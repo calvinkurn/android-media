@@ -15,6 +15,7 @@ object PreferenceModelMapper {
             profiles = profilesModules
             maxProfile = data.maxProfile
             ticker = data.tickers.firstOrNull()
+            enableOccRevamp = data.enableOccRevamp
         }
     }
 
@@ -53,6 +54,7 @@ object PreferenceModelMapper {
             serviceId = shipment.serviceId
             serviceDuration = shipment.serviceDuration
             serviceName = shipment.serviceName
+            estimation = shipment.estimation
         }
     }
 

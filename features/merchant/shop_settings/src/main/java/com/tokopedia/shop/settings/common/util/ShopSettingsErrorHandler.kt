@@ -2,7 +2,7 @@ package com.tokopedia.shop.settings.common.util
 
 import android.content.Context
 import android.text.TextUtils
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.settings.BuildConfig
@@ -17,7 +17,7 @@ object ShopSettingsErrorHandler {
     fun logMessage(message: String) {
         try {
             if (!BuildConfig.DEBUG) {
-                Crashlytics.log(message)
+                FirebaseCrashlytics.getInstance().log(message)
             } else {
                 Timber.e(message)
             }
@@ -28,7 +28,7 @@ object ShopSettingsErrorHandler {
 
     fun logExceptionToCrashlytics(t: Throwable) {
         try {
-            Crashlytics.logException(t)
+            FirebaseCrashlytics.getInstance().recordException(t)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -36,7 +36,7 @@ object ShopSettingsErrorHandler {
 
     fun logExceptionToCrashlytics(m: String) {
         try {
-            Crashlytics.log(m)
+            FirebaseCrashlytics.getInstance().log(m)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -69,6 +69,8 @@ object ShopSettingsErrorHandler {
                     context?.getString(com.tokopedia.network.R.string.default_request_error_unknown)
                 }
             } else if (e is MessageErrorException && !TextUtils.isEmpty(e.message)) {
+                e.message
+            } else if (e is com.tokopedia.abstraction.common.network.exception.MessageErrorException && !e.message.isNullOrBlank()) {
                 e.message
             } else {
                 if (e is IOException) context?.getString(R.string.error_internal_server_error_message) else context?.getString(com.tokopedia.network.R.string.default_request_error_unknown)

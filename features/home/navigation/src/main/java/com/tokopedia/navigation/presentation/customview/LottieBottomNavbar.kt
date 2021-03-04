@@ -3,7 +3,9 @@ package com.tokopedia.navigation.presentation.customview
 import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Handler
+import android.provider.Settings
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -19,6 +21,8 @@ import com.tokopedia.navigation.R
 
 private const val DEFAULT_HEIGHT = 56f
 private const val DEFAULT_ICON_PADDING = 2
+private const val DEFAULT_TITLE_PADDING = 2
+private const val DEFAULT_TITLE_PADDING_BOTTOM = 4
 private const val DEFAULT_TEXT_SIZE = 10f
 
 class LottieBottomNavbar : LinearLayout {
@@ -32,13 +36,14 @@ class LottieBottomNavbar : LinearLayout {
     private var titleList: MutableList<TextView> = ArrayList()
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
-    private var buttonContainerBackgroundColor: Int = Color.WHITE
+    private var buttonContainerBackgroundColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
-    private var buttonColor: Int = Color.GRAY
+    private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
+    private var isThreeItemBottomNav: Boolean = false
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
@@ -94,7 +99,7 @@ class LottieBottomNavbar : LinearLayout {
     private fun adjustBadgePosition() {
         if (menu.isEmpty()) return
         val itemWidthSize = containerWidth/menu.size
-        val badgeRightMargin = itemWidthSize/4
+        val badgeRightMargin = if (isThreeItemBottomNav) (itemWidthSize/2.7).toInt() else itemWidthSize/4
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
@@ -141,10 +146,10 @@ class LottieBottomNavbar : LinearLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
         val defaultButtonHeight = DEFAULT_HEIGHT * context.resources.displayMetrics.density
 
-        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, Color.WHITE)
+        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         buttonsHeight = a.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
 
-        buttonColor = a.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, R.color.grey_500))
+        buttonColor = a.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
         activeButtonColor = a.getColor(R.styleable.LottieBottomNavbar_activeButtonColor, ContextCompat.getColor(context, R.color.transparent))
         a.recycle()
 
@@ -160,8 +165,9 @@ class LottieBottomNavbar : LinearLayout {
         titleList.clear()
         containerList.clear()
 
-        val llLayoutParam = LinearLayout.LayoutParams(itemWidth, LinearLayout.LayoutParams.MATCH_PARENT)
-        val imgLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        val llLayoutParam = LinearLayout.LayoutParams(itemWidth, resources.getDimensionPixelOffset(R.dimen.dp_28))
+        val imgLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                resources.getDimensionPixelOffset(R.dimen.dp_28))
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
@@ -210,10 +216,16 @@ class LottieBottomNavbar : LinearLayout {
             val icon = LottieAnimationView(context)
             icon.tag = context.getString(R.string.tag_lottie_animation_view)+bottomMenu.id
             icon.layoutParams = imgLayoutParam
-            icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
-            bottomMenu.animName?.let {
-                icon.setAnimation(bottomMenu.animName)
-                icon.speed = bottomMenu.animSpeed
+            icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, 0)
+            if (!isDeviceAnimationDisabled()) {
+                bottomMenu.animName?.let {
+                    icon.setAnimation(bottomMenu.animName)
+                    icon.speed = bottomMenu.animSpeed
+                }
+            } else {
+                bottomMenu.imageEnabledName?.let {
+                    icon.setImageResource(it)
+                }
             }
             if (bottomMenu.animName == null) {
                 bottomMenu.imageName?.let {
@@ -225,12 +237,12 @@ class LottieBottomNavbar : LinearLayout {
 
             val imageContainer = FrameLayout(context)
             val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-            resources.getDimensionPixelOffset(R.dimen.dp_32))
+                    FrameLayout.LayoutParams.WRAP_CONTENT)
             imageContainer.layoutParams = fLayoutParams
 
             val iconPlaceholder = ImageView(context)
             iconPlaceholder.tag = "iconPlaceholder"+bottomMenu.id
-            iconPlaceholder.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
+            iconPlaceholder.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, 0)
             iconPlaceholder.layoutParams = imgLayoutParam
             iconPlaceholder.visibility = View.INVISIBLE
             iconPlaceholderList.add(index, iconPlaceholder)
@@ -302,6 +314,7 @@ class LottieBottomNavbar : LinearLayout {
             // add text view to show title
             val title = TextView(context)
             title.layoutParams = txtLayoutParam
+            title.setPadding(DEFAULT_TITLE_PADDING, 0, DEFAULT_TITLE_PADDING, DEFAULT_TITLE_PADDING_BOTTOM)
             title.text = bottomMenu.title
             title.tag = context.getString(R.string.tag_title_textview)+bottomMenu.id
             title.textSize = DEFAULT_TEXT_SIZE
@@ -346,6 +359,21 @@ class LottieBottomNavbar : LinearLayout {
     private fun changeColor(newPosition: Int) {
         if (selectedItem == newPosition) {
             listener?.menuReselected(newPosition, menu[newPosition].id)
+            return
+        }
+
+        //when device animation disabled, only use image resource to prevent stackoverflow error
+        //https://github.com/airbnb/lottie-android/issues/1534
+        if (isDeviceAnimationDisabled()) {
+            val pairSelectedItem = iconList[selectedItem ?: 0]
+            menu[selectedItem ?: 0].imageEnabledName?.let {
+                pairSelectedItem.first.setImageResource(it)
+            }
+
+            val pairNewItem = iconList[newPosition ?: 0]
+            menu[newPosition ?: 0].imageName?.let {
+                pairNewItem.first.setImageResource(it)
+            }
             return
         }
 
@@ -397,10 +425,10 @@ class LottieBottomNavbar : LinearLayout {
         }
     }
 
-    fun setMenu(menu: List<BottomMenu>) {
+    fun setMenu(menu: List<BottomMenu>, isThreeItemBottomNav:Boolean = false) {
         this.menu.clear()
         this.menu.addAll(menu)
-
+        this.isThreeItemBottomNav = isThreeItemBottomNav
         itemCount = this.menu.size
         resizeContainer()
 
@@ -415,6 +443,18 @@ class LottieBottomNavbar : LinearLayout {
     fun setNavbarPositionTop() {
         layoutContent()
         invalidate()
+    }
+
+    fun isDeviceAnimationDisabled() = getAnimationScale(context) == 0f
+
+    fun getAnimationScale(context: Context): Float {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Settings.Global.getFloat(context.contentResolver,
+                    Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+        } else {
+            Settings.System.getFloat(context.contentResolver,
+                    Settings.System.ANIMATOR_DURATION_SCALE, 1.0f)
+        }
     }
 }
 

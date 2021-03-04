@@ -26,7 +26,7 @@ data class AvailableGroup(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("sort_key")
-        val sortKey: Int = 0,
+        val sortKey: Long = 0,
         @SerializedName("has_promo_list")
         val hasPromoList: Boolean = false,
         @SerializedName("checkbox_state")

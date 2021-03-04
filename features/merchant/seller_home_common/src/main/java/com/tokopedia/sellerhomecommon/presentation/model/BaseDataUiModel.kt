@@ -7,4 +7,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 interface BaseDataUiModel {
     val dataKey: String
     var error: String
+    var isFromCache: Boolean
+
+    fun shouldRemove(): Boolean
 }

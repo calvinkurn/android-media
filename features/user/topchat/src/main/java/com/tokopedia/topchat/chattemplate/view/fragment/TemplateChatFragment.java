@@ -1,14 +1,11 @@
 package com.tokopedia.topchat.chattemplate.view.fragment;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
@@ -16,14 +13,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
@@ -36,6 +32,7 @@ import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,17 +70,28 @@ public class TemplateChatFragment extends BaseDaggerFragment
     ChatTemplateAnalytics analytic;
 
     private ItemTouchHelper mItemTouchHelper;
-    private Snackbar snackbarError;
-
-    private Snackbar snackbarInfo;
     private BottomSheetView bottomSheetView;
     private Boolean isSeller = false;
 
     public static TemplateChatFragment createInstance(Bundle extras) {
         TemplateChatFragment fragment = new TemplateChatFragment();
         fragment.setArguments(extras);
-        fragment.isSeller = extras.getBoolean(PARAM_IS_SELLER);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        if (getArguments() != null) {
+            isSeller = getArguments().getBoolean(PARAM_IS_SELLER);
+        }
+        if (GlobalConfig.isSellerApp()) {
+            isSeller = true;
+        }
     }
 
     @Override
@@ -98,8 +106,6 @@ public class TemplateChatFragment extends BaseDaggerFragment
         info = rootView.findViewById(R.id.template_list_info);
         switchTemplate = rootView.findViewById(R.id.switch_chat_template);
         templateContainer = rootView.findViewById(R.id.template_container);
-        snackbarError = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_LONG);
-        snackbarInfo = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_LONG);
 
         recyclerView.setHasFixedSize(true);
 
@@ -133,12 +139,6 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-
-        TextView textView = snackbarError.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-
-        TextView textView2 = snackbarInfo.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-        textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
@@ -206,8 +206,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
     @Override
     public void onEnter(String message, int position) {
         if (message == null && adapter.getList().size() > 5) {
-            snackbarError.setText(getActivity().getString(R.string.limited_template_chat_warning));
-            snackbarError.show();
+            showUnifyToaster(getActivity().getString(R.string.limited_template_chat_warning), Toaster.TYPE_NORMAL);
         } else {
             Intent intent = EditTemplateChatActivity.createInstance(getActivity());
             Bundle bundle = new Bundle();
@@ -289,15 +288,13 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void showError(Throwable errorMessage) {
-        snackbarError.setText(ErrorHandler.getErrorMessage(getContext(), errorMessage));
-        snackbarError.show();
+        showUnifyToaster(ErrorHandler.getErrorMessage(getContext(), errorMessage), Toaster.TYPE_ERROR);
     }
 
     @Override
     public void successRearrange() {
         String text = getActivity().getString(R.string.success_rearrange_template_chat);
-        snackbarInfo.setText(text);
-        snackbarInfo.show();
+        showUnifyToaster(text, Toaster.TYPE_NORMAL);
         prepareResult();
     }
 
@@ -328,8 +325,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
                             break;
                     }
                     prepareResult();
-                    snackbarInfo.setText(text);
-                    snackbarInfo.show();
+                    showUnifyToaster(text, Toaster.TYPE_NORMAL);
                     break;
                 }
             default:
@@ -351,5 +347,11 @@ public class TemplateChatFragment extends BaseDaggerFragment
         Intent intent = new Intent();
         intent.putStringArrayListExtra(LIST_RESULT, adapter.getListString());
         getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    private void showUnifyToaster(String text, int type) {
+        if(getView() != null) {
+            Toaster.build(getView(), text, Toaster.LENGTH_SHORT, type).show();
+        }
     }
 }

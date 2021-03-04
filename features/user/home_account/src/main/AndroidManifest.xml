@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.tokopedia.home_account"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+        <activity
+            android:label="@string/home_account_title"
+            android:name=".view.activity.HomeAccountUserActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/new_home_account"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+    </application>
+</manifest>
+

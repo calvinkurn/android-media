@@ -22,7 +22,7 @@ import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.contactus.inboxticket2.view.adapter.holder.InboxDetailViewHolder
 import com.tokopedia.contactus.inboxticket2.view.adapter.holder.InboxHeaderViewHolder
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
@@ -36,7 +36,7 @@ private const val VIEW_TYPE_HEADER = 0
 class InboxDetailAdapter(private val mContext: Context,
                          private val commentList: MutableList<CommentsItem>,
                          needAttachment: Boolean,
-                         private val mPresenter: InboxDetailPresenter,
+                         private val mPresenter: InboxDetailContract.Presenter,
                          private val inboxDetailListener: InboxDetailListener,
                          private val userId: String,
                          private val caseId: String) : RecyclerView.Adapter<InboxDetailViewHolder>() {
@@ -125,7 +125,7 @@ class InboxDetailAdapter(private val mContext: Context,
             tvAttachmentHint = view.findViewById(R.id.tv_hint_attachment)
         }
 
-        fun bindViewHolder(position: Int, mPresenter: InboxDetailPresenter) {
+        fun bindViewHolder(position: Int, mPresenter: InboxDetailContract.Presenter) {
             if (commentList[position].attachment?.size ?: 0 > 0) {
                 if (attachmentAdapter == null) {
                     attachmentAdapter = AttachmentAdapter(commentList[position].attachment

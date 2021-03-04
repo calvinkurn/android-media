@@ -1,28 +1,27 @@
 package com.tokopedia.topchat.chatroom.domain.mapper
 
 import androidx.collection.ArrayMap
-import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_CAROUSEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -88,11 +87,31 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return listChat
     }
 
+    override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        return MessageViewModel(
+                messageId = chatItemPojoByDateByTime.msgId.toString(),
+                fromUid = chatItemPojoByDateByTime.senderId.toString(),
+                from = chatItemPojoByDateByTime.senderName,
+                fromRole = chatItemPojoByDateByTime.role,
+                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
+                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
+                replyTime = chatItemPojoByDateByTime.replyTime,
+                startTime = "",
+                isRead = chatItemPojoByDateByTime.isRead,
+                isDummy = false,
+                isSender = !chatItemPojoByDateByTime.isOpposite,
+                message = chatItemPojoByDateByTime.msg,
+                source = chatItemPojoByDateByTime.source,
+                blastId = chatItemPojoByDateByTime.blastId,
+                fraudStatus = chatItemPojoByDateByTime.fraudStatus
+        )
+    }
+
     private fun createBroadCastUiModel(chatDateTime: Reply, model: Map<String, Visitable<*>>): BroadCastUiModel {
         return BroadCastUiModel(chatDateTime, model, chatDateTime.isOpposite)
     }
 
-    private fun mergeBroadcast(index: Int, replies: List<Reply>, blastId: Int): Pair<Map<String, Visitable<*>>, Int> {
+    private fun mergeBroadcast(index: Int, replies: List<Reply>, blastId: Long): Pair<Map<String, Visitable<*>>, Int> {
         val broadcast = ArrayMap<String, Visitable<*>>()
         var idx = index
         while (idx < replies.size) {
@@ -169,23 +188,28 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
             TYPE_QUOTATION -> convertToQuotation(chatItemPojoByDateByTime)
             TYPE_STICKER.toString() -> convertToSticker(chatItemPojoByDateByTime)
+            TYPE_REVIEW_REMINDER -> convertToReviewReminder(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
-        val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(item.attachment?.attributes, TopChatVoucherPojo::class.java)
+        val pojo = gson.fromJson<TopChatVoucherPojo>(item.attachment?.attributes, TopChatVoucherPojo::class.java)
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
         var voucherAmount = MerchantVoucherAmount(voucher.amountType, voucher.amount)
-        var voucherOwner = MerchantVoucherOwner(identifier = voucher.identifier, ownerId = voucher.ownerId)
+        var voucherOwner = MerchantVoucherOwner(
+                identifier = voucher.identifier,
+                ownerId = voucher.ownerId.toIntOrZero()
+        )
         var voucherBanner = MerchantVoucherBanner(mobileUrl = voucher.mobileUrl)
-        var voucherModel = MerchantVoucherModel(voucherId = voucher.voucherId,
+        var voucherModel = MerchantVoucherModel(
+                voucherId = voucher.voucherId.toIntOrZero(),
                 voucherName = voucher.voucherName,
                 voucherCode = voucher.voucherCode,
                 merchantVoucherType = voucherType,
                 merchantVoucherAmount = voucherAmount,
-                minimumSpend = voucher.minimumSpend,
+                minimumSpend = voucher.minimumSpend.toIntOrZero(),
                 merchantVoucherOwner = voucherOwner,
                 validThru = voucher.validThru.toString(),
                 tnc = voucher.tnc,
@@ -214,7 +238,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
+        val pojoAttribute = gson.fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
                 ImageDualAnnouncementPojo::class.java)
         return ImageDualAnnouncementUiModel(
                 messageId = item.msgId.toString(),
@@ -235,8 +259,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToQuotation(message: Reply): Visitable<*> {
-        val quotationAttributes = GsonBuilder()
-                .create()
+        val quotationAttributes = gson
                 .fromJson<QuotationAttributes>(
                         message.attachment?.attributes,
                         QuotationAttributes::class.java
@@ -258,19 +281,17 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToSticker(message: Reply): Visitable<*> {
-        val stickerAttributes = GsonBuilder()
-                .create()
-                .fromJson<StickerAttributesResponse>(
-                        message.attachment?.attributes,
-                        StickerAttributesResponse::class.java
-                )
+        val stickerAttributes = gson.fromJson<StickerAttributesResponse>(
+                message.attachment?.attributes,
+                StickerAttributesResponse::class.java
+        )
         return StickerUiModel(
                 messageId = message.msgId.toString(),
                 fromUid = message.senderId.toString(),
                 from = message.senderName,
                 fromRole = message.role,
-                attachmentId = message.attachment?.id ?: "",
-                attachmentType = message.attachment?.type.toString(),
+                attachmentId = message.attachment.id,
+                attachmentType = message.attachment.type.toString(),
                 replyTime = message.replyTime,
                 message = message.msg,
                 isRead = message.isRead,
@@ -279,5 +300,13 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 sticker = stickerAttributes.stickerProfile,
                 source = message.source
         )
+    }
+
+    private fun convertToReviewReminder(message: Reply): Visitable<*> {
+        val review = gson.fromJson<ReviewReminderAttribute>(
+                message.attachment.attributes,
+                ReviewReminderAttribute::class.java
+        )
+        return ReviewUiModel(message, review.reviewCard)
     }
 }

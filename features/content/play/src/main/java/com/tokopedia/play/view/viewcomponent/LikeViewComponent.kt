@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.TotalLikeUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -18,6 +18,9 @@ class LikeViewComponent(
         @IdRes idRes: Int,
         private val listener: Listener
 ) : ViewComponent(container, idRes) {
+
+    val clickAreaView: View
+        get() = vLikeClickArea
 
     private val animationLike = findViewById<LottieAnimationView>(R.id.animation_like)
     private val vLikeClickArea = findViewById<View>(R.id.v_like_click_area)
@@ -53,7 +56,7 @@ class LikeViewComponent(
         }
     }
 
-    fun setTotalLikes(totalLikes: TotalLikeUiModel) {
+    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel) {
         tvTotalLikes.text = totalLikes.totalLikeFormatted
     }
 

@@ -2,10 +2,12 @@ package com.tokopedia.shop.note.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.note.view.fragment.ShopNoteDetailFragment;
 
@@ -29,6 +31,10 @@ public class ShopNoteDetailActivity extends BaseSimpleActivity {
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         shopNoteId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_NOTE_ID);
         super.onCreate(savedInstanceState);
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+        toolbar.setBackground(new ColorDrawable(
+                MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        ));
     }
 
     @Override

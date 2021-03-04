@@ -27,13 +27,13 @@ data class TopAdsGetKeywordSuggestionV3(
 data class KeywordData(
 
         @field:SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: String = "0",
 
         @field:SerializedName("keyword_data")
         val keywordData: List<KeywordDataItem> = listOf(),
 
         @field:SerializedName("min_bid")
-        val minBid: Int = 0
+        val minBid: String = "0"
 
 
 ) : Parcelable
@@ -41,13 +41,13 @@ data class KeywordData(
 @Parcelize
 data class KeywordDataItem(
         @field:SerializedName("bid_suggest")
-        var bidSuggest: Int = 0,
+        var bidSuggest: String = "0",
 
         @field:SerializedName("total_search")
-        val totalSearch: String = "",
+        var totalSearch: String = "",
 
         @field:SerializedName("keyword")
-        val keyword: String = "",
+        var keyword: String = "",
 
         @field:SerializedName("source")
         val source: String = "",

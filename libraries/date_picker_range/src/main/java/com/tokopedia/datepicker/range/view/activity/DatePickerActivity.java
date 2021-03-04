@@ -1,13 +1,13 @@
 package com.tokopedia.datepicker.range.view.activity;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.datepicker.range.R;
@@ -111,7 +111,7 @@ public class DatePickerActivity extends BaseTabActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().setStatusBarColor(Color.WHITE);
+            getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 }

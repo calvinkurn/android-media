@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.content.Context
+import android.util.Base64
 import android.view.View
 import android.webkit.WebView
 import android.widget.LinearLayout
@@ -136,7 +137,7 @@ class InstallmentDetailBottomSheet {
     </body>
 </html>
         """.trimIndent()
-        webView.loadData(htmlText, "text/html", "UTF-8")
+        webView.loadData(Base64.encodeToString(htmlText.toByteArray(), Base64.DEFAULT), "text/html", "base64")
         val ivExpandTerms = child.findViewById<ImageUnify>(R.id.iv_expand_terms)
         ivExpandTerms.setOnClickListener {
             val newRotation = if (ivExpandTerms.rotation == 0f) 180f else 0f

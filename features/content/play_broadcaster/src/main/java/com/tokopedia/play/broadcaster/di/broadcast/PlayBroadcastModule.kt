@@ -15,6 +15,7 @@ import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -53,6 +54,11 @@ class PlayBroadcastModule(val mContext: Context) {
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @Provides
+    fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
+        return UpdateChannelUseCase(graphqlRepository)
     }
 
     @PlayBroadcastScope

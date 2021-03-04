@@ -23,10 +23,10 @@ fun getTopAdsStatusColor(context: Context?, status: String?) : Int {
     if (context == null) return 0
 
     return when(status) {
-        STATUS_PENDING -> context.resources.getColor(R.color.topads_status_pending)
-        STATUS_DATA_NOT_FOUND -> context.resources.getColor(R.color.topads_status_data_not_found)
-        STATUS_NOT_MATCH -> context.resources.getColor(R.color.topads_status_not_match)
-        STATUS_MATCH -> context.resources.getColor(R.color.topads_status_match)
+        STATUS_PENDING -> context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400)
+        STATUS_DATA_NOT_FOUND -> context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y300)
+        STATUS_NOT_MATCH -> context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+        STATUS_MATCH -> context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
         else -> 0
     }
 }

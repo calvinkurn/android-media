@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         tools:text="Paket Umrah Premium"
         app:typographyType="body_3" />
 
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tg_umrah_checkout_summary_pay_title"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         tools:text="Tipe kamar Quad x1 Jamaah"
         app:typographyType="small" />
 
@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         tools:text="Rp27.000.000"
         android:textColor="@color/Neutral_N700"
         app:typographyType="body_3"

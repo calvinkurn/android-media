@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - post widget item click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{click widget post - .{1,} - .{1,}}}",
+      "eventLabel": "",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

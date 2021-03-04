@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_4">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/dp_250"
+        android:layout_height="@dimen/dp_160"
+        android:padding="@dimen/dp_8">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_product"
+            android:layout_width="69dp"
+            android:layout_height="69dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="6"
+            app:unify_image_type="rect"
+            tools:src="@drawable/empty_photo" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_9"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_product"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_product_variant"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_9"
+            android:layout_marginTop="@dimen/dp_2"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_68"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/img_product"
+            app:layout_constraintTop_toBottomOf="@+id/text_product_name"
+            app:typographyType="small"
+            tools:text="Biru, XL"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_9"
+            android:layout_marginTop="@dimen/dp_4"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toEndOf="@+id/img_product"
+            app:layout_constraintTop_toBottomOf="@+id/text_product_variant"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Rp100.000" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_shop_badge"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_9"
+            android:layout_marginTop="@dimen/dp_4"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/text_shop_name"
+            app:layout_constraintStart_toEndOf="@+id/img_product"
+            app:layout_constraintTop_toBottomOf="@+id/text_product_price"
+            tools:src="@drawable/ic_badge_shop_official" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toEndOf="@+id/img_shop_badge"
+            app:layout_constraintTop_toBottomOf="@+id/text_product_price"
+            app:typographyType="small"
+            tools:text="Toko Maju Jaya" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_free_shipping"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_9"
+            android:layout_marginTop="@dimen/dp_9"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toEndOf="@+id/img_product"
+            app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
+            app:unify_image_type="rect"
+            tools:src="@color/Unify_G500" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_delete_wishlist"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:foreground="?selectableItemBackgroundBorderless"
+            android:translationX="-4dp"
+            app:icon_name="DELETE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_add_to_cart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:foreground="?selectableItemBackground"
+            android:gravity="center"
+            android:text="@string/checkout_module_wishlist_add_to_cart"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_delete_wishlist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_delete_wishlist"
+            app:layout_constraintTop_toTopOf="@+id/btn_delete_wishlist"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

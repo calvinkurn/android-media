@@ -5,8 +5,9 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    android:background="@color/white"
+    android:layout_marginTop="@dimen/spacing_lvl2"
+    android:layout_marginBottom="@dimen/spacing_lvl2"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,53 +28,91 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_ads_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_2"
+            android:text="@string/topads_ads_text"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toEndOf="@+id/shop_image"
+            app:layout_constraintTop_toTopOf="@+id/shop_name"
+            app:layout_constraintBottom_toBottomOf="@+id/shop_name"
+            app:typographyType="small"
+            app:typographyWeight="bold"/>
+
         <ImageView
             android:id="@+id/shop_badge"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:visibility="gone"
+            android:contentDescription="@string/topads_sdk_shop_banner_content_description"
             app:layout_constraintBottom_toBottomOf="@+id/shop_name"
-            app:layout_constraintStart_toEndOf="@+id/shop_image"
+            app:layout_constraintStart_toEndOf="@+id/shop_ads_text"
             app:layout_constraintTop_toTopOf="@+id/shop_name"
             tools:src="@tools:sample/avatars"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title_promote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="2px"
-            android:text="@string/title_promote_by"
-            android:textColor="@color/topads_promoted_color"
-            app:layout_constraintStart_toEndOf="@+id/shop_image"
-            app:layout_constraintTop_toBottomOf="@+id/shop_name"
-            app:typographyType="small" />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_name"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:layout_marginTop="8dp"
-            android:textColor="@color/topads_shop_name"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@+id/shop_badge"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnFollow"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayoutMerchantVoucher"
             app:typographyType="heading_5"
             tools:text="Lego Official Store" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutMerchantVoucher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_6"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@id/shop_image"
+            app:layout_constraintTop_toBottomOf="@id/shop_name"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnFollow"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:gravity="center"
+            android:text="@string/topads_follow"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            tools:text="Follow"
+            tools:visibility="visible"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12px"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:overScrollMode="never"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_10"
@@ -81,5 +120,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shop_detail" />
+
+    <com.tokopedia.shopwidget.shopcard.ShopCardView
+        android:id="@+id/adsBannerShopCardView"
+        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_0"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

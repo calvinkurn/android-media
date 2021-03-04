@@ -4,7 +4,7 @@
     android:layout_height="56dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_vertical"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,7 +21,7 @@
         <TextView
             android:id="@+id/category_child_text"
             android:textSize="@dimen/text_size_l_medium"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_68"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"/>
@@ -38,5 +38,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/grey_200" />
+        android:background="@color/Unify_N50" />
 </LinearLayout>

@@ -15,7 +15,7 @@ class ViewComponentNullableDelegate<VC: IViewComponent>(
         viewComponentCreator: (container: ViewGroup) -> VC
 ) : ReadOnlyProperty<Fragment, VC?> {
 
-    private val nonNullDelegate = ViewComponentDelegate(owner, isEagerInit, viewComponentCreator)
+    private val nonNullDelegate = ViewComponentDelegate(owner, isEagerInit, viewComponentCreator, throwIfFailedCreation = false)
 
     override fun getValue(thisRef: Fragment, property: KProperty<*>): VC? {
         return try {

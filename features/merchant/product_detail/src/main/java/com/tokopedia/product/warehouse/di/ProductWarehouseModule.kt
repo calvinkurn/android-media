@@ -9,7 +9,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@ProductDetailScope
 @Module(includes = [ProductDetailUserModule::class, ProductRestModule::class])
 class ProductWarehouseModule {
     @ProductDetailScope

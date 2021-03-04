@@ -29,14 +29,14 @@ interface PlayPusher {
     fun destroy()
 
     /**
-     * add live streaming duration
+     * set live streaming duration
      */
-    fun addStreamDuration(durationInMillis: Long)
+    fun setStreamDuration(durationInMillis: Long)
 
     /**
-     * add maximum live streaming duration
+     * set maximum live streaming duration
      */
-    fun addMaxStreamDuration(durationInMillis: Long)
+    fun setMaxStreamDuration(durationInMillis: Long)
 
     /**
      * start live streaming timer
@@ -64,19 +64,19 @@ interface PlayPusher {
     fun restartStreamDuration(durationInMillis: Long)
 
     /**
-     * add maximum pause duration when streaming
+     * set maximum pause duration when streaming
      */
-    fun addMaxPauseDuration(durationInMillis: Long)
+    fun setMaxPauseDuration(durationInMillis: Long)
 
     fun getTimeElapsed(): String
 
     /**
-     * add listener to timer
+     * set listener to timer
      */
-    fun addPlayPusherTimerListener(listener: PlayPusherTimerListener)
+    fun setPlayPusherTimerListener(listener: PlayPusherTimerListener)
 
     /**
-     * add listener to pusher
+     * set listener to pusher
      */
-    fun addPlayPusherInfoListener(listener: PlayPusherInfoListener)
+    fun setPlayPusherInfoListener(listener: PlayPusherInfoListener)
 }

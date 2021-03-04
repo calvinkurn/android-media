@@ -10,6 +10,6 @@
         android:bottomLeftRadius="@dimen/dp_3"
         android:bottomRightRadius="@dimen/dp_3"
         />
-    <solid android:color="@android:color/white" />
+    <solid android:color="@color/Unify_N0" />
 
 </shape>

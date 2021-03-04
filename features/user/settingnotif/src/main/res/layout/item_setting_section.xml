@@ -16,7 +16,6 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_notifsetting_notification" />
 
@@ -25,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl5"
         android:textStyle="bold"
         tools:text="Transaksi"/>

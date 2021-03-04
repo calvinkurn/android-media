@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_parent_redeem"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_redeemed"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/Unify_G500">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/spacing_lvl8"
+                    android:layout_height="@dimen/spacing_lvl8"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    app:srcCompat="@drawable/ic_event_redeem" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_event_redeem_redeemed_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:gravity="center"
+                    android:text="@string/ent_redeem_data_redeemed"
+                    android:textColor="@color/Unify_N0"
+                    app:typographyType="heading_2"
+                    app:typographyWeight="bold" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_event_redeem_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:gravity="center"
+                    android:textColor="@color/Unify_N0"
+                    app:typographyType="heading_3"
+                    app:typographyWeight="bold" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_event_redeem_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/ent_redeem_title_owner"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_4"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_url_redeem_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Firmanda Mulyawan Nugroho" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_event_redeem_total_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/ent_redeem_title_total"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_4"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_event_redeem_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            tools:text="2"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_event_redeem_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:gravity="center"
+            tools:text="Testing Offline Event"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_1"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_event_redeem_package"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:gravity="center"
+            tools:text="Testing Online 2"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_event_redeem_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:gravity="center"
+            tools:text="Testing Online 2"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_redeem_ticket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/ent_redeem_title_btn_redeem" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_redeem_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/ent_redeem_title_btn_back"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pg_event_redeem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+</FrameLayout>

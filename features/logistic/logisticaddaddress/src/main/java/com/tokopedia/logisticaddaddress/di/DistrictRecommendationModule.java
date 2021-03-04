@@ -24,7 +24,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomPresenter;
-import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
+import com.tokopedia.logisticCommon.data.converter.GeneratedHostConverter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;

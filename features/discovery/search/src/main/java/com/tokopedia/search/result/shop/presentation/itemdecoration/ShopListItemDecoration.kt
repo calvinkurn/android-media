@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.search.R
+import com.tokopedia.shopwidget.shopcard.ShopCardView
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -78,10 +79,10 @@ class ShopListItemDecoration(private val left: Int,
     }
 
     private fun getHorizontalCardViewOffset(view: View): Int {
-        if (view is CardView) {
+        if (view is ShopCardView) {
 
-            val maxElevation = view.maxCardElevation
-            val radius = view.radius
+            val maxElevation = view.getMaxCardElevation()
+            val radius = view.getRadius()
 
             return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
         }
@@ -90,10 +91,10 @@ class ShopListItemDecoration(private val left: Int,
     }
 
     private fun getVerticalCardViewOffset(view: View): Int {
-        if (view is CardView) {
+        if (view is ShopCardView) {
 
-            val maxElevation = view.maxCardElevation
-            val radius = view.radius
+            val maxElevation = view.getMaxCardElevation()
+            val radius = view.getRadius()
 
             return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
         }

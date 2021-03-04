@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_topchat_10"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="Sebagai Pembeli" />

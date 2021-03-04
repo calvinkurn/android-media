@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.util.UmrahSpaceItemDecoration
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategoriesFeatured
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
@@ -44,7 +44,7 @@ class UmrahHomepageCategoryFeaturedAdapter(val onItemBindListener: onItemBindLis
                         )
 
                         while (itemDecorationCount > 0) removeItemDecorationAt(0)
-                        addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4),
+                        addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
                                 RecyclerView.HORIZONTAL))
                         if (categories.products.isNotEmpty() && categories.products.getOrNull(0)?.isViewed == false)
 

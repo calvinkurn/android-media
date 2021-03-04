@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.picker.main.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
@@ -10,7 +11,8 @@ import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.utils.file.FileUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +42,10 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
 
         void onSuccessResizeImage(ArrayList<String> resultPaths);
 
+        void onErrorConvertFormatImage(Throwable e);
+
+        void onSuccessConvertFormatImage(ArrayList<String> resultPaths);
+
     }
 
     public void detachView() {
@@ -49,19 +55,32 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
         }
     }
 
-    public void resizeImage(List<String> imagePath, final long maxFileSize, boolean recheckSizeAfterResize) {
+    public void resizeImage(List<String> imagePath, final long maxFileSize,
+                            boolean recheckSizeAfterResize, boolean convertToWebp) {
 
         Subscription subscription = Observable.from(imagePath)
                 .concatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String path) {
-
-                        if (ImageUtils.getFileSizeInKb(path) > maxFileSize) {
-                            if (ImageUtils.isImageType(getView().getContext(), path)) {
+                        if (FileUtil.getFileSizeInKb(path) > maxFileSize) {
+                            if (FileUtil.isImageType(getView().getContext(), path)) {
+                                String pathResult = "";
                                 //resize image
-                                String pathResult = ImageUtils.resizeBitmap(path, ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
-                                        true, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
-                                if (recheckSizeAfterResize && ImageUtils.getFileSizeInKb(pathResult) > maxFileSize) {
+                                if (convertToWebp) {
+                                    pathResult = ImageProcessingUtil.resizeBitmap(path,
+                                            ImageProcessingUtil.DEF_WIDTH,
+                                            ImageProcessingUtil.DEF_HEIGHT,
+                                            true,
+                                            Bitmap.CompressFormat.WEBP);
+                                } else {
+                                    pathResult = ImageProcessingUtil.resizeBitmap(path,
+                                            ImageProcessingUtil.DEF_WIDTH,
+                                            ImageProcessingUtil.DEF_HEIGHT,
+                                            true,
+                                            ImageProcessingUtil.getCompressFormat(path));
+                                }
+
+                                if (recheckSizeAfterResize && FileUtil.getFileSizeInKb(pathResult) > maxFileSize) {
                                     throw new FileSizeAboveMaximumException();
                                 }
                                 return Observable.just(pathResult);
@@ -100,6 +119,59 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                                 }
                                 if (isViewAttached()) {
                                     getView().onSuccessResizeImage(resultLocalPaths);
+                                }
+                            }
+                        }
+                );
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
+        }
+        compositeSubscription.add(subscription);
+    }
+
+    public void convertFormatImage(List<String> imagePath, boolean convertToWebp) {
+
+        Subscription subscription = Observable.from(imagePath)
+                .concatMap((Func1<String, Observable<String>>) path -> {
+                    String resultPath = path;
+                    boolean isFileImage = FileUtil.isImageType(getView().getContext(), path);
+                    boolean isWebp = ImageProcessingUtil.isWebp(path);
+
+                    if (convertToWebp && isFileImage && !isWebp) {
+                        resultPath = ImageProcessingUtil.resizeBitmap(path,
+                                ImageProcessingUtil.DEF_WIDTH,
+                                ImageProcessingUtil.DEF_HEIGHT,
+                                true,
+                                Bitmap.CompressFormat.WEBP);
+                    }
+                    return Observable.just(resultPath);
+                }).toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<List<String>>() {
+                            @Override
+                            public void onCompleted() {}
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().onErrorConvertFormatImage(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(List<String> paths) {
+                                ArrayList<String> resultLocalPaths = new ArrayList<>();
+                                if (paths == null || paths.size() == 0) {
+                                    throw new NullPointerException();
+                                }
+                                for (int i = 0, sizei = paths.size(); i < sizei; i++) {
+                                    resultLocalPaths.add(paths.get(i));
+                                }
+                                if (isViewAttached()) {
+                                    getView().onSuccessConvertFormatImage(resultLocalPaths);
                                 }
                             }
                         }
@@ -173,7 +245,7 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                             }
                             FutureTarget<File> future = Glide.with(getView().getContext())
                                     .load(url)
-                                    .downloadOnly(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT);
+                                    .downloadOnly(ImageProcessingUtil.DEF_WIDTH, ImageProcessingUtil.DEF_HEIGHT);
                             try {
                                 return future.get();
                             } catch (InterruptedException | ExecutionException e) {

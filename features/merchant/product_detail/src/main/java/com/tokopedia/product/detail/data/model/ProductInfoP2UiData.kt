@@ -4,7 +4,9 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
+import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
@@ -16,7 +18,7 @@ import com.tokopedia.variant_common.model.WarehouseInfo
  */
 data class ProductInfoP2UiData(
         var shopInfo: ShopInfo = ShopInfo(),
-        var shopSpeed: Int = 0,
+        var shopSpeed: Long = 0L,
         var shopChatSpeed: String = "",
         var shopRating: Float = 0F,
         var productView: String = "",
@@ -31,4 +33,7 @@ data class ProductInfoP2UiData(
         var upcomingCampaigns: Map<String, ProductUpcomingData> = mapOf(),
         var vouchers: List<MerchantVoucherViewModel> = listOf(),
         var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
-        var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse())
+        var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
+        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
+        var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary()
+)

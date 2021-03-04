@@ -7,12 +7,14 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.
 data class LabelGroupViewModel(
     val position: String,
     val type: String,
-    val title: String
+    val title: String,
+    val imageUrl: String = ""
 ) : Parcelable {
 
     fun isLabelIntegrity() = position == LABEL_INTEGRITY
 
     constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: ""
@@ -22,6 +24,7 @@ data class LabelGroupViewModel(
         parcel.writeString(position)
         parcel.writeString(type)
         parcel.writeString(title)
+        parcel.writeString(imageUrl)
     }
 
     override fun describeContents(): Int {

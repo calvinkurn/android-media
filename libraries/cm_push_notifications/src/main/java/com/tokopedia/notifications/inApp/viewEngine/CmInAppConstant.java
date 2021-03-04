@@ -8,9 +8,11 @@ public interface CmInAppConstant {
     String TYPE_FULL_SCREEN = "full_screen";
     String TYPE_FULL_SCREEN_IMAGE_ONLY = "full_screen_img";
     String TYPE_INTERSTITIAL = "interstitial";
+    String TYPE_GRATIF = "gratification";
     String TYPE_INTERSTITIAL_IMAGE_ONLY = "interstitial_img";
     String TYPE_BORDER_BOTTOM = "borderBottom";
     String TYPE_BORDER_TOP = "borderTop";
+    String TYPE_SILENT = "silent";
 
     String ORIENTATION_VERTICAL = "vertical";
     String ORIENTATION_HORIZONTAL = "horizontal";

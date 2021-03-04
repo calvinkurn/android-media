@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.*
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.AppendShopShowcaseProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
@@ -28,8 +28,8 @@ class ShopShowcaseAddViewModel @Inject constructor (
         private val appendShopShowcaseProductUseCase: AppendShopShowcaseProductUseCase,
         private val removeShopShowcaseProductUseCase: RemoveShopShowcaseProductUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatchers: ShopShowcaseDispatchProvider
-): BaseViewModel(dispatchers.ui()) {
+        private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val shopId: String by lazy {
         userSession.shopId
@@ -133,35 +133,35 @@ class ShopShowcaseAddViewModel @Inject constructor (
     }
 
     private suspend fun executeAddShopShowcase(data: AddShopShowcaseParam) {
-        _createShopShowcase.value = Success(withContext(dispatchers.io()){
+        _createShopShowcase.value = Success(withContext(dispatchers.io){
             createShopShowcaseUseCase.params = CreateShopShowcaseUseCase.createRequestParams(data)
             return@withContext createShopShowcaseUseCase.executeOnBackground()
         })
     }
 
     private suspend fun executeGetSelectedProductList(filter: GetProductListFilter) {
-        _selectedProductList.value = Success(withContext(dispatchers.io()){
+        _selectedProductList.value = Success(withContext(dispatchers.io){
             getProductListUseCase.params = GetProductListUseCase.createRequestParams(shopId, filter)
             return@withContext getProductListUseCase.executeOnBackground()
         })
     }
 
     private suspend fun executeUpdateShopShowcase(data: UpdateShopShowcaseParam) {
-        _updateShopShowcase.value = Success(withContext(dispatchers.io()){
+        _updateShopShowcase.value = Success(withContext(dispatchers.io){
             updateShopShowcaseUseCase.params = UpdateShopShowcaseUseCase.createRequestParams(data)
             updateShopShowcaseUseCase.executeOnBackground()
         })
     }
 
     private suspend fun executeAppendNewShowcaseProduct(data: AppendShowcaseProductParam) {
-        _appendNewShowcaseProduct.value = Success(withContext(dispatchers.io()){
+        _appendNewShowcaseProduct.value = Success(withContext(dispatchers.io){
             appendShopShowcaseProductUseCase.params = AppendShopShowcaseProductUseCase.createRequestParams(data, shopId)
             return@withContext appendShopShowcaseProductUseCase.executeOnBackground()
         })
     }
 
     private suspend fun executeRemoveShowcaseProduct(data: RemoveShowcaseProductParam) {
-        _removeShowcaseProduct.value = Success(withContext(dispatchers.io()){
+        _removeShowcaseProduct.value = Success(withContext(dispatchers.io){
             removeShopShowcaseProductUseCase.params = RemoveShopShowcaseProductUseCase.createRequestParams(data, shopId)
             return@withContext removeShopShowcaseProductUseCase.executeOnBackground()
         })

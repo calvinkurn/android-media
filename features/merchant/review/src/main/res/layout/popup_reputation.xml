@@ -11,6 +11,7 @@
     <TextView
         android:id="@+id/point"
         android:text="lalalala"
+        android:textColor="@color/Unify_N700_68"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

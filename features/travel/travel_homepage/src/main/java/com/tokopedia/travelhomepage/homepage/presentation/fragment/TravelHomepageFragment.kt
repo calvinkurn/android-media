@@ -88,7 +88,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
         calculateToolbarView(0)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
-        getRecyclerView(view).isNestedScrollingEnabled = false
 
         getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -108,7 +107,9 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
             var flags = travel_homepage_container.systemUiVisibility
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             travel_homepage_container.systemUiVisibility = flags
-            activity?.window?.statusBarColor = Color.WHITE
+            context?.let {
+                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
 
         if (Build.VERSION.SDK_INT in 19..20) {

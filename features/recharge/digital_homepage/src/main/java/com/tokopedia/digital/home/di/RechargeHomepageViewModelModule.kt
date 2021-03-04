@@ -5,14 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
-import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@RechargeHomepageScope
 abstract class RechargeHomepageViewModelModule {
 
     @RechargeHomepageScope

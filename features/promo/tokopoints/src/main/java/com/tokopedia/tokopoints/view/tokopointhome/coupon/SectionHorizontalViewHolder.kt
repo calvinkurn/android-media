@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.tokopointhome.coupon
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -13,6 +14,7 @@ import com.tokopedia.tokopoints.view.adapter.CarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.CouponListAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.TimerUnify
 
@@ -26,6 +28,11 @@ class SectionHorizontalViewHolder(val view: View)
             view.visibility = View.GONE
         }
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+
+        if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
+            CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all, R.id.text_title, ConstraintSet.BASELINE)
+        }
+
         if (content.countdownAttr != null &&
                 content.countdownAttr.isShowTimer && content.countdownAttr.expiredCountDown > 0) {
             val countDownView = view.findViewById<TimerUnify>(R.id.tp_count_down_view)
@@ -33,9 +40,9 @@ class SectionHorizontalViewHolder(val view: View)
             countDownView.remainingMilliseconds = content.countdownAttr.expiredCountDown * 1000
             countDownView.onFinish = { view.visibility = View.GONE }
 
-            view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180)
+            view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(R.dimen.dp_180)
         } else {
-            view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280)
+            view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(R.dimen.dp_280)
         }
         if (!content.cta.isEmpty) {
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all)
@@ -64,9 +71,7 @@ class SectionHorizontalViewHolder(val view: View)
             rvCarousel.addItemDecoration(CarouselItemDecoration(convertDpToPixel(8, rvCarousel.context)))
         }
         rvCarousel.adapter = CouponListAdapter(arrayList)
-
     }
-
 
     fun handledClick(appLink: String?, webLink: String?, action: String?) {
         try {

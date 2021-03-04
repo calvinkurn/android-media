@@ -1,6 +1,7 @@
 package com.tokopedia.analyticsdebugger.debugger.data.source
 
 import android.content.Context
+import com.tokopedia.analyticsdebugger.AnalyticsSource
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
@@ -18,11 +19,7 @@ import javax.inject.Inject
 class GtmLogDBSource @Inject
 constructor(context: Context) {
 
-    private val gtmLogDao: GtmLogDao
-
-    init {
-        gtmLogDao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
-    }
+    private val gtmLogDao: GtmLogDao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
 
     fun deleteAll(): Observable<Boolean> {
         return Observable.unsafeCreate { subscriber ->
@@ -33,11 +30,12 @@ constructor(context: Context) {
 
     fun insertAll(data: AnalyticsLogData): Observable<Boolean> {
         return Observable.just(data).map { analyticsLogData ->
-            val gtmLogDB = GtmLogDB()
-            gtmLogDB.name = analyticsLogData.name
-            gtmLogDB.category = analyticsLogData.category
-            gtmLogDB.data = analyticsLogData.data
-            gtmLogDB.timestamp = Date().time
+            val gtmLogDB = GtmLogDB(
+                    data = analyticsLogData.data,
+                    name = analyticsLogData.name,
+                    timestamp = Date().time,
+                    source =  analyticsLogData.source
+            )
             gtmLogDao.insertAll(gtmLogDB)
             true
         }
@@ -71,15 +69,13 @@ constructor(context: Context) {
         }, Emitter.BackpressureMode.NONE)
     }
 
-    suspend fun getLogs(): List<GtmLogDB> {
+    suspend fun getLogs(@AnalyticsSource analyticsSource: String = AnalyticsSource.ALL): List<GtmLogDB> {
         return withContext(Dispatchers.IO) {
-            gtmLogDao.getAll()
-        }
-    }
+            when (analyticsSource) {
+                AnalyticsSource.ALL -> gtmLogDao.getAll()
+                else -> gtmLogDao.getAll(analyticsSource)
+            }
 
-    suspend fun delete() {
-        withContext(Dispatchers.IO) {
-            gtmLogDao.deleteAll()
         }
     }
 

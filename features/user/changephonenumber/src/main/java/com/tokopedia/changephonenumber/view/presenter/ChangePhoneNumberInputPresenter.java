@@ -45,14 +45,9 @@ public class ChangePhoneNumberInputPresenter
     }
 
     @Override
-    public void initView() {
-
-    }
-
-    @Override
-    public void onNewNumberTextChanged(Editable editable, int selection) {
+    public void onNewNumberTextChanged(String phoneNumber, int selection) {
         final Pattern pattern = Pattern.compile(REGEX_CLEAN_PHONE_NUMBER);
-        String newNumber = editable.toString();
+        String newNumber = phoneNumber;
         final Matcher matcher = pattern.matcher(newNumber);
         newNumber = matcher.replaceAll("");
 
@@ -62,8 +57,8 @@ public class ChangePhoneNumberInputPresenter
             view.disableNextButton();
         }
 
-        if (editable.toString().length() != newNumber.length()) {
-            int lengthDifference = newNumber.length() - editable.toString().length();
+        if (phoneNumber.length() != newNumber.length()) {
+            int lengthDifference = newNumber.length() - phoneNumber.length();
             if (selection + lengthDifference < 0)
                 view.correctPhoneNumber(newNumber, 0);
             else if (selection > newNumber.length())

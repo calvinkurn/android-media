@@ -9,7 +9,7 @@
       "eventLabel": "{{.* - keyword: .*}}",
       "screenName": "/",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.*}}",
+      "userId": "{{.+}}",
       "businessUnit": "search",
       "sessionIris": "{{.*}}"
     },
@@ -20,14 +20,7 @@
       "eventLabel": "",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "clickSearch",
-      "eventCategory": "top nav - /",
-      "eventAction": "click - popular search",
-      "eventLabel": "{{.* - po: .* - applink: .*}}",
+      "userId": "{{.+}}",
       "sessionIris": "{{.*}}"
     },
     {
@@ -71,8 +64,28 @@
       "eventLabel": "{{.* - keyword: .*}}",
       "screenName": "/",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.*}}",
+      "userId": "{{.+}}",
       "businessUnit": "search",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "{{click - popular search - .*}}",
+      "eventLabel": "{{value: .* - title: .* - po: .*}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - initial state - /",
+      "eventAction": "{{click - curated campaign - .*}}",
+      "eventLabel": "{{.* - .*}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
       "sessionIris": "{{.*}}"
     }
   ]

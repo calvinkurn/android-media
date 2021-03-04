@@ -4,8 +4,8 @@ import com.google.gson.Gson
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
+import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
-import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -23,8 +23,8 @@ class ModelBuilder {
     /**
      * Network Data
      */
-    fun buildLiveStats(): LiveStats {
-        return gson.fromJson(loadJsonToString("mock_live_stats.json"), LiveStats::class.java)
+    fun buildLiveStats(): GetLiveStatisticsResponse.ReportChannelSummary {
+        return gson.fromJson(loadJsonToString("mock_live_stats.json"), GetLiveStatisticsResponse.ReportChannelSummary::class.java)
     }
 
     fun buildProductsInEtalase(): GetProductsByEtalaseResponse.GetProductListData {

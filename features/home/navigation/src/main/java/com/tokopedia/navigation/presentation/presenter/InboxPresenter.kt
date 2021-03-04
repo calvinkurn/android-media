@@ -178,6 +178,8 @@ class InboxPresenter @Inject constructor(
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn
 
+    fun getUserId(): String = userSessionInterface.userId ?: ""
+
     private fun getRecommendationVisitables(recommendationWidget: RecommendationWidget): List<Visitable<*>> {
         val recomendationList = ArrayList<Visitable<*>>()
         for (item in recommendationWidget.recommendationItemList) {

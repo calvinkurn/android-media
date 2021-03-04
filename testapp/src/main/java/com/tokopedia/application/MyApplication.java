@@ -7,15 +7,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
-import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.url.Env;
+
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -23,13 +21,13 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -69,8 +67,6 @@ public class MyApplication extends BaseMainApplication
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
-    GCMHandler gcmHandler;
-
     @Override
     public void onCreate() {
 
@@ -85,11 +81,6 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
-//         for staging-only
-//        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
-//        TokopediaUrl.Companion.deleteInstance();
-//        TokopediaUrl.Companion.init(this);
-
         upgradeSecurityProvider();
 
         GraphqlClient.init(this);
@@ -97,6 +88,7 @@ public class MyApplication extends BaseMainApplication
         registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        // apps flyer is dummy
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
@@ -146,26 +138,12 @@ public class MyApplication extends BaseMainApplication
 
     }
 
-    /*public static class GTMAnalytics extends DummyAnalytics {
-
-        public GTMAnalytics(Context context) {
-            super(context);
-        }
-    }*/
-
     public static class AppsflyerAnalytics extends DummyAnalytics {
 
         public AppsflyerAnalytics(Context context) {
             super(context);
         }
     }
-
-    /*public static class MoengageAnalytics extends DummyAnalytics {
-
-        public MoengageAnalytics(Context context) {
-            super(context);
-        }
-    }*/
 
     public static abstract class DummyAnalytics extends ContextAnalytics {
 
@@ -215,14 +193,11 @@ public class MyApplication extends BaseMainApplication
     }
 
     public static List<CacheApiWhiteListDomain> getWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-        cacheApiWhiteList.addAll(getShopWhiteList());
-        return cacheApiWhiteList;
+        return new ArrayList<>(getShopWhiteList());
     }
 
-    public static final List<CacheApiWhiteListDomain> getShopWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-        return cacheApiWhiteList;
+    public static List<CacheApiWhiteListDomain> getShopWhiteList() {
+        return new ArrayList<>();
     }
 
     @Override
@@ -271,15 +246,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public GCMHandler legacyGCMHandler() {
-        if(gcmHandler == null){
-            return gcmHandler = new GCMHandler(this);
-        }else {
-            return gcmHandler;
-        }
-    }
-
-    @Override
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
     }
@@ -306,6 +272,11 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
+
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
 
     }
 
@@ -392,10 +363,9 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public CacheManager getGlobalCacheManager() {
+    public CacheManager getPersistentCacheManager() {
         return null;
     }
-
 
     @Override
     public void logInvalidGrant(Response response) {
@@ -411,17 +381,6 @@ public class MyApplication extends BaseMainApplication
     public void onNewIntent(Context context, Intent intent) {
 
     }
-
-//    @Override
-//    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-//
-//    }
-
-
-//    @Override
-//    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-//
-//    }
 
 
     @Override

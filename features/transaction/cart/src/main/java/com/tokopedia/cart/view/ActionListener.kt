@@ -1,10 +1,9 @@
 package com.tokopedia.cart.view
 
+import android.widget.ImageView
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
-import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
+import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -27,7 +26,7 @@ interface ActionListener {
 
     fun onShowAllItem(appLink: String)
 
-    fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData)
+    fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData, imageView: ImageView)
 
     fun onAddLastSeenToWishlist(productId: String)
 
@@ -63,7 +62,7 @@ interface ActionListener {
 
     fun onSimilarProductUrlClicked(similarProductUrl: String)
 
-    fun onSelectAllClicked()
+    fun onFollowShopClicked(shopId: String, errorType: String)
 
     fun onDeleteAllDisabledProduct();
 
@@ -75,9 +74,13 @@ interface ActionListener {
 
     fun onShowTickerTobacco()
 
-    fun onCartShopNameChecked(isAllChecked: Boolean)
-
     fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
 
     fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
+
+    fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
+
+    fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean)
+
+    fun onGlobalDeleteClicked()
 }

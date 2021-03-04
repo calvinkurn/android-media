@@ -28,17 +28,18 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 
 internal class SearchShopViewModel(
         dispatcher: DispatcherProvider,
         searchParameter: Map<String, Any>,
-        private val searchShopFirstPageUseCase: UseCase<SearchShopModel>,
-        private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
-        private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
-        private val getShopCountUseCase: UseCase<Int>,
-        private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
-        private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-        private val userSession: UserSessionInterface
+        private val searchShopFirstPageUseCase: Lazy<UseCase<SearchShopModel>>,
+        private val searchShopLoadMoreUseCase: Lazy<UseCase<SearchShopModel>>,
+        private val getDynamicFilterUseCase: Lazy<UseCase<DynamicFilterModel>>,
+        private val getShopCountUseCase: Lazy<UseCase<Int>>,
+        private val shopCpmViewModelMapper: Lazy<Mapper<SearchShopModel, ShopCpmViewModel>>,
+        private val shopViewModelMapper: Lazy<Mapper<SearchShopModel, ShopViewModel>>,
+        private val userSession: Lazy<UserSessionInterface>
 ) : BaseViewModel(dispatcher.ui()) {
 
     companion object {
@@ -93,14 +94,14 @@ internal class SearchShopViewModel(
     }
 
     private fun getUniqueId(): String {
-        return if (userSession.isLoggedIn)
-            AuthHelper.getMD5Hash(userSession.userId)
+        return if (userSession.get().isLoggedIn)
+            AuthHelper.getMD5Hash(userSession.get().userId)
         else
             AuthHelper.getMD5Hash(getRegistrationId())
     }
 
     fun getRegistrationId(): String {
-        return userSession.deviceId
+        return userSession.get().deviceId
     }
 
     private fun setSearchParameterUserId() {
@@ -108,7 +109,7 @@ internal class SearchShopViewModel(
     }
 
     fun getUserId(): String {
-        return if (userSession.isLoggedIn) userSession.userId
+        return if (userSession.get().isLoggedIn) userSession.get().userId
         else "0"
     }
 
@@ -143,7 +144,7 @@ internal class SearchShopViewModel(
 
         val requestParams = createSearchShopParam()
 
-        searchShopFirstPageUseCase.execute(this::onSearchShopSuccess, this::catchSearchShopException, requestParams)
+        searchShopFirstPageUseCase.get().execute(this::onSearchShopSuccess, this::catchSearchShopException, requestParams)
     }
 
     private fun startSearchShopFirstPagePerformanceMonitoring() {
@@ -261,7 +262,7 @@ internal class SearchShopViewModel(
     }
 
     private fun createShopRecommendationItemViewModelList(searchShopModel: SearchShopModel): List<Visitable<*>> {
-        val shopViewModel = shopViewModelMapper.convert(searchShopModel)
+        val shopViewModel = shopViewModelMapper.get().convert(searchShopModel)
         setShopItemPosition(shopViewModel.recommendationShopItemList)
 
         return shopViewModel.recommendationShopItemList
@@ -270,18 +271,22 @@ internal class SearchShopViewModel(
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val shouldShowCpmShop = shouldShowCpmShop(searchShopModel)
-        if (shouldShowCpmShop) {
-            val shopCpmViewModel = createShopCpmViewModel(searchShopModel)
-            visitableList.add(shopCpmViewModel)
-        }
-
-        val shopViewModelList = createShopItemViewModelList(searchShopModel)
-        visitableList.addAll(shopViewModelList)
+        processCPM(searchShopModel, visitableList)
+        processSuggestion(searchShopModel, visitableList)
+        processShopItem(searchShopModel, visitableList)
 
         addLoadingMoreModel(visitableList)
 
         return visitableList
+    }
+
+    private fun processCPM(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
+        val shouldShowCpmShop = shouldShowCpmShop(searchShopModel)
+
+        if (shouldShowCpmShop) {
+            val shopCpmViewModel = createShopCpmViewModel(searchShopModel)
+            visitableList.add(shopCpmViewModel)
+        }
     }
 
     private fun shouldShowCpmShop(searchShopModel: SearchShopModel): Boolean {
@@ -304,11 +309,34 @@ internal class SearchShopViewModel(
     }
 
     private fun createShopCpmViewModel(searchShopModel: SearchShopModel): Visitable<*> {
-        return shopCpmViewModelMapper.convert(searchShopModel)
+        return shopCpmViewModelMapper.get().convert(searchShopModel)
+    }
+
+    private fun processSuggestion(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
+        val suggestionModel = searchShopModel.aceSearchShop.suggestion
+        val shouldShowSuggestion = suggestionModel.text.isNotEmpty()
+
+        if (shouldShowSuggestion) {
+            val suggestionViewModel = createSuggestionViewModel(suggestionModel)
+            visitableList.add(suggestionViewModel)
+        }
+    }
+
+    private fun createSuggestionViewModel(suggestionModel: SearchShopModel.AceSearchShop.Suggestion): ShopSuggestionViewModel {
+        return ShopSuggestionViewModel(
+                currentKeyword = suggestionModel.currentKeyword,
+                query = suggestionModel.query,
+                text = suggestionModel.text
+        )
+    }
+
+    private fun processShopItem(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
+        val shopViewModelList = createShopItemViewModelList(searchShopModel)
+        visitableList.addAll(shopViewModelList)
     }
 
     private fun createShopItemViewModelList(searchShopModel: SearchShopModel): List<Visitable<*>> {
-        val shopViewModel = shopViewModelMapper.convert(searchShopModel)
+        val shopViewModel = shopViewModelMapper.get().convert(searchShopModel)
         setShopItemPosition(shopViewModel.shopItemList)
 
         return shopViewModel.shopItemList
@@ -498,7 +526,7 @@ internal class SearchShopViewModel(
     private fun getDynamicFilter() {
         val requestParams = createGetDynamicFilterParams()
 
-        getDynamicFilterUseCase.execute(this::onGetDynamicFilterSuccess, this::catchGetDynamicFilterException, requestParams)
+        getDynamicFilterUseCase.get().execute(this::onGetDynamicFilterSuccess, this::catchGetDynamicFilterException, requestParams)
     }
 
     private fun onGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
@@ -523,8 +551,8 @@ internal class SearchShopViewModel(
 
     private fun generateParamsNetwork(): Map<String, String> {
         return AuthHelper.generateParamsNetwork(
-                userSession.userId,
-                userSession.deviceId,
+                userSession.get().userId,
+                userSession.get().deviceId,
                 mutableMapOf())
     }
 
@@ -576,7 +604,7 @@ internal class SearchShopViewModel(
 
         val requestParams = createSearchShopParam()
 
-        searchShopLoadMoreUseCase.execute(this::onSearchMoreShopSuccess, this::catchSearchShopException, requestParams)
+        searchShopLoadMoreUseCase.get().execute(this::onSearchMoreShopSuccess, this::catchSearchShopException, requestParams)
     }
 
     private fun getTotalShopItemCount(): Int {
@@ -744,7 +772,7 @@ internal class SearchShopViewModel(
     }
 
     fun onViewRequestShopCount(mapParameter: Map<String, Any>) {
-        getShopCountUseCase.execute(
+        getShopCountUseCase.get().execute(
                 this::setShopCount,
                 this::catchRequestShopCountError,
                 createGetShopCountRequestParams(mapParameter)

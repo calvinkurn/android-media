@@ -7,6 +7,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_cart_recommendation.view.*
 
 /**
@@ -19,6 +20,8 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
         @JvmStatic
         val LAYOUT = R.layout.item_cart_recommendation
     }
+
+    internal var isTopAds = false
 
     fun bind(element: CartRecommendationItemHolderData) {
         itemView.productCardView?.apply {
@@ -48,7 +51,8 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                                         type = recommendationLabel.type
                                 )
                             },
-                            hasAddToCartButton = true
+                            hasAddToCartButton = true,
+                            addToCartButtonType = UnifyButton.Type.MAIN
                     )
             )
             setOnClickListener {
@@ -76,6 +80,8 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
             actionListener?.onRecommendationImpression(element)
             element.hasSentImpressionAnalytics = true
         }
+
+        isTopAds = element.recommendationItem.isTopAds
     }
 
     fun clearImage() {

@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">@color/Unify_B600</color>
+    <color name="colorPrimaryDark">@color/Unify_B800</color>
 
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="charcoal_grey_96">#f531353b</color>
-    <color name="green_tokopedia">#03ac0e</color>
-    <color name="gray_line">#e5e7e9</color>
+    <color name="white">@color/Unify_N0</color>
+    <color name="black">@color/Unify_N700</color>
+    <color name="charcoal_grey_96">@color/Unify_N700_96</color>
+    <color name="green_tokopedia">@color/Unify_G500</color>
+    <color name="gray_line">@color/Unify_N75</color>
 
     <color name="transparent">#00000000</color>
 
-    <color name="black_54">#8a000000</color>
-    <color name="search_empty_state_selected_filter_text_color">#03ac0e</color>
+    <color name="black_54">@color/Unify_N700_44</color>
+    <color name="search_empty_state_selected_filter_text_color">@color/Unify_G500</color>
 
-    <color name="shop_item_product_price_color">#ff5722</color>
-    <color name="shop_item_product_empty_color">#f3f4f5</color>
+    <color name="shop_item_product_price_color">@color/Unify_Y500</color>
+    <color name="shop_item_product_empty_color">@color/Unify_N50</color>
 
-    <color name="shop_status_background">#ae31353b</color>
-    <color name="shop_status_text_background">#e131353b</color>
-    <color name="shop_status_text_color">#f5ffffff</color>
-    <color name="shop_empty_search_title_color">#f531353b</color>
-    <color name="shop_empty_search_recommendation_title_color">#f531353b</color>
-    <color name="shadow">#AD31353B</color>
-    <color name="grey_400">#bdbdbd</color>
+    <color name="shop_status_background">@color/Unify_N700_68</color>
+    <color name="shop_status_text_background">@color/Unify_N700_96</color>
+    <color name="shop_status_text_color">@color/Unify_N0_96</color>
+    <color name="shop_empty_search_title_color">@color/Unify_N700_96</color>
+    <color name="shop_empty_search_recommendation_title_color">@color/Unify_N700_96</color>
+    <color name="shadow">@color/Unify_N700_68</color>
+    <color name="grey_400">@color/Unify_N150</color>
 
-    <color name="tkpd_bg_color">#EAEAEA</color>
+    <color name="tkpd_bg_color">@color/Unify_N75</color>
 
-    <color name="free_ongkir_promo_show_case_background">#ae31353b</color>
-    <color name="free_ongkir_promo_show_case_title_color">#f531353b</color>
+    <color name="free_ongkir_promo_show_case_background">@color/Unify_N700_68</color>
+    <color name="free_ongkir_promo_show_case_title_color">@color/Unify_N700_96</color>
 
-    <color name="search_result_empty_divider_color">#f3f4f5</color>
+    <color name="search_result_empty_divider_color">@color/Unify_N50</color>
 
-    <color name="cart_count_color">#ef144a</color>
-    <color name="search_text_view_color">#F531353B</color>
+    <color name="cart_count_color">@color/Unify_R500</color>
+    <color name="search_text_view_color">@color/Unify_N700_96</color>
 </resources>

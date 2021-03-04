@@ -7,9 +7,6 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class YouTubeViewViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
-    override fun initDaggerInject() {
-
-    }
 
     private val videoData = MutableLiveData<DataItem>()
 

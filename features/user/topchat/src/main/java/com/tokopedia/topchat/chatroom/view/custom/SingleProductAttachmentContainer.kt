@@ -19,7 +19,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -32,10 +31,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -48,7 +45,6 @@ import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 class SingleProductAttachmentContainer : ConstraintLayout {
 
     private var btnWishList: UnifyButton? = null
-    private var btnOcc: UnifyButton? = null
     private var btnBuy: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
     private var label: Label? = null
@@ -70,12 +66,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                R.color.topchat_message_shadow,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
                 R.dimen.dp_topchat_2,
                 R.dimen.dp_topchat_1,
                 Gravity.CENTER
@@ -126,7 +122,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun initBindView() {
         btnWishList = findViewById(R.id.tv_wishlist)
-        btnOcc = findViewById(R.id.tv_occ)
         btnBuy = findViewById(R.id.tv_buy)
         btnAtc = findViewById(R.id.tv_atc)
         label = findViewById(R.id.lb_product_label)
@@ -203,16 +198,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun initBackgroundDrawable(useStrokeSender: Boolean) {
         if (bgSender == null) {
-            val strokeColor = if (useStrokeSender) R.color.bg_topchat_right_message else null
+            val strokeColor = if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_G200 else null
             val strokeWidth = if (useStrokeSender) getStrokeWidthSenderDimenRes() else null
             bgSender = ViewUtil.generateBackgroundWithShadow(
                     this,
-                    com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    R.color.topchat_message_shadow,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
                     R.dimen.dp_topchat_2,
                     R.dimen.dp_topchat_1,
                     Gravity.CENTER,
@@ -330,16 +325,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindMargin(product: ProductAttachmentViewModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
-            if (isNextItemSender(product) && bottomMarginOpposite > defaultMarginBottom) {
-                setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, bottomMarginOpposite)
+            if (isNextItemOppositeFrom(product)) {
+                setMargin(defaultMarginLeft, bottomMarginOpposite, defaultMarginRight, defaultMarginBottom)
             } else {
                 setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, defaultMarginBottom)
             }
         }
     }
 
-    private fun isNextItemSender(product: ProductAttachmentViewModel): Boolean {
-        return adapterListener?.isNextItemSender(adapterPosition, product.isSender) == false
+    private fun isNextItemOppositeFrom(product: ProductAttachmentViewModel): Boolean {
+        return adapterListener?.isOpposite(adapterPosition, product.isSender) == true
     }
 
     private fun bindBackground(product: ProductAttachmentViewModel) {
@@ -417,55 +412,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindFooter(product: ProductAttachmentViewModel) {
-        val abTestVariant = getOccAbTestVariant()
         if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
-            if (product.isEligibleOcc() && isEligibleOccAbTest(abTestVariant)) {
-                when (abTestVariant) {
-                    TopchatProductAttachmentViewHolder.VARIANT_A -> {
-                        btnBuy?.hide()
-                        bindOcc(product)
-                        bindAtc(product)
-                    }
-                    TopchatProductAttachmentViewHolder.VARIANT_B -> {
-                        btnBuy?.hide()
-                        btnAtc?.hide()
-                        bindOcc(product)
-                    }
-                }
-            } else {
-                bindBuy(product)
-                bindAtc(product)
-                btnOcc?.hide()
-            }
+            bindBuy(product)
+            bindAtc(product)
             bindWishList(product)
         } else {
             hideFooter()
-        }
-    }
-
-    private fun getOccAbTestVariant(): String {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(TopchatProductAttachmentViewHolder.AB_TEST_KEY, TopchatProductAttachmentViewHolder.VARIANT_DEFAULT);
-    }
-
-    private fun isEligibleOccAbTest(variant: String): Boolean {
-        return (variant == TopchatProductAttachmentViewHolder.VARIANT_A || variant == TopchatProductAttachmentViewHolder.VARIANT_B)
-    }
-
-    fun bindOcc(product: ProductAttachmentViewModel) {
-        btnOcc?.apply {
-            if (product.hasEmptyStock()) {
-                hide()
-            } else {
-                show()
-                isLoading = product.isLoadingOcc
-                setOnClickListener {
-                    if (!product.isLoadingOcc) {
-                        product.isLoadingOcc = true
-                        isLoading = true
-                        listener?.onClickOccFromProductAttachment(product, adapterPosition)
-                    }
-                }
-            }
         }
     }
 
@@ -501,7 +453,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         btnBuy?.hide()
         btnAtc?.hide()
         btnWishList?.hide()
-        btnOcc?.hide()
     }
 
     private fun bindBuy(product: ProductAttachmentViewModel) {
@@ -566,7 +517,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun getBackgroundDrawable(hexColor: String): Drawable? {
-        val backgroundDrawable = MethodChecker.getDrawable(context, com.tokopedia.chat_common.R.drawable.circle_color_variant_indicator)
+        val backgroundDrawable = MethodChecker.getDrawable(context, com.tokopedia.chat_common.R.drawable.topchat_circle_color_variant_indicator)
                 ?: return null
 
         if (isWhiteColor(hexColor)) {
@@ -581,7 +532,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun applyStrokeTo(backgroundDrawable: Drawable) {
         if (backgroundDrawable is GradientDrawable) {
             val strokeWidth = 1f.toPx()
-            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(context, com.tokopedia.chat_common.R.color.grey_300))
+            backgroundDrawable.setStroke(strokeWidth.toInt(), MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
         }
     }
 

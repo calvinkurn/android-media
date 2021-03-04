@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.presentation.fragment
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -80,6 +81,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbar()
         setupMenuList()
         setupSwipeRefresh()
         observeViewModel()
@@ -258,6 +260,16 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 }
                 smoothScroller.targetPosition = positionShopAccount
                 listMenu?.layoutManager?.startSmoothScroll(smoothScroller)
+            }
+        }
+    }
+
+    private fun setupToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(seller_menu_toolbar)
+                seller_menu_toolbar?.title = getString(R.string.title_seller_menu)
             }
         }
     }

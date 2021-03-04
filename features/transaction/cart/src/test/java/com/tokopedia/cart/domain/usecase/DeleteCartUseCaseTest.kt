@@ -24,7 +24,7 @@ object DeleteCartUseCaseTest : Spek({
 
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
     val updateCartCounterUseCase = mockk<UpdateCartCounterUseCase>()
-    val useCase by memoized { DeleteCartUseCase(updateCartCounterUseCase, graphqlUseCase, TestSchedulers) }
+    val useCase by memoized { DeleteCartUseCase(graphqlUseCase, TestSchedulers) }
 
     val params = RequestParams().apply {
         putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, RemoveCartRequest())

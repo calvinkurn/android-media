@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel
@@ -22,13 +23,13 @@ class GetBarChartDataUseCase(
 
     override suspend fun executeOnBackground(): List<BarChartDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetBarChartDataResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetBarChartDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<GetBarChartDataResponse>()
             val barChartDataList: List<BarChartWidgetDataModel> = response.fetchBarChartWidgetData.data
-            return mapper.mapRemoteModelToUiModel(barChartDataList)
+            return mapper.mapRemoteModelToUiModel(barChartDataList, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

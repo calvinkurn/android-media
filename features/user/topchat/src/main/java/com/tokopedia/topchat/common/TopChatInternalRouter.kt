@@ -2,7 +2,9 @@ package com.tokopedia.topchat.common
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.applink.ApplinkConst.AttachProduct.*
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 /**
  * @author by nisie on 07/01/19.
@@ -32,10 +34,17 @@ open class TopChatInternalRouter {
 
         const val TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY = "SELECTED_INVOICE"
 
+        const val SOURCE_TOPCHAT = "topchat"
+
         fun getAttachProductIntent(context: Context, shopId: String, shopName: String,
                                    isSeller: Boolean): Intent {
-            return AttachProductActivity.createInstance(context, shopId, shopName, isSeller,
-                    AttachProductActivity.SOURCE_TOPCHAT)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
+            intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId)
+            intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, isSeller)
+            intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName)
+            intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT)
+
+            return intent
         }
 
     }

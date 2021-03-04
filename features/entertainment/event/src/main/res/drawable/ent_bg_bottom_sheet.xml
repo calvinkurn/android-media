@@ -2,10 +2,10 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <corners
-        android:bottomLeftRadius="0dp"
-        android:bottomRightRadius="0dp"
-        android:topLeftRadius="12dp"
-        android:topRightRadius="12dp" />
+        android:bottomLeftRadius="@dimen/unify_space_0"
+        android:bottomRightRadius="@dimen/unify_space_0"
+        android:topLeftRadius="@dimen/unify_space_12"
+        android:topRightRadius="@dimen/unify_space_12" />
 
-    <solid android:color="@color/white" />
+    <solid android:color="@color/Unify_N0" />
 </shape>

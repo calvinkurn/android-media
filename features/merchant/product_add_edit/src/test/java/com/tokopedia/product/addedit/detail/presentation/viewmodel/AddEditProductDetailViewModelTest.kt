@@ -6,21 +6,33 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
+import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
+import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
+import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
+import com.tokopedia.product.addedit.specification.domain.model.Values
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -40,6 +52,15 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var getNameRecommendationUseCase: GetNameRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var validateProductUseCase: ValidateProductUseCase
+
+    @RelaxedMockK
+    lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
+
+    @RelaxedMockK
+    lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -92,7 +113,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase, annotationCategoryUseCase)
     }
 
     @Test
@@ -284,6 +305,56 @@ class AddEditProductDetailViewModelTest {
 
         val isError = viewModel.isProductNameInputError.getOrAwaitValue()
         Assert.assertTrue(isError && viewModel.productNameMessage.isNotBlank() && viewModel.productNameMessage == stringResMessage)
+    }
+
+    @Test
+    fun `validateProductNameInput should invalid when product name is exist`() = runBlocking {
+        val resultMessage = listOf("error 1", "error 2")
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage)
+                )
+        )
+
+        viewModel.isProductNameChanged = true
+        viewModel.validateProductNameInput( "batik cociks")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
+        Assert.assertTrue(resultViewmodel)
+    }
+
+    @Test
+    fun `validateProductNameInput should valid when product name is not exist`() = runBlocking {
+        val resultMessage = listOf<String>()
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = true,
+                        data = ProductValidateData(resultMessage)
+                )
+        )
+
+        viewModel.isProductNameChanged = true
+        viewModel.validateProductNameInput( "batik cociks")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
+        Assert.assertFalse(resultViewmodel)
     }
 
     @Test
@@ -663,6 +734,54 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `validateProductSkuInput should valid when productSkuInput is not contains space char`() = runBlocking {
+        val resultMessage = listOf<String>()
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage, resultMessage)
+                )
+        )
+
+        viewModel.validateProductSkuInput("ESKU")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
+        Assert.assertTrue(!isError && viewModel.productSkuMessage.isBlank())
+    }
+
+    @Test
+    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = runBlocking {
+        val resultMessage = listOf("error 1", "error 2")
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage, resultMessage)
+                )
+        )
+
+        viewModel.validateProductSkuInput("ES KU")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
+        Assert.assertTrue(isError && viewModel.productSkuMessage.isNotBlank() && viewModel.productSkuMessage == resultMessage.joinToString("\n"))
+    }
+
+    @Test
     fun `updateProductPhotos should not change any image url's`() {
         val sampleProductPhotos = getSampleProductPhotos()
         viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
@@ -761,6 +880,184 @@ class AddEditProductDetailViewModelTest {
                 viewModel.productPhotoPaths.size == 2 &&
                 viewModel.productPhotoPaths[0] == imagePickerResult[0] &&
                 viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail)
+    }
+
+    @Test
+    fun `disable productNameField when product has transaction`() {
+        // positive case
+        viewModel.productInputModel.itemSold = 199
+        Assert.assertTrue(viewModel.hasTransaction)
+
+        // negative case
+        viewModel.productInputModel.itemSold = 0
+        Assert.assertFalse(viewModel.hasTransaction)
+    }
+
+    @Test
+    fun `get showcase list should get the list`() {
+        runBlocking {
+            coEvery {
+                getShopEtalaseUseCase.executeOnBackground().shopShowcases.result
+            } returns listOf()
+
+            viewModel.getShopShowCasesUseCase()
+
+            coVerify {
+                getShopEtalaseUseCase.executeOnBackground()
+            }
+
+            val expectedResponse = Success(listOf<ShopEtalaseModel>())
+            val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
+            assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return unfilled data when productId is not provided`() = runBlocking {
+        val annotationCategoryData = listOf<AnnotationCategoryData>()
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        viewModel.getAnnotationCategory("", "")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertTrue(specificationText.isEmpty())
+        }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return specification data when productId is provided`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", true, ""),
+                                Values(1, "Seedap", false, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa",
+                        data = listOf(
+                                Values(1, "Soto", false, ""),
+                                Values(1, "Bawang", true, ""))
+                )
+        )
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        viewModel.getAnnotationCategory("", "11090")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertEquals("Indomie, Bawang", specificationText)
+        }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return simplified specification data when having more than 5 specification`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", true, ""),
+                                Values(1, "Seedap", false, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa1",
+                        data = listOf(
+                                Values(1, "Soto1", false, ""),
+                                Values(1, "Bawang1", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa2",
+                        data = listOf(
+                                Values(1, "Soto2", false, ""),
+                                Values(1, "Bawang2", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa3",
+                        data = listOf(
+                                Values(1, "Soto3", false, ""),
+                                Values(1, "Bawang3", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa4",
+                        data = listOf(
+                                Values(1, "Soto4", false, ""),
+                                Values(1, "Bawang4", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa5",
+                        data = listOf(
+                                Values(1, "Soto5", false, ""),
+                                Values(1, "Bawang5", true, ""))
+                )
+        )
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        every { provider.getProductSpecificationCounter(any()) } returns ", +1 lainnya"
+
+        viewModel.getAnnotationCategory("", "11090")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertEquals("Indomie, Bawang1, Bawang2, Bawang3, Bawang4, +1 lainnya", specificationText)
+        }
+    }
+
+    @Test
+    fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", false, ""),
+                                Values(1, "Seedap", false, ""))
+                )
+        )
+        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
+        val specificationText = viewModel.specificationText.getOrAwaitValue()
+        Assert.assertTrue(specificationText.isEmpty())
     }
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {

@@ -22,7 +22,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_120"
+            android:layout_height="@dimen/hotel_120dp"
             />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView

@@ -25,14 +25,14 @@ open class RightChatMessageViewHolder constructor(
     var header: LinearLayout? = itemView?.findViewById(R.id.llRoleUser)
     var headerRole: Typography? = itemView?.findViewById(R.id.tvRole)
     var smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.img_sr_blue_dot)
-    private val bg = ViewUtil.generateBackgroundWithShadow(
+    protected open val bg = ViewUtil.generateBackgroundWithShadow(
             fxChat,
-            R.color.bg_topchat_right_message,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
             R.dimen.dp_topchat_20,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_20,
             R.dimen.dp_topchat_20,
-            R.color.topchat_message_shadow,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER
@@ -45,11 +45,11 @@ open class RightChatMessageViewHolder constructor(
         bindBackground(message)
     }
 
-    private fun bindBackground(message: MessageViewModel) {
+    protected open fun bindBackground(message: MessageViewModel) {
         fxChat?.background = bg
     }
 
-    private fun bindHeader(message: MessageViewModel) {
+    protected fun bindHeader(message: MessageViewModel) {
         if (
                 (message.isFromAutoReply() || message.isFromSmartReply()) &&
                 message.isSender &&

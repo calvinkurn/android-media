@@ -27,14 +27,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/redeem_dialog_powered_by"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/redeem_dialog_shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:typographyType="heading_4"
             app:typographyWeight="bold"
             tools:text="Tokopedia" />
@@ -45,28 +45,29 @@
             android:layout_height="@dimen/dp_200"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_24"
-            android:background="@drawable/bg_rounded_white"
-            tools:srcCompat="@drawable/ic_good_rating" />
+            android:background="@drawable/bg_rounded_white_buyer"
+            tools:srcCompat="@drawable/ic_good_rating"
+            android:contentDescription="@string/img_content_desc" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_25"
-            android:background="@color/tkpd_transaction_separator_white" />
+            android:background="@color/Unify_N0_32" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_11"
             android:text="@string/redeem_dialog_voucher_code"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:typographyType="body_2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/redeem_dialog_voucher_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:typographyType="heading_2"
             app:typographyWeight="bold"
             tools:text="X1234XXXXXX" />
@@ -79,7 +80,7 @@
         android:id="@+id/redeem_dialog_expired_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/tkpd_transaction_green_50"
+        android:background="@color/Unify_G600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,9 +96,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        android:background="@color/tkpd_transaction_bg_90"
+        android:background="@color/Unify_N600_96"
         android:padding="@dimen/dp_18"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         tools:text="Sudah di redeem" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

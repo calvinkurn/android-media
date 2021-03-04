@@ -5,7 +5,8 @@
     android:background="@drawable/bg_viewer_badge"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_viewer"
@@ -20,13 +21,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/viewer"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/viewer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_Static_White"
         android:visibility="visible"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
@@ -39,5 +41,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="2382"/>
+        tools:text="2382"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,1341 @@
+[
+  {
+    "data": {
+        "ace_search_product_v4": {
+          "header": {
+            "totalData": 1,
+            "totalDataText": "1",
+            "defaultView": 1,
+            "responseCode": 5,
+            "errorMessage": "",
+            "additionalParams": "",
+            "keywordProcess": "4"
+          },
+          "data": {
+            "isQuerySafe": true,
+            "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=buku%20ensiklopedia%20zakat%20ori",
+            "redirection": {
+              "redirectApplink": ""
+            },
+            "ticker": {
+              "text": "",
+              "query": "",
+              "typeId": 0
+            },
+            "related": {
+              "relatedKeyword": "",
+              "position": 0,
+              "otherRelated": [
+                {
+                  "keyword": "buku ensiklopedia ori",
+                  "url": "https://www.tokopedia.com/search?q=buku+ensiklopedia+ori&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=buku+ensiklopedia+ori&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 1191515338,
+                      "name": "ORI satu paket 12 buku ensiklopedia miracles of Quran pustaka lebah",
+                      "price": 170000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/17/9d248aec-2969-432f-aabc-49b5cf7f464c.jpg",
+                      "url": "https://www.tokopedia.com/wahanaagungdpk/ori-satu-paket-12-buku-ensiklopedia-miracles-of-quran-pustaka-lebah?refined=true&whid=0",
+                      "applink": "tokopedia://product/1191515338",
+                      "priceStr": "Rp170.000",
+                      "wishlist": false,
+                      "ratingAverage": "5.0",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 6",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Depok"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "68478676",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosK7opKfopyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosnNopUf6AKfbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfHZdpoprdHprF6AKdosUpbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_32sHVBEZM2Hu7jh3Bz-PJNIzMxoepn7_BP-8jh93_og8Bg0_MOuoVBk39Pqq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_uH78jNEypzo8MoR_7zSoJNkZ92-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMoR_c20P7NJz_oo8jJh_Ozz81OkZ3BM1_7YUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUsthoZFiyfV79fBjraUE3pKD6AypbAeposCPbm-X9foxQMz2gcV7guYxgIHi6syDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsnf6_jDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&r=https%3A%2F%2Fwww.tokopedia.com%2Fwahanaagungdpk%2Fori-satu-paket-12-buku-ensiklopedia-miracles-of-quran-pustaka-lebah%3Fsrc%3Dtopads&is_search=1&page=1&src=topads_dynamic_broadmatch&dv=android&keywords=buku+ensiklopedia+ori&t=android&management_type=2",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosK7opKfopyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosnNopUf6AKfbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfHZdpoprdHprF6AKdosUpbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_32sHVBEZM2Hu7jh3Bz-PJNIzMxoepn7_BP-8jh93_og8Bg0_MOuoVBk39Pqq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_uH78jNEypzo8MoR_7zSoJNkZ92-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMoR_c20P7NJz_oo8jJh_Ozz81OkZ3BM1_7YUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUsthoZFiyfV79fBjraUE3pKD6AypbAeposCPbm-X9foxQMz2gcV7guYxgIHi6syDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsnf6_jDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?product_id=1191515338&management_type=2&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&page=1&t=android&is_search=1&keywords=buku+ensiklopedia+ori&uid=75093631&r=https%3A%2F%2Fwww.tokopedia.com%2Fwahanaagungdpk%2Fori-satu-paket-12-buku-ensiklopedia-miracles-of-quran-pustaka-lebah%3Fsrc%3Dtopads&src=topads_dynamic_broadmatch",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sydoArdosrfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6_raosKdoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpj5H_r563eaoAxxg3HWHsjf6Z77Hp-Mb3VxyMHWoABio3oMofy7oszsbM2FgaUDUMVj9RosQR-BUstaosJXHprR6AHRHAKd6AyaHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OzoJOkypCg8j2k_VP-Hu21Z9z6z7gt_1HFoJN9Z92HuOjp3923q7NWu_zgqBBR3MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO_oI268MH7_92sP7YJgpz6qjBEZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32sP7hkqRP6zJ1p_92CH1Y119BoqjB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEH_1DUMNwyfVXgcBjy9zB9fVjraUEoiFircYpPVYxQcri6BDirfh5PIz2QMPwrfuxrMotUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUFosjNbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?src=topads_dynamic_broadmatch&keywords=buku+ensiklopedia+ori&page=1&is_search=1&management_type=2&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&t=android"
+                      }
+                    },
+                    {
+                      "id": 1190321129,
+                      "name": "ORI buku bacaan pendidikan anak ensiklopedia nabi Muhammad Saw",
+                      "price": 160000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/17/d70074f4-882f-4ee7-9fab-d9d0ebb9c5c4.jpg",
+                      "url": "https://www.tokopedia.com/wahanaagungdpk/ori-buku-bacaan-pendidikan-anak-ensiklopedia-nabi-muhammad-saw?refined=true&whid=0",
+                      "applink": "tokopedia://product/1190321129",
+                      "priceStr": "Rp160.000",
+                      "wishlist": false,
+                      "ratingAverage": "4.9",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 10",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Depok"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "74690140",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopef6_nhoAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosnNopUf6AKfbm-srcHi6syOHmFiy3zwrfo5rM1i6sUNoadf6AyFHAKNoAUNHsyOoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OzoJOkypCg8j2k_VP-Hu21Z9z6z7gt_1HFoJN9Z92HuOjp3923q7NWu_zgqBBR3MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-o1NNoA-vzVBR_1zSo1NJZ_uoqBjh_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-oJYAoACoqB1a_M2oo1OkgRxozVVd_joG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEH_1DUMoxPVY2gIHi6BDdbArOoiFpHpU79ZFiQBYsy3Njq3zxPcuwy3zpUstfbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHNHpjfbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?keywords=buku+ensiklopedia+ori&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&dv=android&is_search=1&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fwahanaagungdpk%2Fori-buku-bacaan-pendidikan-anak-ensiklopedia-nabi-muhammad-saw%3Fsrc%3Dtopads&src=topads_dynamic_broadmatch&management_type=2&page=1",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEopef6_nhoAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosnNopUf6AKfbm-srcHi6syOHmFiy3zwrfo5rM1i6sUNoadf6AyFHAKNoAUNHsyOoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OzoJOkypCg8j2k_VP-Hu21Z9z6z7gt_1HFoJN9Z92HuOjp3923q7NWu_zgqBBR3MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-o1NNoA-vzVBR_1zSo1NJZ_uoqBjh_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-oJYAoACoqB1a_M2oo1OkgRxozVVd_joG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEH_1DUMoxPVY2gIHi6BDdbArOoiFpHpU79ZFiQBYsy3Njq3zxPcuwy3zpUstfbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHNHpjfbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&management_type=2&src=topads_dynamic_broadmatch&page=1&t=android&keywords=buku+ensiklopedia+ori&is_search=1&product_id=1190321129&r=https%3A%2F%2Fwww.tokopedia.com%2Fwahanaagungdpk%2Fori-buku-bacaan-pendidikan-anak-ensiklopedia-nabi-muhammad-saw%3Fsrc%3Dtopads&uid=75093631&dv=android",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sr7osjFH_eFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6_raosKdoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpj5H_r5gArFHAr7gseW6AKagi77g31Rb_BMy3UWgABjHcuiysBso3H7bM2FgaUDUMVj9RosQR-BUsta6_rXosKfHAnd6_ea6_Ufo_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW1_zoqMHF392Gqjh9Z_VquJB7_jPcqJOAHAz6u7BE_VPgHOBEuMW6Qu17332gPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_u68_ea_7zgP7OJgpu6zJjO_32gH1N_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_zvepeF_32uHjNk__uoqMPd_1zz8JNAZsjibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6sJObm-X9foxQMz2gcV7guYxgIHi6syDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9RoBy9-sqm-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstp6_HNoiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?t=android&dv=android&is_search=1&management_type=2&keywords=buku+ensiklopedia+ori&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=topads_dynamic_broadmatch"
+                      }
+                    },
+                    {
+                      "id": 1339052464,
+                      "name": "ORI satu paket buku ensiklopedia umum edisi terbaru",
+                      "price": 165000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/12/7088a6b1-b3d7-4ad2-843b-e70fd08786a5.jpg",
+                      "url": "https://www.tokopedia.com/wahanaagungdpk/ori-satu-paket-buku-ensiklopedia-umum-edisi-terbaru?refined=true&whid=0",
+                      "applink": "tokopedia://product/1339052464",
+                      "priceStr": "Rp165.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Depok"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "77192398",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoprh6_Up6_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosnNopUf6AKfbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUOoidfoA1h6AJpHsUh6AndoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OzoJOkypCg8j2k_VP-Hu21Z9z6z7gt_1HFoJN9Z92HuOjp3923q7NWu_zgqBBR3MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oA-6zVud_7zV8jOkZ9xvzJJ7_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjO2oAu6qjJp_jzCH7OJ3_z6ucoEZ3dFvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEH_1DUMoxPVY2gIHi6BDdbAKfHaF7HpyF9ZFiQBYsy3Njq3zxPcuwy3zpUstfbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sef6_1Nbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fwahanaagungdpk%2Fori-satu-paket-buku-ensiklopedia-umum-edisi-terbaru%3Fsrc%3Dtopads&page=1&src=topads_dynamic_broadmatch&management_type=2&t=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&keywords=buku+ensiklopedia+ori",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEoprh6_Up6_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosnNopUf6AKfbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUOoidfoA1h6AJpHsUh6AndoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OzoJOkypCg8j2k_VP-Hu21Z9z6z7gt_1HFoJN9Z92HuOjp3923q7NWu_zgqBBR3MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oA-6zVud_7zV8jOkZ9xvzJJ7_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjO2oAu6qjJp_jzCH7OJ3_z6ucoEZ3dFvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEH_1DUMoxPVY2gIHi6BDdbAKfHaF7HpyF9ZFiQBYsy3Njq3zxPcuwy3zpUstfbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sef6_1Nbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?management_type=2&t=android&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fwahanaagungdpk%2Fori-satu-paket-buku-ensiklopedia-umum-edisi-terbaru%3Fsrc%3Dtopads&uid=75093631&is_search=1&page=1&keywords=buku+ensiklopedia+ori&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=topads_dynamic_broadmatch&product_id=1339052464",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srRH_jaHpjdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yF6_raosKdoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJhbpJabprF6AxxoMUhb3UpgArWocVjHi7doAoib31RHcgjHAKR6AgxoZNkrcribm-xgVYpyfYagZUEHs1fbsy7o_JdH_HaHsJdHAKfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_32sHVBEZM2Hu7jh3Bz-PJNIzMxoepn7_BP-8jh93_og8Bg0_MOuoVBk39Pqq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Mj7HjNJu9xvzJuE_32-8JYJe_z6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_3j7o1Nke_o6zJJp_1zgoJN1yR2-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUsthoZFiQBYsy3Njq3zxPcuwy3zpUstfbm-FQRo79fVDgaUE3a-pQcY7PcBXgOYpg3VayfKi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAyNo_jDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?page=1&t=android&dv=android&management_type=2&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=topads_dynamic_broadmatch&is_search=1&keywords=buku+ensiklopedia+ori"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "keyword": "buku zakat ori",
+                  "url": "https://www.tokopedia.com/search?q=buku+zakat+ori&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=buku+zakat+ori&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 997738244,
+                      "name": "buku pintar zakat ori",
+                      "price": 100000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/5/8439721/8439721_90004c45-ce27-4d88-83e5-919e065cb5e9_1500_1500.jpg",
+                      "url": "https://www.tokopedia.com/efrataberkah/buku-pintar-zakat-ori?refined=true&whid=0",
+                      "applink": "tokopedia://product/997738244",
+                      "priceStr": "Rp100.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Jakarta Pusat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "84284029",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6Aea6AeFHsjDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosnNopUf6AKfbm-srcHi6seOHmFiy3zwrfo5rM1i6sUfHZdhHAKR6_HpHp1fHsURoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32mQuBk1Mx6zJNt_VzSPO2JqRz6z7uN3MjFo1NEuMOHucrF_S2VHuBkqcxvucHh_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO_oIxozcrp_Ozo8jOEu_-oqjjp_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjONoIPoucDp_32SHjOkgpCozVBNZ3dFvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEH_1DUMoxPVY2gIHi6BDdbAKaoZFdHpoPbm-X9foxQMz2gcV7guYxgIHi6sJDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAj7HAeDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=topads_dynamic_broadmatch&r=https%3A%2F%2Fwww.tokopedia.com%2Fefrataberkah%2Fbuku-pintar-zakat-ori%3Fsrc%3Dtopads&is_search=1&keywords=buku+zakat+ori&t=android&page=1&management_type=2",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6Aea6AeFHsjDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosnNopUf6AKfbm-srcHi6seOHmFiy3zwrfo5rM1i6sUfHZdhHAKR6_HpHp1fHsURoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32mQuBk1Mx6zJNt_VzSPO2JqRz6z7uN3MjFo1NEuMOHucrF_S2VHuBkqcxvucHh_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO_oIxozcrp_Ozo8jOEu_-oqjjp_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjONoIPoucDp_32SHjOkgpCozVBNZ3dFvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEH_1DUMoxPVY2gIHi6BDdbAKaoZFdHpoPbm-X9foxQMz2gcV7guYxgIHi6sJDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAj7HAeDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&page=1&management_type=2&src=topads_dynamic_broadmatch&is_search=1&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fefrataberkah%2Fbuku-pintar-zakat-ori%3Fsrc%3Dtopads&product_id=997738244&keywords=buku+zakat+ori&t=android&uid=75093631",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sK7HsK7HAUNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6_raosKdoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpr5oZ4doAHNopUhbpK7HpjRHsVw6_nFHAzsoA1Wyf1aoa77gAKdb_Kpg_1W6_JNg_nfo3oio31N9pJOHACwH_1FHmNkrcribm-xgVYpyfYagZUEHsyhbsJF6ArNHpHpo_yaHsrObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qj-W332ZqJNJ_MxHucPR3jz0PJNIz9Bqq_nO_S23Q1h1gpC68j1h332tqJY1ypVve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_uH78JOJgpovuJOE_92uHjOkZ_o617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_9j7P7O1qpooqMra_32SHJOJ39B-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthoZFiQBYsy3Njq3zxPcuwy3zpUsthbm-FQRo79fVDgaUE3a-pQcY7PcBXgOYpg3VayfKi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAj7HAeDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?dv=android&is_search=1&keywords=buku+zakat+ori&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=topads_dynamic_broadmatch&management_type=2&t=android"
+                      }
+                    },
+                    {
+                      "id": 656689589,
+                      "name": "BUKU ORI - POTENSI ZAKAT",
+                      "price": 45000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/1/10/2442766/2442766_aa564c09-593e-4bd3-a4a0-798d8bdb212d_1560_1560.jpg",
+                      "url": "https://www.tokopedia.com/tbericson/buku-ori-potensi-zakat?refined=true&whid=0",
+                      "applink": "tokopedia://product/656689589",
+                      "priceStr": "Rp45.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Bekasi"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    },
+                    {
+                      "id": 1332863653,
+                      "name": "BUKU ORI - IBADAH SHALAT ZAKAT PUASA HAJI",
+                      "price": 45000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/11/10/7521048/7521048_b688b108-e6dd-4a76-be38-a87a00fb3b2d_1560_1560.jpg",
+                      "url": "https://www.tokopedia.com/tokobukuloyisen/buku-ori-ibadah-shalat-zakat-puasa-haji?refined=true&whid=0",
+                      "applink": "tokopedia://product/1332863653",
+                      "priceStr": "Rp45.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Bekasi"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    }
+                  ]
+                },
+                {
+                  "keyword": "buku ensiklopedia zakat",
+                  "url": "https://www.tokopedia.com/search?q=buku+ensiklopedia+zakat&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=buku+ensiklopedia+zakat&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 1174117106,
+                      "name": "Buku Ensiklopedia Fikih Indonesia 4 - ZAKAT",
+                      "price": 160000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/12/6e06c223-35ce-40af-9540-18d4577c4b6e.jpg",
+                      "url": "https://www.tokopedia.com/senanghati05/buku-ensiklopedia-fikih-indonesia-4-zakat?refined=true&whid=0",
+                      "applink": "tokopedia://product/1174117106",
+                      "priceStr": "Rp160.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Jakarta Barat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    },
+                    {
+                      "id": 1251755215,
+                      "name": "Buku ENSIKLOPEDIA RUKUN ISLAM Ibadah Tanpa Khilafiah ZAKAT",
+                      "price": 28000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/12/a9555e7a-df97-43c1-ac3e-48d00aab76a5.jpg",
+                      "url": "https://www.tokopedia.com/baimtokobuku/buku-ensiklopedia-rukun-islam-ibadah-tanpa-khilafiah-zakat?refined=true&whid=0",
+                      "applink": "tokopedia://product/1251755215",
+                      "priceStr": "Rp28.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Medan"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    },
+                    {
+                      "id": 1278548357,
+                      "name": "Buku Ensiklopedia Keuangan Publik Panduan Lengkap Mengelola Zakat Dll",
+                      "price": 185600,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/23/1288cdc4-b2e0-4185-978b-529a13d2d8fe.jpg",
+                      "url": "https://www.tokopedia.com/slemanb/buku-ensiklopedia-keuangan-publik-panduan-lengkap-mengelola-zakat-dll?refined=true&whid=0",
+                      "applink": "tokopedia://product/1278548357",
+                      "priceStr": "Rp185.600",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Kab. Bantul"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    }
+                  ]
+                },
+                {
+                  "keyword": "ensiklopedia zakat ori",
+                  "url": "https://www.tokopedia.com/search?q=ensiklopedia+zakat+ori&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=ensiklopedia+zakat+ori&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 1236068679,
+                      "name": "Ensiklopedia Fikih Indonesia 4: Zakat oleh Ahmad Sarwat LC., MA - ORI",
+                      "price": 134000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/4/1249bd21-a92e-42a8-b3e2-2486d51a020c.jpg",
+                      "url": "https://www.tokopedia.com/promediacell/ensiklopedia-fikih-indonesia-4-zakat-oleh-ahmad-sarwat-lc-ma-ori?refined=true&whid=0",
+                      "applink": "tokopedia://product/1236068679",
+                      "priceStr": "Rp134.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Kab. Bekasi"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    }
+                  ]
+                },
+                {
+                  "keyword": "buku ori",
+                  "url": "https://www.tokopedia.com/search?q=buku+ori&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=buku+ori&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 670721574,
+                      "name": "Netzwerk A1 Buku Pelajaran Bahasa Jerman Katalis 1 Set 2 Buku ORI",
+                      "price": 300000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/7/16695183/16695183_6e89ff47-3d00-4c9f-9243-899b1a47178e_500_500",
+                      "url": "https://www.tokopedia.com/vinsensiusmikael/netzwerk-a1-buku-pelajaran-bahasa-jerman-katalis-1-set-2-buku-ori?refined=true&whid=0",
+                      "applink": "tokopedia://product/670721574",
+                      "priceStr": "Rp300.000",
+                      "wishlist": false,
+                      "ratingAverage": "4.9",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 89",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Barat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "56979502",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_yNopjOHAUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstdbm-7q3OBUsthosnNopUf6AKfbm-srcHi6s1FHmFiy3zwrfo5rM1i6sUfHidOo_HaH_eFH_HpH_Uabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1N2oA-6qBja_M2gHjNk3_-6qBja_M2sq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uzuP1OEgpC6qj1h_92SHJNkz_Vo8MrhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW1_uquJ7a__-oHJh91MhvuJu7_jz6QJNNHAuvzJJh_VPuoV2Jz_oozJN0_S2g8uB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-oq_eh_Bzo81O119PouJOE_uz-81B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgR2HqjJ7_S2zoJOk__-vzV1F_OzSHJBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6sJObm-sy9zwq3zpUs2Q6mFpHpJabAHposxPbm-X9foxQMz2gcV7guYxgIHi6sUDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsyaHsnDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?src=topads_dynamic_broadmatch&page=1&is_search=1&keywords=buku+ori&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&r=https%3A%2F%2Fwww.tokopedia.com%2Fvinsensiusmikael%2Fnetzwerk-a1-buku-pelajaran-bahasa-jerman-katalis-1-set-2-buku-ori%3Fsrc%3Dtopads&management_type=1&t=android",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_yNopjOHAUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstdbm-7q3OBUsthosnNopUf6AKfbm-srcHi6s1FHmFiy3zwrfo5rM1i6sUfHidOo_HaH_eFH_HpH_Uabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1N2oA-6qBja_M2gHjNk3_-6qBja_M2sq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uzuP1OEgpC6qj1h_92SHJNkz_Vo8MrhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW1_uquJ7a__-oHJh91MhvuJu7_jz6QJNNHAuvzJJh_VPuoV2Jz_oozJN0_S2g8uB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-oq_eh_Bzo81O119PouJOE_uz-81B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgR2HqjJ7_S2zoJOk__-vzV1F_OzSHJBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6sJObm-sy9zwq3zpUs2Q6mFpHpJabAHposxPbm-X9foxQMz2gcV7guYxgIHi6sUDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsyaHsnDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?uid=75093631&page=1&t=android&dv=android&keywords=buku+ori&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&management_type=1&product_id=670721574&src=topads_dynamic_broadmatch&is_search=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fvinsensiusmikael%2Fnetzwerk-a1-buku-pelajaran-bahasa-jerman-katalis-1-set-2-buku-ori%3Fsrc%3Dtopads",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1f6_rNo_nabm-xgVY789CBUsthbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_yF6_raosKdoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbp15oa4hosyNo_JdHa4hosyNo_JdHO4fg_KNgMy7oa7pgAnFb_zs63yW6_U7Ha7d6_BiH3J7opJR6cuwo_nF9p1FHmUDUMVj9RosQR-BUstaosUXo_1pHsJ7HAJpHpJaHiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfB6q_ea_M2gHjNk3_-6qBja_M2gHjNkyfBHe72kgJxGgMHauMxsQ1N5Z325q1O1u9uo8MrF_M2VH1OEgpC6qj1h_92SH1B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJO3BzoHj7a__CHuO-D_OzVPJNJ_Mh68_nO_7zCH1h9u_zqzJ1p_1z6q7NE39Bgq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_3j7H1N1_9BouVVR_uzo8jO1Z9B-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMPE_c2CoJNE1_zoqj7a_7zuHJY1gpC-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUsthoZFiQBYsy3Njq3zxPcuwy3zpUstabm-FQRo79fVDgaUE3a-pQcY7PcBXgOYpg3VayfKi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsyaHsnDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?t=android&is_search=1&dv=android&src=topads_dynamic_broadmatch&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ori&page=1&management_type=1"
+                      }
+                    },
+                    {
+                      "id": 433321221,
+                      "name": "Paket Buku Islam M. Quraish Shihab Isi 3 Buku (Dijamin ORI)",
+                      "price": 175000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/3/24/45930357/45930357_c38894ef-84ac-442a-a000-d23337527099_1194_932",
+                      "url": "https://www.tokopedia.com/cendolebook/paket-buku-islam-m-quraish-shihab-isi-3-buku-dijamin-ori?refined=true&whid=0",
+                      "applink": "tokopedia://product/433321221",
+                      "priceStr": "Rp175.000",
+                      "wishlist": false,
+                      "ratingAverage": "5.0",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 61",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Kab. Sleman"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "38450705",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpK7o_nRHA1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHaFiPcBWgZUEH_yF6_raosKdoiFiyRCsUstao_nDUMVj9RosQR-BUstao_UXo_jpHsHNHAURHs17HpKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1jp_c2go1Ok_9P68BjO_32oP7NE3_uoqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu2JQcho8BBE392zPV2Iu_uo1pnF__-uH7h1qpzozVu73Bztq7O1yRPoHBJp_M2Gq1B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Oku9BHqB1O_92-8jY1e9B68jjh_jzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok19BHqB1a_uzz8JYJypu68jBR_92gHjBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6sJObm-sy9zwq3zpUs2Q6mFdHs1D6AUf9ZFiQBYsy3Njq3zxPcuwy3zpUstabm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sU76_nfbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?r=https%3A%2F%2Fwww.tokopedia.com%2Fcendolebook%2Fpaket-buku-islam-m-quraish-shihab-isi-3-buku-dijamin-ori%3Fsrc%3Dtopads&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&page=1&t=android&src=topads_dynamic_broadmatch&management_type=1&keywords=buku+ori",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEHpK7o_nRHA1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHaFiPcBWgZUEH_yF6_raosKdoiFiyRCsUstao_nDUMVj9RosQR-BUstao_UXo_jpHsHNHAURHs17HpKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1jp_c2go1Ok_9P68BjO_32oP7NE3_uoqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu2JQcho8BBE392zPV2Iu_uo1pnF__-uH7h1qpzozVu73Bztq7O1yRPoHBJp_M2Gq1B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Oku9BHqB1O_92-8jY1e9B68jjh_jzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok19BHqB1a_uzz8JYJypu68jBR_92gHjBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6sJObm-sy9zwq3zpUs2Q6mFdHs1D6AUf9ZFiQBYsy3Njq3zxPcuwy3zpUstabm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sU76_nfbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?dv=android&uid=75093631&r=https%3A%2F%2Fwww.tokopedia.com%2Fcendolebook%2Fpaket-buku-islam-m-quraish-shihab-isi-3-buku-dijamin-ori%3Fsrc%3Dtopads&is_search=1&src=topads_dynamic_broadmatch&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ori&page=1&t=android&product_id=433321221&management_type=1",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHdoA1FopnObm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_HDUSz2Q31i6sJfHAjRHsyd6AyDUSCxPcKi6i-ByRHRb9nXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HsnFb9ohP3VagZYFrMYjP3o7b_J5Hsnh6Z4pbpU7bpeO6_HFHp1RbpeO6_HFHp1R9fHp6AKNocuMb_K7y3HWoAeayZOxHAnFb3eaHpHpop1aopnN6u4hH_j79pjpHiUDUMVj9RosQR-BUstao_UXo_jpHsHNHAURHs17HpKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1jp_c2go1Ok_9P68BjO_32oP7NE3_uoqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu2JQcho8BBE392zPV2Iu_uo1pnF__-uH7h1qpzozVu73Bztq7O1yRPoHBJp_M2Gq1B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Oku9BHqB1O_92-8jY1e9B68jjh_jzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok19BHqB1a_uzz8JYJypu68jBR_92gHjBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6sJObm-X9foxQMz2gcV7guYxgIHi6sUDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9RoBy9-sqm-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaoAjFoiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?management_type=1&t=android&dv=android&keywords=buku+ori&page=1&src=topads_dynamic_broadmatch&is_search=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184"
+                      }
+                    },
+                    {
+                      "id": 232623273,
+                      "name": "Riyadhus Shalihin ORI",
+                      "price": 97700,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/4/14/12190099/12190099_c82e666a-b1f2-4a53-9ac6-e043797678d7_1506_1506",
+                      "url": "https://www.tokopedia.com/tokohargabuku/riyadhus-shalihin-ori?refined=true&whid=0",
+                      "applink": "tokopedia://product/232623273",
+                      "priceStr": "Rp97.700",
+                      "wishlist": false,
+                      "ratingAverage": "4.9",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 430",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Timur"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    }
+                  ]
+                }
+               ]
+            },
+            "suggestion": {
+              "suggestion": "",
+              "query": "q=buku ensiklopedia zakat ori&rf=false&skip_broadmatch=true",
+              "text": "Barang yang kamu cari hasilnya sedikit. Mau coba cek barang lainnya?"
+            },
+            "products": [
+              {
+                "id": 704687869,
+                "name": "Buku, Ensiklopedia Fikih Indonesia 4: Zakat -Ori",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "shop": {
+                  "id": 7513198,
+                  "name": "Pusat Buku Original",
+                  "city": "Tangerang Selatan",
+                  "url": "https://www.tokopedia.com/pusatbukuor",
+                  "isOfficial": false,
+                  "isPowerBadge": true
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/2/19/batch-upload/batch-upload_6bfc6cff-fba6-40a7-8f09-6f73c83c0a78.jpg",
+                "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/2/19/batch-upload/batch-upload_6bfc6cff-fba6-40a7-8f09-6f73c83c0a78.jpg",
+                "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/2/19/batch-upload/batch-upload_6bfc6cff-fba6-40a7-8f09-6f73c83c0a78.jpg",
+                "price": "Rp298.200",
+                "priceInt": 298200,
+                "priceRange": "",
+                "categoryId": 8,
+                "categoryName": "Buku",
+                "categoryBreadcrumb": "buku/lainnya",
+                "ratingAverage": "",
+                "originalPrice": "",
+                "discountPercentage": 0,
+                "warehouseIdDefault": 0,
+                "boosterList": "-1",
+                "source_engine": "0",
+                "minOrder": 1,
+                "url": "https://www.tokopedia.com/pusatbukuor/buku-ensiklopedia-fikih-indonesia-4-zakat-ori?whid=0",
+                "labelGroups": [
+                  {
+                    "title": "Cashback",
+                    "position": "promo",
+                    "type": "lightGreen",
+                    "url": ""
+                  },
+                  {
+                    "title": "Cashback",
+                    "position": "price",
+                    "type": "lightGreen",
+                    "url": ""
+                  }
+                ],
+                "labelGroupVariant": [],
+                "badges": [
+                  {
+                    "title": "Power Badge",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                    "show": true
+                  }
+                ],
+                "wishlist": false
+              }
+            ]
+          }
+        }
+    }
+  },
+  {
+    "data": {
+      "quick_filter": {
+        "filter": [
+          {
+            "options": [
+              {
+                "name": "Bebas Ongkir",
+                "key": "bebas_ongkir_promo",
+                "icon": "",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Official Store",
+                "key": "official",
+                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Kurir Instan",
+                "key": "shipping",
+                "icon": "",
+                "value": "10,12,13",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Power Merchant",
+                "key": "goldmerchant",
+                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "productAds": {
+        "status": {
+          "error_code": 0,
+          "message": "OK"
+        },
+        "header": {
+          "process_time": 0.02119317,
+          "total_data": 6
+        },
+        "data": [
+            {
+              "id": "54364871",
+              "ad_ref_key": "",
+              "redirect": "https://www.tokopedia.com/tokobukuivanjaya",
+              "sticker_id": "0",
+              "sticker_image": "",
+              "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_eposedopJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfoadh6Ar7oseOo_KNosypbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAo6uVBN_92oHjNEu_Co8jOdZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gH7hkz_z68BJa_jzuH1YJqp-6qjO2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDdbArfHZFhH_Ha9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_1FHiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?t=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=search&is_search=1&management_type=2&dv=android&page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-ensiklopedi-indonesia-vol-1-7-suplemen-1986-dan-1990%3Fsrc%3Dtopads&keywords=buku+ensiklopedia+zakat+ori&ob=23",
+              "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_eposedopJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfoadh6Ar7oseOo_KNosypbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAo6uVBN_92oHjNEu_Co8jOdZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gH7hkz_z68BJa_jzuH1YJqp-6qjO2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDdbArfHZFhH_Ha9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_1FHiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?uid=75093631&is_search=1&page=1&management_type=2&product_id=758188186&dv=android&ob=23&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-ensiklopedi-indonesia-vol-1-7-suplemen-1986-dan-1990%3Fsrc%3Dtopads&src=search&keywords=buku+ensiklopedia+zakat+ori&sid=796ce62f-6b39-431f-989b-1c2e9abb9184",
+              "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_eposedopJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfoadh6Ar7oseOo_KNosypbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAo6uVBN_92oHjNEu_Co8jOdZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gH7hkz_z68BJa_jzuH1YJqp-6qjO2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDdbArfHZFhH_Ha9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_1FHiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?keywords=buku+ensiklopedia+zakat+ori&management_type=2&uid=75093631&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya&page=1&t=android&src=search",
+              "product": {
+                "id": "758188186",
+                "name": "BUKU ORI - ENSIKLOPEDI INDONESIA VOL 1-7 SUPLEMEN 1986 DAN 1990",
+                "category_breadcrumb": "buku / sosial-politik / buku-sejarah",
+                "wishlist": false,
+                "image": {
+                  "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s17Hpy76Arhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5rI-5gIusPm7hbpUFHsn5Ha4aoa4RosHNHAKFbprfHpjF6ACwHf-iHcUdg31Wo_yRgi77o_Uhb3Jfg_rWoseOg_VMH31Ny31f9pUFoAxwHsn76mNkrcribm-xgVYpyfYagZUEHsyRbsJdopefoA1O6AjfosHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Mj7H7N139Bo8j7a_S2uHJOE_9x-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBjp_c2VoJNE1_-6zV1h_7z0HjNk_3BM1_7YUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJho_nabm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcuXrfB0QcYFg3z2UcYaqZ-Y?ob=23&t=android&src=search&keywords=buku+ensiklopedia+zakat+ori&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&page=1&management_type=2",
+                  "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s17Hpy76Arhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpH5Hsr5opyp6_ndHm4RosHNHAKF9poiysCi6cuBb_1fofyWoA1aHZOxoM1Rb_y7o31hgsVB63VBoB4aHAed9pUFoAKXqSCSUiFiy3zwrfo5rM1i6sUfoadh6Ar7oseOo_KNosypbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAo6uVBN_92oHjNEu_Co8jOdZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gH7hkz_z68BJa_jzuH1YJqp-6qjO2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_1FHiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?ob=23&t=android&src=search&keywords=buku+ensiklopedia+zakat+ori&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&page=1&management_type=2",
+                  "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s17Hpy76Arhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpH5Hsr5opyp6_ndHm4RosHNHAKF9poiysCi6cuBb_1fofyWoA1aHZOxoM1Rb_y7o31hgsVB63VBoB4aHAed9pUFoAKXqSCSUiFiy3zwrfo5rM1i6sUfoadh6Ar7oseOo_KNosypbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAo6uVBN_92oHjNEu_Co8jOdZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gH7hkz_z68BJa_jzuH1YJqp-6qjO2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_1FHiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?ob=23&t=android&src=search&keywords=buku+ensiklopedia+zakat+ori&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&page=1&management_type=2",
+                  "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/3/27/7639080/7639080_3bb0b8ee-567f-4521-a6e7-645e1f1e9ae6_2048_2048.jpg",
+                  "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/3/27/7639080/7639080_3bb0b8ee-567f-4521-a6e7-645e1f1e9ae6_2048_2048.jpg",
+                  "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/product-1/2020/3/27/7639080/7639080_3bb0b8ee-567f-4521-a6e7-645e1f1e9ae6_2048_2048.jpg"
+                },
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya/buku-ori-ensiklopedi-indonesia-vol-1-7-suplemen-1986-dan-1990?src=topads",
+                "relative_uri": "tokobukuivanjaya/buku-ori-ensiklopedi-indonesia-vol-1-7-suplemen-1986-dan-1990",
+                "price_format": "Rp600.000",
+                "wholesale_price": [],
+                "count_talk_format": "0",
+                "count_review_format": "0",
+                "category": {
+                  "id": "1132"
+                },
+                "product_preorder": false,
+                "product_wholesale": false,
+                "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                "product_cashback": false,
+                "product_new_label": false,
+                "product_cashback_rate": "",
+                "product_rating": 0,
+                "product_rating_format": "",
+                "product_item_sold_payment_verified": "",
+                "product_minimum_order": 1,
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                },
+                "label_group": []
+              },
+              "shop": {
+                "id": "7639080",
+                "name": "toko buku ivan jaya",
+                "domain": "tokobukuivanjaya",
+                "location": "Bekasi",
+                "city": "Bekasi",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=7639080",
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya",
+                "owner_id": "87254118",
+                "is_owner": false,
+                "shop_is_official": false,
+                "shop_rating_avg": "<b>4.8</b> Rating Toko",
+                "badges": [
+                  {
+                    "title": "Free Return",
+                    "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                    "show": false
+                  },
+                  {
+                    "title": "Power Merchant",
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true
+                  }
+                ]
+              },
+              "applinks": "tokopedia://product/758188186"
+            },
+            {
+              "id": "57118215",
+              "ad_ref_key": "",
+              "redirect": "https://www.tokopedia.com/tokobukuivanjaya",
+              "sticker_id": "0",
+              "sticker_image": "",
+              "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_rhH_KaH_1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfHZdNHsURopKaoArRoAKabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAz68jJO_7zsH7NE__ovuJ77Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32g8JhkqRBoqMHp_7z-HJNEypCvzJB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDdbAKfHaF7HpyF9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst76_nN6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&t=android&management_type=2&keywords=buku+ensiklopedia+zakat+ori&page=1&src=search&is_search=1&ob=23&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-ensiklopedi-suku-bangsa-di-indonesia%3Fsrc%3Dtopads",
+              "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_rhH_KaH_1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfHZdNHsURopKaoArRoAKabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAz68jJO_7zsH7NE__ovuJ77Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32g8JhkqRBoqMHp_7z-HJNEypCvzJB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDdbAKfHaF7HpyF9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst76_nN6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?product_id=846940153&uid=75093631&page=1&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-ensiklopedi-suku-bangsa-di-indonesia%3Fsrc%3Dtopads&keywords=buku+ensiklopedia+zakat+ori&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&management_type=2&ob=23&is_search=1&src=search&t=android",
+              "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_rhH_KaH_1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfHZdNHsURopKaoArRoAKabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAz68jJO_7zsH7NE__ovuJ77Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32g8JhkqRBoqMHp_7z-HJNEypCvzJB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDdbAKfHaF7HpyF9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst76_nN6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?src=search&management_type=2&t=android&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ensiklopedia+zakat+ori&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya&uid=75093631&page=1",
+              "product": {
+                "id": "846940153",
+                "name": "BUKU ORI - ENSIKLOPEDI SUKU BANGSA DI INDONESIA",
+                "category_breadcrumb": "buku / pendidikan / ensiklopedia",
+                "wishlist": false,
+                "image": {
+                  "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1RH_JdHsJObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5rI-5gIusPm7hbpUFHsn5oZ4hHa4RosHNHAKFbprfHpjF6ACwypjNgsjFysJWopgjgZ77ypypb3JfHM1Wy_Pso3gBypPs63-B9pJOosCwH_1fHmNkrcribm-xgVYpyfYagZUEHsyhbsjaHsrR6AU7opr76AUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Mj7oJNEe_uvzcHp_S2oH7Y1__z-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBBd_c2081OkypovzJjF_S2sHJYJZ3BM1_7YUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6seNHAjdbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcuXrfB0QcYFg3z2UcYaqZ-Y?src=search&keywords=buku+ensiklopedia+zakat+ori&is_search=1&management_type=2&t=android&dv=android&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&ob=23",
+                  "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1RH_JdHsJObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbp15H_H5opyp6_ndHm4RosHNHAKF9fHN63yNHcUhb_rfgc1WocHfHaOxos-Bb3JRypuMg3HRypBigu4ho_yF9pJOosnXqSCSUiFiy3zwrfo5rM1i6sUfHZdNHsURopKaoArRoAKabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAz68jJO_7zsH7NE__ovuJ77Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32g8JhkqRBoqMHp_7z-HJNEypCvzJB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst76_nN6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?src=search&keywords=buku+ensiklopedia+zakat+ori&is_search=1&management_type=2&t=android&dv=android&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&ob=23",
+                  "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1RH_JdHsJObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbp15H_H5opyp6_ndHm4RosHNHAKF9fHN63yNHcUhb_rfgc1WocHfHaOxos-Bb3JRypuMg3HRypBigu4ho_yF9pJOosnXqSCSUiFiy3zwrfo5rM1i6sUfHZdNHsURopKaoArRoAKabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAz68jJO_7zsH7NE__ovuJ77Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32g8JhkqRBoqMHp_7z-HJNEypCvzJB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst76_nN6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?src=search&keywords=buku+ensiklopedia+zakat+ori&is_search=1&management_type=2&t=android&dv=android&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&ob=23",
+                  "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/5/13/7639080/7639080_c99f90b1-76de-4c63-a62e-a7c5fec7c9be_1560_1560.jpg",
+                  "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/13/7639080/7639080_c99f90b1-76de-4c63-a62e-a7c5fec7c9be_1560_1560.jpg",
+                  "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/product-1/2020/5/13/7639080/7639080_c99f90b1-76de-4c63-a62e-a7c5fec7c9be_1560_1560.jpg"
+                },
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya/buku-ori-ensiklopedi-suku-bangsa-di-indonesia?src=topads",
+                "relative_uri": "tokobukuivanjaya/buku-ori-ensiklopedi-suku-bangsa-di-indonesia",
+                "price_format": "Rp50.000",
+                "wholesale_price": [],
+                "count_talk_format": "0",
+                "count_review_format": "0",
+                "category": {
+                  "id": "4360"
+                },
+                "product_preorder": false,
+                "product_wholesale": false,
+                "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                "product_cashback": false,
+                "product_new_label": false,
+                "product_cashback_rate": "",
+                "product_rating": 0,
+                "product_rating_format": "",
+                "product_item_sold_payment_verified": "",
+                "product_minimum_order": 1,
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                },
+                "label_group": []
+              },
+              "shop": {
+                "id": "7639080",
+                "name": "toko buku ivan jaya",
+                "domain": "tokobukuivanjaya",
+                "location": "Bekasi",
+                "city": "Bekasi",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=7639080",
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya",
+                "owner_id": "87254118",
+                "is_owner": false,
+                "shop_is_official": false,
+                "shop_rating_avg": "<b>4.8</b> Rating Toko",
+                "badges": [
+                  {
+                    "title": "Free Return",
+                    "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                    "show": false
+                  },
+                  {
+                    "title": "Power Merchant",
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true
+                  }
+                ]
+              },
+              "applinks": "tokopedia://product/846940153"
+            },
+            {
+              "id": "77372243",
+              "ad_ref_key": "",
+              "redirect": "https://www.tokopedia.com/tokobukuivanjaya",
+              "sticker_id": "0",
+              "sticker_image": "",
+              "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoprpopUaoAHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sU7oadf6_URosy7HAyO6_ydoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_e7_S2Co1YJypo68j7p_OzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok1_oHqBjO_32sHjNk19P6qB1O_M2SHjBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFdosHDoAHfHV7DUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAJF6AeDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUM-OqR1Kg3Npq3WDQRCBgcjKQR-2US7?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ensiklopedia+zakat+ori&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-ensiklopedi-asal-usul%3Fsrc%3Dtopads&is_search=1&management_type=2&dv=android&src=search&page=1&ob=23",
+              "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEoprpopUaoAHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sU7oadf6_URosy7HAyO6_ydoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_e7_S2Co1YJypo68j7p_OzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok1_oHqBjO_32sHjNk19P6qB1O_M2SHjBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFdosHDoAHfHV7DUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAJF6AeDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUM-OqR1Kg3Npq3WDQRCBgcjKQR-2US7?dv=android&uid=75093631&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-ensiklopedi-asal-usul%3Fsrc%3Dtopads&is_search=1&keywords=buku+ensiklopedia+zakat+ori&ob=23&product_id=1356449022&management_type=2&t=android&src=search&page=1",
+              "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoprpopUaoAHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sU7oadf6_URosy7HAyO6_ydoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_e7_S2Co1YJypo68j7p_OzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok1_oHqBjO_32sHjNk19P6qB1O_M2SHjBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFdosHDoAHfHV7DUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAJF6AeDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUM-OqR1Kg3Npq3WDQRCBgcjKQR-2US7?r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya&page=1&management_type=2&uid=75093631&t=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=search&keywords=buku+ensiklopedia+zakat+ori&dv=android",
+              "product": {
+                "id": "1356449022",
+                "name": "BUKU ORI - ENSIKLOPEDI ASAL USUL",
+                "category_breadcrumb": "buku / pendidikan / ensiklopedia",
+                "wishlist": false,
+                "image": {
+                  "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srRHpraHsepbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5H_J5H_j56cyhypKpHMHWoA1Oya77gczjb3VBH_nWoAHNofy7gMHf6_UFbM2FgaUDUMVj9RosQR-BUstaoArXosjaopyfoAnfo_jf6AyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Mj7oJNEe_uvzcHp_S2oH7Y1__z-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBJp_c2go1Okyp-6qBVR_M2uo1Nkgp--QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sehHAK7bm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcuXrfB0QcYFg3z2UcYaqZ-Y?ob=23&t=android&page=1&management_type=2&src=search&is_search=1&keywords=buku+ensiklopedia+zakat+ori&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184",
+                  "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srRHpraHsepbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJhbpJNbpxMH3HdHp-sb_eOo3HWoczjgmOxg_JFb_ep6_PMocgsosjaHmNkrcribm-xgVYpyfYagZUEHseRbsyNHsrfoseFos1NosKfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAz68jJO_7zsH7NE__ovuJ77Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32zH7hk3_uoqMHa_M2zP7Nku_u6qMraZ3dFvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7H_ndomFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?ob=23&t=android&page=1&management_type=2&src=search&is_search=1&keywords=buku+ensiklopedia+zakat+ori&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184",
+                  "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srRHpraHsepbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJhbpJNbpxMH3HdHp-sb_eOo3HWoczjgmOxg_JFb_ep6_PMocgsosjaHmNkrcribm-xgVYpyfYagZUEHseRbsyNHsrfoseFos1NosKfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qB2D3BzsP7Y9u_zHuJg0_M2zPJNJuMBo1pn73BzSH1h919P6Hj7p_3OoP7dau_-6q1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1N2oAz68jJO_7zsH7NE__ovuJ77Z3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32zH7hk3_uoqMHa_M2zP7Nku_u6qMraZ3dFvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_Jhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7H_ndomFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?ob=23&t=android&page=1&management_type=2&src=search&is_search=1&keywords=buku+ensiklopedia+zakat+ori&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184",
+                  "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/11/19/8f1c832c-455c-4ddd-ae10-4397f4fc6920.jpg",
+                  "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/19/8f1c832c-455c-4ddd-ae10-4397f4fc6920.jpg",
+                  "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/19/8f1c832c-455c-4ddd-ae10-4397f4fc6920.jpg"
+                },
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya/buku-ori-ensiklopedi-asal-usul?src=topads",
+                "relative_uri": "tokobukuivanjaya/buku-ori-ensiklopedi-asal-usul",
+                "price_format": "Rp25.000",
+                "wholesale_price": [],
+                "count_talk_format": "0",
+                "count_review_format": "0",
+                "category": {
+                  "id": "4360"
+                },
+                "product_preorder": false,
+                "product_wholesale": false,
+                "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                "product_cashback": false,
+                "product_new_label": false,
+                "product_cashback_rate": "",
+                "product_rating": 0,
+                "product_rating_format": "",
+                "product_item_sold_payment_verified": "",
+                "product_minimum_order": 1,
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                },
+                "label_group": []
+              },
+              "shop": {
+                "id": "7639080",
+                "name": "toko buku ivan jaya",
+                "domain": "tokobukuivanjaya",
+                "location": "Bekasi",
+                "city": "Bekasi",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=7639080",
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya",
+                "owner_id": "87254118",
+                "is_owner": false,
+                "shop_is_official": false,
+                "shop_rating_avg": "<b>4.8</b> Rating Toko",
+                "badges": [
+                  {
+                    "title": "Free Return",
+                    "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                    "show": false
+                  },
+                  {
+                    "title": "Power Merchant",
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true
+                  }
+                ]
+              },
+              "applinks": "tokopedia://product/1356449022"
+            },
+            {
+              "id": "66815400",
+              "ad_ref_key": "",
+              "redirect": "https://www.tokopedia.com/tokobukuivanjaya",
+              "sticker_id": "0",
+              "sticker_image": "",
+              "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosydH_17HAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sU7oadhopU7HAnfosJNH_yFHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_e7_S2Co1YJypo68j7p_OzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok1_oHqj1p_32zP7OJ3_-oucWd_M2C8JBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFdo_jD6Aya9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthoAHpoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=search&ob=23&keywords=buku+ensiklopedia+zakat+ori&t=android&dv=android&is_search=1&page=1&management_type=2&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-ensiklopedi-populer-untuk-orangtua%3Fsrc%3Dtopads",
+              "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosydH_17HAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sU7oadhopU7HAnfosJNH_yFHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_e7_S2Co1YJypo68j7p_OzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok1_oHqj1p_32zP7OJ3_-oucWd_M2C8JBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFdo_jD6Aya9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthoAHpoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?page=1&management_type=2&is_search=1&uid=75093631&src=search&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-ensiklopedi-populer-untuk-orangtua%3Fsrc%3Dtopads&product_id=1200443795&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ensiklopedia+zakat+ori&ob=23&t=android",
+              "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosydH_17HAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sU7oadhopU7HAnfosJNH_yFHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_e7_S2Co1YJypo68j7p_OzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok1_oHqj1p_32zP7OJ3_-oucWd_M2C8JBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFdo_jD6Aya9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthoAHpoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZCBQSo2qfh5rcujqZC5rMjiwe?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&uid=75093631&page=1&management_type=2&dv=android&src=search&keywords=buku+ensiklopedia+zakat+ori&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya",
+              "product": {
+                "id": "1200443795",
+                "name": "BUKU ORI - ENSIKLOPEDI POPULER UNTUK ORANGTUA",
+                "category_breadcrumb": "buku / pengembangan-diri-karir / self-improvement-development",
+                "wishlist": false,
+                "image": {
+                  "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syf6AJOoAnFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn56Z4aHm4dosypopy7ya7aHfgjb_edyprW63VMgi7fgAgBHpKOHpyNo_UXqSCSUiFiy3zwrfo5rM1i6sU7oadhopU7HAnfosJNH_yFHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_e7_S2Co1YJypo68j7p_OzooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok1_oHqj1p_32zP7OJ3_-oucWd_M2C8JBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJhHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_epHpyDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUM-OqR1Kg3Npq3WDQRCBgcjKQR-2US7?dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ensiklopedia+zakat+ori&src=search&is_search=1&t=android&page=1&ob=23&management_type=2",
+                  "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syf6AJOoAnFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpj5Hsn56AyfHprfocHWHsoMgm776cHRb_BxgMyWoMefg_Hdo_Hf6_1abM2FgaUDUMVj9RosQR-BUstaoArXH_raoAnFosyh6_JfHAJDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Mj7oJNEe_uvzcHp_S2oH7Y1__z-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBJp_c2VH7Ok19PozVja_uz08JNke9x-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJ7HpHfbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcuXrfB0QcYFg3z2UcYaqZ-Y?dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ensiklopedia+zakat+ori&src=search&is_search=1&t=android&page=1&ob=23&management_type=2",
+                  "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syf6AJOoAnFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpj5Hsn56AyfHprfocHWHsoMgm776cHRb_BxgMyWoMefg_Hdo_Hf6_1abM2FgaUDUMVj9RosQR-BUstaoArXH_raoAnFosyh6_JfHAJDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Mj7oJNEe_uvzcHp_S2oH7Y1__z-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBJp_c2VH7Ok19PozVja_uz08JNke9x-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJ7HpHfbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcuXrfB0QcYFg3z2UcYaqZ-Y?dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ensiklopedia+zakat+ori&src=search&is_search=1&t=android&page=1&ob=23&management_type=2",
+                  "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/9/20/8663764c-23fd-48c7-9aff-6d6e38536952.jpg",
+                  "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/20/8663764c-23fd-48c7-9aff-6d6e38536952.jpg",
+                  "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/9/20/8663764c-23fd-48c7-9aff-6d6e38536952.jpg"
+                },
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya/buku-ori-ensiklopedi-populer-untuk-orangtua?src=topads",
+                "relative_uri": "tokobukuivanjaya/buku-ori-ensiklopedi-populer-untuk-orangtua",
+                "price_format": "Rp30.000",
+                "wholesale_price": [],
+                "count_talk_format": "0",
+                "count_review_format": "0",
+                "category": {
+                  "id": "862"
+                },
+                "product_preorder": false,
+                "product_wholesale": false,
+                "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                "product_cashback": false,
+                "product_new_label": false,
+                "product_cashback_rate": "",
+                "product_rating": 0,
+                "product_rating_format": "",
+                "product_item_sold_payment_verified": "",
+                "product_minimum_order": 1,
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                },
+                "label_group": []
+              },
+              "shop": {
+                "id": "7639080",
+                "name": "toko buku ivan jaya",
+                "domain": "tokobukuivanjaya",
+                "location": "Bekasi",
+                "city": "Bekasi",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=7639080",
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya",
+                "owner_id": "87254118",
+                "is_owner": false,
+                "shop_is_official": false,
+                "shop_rating_avg": "<b>4.8</b> Rating Toko",
+                "badges": [
+                  {
+                    "title": "Free Return",
+                    "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                    "show": false
+                  },
+                  {
+                    "title": "Power Merchant",
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true
+                  }
+                ]
+              },
+              "applinks": "tokopedia://product/1200443795"
+            },
+            {
+              "id": "80876263",
+              "ad_ref_key": "",
+              "redirect": "https://www.tokopedia.com/tokobukuivanjaya",
+              "sticker_id": "0",
+              "sticker_image": "",
+              "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AndopyaosHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfoidFHA1RH_ydosJhoAUpHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_ep_Bzg81OE__-68B1F_92o8JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok3_-HqjVR_Bzs8JNkgp-ouJ1F_32o8jBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFRosJDopya9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstdo_jfbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcYaqZCpg32xrMVtUS7?r_replacement=new&is_search=1&keywords=buku+ensiklopedia+zakat+ori&management_type=2&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=search&page=1&t=android&ob=23&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-seratus-tokoh-yang-paling-berpengaruh-dalam-sejarah%3Fsrc%3Dtopads",
+              "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6AndopyaosHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfoidFHA1RH_ydosJhoAUpHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_ep_Bzg81OE__-68B1F_92o8JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok3_-HqjVR_Bzs8JNkgp-ouJ1F_32o8jBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFRosJDopya9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstdo_jfbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcYaqZCpg32xrMVtUS7?dv=android&product_id=1413828306&r_replacement=new&t=android&uid=75093631&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya%2Fbuku-ori-seratus-tokoh-yang-paling-berpengaruh-dalam-sejarah%3Fsrc%3Dtopads&keywords=buku+ensiklopedia+zakat+ori&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&ob=23&is_search=1&management_type=2&src=search",
+              "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AndopyaosHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosndosndo_yRbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfoidFHA1RH_ydosJhoAUpHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_ep_Bzg81OE__-68B1F_92o8JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok3_-HqjVR_Bzs8JNkgp-ouJ1F_32o8jBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFRosJDopya9ZFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstdo_jfbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcYaqZCpg32xrMVtUS7?management_type=2&t=android&dv=android&uid=75093631&keywords=buku+ensiklopedia+zakat+ori&page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokobukuivanjaya&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=search",
+              "product": {
+                "id": "1413828306",
+                "name": "BUKU ORI - SERATUS TOKOH yang paling berpengaruh dalam sejarah",
+                "category_breadcrumb": "buku / sosial-politik / buku-biografi",
+                "wishlist": false,
+                "image": {
+                  "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKF6ArfHsypbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5H_U56m4NyMzjg3zjHZ7NofJdb_zMHsjWy3ehgi77Hf1dHcefH_uxH_JXqSCSUiFiy3zwrfo5rM1i6sUfoidFHA1RH_ydosJhoAUpHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V6q_ep_Bzg81OE__-68B1F_92o8JB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok3_-HqjVR_Bzs8JNkgp-ouJ1F_32o8jBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJhHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUE6A1NoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiySu0PZC5rMjKrfuky9-xqm-Y?keywords=buku+ensiklopedia+zakat+ori&management_type=2&t=android&dv=android&src=search&ob=23&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&r_replacement=new&page=1",
+                  "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKF6ArfHsypbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJabpK563-jgcujgAJW6_Px6m77gsUNb3VjH3yWoAoB6ACjosJOy_JhbM2FgaUDUMVj9RosQR-BUstaosyXHAnOopJf6AyhH_eaHpHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Mj7H7N139Bo8j7a_S2uHJOE_9x-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBja_c2CP7N1yRx6qMra_uzVHJOk_92-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sKO6_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUM-OqR1KQR-2UIoBqMVay3Kiwe?keywords=buku+ensiklopedia+zakat+ori&management_type=2&t=android&dv=android&src=search&ob=23&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&r_replacement=new&page=1",
+                  "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKF6ArfHsypbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJabpK563-jgcujgAJW6_Px6m77gsUNb3VjH3yWoAoB6ACjosJOy_JhbM2FgaUDUMVj9RosQR-BUstaosyXHAnOopJf6AyhH_eaHpHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Mj7H7N139Bo8j7a_S2uHJOE_9x-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBja_c2CP7N1yRx6qMra_uzVHJOk_92-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sKO6_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUM-OqR1KQR-2UIoBqMVay3Kiwe?keywords=buku+ensiklopedia+zakat+ori&management_type=2&t=android&dv=android&src=search&ob=23&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&r_replacement=new&page=1",
+                  "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/12/8/9bddedd1-97a8-4f29-ad1f-43e80d615a11.jpg",
+                  "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/8/9bddedd1-97a8-4f29-ad1f-43e80d615a11.jpg",
+                  "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/8/9bddedd1-97a8-4f29-ad1f-43e80d615a11.jpg"
+                },
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya/buku-ori-seratus-tokoh-yang-paling-berpengaruh-dalam-sejarah?src=topads",
+                "relative_uri": "tokobukuivanjaya/buku-ori-seratus-tokoh-yang-paling-berpengaruh-dalam-sejarah",
+                "price_format": "Rp40.000",
+                "wholesale_price": [],
+                "count_talk_format": "0",
+                "count_review_format": "0",
+                "category": {
+                  "id": "762"
+                },
+                "product_preorder": false,
+                "product_wholesale": false,
+                "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                "product_cashback": false,
+                "product_new_label": true,
+                "product_cashback_rate": "",
+                "product_rating": 0,
+                "product_rating_format": "",
+                "product_item_sold_payment_verified": "",
+                "product_minimum_order": 1,
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                },
+                "label_group": [
+                  {
+                    "position": "credibility",
+                    "type": "lightBlue",
+                    "title": "Terbaru"
+                  },
+                  {
+                    "position": "gimmick",
+                    "type": "textDarkOrange",
+                    "title": "Produk Terbaru"
+                  }
+                ]
+              },
+              "shop": {
+                "id": "7639080",
+                "name": "toko buku ivan jaya",
+                "domain": "tokobukuivanjaya",
+                "location": "Bekasi",
+                "city": "Bekasi",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=7639080",
+                "uri": "https://www.tokopedia.com/tokobukuivanjaya",
+                "owner_id": "87254118",
+                "is_owner": false,
+                "shop_is_official": false,
+                "shop_rating_avg": "<b>4.8</b> Rating Toko",
+                "badges": [
+                  {
+                    "title": "Free Return",
+                    "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                    "show": false
+                  },
+                  {
+                    "title": "Power Merchant",
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true
+                  }
+                ]
+              },
+              "applinks": "tokopedia://product/1413828306"
+            },
+            {
+              "id": "65629438",
+              "ad_ref_key": "",
+              "redirect": "https://www.tokopedia.com/richeesebook",
+              "sticker_id": "0",
+              "sticker_image": "",
+              "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEos1fHsj7HpKDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosndosndo_yRbm-srcHi6seFHmFiy3zwrfo5rM1i6sUfoZdNosKNHAnfo_JRopUaHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V68_eh_7zo8JYJe9xouJON_M20HjONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-61peO_M2So1OJe_-6uJ1p_S2-81ONZsjibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFpHpJObAHp6AgPbm-X9foxQMz2gcV7guYxgIHi6sJhHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHaHAHRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcYaqZCpg32xrMVtUS7?r=https%3A%2F%2Fwww.tokopedia.com%2Fricheesebook%2Fbuku-sejarah-hukum-agraria-indonesia-ori-boedi-harsono%3Fsrc%3Dtopads&keywords=buku+ensiklopedia+zakat+ori&ob=23&page=1&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&t=android&src=search&is_search=1&management_type=2",
+              "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEos1fHsj7HpKDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosndosndo_yRbm-srcHi6seFHmFiy3zwrfo5rM1i6sUfoZdNosKNHAnfo_JRopUaHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V68_eh_7zo8JYJe9xouJON_M20HjONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-61peO_M2So1OJe_-6uJ1p_S2-81ONZsjibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFpHpJObAHp6AgPbm-X9foxQMz2gcV7guYxgIHi6sJhHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHaHAHRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcYaqZCpg32xrMVtUS7?t=android&product_id=1166574674&management_type=2&ob=23&uid=75093631&r=https%3A%2F%2Fwww.tokopedia.com%2Fricheesebook%2Fbuku-sejarah-hukum-agraria-indonesia-ori-boedi-harsono%3Fsrc%3Dtopads&keywords=buku+ensiklopedia+zakat+ori&page=1&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=search&is_search=1",
+              "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEos1fHsj7HpKDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosndosndo_yRbm-srcHi6seFHmFiy3zwrfo5rM1i6sUfoZdNosKNHAnfo_JRopUaHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V68_eh_7zo8JYJe9xouJON_M20HjONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-61peO_M2So1OJe_-6uJ1p_S2-81ONZsjibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Q6mFpHpJObAHp6AgPbm-X9foxQMz2gcV7guYxgIHi6sJhHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHaHAHRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcYaqZCpg32xrMVtUS7?t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fricheesebook&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=buku+ensiklopedia+zakat+ori&page=1&dv=android&uid=75093631&src=search&management_type=2",
+              "product": {
+                "id": "1166574674",
+                "name": "Buku Sejarah Hukum Agraria Indonesia ori Boedi Harsono",
+                "category_breadcrumb": "buku / buku-hukum / buku-politik-hukum",
+                "wishlist": false,
+                "image": {
+                  "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syOosUNoAHdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn56Z4hHZYBgs1NHAuMyaOx63oMb_zMg_yW63ojyi7dHpjNg_zsysVjyfHXqSCSUiFiy3zwrfo5rM1i6sUfoZdNosKNHAnfo_JRopUaHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32qQV21yRPvuO17_Vzcq7Nk19z6zVg2_uHFoV21gpVHuOVR_s-oH7OW_9P6HB1a_MB-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_V68_eh_7zo8JYJe9xouJON_M20HjONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-61peO_M2So1OJe_-6uJ1p_S2-81ONZsjibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJhHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpUFHprDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUM-OqR1KQR-2UIoBqMVay3Kiwe?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&ob=23&management_type=2&is_search=1&t=android&dv=android&src=search&page=1&keywords=buku+ensiklopedia+zakat+ori",
+                  "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syOosUNoAHdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpj5H_J5g3yO6_nOgMHWy_Bsgi77gM1fb_BsgcUW6AHN6317yfUhgcosbM2FgaUDUMVj9RosQR-BUstaos1X6_yd6_nFos1hopraHsHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Sj7H1YJ_9xvzJVd_uzo81Nkqp-o81BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_BH7o1NkgpuozJJa_BzVH7NEZ9Bo81tNUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHaHAHRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcYaqZCpg32xrMVtUS7?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&ob=23&management_type=2&is_search=1&t=android&dv=android&src=search&page=1&keywords=buku+ensiklopedia+zakat+ori",
+                  "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syOosUNoAHdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpj5H_J5g3yO6_nOgMHWy_Bsgi77gM1fb_BsgcUW6AHN6317yfUhgcosbM2FgaUDUMVj9RosQR-BUstaos1X6_yd6_nFos1hopraHsHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk3MhqucoR_OPuoJh1zMW6qBV7_jz3q1O_HAzqucrh_VPzP7da__ooQ1OR_s-uHjN2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_Sj7H1YJ_9xvzJVd_uzo81Nkqp-o81BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_BH7o1NkgpuozJJa_BzVH7NEZ9Bo81tNUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHaHAHRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-iP3WOUcYaqZCpg32xrMVtUS7?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&ob=23&management_type=2&is_search=1&t=android&dv=android&src=search&page=1&keywords=buku+ensiklopedia+zakat+ori",
+                  "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/9/11/ef5905fc-a9cf-4fe6-9cdb-8399e4cb1dcc.jpg",
+                  "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/11/ef5905fc-a9cf-4fe6-9cdb-8399e4cb1dcc.jpg",
+                  "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/9/11/ef5905fc-a9cf-4fe6-9cdb-8399e4cb1dcc.jpg"
+                },
+                "uri": "https://www.tokopedia.com/richeesebook/buku-sejarah-hukum-agraria-indonesia-ori-boedi-harsono?src=topads",
+                "relative_uri": "richeesebook/buku-sejarah-hukum-agraria-indonesia-ori-boedi-harsono",
+                "price_format": "Rp149.900",
+                "wholesale_price": [],
+                "count_talk_format": "0",
+                "count_review_format": "8",
+                "category": {
+                  "id": "3386"
+                },
+                "product_preorder": false,
+                "product_wholesale": false,
+                "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                "product_cashback": false,
+                "product_new_label": false,
+                "product_cashback_rate": "",
+                "product_rating": 97,
+                "product_rating_format": "4.8",
+                "product_item_sold_payment_verified": "Terjual 13",
+                "product_minimum_order": 1,
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                },
+                "label_group": []
+              },
+              "shop": {
+                "id": "9310295",
+                "name": "Richeese book",
+                "domain": "richeesebook",
+                "location": "Jakarta Pusat",
+                "city": "Jakarta Pusat",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=9310295",
+                "uri": "https://www.tokopedia.com/richeesebook",
+                "owner_id": "69516369",
+                "is_owner": false,
+                "shop_is_official": false,
+                "shop_rating_avg": "<b>4.9</b> Rating Toko",
+                "badges": [
+                  {
+                    "title": "Free Return",
+                    "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                    "show": false
+                  },
+                  {
+                    "title": "Power Merchant",
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true
+                  }
+                ]
+              },
+              "applinks": "tokopedia://product/1166574674"
+            }
+        ],
+        "template": [
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "headlineAds": {
+        "status": {
+          "error_code": 0,
+          "message": "OK"
+        },
+        "header": {
+          "process_time": 0.014300596,
+          "total_data": 1
+        },
+        "data": [
+            {
+              "id": "49221079",
+              "ad_ref_key": "49221079",
+              "redirect": "https://www.tokopedia.com/meastore",
+              "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAjaHsJFopjDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosndo_yRbm-0g9BRQR-j9fBjUsthoAKFo_UdoiFiy3zwrfo5rM1i6sUfHZdN6AjO6_jh6ArpHsURbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBkz9uozVu2_JoGP3Uao32q17jfZ32cq1N1__CozcDa_VPgP7NE_9z6z7uN3jHhquBk__-HuJ-D_M2C8Bjau9PvzJ-2_1o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81Nkz9uvucrO_Bz0o1O1gpoo8jBN_SBG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-0PVYFqI-xrf1ibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEHZFiQBYsy3Njq3zxPcuwy3zpUsthbm-xyBY7g9o7Ustig9xF9fxBy3zDq3NB9R-BrRzaP3o7P9-B9fg5rMOOQcVwHZUDUSgBrSo2Qfdi6i-fHi-Y?template_id_used=3&click_ad_type=1&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fmeastore&is_search=1&cpm_template_req=3%2C4%2C5&keyword_correction=buku+ensiklopedia+zakat+ori&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&uid=75093631&keywords=buku+ensiklopedia+zakat+ori&page=1&src=search",
+              "headline": {
+                "template_id": "3",
+                "name": "MEA STORE",
+                "image": {
+                  "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6seNHsUhHArNbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6AyF6A1foaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5Hsnhoa4hbpJpbpKf6ArdHZ4dosKR6AVwHposHc-jypeWHsUOHm77HfyNb_xj6cUWHMVMosoBgAjpH_jFbM2FgaUDUMoFQZUEH_UDUMWB89P5rMzwq3ei6sJ76AnOHsKfbm-xgVYpyfYagZUEHsyhbsjd6_1N6_JdopHaHsrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32VP1OJu3BHe72OysUOqB2_Z_g-qjg2_BzoHJOJqp-HuOBR_S2oPJNIz9BqepV2332oHjh1eMh6qjVE3_-uP7YJeMBoe7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2VP1Y1gpu6ucDO_uzSH7OEZ9B681tNUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMW79RCtrMVpgZUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-B8ICwqcuxgch2QMuwrMupPI-OyRzOrMuwgMYaQ9uDyu4hUiFiPMuarfB5QiUEUSyaUiFirMuh9fxBy3zDq3NB9RCaQfzOyRzwyfYOQSei6sHDUSg2g9PBgVYFrMYjP3o79fBjraUE3pHOopnfopHdbAHfHAeaH_nR997?page=1&cpm_template_req=3%2C4%2C5&keyword_correction=buku+ensiklopedia+zakat+ori&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&uid=75093631&src=search&t=android&is_search=1&keywords=buku+ensiklopedia+zakat+ori&template_id_used=3",
+                  "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2017/1/13/868781/868781_33c0bdc4-2250-43f9-8d8b-2af63ed93190.jpg"
+                },
+                "shop": {
+                  "id": "868781",
+                  "name": "MEA STORE",
+                  "domain": "meastore",
+                  "tagline": "pilihan belanja Masyarakat Ekonomi ASEAN",
+                  "slogan": "Belanja Rp 2.750.000 Free Ongkir ke seluruh Kota Indonesia",
+                  "location": "Kota Surabaya",
+                  "city": "Kota Surabaya",
+                  "gold_shop": true,
+                  "gold_shop_badge": true,
+                  "shop_is_official": false,
+                  "product": [
+                    {
+                      "id": "35706738",
+                      "name": "Ensiklopedia Nabi Muhammad SAW",
+                      "price_format": "Rp 4.750.000",
+                      "applinks": "tokopedia://product/35706738",
+                      "product_rating": 100,
+                      "product_cashback": false,
+                      "product_cashback_rate": "",
+                      "product_new_label": false,
+                      "count_review_format": "1",
+                      "image_product": {
+                        "product_id": "35706738",
+                        "product_name": "Ensiklopedia Nabi Muhammad SAW",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2016/3/10/2504204/2504204_475916da-bbed-4afb-87a0-03a1842d9b24.png",
+                        "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAjaHsJFopjDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosndo_yRbm-0g9BRQR-j9fBjUsthoAKFo_UdoiFiy3zwrfo5rM1i6sUfHZdN6AjO6_jh6ArpHsURbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBkz9uozVu2_JoGP3Uao32q17jfZ32cq1N1__CozcDa_VPgP7NE_9z6z7uN3jHhquBk__-HuJ-D_M2C8Bjau9PvzJ-2_1o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81Nkz9uvucrO_Bz0o1O1gpoo8jBN_SBG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-0PVYFqI-xrf1ibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEHZFiQBYsy3Njq3zxPcuwy3zpUsthbm-xyBY7g9o7Ustig9xF9fxBy3zDq3NB9R-BrRzaP3o7P9-B9fg5rMOOQcVwHZUDUSgBrSo2Qfdi6i-fHi-Y?page=1&t=android&is_search=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fmeastore%2Fensiklopedia-nabi-muhammad-saw&cpm_template_req=3%2C4%2C5&keyword_correction=buku+ensiklopedia+zakat+ori&product_id=35706738&uid=75093631&src=search&keywords=buku+ensiklopedia+zakat+ori&template_id_used=3&click_ad_type=2&sid=796ce62f-6b39-431f-989b-1c2e9abb9184"
+                      },
+                      "campaign": {
+                        "original_price": "",
+                        "discount_percentage": 0
+                      }
+                    },
+                    {
+                      "id": "36042107",
+                      "name": "Ensiklopedia Rukun Islam",
+                      "price_format": "Rp 1.800.000",
+                      "applinks": "tokopedia://product/36042107",
+                      "product_rating": 100,
+                      "product_cashback": false,
+                      "product_cashback_rate": "",
+                      "product_new_label": false,
+                      "count_review_format": "1",
+                      "image_product": {
+                        "product_id": "36042107",
+                        "product_name": "Ensiklopedia Rukun Islam",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2016/3/12/2504204/2504204_cdf0b09f-9668-4ac5-bc42-96df77057031.jpg",
+                        "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAjaHsJFopjDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosndo_yRbm-0g9BRQR-j9fBjUsthoAKFo_UdoiFiy3zwrfo5rM1i6sUfHZdN6AjO6_jh6ArpHsURbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBkz9uozVu2_JoGP3Uao32q17jfZ32cq1N1__CozcDa_VPgP7NE_9z6z7uN3jHhquBk__-HuJ-D_M2C8Bjau9PvzJ-2_1o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81Nkz9uvucrO_Bz0o1O1gpoo8jBN_SBG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-0PVYFqI-xrf1ibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEHZFiQBYsy3Njq3zxPcuwy3zpUsthbm-xyBY7g9o7Ustig9xF9fxBy3zDq3NB9R-BrRzaP3o7P9-B9fg5rMOOQcVwHZUDUSgBrSo2Qfdi6i-fHi-Y?click_ad_type=2&product_id=36042107&r=https%3A%2F%2Fwww.tokopedia.com%2Fmeastore%2Fensiklopedia-rukun-islam&src=search&is_search=1&template_id_used=3&t=android&cpm_template_req=3%2C4%2C5&keyword_correction=buku+ensiklopedia+zakat+ori&keywords=buku+ensiklopedia+zakat+ori&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&uid=75093631"
+                      },
+                      "campaign": {
+                        "original_price": "",
+                        "discount_percentage": 0
+                      }
+                    }
+                  ],
+                  "image_shop": {
+                    "cover": "https://ecs7-p.tokopedia.net/img/cache/750/shops-1/2019/1/15/108747/108747_f9dc86e1-5e29-4231-8958-6a279ebcfa7e.jpg",
+                    "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2017/1/13/868781/868781_33c0bdc4-2250-43f9-8d8b-2af63ed93190.jpg",
+                    "xs_url": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2017/1/13/868781/868781_33c0bdc4-2250-43f9-8d8b-2af63ed93190.jpg",
+                    "cover_ecs": "https://ecs7-p.tokopedia.net/img/cache/750/shops-1/2019/1/15/108747/108747_f9dc86e1-5e29-4231-8958-6a279ebcfa7e.jpg",
+                    "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2017/1/13/868781/868781_33c0bdc4-2250-43f9-8d8b-2af63ed93190.jpg",
+                    "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2017/1/13/868781/868781_33c0bdc4-2250-43f9-8d8b-2af63ed93190.jpg"
+                  }
+                },
+                "badges": [
+                  {
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true,
+                    "title": "Power Merchant"
+                  }
+                ],
+                "button_text": "Cek Sekarang",
+                "promoted_text": "Dipromosikan oleh",
+                "description": "Belanja Rp 2.750.000 Free Ongkir ke seluruh Kota Indonesia",
+                "uri": "https://www.tokopedia.com/meastore"
+              },
+              "applinks": "tokopedia://shop/868781"
+            }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "global_search_navigation": {
+        "data": {
+            "source": "recharge",
+            "title": "",
+            "keyword": "buku ensiklopedia zakat ori",
+            "nav_template": "card",
+            "background": "https://ecs7.tokopedia.net/img/blue-container.png",
+            "see_all_applink": "",
+            "see_all_url": "",
+            "show_topads": false,
+            "list": []
+         }
+      }
+    }
+  },
+  {
+    "data": {
+      "searchInspirationCarouselV2": {
+        "data": []
+      }
+    }
+  },
+  {
+    "data": {
+      "searchInspirationWidget": {
+        "data": []
+      }
+    }
+  }
+]

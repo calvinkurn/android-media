@@ -2,9 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,83 +15,81 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
+            app:cardCornerRadius="@dimen/dp_4"
             app:cardPreventCornerOverlap="false"
-            app:cardUseCompatPadding="true"
             app:cardElevation="@dimen/dp_4"
-            app:cardCornerRadius="@dimen/dp_4">
-            
+            app:cardUseCompatPadding="true">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_8">
-                
+
                 <com.tokopedia.design.image.SquareImageView
                     android:id="@+id/product_image"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_96"
-                    tools:src="@drawable/ic_product_cart_counter_dark"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_product_cart_counter_dark" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/product_name"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:maxLines="2"
+                    android:layout_marginStart="@dimen/dp_8"
                     android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/product_image"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginStart="@dimen/dp_8"
-                    tools:text="Simple Minimalistic Ergonomic White Chair"
-                    app:fontSize="small"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"/>
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Simple Minimalistic Ergonomic White Chair" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/product_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/product_name"
-                    app:layout_constraintStart_toStartOf="@+id/product_name"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/orange_red"
                     android:layout_marginTop="@dimen/dp_2"
-                    tools:text="Rp100.000"
-                    app:fontSize="micro"
-                    app:weight="medium"/>
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_Y500"
+                    app:layout_constraintStart_toStartOf="@+id/product_name"
+                    app:layout_constraintTop_toBottomOf="@+id/product_name"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    tools:text="Rp100.000" />
 
                 <ImageView
                     android:id="@+id/ic_badge"
                     android:layout_width="@dimen/dp_14"
                     android:layout_height="@dimen/dp_14"
                     android:layout_alignParentBottom="true"
-                    tools:src="@drawable/ic_power_merchant"
                     android:layout_marginStart="@dimen/dp_8"
-                    tools:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/product_image"
                     app:layout_constraintStart_toEndOf="@+id/product_image"
-                    />
+                    tools:src="@drawable/ic_power_merchant"
+                    tools:visibility="visible" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/product_shop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@+id/ic_badge"
-                    app:layout_constraintBottom_toBottomOf="@+id/product_image"
                     android:layout_marginStart="@dimen/dp_4"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    app:layout_goneMarginStart="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_2"
-                    android:drawablePadding="@dimen/dp_4"
-                    tools:text="The Dept Store"
-                    app:fontSize="micro"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"/>
-                
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintBottom_toBottomOf="@+id/product_image"
+                    app:layout_constraintStart_toEndOf="@+id/ic_badge"
+                    app:layout_goneMarginStart="@dimen/dp_8"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    tools:text="The Dept Store" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
@@ -103,9 +101,9 @@
             android:layout_marginTop="@dimen/dp_16"
             android:transitionName="@string/transition_video_horizontal_scroll"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
-        <com.tokopedia.product.detail.view.widget.SelectionTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_product_descr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -113,11 +111,11 @@
             android:autoLink="all"
             android:lineSpacingExtra="@dimen/sp_6"
             android:longClickable="true"
+            android:textColor="@color/Unify_N700_96"
+            android:textColorLink="@color/Unify_G500"
             android:transitionName="@string/transition_description"
-            app:fontSize="small"
-            app:textViewTheme="lightPrimary"
+            app:typographyType="body_2"
             tools:text="Pilihan tepat untuk dekorasi rumah minimalis modern Anda, atau untuk mengimbangi interior unik pilihan Anda. Tersedia dalam 4 pilihan warna, hitam, putih, biru, dan jingga. .." />
-
     </LinearLayout>
 
 </ScrollView>

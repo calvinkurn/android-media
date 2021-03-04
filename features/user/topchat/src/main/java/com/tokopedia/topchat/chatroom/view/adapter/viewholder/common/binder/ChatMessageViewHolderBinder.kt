@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder
 
+import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
@@ -29,6 +31,14 @@ object ChatMessageViewHolderBinder {
         fxChat?.setHourTime(hourTime)
     }
 
+    fun bindHourTextView(
+            viewModel: MessageViewModel,
+            hour: TextView?
+    ) {
+        val hourTime = getHourTime(viewModel.replyTime)
+        hour?.text = hourTime
+    }
+
     private fun getHourTime(replyTime: String?): String {
         return try {
             replyTime?.let {
@@ -40,17 +50,23 @@ object ChatMessageViewHolderBinder {
     }
 
     fun bindChatReadStatus(element: MessageViewModel, messageView: FlexBoxChatLayout?) {
+        messageView?.checkMark?.let {
+            bindChatReadStatus(element, it)
+        }
+    }
+
+    fun bindChatReadStatus(element: MessageViewModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
-            messageView?.checkMark?.show()
+            checkMark.show()
             val imageResource = when {
                 element.isDummy -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_rounded_grey
                 !element.isRead -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_sent_rounded_grey
                 else -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_read_rounded_green
             }
-            val drawable = MethodChecker.getDrawable(messageView?.checkMark?.context, imageResource)
-            messageView?.checkMark?.setImageDrawable(drawable)
+            val drawable = MethodChecker.getDrawable(checkMark.context, imageResource)
+            checkMark.setImageDrawable(drawable)
         } else {
-            messageView?.checkMark?.gone()
+            checkMark.gone()
         }
     }
 

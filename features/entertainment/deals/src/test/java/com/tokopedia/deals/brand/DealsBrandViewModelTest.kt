@@ -86,4 +86,46 @@ class DealsBrandViewModelTest {
         assert(viewModel.dealsSearchResponse.value is Success)
         assertEquals((viewModel.dealsSearchResponse.value as Success).data, mockBrand)
     }
+
+    @Test
+    fun getBrandList_locationCoordinateNotNull_searchResponseShouldBeSuccess() {
+        val mockSearhData = Gson().fromJson(getJson("brandpage.json"), SearchData::class.java)
+        val mockBrand = DealsBrandMapper.mapBrandToBaseItemViewModel(mockSearhData.eventSearch.brands, 0)
+        // given
+        coEvery {
+            useCase.getDealsSearchResult(
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(SearchData) -> Unit>().invoke(mockSearhData)
+        }
+
+        // when
+        viewModel.getBrandList("", Location(coordinates = "0.0"), "1", 0)
+
+        // then
+        assert(viewModel.dealsSearchResponse.value is Success)
+        assertEquals((viewModel.dealsSearchResponse.value as Success).data, mockBrand)
+    }
+
+    @Test
+    fun getBrandList_locationNull_searchResponseShouldBeSuccess() {
+        val mockSearhData = Gson().fromJson(getJson("brandpage.json"), SearchData::class.java)
+        val mockBrand = DealsBrandMapper.mapBrandToBaseItemViewModel(mockSearhData.eventSearch.brands, 0)
+        // given
+        coEvery {
+            useCase.getDealsSearchResult(
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(SearchData) -> Unit>().invoke(mockSearhData)
+        }
+
+        // when
+        viewModel.getBrandList("", null, "1", 0)
+
+        // then
+        assert(viewModel.dealsSearchResponse.value is Success)
+        assertEquals((viewModel.dealsSearchResponse.value as Success).data, mockBrand)
+    }
 }

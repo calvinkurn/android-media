@@ -9,7 +9,7 @@
         android:id="@+id/suggestionTopShopTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         android:text="@string/suggestion_top_shop_title"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_16"

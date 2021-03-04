@@ -157,10 +157,10 @@ internal class ShopListFragment:
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         )
     }
 
@@ -598,6 +598,10 @@ internal class ShopListFragment:
 
     override fun onSelectedFilterRemoved(uniqueId: String?) {
         searchShopViewModel?.onViewRemoveSelectedFilterAfterEmptySearch(uniqueId)
+    }
+
+    override fun onEmptySearchToGlobalSearchClicked(applink: String?) {
+        // No implementation here
     }
 
     override fun getRegistrationId(): String {

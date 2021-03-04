@@ -7,17 +7,17 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/umrah_pdp_images_top"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="@dimen/dimen_dp_200"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_title"
-        android:layout_width="@dimen/dp_180"
+        android:layout_width="@dimen/dimen_dp_180"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:textColor="@color/Neutral_N700_96"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -27,26 +27,26 @@
         android:id="@+id/iw_umrah_pdp_travel_agent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_title"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_title" />
 
     <View
         android:id="@+id/v_umrah_pdp_separator"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:background="@color/Neutral_N75"
         app:layout_constraintLeft_toLeftOf="@+id/iw_umrah_pdp_travel_agent"
         app:layout_constraintTop_toBottomOf="@+id/iw_umrah_pdp_travel_agent" />
 
     <com.tokopedia.salam.umrah.pdp.presentation.widget.UmrahPdpGreenRectWidget
         android:id="@+id/grw_umrah_pdp_hotel_type"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="@+id/v_umrah_pdp_separator"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/v_umrah_pdp_separator" />
@@ -55,7 +55,7 @@
         android:id="@+id/iw_umrah_pdp_calendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="@+id/grw_umrah_pdp_hotel_type"
         app:layout_constraintTop_toBottomOf="@+id/grw_umrah_pdp_hotel_type" />
 
@@ -63,7 +63,7 @@
         android:id="@+id/iw_umrah_pdp_hotel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="@+id/iw_umrah_pdp_calendar"
         app:layout_constraintTop_toBottomOf="@+id/iw_umrah_pdp_calendar" />
 
@@ -71,15 +71,15 @@
         android:id="@+id/iw_umrah_pdp_plane"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="@+id/iw_umrah_pdp_hotel"
         app:layout_constraintTop_toBottomOf="@+id/iw_umrah_pdp_hotel" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_accommodation_title"
-        android:layout_width="@dimen/dp_60"
+        android:layout_width="@dimen/layout_lvl7"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:textColor="@color/Neutral_N700_96"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="@+id/iw_umrah_pdp_plane"
@@ -87,29 +87,29 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image1"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_100"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_width="@dimen/dimen_dp_200"
+        android:layout_height="@dimen/unify_space_96"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:corners="16"
         app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_accommodation_title"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_accommodation_title" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image2"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_100"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_width="@dimen/dimen_dp_200"
+        android:layout_height="@dimen/unify_space_96"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:corners="16"
         app:layout_constraintLeft_toRightOf="@+id/image1"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_accommodation_title" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_hotel_name_1"
-        android:layout_width="@dimen/dp_80"
+        android:layout_width="@dimen/dimen_dp_80"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:textColor="@color/Neutral_N700_96"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="@+id/image1"
@@ -117,9 +117,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_hotel_desc_1"
-        android:layout_width="@dimen/dp_60"
+        android:layout_width="@dimen/layout_lvl7"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_hotel_name_1"
@@ -127,9 +127,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_hotel_star_1"
-        android:layout_width="@dimen/dp_30"
+        android:layout_width="@dimen/spacing_lvl6"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_hotel_desc_1"
@@ -137,11 +137,11 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_hotel_distance_1"
-        android:layout_width="@dimen/dp_100"
+        android:layout_width="@dimen/unify_space_96"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/Neutral_N700_96"
         app:corners="4"
         app:layout_constraintRight_toRightOf="parent"

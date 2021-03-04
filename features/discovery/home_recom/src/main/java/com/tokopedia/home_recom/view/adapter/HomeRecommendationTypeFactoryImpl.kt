@@ -6,17 +6,20 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.home_recom.model.datamodel.*
-import com.tokopedia.home_recom.view.viewholder.ProductInfoViewHolder
-import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
-import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
-import com.tokopedia.home_recom.view.viewholder.TitleViewHolder
+import com.tokopedia.home_recom.view.viewholder.*
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 /**
  * A Class of Implementation Type Factory Pattern.
  *
  * This class extends from [BaseAdapterTypeFactory] and implement from [HomeRecommendationTypeFactory]
  */
-class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
+class HomeRecommendationTypeFactoryImpl(
+        private val recommendationListener: RecommendationListener,
+        private val titleListener: TitleListener,
+        private val recommendationErrorListener: RecommendationErrorListener,
+        private val productInfoListener: ProductInfoViewHolder.ProductInfoListener
+) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
     /**
      * This override function from [HomeRecommendationTypeFactory]
      * It return viewType for [ProductInfoDataModel]
@@ -53,6 +56,10 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
         return TitleDataModel.LAYOUT
     }
 
+    override fun type(dataModel: RecommendationErrorDataModel): Int {
+        return RecommendationErrorDataModel.LAYOUT
+    }
+
     /**
      * This override function from [HomeRecommendationTypeFactory]
      * It return viewType for [RecommendationCarouselItemDataModel]
@@ -65,11 +72,13 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
     /**
      * This override function from [HomeRecommendationTypeFactory]
      * It return viewType for [LoadingModel]
-     * @param viewModel dataModel for [LoadingShimmeringGridViewHolder]
+     * @param viewModel dataModel for [RecommendationShimmeringViewHolder]
      */
     override fun type(viewModel: LoadingModel?): Int {
-        return LoadingShimmeringGridViewHolder.LAYOUT
+        return RecommendationShimmeringViewHolder.LAYOUT
     }
+
+    override fun type(dataModel: RecommendationEmptyDataModel): Int = -1
 
     /**
      * This override function from [BaseAdapterTypeFactory]
@@ -79,11 +88,12 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
      */
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when(type){
-            RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view)
-            ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view)
-            RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view)
-            TitleDataModel.LAYOUT -> TitleViewHolder(view)
-            LoadingShimmeringGridViewHolder.LAYOUT -> LoadingShimmeringGridViewHolder(view)
+            RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener)
+            ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view, productInfoListener)
+            RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view, recommendationListener)
+            TitleDataModel.LAYOUT -> TitleViewHolder(view, titleListener)
+            RecommendationErrorDataModel.LAYOUT -> RecommendationErrorViewHolder(view, recommendationErrorListener)
+            RecommendationShimmeringViewHolder.LAYOUT -> RecommendationShimmeringViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -8,7 +8,6 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.Gravity
 import android.view.View
-import android.view.View.LAYER_TYPE_SOFTWARE
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
@@ -85,7 +84,6 @@ object ViewUtil {
             paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
             shape = RoundRectShape(outerRadius, null, null)
         }
-        view.setLayerType(LAYER_TYPE_SOFTWARE, shapeDrawable.paint)
         val drawableLayer = arrayListOf<Drawable>(shapeDrawable)
         if (strokeColorValue != null && strokeWidthValue != null) {
             val strokeDrawable = ShapeDrawable().apply {

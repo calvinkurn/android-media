@@ -10,11 +10,13 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.domain.FlightCancellationAttachmentUploadUseCase
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellationV2.presentation.model.*
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
 import javax.inject.Inject
 
@@ -23,6 +25,8 @@ import javax.inject.Inject
  */
 class FlightCancellationReasonViewModel @Inject constructor(
         private val attachmentUploadUseCase: FlightCancellationAttachmentUploadUseCase,
+        private val userSession: UserSessionInterface,
+        private val flightAnalytics: FlightAnalytics,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -57,6 +61,13 @@ class FlightCancellationReasonViewModel @Inject constructor(
     init {
         mutableCanNavigateToNextStep.value = false
         mutableAttachmentErrorStringRes.value = DEFAULT_STRING_RES_ERROR
+    }
+
+    fun trackOnNext() {
+        flightAnalytics.eventClickNextOnCancellationReason(
+                "${selectedReason?.title ?: ""} - ${cancellationWrapperModel.invoiceId}",
+                userSession.userId
+        )
     }
 
     fun buildAttachmentList() {

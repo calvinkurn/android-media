@@ -34,13 +34,4 @@ object TestHelper {
         val error = mapOf<Type, List<GraphqlError>>(T::class.java to emptyList())
         return GraphqlResponse(result, error, false).getData(T::class.java)
     }
-
-    inline fun<reified T: Any> createErrorResponse(): GraphqlResponse {
-        val errorResponse = GraphqlError().apply {
-            message = "error message"
-        }
-        val result = mapOf<Type, Any?>(T::class.java to null)
-        val error = mapOf<Type, List<GraphqlError>>(T::class.java to listOf(errorResponse))
-        return GraphqlResponse(result, error, false)
-    }
 }

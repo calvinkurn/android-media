@@ -117,7 +117,12 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         }
 
         if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getLong(key);
+            long value = firebaseRemoteConfig.getLong(key);
+            if (value == 0L) {
+                return defaultValue;
+            } else {
+                return value;
+            }
         }
 
         return defaultValue;
@@ -139,7 +144,12 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         }
 
         if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getString(key);
+            String value = firebaseRemoteConfig.getString(key);
+            if (TextUtils.isEmpty(value)) {
+                return defaultValue;
+            } else {
+                return value;
+            }
         }
 
         return defaultValue;

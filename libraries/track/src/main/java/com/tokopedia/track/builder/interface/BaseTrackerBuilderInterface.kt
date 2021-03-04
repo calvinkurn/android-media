@@ -36,6 +36,11 @@ interface BaseTrackerBuilderInterface {
                                    products: List<BaseTrackerConst.Product>
     ): BaseTrackerBuilderInterface
 
+    fun constructBasicGeneralClick(event: String,
+                                   eventCategory: String,
+                                   eventAction: String,
+                                   eventLabel: String
+    ): BaseTrackerBuilderInterface
 
     fun appendEvent(value: String): BaseTrackerBuilderInterface
     fun appendEventCategory(value: String): BaseTrackerBuilderInterface

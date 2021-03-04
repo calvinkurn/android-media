@@ -7,5 +7,11 @@ package com.tokopedia.sellerhomecommon.presentation.model
 data class PostListDataUiModel(
         override val dataKey: String = "",
         val items: List<PostUiModel> = emptyList(),
-        override var error: String = ""
-): BaseDataUiModel
+        val cta: PostCtaDataUiModel = PostCtaDataUiModel(),
+        override var error: String = "",
+        override var isFromCache: Boolean = false
+): BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && items.isEmpty()
+    }
+}

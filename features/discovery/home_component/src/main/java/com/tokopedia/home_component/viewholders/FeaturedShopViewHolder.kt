@@ -77,7 +77,7 @@ class FeaturedShopViewHolder(
     }
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
-        var textColor = ContextCompat.getColor(itemView.context, R.color.Neutral_N50)
+        var textColor = ContextCompat.getColor(itemView.context, R.color.Unify_N50)
         if(element.channelModel.channelBanner.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(element.channelModel.channelBanner.textColor)

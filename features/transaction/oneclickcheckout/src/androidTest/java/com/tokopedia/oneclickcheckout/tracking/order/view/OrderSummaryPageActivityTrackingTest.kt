@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -80,13 +81,17 @@ class OrderSummaryPageActivityTrackingTest {
             clickOnboardingInfo()
             closeBottomSheet()
 
-            cartInterceptor.customGetOccCartResponsePath = null
-            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_DEFAULT_RESPONSE_PATH
             clickAddPreferenceForNewBuyer()
+
+            clickButtonPromo()
 
             clickChangePreference {
                 clickAddPreference()
             }
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_RESPONSE_PATH
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
 
             clickChangePreference {
                 clickEditPreference(1)
@@ -101,6 +106,8 @@ class OrderSummaryPageActivityTrackingTest {
                 chooseCourierWithText("AnterAja")
             }
 
+            clickButtonPromo()
+
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickBboTicker()
 
@@ -112,6 +119,30 @@ class OrderSummaryPageActivityTrackingTest {
 
             checkoutInterceptor.customCheckoutResponsePath = null
             pay()
+        }
+
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_WITH_LOW_MAXIMUM_PAYMENT_RESPONSE_PATH
+        promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
+        Intents.release()
+        activityRule.launchActivity(null)
+
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_RED_STATE_RESPONSE
+            clickAddProductQuantity()
+
+            clickButtonPromo()
+
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            pay()
+            clickButtonContinueWithRedPromo()
+            closeBottomSheet()
+            closePromoNotEligibleBottomSheet()
+
+            checkoutInterceptor.customCheckoutResponsePath = null
+            pay()
+            clickButtonContinueWithRedPromo()
         }
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())

@@ -2,7 +2,7 @@ package com.tokopedia.autocomplete.suggestion.doubleline
 
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
 
-fun SuggestionItem.convertSuggestionItemToDoubleLineVisitableList(searchTerm: String, position: Int): SuggestionDoubleLineViewModel {
+fun SuggestionItem.convertToDoubleLineVisitableList(searchTerm: String, position: Int): SuggestionDoubleLineViewModel {
     val item = SuggestionDoubleLineViewModel()
     item.template = this.template
     item.type = this.type

@@ -8,12 +8,11 @@ class SellerHomeRemoteConfig @Inject constructor(
     private val remoteConfig: FirebaseRemoteConfigImpl
 ) {
 
-    fun isGlobalSearchEnabled(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_SEARCH_SELLER, false)
-    }
-
     fun isNotificationTrayClear(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR, false)
     }
 
+    fun isSellerHomeDashboardCachingEnabled(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.SELLER_HOME_DASHBOARD_ENABLE_CACHE, false)
+    }
 }

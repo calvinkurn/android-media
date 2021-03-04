@@ -11,4 +11,5 @@
     <string name="remote_config_type_label">TYPE</string>
     <string name="remote_config_edit_placeholder">Input new value here</string>
     <string name="remote_config_edit_btn_save">Save</string>
+
 </resources>

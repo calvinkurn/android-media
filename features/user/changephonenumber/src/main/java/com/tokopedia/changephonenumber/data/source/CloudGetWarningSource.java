@@ -2,7 +2,7 @@ package com.tokopedia.changephonenumber.data.source;
 
 import com.tokopedia.changephonenumber.data.api.ChangePhoneNumberApi;
 import com.tokopedia.changephonenumber.data.mapper.GetWarningMapper;
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel;
 
 import java.util.HashMap;
 
@@ -26,7 +26,7 @@ public class CloudGetWarningSource {
         this.getWarningMapper = getWarningMapper;
     }
 
-    public Observable<WarningViewModel> getWarning(HashMap<String, Object> params) {
+    public Observable<WarningUIModel> getWarning(HashMap<String, Object> params) {
         return changePhoneNumberApi.getWarning(params)
                 .map(getWarningMapper);
     }

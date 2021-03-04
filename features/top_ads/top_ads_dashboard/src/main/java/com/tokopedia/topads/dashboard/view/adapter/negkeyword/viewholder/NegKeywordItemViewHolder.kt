@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.*
 
@@ -14,14 +14,14 @@ import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.*
  */
 
 class NegKeywordItemViewHolder(val view: View,
-                               var onSelectMode: ((select: Boolean) -> Unit)) : NegKeywordViewHolder<NegKeywordItemViewModel>(view) {
+                               var onSelectMode: ((select: Boolean) -> Unit)) : NegKeywordViewHolder<NegKeywordItemModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_neg_keyword_card
     }
 
-    override fun bind(item: NegKeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: NegKeywordItemModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {
         item.let {
             if (selectMode) {
                 view.check_box.visibility = View.VISIBLE

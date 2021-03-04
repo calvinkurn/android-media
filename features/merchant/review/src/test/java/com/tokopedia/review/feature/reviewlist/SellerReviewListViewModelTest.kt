@@ -1,10 +1,14 @@
 package com.tokopedia.review.feature.reviewlist
 
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewlist.data.ProductRatingOverallResponse
 import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
+import com.tokopedia.review.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.review.feature.reviewlist.view.model.ProductRatingOverallUiModel
+import com.tokopedia.review.feature.reviewlist.view.model.ProductRatingWrapperUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -20,17 +24,20 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
     @Test
     fun `when get overall product rating by sort only should return success`() {
         runBlocking {
+            val sortBy = "time=7d"
+            val filterBy = "review_count desc"
             val productRatingOverallData = ProductRatingOverallResponse.ProductGetProductRatingOverallByShop(
                     rating = 5.0F,
                     reviewCount = 50,
                     productCount = 60,
-                    filterBy = "time=7d"
+                    filterBy = sortBy
             )
 
-            onOverallProductRating_thenReturn(productRatingOverallData)
-            onReviewProductList_thenReturn()
+            getProductRatingOverallUse.requestParams = GetProductRatingOverallUseCase.createParams(sortBy, filterBy, 15, 1)
 
-            viewModel.getProductRatingData("time=7d", anyString())
+            onOverallProductRating_thenReturn(productRatingOverallData)
+
+            viewModel.getProductRatingData(sortBy, anyString())
 
             val expectedResult = Success(ProductRatingOverallUiModel(
                     rating = 5.0F,
@@ -38,7 +45,7 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
                     period = SellerReviewProductListMapper.getPastDateCalculate(ReviewConstants.LAST_WEEK_KEY)))
 
             verifySuccessProductRatingOverallUseCaseCalled()
-            verifySuccessReviewProductListUseCaseCalled()
+
             viewModel.productRatingOverall.verifySuccessEquals(expectedResult)
             assertTrue(viewModel.reviewProductList.value is Success)
             assertNotNull(viewModel.reviewProductList.value)
@@ -48,15 +55,19 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
     @Test
     fun `when get overall product rating by sort and filter should return success`() {
         runBlocking {
+            val sortBy = "time=7d"
+            val filterBy = "review_count desc"
+
             val productRatingOverallData = ProductRatingOverallResponse.ProductGetProductRatingOverallByShop(
                     rating = 5.0F,
                     reviewCount = 50,
                     productCount = 60)
 
-            onOverallProductRating_thenReturn(productRatingOverallData)
-            onReviewProductList_thenReturn()
+            getProductRatingOverallUse.requestParams = GetProductRatingOverallUseCase.createParams(sortBy, filterBy, 15, 1)
 
-            viewModel.getProductRatingData("time=7d", "review_count desc")
+            onOverallProductRating_thenReturn(productRatingOverallData)
+
+            viewModel.getProductRatingData(sortBy, filterBy)
 
             val expectedResult = Success(ProductRatingOverallUiModel(
                     rating = 5.0F,
@@ -64,7 +75,6 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
                     period = SellerReviewProductListMapper.getPastDateCalculate(ReviewConstants.LAST_WEEK_KEY)))
 
             verifySuccessProductRatingOverallUseCaseCalled()
-            verifySuccessReviewProductListUseCaseCalled()
             viewModel.productRatingOverall.verifySuccessEquals(expectedResult)
             assertTrue(viewModel.reviewProductList.value is Success)
             assertNotNull(viewModel.reviewProductList.value)
@@ -74,14 +84,17 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
     @Test
     fun `when get overall product rating by filter only should return success`() {
         runBlocking {
+            val sortBy = "time=7d"
+            val filterBy = "review_count desc"
             val productRatingOverallData = ProductRatingOverallResponse.ProductGetProductRatingOverallByShop(
                     rating = 5.0F,
                     reviewCount = 50,
                     productCount = 60)
 
+            getProductRatingOverallUse.requestParams = GetProductRatingOverallUseCase.createParams(sortBy, filterBy, 15, 1)
+
             onOverallProductRating_thenReturn(productRatingOverallData)
-            onReviewProductList_thenReturn()
-            viewModel.getProductRatingData(anyString(), "review_count desc")
+            viewModel.getProductRatingData(anyString(), filterBy)
 
             val expectedResult = Success(ProductRatingOverallUiModel(
                     rating = 5.0F,
@@ -89,7 +102,6 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
                     period = SellerReviewProductListMapper.getPastDateCalculate(ReviewConstants.LAST_WEEK_KEY)))
 
             verifySuccessProductRatingOverallUseCaseCalled()
-            verifySuccessReviewProductListUseCaseCalled()
             viewModel.productRatingOverall.verifySuccessEquals(expectedResult)
         }
     }
@@ -167,7 +179,8 @@ class SellerReviewListViewModelTest: SellerReviewListViewModelTextFixture() {
     }
 
     private fun onOverallProductRating_thenReturn(response: ProductRatingOverallResponse.ProductGetProductRatingOverallByShop) {
-        coEvery { getProductRatingOverallUse.executeOnBackground() } returns response
+        coEvery { getProductRatingOverallUse.executeOnBackground() } returns ProductRatingWrapperUiModel(productRatingOverall = Success(response),
+                reviewProductList = Success(ProductReviewListResponse.ProductShopRatingAggregate()))
     }
 
     private fun onReviewProductList_thenReturn() {

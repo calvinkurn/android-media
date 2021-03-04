@@ -275,7 +275,7 @@ class FlightSearchReturnViewModelTest {
     fun onFlightSelectFromDetail_nullRoutes_notValidReturnJourney() {
         // given
         coEvery { flightSearchJourneyByIdUseCase.execute(any()) } returnsMany listOf(DEPARTURE_JOURNEY, FlightJourneyModel(
-                "", "DummyId", "BTJ",
+                "", "DummyId", true, false, "BTJ",
                 "Bandara International Sultan Iskandar Muda", "",
                 "10.00", 111111, "CGK", "12.40",
                 "Bandara International Soekarno Hatta", "",
@@ -323,7 +323,7 @@ class FlightSearchReturnViewModelTest {
     fun onFlightSelectFromDetail_emptyRoutes_notValidReturnJourney() {
         // given
         coEvery { flightSearchJourneyByIdUseCase.execute(any()) } returnsMany listOf(DEPARTURE_JOURNEY, FlightJourneyModel(
-                "", "DummyId", "BTJ",
+                "", "DummyId", true, true, "BTJ",
                 "Bandara International Sultan Iskandar Muda", "",
                 "10.00", 111111, "CGK", "12.40",
                 "Bandara International Soekarno Hatta", "",
@@ -411,7 +411,7 @@ class FlightSearchReturnViewModelTest {
         flightSearchReturnViewModel.onFlightSearchSelected(defaultSearchPassData)
 
         // then
-        every { flightAnalytics.eventSearchProductClickFromList(defaultSearchPassData, any<FlightJourneyModel>(),
+        every { flightAnalytics.eventSearchProductClickV2FromList(defaultSearchPassData, any<FlightJourneyModel>(),
                 FlightAnalytics.Screen.SEARCH, any()) }
     }
 
@@ -424,7 +424,7 @@ class FlightSearchReturnViewModelTest {
         flightSearchReturnViewModel.onFlightSearchSelected(defaultSearchPassData)
 
         // then
-        every { flightAnalytics.eventSearchProductClickFromList(defaultSearchPassData, any<FlightJourneyModel>(),
+        every { flightAnalytics.eventSearchProductClickV2FromList(defaultSearchPassData, any<FlightJourneyModel>(),
                 FlightAnalytics.Screen.SEARCH, any()) }
     }
 
@@ -444,7 +444,7 @@ class FlightSearchReturnViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchPassDataModel, VALID_RETURN_JOURNEY,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassDataModel, VALID_RETURN_JOURNEY,
                     adapterPosition, FlightAnalytics.Screen.SEARCH, any())
         }
         val returnJourney = flightSearchReturnViewModel.selectedReturnJourney!!
@@ -503,7 +503,7 @@ class FlightSearchReturnViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchPassDataModel, VALID_RETURN_JOURNEY,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassDataModel, VALID_RETURN_JOURNEY,
                     adapterPosition, FlightAnalytics.Screen.SEARCH, any())
         }
         val returnJourney = flightSearchReturnViewModel.selectedReturnJourney!!

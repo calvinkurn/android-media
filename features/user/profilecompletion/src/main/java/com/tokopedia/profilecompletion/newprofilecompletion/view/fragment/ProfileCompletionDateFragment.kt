@@ -82,7 +82,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
         profileCompletionFragment?.canProceed(false)
 
         val drawable = MethodChecker.getDrawable(activity, R.drawable.ic_down_date)
-        drawable.setColorFilter(MethodChecker.getColor(activity, R.color.warm_grey), PorterDuff.Mode.SRC_IN)
+        drawable.setColorFilter(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N200), PorterDuff.Mode.SRC_IN)
         drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicWidth)
         actxtMonth?.setCompoundDrawables(null, null, drawable, null)
     }

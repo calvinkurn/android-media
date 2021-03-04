@@ -5,6 +5,7 @@ import android.text.InputType
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -26,7 +27,11 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
     private var maxAlertErrorMessage: String = ""
 
     override fun bind(element: VoucherTextFieldUiModel) {
-        itemView.textField?.run {
+        itemView.mvcInputTextField?.run {
+            // Fix blank color when dark mode activated.
+            textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            textFieldInput.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+
             setLabelStatic(true)
             setInputType(InputType.TYPE_CLASS_NUMBER)
 

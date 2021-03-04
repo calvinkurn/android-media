@@ -3,7 +3,6 @@ package com.tokopedia.productcard.options.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.productcard.options.ProductCardOptionsScope
 import com.tokopedia.productcard.options.topadswishlist.TopAdsWishlistUseCase
 import com.tokopedia.topads.sdk.base.AuthInterceptor
 import com.tokopedia.topads.sdk.base.Config
@@ -17,7 +16,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 @Module
-@ProductCardOptionsScope
 internal class TopAdsWishlistUseCaseModule {
 
     @Provides

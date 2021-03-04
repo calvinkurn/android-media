@@ -2,11 +2,11 @@ package com.tokopedia.sellerhome.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcherImpl
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
@@ -33,7 +33,7 @@ class SellerHomeModule {
 
     @SellerHomeScope
     @Provides
-    fun provideCoroutineDispatcher(): SellerHomeCoroutineDispatcher = SellerHomeCoroutineDispatcherImpl
+    fun provideCoroutineDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @SellerHomeScope
     @Provides

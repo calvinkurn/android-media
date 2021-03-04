@@ -6,8 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_REDEEM_COUPON
-import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_VALIDATE_REDEEM
+import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.Companion.TP_GQL_TOKOPOINT_REDEEM_COUPON
+import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.Companion.TP_GQL_TOKOPOINT_VALIDATE_REDEEM
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*

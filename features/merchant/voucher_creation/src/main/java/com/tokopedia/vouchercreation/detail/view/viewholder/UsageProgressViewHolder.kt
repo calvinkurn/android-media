@@ -25,11 +25,11 @@ class UsageProgressViewHolder(
 
     override fun bind(element: UsageProgressUiModel) {
         with(itemView) {
-            val progressBarValue = (element.bookedQuota / element.quota) * 100
+            val progressBarValue = (element.confirmedQuota / element.quota) * 100
             progressMvcUsage?.setValue(progressBarValue, true)
             progressMvcUsage?.progressBarHeight = context.pxToDp(6).toInt()
 
-            tvMvcUsedQuota?.text = element.bookedQuota.toString()
+            tvMvcUsedQuota?.text = element.confirmedQuota.toString()
             tvMvcTotalQuota?.text = String.format(context?.getString(R.string.mvc_detail_total_quota).toBlankOrString(), element.quota.toString())
 
             mvcImgInfo.setOnClickListener {

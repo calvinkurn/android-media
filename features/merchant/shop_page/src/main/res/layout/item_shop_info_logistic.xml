@@ -5,6 +5,8 @@
     android:id="@+id/logisticLabelView"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_64"
+    app:lv_title_color="@color/Unify_N600_96"
+    app:lv_sub_title_color="@color/Unify_N700_68"
     app:lv_image="@drawable/ic_smiley_good"
     app:lv_image_width="@dimen/dp_64"
     app:lv_image_height="@dimen/dp_32"

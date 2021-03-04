@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.otp.verification.DispatcherProviderTest
-import com.tokopedia.otp.verification.domain.data.OtpModeListPojo
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK

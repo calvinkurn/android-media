@@ -1,12 +1,14 @@
 package com.tokopedia.promocheckout.detail.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
@@ -58,14 +60,14 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideFlightCheckVoucherUseCase(@ApplicationContext context: Context): FlightCheckVoucherUseCase {
-        return FlightCheckVoucherUseCase(context, GraphqlUseCase())
+    fun provideFlightCheckVoucherUseCase(): FlightCheckVoucherUseCase {
+        return FlightCheckVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideFlightCancelVoucherUseCase(@ApplicationContext context: Context): FlightCancelVoucherUseCase {
-        return FlightCancelVoucherUseCase(context, GraphqlUseCase())
+    fun provideFlightCancelVoucherUseCase(): FlightCancelVoucherUseCase {
+        return FlightCancelVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutDetailScope
@@ -77,8 +79,8 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     @Provides
     fun provideMarketplacePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                         checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                         clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailPresenter {
+                                    checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
+                                    clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailPresenter {
         return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, clearCacheAutoApplyStackUseCase)
     }
 
@@ -103,7 +105,7 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     @Provides
     fun provideHotelPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                               hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
+                              hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
                               hotelCheckVoucherMapper: HotelCheckVoucherMapper,
                               flightCancelVoucherUseCase: FlightCancelVoucherUseCase): PromoCheckoutDetailHotelPresenter {
         return PromoCheckoutDetailHotelPresenter(getDetailCouponMarketplaceUseCase, hotelCheckVoucherUseCase, hotelCheckVoucherMapper, flightCancelVoucherUseCase)
@@ -115,16 +117,16 @@ class PromoCheckoutDetailModule {
                               clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                               eventCheckRepository: EventCheckRepository,
                               compositeSubscription: CompositeSubscription): PromoCheckoutDetailEventPresenter {
-        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase,clearCacheAutoApplyStackUseCase,eventCheckRepository, compositeSubscription)
+        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase, clearCacheAutoApplyStackUseCase, eventCheckRepository, compositeSubscription)
     }
 
     @PromoCheckoutDetailScope
     @Provides
     fun provideDetailDealsPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                              clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                              dealsCheckRepository: PromoCheckoutDealsRepository,
-                              compositeSubscription: CompositeSubscription): PromoCheckoutDetailDealsPresenter {
-        return PromoCheckoutDetailDealsPresenter(getDetailCouponMarketplaceUseCase,clearCacheAutoApplyStackUseCase, dealsCheckRepository, compositeSubscription)
+                                    clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                    dealsCheckRepository: PromoCheckoutDealsRepository,
+                                    compositeSubscription: CompositeSubscription): PromoCheckoutDetailDealsPresenter {
+        return PromoCheckoutDetailDealsPresenter(getDetailCouponMarketplaceUseCase, clearCacheAutoApplyStackUseCase, dealsCheckRepository, compositeSubscription)
     }
 
     @PromoCheckoutDetailScope
@@ -141,13 +143,19 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context) : NetworkRouter {
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return (context as NetworkRouter)
+    }
+
+    @Provides
+    @PromoCheckoutDetailScope
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context) : UserSessionInterface {
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         val userSession = UserSession(context)
         return userSession
     }
@@ -166,13 +174,24 @@ class PromoCheckoutDetailModule {
 
     @Provides
     @PromoCheckoutDetailScope
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+                                   userSession: UserSessionInterface): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, context.applicationContext as NetworkRouter, userSession)
+    }
+
+    @Provides
+    @PromoCheckoutDetailScope
     internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
-                                     okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
+                                     chuckerInterceptor: ChuckerInterceptor,
+                                     okHttpRetryPolicy: OkHttpRetryPolicy,
+                                     tkpdAuthInterceptor: TkpdAuthInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
         return builder
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(chuckerInterceptor)
+                .addInterceptor(tkpdAuthInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)

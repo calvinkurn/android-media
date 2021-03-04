@@ -30,7 +30,7 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment impleme
     private TextView tvLabelCustom;
     private TextView btnSend;
     private EditText editText;
-    private InboxDetailContract.InboxDetailPresenter mPresenter;
+    private InboxDetailContract.Presenter mPresenter;
     private View selectedButton;
     private int ratingId;
 
@@ -171,7 +171,7 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment impleme
     @Override
     public void setPresenter(InboxBaseContract.InboxBasePresenter presenter) {
         if (presenter != null) {
-            mPresenter = (InboxDetailContract.InboxDetailPresenter) presenter;
+            mPresenter = (InboxDetailContract.Presenter) presenter;
         }
     }
 

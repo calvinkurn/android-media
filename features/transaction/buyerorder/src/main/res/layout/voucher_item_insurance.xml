@@ -41,7 +41,7 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:ellipsize="end"
                 android:maxLines="@integer/int_3"
-                android:textColor="@color/black_70_new"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@id/img_product"
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/font_black_secondary_54"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/sp_11"
                 app:layout_constraintLeft_toLeftOf="@id/txt_product_name"
                 app:layout_constraintTop_toBottomOf="@id/txt_product_name"
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/orange_red"
+                android:textColor="@color/Unify_Y500"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="@id/txt_quantity"
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_10">
 
@@ -98,7 +98,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/protection_details"
-                android:textColor="@color/black_70"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />
 

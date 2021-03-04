@@ -9,7 +9,7 @@
     </item>
     <item android:top="@dimen/play_product_action_container_shadow_height">
         <shape>
-            <solid android:color="@color/Neutral_N0"/>
+            <solid android:color="@color/Unify_N0"/>
         </shape>
     </item>
 

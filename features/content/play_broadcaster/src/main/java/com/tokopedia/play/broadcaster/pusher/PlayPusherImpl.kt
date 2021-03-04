@@ -69,7 +69,6 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
 
     override fun stopPush() {
         mApsaraLivePusher.stopPush()
-        mTimerDuration?.stop()
     }
 
     override fun switchCamera() {
@@ -95,14 +94,14 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
         mTimerDuration?.destroy()
     }
 
-    override fun addStreamDuration(durationInMillis: Long) {
+    override fun setStreamDuration(durationInMillis: Long) {
         if (this.mTimerDuration == null) {
             this.mTimerDuration = PlayPusherTimer(mContext, durationInMillis)
         }
         this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
-    override fun addMaxStreamDuration(durationInMillis: Long) {
+    override fun setMaxStreamDuration(durationInMillis: Long) {
         this.mTimerDuration?.mMaxDuration = durationInMillis
     }
 
@@ -119,24 +118,28 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
     }
 
     override fun stopTimer() {
-        this.mTimerDuration?.stop()
+        try {
+            this.mTimerDuration?.stop()
+        } catch (throwable: Throwable){
+        }
     }
 
     override fun restartStreamDuration(durationInMillis: Long) {
         this.mTimerDuration?.restart(durationInMillis)
     }
 
-    override fun addMaxPauseDuration(durationInMillis: Long) {
+    override fun setMaxPauseDuration(durationInMillis: Long) {
         this.mTimerDuration?.pauseDuration = durationInMillis
     }
 
     override fun getTimeElapsed(): String = this.mTimerDuration?.getTimeElapsed().orEmpty()
 
-    override fun addPlayPusherTimerListener(listener: PlayPusherTimerListener) {
+    override fun setPlayPusherTimerListener(listener: PlayPusherTimerListener) {
         this.mPlayPusherTimerListener = listener
+        this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
-    override fun addPlayPusherInfoListener(listener: PlayPusherInfoListener) {
+    override fun setPlayPusherInfoListener(listener: PlayPusherInfoListener) {
         this.mPlayPusherInfoListener = listener
     }
 

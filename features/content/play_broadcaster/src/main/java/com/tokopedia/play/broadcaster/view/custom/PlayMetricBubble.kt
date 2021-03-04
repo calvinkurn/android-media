@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
+import com.tokopedia.play_common.view.loadImage
 
 /**
  * Created by jegul on 21/09/20

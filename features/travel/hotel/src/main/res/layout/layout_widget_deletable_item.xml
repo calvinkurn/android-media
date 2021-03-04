@@ -19,7 +19,7 @@
         android:layout_marginRight="@dimen/hotel_10dp"
         tools:text="Jalan Sudirman"
         app:typographyType="body_2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:maxEms="5"
         android:singleLine="true"
         android:ellipsize="end"

@@ -10,6 +10,8 @@ object FlightSearchGQLQuery {
             data {
               id
               term
+              hasFreeRapidTest
+              isSeatDistancing
               departureAirportID
               departureTime
               departureTimeInt

@@ -49,8 +49,6 @@ class EventDetailViewModelTest {
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
 
-    @MockK
-    lateinit var resources: Resources
 
     val context = mockk<Context>(relaxed = true)
     private val hashSet = HashSet<String>()
@@ -59,8 +57,6 @@ class EventDetailViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         eventDetailViewModel = EventDetailViewModel(Dispatchers.Unconfined, graphqlRepository)
-        eventDetailViewModel.resources = context.resources
-
     }
 
     @Test
@@ -68,6 +64,27 @@ class EventDetailViewModelTest {
         val cityID = "5"
         eventDetailViewModel.setData(cityID)
         assertEquals(cityID, eventDetailViewModel.cityID)
+    }
+
+    @Test
+    fun setCityID_successSetCityIDDirect_success(){
+        val cityID = "5"
+        eventDetailViewModel.cityID = cityID
+        assertEquals(cityID, eventDetailViewModel.cityID)
+    }
+
+    @Test
+    fun setCategory_successSetCategoryDirect_success(){
+        val category = "Event"
+        eventDetailViewModel.category = category
+        assertEquals(category, eventDetailViewModel.category)
+    }
+
+    @Test
+    fun setCategoryModel_successSetCategoryModelDirect_success(){
+        val categoryModel = CategoryModel()
+        eventDetailViewModel.categoryModel = categoryModel
+        assertEquals(categoryModel, eventDetailViewModel.categoryModel)
     }
 
     @Test
@@ -207,5 +224,30 @@ class EventDetailViewModelTest {
         val uri = this.javaClass.classLoader?.getResource(path)
         val file = File(uri?.path)
         return String(file.readBytes())
+    }
+
+    @Test
+    fun checkHashPutCategory_HashRemovedId(){
+        //given
+        hashSet.clear()
+        eventDetailViewModel.hashSet.add("12")
+
+        //when
+        eventDetailViewModel.putCategoryToQuery("12", "")
+
+        //then
+        assertEquals(eventDetailViewModel.hashSet, hashSet)
+    }
+
+    @Test
+    fun checkHashPutCategory_CategoryNotOnlyOne(){
+        //given
+        eventDetailViewModel.hashSet.add("12")
+
+        //when
+        eventDetailViewModel.putCategoryToQuery("13", "")
+
+        //then
+        assertEquals(eventDetailViewModel.category, "12,13")
     }
 }

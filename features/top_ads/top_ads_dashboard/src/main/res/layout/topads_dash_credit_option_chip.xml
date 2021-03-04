@@ -1,0 +1,9 @@
+<com.tokopedia.unifycomponents.ChipsUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/creditOptionChipItem"
+    android:layout_width="@dimen/dp_150"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8"
+    app:centerText="true"
+    app:chipSize="medium"
+    app:chipType="normal" />

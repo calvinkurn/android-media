@@ -1,17 +1,17 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel
 
-import android.widget.ImageView
-import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
-import com.tokopedia.unifyprinciples.Typography
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.utils.StripedUnderlineUtil
+import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.stickylogin.common.utils.StripedUnderlineUtil
+import com.tokopedia.unifyprinciples.Typography
 
 class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: HomeCategoryListener?) :
         AbstractViewHolder<GeoLocationPromptDataModel>(itemView) {
@@ -51,12 +51,12 @@ class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: Home
         StripedUnderlineUtil.stripUnderlines(tvDesc)
 
         tvDesc.setOnClickListener {
-            HomePageTracking.eventClickGeolocationComponent(itemView.context)
+            HomePageTracking.eventClickGeolocationComponent()
             homeCategoryListener?.launchPermissionChecker()
         }
 
         btnClose.setOnClickListener {
-            HomePageTracking.eventClickCloseGeolocationComponent(itemView.context)
+            HomePageTracking.eventClickCloseGeolocationComponent()
             homeCategoryListener?.onCloseGeolocationView()
         }
     }

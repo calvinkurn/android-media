@@ -26,6 +26,7 @@
     <string name="notif_ticker_title">Terima info yang lebih lengkap</string>
 
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
+    <string name="notif_error_update_token">Gagal perbaharui token</string>
     <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>
 
     <string name="notif_ringtone_success">Ringtone berjalan dengan baik</string>
@@ -76,5 +77,8 @@
     <string name="notif_label_clear_cache_cancel">Batal</string>
 
     <string name="notif_network_issue">Ada gangguan dalam proses pemeriksaan, coba restart aplikasimu dan lakukan pemeriksaan ulang.</string>
+
+    <string name="notif_footer_care">Butuh bantuan lebih lanjut? Kunjungi Tokopedia Care</string>
+    <string name="notif_footer_visit_care">Kunjungi Tokopedia Care</string>
 
 </resources>

@@ -8,7 +8,7 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating1"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
@@ -17,41 +17,37 @@
         android:scaleType="centerCrop"
         tools:src="@drawable/topads_ic_rating_active" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating2"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
         android:adjustViewBounds="true"
         android:gravity="center"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/topads_ic_rating_active" />
+        android:scaleType="centerCrop" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating3"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
         android:adjustViewBounds="true"
         android:gravity="center"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/topads_ic_rating_active" />
+        android:scaleType="centerCrop" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating4"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
         android:adjustViewBounds="true"
         android:gravity="center"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/topads_ic_rating_active" />
+        android:scaleType="centerCrop" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating5"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
         android:adjustViewBounds="true"
         android:gravity="center"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/topads_ic_rating_active" />
+        android:scaleType="centerCrop" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_rating_count"

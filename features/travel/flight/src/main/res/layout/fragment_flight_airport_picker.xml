@@ -5,14 +5,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:background="@color/Unify_N0">
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_scrollFlags="scroll|snap|enterAlways"
-        app:siv_search_hint="@string/flight_label_search_hint_airport" />
+        app:search_bar_show_icon="false"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:search_bar_placeholder="@string/flight_label_search_hint_airport" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -20,6 +23,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/Unify_N0"/>
 
 </LinearLayout>

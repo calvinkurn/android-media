@@ -14,12 +14,10 @@ import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
@@ -60,6 +58,7 @@ class AddPinFragment : BaseDaggerFragment() {
 
     private var isConfirmPin = false
     private var isSkipOtp: Boolean = false
+    private var validateToken: String = ""
     private var pin = ""
 
     private var inputPin: PinUnify? = null
@@ -94,7 +93,7 @@ class AddPinFragment : BaseDaggerFragment() {
                     if (isConfirmPin) {
                         if (s.toString() == pin) {
                             if (isSkipOtp) {
-                                addChangePinViewModel.checkSkipOtpPin()
+                                addChangePinViewModel.checkSkipOtpPin(validateToken)
                             } else {
                                 goToVerificationActivity()
                             }
@@ -162,9 +161,8 @@ class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun initVar() {
-        val isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false)
-        if (isSkipOtp != null)
-            this.isSkipOtp = isSkipOtp
+        isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false) ?: false
+        validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "").toString()
     }
 
     private fun goToVerificationActivity() {

@@ -10,12 +10,13 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_brightness"
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_gravity="center_horizontal"
+        android:textColor="@color/Unify_N700"
         android:text="@string/default_brightness_value" />
 
     <RelativeLayout
@@ -30,14 +31,14 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            app:high_color="@color/tkpd_main_green"
+            app:high_color="@color/Unify_G400"
             app:high_stroke_width="@dimen/dp_2"
-            app:line_color="@color/grey_700"
+            app:line_color="@color/Unify_N500"
             app:line_width="@dimen/dp_1"
-            app:nail_color="@color/grey_700"
+            app:nail_color="@color/Unify_N500"
             app:nail_radius="@dimen/dp_0"
             app:nail_stroke_width="@dimen/dp_0"
-            app:thumb_color="@color/white"
+            app:thumb_color="@color/Unify_N0"
             app:thumb_radius="@dimen/dp_12"
             android:clipChildren="false"
             android:clipToPadding="false"

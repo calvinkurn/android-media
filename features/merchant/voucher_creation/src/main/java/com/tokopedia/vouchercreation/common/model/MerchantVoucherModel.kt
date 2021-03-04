@@ -5,38 +5,20 @@ import com.google.gson.annotations.SerializedName
 
 data class MerchantVoucherModel(
         @Expose
+        @SerializedName("confirmed_global_quota")
+        val confirmedQuota: Int = 0,
+        @Expose
         @SerializedName("booked_global_quota")
         val bookedQuota: Int = 0,
-        @Expose
-        @SerializedName("create_by")
-        val createBy: Int = 0,
         @Expose
         @SerializedName("create_time")
         val createTime: String = "",
         @Expose
-        @SerializedName("galadriel_catalog_id")
-        val galadrielCatalogId: Int = 0,
-        @Expose
-        @SerializedName("galadriel_voucher_id")
-        val galadrielVoucherId: Int = 0,
-        @Expose
         @SerializedName("is_public")
         val isPublic: Int = 0,
         @Expose
-        @SerializedName("is_quota_avaiable")
-        val isQuotaAvailable: Int = 0,
-        @Expose
         @SerializedName("remaining_quota")
         val remainingQuota: Int = 0,
-        @Expose
-        @SerializedName("shop_id")
-        val shopId: Int = 0,
-        @Expose
-        @SerializedName("tnc")
-        val tnc: String = "",
-        @Expose
-        @SerializedName("update_by")
-        val updateBy: Int = 0,
         @Expose
         @SerializedName("update_time")
         val updateTime: String = "",
@@ -52,12 +34,6 @@ data class MerchantVoucherModel(
         @Expose
         @SerializedName("voucher_discount_amt_max")
         val discountAmtMax: Int = 0,
-        @Expose
-        @SerializedName("voucher_discount_amt_max_formatted")
-        val discountAmtMaxFormatted: String = "",
-        @Expose
-        @SerializedName("voucher_discount_type")
-        val discountType: Int = 0,
         @Expose
         @SerializedName("voucher_discount_type_formatted")
         val discountTypeFormatted: String = "",
@@ -77,9 +53,6 @@ data class MerchantVoucherModel(
         @SerializedName("voucher_minimum_amt")
         val voucherMinimumAmt: Int = 0,
         @Expose
-        @SerializedName("voucher_minimum_amt_formatted")
-        val voucherMinimumAmtFormatted: String = "",
-        @Expose
         @SerializedName("voucher_name")
         val voucherName: String = "",
         @Expose
@@ -91,9 +64,6 @@ data class MerchantVoucherModel(
         @Expose
         @SerializedName("voucher_status")
         val voucherStatus: Int = 0,
-        @Expose
-        @SerializedName("voucher_status_formatted")
-        val voucherStatusFormatted: String = "",
         @Expose
         @SerializedName("voucher_type")
         val voucherType: Int = 0,

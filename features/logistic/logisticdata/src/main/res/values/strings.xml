@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name">logisticdata</string>
-    <string name="label_main_address">Utama</string>
-    <string name="content_desc_tv_address_status">text status alamat</string>
-</resources>

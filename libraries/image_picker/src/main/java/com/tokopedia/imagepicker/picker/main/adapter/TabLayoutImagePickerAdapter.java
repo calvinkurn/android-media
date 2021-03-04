@@ -5,27 +5,26 @@ import androidx.annotation.ColorRes;
 import com.google.android.material.tabs.TabLayout;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.common.ImagePickerTab;
 
 /**
  * Created by hendry on 19/04/18.
  */
 
 public class TabLayoutImagePickerAdapter {
-    private @ImagePickerTabTypeDef
-    int[] tabTypeDef;
+    private ImagePickerTab[] tabTypeDef;
     private Context context;
     private TabLayout tabLayout;
 
     public static @ColorRes
-    int SELECTED_COLOR = R.color.font_black_primary_70;
+    int SELECTED_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68;
     public static @ColorRes
-    int UNSELECTED_COLOR = R.color.grey_500;
+    int UNSELECTED_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N200;
 
     public TabLayoutImagePickerAdapter(
             TabLayout tabLayout,
             Context context,
-            @ImagePickerTabTypeDef int[] tabTypeDef) {
+            ImagePickerTab[] tabTypeDef) {
         this.tabLayout = tabLayout;
         this.tabTypeDef = tabTypeDef;
         this.context = context;
@@ -35,20 +34,20 @@ public class TabLayoutImagePickerAdapter {
         if (tabLayout.getTabCount() > 0) {
             tabLayout.removeAllTabs();
         }
-        for (int tabTypeDefItem : tabTypeDef) {
+        for (ImagePickerTab tabTypeDefItem : tabTypeDef) {
             TabLayout.Tab tab = tabLayout.newTab();
             switch (tabTypeDefItem) {
-                case ImagePickerTabTypeDef.TYPE_GALLERY:
+                case TYPE_GALLERY:
                     tab.setText(context.getString(R.string.gallery));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
-                case ImagePickerTabTypeDef.TYPE_CAMERA:
+                case TYPE_CAMERA:
                     tab.setText(context.getString(R.string.camera));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
-                case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+                case TYPE_INSTAGRAM:
                     tab.setText(context.getString(R.string.instagram));
                     unselectTab(tab);
                     tabLayout.addTab(tab);

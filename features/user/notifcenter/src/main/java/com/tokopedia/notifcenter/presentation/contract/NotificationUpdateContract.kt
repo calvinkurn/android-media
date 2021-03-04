@@ -23,7 +23,7 @@ interface NotificationUpdateContract {
         fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit)
         fun resetFilter()
         fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit)
-        fun addProductToCart(product: ProductData, onSuccessAddToCart: (DataModel) -> Unit)
+        fun addProductToCart(userId: String, product: ProductData, onSuccessAddToCart: (DataModel) -> Unit)
         fun updateFilter(filter: HashMap<String, Int>)
     }
 }

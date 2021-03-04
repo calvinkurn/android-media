@@ -62,7 +62,7 @@
         android:paddingStart="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8"
         android:text="@string/label_see_all"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@+id/txt_review_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_review_title"

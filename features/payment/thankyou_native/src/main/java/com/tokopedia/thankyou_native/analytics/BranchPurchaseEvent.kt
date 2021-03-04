@@ -12,11 +12,12 @@ import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.thankyou_native.TkpdIdlingResource
+
 
 
 const val CATEGORY_LEVEL_ONE_EGOLD = "egold"
 const val CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION = "purchase-protection"
-
 class BranchPurchaseEvent(val userSession: UserSessionInterface,
                           val thanksPageData: ThanksPageData) {
 
@@ -27,6 +28,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
             linkerCommerceData.paymentData = getBranchPaymentData(shopOrder)
             sendBranchEvent(linkerCommerceData)
         }
+
     }
 
     private fun getBranchPaymentData(shopOrder: ShopOrder): PaymentData {

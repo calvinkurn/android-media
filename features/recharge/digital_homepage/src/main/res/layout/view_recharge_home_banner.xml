@@ -34,9 +34,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/circular_view_pager"
-        tools:background="@android:color/holo_blue_bright"
+        tools:background="@color/Unify_G500"
         tools:layout_height="@dimen/layout_lvl1"
-        tools:layout_width="200dp" />
+        tools:layout_width="@dimen/banner_width" />
 
     <TextView
         android:id="@+id/see_all_promo"
@@ -50,12 +50,13 @@
         android:focusable="true"
         android:focusableInTouchMode="false"
         android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="3sp"
+        android:lineSpacingExtra="@dimen/banner_see_all_line_spacing"
         android:text="@string/recharge_home_banner_see_all_label"
-        android:textColor="#03ac0e"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/fontSize_lvl2"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/circular_view_pager" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

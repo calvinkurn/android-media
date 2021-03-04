@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.pending.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevInboxReviewMarkAsSeenResponseWrapper
@@ -10,23 +11,21 @@ class ProductrevMarkAsSeenUseCase @Inject constructor(graphqlRepository: Graphql
 
     companion object {
         const val PARAM_INBOX_REVIEW_ID = "inboxReviewID"
-        private val query by lazy {
+        const val MARK_AS_SEEN_MUTATION_CLASS_NAME = "MarkAsSeen"
+        const val MARK_AS_SEEN_MUTATION =
             """
                 mutation productrevInboxReviewMarkAsSeen(${'$'}inboxReviewID: String!) {
                   productrevInboxReviewMarkAsSeen(inboxReviewID: ${'$'}inboxReviewID) {
                       success
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
-    init {
-        setGraphqlQuery(query)
+    @GqlQuery(MARK_AS_SEEN_MUTATION_CLASS_NAME, MARK_AS_SEEN_MUTATION)
+    fun setParams(inboxReviewId: Long) {
+        setGraphqlQuery(MarkAsSeen.GQL_QUERY)
         setTypeClass(ProductrevInboxReviewMarkAsSeenResponseWrapper::class.java)
-    }
-
-    fun setParams(inboxReviewId: Int) {
         setRequestParams(
                 RequestParams.create().apply {
                     putString(PARAM_INBOX_REVIEW_ID, inboxReviewId.toString())

@@ -26,9 +26,6 @@ data class SellerSearchResponse(
         ) {
             data class Section(
                     @Expose
-                    @SerializedName("action_link")
-                    val action_link: String? = "",
-                    @Expose
                     @SerializedName("action_title")
                     val action_title: String? = "",
                     @Expose
@@ -52,9 +49,6 @@ data class SellerSearchResponse(
                         @SerializedName("app_url")
                         val app_url: String? = "",
                         @Expose
-                        @SerializedName("click_event")
-                        val click_event: String? = "",
-                        @Expose
                         @SerializedName("description")
                         val description: String? = "",
                         @Expose
@@ -66,9 +60,6 @@ data class SellerSearchResponse(
                         @Expose
                         @SerializedName("label")
                         val label: String? = "",
-                        @Expose
-                        @SerializedName("ref_id")
-                        val ref_id: String? = "",
                         @Expose
                         @SerializedName("title")
                         val title: String? = "",

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <FrameLayout
         android:id="@+id/container_background"
@@ -18,20 +18,20 @@
             android:id="@+id/img_banner_background"
             android:layout_width="match_parent"
             android:layout_height="@dimen/banner_dynamic_background_height"
-            android:background="@color/tkpd_main_green" />
+            android:background="@color/Unify_G400" />
 
         <ImageView
             android:id="@+id/overlay_img"
             android:layout_width="match_parent"
             android:layout_height="@dimen/banner_dynamic_background_height"
             android:alpha="0.32"
-            android:background="#31353B"
+            android:background="@color/Unify_N700"
             android:scaleType="centerCrop" />
 
         <View
             android:id="@+id/overlay_round"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_30"
+            android:layout_height="@dimen/travel_homepage_dp_30"
             android:layout_gravity="bottom"
             android:background="@drawable/travel_background_banner_image_mask"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,9 +41,9 @@
     <View
         android:id="@+id/white_space"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="@dimen/travel_homepage_dp_20"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_background" />
@@ -58,7 +58,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_121"
+        android:layout_height="@dimen/travel_homepage_dp_121"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_32"

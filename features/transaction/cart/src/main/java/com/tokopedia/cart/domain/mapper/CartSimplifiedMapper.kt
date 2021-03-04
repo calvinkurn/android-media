@@ -172,6 +172,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
             it.freeShippingBadgeUrl = if (availableGroup.shipmentInformation.freeShipping.eligible) availableGroup.shipmentInformation.freeShipping.badgeUrl else ""
             it.incidentInfo = availableGroup.shop.shopAlertMessage
+            it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
             it
         }
     }
@@ -215,11 +216,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     errorFormItemValidationMessage = "",
                     isEditableRemark = false,
                     isStateHasNotes = false,
-                    isSelected = if (cartItemData.isError) {
-                        false
-                    } else {
-                        cartItemData.originData?.isCheckboxState ?: true
-                    },
+                    isSelected = cartItemData.originData?.isCheckboxState ?: true,
                     actionsData = actionsData,
                     errorType = errorType
             )
@@ -241,8 +238,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.originData = mapOriginData(cartDetail, shopGroup)
             it.updatedData = mapUpdatedData(cartDetail, cartDataListResponse)
             it.messageErrorData = mapMessageErrorData(cartDataListResponse.messages)
-            mapCartItemDataWarning(cartDetail, it)
-            mapCartItemDataError(cartDetail, it)
 
             when (shopGroup) {
                 is AvailableGroup -> {
@@ -274,31 +269,12 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun validateQty(cartItemHolderData: CartItemHolderData) {
         when {
             cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 > cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0
+                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.maxOrder
+                        ?: 0
             }
             cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 < cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.minOrder ?: 0
-            }
-        }
-    }
-
-    private fun mapCartItemDataError(cartDetail: CartDetail, it: CartItemData) {
-        if (cartDetail.errors.isNotEmpty()) {
-            it.isError = true
-            it.errorMessageTitle = cartDetail.errors[0]
-            if (cartDetail.errors.size > 1) {
-                it.errorMessageDescription = cartDetail.errors.subList(1, cartDetail.errors.size - 1).joinToString()
-            }
-        }
-    }
-
-    private fun mapCartItemDataWarning(cartDetail: CartDetail, it: CartItemData) {
-        if (cartDetail.messages.isNotEmpty()) {
-            it.isWarning = true
-            it.warningMessageTitle = cartDetail.messages[0]
-
-            if (cartDetail.messages.size > 1) {
-                it.warningMessageDescription = cartDetail.messages.subList(1, cartDetail.messages.size - 1).joinToString()
+                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.minOrder
+                        ?: 0
             }
         }
     }

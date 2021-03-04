@@ -225,7 +225,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private fun showErrorToaster(message: String) {
         KeyboardHandler.hideSoftKeyboard(activity)
         view?.run {
-            Toaster.make(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            Toaster.build(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 

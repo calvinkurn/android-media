@@ -1,0 +1,11 @@
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <solid
+        android:color="@color/Unify_Y500"/>
+
+    <size
+        android:width="@dimen/notification_circle_size"
+        android:height="@dimen/notification_circle_size"/>
+</shape>

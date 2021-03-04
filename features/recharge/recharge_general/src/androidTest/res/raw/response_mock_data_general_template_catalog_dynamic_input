@@ -1,0 +1,89 @@
+[
+  {
+    "data": {
+      "rechargeCatalogDynamicInput": {
+        "needEnquiry": true,
+        "isShowingProduct": true,
+        "dynamicFields": [
+          {
+            "param_name": "product",
+            "name": "product_id",
+            "text": "Bayar PBB Tahun",
+            "style": "select_dropdown",
+            "placeholder": "",
+            "help": "",
+            "data_collections": [
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "4801",
+                    "attributes": {
+                      "price": "",
+                      "price_plain": 10000,
+                      "promo": null,
+                      "desc": "2016",
+                      "detail": "<b>1. Harap perhatikan deadline pembayaran PBB sesuai daerah masing - masing. <br/>2. 1 pengguna bisa melakukan pembayaran SPPT PBB lebih dari 1x, termasuk atas nama orang lain.<br/>3.  Harap Menggunakan NOP sesuai dengan yang tertera pada SPPT terkini.<br/>",
+                      "detail_compact": "<b>1. Harap perhatikan deadline pembayaran PBB sesuai daerah masing - masing. <br/>2. 1 pengguna bisa melakukan pembayaran SPPT PBB lebih dari 1x, termasuk atas nama orang lain.<br/>3.  Harap Menggunakan NOP sesuai dengan yang tertera pada SPPT terkini.<br/>",
+                      "info": "2016",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 22,
+                      "product_labels": [],
+                      "product_descriptions": [],
+                      "hide_from_subscription": false
+                    }
+                  },
+                  {
+                    "id": "4803",
+                    "attributes": {
+                      "price": "",
+                      "price_plain": 10000,
+                      "promo": null,
+                      "desc": "2017",
+                      "detail": "<b>1. Harap perhatikan deadline pembayaran PBB sesuai daerah masing - masing. <br/>2. 1 pengguna bisa melakukan pembayaran SPPT PBB lebih dari 1x, termasuk atas nama orang lain.<br/>3.  Harap Menggunakan NOP sesuai dengan yang tertera pada SPPT terkini.<br/>",
+                      "detail_compact": "<b>1. Harap perhatikan deadline pembayaran PBB sesuai daerah masing - masing. <br/>2. 1 pengguna bisa melakukan pembayaran SPPT PBB lebih dari 1x, termasuk atas nama orang lain.<br/>3.  Harap Menggunakan NOP sesuai dengan yang tertera pada SPPT terkini.<br/>",
+                      "info": "2017",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 22,
+                      "product_labels": [],
+                      "product_descriptions": [],
+                      "hide_from_subscription": false
+                    }
+                  }
+                ]
+              }
+            ],
+            "validations": []
+          },
+          {
+            "param_name": "",
+            "name": "client_number",
+            "text": "Nomor Objek Pajak",
+            "style": "input_numeric",
+            "placeholder": "",
+            "help": "Nomor Objek Pajak harus 18 digit",
+            "data_collections": [],
+            "validations": [
+              {
+                "rule": "^\\d{18}$",
+                "title": "Exact 18 Digit"
+              }
+            ]
+          },
+          {
+            "param_name": "enquiry",
+            "name": "enquiry_result",
+            "text": "Cek Tagihan",
+            "style": "enquiry",
+            "placeholder": "",
+            "help": "",
+            "data_collections": [],
+            "validations": []
+          }
+        ]
+      }
+    }
+  }
+]

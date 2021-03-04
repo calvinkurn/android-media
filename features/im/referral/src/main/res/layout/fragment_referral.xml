@@ -4,7 +4,7 @@
     android:id="@+id/nested_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:fillViewport="true">
 
     <LinearLayout
@@ -33,7 +33,7 @@
                     android:fontFamily="sans-serif"
                     android:gravity="center_horizontal"
                     android:text="@string/referral_title_desc"
-                    android:textColor="@color/black_70"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_20" />
 
 
@@ -45,7 +45,7 @@
                     android:fontFamily="sans-serif"
                     android:gravity="center_horizontal"
                     android:text="@string/app_share_referral_label_desc"
-                    android:textColor="@color/black_54"
+                    android:textColor="@color/Unify_N700_44"
                     android:textSize="@dimen/sp_14" />
 
                 <RelativeLayout
@@ -75,7 +75,7 @@
                             android:paddingLeft="@dimen/padding_small"
                             android:paddingRight="@dimen/padding_small"
                             android:paddingTop="@dimen/padding_small"
-                            android:textColor="@color/deep_orange_500"
+                            android:textColor="@color/Unify_Y500"
                             android:textSize="@dimen/font_medium"
                             android:textStyle="normal" />
 
@@ -92,7 +92,7 @@
                             android:paddingLeft="@dimen/margin_xlarge"
                             android:paddingRight="@dimen/margin_large"
                             android:text="@string/menu_copy"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Unify_N700"
                             android:textSize="@dimen/font_medium" />
 
 
@@ -105,7 +105,7 @@
                             android:layout_marginLeft="@dimen/margin_sm"
                             android:layout_toRightOf="@+id/tv_referral_code"
                             android:src="@drawable/checked_thin"
-                            android:tint="@color/green_250"
+                            android:tint="@color/Unify_G400"
                             android:visibility="gone" />
                     </RelativeLayout>
 
@@ -115,7 +115,7 @@
                         android:layout_below="@+id/rl_referral_code_main"
                         android:layout_marginBottom="@dimen/margin_med"
                         android:layout_marginTop="@dimen/margin_large"
-                        android:background="@color/grey_hint_full" />
+                        android:background="@color/Unify_N100" />
 
                     <TextView
                         android:id="@+id/tv_Bagikan_ke"
@@ -124,12 +124,12 @@
                         android:layout_below="@+id/rl_referral_code_main"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/margin_med"
-                        android:background="@color/white"
+                        android:background="@color/Unify_N0"
                         android:gravity="center_horizontal|center_vertical"
                         android:paddingLeft="@dimen/padding_vvs"
                         android:paddingRight="@dimen/padding_vvs"
                         android:text="@string/bagikan_ke"
-                        android:textColor="@color/black_54"
+                        android:textColor="@color/Unify_N700_44"
                         android:textSize="@dimen/fonts" />
                 </RelativeLayout>
 
@@ -148,7 +148,7 @@
                     android:lineSpacingExtra="@dimen/font_medium"
                     android:padding="@dimen/padding_med"
                     android:text="Bagaimana cara kerjanya?"
-                    android:textColor="@color/green_btn"
+                    android:textColor="@color/Unify_G600"
                     android:textSize="@dimen/fontvs" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -156,7 +156,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_small"
-            android:background="@color/grey_300" />
+            android:background="@color/Unify_N100" />
 
 
         <LinearLayout
@@ -183,7 +183,7 @@
                     android:id="@+id/referral_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black_70"
+                    android:textColor="@color/Unify_N700_68"
                     android:text="@string/referral_count_label"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -209,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/progress_bar_referral"
                 android:layout_marginBottom="@dimen/margin_sm"
-                android:textColor="@color/black_38"
+                android:textColor="@color/Unify_N700_32"
                 android:text="@string/referral_percent_label"
                 android:textSize="@dimen/fonts" />
 
@@ -219,7 +219,7 @@
             android:id="@+id/view_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_small"
-            android:background="@color/grey_300" />
+            android:background="@color/Unify_N100" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -231,9 +231,9 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:tabIndicatorColor="@color/tkpd_main_green"
+                app:tabIndicatorColor="@color/Unify_G400"
                 app:tabMode="scrollable"
-                app:tabSelectedTextColor="@color/tkpd_main_green">
+                app:tabSelectedTextColor="@color/Unify_G400">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="match_parent"

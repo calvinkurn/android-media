@@ -28,13 +28,12 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class VideoViewComponent(
         container: ViewGroup,
-        @IdRes idRes: Int
+        @IdRes idRes: Int,
+        private val dataSource: DataSource
 ) : ViewComponent(container, idRes) {
 
     private val pvVideo = findViewById<PlayerView>(R.id.pv_video)
     private val ivThumbnail = findViewById<ImageView>(R.id.iv_thumbnail)
-
-    private var mExoPlayer: ExoPlayer? = null
 
     fun setPlayer(exoPlayer: ExoPlayer?) {
         pvVideo.player = exoPlayer
@@ -62,6 +61,8 @@ class VideoViewComponent(
     fun hideThumbnail() {
         ivThumbnail.hide()
     }
+
+    fun getPlayerView(): PlayerView = pvVideo
 
     private fun configureVideoLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
 
@@ -92,7 +93,7 @@ class VideoViewComponent(
 
         fun configureBackground() {
             rootView.setBackgroundColor(MethodChecker.getColor(rootView.context,
-                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.play_solid_black
+                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.play_dms_video_background
                     else R.color.transparent
             ))
         }
@@ -125,17 +126,16 @@ class VideoViewComponent(
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        mExoPlayer = pvVideo.player as? ExoPlayer
-        setPlayer(null)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        mExoPlayer?.let { setPlayer(it) }
+        if (dataSource.isInPiPMode()) setPlayer(null)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         setPlayer(null)
+    }
+
+    interface DataSource {
+
+        fun isInPiPMode(): Boolean
     }
 }

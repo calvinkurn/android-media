@@ -6,27 +6,27 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/dp_5"
-    android:paddingBottom="@dimen/dp_5">
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_info"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ellipsize="none"
         android:maxLines="5"
         android:scrollHorizontally="false"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2"
         tools:text="Jarak antar kursi" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/desc_info"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         tools:text="34 inci" />
 </LinearLayout>

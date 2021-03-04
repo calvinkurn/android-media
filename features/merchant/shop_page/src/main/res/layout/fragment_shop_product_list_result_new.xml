@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:clipToPadding="false">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -17,13 +17,12 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:clipChildren="false"
-            android:background="@android:color/white">
+            android:background="@color/Unify_N0">
 
             <com.tokopedia.shop.product.view.widget.StickySingleHeaderView
                 android:id="@+id/stickySingleHeaderView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
@@ -41,7 +40,18 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             </com.tokopedia.shop.product.view.widget.StickySingleHeaderView>
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <include
+        android:id="@+id/npl_follow_view"
+        layout="@layout/layout_button_npl_follow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        />
+
 </RelativeLayout>

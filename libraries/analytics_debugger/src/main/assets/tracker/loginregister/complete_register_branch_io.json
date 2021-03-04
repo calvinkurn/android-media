@@ -1,0 +1,21 @@
+{
+  "readme": "Registration Branch IO Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "buoList": [],
+      "customProperties": {
+        "nameValuePairs": {
+          "email": "{{.*}}",
+          "userId": "{{\\w+}}",
+          "phone": "{{.*}}"
+        }
+      },
+      "eventName": "COMPLETE_REGISTRATION",
+      "isStandardEvent": "{{true|false}}",
+      "standardProperties": {
+        "nameValuePairs": {}
+      }
+    }
+  ]
+}

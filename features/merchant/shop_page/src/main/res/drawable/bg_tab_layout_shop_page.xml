@@ -4,7 +4,7 @@
         <layer-list>
             <item android:left="@dimen/dp_minus2" android:right="@dimen/dp_minus2" android:top="@dimen/dp_minus2">
                 <shape android:shape="rectangle">
-                    <stroke android:width="@dimen/dp_1" android:color="@color/tab_layout_shop_page_background_color" />
+                    <stroke android:width="@dimen/dp_1" android:color="@color/Unify_N75" />
                 </shape>
             </item>
         </layer-list>

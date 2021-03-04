@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_lvl2"
             android:gravity="center_vertical"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             tools:text="Toko Saya: **Kelontong**" />
 

@@ -13,4 +13,5 @@ public interface EmptyStateListener {
     String getUserId();
     @Nullable
     List<Option> getSelectedFilterAsOptionList();
+    void onEmptySearchToGlobalSearchClicked(String applink);
 }

@@ -3,12 +3,12 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -17,28 +17,35 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.sessioncommon)
+
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.adapterDelegate)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.dialog
-
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
+
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -52,15 +59,19 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.miscDependencies.multiDex
-    
-    implementation (rootProject.ext.miscDependencies.ucrop) {
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+
+    // spek
+    testImplementation rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
 }
 
 project.ext {
@@ -71,4 +82,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 

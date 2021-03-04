@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="@dimen/dp_20">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tagLine"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -22,9 +22,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Terlambat Bayar"
-        tools:textColor="@color/tkpd_transaction_label_pink"
+        tools:textColor="@color/Unify_R500"
         tools:visibility="gone"
-        tools:background="@drawable/bg_rounded_pink_label"
+        tools:background="@drawable/bg_rounded_pink_label_buyer"
         />
 
     <TextView
@@ -33,11 +33,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="@dimen/sp_10"
-        android:textColor="@color/tkpd_transaction_font_subtitle_recharge_widget"
+        android:textColor="@color/Unify_N700_68"
         android:lineSpacingExtra="@dimen/sp_6"
         android:visibility="gone"
         android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
         app:layout_constraintStart_toEndOf="@+id/tagLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -46,17 +45,16 @@
         tools:visibility="gone"
         tools:text="mulai dari"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/strikeThroughPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="@dimen/sp_10"
-        android:textColor="@color/tkpd_transaction_font_subtitle_recharge_widget"
+        android:textColor="@color/Unify_N700_68"
         android:lineSpacingExtra="@dimen/sp_6"
         android:visibility="gone"
         android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
         app:layout_constraintStart_toEndOf="@+id/pricePrefix"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -71,7 +69,7 @@
         android:layout_marginBottom="@dimen/dp_2"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="@color/tkpd_transaction_font_subtitle_recharge_widget"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_12"
         android:textStyle="bold"
         android:visibility="gone"

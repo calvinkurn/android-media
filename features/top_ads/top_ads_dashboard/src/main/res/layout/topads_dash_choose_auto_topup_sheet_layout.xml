@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/chooseCredit"
+        layout="@layout/topads_dash_choose_topup_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/saveBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/cancelBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/topads_common_cancel_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/saveBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chooseCredit"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/saveBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/topads_dash_aktifan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cancelBtn"
+        app:layout_constraintTop_toBottomOf="@id/chooseCredit"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

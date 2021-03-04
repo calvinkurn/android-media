@@ -36,7 +36,8 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: DispatcherProvide
         get() = mutableLoginFingerprintResult
 
     val loginSubscriber =  LoginTokenSubscriber(userSession, onSuccessLoginToken(),
-            onErrorValidateFP(), {}, {})
+            onErrorValidateFP(),
+            onSuccessLoginToken(), {}, {})
 
     fun validateFingerprint() {
         val signature = cryptographyUtils?.generateFingerprintSignature(fingerprintSetting.getFingerprintUserId(), userSession.deviceId)

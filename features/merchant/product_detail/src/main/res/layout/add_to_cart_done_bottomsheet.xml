@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corner_top_left_top_right"
+        android:background="@drawable/product_detail_rounded_corner_top_left_top_right"
         android:clipToPadding="true">
         <LinearLayout
             android:id="@+id/layout_title"
@@ -36,7 +36,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@color/grey_750"
+                android:textColor="@color/Unify_N600"
                 android:textSize="@dimen/sp_17" />
 
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end|right"
-                android:textColor="@color/tkpd_main_green"
+                android:textColor="@color/Unify_G400"
                 android:textSize="@dimen/sp_14"
                 android:visibility="gone" />
 
@@ -95,7 +95,7 @@
                 android:maxLines="1"
                 android:visibility="gone"
                 android:text="Harga Barang"
-                android:textColor="@color/charcoal_grey_44"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintBottom_toTopOf="@+id/price"
                 app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -133,7 +133,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="@color/charcoal_grey_44"
+                android:textColor="@color/Unify_N700_44"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/discount_percentage"
                 app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
@@ -153,7 +153,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="@color/charcoal_grey_96"
+                android:textColor="@color/Unify_N700_96"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
@@ -173,7 +173,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="@color/charcoal_grey_96"
+                android:textColor="@color/Unify_N700_96"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

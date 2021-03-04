@@ -7,12 +7,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
+import com.tokopedia.shop.common.di.ShopQualifier;
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
-import com.tokopedia.topads.dashboard.di.qualifier.ShopWsQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -26,7 +24,6 @@ import retrofit2.Retrofit;
  * Created by hadi.putra on 24/04/18.
  */
 
-@TopAdsScope
 @Module
 public class TopAdsShopModule {
 
@@ -82,17 +79,4 @@ public class TopAdsShopModule {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_URL).client(okHttpClient).build();
     }
 
-    @ShopWsQualifier
-    @TopAdsScope
-    @Provides
-    public Retrofit provideWSRetrofit(@ShopQualifier OkHttpClient okHttpClient,
-                                      Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build();
-    }
-
-    @TopAdsScope
-    @Provides
-    public TopAdsShopApi provideShopApi(@ShopWsQualifier Retrofit retrofit) {
-        return retrofit.create(TopAdsShopApi.class);
-    }
 }

@@ -18,7 +18,7 @@ class ProgressMapper @Inject constructor() {
         private const val DANGER = "DANGER"
     }
 
-    fun mapResponseToUi(progressDataResponse: List<ProgressDataModel>): List<ProgressDataUiModel> {
+    fun mapResponseToUi(progressDataResponse: List<ProgressDataModel>, isFromCache: Boolean): List<ProgressDataUiModel> {
         return progressDataResponse.map{
             ProgressDataUiModel(
                     valueTxt = it.valueText.orEmpty(),
@@ -28,7 +28,8 @@ class ProgressMapper @Inject constructor() {
                     colorState = mapState(it.state.orEmpty()),
                     error = it.errorMessage.orEmpty(),
                     subtitle = it.subtitle.orEmpty(),
-                    dataKey = it.dataKey.orEmpty()
+                    dataKey = it.dataKey.orEmpty(),
+                    isFromCache = isFromCache
             )
         }
     }

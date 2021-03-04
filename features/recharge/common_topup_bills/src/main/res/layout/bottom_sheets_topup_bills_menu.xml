@@ -4,47 +4,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16">
+    android:paddingLeft="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/menu_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingBottom="@dimen/spacing_lvl4"
         android:text="@string/common_topup__menu_promo"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_5" />
 
     <View
         android:id="@+id/v_first_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="@dimen/separator_size"
         android:background="@drawable/bg_line_separator" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/menu_help"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
         android:text="@string/common_topup__menu_help"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_5" />
 
     <View
         android:id="@+id/v_second_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="@dimen/separator_size"
         android:background="@drawable/bg_line_separator" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/menu_order_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
         android:text="@string/common_topup__menu_transaction_list"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_5" />
 
 </LinearLayout>

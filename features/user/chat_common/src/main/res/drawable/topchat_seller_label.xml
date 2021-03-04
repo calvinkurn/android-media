@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/topchat_seller_label_shape_color"/>
+    <solid android:color="@color/Green_G200"/>
     <corners android:radius="@dimen/dp_20"/>
 </shape>
 

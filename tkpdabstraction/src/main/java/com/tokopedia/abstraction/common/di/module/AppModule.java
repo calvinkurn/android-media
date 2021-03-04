@@ -3,10 +3,10 @@ package com.tokopedia.abstraction.common.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.cachemanager.CacheManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,7 +15,7 @@ import dagger.Provides;
 /**
  * @author kulomady on 1/9/17.
  */
-@Module (includes = {NetModule.class})
+@Module(includes = {NetModule.class})
 public class AppModule {
 
     private final Context context;
@@ -33,17 +33,17 @@ public class AppModule {
 
     @ApplicationScope
     @Provides
-    public AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context);
-        }else{
+    public AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context) {
+        if (context instanceof AbstractionRouter) {
+            return ((AbstractionRouter) context);
+        } else {
             return null;
         }
     }
 
     @ApplicationScope
     @Provides
-    public CacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getGlobalCacheManager();
+    public CacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter) {
+        return abstractionRouter.getPersistentCacheManager();
     }
 }

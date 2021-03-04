@@ -1,38 +1,27 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
     }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+	implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.miscDependencies.gson
 
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.global_error
-    implementation project(rootProject.ext.libraries.graphql)
-
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation project(rootProject.ext.libraries.analytics)
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation rootProject.ext.miscDependencies.coroutineAndroid
-    implementation project(rootProject.ext.libraries.analytics)
 }
 
 project.ext {

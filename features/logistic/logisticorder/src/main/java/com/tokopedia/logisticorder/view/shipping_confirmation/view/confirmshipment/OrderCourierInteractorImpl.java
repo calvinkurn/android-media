@@ -1,7 +1,7 @@
 package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment;
 
 
-import com.tokopedia.logisticdata.data.repository.OrderCourierRepository;
+import com.tokopedia.logisticCommon.data.repository.OrderCourierRepository;
 import com.tokopedia.logisticorder.view.shipping_confirmation.network.mapper.OrderDetailMapper;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 

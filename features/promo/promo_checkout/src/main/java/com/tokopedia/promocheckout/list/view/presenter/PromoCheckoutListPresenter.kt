@@ -79,7 +79,8 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
 
             override fun onNext(objects: GraphqlResponse) {
                 val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
-                view.renderListLastSeen(lastSeenPromoData.promoModels, false)
+                val promos = lastSeenPromoData.promoModels.filter { it.promoCode.isNotEmpty() && it.title.isNotEmpty() }
+                view.renderListLastSeen(promos, false)
             }
         })
     }

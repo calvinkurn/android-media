@@ -24,14 +24,14 @@
             android:adjustViewBounds="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/Neutral_N200"
+            tools:background="@color/Unify_N200"
             android:scaleType="centerCrop"/>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintTop_toTopOf="@id/image"
-            app:layout_constraintBottom_toBottomOf="@id/image"
+            app:layout_constraintTop_toTopOf="@+id/image"
+            app:layout_constraintBottom_toBottomOf="@+id/image"
             android:background="@drawable/travel_destination_section_overlay"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -43,7 +43,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toTopOf="@+id/subtitle"
             app:typographyType="heading_3"
             tools:text="Hotel di Jakarta Selatan hehe" />
@@ -58,7 +58,7 @@
             android:layout_marginBottom="@dimen/layout_lvl2"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="body_3"
             tools:text="Indonesia Tanah Air Beta Pu" />

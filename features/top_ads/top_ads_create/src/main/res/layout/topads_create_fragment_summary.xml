@@ -18,9 +18,9 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_4"
+            android:padding="@dimen/dp_16"
             app:cardCornerRadius="@dimen/dp_8"
-            app:cardUseCompatPadding="true"
-            android:padding="@dimen/dp_16" >
+            app:cardUseCompatPadding="true">
 
             <RelativeLayout
                 android:id="@+id/card"
@@ -35,14 +35,12 @@
                     android:layout_marginBottom="@dimen/dp_8"
                     android:text="@string/anggaran_harian"
                     app:typographyType="heading_4" />
+
                 <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                     android:id="@+id/toggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    />
-
+                    android:layout_alignParentEnd="true" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/summary"
@@ -54,10 +52,10 @@
 
                 <com.tokopedia.unifycomponents.TextFieldUnify
                     android:id="@+id/daily_budget"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/summary"
+                    android:visibility="gone"
                     app:text_field_input_type="number"
                     app:text_field_prepend_text="Rp" />
             </RelativeLayout>
@@ -71,9 +69,9 @@
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
+            android:padding="@dimen/dp_16"
             app:cardCornerRadius="@dimen/dp_8"
-            app:cardUseCompatPadding="true"
-            android:padding="@dimen/dp_16">
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -109,8 +107,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
-                        app:typographyType="body_2"
                         android:text="Manual"
+                        app:typographyType="body_2"
                         tools:text="Manual" />
 
                 </LinearLayout>
@@ -206,14 +204,14 @@
                         app:typographyType="body_2" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:id="@+id/bid_range"
+                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
-                        app:typographyType="body_2"
                         android:text="@string/bid_range"
+                        app:typographyType="body_2"
                         tools:text="Rp 5.000 - Rp 10.000" />
                 </LinearLayout>
 
@@ -232,14 +230,14 @@
                         app:typographyType="body_2" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:id="@+id/dailyBudgetType"
+                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
-                        app:typographyType="body_2"
                         android:text="@string/tidak_dibatasi"
+                        app:typographyType="body_2"
                         tools:text="Tidak dibatasi" />
                 </LinearLayout>
             </LinearLayout>
@@ -256,7 +254,6 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
-            android:layout_above="@+id/btn_submit"
             android:background="@drawable/topads_bg_shader_gray" />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -266,9 +263,9 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
+            android:text="Iklankan"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="filled"
-            android:text="Iklankan" />
+            app:unifyButtonVariant="filled" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/info_text"
@@ -282,4 +279,12 @@
             android:text="@string/info_text_summary"
             app:typographyType="body_3" />
     </LinearLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loading"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:loader_type="circular" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -28,8 +28,9 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
             val timeCounter: String = "",
             var totalNotify: Int = 0,
             val totalNotifyWording: String = "",
+            val dynamicRule: DynamicRule = DynamicRule(),
             val bannerList: List<BannerItem> = listOf(),
-            val productList: List<ShopHomeProductViewModel> = listOf(),
+            val productList: List<ShopHomeProductUiModel> = listOf(),
             var isRemindMe: Boolean? = null,
             var rvState: Parcelable? = null,
             var showRemindMeLoading : Boolean = false,
@@ -43,6 +44,14 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
                 val device: String = ""
         ) : ImpressHolder()
 
+        data class DynamicRule(
+                val descriptionHeader: String = "",
+                val dynamicRoleData: DynamicRoleData = DynamicRoleData()
+        ) {
+            data class DynamicRoleData(
+                    val ruleID: String = ""
+            )
+        }
     }
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {

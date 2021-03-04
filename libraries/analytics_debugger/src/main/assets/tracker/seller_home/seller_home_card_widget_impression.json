@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - card widget impression",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{impression widget card - .{1,} (GOOD|WARNING|DANGER)}}",
+      "eventLabel": "{{.{1,}}}",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

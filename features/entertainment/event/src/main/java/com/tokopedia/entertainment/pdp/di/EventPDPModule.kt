@@ -2,41 +2,37 @@ package com.tokopedia.entertainment.pdp.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi.Companion.BASE_URL
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepositoryImpl
+import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
+import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
+import com.tokopedia.entertainment.pdp.network_api.RedeemTicketEventUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import okhttp3.OkHttpClient
+import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Named
 
 /**
  * Author firman on 06-04-20
  */
 
-@EventPDPScope
 @Module
 class EventPDPModule {
 
@@ -88,42 +84,7 @@ class EventPDPModule {
 
     @Provides
     @EventPDPScope
-    internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
-                                     httpLoggingInterceptor: HttpLoggingInterceptor,
-                                     chuckerInterceptor: ChuckerInterceptor,
-                                     okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        return builder
-                .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(chuckerInterceptor)
-                .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .build()
-    }
-
-    @Provides
-    @EventPDPScope
-    fun provideApiService(gson: Gson, client: OkHttpClient): EventCheckoutApi {
-        val retrofitBuilder = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-        retrofitBuilder.client(client)
-        val retrofit = retrofitBuilder.build()
-        return retrofit.create(EventCheckoutApi::class.java)
-    }
-
-    @Provides
-    @EventPDPScope
-    fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckoutRepository {
-        return EventCheckoutRepositoryImpl(eventCheckoutApi)
-    }
-
-    @Provides
-    @EventPDPScope
-    fun provideIris(@ApplicationContext  context: Context): IrisSession {
+    fun provideIris(@ApplicationContext context: Context): IrisSession {
         return IrisSession(context)
     }
 
@@ -137,6 +98,48 @@ class EventPDPModule {
     @EventPDPScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
+    }
+
+    @EventPDPScope
+    @Provides
+    fun provideAuthInterceptors(@ApplicationContext context: Context,
+                                userSession: UserSessionInterface): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideInterceptors(tkpdAuthInterceptor: TkpdAuthInterceptor,
+                            fingerprintInterceptor: FingerprintInterceptor,
+                            httpLoggingInterceptor: HttpLoggingInterceptor,
+                            chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
+        return mutableListOf(tkpdAuthInterceptor, fingerprintInterceptor, httpLoggingInterceptor, chuckerInterceptor)
+    }
+
+    @Provides
+    fun provideRestRepository(interceptors: MutableList<Interceptor>,
+                              @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideGetWhiteListValidationUseCase(repository: RestRepository): GetWhiteListValidationUseCase {
+        return GetWhiteListValidationUseCase(repository)
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideGetEventRedeemUseCase(repository: RestRepository): GetEventRedeemUseCase {
+        return GetEventRedeemUseCase(repository)
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideRedeemTicketEventUseCase(repository: RestRepository): RedeemTicketEventUseCase {
+        return RedeemTicketEventUseCase(repository)
     }
 
 }

@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Created by jegul on 2019-10-01.
  */
-abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class BaseAdapter<T: Any>(isFlexibleType: Boolean = false) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    protected val delegatesManager = AdapterDelegatesManager<T>()
+    protected val delegatesManager = AdapterDelegatesManager<T>(isFlexibleType)
     protected val itemList: MutableList<T> = mutableListOf()
 
     @Deprecated(

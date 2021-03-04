@@ -1,0 +1,68 @@
+[
+  {
+    "data": {
+      "one_click_checkout": {
+        "header": {
+          "process_time": "",
+          "reason": "",
+          "error_code": "",
+          "messages": []
+        },
+        "data": {
+          "success": 0,
+          "error": {
+            "code": "511",
+            "image_url": "",
+            "message": "Stok barang kosong",
+            "additional_info": {
+              "price_validation": {
+                "is_updated": "",
+                "message": {
+                  "title": "",
+                  "desc": "",
+                  "action": ""
+                },
+                "tracker_data": {
+                  "product_changes_type": "",
+                  "campaign_type": "",
+                  "product_ids": ""
+                }
+              }
+            }
+          },
+          "payment_parameter": {
+            "callback_url": "",
+            "payload": "",
+            "redirect_param": {
+              "url": "",
+              "gateway": "",
+              "method": "",
+              "form": ""
+            }
+          },
+          "prompt": {
+            "type": "bottom_sheet",
+            "title": "title prompt",
+            "description": "description prompt",
+            "image_url": "",
+            "buttons": [
+              {
+                "text": "button",
+                "link": "open",
+                "action": "tokopedia://home",
+                "color": "primary"
+              },
+              {
+                "text": "second button",
+                "link": "open",
+                "action": "tokopedia://home",
+                "color": "secondary"
+              }
+            ]
+          }
+        },
+        "status": "OK"
+      }
+    }
+  }
+]

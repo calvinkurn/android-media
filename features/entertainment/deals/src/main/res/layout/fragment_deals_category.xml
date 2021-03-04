@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/deals_category_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/spacing_lvl3"

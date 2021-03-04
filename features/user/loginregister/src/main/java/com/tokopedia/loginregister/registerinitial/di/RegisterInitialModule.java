@@ -1,8 +1,15 @@
 package com.tokopedia.loginregister.registerinitial.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.loginregister.common.DispatcherProvider;
+import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference;
+
+import org.jetbrains.annotations.NotNull;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,6 +36,30 @@ public class RegisterInitialModule {
     @Provides
     CoroutineDispatcher provideMainDispatcher(){
         return Dispatchers.getMain();
+    }
+
+    @RegisterInitialScope
+    @Provides
+    DispatcherProvider provideDispatcherProvider() {
+        return new DispatcherProvider() {
+            @NotNull
+            @Override
+            public CoroutineDispatcher io() {
+                return Dispatchers.getIO();
+            }
+
+            @NotNull
+            @Override
+            public CoroutineDispatcher ui() {
+                return Dispatchers.getMain();
+            }
+        };
+    }
+
+    @RegisterInitialScope
+    @Provides
+    ExternalRegisterPreference provideExternalRegisterPreference(@ApplicationContext Context context) {
+        return new ExternalRegisterPreference(context);
     }
 
 }

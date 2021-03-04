@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
+import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.list.data.bomorderfilter.CustomDate;
 import com.tokopedia.buyerorder.list.data.bomorderfilter.DefaultDate;
@@ -35,7 +37,7 @@ public class OrderListContract {
 
         void renderEmptyList(int typeRequest, long elapsedDays);
 
-        Context getAppContext();
+        Context getActivity();
 
         void setLastOrderId(int orderid);
 
@@ -65,10 +67,6 @@ public class OrderListContract {
 
         void finishOrderDetail();
 
-        void startSellerAndAddInvoice();
-
-        void requestCancelOrder(Status status);
-
         void showSuccessMessageWithAction(String message);
 
         void setFilterRange(DefaultDate defaultDate, CustomDate customDate);
@@ -79,7 +77,7 @@ public class OrderListContract {
     public interface Presenter extends CustomerPresenter<View> {
         void getAllOrderData(Context context, String orderCategory, int typeRequest, int page, int orerId);
 
-        void processGetRecommendationData(int page, boolean isFirstTime);
+        void processGetRecommendationData(Context Context, int page, boolean isFirstTime);
 
         void onRefresh();
     }

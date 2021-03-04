@@ -5,32 +5,32 @@
     android:id="@+id/container_item_umrah_pdp_faq"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardUseCompatPadding="true"
     tools:targetApi="lollipop">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="260dp"
+        android:layout_width="@dimen/dimen_dp_260"
         android:layout_height="wrap_content">
 
         <View
             android:id="@+id/v_umrah_pdp_left_bg"
-            android:layout_width="@dimen/dp_4"
-            android:layout_height="0dp"
-            android:background="@color/green_300"
+            android:layout_width="@dimen/spacing_lvl2"
+            android:layout_height="@dimen/unify_space_0"
+            android:background="@color/Green_G500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/item_tg_umrah_pdp_faq_question"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginStart="@dimen/spacing_lvl5"
+            android:layout_marginLeft="@dimen/spacing_lvl5"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_96"
@@ -43,9 +43,9 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/item_tg_umrah_pdp_faq_answer"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_68"
@@ -58,14 +58,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/item_tg_umrah_pdp_faq_read_more"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@string/umrah_pdp_read_more"
-            android:textColor="@color/g_500"
+            android:textColor="@color/Green_G500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@+id/item_tg_umrah_pdp_faq_answer"
             app:layout_constraintTop_toBottomOf="@+id/item_tg_umrah_pdp_faq_answer"

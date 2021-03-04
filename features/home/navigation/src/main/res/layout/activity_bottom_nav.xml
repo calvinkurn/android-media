@@ -11,7 +11,7 @@
         android:layout_height="@dimen/mainparent_nav_bar_height"
         android:elevation="@dimen/mainparent_nav_bar_elevation"
         android:orientation="vertical"
-        app:buttonContainerBackgroundColor="@android:color/white"
+        app:buttonContainerBackgroundColor="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,6 +19,6 @@
         app:offscreenPageLimit="4"
         app:setViewPagerSwipeable="false"
         app:navbarElevation="@dimen/mainparent_nav_bar_elevation"
-        app:viewPagerBackground="@android:color/white" />
+        app:viewPagerBackground="@color/Unify_N0" />
 
 </FrameLayout>

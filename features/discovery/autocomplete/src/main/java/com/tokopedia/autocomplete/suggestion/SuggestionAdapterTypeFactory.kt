@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewHolder
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
+import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageViewHolder
+import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageViewModel
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewHolder
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewHolder
@@ -34,12 +36,22 @@ class SuggestionAdapterTypeFactory(
         return SuggestionTopShopWidgetViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: SuggestionDoubleLineWithoutImageViewModel): Int {
+        return SuggestionDoubleLineWithoutImageViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: SuggestionSeparatorViewModel): Int {
+        return SuggestionSeparatorViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SuggestionTitleViewHolder.LAYOUT -> SuggestionTitleViewHolder(parent)
             SuggestionSingleLineViewHolder.LAYOUT -> SuggestionSingleLineViewHolder(parent, suggestionClickListener)
             SuggestionDoubleLineViewHolder.LAYOUT -> SuggestionDoubleLineViewHolder(parent, suggestionClickListener)
             SuggestionTopShopWidgetViewHolder.LAYOUT -> SuggestionTopShopWidgetViewHolder(parent, suggestionTopShopListener)
+            SuggestionDoubleLineWithoutImageViewHolder.LAYOUT -> SuggestionDoubleLineWithoutImageViewHolder(parent, suggestionClickListener)
+            SuggestionSeparatorViewHolder.LAYOUT -> SuggestionSeparatorViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

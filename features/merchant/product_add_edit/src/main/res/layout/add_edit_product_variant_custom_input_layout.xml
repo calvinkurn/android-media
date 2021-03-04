@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:maxHeight="@dimen/dp_150"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/textFieldUnifyCustomValue"
+        android:contentDescription="@string/content_desc_textFieldUnifyCustomValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -16,6 +18,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonSave"
+        android:contentDescription="@string/content_desc_buttonSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"

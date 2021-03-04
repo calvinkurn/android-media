@@ -1,12 +1,12 @@
 package com.tokopedia.review.feature.reviewdetail.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackFilterResponse
 import com.tokopedia.review.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.review.feature.reviewdetail.data.ProductReviewInitialDataResponse
-import com.tokopedia.review.feature.reviewdetail.util.GqlQueryDetail
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -14,6 +14,7 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 28/04/20
  */
+@GqlQuery(GetProductReviewInitialUseCase.GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY_CLASS_NAME, GetProductReviewInitialUseCase.GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY)
 class GetProductReviewInitialUseCase @Inject constructor(
         private val graphQlRepository: GraphqlRepository
 ) : UseCase<ProductReviewInitialDataResponse>() {
@@ -25,6 +26,35 @@ class GetProductReviewInitialUseCase @Inject constructor(
         private const val LIMIT = "limit"
         private const val PAGE = "page"
         private const val TIME_FILTER = "timeFilter"
+        const val GET_PRODUCT_FEEDBACK_FILTER_QUERY_CLASS_NAME = "ProductFeedbackFilter"
+        const val GET_PRODUCT_FEEDBACK_FILTER_QUERY = """
+        query get_product_feedback_detail(${'$'}productID: Int!, ${'$'}sortBy: String!, ${'$'}filterBy: String!, ${'$'}limit: Int!, ${'$'}page: Int!) {
+          productrevFeedbackDataPerProduct(productID: ${'$'}productID, sortBy: ${'$'}sortBy,
+            filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
+              topics {
+                  title
+                  count
+                  formatted
+              }
+              aggregatedRating {
+                  rating
+                  ratingCount
+              }
+              reviewCount
+            }
+        }
+        """
+        const val GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY_CLASS_NAME = "ReviewDetailOverall"
+        const val GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY = """
+        query get_product_review_detail_overall(${'$'}productID: Int!, ${'$'}filterBy: String!) {
+             productrevGetReviewAggregateByProduct(productID: ${'$'}productID, filterBy: ${'$'}filterBy) {
+               productName
+               ratingAverage
+               ratingCount
+               period
+            }
+        }
+        """
 
         @JvmStatic
         fun createParams(productID: Int, filterBy: String, sortBy: String, page: Int, timeFilter: String): RequestParams = RequestParams.create().apply {
@@ -38,6 +68,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
 
     var requestParams: RequestParams = RequestParams.EMPTY
 
+    @GqlQuery(GET_PRODUCT_FEEDBACK_FILTER_QUERY_CLASS_NAME, GET_PRODUCT_FEEDBACK_FILTER_QUERY)
     override suspend fun executeOnBackground(): ProductReviewInitialDataResponse {
         val productReviewInitialResponse = ProductReviewInitialDataResponse()
 
@@ -48,7 +79,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
         val timeFilter = requestParams.getString(TIME_FILTER, "")
 
         val overAllRatingParams = mapOf(PRODUCT_ID to productId, FILTER_BY to filterBy)
-        val overAllRatingRequest = GraphqlRequest(GqlQueryDetail.GET_PRODUCT_REVIEW_DETAIL_OVERALL, ProductReviewDetailOverallResponse::class.java,
+        val overAllRatingRequest = GraphqlRequest(ReviewDetailOverall.GQL_QUERY, ProductReviewDetailOverallResponse::class.java,
                 overAllRatingParams)
 
         val feedbackDetailListParams = mapOf(PRODUCT_ID to productId,
@@ -56,7 +87,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
                 FILTER_BY to filterBy,
                 LIMIT to 10,
                 PAGE to page)
-        val feedbackDetailListRequest = GraphqlRequest(GqlQueryDetail.GET_PRODUCT_FEEDBACK_LIST_DETAIL, ProductFeedbackDetailResponse::class.java,
+        val feedbackDetailListRequest = GraphqlRequest(FeedbackDetailList.GQL_QUERY, ProductFeedbackDetailResponse::class.java,
                 feedbackDetailListParams)
 
         val feedbackFilterParams = mapOf(PRODUCT_ID to productId,
@@ -64,7 +95,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
                 FILTER_BY to timeFilter,
                 LIMIT to 10,
                 PAGE to 0)
-        val feedbackDetailFilterRequest = GraphqlRequest(GqlQueryDetail.GQL_GET_PRODUCT_FEEDBACK_FILTER, ProductFeedbackFilterResponse::class.java,
+        val feedbackDetailFilterRequest = GraphqlRequest(ProductFeedbackFilter.GQL_QUERY, ProductFeedbackFilterResponse::class.java,
                 feedbackFilterParams)
 
         val requests = mutableListOf(overAllRatingRequest, feedbackDetailListRequest, feedbackDetailFilterRequest)

@@ -21,18 +21,16 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.loader
 import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
@@ -48,6 +46,7 @@ import javax.inject.Inject
  */
 
 private const val CLICK_TAMBAH_KATA_KUNCI_NEGATIVE = "click - tambah kata kunci negatif"
+
 class NegKeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NegKeywordAdapter
@@ -65,9 +64,10 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
-    private var totalCount = 0
     private var totalPage = 0
     private var currentPageNum = 1
+    private var max = 0
+    private var perPage = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -125,7 +125,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (currentPageNum < totalPage) {
+                if (max == perPage) {
                     currentPageNum++
                     fetchNextPage(currentPageNum)
                 }
@@ -156,7 +156,6 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
-            putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_KATA_KUNCI_NEGATIVE, "")
@@ -196,17 +195,12 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
-        viewModel.getCountProductKeyword(resources, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()), ::successCount)
         currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
         viewModel.getGroupKeywordData(resources, 0, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
                 ?: 0, searchBar.searchBarTextField.text.toString(), null, null, currentPageNum, ::onSuccessKeyword, ::onEmpty)
-    }
-
-    private fun successCount(list: List<CountDataItem>) {
-        totalCount = list[0].totalKeywords
     }
 
     private fun showConfirmationDialog(context: Context) {
@@ -242,7 +236,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onEmpty() {
-        adapter.items.add(NegKeywordEmptyViewModel())
+        adapter.items.add(NegKeywordEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
         } else {
@@ -253,12 +247,16 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
 
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
         loader.visibility = View.GONE
-        totalPage = (totalCount / response.meta.page.perPage) + 1
+        max = response.meta.page.max
+        perPage = response.meta.page.perPage
+        totalPage = if (max % response.meta.page.perPage == 0) {
+            max / response.meta.page.perPage
+        } else
+            (max / response.meta.page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
-            adapter.items.add(NegKeywordItemViewModel(result))
+            adapter.items.add(NegKeywordItemModel(result))
         }
-        recyclerviewScrollListener.updateStateAfterGetData()
         adapter.notifyDataSetChanged()
         (activity as TopAdsGroupDetailViewActivity).setNegKeywordCount(adapter.itemCount)
     }

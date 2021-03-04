@@ -33,7 +33,7 @@ import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase.Companion.pa
 interface ProductStockHandlerContract {
     fun setProductReminder(productId: String, notificationId: String)
     fun getHighlightProduct(shopId: String)
-    fun addProductToCart(product: ProductData?)
+    fun addProductToCart(userId: String, product: ProductData?)
     fun onErrorMessage(throwable: Throwable)
 }
 
@@ -70,9 +70,9 @@ class ProductStockHandlerViewModel @Inject constructor(
         }, {})
     }
 
-    override fun addProductToCart(product: ProductData?) {
+    override fun addProductToCart(userId: String, product: ProductData?) {
         if (product == null) return
-        addToCartUseCase.createObservable(atcParams(product))
+        addToCartUseCase.createObservable(atcParams(userId, product))
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -111,7 +111,7 @@ class ProductStockHandlerViewModel @Inject constructor(
     }
 
     companion object {
-        private fun atcParams(product: ProductData?): RequestParams {
+        private fun atcParams(userId: String, product: ProductData?): RequestParams {
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = product?.productId.toLongOrZero()
             addToCartRequestParams.shopId = product?.shop?.id ?: -1
@@ -119,6 +119,7 @@ class ProductStockHandlerViewModel @Inject constructor(
             addToCartRequestParams.notes = ""
             addToCartRequestParams.productName = product?.name?: ""
             addToCartRequestParams.price = product?.price?: ""
+            addToCartRequestParams.userId = userId
 
             return RequestParams.create().apply {
                 putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

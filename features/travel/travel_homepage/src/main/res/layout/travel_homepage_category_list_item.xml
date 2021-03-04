@@ -6,11 +6,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.design.image.SquareImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/category_image"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="@dimen/dp_12"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_margin="@dimen/unify_space_12"
         android:layout_gravity="center"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -18,11 +18,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingStart="@dimen/dp_2"
-        android:paddingLeft="@dimen/dp_2"
-        android:paddingEnd="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_2"
+        android:paddingStart="@dimen/spacing_lvl1"
+        android:paddingLeft="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/spacing_lvl1"
+        android:paddingRight="@dimen/spacing_lvl1"
         app:typographyType="small"
         tools:text="Travel and Entertainment"
-        android:textColor="@color/Neutral_N700_96"/>
+        android:textColor="@color/Unify_N700_96"/>
 </LinearLayout>

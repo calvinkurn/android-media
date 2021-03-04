@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class BarChartMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(barChartDataList: List<BarChartWidgetDataModel>): List<BarChartDataUiModel> {
+    fun mapRemoteModelToUiModel(barChartDataList: List<BarChartWidgetDataModel>, isFromCache: Boolean): List<BarChartDataUiModel> {
         return barChartDataList.map {
             BarChartDataUiModel(
                     dataKey = it.dataKey,
@@ -24,7 +24,8 @@ class BarChartMapper @Inject constructor() {
                             xAxis = getAxis(it.data.axes.xLabel),
                             yAxis = getAxis(it.data.axes.yLabel).distinctBy { axis -> axis.value },
                             summary = mapBarChartSummary(it.data.summary)
-                    )
+                    ),
+                    isFromCache = isFromCache
             )
         }
     }

@@ -127,4 +127,8 @@ public interface Constant {
          String CHATBOT = "chatbot";
     }
 
+    interface IntentFilter {
+         String GET_CHAT_SELLER_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_CHAT_APP_WIDGET_DATA";
+         String GET_ORDER_SELLER_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ORDER_APP_WIDGET_DATA";
+    }
 }

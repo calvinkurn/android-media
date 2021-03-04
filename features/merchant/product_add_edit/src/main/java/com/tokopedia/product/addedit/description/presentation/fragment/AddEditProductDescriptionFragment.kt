@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,6 +31,11 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
@@ -43,6 +47,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
@@ -83,10 +89,12 @@ class AddEditProductDescriptionFragment:
         const val MAX_VIDEOS = 3
         const val MAX_DESCRIPTION_CHAR = 2000
         const val VIDEO_REQUEST_DELAY = 250L
+        const val VALIDATE_REQUEST_DELAY = 250L
     }
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+    private var isFragmentVisible = false
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -192,7 +200,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_description, container, false)
+        return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
     }
 
     override fun onResume() {
@@ -202,27 +210,31 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun getRecyclerViewResourceId(): Int {
-        return com.tokopedia.product.addedit.R.id.recycler_view
+        return R.id.recycler_view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
-        textFieldDescription.textFieldInput.apply {
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
+
+        textFieldDescription?.setCounter(MAX_DESCRIPTION_CHAR)
+        textFieldDescription?.textFieldInput?.apply {
             isSingleLine = false
             imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             afterTextChanged {
                 if (it.length >= MAX_DESCRIPTION_CHAR) {
-                    textFieldDescription.setMessage(getString(R.string.error_description_character_limit))
-                    textFieldDescription.setError(true)
+                    textFieldDescription?.setMessage(getString(R.string.error_description_character_limit))
+                    textFieldDescription?.setError(true)
                 } else {
-                    textFieldDescription.setMessage("")
-                    textFieldDescription.setError(false)
+                    textFieldDescription?.setMessage("")
+                    textFieldDescription?.setError(false)
                 }
+                validateDescriptionText(it)
             }
         }
 
@@ -290,10 +302,47 @@ class AddEditProductDescriptionFragment:
         hideKeyboardWhenTouchOutside()
 
         observeProductInputModel()
+        observeDescriptionValidation()
         observeProductVideo()
 
         // PLT Monitoring
         stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (isFragmentVisible) {
+            inputAllDataInInputModel()
+            outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(descriptionViewModel.productInputModel.value))
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, descriptionViewModel.isAddMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, descriptionViewModel.isEditMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, descriptionViewModel.isDraftMode)
+            outState.putBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED, descriptionViewModel.isFirstMoved)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_INPUT_MODEL)
+            descriptionViewModel.isAddMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISADDING)
+            descriptionViewModel.isEditMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISEDITING)
+            descriptionViewModel.isDraftMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISDRAFTING)
+            descriptionViewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
+
+            if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model and and ui of the page
+                mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
+                    descriptionViewModel.updateProductInputModel(this)
+                    if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved)) {
+                        applyEditMode()
+                    } else {
+                        btnNext.visibility = View.VISIBLE
+                        btnSave.visibility = View.GONE
+                    }
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
     }
 
     private fun sendClickAddProductVariant() {
@@ -306,6 +355,7 @@ class AddEditProductDescriptionFragment:
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isFragmentVisible = false
         removeObservers()
     }
 
@@ -405,7 +455,7 @@ class AddEditProductDescriptionFragment:
         if(descriptionViewModel.isAddMode && !descriptionViewModel.isDraftMode) {
             var dataBackPressed = NO_DATA
             if(descriptionViewModel.isFirstMoved) {
-                inputAllDataInInputDraftModel()
+                inputAllDataInInputModel()
                 dataBackPressed = DESCRIPTION_DATA
                 descriptionViewModel.productInputModel.value?.requestCode = arrayOf(DETAIL_DATA, DESCRIPTION_DATA, NO_DATA)
             }
@@ -415,7 +465,8 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun inputAllDataInInputDraftModel() {
+    private fun inputAllDataInInputModel() {
+        descriptionViewModel.productInputModel.value?.isDataChanged = true
         descriptionViewModel.productInputModel.value?.descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
                 getFilteredValidVideoLink()
@@ -425,6 +476,12 @@ class AddEditProductDescriptionFragment:
     private fun observeProductInputModel() {
         descriptionViewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             updateVariantLayout()
+        })
+    }
+
+    private fun observeDescriptionValidation() {
+        descriptionViewModel.descriptionValidationMessage.observe(viewLifecycleOwner, Observer {
+            updateDescriptionFieldErrorMessage(it)
         })
     }
 
@@ -519,11 +576,23 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun applyEditMode() {
-        val description = descriptionViewModel.descriptionInputModel.productDescription
-        val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
+    private fun validateDescriptionText(it: String) {
+        view?.postDelayed({
+            descriptionViewModel.validateProductDescriptionInput(it)
+        }, VALIDATE_REQUEST_DELAY)
+    }
 
-        textFieldDescription.setText(description)
+    private fun updateDescriptionFieldErrorMessage(message: String) {
+        textFieldDescription?.setMessage(message)
+        textFieldDescription?.setError(message.isNotEmpty())
+        btnSave.isEnabled = message.isEmpty()
+    }
+
+    private fun applyEditMode() {
+        val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
+        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList ?: emptyList()
+
+        textFieldDescription?.setText(description)
         if (videoLinks.isNotEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)
@@ -652,7 +721,7 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickContinue(shopId)
         }
-        inputAllDataInInputDraftModel()
+        inputAllDataInInputModel()
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
             arguments?.let {
                 val cacheManagerId = AddEditProductDescriptionFragmentArgs.fromBundle(it).cacheManagerId
@@ -665,21 +734,21 @@ class AddEditProductDescriptionFragment:
                 }
                 val destination = AddEditProductDescriptionFragmentDirections.actionAddEditProductDescriptionFragmentToAddEditProductShipmentFragment()
                 destination.cacheManagerId = cacheManagerId
-                findNavController().navigate(destination)
+                NavigationController.navigate(this@AddEditProductDescriptionFragment, destination)
             }
         }
     }
 
     private fun submitInput() {
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
-            inputAllDataInInputDraftModel()
+            inputAllDataInInputModel()
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE)
         }
     }
 
     private fun submitInputEdit() {
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
-            inputAllDataInInputDraftModel()
+            inputAllDataInInputModel()
             setFragmentResultWithBundle(REQUEST_KEY_DESCRIPTION)
         }
         if (descriptionViewModel.isEditMode) {

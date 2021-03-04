@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/unify_space_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_home_popular_city_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_T600"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        android:text="@string/hotel_homepage_popular_city_section_subtitle"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_home_popular_city_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_4"
+        android:text="@string/hotel_homepage_popular_city_section_title"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_popular_cities"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_homepage_popular_cities_see_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="alternate"
+        android:text="@string/hotel_homepage_popular_city_button_see_more"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"/>
+
+</LinearLayout>

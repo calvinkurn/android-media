@@ -4,7 +4,7 @@
     android:id="@+id/ll_invoice_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <include
@@ -28,15 +28,10 @@
 
             <include
                 layout="@layout/item_cart_product"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
             <include
                 layout="@layout/item_shipment_other_product"
-                tools:visibility="visible" />
-
-            <!--Shipping: Trade In Pickup-->
-            <include
-                layout="@layout/item_shipment_trade_in_pickup"
                 tools:visibility="visible" />
 
             <!--Shipping: Shipping Experience-->

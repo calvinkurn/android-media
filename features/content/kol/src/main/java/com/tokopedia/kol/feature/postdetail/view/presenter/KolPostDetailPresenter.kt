@@ -31,8 +31,6 @@ import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
-import com.tokopedia.vote.domain.usecase.SendVoteUseCase
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -46,7 +44,6 @@ class KolPostDetailPresenter @Inject constructor(
         private val likeKolPostUseCase: LikeKolPostUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
         private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
-        private val sendVoteUseCase: SendVoteUseCase,
         private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
         private val deletePostUseCase: DeletePostUseCase,
         private val atcUseCase: AddToCartUseCase,
@@ -68,7 +65,6 @@ class KolPostDetailPresenter @Inject constructor(
         doFavoriteShopUseCase.unsubscribe()
         trackAffiliateClickUseCase.unsubscribe()
         deletePostUseCase.unsubscribe()
-        sendVoteUseCase.unsubscribe()
         atcUseCase.unsubscribe()
         getRelatedPostUseCase.unsubscribe()
         getWhitelistUseCase.unsubscribe()
@@ -169,29 +165,6 @@ class KolPostDetailPresenter @Inject constructor(
         )
     }
 
-    override fun sendVote(positionInFeed: Int, pollId: String, optionId: String) {
-        sendVoteUseCase.execute(
-                SendVoteUseCase.createParamsV1(pollId, optionId),
-                object : Subscriber<VoteStatisticDomainModel>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        if (view != null) {
-                            view.onErrorSendVote(ErrorHandler.getErrorMessage(view.context, e))
-                        }
-                    }
-
-                    override fun onNext(voteStatisticDomainModel: VoteStatisticDomainModel) {
-                        if (view != null) {
-                            view.onSuccessSendVote(positionInFeed, optionId, voteStatisticDomainModel)
-                        }
-                    }
-                })
-
-    }
-
     override fun trackAffiliate(clickURL: String) {
         trackAffiliateClickUseCase.execute(
                 TrackAffiliateClickUseCase.createRequestParams(clickURL), object : Subscriber<Boolean>() {
@@ -238,7 +211,8 @@ class KolPostDetailPresenter @Inject constructor(
         val isShopEmpty = postTagItem.shop.isEmpty()
         if (!isShopEmpty) {
             atcUseCase.execute(
-                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId, productName = postTagItem.text, price = postTagItem.price),
+                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId, productName = postTagItem.text,
+                            price = postTagItem.price, userId = userSession.userId),
                     object : Subscriber<AddToCartDataModel>() {
                         override fun onCompleted() {
 

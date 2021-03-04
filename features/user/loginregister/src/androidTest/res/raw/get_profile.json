@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "profile": {
+        "user_id": "88495978",
+        "full_name": "Kelvin Saputra haha",
+        "first_name": "Kelvin",
+        "email": "kelvin.saputra+1@tokopedia.com",
+        "bday": "1997-12-12T00:00:00Z",
+        "gender": "1",
+        "phone": "6285156364695",
+        "phone_masked": "XXXX-XXXX-4695",
+        "phone_verified": true,
+        "profile_picture": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-20.jpg",
+        "created_password": true,
+        "isLoggedIn": true
+      },
+      "shopBasicData": {
+        "result": {
+          "shopID": "7799905",
+          "name": "kelvin tokop",
+          "domain": "kelvintokop",
+          "level": 1,
+          "logo": "https://ecs7-p.tokopedia.net/img/seller_no_logo_1.png"
+        }
+      }
+    }
+  }
+]

@@ -4,15 +4,14 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 
 import java.util.List;
 
@@ -45,9 +44,7 @@ public interface ShippingDurationContract {
                                        List<ShopShipment> shopShipmentList, int codHistory,
                                        boolean isCorner, boolean isLeasing, String pslCode,
                                        List<Product> products, String cartString, boolean isTradeInDropOff,
-                                       RecipientAddressModel recipientAddressModel);
-
-        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList);
+                                       RecipientAddressModel recipientAddressModel, boolean isFulfillment, int preOrderTime, String mvc);
 
         CourierItemData getCourierItemData(List<ShippingCourierUiModel> shippingCourierUiModels);
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.ContainerUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_gradient_green">
+    app:container_color="GREEN">
 
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_1"
-                android:background="@color/Neutral_N100"
+                android:background="@color/Unify_N100"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_card_header" />
 
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:lines="1"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/view_card_header"
                 app:layout_constraintStart_toStartOf="@+id/view_card_header"
                 app:layout_constraintTop_toTopOf="@+id/view_card_header"
@@ -70,29 +70,17 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_12"
-                android:lines="1"
-                android:textColor="@color/Neutral_N700_96"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_card_header"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_address_receiver"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:ellipsize="end"
                 android:lines="1"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/tv_address_name"
-                app:layout_constraintTop_toTopOf="@+id/tv_address_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_card_header"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler" />
 
@@ -107,7 +95,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:ellipsize="end"
                 android:lines="1"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_address_name"
@@ -146,7 +134,7 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_12"
-                android:background="@color/Neutral_N75"
+                android:background="@color/Unify_N75"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_order_preference_payment" />
@@ -161,7 +149,7 @@
                 android:paddingEnd="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_12"
                 android:text="@string/label_choose_other_preference"
-                android:textColor="@color/Green_G500"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider3"
@@ -171,4 +159,4 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify>
-</FrameLayout>
+</com.tokopedia.unifycomponents.ContainerUnify>

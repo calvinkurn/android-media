@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/label_variant_title"
-        android:textColor="@color/grey_796"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_6"
         android:text="@string/label_variant_subtitle"
-        android:textColor="@color/grey_560"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVariantHeaderTitle"
@@ -31,72 +31,41 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddVariant"
+        android:contentDescription="@string/content_desc_tvAddVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/label_add_variant"
-        android:textColor="@color/unify_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVariantHeaderSubtitle"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvEditVariant"
+        android:contentDescription="@string/content_desc_tvEditVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_edit_variant"
-        android:textColor="@color/unify_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="@+id/tvVariantHeaderTitle"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
         android:id="@+id/layoutVariantTips"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl7"
+        app:text="@string/label_add_product_variant_tips"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:background="@drawable/yellow_y100_rounded_corner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddVariant">
-
-        <ImageView
-            android:id="@+id/ivVariantTipsBulb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/product_add_edit_ic_tips_bulb"
-            android:layout_marginStart="@dimen/dp_8" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvVariantPhotoTips"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_11"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_11"
-            android:text="@string/label_add_product_variant_tips"
-            android:textColor="@color/container_help_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivVariantTipsBulb"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/tvAddVariant" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvVariantLevel1Type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/grey_560"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutVariantTips"
         app:typographyType="body_2" />
@@ -105,7 +74,7 @@
         android:id="@+id/tvVariantLevel1Count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/grey_796"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVariantLevel1Type"
         app:typographyType="body_2" />
@@ -114,7 +83,7 @@
         android:id="@+id/tvVariantLevel2Type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/grey_560"
+        android:textColor="@color/Unify_N700_68"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVariantLevel1Count"
@@ -124,7 +93,7 @@
         android:id="@+id/tvVariantLevel2Count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/grey_796"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVariantLevel2Type"
         app:typographyType="body_2" />

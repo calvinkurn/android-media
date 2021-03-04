@@ -12,7 +12,7 @@
         android:id="@+id/shop_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
-            tools:src="@color/tkpd_main_green" />
+            tools:src="@color/Unify_G400" />
 
         <ImageView
             android:id="@+id/iv_badge"
@@ -79,22 +79,22 @@
             app:layout_constraintStart_toEndOf="@+id/shop_ava"
             app:layout_constraintTop_toBottomOf="@+id/shop_location_online" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_feature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_5"
-            android:background="@color/green_go_apotik"
+            android:background="@color/Unify_G200"
+            app:typographyType="small"
             android:lines="1"
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_4"
             android:paddingTop="@dimen/dp_2"
             android:paddingRight="@dimen/dp_4"
             android:paddingBottom="@dimen/dp_2"
-            android:textColor="@color/medium_green"
+            android:textColor="@color/Unify_G400"
             android:visibility="visible"
-            app:fontSize="micro"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintLeft_toRightOf="@+id/shop_name"
@@ -103,23 +103,22 @@
             app:layout_constraintTop_toTopOf="@+id/shop_ava"
             app:layout_goneMarginLeft="@dimen/dp_12"
             app:layout_goneMarginStart="@dimen/dp_12"
-            tools:text="By GoApotik"
-            tools:textSize="12sp" />
+            tools:text="By GoApotik" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_location_online"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_4"
             android:maxLines="2"
-            app:fontSize="micro"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_location"
             app:layout_constraintTop_toBottomOf="@+id/shop_name"
-            app:textViewTheme="lightDisabled"
-            tools:text="SHOP NAME asdasdsadsadasddasasddsadsadasdsadsa" />
+            app:typographyType="body_3"
+            tools:text="Jakarta Barat • 20 menit lalu" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_name"
@@ -127,6 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_5"
+            app:layout_constrainedWidth="true"
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
@@ -155,9 +155,9 @@
             android:gravity="center"
             android:padding="@dimen/dp_8"
             android:text="@string/label_chat_seller"
-            android:textColor="@color/light_primary"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
-            app:drawableLeftCompat="@drawable/ic_topchat"
+            app:drawableLeftCompat="@drawable/ic_product_detail_topchat"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_favorite"
             app:layout_constraintHorizontal_chainStyle="spread"
@@ -179,7 +179,7 @@
             android:gravity="center"
             android:padding="@dimen/dp_8"
             android:text="@string/label_follow"
-            android:textColor="@color/dark_primary"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_12"
             app:drawableLeftCompat="@drawable/ic_plus_add_white_24"
             app:layout_constraintBottom_toBottomOf="@+id/send_msg_shop"
@@ -201,6 +201,6 @@
         android:layout_height="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/shop_separator"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,12 +31,13 @@
             android:paddingStart="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_12"
             android:textColor="@color/clr_f531353b"
+            android:text="@string/discovery_tokopedia"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/iv_back"
             app:layout_constraintRight_toLeftOf="@+id/iv_search"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3"
-            tools:text="Discovery"/>
+            tools:text="@string/discovery_tokopedia"/>
 
         <ImageView
             android:id="@+id/iv_search"

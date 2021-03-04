@@ -16,7 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/Unify_N0">
 
             <com.tokopedia.header.HeaderUnify
                 android:id="@+id/showcase_picker_toolbar"
@@ -98,11 +99,14 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/guideline_action_picker"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_bias="0"
             android:layout_width="wrap_content"
             android:ellipsize="end"
             android:lineSpacingExtra="@dimen/sp_6"
             android:singleLine="true"
-            android:textColor="@color/primary_text_color"
+            android:textColor="@color/Unify_N700_96"
             tools:text="@string/empty_state_hint_text" />
 
         <ImageView
@@ -116,12 +120,20 @@
             android:layout_alignParentEnd="true"
             android:contentDescription="@string/new_showcase_hint_button_content_desc" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_action_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/dp_32"
+            />
+
         <View
             android:id="@+id/view_line_separator"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_20"
-            android:background="@color/line_separator"
+            android:background="@color/Unify_N75"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_empty_state_hint"
@@ -153,7 +165,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:gravity="center"
             android:text="@string/title_empty_state"
-            android:textColor="@color/primary_text_color"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_20"
             android:textStyle="bold" />
 
@@ -165,7 +177,7 @@
             android:gravity="center"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/subtitle_empty_state"
-            android:textColor="@color/secondary_subtitle_text_color"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
@@ -198,19 +210,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible">
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_picker_save"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:text="@string/save_product_action_text"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonSize="large"
-            app:unifyButtonType="main"
-            />
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_picker_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:text="@string/save_product_action_text"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main"
+                />
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

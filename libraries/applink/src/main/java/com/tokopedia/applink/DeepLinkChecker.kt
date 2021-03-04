@@ -43,7 +43,6 @@ object DeepLinkChecker {
     const val FLIGHT = 18
     const val REFERRAL = 19
     const val TOKOPOINT = 20
-    const val GROUPCHAT = 21
     const val SALE = 22
     const val WALLET_OVO = 23
     const val PLAY = 24
@@ -60,6 +59,7 @@ object DeepLinkChecker {
     const val PRODUCT_REVIEW = 35
     const val DEALS = 36
     const val TRAVEL_HOMEPAGE = 37
+    const val NATIVE_THANK_YOU = 38
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 

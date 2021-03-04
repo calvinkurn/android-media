@@ -4,7 +4,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -19,13 +18,13 @@ import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 
 abstract class ChatMessageViewHolder(
         itemView: View?,
-        private val listener: ChatLinkHandlerListener,
+        protected val listener: ChatLinkHandlerListener,
         private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<MessageViewModel>(itemView) {
 
     protected open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
     protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(R.id.cl_msg_container)
-    protected val bottomMarginOpposite: Float = getOppositeMargin(itemView?.context)
+    protected val topMarginOpposite: Float = getOppositeMargin(itemView?.context)
     private val movementMethod = ChatLinkHandlerMovementMethod(listener)
 
     override fun bind(message: MessageViewModel) {
@@ -39,8 +38,8 @@ abstract class ChatMessageViewHolder(
     protected fun bindMargin(message: MessageViewModel) {
         val lp = msgContainer?.layoutParams
         if (lp is RecyclerView.LayoutParams) {
-            if (!adapterListener.isNextItemSender(adapterPosition, message.isSender)) {
-                msgContainer?.setMargin(0, 0, 0, bottomMarginOpposite.toInt())
+            if (adapterListener.isOpposite(adapterPosition, message.isSender)) {
+                msgContainer?.setMargin(0, topMarginOpposite.toInt(), 0, 0)
             } else {
                 msgContainer?.setMargin(0, 0, 0, 0)
             }
@@ -51,7 +50,7 @@ abstract class ChatMessageViewHolder(
         itemView.setOnClickListener { v -> KeyboardHandler.DropKeyboard(itemView.context, itemView) }
     }
 
-    private fun verifyReplyTime(chat: MessageViewModel) {
+    protected fun verifyReplyTime(chat: MessageViewModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
@@ -64,5 +63,6 @@ abstract class ChatMessageViewHolder(
     companion object {
         const val TYPE_LEFT = 0
         const val TYPE_RIGHT = 1
+        const val TYPE_RIGHT_BANNED = 2
     }
 }

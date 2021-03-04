@@ -1,0 +1,116 @@
+[
+  {
+    "data": {
+      "uohOrders": {
+        "orders": [],
+        "filters": [
+          "Semua Transaksi",
+          "Dalam Proses",
+          "Berhasil",
+          "Tidak Berhasil",
+          "E-tiket \u0026 E-voucher Aktif"
+        ],
+        "filtersV2": [
+          {
+            "label": "Semua Status Transaksi",
+            "value": "",
+            "isPrimary": true
+          },
+          {
+            "label": "Transaksi Berlangsung",
+            "value": "Dalam Proses",
+            "isPrimary": true
+          },
+          {
+            "label": "Menunggu Konfirmasi",
+            "value": "menunggu_konfirmasi",
+            "isPrimary": false
+          },
+          {
+            "label": "Diproses",
+            "value": "diproses",
+            "isPrimary": false
+          },
+          {
+            "label": "Dikirim",
+            "value": "dikirim",
+            "isPrimary": false
+          },
+          {
+            "label": "Tiba di Tujuan",
+            "value": "tiba_di_tujuan",
+            "isPrimary": false
+          },
+          {
+            "label": "Dikomplain",
+            "value": "dikomplain",
+            "isPrimary": false
+          },
+          {
+            "label": "Berhasil",
+            "value": "Berhasil",
+            "isPrimary": true
+          },
+          {
+            "label": "Tidak Berhasil",
+            "value": "Tidak Berhasil",
+            "isPrimary": true
+          },
+          {
+            "label": "E-tiket \u0026 E-voucher Aktif",
+            "value": "E-tiket \u0026 E-voucher Aktif",
+            "isPrimary": true
+          }
+        ],
+        "categories": [
+          {
+            "value": "marketplace",
+            "label": "Belanja"
+          },
+          {
+            "value": "air_pdam,angsuran_kredit,belajar,biaya_pendidikan,bpjs,invoicing,samsat,gas_pgn,internet_tv_kabel,iuran_properti,tagihan_cc,kartu_prakerja,listrik_pln,m_tix,pajak,paket_data,pasca_bayar,penerimaan_negara,premi_asuransi,pulsa,retribusi,roaming,streaming,telkom,uang_elektronik,upgrade_internet_tv,voucher_game,bridestory_pay,ovo",
+            "label": "Top-up \u0026 Tagihan"
+          },
+          {
+            "value": "deals,event,flight,train,hotel",
+            "label": "Travel \u0026 Entertainment"
+          },
+          {
+            "value": "mutual_fund,gold,insurance,gift_card,modal_toko",
+            "label": "Keuangan"
+          },
+          {
+            "value": "umrah,donasi,zakat_mal,zakat_fitrah",
+            "label": "Halal Corner"
+          },
+          {
+            "value": "money_in",
+            "label": "Langsung Laku"
+          },
+          {
+            "value": "ls_print",
+            "label": "Tokopedia Print"
+          }
+        ],
+        "next": "",
+        "dateLimit": "2018-09-01",
+        "tickers": [
+          {
+            "action": {
+              "actionType": "",
+              "appURL": "",
+              "webURL": "",
+              "label": "",
+              "textColor": "",
+              "bgColor": ""
+            },
+            "title": "Info seputar Kartu Prakerja",
+            "text": "Periode pengisian ulasan \u0026 rating Prakerja sudah berakhir 15 Des pkl 23.59 WIB",
+            "type": "default",
+            "isFull": false
+          }
+        ]
+      }
+    }
+  }
+]

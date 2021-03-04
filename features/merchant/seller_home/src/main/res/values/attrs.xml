@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LottieBottomNav">
+        <attr name="buttonContainerBackgroundColor" format="color" />
+        <attr name="buttonsHeight" format="dimension" />
+        <attr name="itemCount" format="integer" />
+        <attr name="offscreenPageLimit" format="integer" />
+        <attr name="setViewPagerSwipeable" format="boolean" />
+        <attr name="viewPagerBackground" format="color" />
+        <attr name="activeButtonColor" format="color" />
+        <attr name="buttonColor" format="color" />
+        <attr name="navbarElevation" format="dimension"/>
+    </declare-styleable>
+</resources>

@@ -1,6 +1,10 @@
 package com.tokopedia.sellerhomecommon.presentation.view.bottomsheet
 
 import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -17,13 +21,17 @@ class TooltipBottomSheet : BottomSheetUnify() {
     companion object {
         fun createInstance(): TooltipBottomSheet {
             return TooltipBottomSheet().apply {
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 showCloseIcon = false
                 isDragable = true
                 showKnob = true
                 isHideable = true
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NO_FRAME, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
     }
 
     fun init(context: Context, tooltip: TooltipUiModel) {

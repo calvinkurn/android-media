@@ -17,15 +17,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iris.Iris
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -41,13 +43,14 @@ import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -79,6 +82,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private lateinit var listAccount: RecyclerView
     private lateinit var adapter: AccountAdapter
     private lateinit var toolbarShopCreation: Toolbar
+    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     lateinit var mIris: Iris
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
@@ -173,28 +177,28 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver() {
-        chooseAccountViewModel.getAccountListFBResponse.observe(this, androidx.lifecycle.Observer {
+        chooseAccountViewModel.getAccountListFBResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetAccountList(it.data)
                 is Fail -> onErrorGetAccountList(it.throwable)
             }
         })
-        chooseAccountViewModel.getAccountListPhoneResponse.observe(this, androidx.lifecycle.Observer {
+        chooseAccountViewModel.getAccountListPhoneResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetAccountList(it.data)
                 is Fail -> onErrorGetAccountList(it.throwable)
             }
         })
-        chooseAccountViewModel.loginPhoneNumberResponse.observe(this, androidx.lifecycle.Observer {
+        chooseAccountViewModel.loginPhoneNumberResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                is Success -> onSuccessLoginToken()
+                is Success -> onSuccessLoginToken(it.data)
                 is Fail -> {
                     dismissLoadingProgress()
                     onErrorLoginToken(it.throwable)
                 }
             }
         })
-        chooseAccountViewModel.getUserInfoResponse.observe(this, androidx.lifecycle.Observer {
+        chooseAccountViewModel.getUserInfoResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
                 is Fail -> {
@@ -203,10 +207,15 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 }
             }
         })
-        chooseAccountViewModel.goToActivationPage.observe(this, androidx.lifecycle.Observer {
+        chooseAccountViewModel.showPopup.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it != null) {
+                showPopupError(it.header, it.body, it.action)
+            }
+        })
+        chooseAccountViewModel.goToActivationPage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToActivationPage()
         })
-        chooseAccountViewModel.goToSecurityQuestion.observe(this, androidx.lifecycle.Observer {
+        chooseAccountViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToSecurityQuestion()
         })
     }
@@ -225,7 +234,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         selectedPhoneNo = phone
         showLoadingProgress()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.AFTER_LOGIN_PHONE)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_AFTER_LOGIN_PHONE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.userIdEnc)
@@ -233,8 +242,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID, account.userId)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.PIN);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OTP_MODE_PIN);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
     }
 
@@ -296,14 +306,15 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
             TrackApp.getInstance().gtm
                     .pushUserId(userId)
-            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
-                Crashlytics.setUserIdentifier(userId)
+            if (!GlobalConfig.DEBUG && crashlytics != null)
+                crashlytics.setUserId(userId)
 
             if (userSessionInterface.isLoggedIn) {
                 val userData = UserData()
                 userData.userId = userSessionInterface.userId
                 userData.email = userSessionInterface.email
                 userData.phoneNumber = userSessionInterface.phoneNumber
+                userData.medium = userSessionInterface.loginMethod
 
                 //Identity Event
                 LinkerManager.getInstance().sendEvent(
@@ -312,7 +323,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 //Login Event
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
-                loginEventAppsFlyer(userSessionInterface.userId, userSessionInterface.email)
+                loginEventAppsFlyer(userSessionInterface.userId, "")
             }
 
         } catch (e: Exception) {
@@ -330,18 +341,22 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
-    private fun onSuccessLoginToken() {
+    private fun onSuccessLoginToken(loginToken: LoginToken) {
         chooseAccountViewModel.getUserInfo()
     }
 
     private fun onErrorLoginToken(throwable: Throwable) {
-        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
+        if (throwable is AkamaiErrorException) {
+            showPopupErrorAkamai()
+        } else {
+            onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
+        }
         logUnknownError(Throwable("Login Phone Number Login Token is not success"))
     }
 
     private fun logUnknownError(throwable: Throwable) {
         try {
-            Crashlytics.logException(throwable)
+            crashlytics.recordException(throwable)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -416,6 +431,31 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun showPopupError(header: String, body: String, url: String) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(header)
+            dialog.setDescription(body)
+            dialog.setPrimaryCTAText(getString(R.string.check_full_information))
+            dialog.setSecondaryCTAText(getString(R.string.close_popup))
+            dialog.setPrimaryCTAClickListener {
+                RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.hide()
+            }
+            dialog.show()
+        }
+    }
+
+    private fun showPopupErrorAkamai() {
+        showPopupError(
+                getString(R.string.popup_error_title),
+                getString(R.string.popup_error_desc),
+                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+        )
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             onSuccessLogin(userSessionInterface.temporaryUserId)
@@ -454,6 +494,11 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         const val REQUEST_CODE_PIN_CHALLENGE = 112
         const val PARAM_IS_2FA_KEY = "KEY_FROM_2FA_CHALLENGE"
         const val PARAM_IS_2FA = 113
+
+        private const val OTP_TYPE_AFTER_LOGIN_PHONE = 148
+        private const val OTP_MODE_PIN = "PIN"
+
+        private const val TOKOPEDIA_CARE_PATH = "help"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = ChooseAccountFragment()

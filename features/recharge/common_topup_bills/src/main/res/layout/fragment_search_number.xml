@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/topupbills_search_input_view_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16" />
+        app:search_bar_show_icon="false"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="#f3f4f5"/>
+        android:layout_height="@dimen/layout_lvl1"
+        android:background="@color/Unify_N50"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topupbills_search_number_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         tools:listitem="@layout/item_autocomplete_fav_num" />
 
 </LinearLayout>

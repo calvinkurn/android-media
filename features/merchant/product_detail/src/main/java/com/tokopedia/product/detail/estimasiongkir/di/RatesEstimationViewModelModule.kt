@@ -9,7 +9,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@RatesEstimationScope
 @Module
 abstract class RatesEstimationViewModelModule{
 

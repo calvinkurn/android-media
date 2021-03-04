@@ -14,10 +14,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_product"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
+            app:unify_image_type="rect"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -31,7 +32,7 @@
             android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/iv_product"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
@@ -46,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_2"
-            android:textColor="@color/charcoal_grey_44"
+            android:textColor="@color/Unify_N700_44"
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constraintTop_toBottomOf="@+id/tv_product"

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="wrap_content">
+
+    <RatingBar
+        android:id="@+id/product_rating"
+        style="@style/RatingBar.Micro"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_height="wrap_content"
+        android:isIndicator="true"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+            android:id="@+id/progress_value_review"
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="5"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
+            app:rcBackgroundColor="@color/Unify_N50"
+            app:rcMax="100"
+            app:rcProgress="0"
+            app:rcProgressColor="@color/Unify_Y300"
+            app:rcRadius="6.5dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:id="@+id/counter_review"
+            android:textColor="@color/Unify_N700_68"
+            style="@style/TextView.Micro.BlackSecondary"
+            tools:text="49"/>
+
+    </LinearLayout>
+</LinearLayout>

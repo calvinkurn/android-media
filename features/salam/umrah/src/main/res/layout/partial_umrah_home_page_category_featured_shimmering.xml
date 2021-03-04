@@ -6,33 +6,33 @@
     android:orientation="horizontal"
     >
     <com.tokopedia.salam.umrah.homepage.presentation.widget.UmrahHomepageDealsWidget
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
     <com.tokopedia.salam.umrah.homepage.presentation.widget.UmrahHomepageDealsWidget
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
     <com.tokopedia.salam.umrah.homepage.presentation.widget.UmrahHomepageDealsWidget
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
     <com.tokopedia.salam.umrah.homepage.presentation.widget.UmrahHomepageDealsWidget
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
     <com.tokopedia.salam.umrah.homepage.presentation.widget.UmrahHomepageDealsWidget
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
     <com.tokopedia.salam.umrah.homepage.presentation.widget.UmrahHomepageDealsWidget
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />

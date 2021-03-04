@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.linker.helper.BranchHelper;
+import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.interfaces.WrapperInterface;
@@ -11,6 +14,7 @@ import com.tokopedia.linker.model.LinkerCommerceData;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerShareData;
+import com.tokopedia.linker.model.RechargeLinkerData;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.requests.LinkerDeeplinkRequest;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
@@ -30,6 +34,7 @@ import java.util.Map;
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.LinkProperties;
 
 
@@ -37,13 +42,16 @@ public class BranchWrapper implements WrapperInterface {
 
     private String deferredDeeplinkPath;
     private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
+    private static boolean isBranchInitialized = false;
 
     @Override
     public void init(Context context) {
         if(Branch.getInstance() == null) {
             Branch.enableBypassCurrentActivityIntentState();
             Branch.getAutoInstance(context);
-
+            if(GlobalConfig.isAllowDebuggingTools()) {
+                Branch.enableLogging();
+            }
         }
     }
 
@@ -73,32 +81,17 @@ public class BranchWrapper implements WrapperInterface {
             try {
                 if(linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDataObj() != null &&
                         linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData) {
-                    branch.initSession(new Branch.BranchReferralInitListener() {
-                                           @Override
-                                           public void onInitFinished(JSONObject referringParams, BranchError error) {
-                                               if (error == null) {
-                                                   String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
-                                                   String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
-
-                                                   if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")&&
-                                                           !TextUtils.isEmpty(deeplink)) {
-                                                       deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
-                                                   }
-                                                   if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
-                                                       linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
-                                                               LinkerUtils.createDeeplinkData(deeplink, promoCode));
-                                                   }
-
-                                                   checkAndSendUtmParams(context,referringParams);
-                                               } else {
-                                                   if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
-                                                       linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
-                                                               LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
-                                                   }
-                                               }
-                                           }
-                                       }, ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable(),
-                            ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
+                    if(isBranchInitialized){
+                        Branch.sessionBuilder(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity())
+                                .withCallback(getBranchCallback(linkerDeeplinkRequest, context))
+                                .withData(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable())
+                                .reInit();
+                    }
+                    else {
+                        isBranchInitialized = true;
+                        Branch.sessionBuilder(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity()).withCallback(getBranchCallback(linkerDeeplinkRequest, context)).
+                                withData(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable()).init();
+                    }
                 }
             } catch (Exception e) {
                 if(linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
@@ -107,6 +100,46 @@ public class BranchWrapper implements WrapperInterface {
                 }
             }
         }
+    }
+
+    private Branch.BranchReferralInitListener getBranchCallback(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context){
+        return new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
+                    String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
+
+                    if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")&&
+                            !TextUtils.isEmpty(deeplink)) {
+                        deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
+                    }
+                    if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
+                        linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
+                                LinkerUtils.createDeeplinkData(deeplink, promoCode));
+                    }
+
+                    checkAndSendUtmParams(context,referringParams);
+                } else {
+                    if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
+                        linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
+                                LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
+                    }
+                }
+            }
+        };
+    }
+
+    private void fetchLastAttributeTouchData(){
+        Branch.getInstance().getLastAttributedTouchData(
+                new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
+                    @Override
+                    public void onDataFetched(JSONObject jsonObject, BranchError error) {
+                        if(error == null){
+
+                        }
+                    }
+                });
     }
 
     @Override
@@ -183,6 +216,24 @@ public class BranchWrapper implements WrapperInterface {
                         linkerGenericRequest.getDataObj() instanceof LinkerData){
                     BranchHelper.sendFlightPurchaseEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
                 }
+                break;
+            // Recharge
+            case LinkerConstants.EVENT_DIGITAL_HOMEPAGE:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    RechargeBranchHelper.sendDigitalHomepageLaunchEvent(context,
+                            (LinkerData) linkerGenericRequest.getDataObj()
+                    );
+                }
+                break;
+            case LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof RechargeLinkerData){
+                    RechargeBranchHelper.sendDigitalScreenLaunchEvent(context,
+                            (RechargeLinkerData) linkerGenericRequest.getDataObj()
+                    );
+                }
+                break;
         }
     }
 
@@ -217,14 +268,19 @@ public class BranchWrapper implements WrapperInterface {
                             }
                         } else {
                             if(shareCallback != null) {
-                                shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), url));
+                                if(data.isThrowOnError()){
+                                    shareCallback.onError(LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
+                                }
+                                else {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                                }
                             }
                         }
                     }
                 });
             }
         } else {
-            shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
+            shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
         }
     }
 
@@ -247,6 +303,8 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.PROMO_DETAIL, data.getId());
         } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getUri();
+        } else if (LinkerData.MERCHANT_VOUCHER.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         }
 
         else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -273,6 +331,13 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
             linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
+        } else if (LinkerData.HOTEL_TYPE.equalsIgnoreCase(data.getType())) {
+            linkProperties.setFeature(LinkerConstants.FEATURE_TYPE_HOTEL);
+            linkProperties.addTag(LinkerConstants.HOTEL_LABEL);
+            linkProperties.addTag(LinkerConstants.PDP_LABEL);
+            if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
+            linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
+            deeplinkPath = data.getDeepLink();
         }
 
         if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {

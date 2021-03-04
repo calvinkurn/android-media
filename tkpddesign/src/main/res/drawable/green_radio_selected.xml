@@ -8,7 +8,7 @@
                 android:width="25dp"
                 android:height="25dp"/>
             <solid
-                android:color="@color/white"/>
+                android:color="@color/Unify_N0"/>
             <stroke
                 android:width="2dp"
                 android:color="@color/tkpd_main_green"/>

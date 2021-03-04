@@ -1,11 +1,9 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
-import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
@@ -24,7 +22,7 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel.Companion.TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED
+import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
@@ -43,7 +41,7 @@ class ShopHomeNplCampaignViewHolder(
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView), CoroutineScope {
 
     private val masterJob = SupervisorJob()
-
+    private var isRemindMe: Boolean? = null
     override val coroutineContext = masterJob + Dispatchers.Main
 
     companion object {
@@ -77,10 +75,27 @@ class ShopHomeNplCampaignViewHolder(
         setBannerImage(model)
         setProductCarousel(model)
         setWidgetImpressionListener(model)
+        setBannerClickableArea(model)
+    }
+
+    private fun setBannerClickableArea(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        val productList = model.data?.firstOrNull()?.productList ?: listOf()
+        val clickableBannerAreaWidth = (getScreenWidth() * PADDING_LEFT_PERCENTAGE).toInt()
+        itemView.banner_clickable_area?.apply {
+            if (productList.isNotEmpty()) {
+                layoutParams?.width = clickableBannerAreaWidth
+                setOnClickListener {
+                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model)
+                }
+                show()
+            } else {
+                hide()
+            }
+        }
     }
 
     private fun setProductCarousel(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        val productList = model.data?.firstOrNull()?.productList?.reversed() ?: listOf()
+        val productList = model.data?.firstOrNull()?.productList ?: listOf()
         productListCampaignAdapter = ShopCampaignCarouselProductAdapter(
                 ShopCampaignCarouselProductAdapterTypeFactory(
                         model,
@@ -89,17 +104,16 @@ class ShopHomeNplCampaignViewHolder(
                 )
         )
         itemView.rv_product_carousel?.apply {
-            val paddingLeftBasedOnScreen = (getScreenWidth() *  PADDING_LEFT_PERCENTAGE).toInt()
-            setPadding(paddingLeftBasedOnScreen, paddingTop, paddingRight, paddingBottom)
             launch {
                 try {
                     val rvState = model.data?.firstOrNull()?.rvState
                     if (null != rvState) {
                         itemView.rv_product_carousel?.layoutManager?.onRestoreInstanceState(rvState)
-                    } else {
-                        layoutManager?.scrollToPosition(productList.size - 1)
                     }
-                    productListCampaignAdapter?.setElement(productList)
+                    val clickableBannerAreaWidth = (getScreenWidth() *  PADDING_LEFT_PERCENTAGE).toInt()
+                    if(productList.isNotEmpty())
+                        productListCampaignAdapter?.addElement(ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth))
+                    productListCampaignAdapter?.addElement(productList)
                     adapter = productListCampaignAdapter
                     setHeightBasedOnProductCardMaxHeight(productList.map {
                         ShopPageHomeMapper.mapToProductCardCampaignModel(
@@ -124,7 +138,7 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_145)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_145)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
@@ -140,12 +154,15 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            setImageUrl(bannerUrl, heightRatio = 1f)
+            try {
+                if(context.isValidGlideContext())
+                    setImageUrl(bannerUrl, heightRatio = 1f)
+            } catch (e: Throwable) { }
         }
     }
 
     private fun setRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        val isRemindMe = model.data?.firstOrNull()?.isRemindMe
+        isRemindMe = model.data?.firstOrNull()?.isRemindMe
         isRemindMe?.let {
             itemView.layout_remind_me?.show()
             itemView.layout_remind_me?.setOnClickListener {
@@ -162,7 +179,8 @@ class ShopHomeNplCampaignViewHolder(
                         itemView.context,
                         R.drawable.ic_npl_remind_me_true
                 ))
-                itemView.text_remind_me?.hide()
+                hideRemindMeText(model, it)
+                model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
             } else {
                 val isHideRemindMeTextAfterXSeconds = model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds ?: false
                 itemView.layout_remind_me?.background = MethodChecker.getDrawable(
@@ -174,17 +192,39 @@ class ShopHomeNplCampaignViewHolder(
                         R.drawable.ic_npl_remind_me_false
                 ))
                 if(isHideRemindMeTextAfterXSeconds){
-                    itemView.text_remind_me?.hide()
+                    hideRemindMeText(model, it)
                 }else{
                     itemView.text_remind_me?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
-                        model.data.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
-                        itemView.text_remind_me?.hide()
+                        if (isRemindMe == false) {
+                            hideRemindMeText(model, isRemindMe ?: false)
+                        }
+                        model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
                     }) {}
                 }
             }
             checkRemindMeLoading(model)
+        }
+    }
+
+    private fun hideRemindMeText(model: ShopHomeNewProductLaunchCampaignUiModel, isRemindMe: Boolean) {
+        val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
+        itemView.text_remind_me?.apply {
+            val colorText = if(isRemindMe){
+                com.tokopedia.unifyprinciples.R.color.Unify_N0
+            }else{
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+            }
+            setTextColor(MethodChecker.getColor(itemView.context, colorText))
+            if(totalNotifyWording.isEmpty()) {
+                hide()
+            } else {
+                val totalNotify = model.data?.firstOrNull()?.totalNotify ?: 0
+                val totalNotifyFormatted = totalNotify.thousandFormatted(1, RoundingMode.DOWN)
+                show()
+                text = totalNotifyFormatted
+            }
         }
     }
 
@@ -235,6 +275,8 @@ class ShopHomeNplCampaignViewHolder(
             } else {
                 itemView.timer?.gone()
             }
+        }else{
+            itemView.layout_timer?.gone()
         }
     }
 
@@ -258,20 +300,12 @@ class ShopHomeNplCampaignViewHolder(
         }
     }
 
-    private fun setCampaignInterest(
-            totalNotify: Int,
-            totalNotifyWording: String,
-            statusCampaign: String
-    ) {
-        if (totalNotifyWording.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
+    private fun setCampaignDescription(description: String, statusCampaign: String) {
+        if (description.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
             itemView.text_description?.text = ""
             itemView.text_description?.hide()
         } else {
-            val totalCampaignInterestString = totalNotifyWording.replace(
-                    TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED,
-                    totalNotify.thousandFormatted(1, RoundingMode.DOWN)
-            )
-            itemView.text_description?.text = totalCampaignInterestString
+            itemView.text_description?.text = MethodChecker.fromHtml(description)
             itemView.text_description?.show()
         }
     }
@@ -295,13 +329,12 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setHeader(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val title = model.header.title
-        val totalNotify = model.data?.firstOrNull()?.totalNotify ?: 0
-        val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
+        val dynamicRuleDescription = model.data?.firstOrNull()?.dynamicRule?.descriptionHeader.orEmpty()
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
         setTitle(title)
         setTnc(title, model)
         setCta(model)
-        setCampaignInterest(totalNotify, totalNotifyWording, statusCampaign)
+        setCampaignDescription(dynamicRuleDescription, statusCampaign)
     }
 
     private fun setTnc(title: String, model: ShopHomeNewProductLaunchCampaignUiModel) {

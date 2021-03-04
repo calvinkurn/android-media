@@ -75,8 +75,6 @@ public interface TkpdCoreRouter {
 
     void onAppsFlyerInit();
 
-    GCMHandler legacyGCMHandler();
-
     void refreshFCMTokenFromBackgroundToCM(String token, boolean force);
 
     void refreshFCMFromInstantIdService(String token);

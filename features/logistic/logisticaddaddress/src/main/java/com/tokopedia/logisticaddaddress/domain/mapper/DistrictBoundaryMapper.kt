@@ -4,10 +4,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_boundary.DistrictBoundaryResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_boundary.Geometry
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
-import com.tokopedia.logisticdata.util.getLatLng
+import com.tokopedia.logisticCommon.util.getLatLng
 import javax.inject.Inject
 
 /**

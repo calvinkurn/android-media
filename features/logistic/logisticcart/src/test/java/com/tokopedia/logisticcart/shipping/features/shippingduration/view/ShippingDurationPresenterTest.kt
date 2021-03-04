@@ -5,8 +5,8 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -59,7 +59,7 @@ object ShippingDurationPresenterTest : Spek({
             When("executed") {
                 presenter.loadCourierRecommendation(shipmentDetailData, 0,
                         shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address)
+                        products, "1479278-30-740525-99367774", false, address, false, 0, "")
             }
 
             Then("view shows positive data") {
@@ -86,7 +86,7 @@ object ShippingDurationPresenterTest : Spek({
             When("executed") {
                 presenter.loadCourierRecommendation(shipmentDetailData, 0,
                         shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address)
+                        products, "1479278-30-740525-99367774", false, address, false, 0, "")
             }
 
             Then("view shows no courier page from errorMessage") {
@@ -109,7 +109,7 @@ object ShippingDurationPresenterTest : Spek({
             When("executed") {
                 presenter.loadCourierRecommendation(shipmentDetailData, 0,
                         shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address)
+                        products, "1479278-30-740525-99367774", false, address, false, 0, "")
             }
 
             Then("view shows no courier page") {
@@ -128,7 +128,7 @@ object ShippingDurationPresenterTest : Spek({
             When("executed") {
                 presenter.loadCourierRecommendation(shipmentDetailData, 0,
                         shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address)
+                        products, "1479278-30-740525-99367774", false, address, false, 0, "")
             }
 
             Then("view shows error page") {
@@ -136,38 +136,6 @@ object ShippingDurationPresenterTest : Spek({
                     view.showErrorPage(any())
                 }
             }
-        }
-
-    }
-
-    Feature("load courier recommendation express checkout") {
-        beforeEachTest {
-            presenter.attachView(view)
-        }
-
-        Scenario("fetch data and showing data") {
-
-            val shippingParam = DummyProvider.getShippingParam()
-            val shopShipments = DummyProvider.getShopShipments()
-            val shippingData = DummyProvider.getShippingRecommendationDataWithState()
-
-            Given("observable returning success data") {
-                every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
-                every {
-                    responseConverter.fillState(any(), shopShipments, 0, 0)
-                } returns shippingData
-            }
-
-            When("executed") {
-                presenter.loadCourierRecommendation(shippingParam, 0, shopShipments)
-            }
-
-            Then("view showing positive data") {
-                verify {
-                    view.showData(shippingData.shippingDurationViewModels, shippingData.logisticPromo)
-                }
-            }
-
         }
 
     }

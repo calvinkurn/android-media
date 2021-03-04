@@ -1,4 +1,5 @@
 package com.tokopedia.checkers
+
 object ProductListClickChecker {
 
     fun notContainWords(eventAction: String?) =

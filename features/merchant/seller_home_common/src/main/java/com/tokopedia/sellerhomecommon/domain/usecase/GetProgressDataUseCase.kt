@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
@@ -21,13 +22,13 @@ class GetProgressDataUseCase constructor(
 
     override suspend fun executeOnBackground(): List<ProgressDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetProgressDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetProgressDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetProgressDataResponse>()
             val widgetData = data.getProgressBarData?.progressData.orEmpty()
-            return progressMapper.mapResponseToUi(widgetData)
+            return progressMapper.mapResponseToUi(widgetData, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

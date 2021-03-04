@@ -180,23 +180,23 @@ open class SizeSmallBusinessViewHolder (
                 when (element.tagType) {
                     1 -> {
                         itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_pink_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_pink))
+                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                     }
                     2 -> {
                         itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_green_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_green))
+                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                     }
                     3 -> {
                         itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_blue_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_blue))
+                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
                     }
                     4 -> {
                         itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_yellow_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_yellow))
+                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                     }
                     5 -> {
                         itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_grey_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_grey))
+                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     }
                     else -> {
                         itemView.tagLine.visibility = View.GONE

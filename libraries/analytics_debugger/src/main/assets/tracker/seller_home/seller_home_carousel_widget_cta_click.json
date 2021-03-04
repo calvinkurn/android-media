@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - carousel/banner widget CTA click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{click widget banner - .{1,} - see more}}",
+      "eventLabel": "",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

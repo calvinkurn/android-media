@@ -1,7 +1,8 @@
 package com.tokopedia.seller.purchase.detail.domain;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.purchase.detail.model.history.viewmodel.OrderHistoryData;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -11,6 +12,6 @@ import rx.Observable;
 
 public interface IOrderHistoryRepository {
 
-    Observable<OrderHistoryData> requestOrderHistoryData(TKPDMapParam<String, Object> params);
+    Observable<OrderHistoryData> requestOrderHistoryData(HashMap<String, Object> params);
 
 }

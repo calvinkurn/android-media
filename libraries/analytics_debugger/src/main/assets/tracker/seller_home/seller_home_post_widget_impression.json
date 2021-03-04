@@ -1,0 +1,16 @@
+{
+  "readme": "Seller Home Dashboard - post widget impression",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewHomepageIris",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{impression widget post - .{1,}}}",
+      "eventLabel": "{{(empty|not empty)}}",
+      "sessionIris": "{{.{1,}}}",
+      "businessUnit": "physical goods",
+      "currentSite": "tokopediaseller",
+      "userId": "{{.{1,}}}"
+    }
+  ]
+}

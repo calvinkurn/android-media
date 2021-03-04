@@ -26,13 +26,16 @@ class RechargeHomepageViewModel @Inject constructor(
         private val dispatcher: RechargeHomepageDispatchersProvider)
     : BaseViewModel(dispatcher.IO) {
 
-    private val mutableRechargeHomepageSectionSkeleton = MutableLiveData<Result<List<RechargeHomepageSectionSkeleton.Item>>>()
-    val rechargeHomepageSectionSkeleton: LiveData<Result<List<RechargeHomepageSectionSkeleton.Item>>>
+    private val mutableRechargeHomepageSectionSkeleton = MutableLiveData<Result<RechargeHomepageSectionSkeleton>>()
+    val rechargeHomepageSectionSkeleton: LiveData<Result<RechargeHomepageSectionSkeleton>>
         get() = mutableRechargeHomepageSectionSkeleton
+
     var localRechargeHomepageSections: List<RechargeHomepageSections.Section> = listOf()
+
     private val mutableRechargeHomepageSections = MutableLiveData<List<RechargeHomepageSections.Section>>()
     val rechargeHomepageSections: LiveData<List<RechargeHomepageSections.Section>>
         get() = mutableRechargeHomepageSections
+
     private val mutableRechargeHomepageSectionAction = MutableLiveData<Result<RechargeHomepageSectionAction>>()
     val rechargeHomepageSectionAction: LiveData<Result<RechargeHomepageSectionAction>>
         get() = mutableRechargeHomepageSectionAction
@@ -47,10 +50,11 @@ class RechargeHomepageViewModel @Inject constructor(
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response.sections
+            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
 
+            mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
             // Add initial section data
-            localRechargeHomepageSections = RechargeHomepageSectionMapper.mapInitialHomepageSections(data)
+            localRechargeHomepageSections = RechargeHomepageSectionMapper.mapInitialHomepageSections(data.sections)
             mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
         }) {
             mutableRechargeHomepageSectionSkeleton.postValue(Fail(it))
@@ -75,15 +79,19 @@ class RechargeHomepageViewModel @Inject constructor(
                 Update local (viewmodel) section then update LiveData in order to
                 prevent missing section updates caused by postValue override
              */
-            localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
-            mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
+            withContext(dispatcher.Main) {
+                localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
+                mutableRechargeHomepageSections.value = localRechargeHomepageSections
+            }
         }) {
             // Because error occured, remove sections
-            localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(
-                    localRechargeHomepageSections,
-                    RechargeHomepageSections(requestIDs = requestIDs)
-            )
-            mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
+            withContext(dispatcher.Main) {
+                localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(
+                        localRechargeHomepageSections,
+                        RechargeHomepageSections(requestIDs = requestIDs)
+                )
+                mutableRechargeHomepageSections.value = localRechargeHomepageSections
+            }
         }
     }
 
@@ -130,6 +138,21 @@ class RechargeHomepageViewModel @Inject constructor(
         )
     }
 
+    fun getDynamicIconsSectionIds(): ArrayList<String> {
+        return if (rechargeHomepageSectionSkeleton.value is Success) {
+            val dynamicIconSectionsIds = arrayListOf<String>()
+            (rechargeHomepageSectionSkeleton.value as Success).data.sections.filter { it.template.equals(SECTION_DYNAMIC_ICONS) }
+                    .forEach { dynamicIconSectionsIds.add(it.id) }
+            dynamicIconSectionsIds
+        } else arrayListOf()
+    }
+
+    fun getSearchBarPlaceholder(): String {
+        rechargeHomepageSectionSkeleton.value.let {
+            return if (it is Success) it.data.searchBarPlaceholder else ""
+        }
+    }
+
     companion object {
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_ID = "sectionID"
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION = "action"
@@ -151,5 +174,6 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
         const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
         const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
+        const val SECTION_PRODUCT_CARD_CUSTOM_BANNER = "PRODUCT_CARD_CUSTOM_BANNER"
     }
 }

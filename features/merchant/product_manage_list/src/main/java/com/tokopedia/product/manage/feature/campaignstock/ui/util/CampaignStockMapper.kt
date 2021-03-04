@@ -7,7 +7,7 @@ import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 object CampaignStockMapper {

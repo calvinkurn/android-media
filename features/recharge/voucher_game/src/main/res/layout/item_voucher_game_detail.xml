@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_2"
-    app:cardCornerRadius="@dimen/dp_5"
-    app:cardElevation="@dimen/dp_2">
+    android:layout_margin="@dimen/unify_space_2"
+    app:cardCornerRadius="@dimen/voucher_game_dp_5"
+    app:cardElevation="@dimen/unify_space_2">
 
     <RelativeLayout
         android:id="@+id/layout_product"
@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/digital_bg_product_item"
         android:orientation="vertical"
-        android:padding="@dimen/dp_10">
+        android:padding="@dimen/voucher_game_dp_10">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_product"
@@ -22,11 +22,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/unify_space_4"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="2"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_5"
             tools:text="Data 40.000" />
 
@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title_product"
             android:layout_alignParentLeft="true"
-            android:layout_marginRight="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginRight="@dimen/unify_space_4"
+            android:layout_marginBottom="@dimen/unify_space_4"
             android:visibility="gone"
             app:labelType="general_dark_red"
             app:textAllCaps="true"
@@ -46,13 +46,13 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_promo_price"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_19"
+            android:layout_height="@dimen/voucher_game_dp_19"
             android:layout_below="@id/title_product"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/unify_space_4"
             android:layout_toRightOf="@id/product_promo_label"
             android:gravity="center"
             android:lines="1"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             app:typographyType="small"
             tools:text="Pulsa 40.000" />
 
@@ -63,7 +63,7 @@
             android:layout_below="@id/product_promo_price"
             android:layout_alignParentLeft="true"
             android:lines="1"
-            android:textColor="@color/tkpd_main_orange"
+            android:textColor="@color/Unify_Y500"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Pulsa 40.000" />
@@ -74,10 +74,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/product_price"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/unify_space_4"
             android:lines="1"
             android:text="@string/vg_product_view_detail"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G500"
             android:visibility="gone"
             app:typographyType="body_2"
             app:typographyWeight="bold"

@@ -6,6 +6,14 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Theme.White.Hotel">
+        <item name="titleTextAppearance">@style/HotelTitleTextAppearance</item>
+    </style>
+
+    <style name="HotelTitleTextAppearance" parent="TitleTextAppearance.White">
+        <item name="android:textColor">@color/Unify_N700_96</item>
+    </style>
+
     <style name="TitlePageWhiteIndicator.Hotel">
         <item name="android:textStyle">bold</item>
     </style>
@@ -28,6 +36,7 @@
         <item name="colorControlNormal">@color/hotel_grey_200</item>
         <item name="colorControlActivated">@color/hotel_color_active_rail</item>
     </style>
+
     <style name="TextInputLayoutHintText" parent="TextAppearance.Design.Hint">
         <item name="android:textSize">1sp</item>
     </style>

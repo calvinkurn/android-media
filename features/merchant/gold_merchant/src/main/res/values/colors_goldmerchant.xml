@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="empty_background">#f9f9f9</color>
-    <color name="breakline_background">#CD000000</color>
-
-    <color name="bg_card_not_gm">#CD000000</color>
-    <color name="gmfeatured_selection_color">#f3fef3</color>
-
-</resources>

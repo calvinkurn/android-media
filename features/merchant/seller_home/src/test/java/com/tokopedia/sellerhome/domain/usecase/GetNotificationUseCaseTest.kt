@@ -5,8 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.utils.TestHelper
-import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
-import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import io.mockk.MockKAnnotations
@@ -84,20 +82,11 @@ class GetNotificationUseCaseTest {
 
     private fun getExpectedNotification(): NotificationUiModel {
         return NotificationUiModel(
-                chat = NotificationChatUiModel(
-                        unreads = 3,
-                        unreadsSeller = 0,
-                        unreadsUser = 3
-                ),
-                notifCenterUnread = NotificationCenterUnreadUiModel(
-                        notifUnread = "0",
-                        notifUnreadInt = 0
-                ),
+                chat = 0,
+                notifCenterUnread = 0,
                 sellerOrderStatus = NotificationSellerOrderStatusUiModel(
-                        arriveAtDestination = 0,
                         newOrder = 16,
-                        readyToShip = 10,
-                        shipped = 146
+                        readyToShip = 10
                 )
         )
     }

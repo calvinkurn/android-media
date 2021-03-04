@@ -75,7 +75,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun observeLayout() {
-        homeViewModel.observableEventHomeLayout.observe(this, Observer {
+        homeViewModel.observableEventHomeLayout.observe(viewLifecycleOwner, Observer {
             isLoadingInitialData = true
             when (it) {
                 is Success -> {
@@ -86,7 +86,7 @@ class DealsHomeFragment : DealsBaseFragment(),
             }
         })
 
-        baseViewModel.observableCurrentLocation.observe(this, Observer {
+        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
             onBaseLocationChanged(it)
         })
     }

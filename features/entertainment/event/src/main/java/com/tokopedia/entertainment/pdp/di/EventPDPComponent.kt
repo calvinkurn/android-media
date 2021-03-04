@@ -2,11 +2,8 @@ package com.tokopedia.entertainment.pdp.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.entertainment.pdp.fragment.EventPDPFormFragment
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment
-import com.tokopedia.entertainment.pdp.fragment.EventPDPFragment
-import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment
+import com.tokopedia.entertainment.pdp.fragment.*
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,4 +26,5 @@ interface EventPDPComponent {
     fun inject(eventPDPTicketFragment: EventPDPTicketFragment)
     fun inject(eventCheckoutFragment: EventCheckoutFragment)
     fun inject(eventPDPFormFragment: EventPDPFormFragment)
+    fun inject(eventRedeemFragment: EventRedeemFragment)
 }

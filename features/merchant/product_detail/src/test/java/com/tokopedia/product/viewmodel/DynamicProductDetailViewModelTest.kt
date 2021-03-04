@@ -22,23 +22,27 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.util.ProductDetailTestUtil
-import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -55,7 +59,6 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.*
 import org.mockito.Matchers.*
 import rx.Observable
-
 
 @ExperimentalCoroutinesApi
 class DynamicProductDetailViewModelTest {
@@ -134,7 +137,7 @@ class DynamicProductDetailViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        spykViewModel = spyk(DynamicProductDetailViewModel(TestDispatcherProvider(), Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
+        spykViewModel = spyk(DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
                 Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase }, userSessionInterface)
         )
     }
@@ -145,7 +148,7 @@ class DynamicProductDetailViewModelTest {
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(TestDispatcherProvider(), Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
+        DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
                 Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase }, userSessionInterface)
     }
 
@@ -153,10 +156,46 @@ class DynamicProductDetailViewModelTest {
     //==============================================================================================//
 
     @Test
+    fun `on success clear cache`() {
+        viewModel.clearCacheP2Data()
+
+        verify {
+            getProductInfoP2DataUseCase.clearCache()
+        }
+    }
+
+    @Test
+    fun `get shop info from P2`() {
+        val shopInfo = viewModel.getShopInfo()
+
+        Assert.assertNotNull(shopInfo)
+    }
+
+    @Test
+    fun `get cart type by product id`() {
+        val cartRedirection = viewModel.getCartTypeByProductId()
+
+        Assert.assertNull(cartRedirection)
+    }
+
+    @Test
+    fun `get multi origin but p1 data is null`(){
+        spykViewModel.getDynamicProductInfoP1 = null
+        val data = viewModel.getMultiOriginByProductId()
+        Assert.assertEquals(data.id, "")
+    }
+
+    @Test
     fun `on success update variable p1`() {
         viewModel.updateDynamicProductInfoData(DynamicProductInfoP1())
 
         Assert.assertNotNull(viewModel.getDynamicProductInfoP1)
+    }
+
+    @Test
+    fun `update variable p1 with null`() {
+        viewModel.updateDynamicProductInfoData(null)
+        Assert.assertNull(viewModel.getDynamicProductInfoP1)
     }
 
     @Test
@@ -434,17 +473,20 @@ class DynamicProductDetailViewModelTest {
         val listOfRecom = arrayListOf(recomWidget)
         val listOfFilter = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
         val pageName = "pdp3"
+
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOfFilter
 
-        viewModel.loadRecommendation(pageName)
+        (1..2).forEach { _ ->
+            viewModel.loadRecommendation(pageName)
+        }
 
-        coVerify {
+        coVerify(exactly = 1) {
             getRecommendationUseCase.createObservable(any())
         }
 
@@ -462,7 +504,7 @@ class DynamicProductDetailViewModelTest {
         } returns listOfRecom
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOfFilter
 
         viewModel.loadRecommendation(pageName)
@@ -482,7 +524,7 @@ class DynamicProductDetailViewModelTest {
         } throws Throwable()
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOf()
 
         viewModel.loadRecommendation(pageName)
@@ -490,8 +532,61 @@ class DynamicProductDetailViewModelTest {
         coVerify {
             getRecommendationUseCase.createObservable(any())
         }
-        print(viewModel.loadTopAdsProduct.value)
         Assert.assertTrue(viewModel.loadTopAdsProduct.value is Fail)
+    }
+
+    @Test
+    fun `success get recommendation with exist list`() {
+        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
+        val listOfRecom = arrayListOf(recomWidget)
+        val recomDataModel = ProductRecommendationDataModel(filterData = listOf(AnnotationChip(
+                RecommendationFilterChipsEntity.RecommendationFilterChip(isActivated = true)
+        )))
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.getRecommendation(recomDataModel, AnnotationChip(), 1, 1)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        }
+
+        Assert.assertTrue(viewModel.filterTopAdsProduct.value?.isRecomenDataEmpty == false)
+        Assert.assertTrue((viewModel.statusFilterTopAdsProduct.value as Success).data)
+    }
+
+    @Test
+    fun `success get recommendation with empty list`() {
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns emptyList()
+
+        viewModel.getRecommendation(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        }
+
+        Assert.assertNull(viewModel.filterTopAdsProduct.value?.recomWidgetData)
+        Assert.assertFalse((viewModel.statusFilterTopAdsProduct.value as Success).data)
+    }
+
+    @Test
+    fun `error get recommendation`() {
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } throws Throwable()
+
+        viewModel.getRecommendation(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        }
+
+        Assert.assertNull(viewModel.filterTopAdsProduct.value?.recomWidgetData)
+        Assert.assertTrue(viewModel.statusFilterTopAdsProduct.value is Fail)
     }
     //==================================END OF TOP ADS SECTION======================================//
     //==============================================================================================//
@@ -577,7 +672,7 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNotNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
-
+        Assert.assertTrue(viewModel.topAdsImageView.value is Success)
         Assert.assertFalse(viewModel.enableCaching)
 
         val p1Result = (viewModel.productLayout.value as Success).data
@@ -631,6 +726,10 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
         } returns ProductInfoP2Other()
+
+        coEvery {
+            topAdsImageViewUseCase.getImageData(any())
+        } returns arrayListOf(TopAdsImageViewModel())
     }
 
     @Test
@@ -716,6 +815,7 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
+        Assert.assertNotNull(viewModel.shouldHideFloatingButton())
     }
 
     @Test
@@ -806,7 +906,7 @@ class DynamicProductDetailViewModelTest {
             toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
         } returns result
 
-        viewModel.toggleTeaserNotifyMe(0, 0, "")
+        viewModel.toggleTeaserNotifyMe(0L, 0L, "")
         coVerify { toggleNotifyMeUseCase.executeOnBackground() }
 
         Assert.assertTrue(viewModel.toggleTeaserNotifyMe.value is Success)
@@ -820,7 +920,7 @@ class DynamicProductDetailViewModelTest {
             toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
         } returns result
 
-        viewModel.toggleTeaserNotifyMe(0, 0, "")
+        viewModel.toggleTeaserNotifyMe(0L, 0L, "")
         coVerify { toggleNotifyMeUseCase.executeOnBackground() }
 
         Assert.assertTrue(!(viewModel.toggleTeaserNotifyMe.value as Success).data)
@@ -917,37 +1017,55 @@ class DynamicProductDetailViewModelTest {
     @Test
     fun onSuccessToggleFavoriteShop() {
         val shopId = "1234"
+        val data = FollowShop()
+        data.isSuccess = true
+
         coEvery {
-            toggleFavoriteUseCase.executeOnBackground().followShop.isSuccess
-        } returns anyBoolean()
+            toggleFavoriteUseCase.executeOnBackground(any()).followShop
+        } returns data
 
         viewModel.toggleFavorite(shopId)
 
-        verify {
-            toggleFavoriteUseCase.createRequestParam(shopId)
-            toggleFavoriteUseCase.createRequestParam(shopId)
-        }
         coVerify {
-            toggleFavoriteUseCase.executeOnBackground()
+            toggleFavoriteUseCase.executeOnBackground(any())
         }
 
-        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data, anyBoolean())
+        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.first, true)
+        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.second, false)
+    }
+
+    @Test
+    fun onSuccessToggleFavoriteShopNpl() {
+        val shopId = "1234"
+        val isNpl = true
+        val data = FollowShop()
+        data.isSuccess = true
+
+        coEvery {
+            toggleFavoriteUseCase.executeOnBackground(any()).followShop
+        } returns data
+
+        viewModel.toggleFavorite(shopId, isNpl)
+
+        coVerify {
+            toggleFavoriteUseCase.executeOnBackground(any())
+        }
+
+        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.first, true)
+        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.second, isNpl)
     }
 
     @Test
     fun onErrorToggleFavoriteShop() {
         val shopId = "1234"
         coEvery {
-            toggleFavoriteUseCase.executeOnBackground().followShop.isSuccess
+            toggleFavoriteUseCase.executeOnBackground(any()).followShop.isSuccess
         } throws Throwable()
 
         viewModel.toggleFavorite(shopId)
 
-        verify {
-            toggleFavoriteUseCase.createRequestParam(shopId)
-        }
         coVerify {
-            toggleFavoriteUseCase.executeOnBackground()
+            toggleFavoriteUseCase.executeOnBackground(any())
         }
 
         Assert.assertTrue(viewModel.toggleFavoriteResult.value is Fail)

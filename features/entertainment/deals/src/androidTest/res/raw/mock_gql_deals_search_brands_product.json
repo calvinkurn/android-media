@@ -1,0 +1,867 @@
+[
+  {
+    "data": {
+      "event_search": {
+        "category": {
+          "title": "Deals"
+        },
+        "brands": [
+          {
+            "id": "2185",
+            "title": "Alfamart",
+            "description": "Alfamart adalah jaringan toko swalayan di Indonesia. Gerai ini umumnya menjual berbagai produk makanan, minuman dan barang kebutuhan hidup lainnya. Lebih dari 200 produk makanan dan barang kebutuhan hidup lainnya tersedia dengan harga bersaing, memenuhi kebutuhan konsumen sehari-hari.",
+            "seo_url": "alfamart-2185",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/4/5/2892668/2892668_f4189f88-d3c8-4ddd-b074-88ca0c78a790.png",
+            "city_name": ""
+          },
+          {
+            "id": "3477",
+            "title": "Indomaret",
+            "description": "Indomaret atau PT Indomarco Prismatama adalah jaringan ritel waralaba di Indonesia. Indomaret merupakan salah satu anak perusahaan Salim Group. Indomaret merupakan jaringan minimarket yang menyediakan kebutuhan pokok dan kebutuhan sehari- hari dengan luas area penjualan kurang dari 200 m2. Toko pertama dengan nama Indomart dibuka di Ancol, Jakarta Utara, pada tanggal 20 Juni 1988, dikelola oleh PT. Indomarco Prismatama. Tahun 1997 perusahaan mengembangkan bisnis gerai waralaba pertama di Indonesia, setelah ",
+            "seo_url": "indomaret-3477",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/4/9/2892668/2892668_c75b523c-5f4e-4fe5-96c7-e0edfd494671.png",
+            "city_name": ""
+          },
+          {
+            "id": "1790",
+            "title": "Carrefour",
+            "description": "Carrefour membantu semua orang agar dapat menikmati kualitas hidup yang lebih baik setiap harinya. Menyediakan berbagai kebutuhan harian sekaligus bulanan, sebagai tujuan utama berbelanja keluarga dengan memberikan pelayanan dan produk berkualitas dimanapun dan kapanpun.",
+            "seo_url": "carrefour-1790",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/11/5/2892668/2892668_3ac41f7e-277d-4531-a4c2-f71dddd16903.png",
+            "city_name": ""
+          },
+          {
+            "id": "4053",
+            "title": "Ace Hardware",
+            "description": "PT ACE Hardware Indonesia Tbk adalah sebuah perusahaan ritel yang bergerak dalam bidang perlengkapan rumah dan produk gaya hidupACE Hardware adalah salah satu jaringan modern terbesar dari bisnis ritel perlengkapan rumah dan gaya hidup di IndonesiaPerusahaan berbasis koperasi ritelini berasal dari Amerika Serikat Perusahaan ini menjadi peritel toko perkakas terbesar di duniaSaat ini ACE adalah Pionir dan Pusat Perlengkapan Rumah  Gaya Hidup Terlengkap dengan 156 toko di beraneka pusat keramaian pada kota-kota besar di Indonesia",
+            "seo_url": "ace-hardware-4053",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/11/15/59253604/59253604_85432c38-161f-4a74-a09f-b81bceb71957.png",
+            "city_name": ""
+          },
+          {
+            "id": "5099",
+            "title": "Foodhall",
+            "description": "The FoodHall berkomitmen untuk menyediakan produk yang berkualitas segar dan memberikan servis terbaik",
+            "seo_url": "foodhall-5099",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/13/2892668/2892668_878b0dcd-b31e-429c-913d-4768fad18993.png",
+            "city_name": ""
+          },
+          {
+            "id": "5312",
+            "title": "Gabriella Beauty",
+            "description": "Gabriella Beauty kini hadir di Fave Gabriella Beauty merupakan sebuah studio kecantikan Salah satu treatment yang bisa kamu dpatkan di sini adalah layanan untuk kecantikan kuku Akan ada beautician berpengalaman yang akan membantu kamu di sini Jangan lewatkan promo menariknya",
+            "seo_url": "gabriella-beauty-5312",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/3b03d382a88d777def0259c41f6218b265a8bf87/store/fill/200/200/ab1cc93e9c46dac2cc2caa72306824e494282727f8b3836df48ee1d2b3a1/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5241",
+            "title": "Cessa Natural Indonesia",
+            "description": "Cessa Natural merupakan brand kesehatan yang ditujukan untuk penggunaan pada bayi dan anak untuk menggantikan pemakaian obat-obatan kimia saat bayi atau anak anda mengalami flu batuk demam dan berbagai keluhan lainnya Obat-obatan kimia tidak dianjurkan digunakan pada anak apalagi bayi usia dini oleh karena itu Cessa Natural hadir dengan bahan-bahan alami yang sangat bermanfaat untuk meredakan berbagai gejala seperti  Flu Batuk Demam bahkan salah satu produk Cessa memiliki khasiat sebagai anti tantrum atau sebagai penenang saat bayi sedang gelisah atau rewel",
+            "seo_url": "cessa-natural-indonesia-5241",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/ebeb117aefd2e6fc12582940e06b93f7125821b4/store/fill/200/200/4ae600ae45699a17beaae9e374f03a0df7115482cdc6a220198aab654d7e/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5200",
+            "title": "Natieva Online Course",
+            "description": "Natieva Online Course adalah platform pembelajaran berbasis online yang dapat dengan mudah meningkatkan keterampilan bahasa Inggris dan Jepang sehingga Anda dapat mendukung pekerjaan Anda",
+            "seo_url": "natieva-online-course-5200",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/b61941c380e52caa95c5a2e571f99c110423e293/store/fill/200/200/ce491f20827e620eb7480db6f1fbc8cd40d3c038b681483259764bf1cb06/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5396",
+            "title": "RB Shop",
+            "description": "RB Shop kini hadir di Fave Lengkapi berbagai kebutuhan peralatan rumah tangga kamu di sini Mulai dari peralatan elektronik hingga buku ada sini",
+            "seo_url": "rb-shop-5396",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/e999d31abb928dfb15cfdc8213dc708a02e715fe/store/fill/200/200/9db1db7a846cdc4b83fc3c0e66f0b15053289a577c3f5123a8c5658ec2f8/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5972",
+            "title": "Blink Charm",
+            "description": "Blink Charm kini hadir di Fave Spesial untuk kamu dapatkan produk kecantikan terutama fake lashes di sini Pilih yang sesuai dengan wajah dan bentuk mata agar penmapilanmu semakin cantik Jangan lewatkan promonya",
+            "seo_url": "blink-charm-5972",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/9a4bd42ac4a7a0ddd84a9882807294f2ad3ed54e/store/fill/200/200/201d01ee5ff3a1e02a3327034f74eca3099b7cf02d857edd8bce9976c0eb/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5163",
+            "title": "Zataru",
+            "description": "Zatarucom adalah toko parfum online terpercaya yang menjual parfum original Dapatkan berbagai macam parfum original yang sesuai dengan seleramu",
+            "seo_url": "zataru-5163",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/9ad3d601bb4ea7ca4b3d55b5b920b4c270102dbc/store/fill/200/200/842ca90d8a7f1fa39284a7516ad32884e6f2aaab2994b53a5c4dca09553b/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5314",
+            "title": "Aroma Sense",
+            "description": "Aroma Sense menyediaan luxury shower head yang memiliki banyak kegunaan Manjakan diri dengan berbagai pilihan aroma yang menyegarkan dan berenergi dari shower head Aroma Sense Pilih wangi favoritmu seperti wangi lemon minty eucalyptus dan aroma lavender yang anti stress",
+            "seo_url": "aroma-sense-5314",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/36ba197cd41b4c5a5ce9356a3d877e27fafe2e3e/store/fill/200/200/a7a9d991cc1324682443e3d94848b0c0098cba5e1bc66029dbd8deef88fb/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5404",
+            "title": "Ertos Beauty Care",
+            "description": "Ertos Beauty Care kini hadir di Fave Dapatkan berbagai macam produk skincare yang tersedia untuk berbagai jenis kulit Sesuaikan kebutuhan kulitmu dengan produk Ertos Beauty Care dan dapatkan kulit sehat yang cantik",
+            "seo_url": "ertos-beauty-care-5404",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/370361310bb45ffc8a7712cd5312180c9354c790/store/fill/200/200/d017b44a762cd757ab4e12144e53301694c4d4dc734cd351d1cf72c85727/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "4886",
+            "title": "Marcks Venus Aesthetic Clinic",
+            "description": "Marcks Venus Aesthetic Clinic merupakan sebuah klinik kecantikan Di sini kamu akan ditangani oleh tim dokter kecantikan berpengalaman Berbagai treatment bisa kamu dapatkan mulai dari Facial hingga Radiofrequency",
+            "seo_url": "marcks-venus-aesthetic-clinic-4886",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/027a79a9caa9c2861b2a3bacc86c7e498ed4b364/store/fill/200/200/3f8d9048c182c20402e270d2ccb6bc4ed8161a43d892a2bcfc5e0fca3f45/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5330",
+            "title": "Enblanc",
+            "description": "Enblanc menawarkan tisu bayi premium ramah lingkungan yang terbuat dari kain rayshell alami yang terdegradasi di alam Tes iritasi kulit FDA lengkap uji sitotoksisitas dan uji toksisitas oral bahwa itu adalah jaringan basah yang aman bebas pewangi dan bebas alkohol untuk wajah bayi baru lahir dan orang dewasa dengan kulit sensitif Jaringan basah Enblanc menggunakan air murni dengan kemurnian 999 yang menghilangkan mikroorganisme dan zat asing melalui 7 langkah Jeju pulau bersih di Samudera Pasifik sistem pemurnian vulkanik Lava gunung berapi Jeju adalah sumber daya alkali lemah yang mengandung sedikit kotoran dan merupakan bahan baku murni dengan fungsi pemurnian dan pelestarian kelembaban",
+            "seo_url": "enblanc-5330",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/c6c8e051095bce0122a1f9a740b75b68e2100d31/store/fill/200/200/e752369701a705111c0cc906464bc307d13a9a455dca264ff0db23b449fc/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5393",
+            "title": "Rotanmurotanku",
+            "description": "Rotanmurotanku kini hadir di Fave Percantik tampilan rumah kamu dengan berbagai peralatan dari Rotanmurotanku yang terbuat dari rotan berkualitas baik Aksen peralatan rotan akan membuat tampilan rumah lebih segar dan terlihat natural",
+            "seo_url": "rotanmurotanku-5393",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/73abac1d24097811368ffb16feac1b8fb20dd8c8/store/fill/200/200/45952d0186d79571b678611e08f552088454aa99cb2a9ee59af3756f3ce7/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5180",
+            "title": "Giladiskon",
+            "description": "GD atau Giladiskon Plus adalah membership aplikasi Giladiskon untuk bisa menikmati voucher promo sepuasnya sepanjang tahun Hanya dengan menjadi anggota dari Giladiskon kamu bisa menggunakan semua voucher promo khusus member GD sebanyak yang kamu inginkan Mengapa harus jadi member GD Karena voucher promo yang diberikan untuk member GD tidak akan ditemukan di tempat lain dan dapat digabungkan dengan promo lainnya sehingga kamu bisa belanja dan jajan dengan lebih hemat dan cerdas",
+            "seo_url": "giladiskon-5180",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/e2e47b9445bf0f1f7d41c63add7e6bb0ecdb7fc5/store/fill/200/200/1f4b08a1d48aaabf1ffcbdb51e1599939597c8ef76d0497619d8341d290b/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "2383",
+            "title": "Kinokuniya",
+            "description": "Kinokuniya merupakan toko buku internasional yang mempunyai koleksi lebih dari 4 bahasa, meliputi Inggirs, Jepang, China dan Indonesia dengan pilihan lebih dari 900.000 judul.",
+            "seo_url": "kinokuniya-2383",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/12/3/2892668/2892668_22a308bc-7622-47f7-8703-f78469911cc2.png",
+            "city_name": ""
+          },
+          {
+            "id": "5183",
+            "title": "Kings Tailor  Co",
+            "description": "Kings Tailor  Co melayani jasa dan menjahit semua pakaian yang ada serta memastikan bahwa standar tertinggi dipertahankan di setiap tahap Pesanan akan diproses dengan terlebih dahulu mendiskusikan kebutuhan Anda dengan Kings Tailor  Co sebelum memilih detail kain dan gaya Kings Tailor  Co kemudian akan mengukur dan menyesuaikan sesuai dengan tubuh Anda",
+            "seo_url": "kings-tailor-co-5183",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/07bc8f9259dd8317fdae4d40d1d5faa59fdcf130/store/fill/200/200/36a5ad8db018d6b23cb1d9300b5c1eaa10e4f82d02a2778e0fc41813c5b7/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "5264",
+            "title": "Toko Mas Intan Jaya",
+            "description": "Toko Mas Intan Jaya kini hadir di Fave Dapatkan berbagai emas dalam bentuk perhiasan maupun bentuk lainnya di sini",
+            "seo_url": "toko-mas-intan-jaya-5264",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/480c51b1a623be72aca82d1513628627541642f1/store/fill/200/200/2d02d232cf4e0265c5acbeb2c92123cbe8741c9d6e4f78033409e2b1eca5/logo.jpg",
+            "city_name": ""
+          }
+        ],
+        "products": [
+          {
+            "custom_labels": "",
+            "id": "21307",
+            "brand_id": "4053",
+            "display_name": "Voucher Ace Hardware Rp 100.000",
+            "seo_url": "voucher-ace-hardware-rp-100000-21307",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/15/2892668/2892668_c0c1dba5-e174-4de0-a284-dab3fcc0532a.jpg",
+            "mrp": "100000",
+            "sales_price": "97000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571626800",
+            "max_end_date": "1599584400",
+            "sale_start_date": "1571626800",
+            "sale_end_date": "1599584400",
+            "custom_text_1": "1",
+            "saving_percentage": "3% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-ace-hardware-rp-100000-21307/",
+            "app_url": "tokopedia://deals/voucher-ace-hardware-rp-100000-21307",
+            "brand": {
+              "id": "4053",
+              "title": "Ace Hardware",
+              "seo_url": "ace-hardware-4053",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/11/15/59253604/59253604_85432c38-161f-4a74-a09f-b81bceb71957.png"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "10869",
+            "brand_id": "2383",
+            "display_name": "Voucher Kinokuniya Rp 200.000",
+            "seo_url": "voucher-kinokuniya-rp-200000-10869",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/16/42857236/42857236_9963506e-285c-43e3-96d5-7441886a4d6e.jpg",
+            "mrp": "200000",
+            "sales_price": "198000",
+            "display_tags": " ",
+            "priority": "0",
+            "min_start_date": "1543849200",
+            "max_end_date": "1598288400",
+            "sale_start_date": "1543849200",
+            "sale_end_date": "1598288400",
+            "custom_text_1": "1",
+            "saving_percentage": "1% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-kinokuniya-rp-200000-10869/",
+            "app_url": "tokopedia://deals/voucher-kinokuniya-rp-200000-10869",
+            "brand": {
+              "id": "2383",
+              "title": "Kinokuniya",
+              "seo_url": "kinokuniya-2383",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/12/3/2892668/2892668_22a308bc-7622-47f7-8703-f78469911cc2.png"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              },
+              {
+                "id": "27",
+                "title": "Voucher populer",
+                "media_url": "",
+                "url": "topdeals"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "10870",
+            "brand_id": "2383",
+            "display_name": "Voucher Kinokuniya Rp 500.000",
+            "seo_url": "voucher-kinokuniya-rp-500000-10870",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/16/42857236/42857236_9963506e-285c-43e3-96d5-7441886a4d6e.jpg",
+            "mrp": "500000",
+            "sales_price": "495000",
+            "display_tags": " ",
+            "priority": "0",
+            "min_start_date": "1543849200",
+            "max_end_date": "1598288400",
+            "sale_start_date": "1543849200",
+            "sale_end_date": "1598288400",
+            "custom_text_1": "1",
+            "saving_percentage": "1% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-kinokuniya-rp-500000-10870/",
+            "app_url": "tokopedia://deals/voucher-kinokuniya-rp-500000-10870",
+            "brand": {
+              "id": "2383",
+              "title": "Kinokuniya",
+              "seo_url": "kinokuniya-2383",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/12/3/2892668/2892668_22a308bc-7622-47f7-8703-f78469911cc2.png"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              },
+              {
+                "id": "27",
+                "title": "Voucher populer",
+                "media_url": "",
+                "url": "topdeals"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "29977",
+            "brand_id": "5241",
+            "display_name": "Free Delivery - Cessa Kids: Cessa Kids Fever Drop - Essential Oil Pereda Demam",
+            "seo_url": "free-delivery---cessa-kids-cessa-kids-fever-drop---essential-oil-pereda-demam-29977",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/b1b917b2b425b5dc1da806c8f5d3870efdc20dce/store/fill/400/250/5677c1d9fb8c85df3e0a9e958e3c67438251fdf70bd2ae98de31416bc04d/activity_image.jpg",
+            "mrp": "70000",
+            "sales_price": "70000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783443",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783443",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/free-delivery---cessa-kids-cessa-kids-fever-drop---essential-oil-pereda-demam-29977/",
+            "app_url": "tokopedia://deals/free-delivery---cessa-kids-cessa-kids-fever-drop---essential-oil-pereda-demam-29977",
+            "brand": {
+              "id": "5241",
+              "title": "Cessa Natural Indonesia",
+              "seo_url": "cessa-natural-indonesia-5241",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/ebeb117aefd2e6fc12582940e06b93f7125821b4/store/fill/200/200/4ae600ae45699a17beaae9e374f03a0df7115482cdc6a220198aab654d7e/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "29976",
+            "brand_id": "5241",
+            "display_name": "Free Delivery - Cessa Kids: Cessa Kids Bugs Away - Essential Oil Menjaga Dari Gigitan Nyamuk",
+            "seo_url": "free-delivery---cessa-kids-cessa-kids-bugs-away---essential-oil-menjaga-dari-gigitan-nyamuk-29976",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/bd853c1ad409de30482140bac09a868e6513b3a6/store/fill/400/250/d51adf779c4f0ae9e567ec5017852ebfa019dc78817b5fc16e3643bb6a5f/activity_image.jpg",
+            "mrp": "70000",
+            "sales_price": "70000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783443",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783443",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/free-delivery---cessa-kids-cessa-kids-bugs-away---essential-oil-menjaga-dari-gigitan-nyamuk-29976/",
+            "app_url": "tokopedia://deals/free-delivery---cessa-kids-cessa-kids-bugs-away---essential-oil-menjaga-dari-gigitan-nyamuk-29976",
+            "brand": {
+              "id": "5241",
+              "title": "Cessa Natural Indonesia",
+              "seo_url": "cessa-natural-indonesia-5241",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/ebeb117aefd2e6fc12582940e06b93f7125821b4/store/fill/200/200/4ae600ae45699a17beaae9e374f03a0df7115482cdc6a220198aab654d7e/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "29986",
+            "brand_id": "5241",
+            "display_name": "Free Delivery - Cessa Kids: Cessa Kids Lenire - Essential Oil Pereda Rewel / Tantrum",
+            "seo_url": "free-delivery---cessa-kids-cessa-kids-lenire---essential-oil-pereda-rewel-tantrum-29986",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/15c8679cf0fd32411fa4bb43d008c4e090f6d7b6/store/fill/400/250/d259e0d7483c145716ff22f3bb6c389c9251cf5e3c5994edf95a09182d9f/activity_image.jpg",
+            "mrp": "70000",
+            "sales_price": "70000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783443",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783443",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/free-delivery---cessa-kids-cessa-kids-lenire---essential-oil-pereda-rewel-tantrum-29986/",
+            "app_url": "tokopedia://deals/free-delivery---cessa-kids-cessa-kids-lenire---essential-oil-pereda-rewel-tantrum-29986",
+            "brand": {
+              "id": "5241",
+              "title": "Cessa Natural Indonesia",
+              "seo_url": "cessa-natural-indonesia-5241",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/ebeb117aefd2e6fc12582940e06b93f7125821b4/store/fill/200/200/4ae600ae45699a17beaae9e374f03a0df7115482cdc6a220198aab654d7e/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30382",
+            "brand_id": "5277",
+            "display_name": "Fit Pac Small - Delivery",
+            "seo_url": "fit-pac-small---delivery-30382",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/f6863abe314ed4018d8b57380894fa8f345e5346/store/fill/400/250/edba2cedcf4a28019252c53b1f30d889c06d16a36e08ae1d549aae013484/activity_image.jpg",
+            "mrp": "37500",
+            "sales_price": "31899",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783562",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783562",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "14% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/fit-pac-small---delivery-30382/",
+            "app_url": "tokopedia://deals/fit-pac-small---delivery-30382",
+            "brand": {
+              "id": "5277",
+              "title": "Fit Pac Indonesia",
+              "seo_url": "fit-pac-indonesia-5277",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/ffdcba32317bb9e9a5fe283674f08c1d3d01cddd/store/fill/200/200/3211bc2d6d16e2ac29f1a66709081d33aa2d55c99aae237c2649a256e933/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "29992",
+            "brand_id": "5245",
+            "display_name": "[#KitaBisa] 1-on-1 Hair Do / Hair Styling Class (Online)",
+            "seo_url": "kitabisa-1-on-1-hair-do-hair-styling-class-online-29992",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/d4f0b15f02bcfbfe549b74509fbd8069c73d82cd/store/fill/400/250/23c803feccf8bf17c0fd9f5923f9227e354377439f6eed4de0749c2c44b3/activity_image.jpg",
+            "mrp": "350000",
+            "sales_price": "180075",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783567",
+            "max_end_date": "1596556799",
+            "sale_start_date": "1595783567",
+            "sale_end_date": "1596556799",
+            "custom_text_1": "1",
+            "saving_percentage": "48% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/kitabisa-1-on-1-hair-do-hair-styling-class-online-29992/",
+            "app_url": "tokopedia://deals/kitabisa-1-on-1-hair-do-hair-styling-class-online-29992",
+            "brand": {
+              "id": "5245",
+              "title": "HelloBeauty",
+              "seo_url": "hellobeauty-5245",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/6219b952d2f0c96cacd5e31836b53f0b448954b5/store/fill/200/200/523c10f06f8550f8af9b20b9e170efbc3755641babcc054f59dc2e136952/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "31144",
+            "brand_id": "5330",
+            "display_name": "Enblanc 1 Pc (20 Lembar) - Delivery",
+            "seo_url": "enblanc-1-pc-20-lembar---delivery-31144",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/2e3585bf2003165203efa2e1583dd3fcab0ad638/store/fill/400/250/a6d02d65823518ffa966a9aaa376b08b8c47fa1a86e74447979e59f3535f/activity_image.jpg",
+            "mrp": "15000",
+            "sales_price": "12348",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783577",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783577",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "17% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/enblanc-1-pc-20-lembar---delivery-31144/",
+            "app_url": "tokopedia://deals/enblanc-1-pc-20-lembar---delivery-31144",
+            "brand": {
+              "id": "5330",
+              "title": "Enblanc",
+              "seo_url": "enblanc-5330",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/c6c8e051095bce0122a1f9a740b75b68e2100d31/store/fill/200/200/e752369701a705111c0cc906464bc307d13a9a455dca264ff0db23b449fc/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "31143",
+            "brand_id": "5330",
+            "display_name": "Enblanc 8 Pcs (160 Lembar) - Delivery",
+            "seo_url": "enblanc-8-pcs-160-lembar---delivery-31143",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/fd3c1df10a51eeb971083541d4967654dd35340f/store/fill/400/250/4ae20ade1d33a1db44e616f38c0351abc2c15f7c8e85c3903e96b73583f5/activity_image.jpg",
+            "mrp": "120000",
+            "sales_price": "90552",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783578",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783578",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "24% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/enblanc-8-pcs-160-lembar---delivery-31143/",
+            "app_url": "tokopedia://deals/enblanc-8-pcs-160-lembar---delivery-31143",
+            "brand": {
+              "id": "5330",
+              "title": "Enblanc",
+              "seo_url": "enblanc-5330",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/c6c8e051095bce0122a1f9a740b75b68e2100d31/store/fill/200/200/e752369701a705111c0cc906464bc307d13a9a455dca264ff0db23b449fc/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30934",
+            "brand_id": "5314",
+            "display_name": "Vitamin C Cartridges 3in1 Lavender - Delivery",
+            "seo_url": "vitamin-c-cartridges-3in1-lavender---delivery-30934",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/adcfaee8cbf290e2e4e25d5f38c77e9d1fd8062d/store/fill/400/250/bbee94d84158f7484879512d4bf1324781a0358e953bd17230281bf981dd/activity_image.jpg",
+            "mrp": "420000",
+            "sales_price": "420000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783679",
+            "max_end_date": "1598457599",
+            "sale_start_date": "1595783679",
+            "sale_end_date": "1598457599",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/vitamin-c-cartridges-3in1-lavender---delivery-30934/",
+            "app_url": "tokopedia://deals/vitamin-c-cartridges-3in1-lavender---delivery-30934",
+            "brand": {
+              "id": "5314",
+              "title": "Aroma Sense",
+              "seo_url": "aroma-sense-5314",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/36ba197cd41b4c5a5ce9356a3d877e27fafe2e3e/store/fill/200/200/a7a9d991cc1324682443e3d94848b0c0098cba5e1bc66029dbd8deef88fb/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30935",
+            "brand_id": "5314",
+            "display_name": "Vitamin C Cartridges isi 1 Vanilla Coconut - Delivery",
+            "seo_url": "vitamin-c-cartridges-isi-1-vanilla-coconut---delivery-30935",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/89983191b401f498a211c35f1e700776a86a4f7e/store/fill/400/250/248c3616c3d13d0a8f7634982858294093f61989c920ba8d3eec92cb6c72/activity_image.jpg",
+            "mrp": "150000",
+            "sales_price": "150000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783679",
+            "max_end_date": "1598457599",
+            "sale_start_date": "1595783679",
+            "sale_end_date": "1598457599",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/vitamin-c-cartridges-isi-1-vanilla-coconut---delivery-30935/",
+            "app_url": "tokopedia://deals/vitamin-c-cartridges-isi-1-vanilla-coconut---delivery-30935",
+            "brand": {
+              "id": "5314",
+              "title": "Aroma Sense",
+              "seo_url": "aroma-sense-5314",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/36ba197cd41b4c5a5ce9356a3d877e27fafe2e3e/store/fill/200/200/a7a9d991cc1324682443e3d94848b0c0098cba5e1bc66029dbd8deef88fb/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30917",
+            "brand_id": "5314",
+            "display_name": "Microfiber Filter Kids (isi 5) - Delivery",
+            "seo_url": "microfiber-filter-kids-isi-5---delivery-30917",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/e3aab481ee2564d611bcb8dd350aab6e950b5f21/store/fill/400/250/bc271b0c7be0b6411d3bfff99ebd750063d06ef984fd2c984e8e1e7658bf/activity_image.jpg",
+            "mrp": "75000",
+            "sales_price": "75000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783680",
+            "max_end_date": "1598457599",
+            "sale_start_date": "1595783680",
+            "sale_end_date": "1598457599",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/microfiber-filter-kids-isi-5---delivery-30917/",
+            "app_url": "tokopedia://deals/microfiber-filter-kids-isi-5---delivery-30917",
+            "brand": {
+              "id": "5314",
+              "title": "Aroma Sense",
+              "seo_url": "aroma-sense-5314",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/36ba197cd41b4c5a5ce9356a3d877e27fafe2e3e/store/fill/200/200/a7a9d991cc1324682443e3d94848b0c0098cba5e1bc66029dbd8deef88fb/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30924",
+            "brand_id": "5314",
+            "display_name": "Vitamin C Cartridges 3in1 Vanilla Coconut - Delivery",
+            "seo_url": "vitamin-c-cartridges-3in1-vanilla-coconut---delivery-30924",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/bd664073ea6bffa5c1edc43f56fb92481247e566/store/fill/400/250/446da4c97401ff74a3f2e0b332d47ce345b020a68d9d3c375dbe1a38be83/activity_image.jpg",
+            "mrp": "420000",
+            "sales_price": "420000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783680",
+            "max_end_date": "1598457599",
+            "sale_start_date": "1595783680",
+            "sale_end_date": "1598457599",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/vitamin-c-cartridges-3in1-vanilla-coconut---delivery-30924/",
+            "app_url": "tokopedia://deals/vitamin-c-cartridges-3in1-vanilla-coconut---delivery-30924",
+            "brand": {
+              "id": "5314",
+              "title": "Aroma Sense",
+              "seo_url": "aroma-sense-5314",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/36ba197cd41b4c5a5ce9356a3d877e27fafe2e3e/store/fill/200/200/a7a9d991cc1324682443e3d94848b0c0098cba5e1bc66029dbd8deef88fb/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "29733",
+            "brand_id": "4886",
+            "display_name": "Free Delivery - MVC Purify & Anti-Acne Skin Series Product",
+            "seo_url": "free-delivery---mvc-purify-anti-acne-skin-series-product-29733",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/46c8b6fe9582a850010cb13fe24ddc31f54d2f0b/store/fill/400/250/4c26def6485503759ae2c9ab565e920064790425cad1564ea2e2ff29eb77/activity_image.jpg",
+            "mrp": "264000",
+            "sales_price": "204771",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783677",
+            "max_end_date": "1596211199",
+            "sale_start_date": "1595783677",
+            "sale_end_date": "1596211199",
+            "custom_text_1": "1",
+            "saving_percentage": "22% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/free-delivery---mvc-purify-anti-acne-skin-series-product-29733/",
+            "app_url": "tokopedia://deals/free-delivery---mvc-purify-anti-acne-skin-series-product-29733",
+            "brand": {
+              "id": "4886",
+              "title": "Marcks Venus Aesthetic Clinic",
+              "seo_url": "marcks-venus-aesthetic-clinic-4886",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/027a79a9caa9c2861b2a3bacc86c7e498ed4b364/store/fill/200/200/3f8d9048c182c20402e270d2ccb6bc4ed8161a43d892a2bcfc5e0fca3f45/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "34524",
+            "brand_id": "5314",
+            "display_name": "Showerhead Kids Shark Turtle Vitamin C - Delivery",
+            "seo_url": "showerhead-kids-shark-turtle-vitamin-c---delivery-34524",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/0677bef0bda3241384d4c2eb9c842473772e6699/store/fill/400/250/89065bfa2e5c532df6514e92f38d2d4b2b92df4168589a698be402dc7180/activity_image.jpg",
+            "mrp": "509915",
+            "sales_price": "509915",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783680",
+            "max_end_date": "1596211199",
+            "sale_start_date": "1595783680",
+            "sale_end_date": "1596211199",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/showerhead-kids-shark-turtle-vitamin-c---delivery-34524/",
+            "app_url": "tokopedia://deals/showerhead-kids-shark-turtle-vitamin-c---delivery-34524",
+            "brand": {
+              "id": "5314",
+              "title": "Aroma Sense",
+              "seo_url": "aroma-sense-5314",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/36ba197cd41b4c5a5ce9356a3d877e27fafe2e3e/store/fill/200/200/a7a9d991cc1324682443e3d94848b0c0098cba5e1bc66029dbd8deef88fb/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30916",
+            "brand_id": "5314",
+            "display_name": "Vitamin C Cartridges isi 1 Pine - Delivery",
+            "seo_url": "vitamin-c-cartridges-isi-1-pine---delivery-30916",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/387fa9d0929c73ed4210876dee77e5ae0e7395db/store/fill/400/250/e2f020d98483cf3d4d8e9ce4ad3aac8a7864ceba29a688c5e700051a631b/activity_image.jpg",
+            "mrp": "150000",
+            "sales_price": "150000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783680",
+            "max_end_date": "1598457599",
+            "sale_start_date": "1595783680",
+            "sale_end_date": "1598457599",
+            "custom_text_1": "1",
+            "saving_percentage": "",
+            "web_url": "https://www.tokopedia.com/deals/i/vitamin-c-cartridges-isi-1-pine---delivery-30916/",
+            "app_url": "tokopedia://deals/vitamin-c-cartridges-isi-1-pine---delivery-30916",
+            "brand": {
+              "id": "5314",
+              "title": "Aroma Sense",
+              "seo_url": "aroma-sense-5314",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/36ba197cd41b4c5a5ce9356a3d877e27fafe2e3e/store/fill/200/200/a7a9d991cc1324682443e3d94848b0c0098cba5e1bc66029dbd8deef88fb/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30140",
+            "brand_id": "5256",
+            "display_name": "Karpet Lantai Paradise Africa Ukuran 160 x 210 (Tipe Karpet PP) - Delivery",
+            "seo_url": "karpet-lantai-paradise-africa-ukuran-160-x-210-tipe-karpet-pp---delivery-30140",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/5896603c7e0e822daba86cf01dd619cb3e59a771/store/fill/400/250/d925e5bac91e99d889c9cd8d0f23c32eff9d67f0dc2c7671f42f741d5a06/activity_image.jpg",
+            "mrp": "229500",
+            "sales_price": "201169",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783686",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783686",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "12% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/karpet-lantai-paradise-africa-ukuran-160-x-210-tipe-karpet-pp---delivery-30140/",
+            "app_url": "tokopedia://deals/karpet-lantai-paradise-africa-ukuran-160-x-210-tipe-karpet-pp---delivery-30140",
+            "brand": {
+              "id": "5256",
+              "title": "Bandar Karpet",
+              "seo_url": "bandar-karpet-5256",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/42ce5275a24165b640caaa41b680739a0dd478b0/store/fill/200/200/a93b16ac2e75a7a843eb8e6085ec6b6ab29ff5a7067f11e19104e9f0199e/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30136",
+            "brand_id": "5256",
+            "display_name": "Karpet Lantai Prisma Ukuran 85 x 140 (Tipe Karpet Busa Polyester) - Delivery",
+            "seo_url": "karpet-lantai-prisma-ukuran-85-x-140-tipe-karpet-busa-polyester---delivery-30136",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/f85d7be9bb2deba201d407c0746863f325857ffb/store/fill/400/250/eb0cb8b6370110b6f3bf0672375e7949eb3c7abefa306f2905f5439ff7db/activity_image.jpg",
+            "mrp": "193500",
+            "sales_price": "169270",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783686",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783686",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "12% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/karpet-lantai-prisma-ukuran-85-x-140-tipe-karpet-busa-polyester---delivery-30136/",
+            "app_url": "tokopedia://deals/karpet-lantai-prisma-ukuran-85-x-140-tipe-karpet-busa-polyester---delivery-30136",
+            "brand": {
+              "id": "5256",
+              "title": "Bandar Karpet",
+              "seo_url": "bandar-karpet-5256",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/42ce5275a24165b640caaa41b680739a0dd478b0/store/fill/200/200/a93b16ac2e75a7a843eb8e6085ec6b6ab29ff5a7067f11e19104e9f0199e/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "custom_labels": "",
+            "id": "30139",
+            "brand_id": "5256",
+            "display_name": "Karpet Lantai Koala Ukuran 120 x 170 Brown (Tipe Karpet Bulu) - Delivery",
+            "seo_url": "karpet-lantai-koala-ukuran-120-x-170-brown-tipe-karpet-bulu---delivery-30139",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/ccd8ea436d1f0705d7d34c41b8e096539d7c8fae/store/fill/400/250/2eb0cc7881b8167c6cbe7c9676c0c2e24633c794a04c43b4c45cb8342c2e/activity_image.jpg",
+            "mrp": "533000",
+            "sales_price": "466651",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595783686",
+            "max_end_date": "1601049599",
+            "sale_start_date": "1595783686",
+            "sale_end_date": "1601049599",
+            "custom_text_1": "1",
+            "saving_percentage": "12% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/karpet-lantai-koala-ukuran-120-x-170-brown-tipe-karpet-bulu---delivery-30139/",
+            "app_url": "tokopedia://deals/karpet-lantai-koala-ukuran-120-x-170-brown-tipe-karpet-bulu---delivery-30139",
+            "brand": {
+              "id": "5256",
+              "title": "Bandar Karpet",
+              "seo_url": "bandar-karpet-5256",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/42ce5275a24165b640caaa41b680739a0dd478b0/store/fill/200/200/a93b16ac2e75a7a843eb8e6085ec6b6ab29ff5a7067f11e19104e9f0199e/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

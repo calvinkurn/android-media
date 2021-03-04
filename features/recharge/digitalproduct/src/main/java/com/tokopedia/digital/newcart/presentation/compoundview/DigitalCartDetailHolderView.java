@@ -1,26 +1,29 @@
 package com.tokopedia.digital.newcart.presentation.compoundview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.presentation.compoundview.adapter.DigitalCartDetailAdapter;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DigitalCartDetailHolderView extends LinearLayout {
+    private static String TITLE_PAYMENT = "Pembayaran";
+
     private RecyclerView mainInfoRecyclerView;
     private AppCompatTextView detailToggleAppCompatTextView;
 
@@ -77,8 +80,19 @@ public class DigitalCartDetailHolderView extends LinearLayout {
     }
 
     public void removeAdditionalInfo() {
-        detailToggleAppCompatTextView.setVisibility(GONE);
+        detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_close_label);
         adapter.setInfos(new ArrayList<>(this.mainInfos));
+        for (int i = additionalInfos.size() - 1; i >= 0; i--) {
+            if (additionalInfos.get(i).getTitle().contains(TITLE_PAYMENT)) {
+                additionalInfos.remove(i);
+            }
+        }
+        if (additionalInfos != null && additionalInfos.size() > 0) {
+            detailToggleAppCompatTextView.setVisibility(VISIBLE);
+        } else {
+            detailToggleAppCompatTextView.setVisibility(GONE);
+        }
+        adapter.addInfos(constructAdditionalInfo(additionalInfos));
         adapter.notifyDataSetChanged();
     }
 

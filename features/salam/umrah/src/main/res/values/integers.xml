@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="umrah_max_length_duration_input">20</integer>
+    <integer name="umrah_value_min_range_slider">18000000</integer>
+    <integer name="umrah_value_max_range_slider">50000000</integer>
+    <integer name="umrah_value_step_range_slider">100000</integer>
     <array name="umrah_pdp_list_image_facility">
         <item>@drawable/umrah_ic_pdp_visa</item>
         <item>@drawable/umrah_ic_pdp_insurance</item>

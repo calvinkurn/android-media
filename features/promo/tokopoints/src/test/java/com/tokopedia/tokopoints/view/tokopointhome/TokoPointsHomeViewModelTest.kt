@@ -11,6 +11,8 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
+import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
+import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -48,13 +50,15 @@ class TokoPointsHomeViewModelTest {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
             every { onChanged(any()) } just Runs
         }
-        val data = mockk<TokopediaRewardTopSection>{
+        val tokopediaRewardTopsectionData = mockk<TokopediaRewardTopSection> {
             every { isShowIntroActivity } returns false
+            every { isShowSavingPage } returns false
         }
         val dataSection = mockk<List<SectionContent>>()
+
         coEvery { repository.getTokoPointDetailData() } returns mockk {
-            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk{
-                every { tokopediaRewardTopSection } returns data
+            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
+                every { tokopediaRewardTopSection } returns tokopediaRewardTopsectionData
             }
             every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
                 every { sectionContent } returns mockk {
@@ -64,6 +68,7 @@ class TokoPointsHomeViewModelTest {
         }
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
+
         verify(ordering = Ordering.ORDERED) {
             tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
             tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
@@ -71,7 +76,50 @@ class TokoPointsHomeViewModelTest {
 
         val result = viewModel.tokopointDetailLiveData.value as Success
         assert(result.data.sectionList == dataSection)
-        assert(result.data.tokoPointEntity == data)
+        assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
+    }
+
+    @Test
+    fun `getTokoPointDetail for userSavingVisible`() {
+        val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
+            every { onChanged(any()) } just Runs
+        }
+        val tokopediaRewardTopsectionData = mockk<TokopediaRewardTopSection> {
+            every { isShowIntroActivity } returns false
+            every { isShowSavingPage } returns true
+        }
+        val dataSection = mockk<List<SectionContent>>()
+        val dataUserSavingResponse = mockk<TokopointsUserSaving>()
+
+        coEvery { repository.getTokoPointDetailData() } returns mockk {
+            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
+                every { tokopediaRewardTopSection } returns tokopediaRewardTopsectionData
+            }
+            every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
+                every { sectionContent } returns mockk {
+                    every { sectionContent } returns dataSection
+                }
+            }
+
+        }
+        coEvery { repository.getUserSavingData() } returns mockk {
+            every { getData<UserSavingResponse>(UserSavingResponse::class.java) } returns mockk {
+                every { tokopointsUserSaving } returns dataUserSavingResponse
+            }
+        }
+        viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
+        viewModel.getTokoPointDetail()
+
+        verify(ordering = Ordering.ORDERED) {
+            tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
+            tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
+        }
+
+        val result = viewModel.tokopointDetailLiveData.value as Success
+        assert(result.data.sectionList == dataSection)
+        assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
+        assert(result.data.topSectionResponse.userSavingResponse == dataUserSavingResponse)
+
     }
 
     @Test

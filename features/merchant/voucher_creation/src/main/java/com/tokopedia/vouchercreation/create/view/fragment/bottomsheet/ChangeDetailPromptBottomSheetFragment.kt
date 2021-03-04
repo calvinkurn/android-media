@@ -27,7 +27,7 @@ class ChangeDetailPromptBottomSheetFragment : BottomSheetUnify(){
             }
         }
 
-        val TAG = ChangeDetailPromptBottomSheetFragment::javaClass.name
+        const val TAG = "ChangeDetailPromptBottomSheet"
     }
 
     private var onCancelVoucher: () -> Unit = {}

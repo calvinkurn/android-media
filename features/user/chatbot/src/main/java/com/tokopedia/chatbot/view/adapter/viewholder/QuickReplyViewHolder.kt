@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -14,7 +13,8 @@ import com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
-import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet
+import com.tokopedia.chatbot.util.removeUnderLineFromLinkAndSetText
+
 
 /**
  * @author by nisie on 5/8/18.
@@ -47,15 +47,14 @@ class QuickReplyViewHolder(itemView: View,
 
     private fun setMessage(element: QuickReplyListViewModel) {
         if (element.message.isNotEmpty()) {
-            message.text = MethodChecker.fromHtml(element.message)
+            message.removeUnderLineFromLinkAndSetText(element.message)
             message.post {
                 if (message.lineCount >= MESSAGE_LINE_COUNT) {
                     message.maxLines = MESSAGE_LINE_COUNT
                     message.text = EllipsizeMaker.getTruncatedMsg(message)
-                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
                     mesageBottom.visibility = View.VISIBLE
                     mesageBottom.setOnClickListener {
-                        ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
+                        showFullMessage(element.message)
                     }
 
                 } else {
@@ -65,6 +64,12 @@ class QuickReplyViewHolder(itemView: View,
             }
 
         }
+    }
+
+    private fun showFullMessage(message: String) {
+        this.message.maxLines = Int.MAX_VALUE
+        this.message.removeUnderLineFromLinkAndSetText(message)
+        mesageBottom.visibility = View.GONE
     }
 
     private fun setClickableUrl() {

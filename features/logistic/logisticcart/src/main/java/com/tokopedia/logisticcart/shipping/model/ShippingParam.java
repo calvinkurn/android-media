@@ -33,6 +33,8 @@ public class ShippingParam implements Parcelable {
     private boolean isTradeInDropOff;
     private List<Product> products;
     private String uniqueId; // this is actually cart string
+    private boolean isFulfillment;
+    private int preOrderDuration;
 
     public ShippingParam() {
     }
@@ -61,6 +63,8 @@ public class ShippingParam implements Parcelable {
         isTradeInDropOff = in.readByte() != 0;
         products = in.createTypedArrayList(Product.CREATOR);
         uniqueId = in.readString();
+        isFulfillment = in.readByte() != 0;
+        preOrderDuration = in.readInt();
     }
 
     @Override
@@ -88,6 +92,8 @@ public class ShippingParam implements Parcelable {
         dest.writeByte((byte) (isTradeInDropOff ? 1 : 0));
         dest.writeTypedList(products);
         dest.writeString(uniqueId);
+        dest.writeByte((byte) (isFulfillment? 1 : 0));
+        dest.writeInt(preOrderDuration);
     }
 
     @Override
@@ -277,5 +283,21 @@ public class ShippingParam implements Parcelable {
 
     public void setTradeInDropOff(boolean tradeInDropOff) {
         isTradeInDropOff = tradeInDropOff;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
+    public int getPreOrderDuration() {
+        return preOrderDuration;
+    }
+
+    public void setPreOrderDuration(int preOrderDuration) {
+        this.preOrderDuration = preOrderDuration;
     }
 }

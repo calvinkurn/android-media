@@ -3,7 +3,6 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragme
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -20,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -55,7 +55,7 @@ import kotlin.collections.ArrayList
 /**
  * Created by Rafli Syam 19/09/2020
  */
-class ShopShowcasePickerFragment : BaseDaggerFragment(),
+class ShopShowcasePickerFragment: BaseDaggerFragment(),
         HasComponent<ShopShowcaseManagementComponent>,
         ShopShowcasePickerAdapter.PickerClickListener {
 
@@ -103,9 +103,10 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     private val rvScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                     headerLayout?.cardElevation = HEADER_NO_ELEVATION
-                } else {
+                }
+                else {
                     headerLayout?.cardElevation = HEADER_HAS_ELEVATION
                 }
             }
@@ -198,10 +199,10 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
             _productId = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, "")
             _productName = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_NAME, "")
             pickerType = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_TYPE, ShowcasePickerType.RADIO)
-            if (pickerType == ShowcasePickerType.CHECKBOX) {
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
                 selectedShowcaseList = arrayListOf()
                 preSelectedShowcaseList = it.getParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER)
-                if (preSelectedShowcaseList == null)
+                if(preSelectedShowcaseList == null)
                     preSelectedShowcaseList = arrayListOf()
             }
         }
@@ -230,7 +231,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        removeObservers(shopShowcasePickerViewModel.getListBuyerShopShowcaseResponse)
+        removeObservers(shopShowcasePickerViewModel.getListSellerShopShowcaseResponse)
         removeObservers(shopShowcasePickerViewModel.getShopProductResponse)
         removeObservers(shopShowcasePickerViewModel.createShopShowcase)
     }
@@ -258,10 +259,10 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
             showcaseId = item.id
             showcaseName = item.name
         }
-        if (pickerType == ShowcasePickerType.RADIO) {
+        if(pickerType == ShowcasePickerType.RADIO) {
             selectedShowcase = itemPicker
         } else {
-            if (item.isChecked) {
+            if(item.isChecked) {
                 selectedShowcaseList?.add(itemPicker)
             } else {
                 selectedShowcaseList?.remove(itemPicker)
@@ -277,13 +278,12 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == ShopShowcaseListActivity.REQUEST_CODE_ADD_ETALASE) {
+        if(resultCode == Activity.RESULT_OK && requestCode == ShopShowcaseListActivity.REQUEST_CODE_ADD_ETALASE) {
             loadShowcaseList()
         }
     }
 
     private fun initView() {
-        setBackgroundColor()
         initRecyclerView()
         setupPickerLayout()
         loadShowcaseList()
@@ -294,18 +294,18 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
 
     private fun initListener() {
         // set listener for showcase search
-        searchBar?.searchBarTextField?.addTextChangedListener(object : AfterTextWatcher() {
+        searchBar?.searchBarTextField?.addTextChangedListener(object: AfterTextWatcher() {
             override fun afterTextChanged(keyword: Editable?) {
-                if (showcaseList.size.isMoreThanZero()) {
+                if(showcaseList.size.isMoreThanZero()) {
                     val filteredList = showcaseList.filter {
                         it.name.toLowerCase(Locale.ROOT).contains(keyword.toString().toLowerCase(Locale.ROOT))
                     }
-                    if (filteredList.size.isMoreThanZero()) {
+                    if(filteredList.size.isMoreThanZero()) {
                         showSearchEmptyStateRadioPicker(false)
                         showSearchEmptyStateHint(false)
                         showcasePickerAdapter?.updateDataSet(ArrayList(filteredList), totalChecked = totalCheckedShowcase)
                     } else {
-                        if (pickerType == ShowcasePickerType.RADIO)
+                        if(pickerType == ShowcasePickerType.RADIO)
                             showSearchEmptyStateRadioPicker(true)
                         else {
                             showcaseNameHint = keyword.toString()
@@ -319,7 +319,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
         // set listener for save picker button
         savePickerButton?.setOnClickListener {
             val intent = Intent()
-            if (pickerType == ShowcasePickerType.RADIO) {
+            if(pickerType == ShowcasePickerType.RADIO) {
                 intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase)
                 intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT, selectedProduct)
             } else {
@@ -341,7 +341,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
 
         // set listener for empty state picker
         emptyStatePicker?.setPrimaryCTAClickListener {
-            if (pickerType == ShowcasePickerType.RADIO) {
+            if(pickerType == ShowcasePickerType.RADIO) {
                 checkTotalProduct()
             } else {
                 showAddShowcaseBottomSheet()
@@ -350,7 +350,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
 
         // set listener for hint
         emptyStateHint?.setOnClickListener {
-            if (pickerType == ShowcasePickerType.CHECKBOX) {
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
                 showAddShowcaseBottomSheet(showcaseNameHint)
             }
         }
@@ -378,34 +378,49 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
                     buttonAddShowcaseBottomSheet?.isLoading = true
                     createShowcase(textFieldAddShowcaseBottomSheet?.textFieldInput?.text.toString())
                 }
+
+                // on dismiss bottomsheet
+                setOnDismissListener {
+                    activity?.let {
+                        KeyboardHandler.hideSoftKeyboard(it)
+                    }
+                }
             })
             isKeyboardOverlap = false
         }
     }
 
     private fun showAddShowcaseBottomSheet(showcaseNameHint: String = "") {
-        if (shopType == ShopType.REGULAR && showcaseList.size >= MAX_TOTAL_SHOWCASE_REGULAR_MERCHANT) {
+        if(shopType == ShopType.REGULAR && showcaseList.size >= MAX_TOTAL_SHOWCASE_REGULAR_MERCHANT) {
             showToaster(getString(R.string.max_total_showcase_error_text), Toaster.TYPE_NORMAL)
-        } else if ((shopType == ShopType.GOLD_MERCHANT || shopType == ShopType.OFFICIAL_STORE)
+        }
+        else if((shopType == ShopType.GOLD_MERCHANT || shopType == ShopType.OFFICIAL_STORE)
                 && (showcaseList.size >= MAX_TOTAL_SHOWCASE_PM_AND_OS)) {
             showToaster(getString(R.string.max_total_showcase_error_text), Toaster.TYPE_NORMAL)
-        } else {
+        }
+        else if (totalCheckedShowcase >= ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE) {
+            showToaster(getString(R.string.max_selected_showcase_text), Toaster.TYPE_NORMAL)
+        }
+        else {
             context?.let {
                 setupAddShowcaseBottomSheet(it)
             }
-            if (showcaseNameHint.isNotEmpty()) {
+            if(showcaseNameHint.isNotEmpty()) {
                 // set hint to bottomsheet textfield
                 textFieldAddShowcaseBottomSheet?.textFieldInput?.text = Editable.Factory.getInstance().newEditable(showcaseNameHint)
             }
             fragmentManager?.let {
                 addShowcaseBottomSheet?.show(it, "")
+                activity?.let { activity ->
+                    KeyboardHandler.showSoftKeyboard(activity)
+                }
             }
         }
     }
 
     private fun initRecyclerView() {
         showcasePickerAdapter = ShopShowcasePickerAdapter(this, pickerType)
-        if (preSelectedShowcaseList?.size.isMoreThanZero()) {
+        if(preSelectedShowcaseList?.size.isMoreThanZero()) {
             preSelectedShowcaseList?.size?.let { totalCheckedShowcase += it }
             showcasePickerAdapter?.updateDataSet(preSelectedShowcase = preSelectedShowcaseList?.toList(), totalChecked = totalCheckedShowcase)
             preSelectedShowcaseList?.let { selectedShowcaseList?.addAll(it) }
@@ -420,9 +435,9 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun loadShowcaseList() {
-        if (isMyShop) {
+        if(isMyShop) {
             showLoading(true)
-            shopShowcasePickerViewModel.getShopShowcaseListAsBuyer(shopId, isOwner = isMyShop)
+            shopShowcasePickerViewModel.getShopShowcaseListAsSeller()
         }
     }
 
@@ -444,9 +459,9 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
 
     private fun observeCreateShowcase() {
         observe(shopShowcasePickerViewModel.createShopShowcase) {
-            when (it) {
+            when(it) {
                 is Success -> {
-                    if (it.data.success) {
+                    if(it.data.success) {
                         addShowcaseBottomSheet?.dismiss()
                         searchBar?.searchBarTextField?.text?.clear()
                         newCreatedShowcaseId = it.data.createdId
@@ -467,40 +482,47 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun observeGetShowcaseList() {
-        observe(shopShowcasePickerViewModel.getListBuyerShopShowcaseResponse) {
-            when (it) {
-                is Success -> {
-                    showLoading(false)
-                    showcaseList = it.data
-                    showGlobalError(false)
-
-                    if (showcaseList.size.isMoreThanZero()) {
-                        showEmptyStatePickerList(false)
-                        // checked new created showcase, if showcaseId is not equal to zero
-                        if (totalCheckedShowcase < ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE && newCreatedShowcaseId.isNotEmpty()) {
-                            showcaseList.map { showcaseItem ->
-                                if (showcaseItem.id == newCreatedShowcaseId) {
-                                    showcaseItem.isChecked = true
-                                    selectedShowcaseList?.add(ShowcaseItemPicker(showcaseItem.id, showcaseItem.name))
-                                    renderButtonCounter(selectedShowcaseList?.size)
-                                    totalCheckedShowcase += 1
-                                }
-                            }
-                        }
-                        // check previous selected showcase
-                        if (selectedShowcaseList?.size.isMoreThanZero()) {
-                            showcaseList.forEach { item ->
-                                selectedShowcaseList?.forEach { selectedItem ->
-                                    if (item.id == selectedItem.showcaseId)
-                                        item.isChecked = true
-                                }
-                            }
-                        }
-                        showcasePickerAdapter?.updateDataSet(newList = showcaseList, totalChecked = totalCheckedShowcase)
-                    } else {
-                        showEmptyStatePickerList(true)
-                    }
-                }
+        observe(shopShowcasePickerViewModel.getListSellerShopShowcaseResponse) {
+            when(it) {
+               is Success -> {
+                   showLoading(false)
+                   val errorMessage = it.data.shopShowcases.error.message
+                   showcaseList = it.data.shopShowcases.result
+                   if(errorMessage.isNotEmpty()) {
+                       showToaster(errorMessage, Toaster.TYPE_ERROR)
+                   } else {
+                       showGlobalError(false)
+                       if(showcaseList.size.isMoreThanZero()) {
+                           showEmptyStatePickerList(false)
+                           // checked new created showcase, if showcaseId is not equal to zero
+                           if(totalCheckedShowcase < ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE && newCreatedShowcaseId.isNotEmpty()) {
+                               showcaseList.map { showcaseItem ->
+                                   if(showcaseItem.id == newCreatedShowcaseId) {
+                                       showcaseItem.isChecked = true
+                                       selectedShowcaseList?.add(ShowcaseItemPicker(showcaseItem.id, showcaseItem.name))
+                                       renderButtonCounter(selectedShowcaseList?.size)
+                                       totalCheckedShowcase += 1
+                                   }
+                               }
+                           }
+                           // check previous selected showcase
+                           if(selectedShowcaseList?.size.isMoreThanZero()) {
+                               showcaseList.forEach { item ->
+                                   selectedShowcaseList?.forEach { selectedItem ->
+                                       if(item.id == selectedItem.showcaseId) {
+                                           // assign new showcase name from cloud, to prevent empty showcase from edit product
+                                           selectedItem.showcaseName = item.name
+                                           item.isChecked = true
+                                       }
+                                   }
+                               }
+                           }
+                           showcasePickerAdapter?.updateDataSet(newList = showcaseList, totalChecked = totalCheckedShowcase)
+                       } else {
+                           showEmptyStatePickerList(true)
+                       }
+                   }
+               }
                 is Fail -> {
                     showLoading(false)
                     showEmptyStatePickerList(false)
@@ -540,7 +562,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun setupPickerLayout() {
-        if (pickerType == ShowcasePickerType.CHECKBOX) {
+        if(pickerType == ShowcasePickerType.CHECKBOX) {
             addShowcaseButton?.gone()
             headerUnify?.actionTextView?.visible()
             renderButtonCounter(selectedShowcaseList?.size)
@@ -551,7 +573,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun renderButtonCounter(total: Int?) {
-        if (total.isMoreThanZero()) {
+        if(total.isMoreThanZero()) {
             savePickerButton?.text = getString(R.string.picker_apply_showcase_counter_text, total.toString())
             savePickerButton?.isEnabled = true
         } else {
@@ -561,7 +583,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun showSearchEmptyStateHint(state: Boolean, hint: String = "") {
-        if (state) {
+        if(state) {
             tvEmptyStateHint?.text = MethodChecker.fromHtml(String.format(getString(R.string.empty_state_hint_text), hint))
             emptyStateHint?.visible()
             rvPicker?.gone()
@@ -572,7 +594,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun showSearchEmptyStateRadioPicker(state: Boolean) {
-        if (state) {
+        if(state) {
             ImageHandler.loadImage(context, emptyStateImage, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
             emptyState?.visible()
             rvPicker?.gone()
@@ -583,7 +605,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun showEmptyStatePickerList(state: Boolean) {
-        if (state) {
+        if(state) {
             rvPicker?.gone()
             searchBar?.gone()
             headerUnify?.actionTextView?.gone()
@@ -595,7 +617,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
             rvPicker?.visible()
             searchBar?.visible()
             footer?.visible()
-            if (pickerType == ShowcasePickerType.CHECKBOX) {
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
                 headerUnify?.actionTextView?.visible()
             } else {
                 addShowcaseButton?.visible()
@@ -604,7 +626,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading(state: Boolean) {
-        if (state) {
+        if(state) {
             loaderUnify?.visible()
             rvPicker?.gone()
             footer?.gone()
@@ -619,7 +641,7 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
             rvPicker?.visible()
             footer?.visible()
             searchBar?.visible()
-            if (pickerType == ShowcasePickerType.CHECKBOX) {
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
                 headerUnify?.actionTextView?.visible()
             } else {
                 addShowcaseButton?.visible()
@@ -628,13 +650,14 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
     }
 
     private fun showToaster(msg: String?, type: Int) {
+        hideSoftKeyboard()
         view?.let { view ->
             Toaster.make(view, msg ?: "", Snackbar.LENGTH_LONG, type)
         }
     }
 
     private fun showGlobalError(state: Boolean) {
-        if (state) {
+        if(state) {
             globalError?.setType(GlobalError.SERVER_ERROR)
             globalError?.visible()
             globalError?.setActionClickListener {
@@ -652,8 +675,10 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setBackgroundColor() {
-        view?.setBackgroundColor(Color.WHITE)
+    private fun hideSoftKeyboard() {
+        activity?.run {
+            KeyboardHandler.hideSoftKeyboard(this)
+        }
     }
 
     private fun goToAddShowcase() {

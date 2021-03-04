@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
@@ -56,7 +56,7 @@
             app:layout_constraintTop_toTopOf="@id/reviewHistoryDate"
             app:layout_constraintBottom_toBottomOf="@id/reviewHistoryDate"
             tools:visibility="visible"
-            tools:src="@drawable/ic_rating_star_five"/>
+            tools:src="@drawable/review_ic_rating_star_five"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewHistoryDate"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
             android:layout_marginTop="@dimen/spacing_lvl1"
             app:layout_constraintTop_toBottomOf="@id/review_history_product_name_barrier"
@@ -110,7 +110,7 @@
             android:id="@+id/reviewHistoryReply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:text="@string/review_history_reply_exists"
             android:layout_marginTop="@dimen/dp_10"
             android:visibility="gone"

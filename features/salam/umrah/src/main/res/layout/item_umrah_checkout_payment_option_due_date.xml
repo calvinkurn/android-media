@@ -5,7 +5,7 @@
     android:id="@+id/ll_list_payment_option_installment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
     android:visibility="gone"
     android:orientation="horizontal">
 
@@ -43,7 +43,7 @@
         app:typographyType="body_3"
         android:gravity="start"
         android:textColor="@color/Neutral_N700"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
         />
 
 </LinearLayout>

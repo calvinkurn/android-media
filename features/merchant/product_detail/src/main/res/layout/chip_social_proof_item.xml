@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chipSocialProofItem"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -30,7 +31,7 @@
         android:id="@+id/chip_social_proof_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         android:layout_marginStart="@dimen/dp_4"
         tools:text="(10)" />

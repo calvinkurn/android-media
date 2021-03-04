@@ -30,7 +30,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:textAlignment="center"
-        android:textColor="@color/defaultText"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
@@ -42,7 +42,7 @@
         android:lines="1"
         android:text="@string/subtitle_all_brand_not_found"
         android:textAlignment="center"
-        android:textColor="@color/charcoal_grey_68"
+        android:textColor="@color/Unify_N700_68"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

@@ -86,7 +86,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
 
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
 
-        if (position > 0) {
+        if (position > 0 && mItems.size > position - 1) {
             val item = mItems[position - 1]
             if (pHolder is ViewHolder) {
                 val holder = pHolder
@@ -115,7 +115,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                 }
                 holder.imgBanner.setOnClickListener { v: View? ->
                     val bundle = Bundle()
-                    bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems[position].code)
+                    bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems[position - 1].code)
                     holder.imgBanner.context.startActivity(getCouponDetail(holder.imgBanner.context, bundle), bundle)
                 }
                 /*This section is exclusively for handling flash-sale timer*/if (holder.timer != null) {
@@ -138,7 +138,10 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                                 val minutes = (l / (1000 * 60) % 60).toInt()
                                 val hours = (l / (1000 * 60 * 60) % 24).toInt()
                                 holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
-                                holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
+                                try {
+                                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
+                                } catch (e: Exception) {
+                                }
                                 holder.progressTimer.progress = l.toInt() / 1000
                                 try {
                                     holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),

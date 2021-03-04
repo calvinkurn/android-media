@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer name="two">2</integer>
-    <integer name="four">4</integer>
-    <integer name="sixteen">16</integer>
-    <integer name="twenty_four">24</integer>
-</resources>

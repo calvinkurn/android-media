@@ -14,7 +14,7 @@
         <activity
             android:name=".product.view.activity.DigitalSearchNumberActivity"
             android:label="@string/digital_title_fav_number"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
 
         <activity android:name=".product.view.activity.DigitalYoutubeActivity" />
@@ -22,16 +22,16 @@
         <activity
             android:name=".product.view.activity.DigitalChooserActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.WhiteUnify"/>
 
         <activity
             android:name=".product.view.activity.DigitalProductActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
 
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -44,12 +44,12 @@
         </activity>
         <activity
             android:name=".newcart.presentation.activity.DigitalCartActivity"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:label="@string/digital_cart_toolbar_title"
             android:screenOrientation="portrait" >
 
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
@@ -63,12 +63,6 @@
                     android:path="@string/path_telco_cart" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".product.view.activity.DigitalUssdActivity"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-
     </application>
 
 </manifest>

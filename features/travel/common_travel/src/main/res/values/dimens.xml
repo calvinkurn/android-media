@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="travel_search_shimmering_margin_right">150dp</dimen>
+
+    <dimen name="video_banner_margin">12dp</dimen>
+
+    <dimen name="cross_selling_rv_margin_start">14dp</dimen>
+    <dimen name="cross_selling_rv_margin_end">6dp</dimen>
+    <dimen name="cross_selling_item_background_width">56dp</dimen>
+    <dimen name="cross_selling_item_width">300dp</dimen>
+
+    <dimen name="common_travel_dp_10">10dp</dimen>
+    <dimen name="common_travel_dp_20">20dp</dimen>
 </resources>

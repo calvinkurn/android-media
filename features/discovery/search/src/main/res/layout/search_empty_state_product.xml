@@ -1,10 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_retry"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:background="@color/tkpd_bg_color"
+    android:background="@color/Unify_N75"
     android:orientation="vertical">
 
     <com.tokopedia.topads.sdk.widget.TopAdsBannerView
@@ -12,63 +13,95 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16"
         android:layout_marginBottom="8dp"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <ImageView
             android:id="@+id/no_result_image"
             android:layout_width="133dp"
             android:layout_height="100dp"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_view_empty_title_text"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:typographyType="heading_4"
-            android:textColor="@color/font_black_primary_70"
-            android:layout_toRightOf="@id/no_result_image"
-            android:layout_marginLeft="@dimen/dp_16"/>
+            android:textColor="@color/Unify_N700_68"
+            android:text="@string/msg_empty_search_product_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/no_result_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/dp_16"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_view_empty_content_text"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/font_black_secondary_54"
-            android:layout_toRightOf="@id/no_result_image"
+            android:textColor="@color/Unify_N700_44"
             android:layout_below="@id/text_view_empty_title_text"
+            app:layout_constraintStart_toEndOf="@id/no_result_image"
+            app:layout_constraintTop_toBottomOf="@id/text_view_empty_title_text"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="4dp"
-            android:layout_marginLeft="@dimen/dp_16"/>
+            android:layout_marginStart="@dimen/dp_16"
+            tools:text="Coba kata kunci lain atau cek produk rekomendasi dari Tokopedia"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/selectedFilterRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/no_result_image"
             android:layout_marginTop="8dp"
-            />
+            app:layout_constraintTop_toBottomOf="@id/no_result_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonEmptySearchToGlobalSearch"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:text="@string/search_result_global_search_button_text"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:visibility="gone"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintTop_toBottomOf="@id/no_result_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/button_add_promo"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_32"
             android:id="@+id/button_add_promo"
             android:gravity="center"
-            android:layout_below="@id/no_result_image"
             android:background="@drawable/search_button_green_rounded_background"
             app:typographyType="heading_6"
-            android:textColor="#ffffff"
+            android:textColor="@color/Unify_N0"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/msg_empty_search_product_button"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="@dimen/dp_4"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:paddingLeft="21dp"
-            android:paddingRight="21dp"/>
+            android:paddingRight="21dp"
+            app:layout_goneMarginStart="@dimen/dp_0"
+            app:layout_constraintTop_toBottomOf="@id/no_result_image"
+            app:layout_constraintStart_toEndOf="@id/buttonEmptySearchToGlobalSearch"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

@@ -6,4 +6,6 @@
     <string name="home_fav_store">Home - Fav Store Page</string>
     <string name="wishlist_empty_title">Wishlist masih kosong</string>
     <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
+
+    <string name="favorite_empty_button">Masuk Sekarang</string>
 </resources>

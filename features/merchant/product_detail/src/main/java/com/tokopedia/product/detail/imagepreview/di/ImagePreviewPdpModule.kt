@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.imagepreview.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.imagepreview.data.ImagePreviewTracking
@@ -10,11 +12,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
-@ImagePreviewPdpScope
 @Module(includes = [
     ImagePreviewPdpViewModelModule::class
 ])
@@ -34,8 +32,7 @@ class ImagePreviewPdpModule {
 
     @ImagePreviewPdpScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @ImagePreviewPdpScope
     @Provides

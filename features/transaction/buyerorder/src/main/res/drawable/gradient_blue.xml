@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="90"
-        android:endColor="@color/white"
-        android:startColor="@color/tkpd_transaction_bg_label_blue" />
+        android:endColor="@color/Unify_N0"
+        android:startColor="@color/Unify_B200" />
     <corners android:radius="@dimen/dp_5" />
 </shape>

@@ -2,9 +2,8 @@
     package="com.tokopedia.officialstore">
 
     <application>
-        <activity
-            android:name=".brandlist.activity.ReactNativeBrandListOsActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".OfficialStoreActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
     </application>
 
 </manifest>

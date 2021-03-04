@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
  * ade.hadian@tokopedia.com
  */
 
-@ProfileCommonScope
 @Module(includes = [
     ProfileCommonQueryModule::class,
     ProfileCommonUseCaseModule::class

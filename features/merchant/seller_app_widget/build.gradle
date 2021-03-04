@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android-extensions'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.utils)
+
+    implementation rootProject.ext.unifyDependencies.principles
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.workManager
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
+    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+}
+
+project.ext {
+    artifactId = 'seller_app_widget'
+    groupId = 'com.tokopedia.sellerappwidget'
+    versionName = "0.0.1"
+    artifactName ="seller_app_widget-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

@@ -1,0 +1,73 @@
+[
+  {
+    "data": {
+      "getBUWidget": {
+        "title": "Beli Pulsa atau Bayar Tagihanmu",
+        "media_url": "https://ecs7.tokopedia.net/img/recharge/buwidget/RECHARGE-WIDGET-DGTOPED.png",
+        "app_link": "https://pulsa.tokopedia.com",
+        "web_link": "https://m.tokopedia.com",
+        "text_link": "Lihat Semua",
+        "banner_app_link": "https://pulsa.tokopedia.com",
+        "banner_web_link": "https://pulsa.tokopedia.com",
+        "option_1": "mix-left",
+        "option_2": "#FF7182",
+        "option_3": "",
+        "tracking": [],
+        "items": [
+          {
+            "id": 1,
+            "title": "Pulsa",
+            "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png",
+            "subtitle": "  Top-up pulsa yuk biar bisa nelpon teman sepuasnya.                                                  ",
+            "label_1": "",
+            "label_1_mode": "",
+            "label_2": "",
+            "label_3": "",
+            "app_link": "tokopedia://digital/form?category_id=1",
+            "web_link": "https://www.tokopedia.com/pulsa",
+            "tracking": []
+          },
+          {
+            "id": 2,
+            "title": "Paket Data",
+            "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png",
+            "subtitle": "Top-up paket data kamu biar bisa internetan.                  ",
+            "label_1": "",
+            "label_1_mode": "",
+            "label_2": "",
+            "label_3": "",
+            "app_link": "tokopedia://digital/form?category_id=2",
+            "web_link": "https://www.tokopedia.com/paket-data",
+            "tracking": []
+          },
+          {
+            "id": 3,
+            "title": "Listrik PLN",
+            "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png",
+            "subtitle": "Bayar tagihan atau beli token listrik kamu di sini.                    ",
+            "label_1": "",
+            "label_1_mode": "",
+            "label_2": "",
+            "label_3": "",
+            "app_link": "tokopedia://digital/form?category_id=3",
+            "web_link": "https://www.tokopedia.com/pln/",
+            "tracking": []
+          },
+          {
+            "id": 4,
+            "title": "Listrik PLN 2",
+            "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png",
+            "subtitle": "Bayar tagihan atau beli token listrik kamu di sini.                    ",
+            "label_1": "",
+            "label_1_mode": "",
+            "label_2": "",
+            "label_3": "",
+            "app_link": "tokopedia://digital/form?category_id=3",
+            "web_link": "https://www.tokopedia.com/pln/",
+            "tracking": []
+          }
+        ]
+      }
+    }
+  }
+]

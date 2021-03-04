@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.abstraction">
 
-    <application  />
+    <application>
+        <meta-data
+            android:name="com.tokopedia.abstraction.common.utils.image.TkpdGlideModule"
+            android:value="GlideModule" />
+    </application>
 
 </manifest>

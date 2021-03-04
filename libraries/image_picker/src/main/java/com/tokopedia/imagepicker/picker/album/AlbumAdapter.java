@@ -2,20 +2,19 @@ package com.tokopedia.imagepicker.picker.album;
 
 import android.content.Context;
 import android.database.Cursor;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.adapter.RecyclerViewCursorAdapter;
-
-import java.io.File;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -24,13 +23,13 @@ import java.io.File;
 public class AlbumAdapter extends RecyclerViewCursorAdapter<AlbumAdapter.AlbumViewHolder> {
 
     private Context context;
-    private int galleryType;
+    private GalleryType galleryType;
 
     private OnAlbumAdapterListener onAlbumAdapterListener;
     public interface OnAlbumAdapterListener{
         void onAlbumClicked(AlbumItem albumItem, int position);
     }
-    public AlbumAdapter(Context context, OnAlbumAdapterListener listener, int galleryType) {
+    public AlbumAdapter(Context context, OnAlbumAdapterListener listener, GalleryType galleryType) {
         super(null);
         this.context = context;
         this.onAlbumAdapterListener = listener;
@@ -67,24 +66,24 @@ public class AlbumAdapter extends RecyclerViewCursorAdapter<AlbumAdapter.AlbumVi
         holder.tvAlbumName.setText(albumItem.getDisplayName(context));
         int resourseString;
         switch (galleryType) {
-            case GalleryType.IMAGE_ONLY:
+            case IMAGE_ONLY:
                 resourseString = R.string.x_photos;
                 break;
-            case GalleryType.VIDEO_ONLY:
+            case VIDEO_ONLY:
                 resourseString = R.string.x_videos;
                 break;
             default:
-            case GalleryType.ALL:
+            case ALL:
                 resourseString = R.string.x_media;
                 break;
         }
         holder.tvAlbumCount.setText(context.getString(resourseString, albumItem.getCount()));
 
         // do not need to load animated Gif
-        ImageHandler.loadImageFromFileFitCenter(
+        ImageHandler.loadImageFromUriFitCenter(
                 context,
                 holder.ivAlbumCover,
-                new File(albumItem.getCoverPath())
+                albumItem.getCoverPath()
         );
     }
 

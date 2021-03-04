@@ -4,16 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
-import com.tokopedia.topads.edit.utils.Constants.EDIT_SOURCE
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_EXISTS
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_SOURCE
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
 import kotlinx.android.synthetic.main.topads_edit_add_keyword_negative_item_layout.view.*
-import kotlinx.android.synthetic.main.topads_edit_add_keyword_negative_item_layout.view.checkBox
-import kotlinx.android.synthetic.main.topads_edit_add_keyword_negative_item_layout.view.keyword_name
-import kotlinx.android.synthetic.main.topads_edit_layout_keyword_list_item.view.*
 
 /**
  * Created by Pika on 13/4/20.
@@ -60,7 +56,7 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
     }
 
     fun addKeyword(name: String) {
-        items.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_NEGATIVE_PHRASE, KEYWORD_EXISTS, "0", 0, true, name , KEYWORD_SOURCE))
+        items.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_NEGATIVE_PHRASE, KEYWORD_EXISTS, "0", "0", true, name, KEYWORD_SOURCE))
         notifyItemInserted(items.size - 1)
     }
 }

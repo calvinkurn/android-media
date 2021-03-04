@@ -644,7 +644,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
                     FlightAnalytics.Screen.SEARCH, any())
         }
     }
@@ -660,7 +660,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
                     FlightAnalytics.Screen.SEARCH, any())
         }
     }
@@ -677,7 +677,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
                     FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
@@ -707,7 +707,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
                     FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
@@ -739,7 +739,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData,
                     journeyModel, FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
@@ -770,7 +770,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData,
                     journeyModel, FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
@@ -802,7 +802,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
                     adapterPosition, FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
@@ -833,7 +833,7 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
                     adapterPosition, FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }

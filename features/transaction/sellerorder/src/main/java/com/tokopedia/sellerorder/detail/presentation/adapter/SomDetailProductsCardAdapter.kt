@@ -1,11 +1,12 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import kotlinx.android.synthetic.main.detail_product_card_item.view.*
@@ -24,14 +25,13 @@ class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.
         return listProducts.size
     }
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.setOnClickListener { actionListener?.onClickProduct(listProducts[position].id) }
+        holder.itemView.setOnClickListener {
+            actionListener?.onClickProduct(listProducts[position].orderDetailId.toIntOrZero())
+        }
         holder.itemView.iv_product.loadImage(listProducts[position].thumbnail)
         holder.itemView.tv_product_name.text = listProducts[position].name
-        holder.itemView.tv_product_desc.text = "${listProducts[position].quantity} barang (${listProducts[position].weightText})"
-        holder.itemView.tv_product_price.text = "@ ${listProducts[position].priceText}"
+        holder.itemView.tv_product_desc.text = StringBuilder("${listProducts[position].quantity} x ${listProducts[position].priceText}")
         if (listProducts[position].note.isNotEmpty()) {
             holder.itemView.divider_product.visibility = View.VISIBLE
             holder.itemView.tv_product_notes.visibility = View.VISIBLE

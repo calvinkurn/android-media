@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,12 @@ public class Product implements Parcelable {
     private String errorMessageDescription;
 
     private long cartId;
-    private int productId;
+    private long productId;
     private String productName;
     private String productPriceFmt;
-    private int productPrice;
-    private int productOriginalPrice;
-    private int productWholesalePrice;
+    private long productPrice;
+    private long productOriginalPrice;
+    private long productWholesalePrice;
     private String productWholesalePriceFmt;
     private String productWeightFmt;
     private int productWeight;
@@ -86,7 +87,7 @@ public class Product implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
@@ -106,15 +107,15 @@ public class Product implements Parcelable {
         this.freeReturnLogo = freeReturnLogo;
     }
 
-    public void setProductPrice(int productPrice) {
+    public void setProductPrice(long productPrice) {
         this.productPrice = productPrice;
     }
 
-    public void setProductOriginalPrice(int productOriginalPrice) {
+    public void setProductOriginalPrice(long productOriginalPrice) {
         this.productOriginalPrice = productOriginalPrice;
     }
 
-    public void setProductWholesalePrice(int productWholesalePrice) {
+    public void setProductWholesalePrice(long productWholesalePrice) {
         this.productWholesalePrice = productWholesalePrice;
     }
 
@@ -222,7 +223,7 @@ public class Product implements Parcelable {
         return errorMessage;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
@@ -234,15 +235,15 @@ public class Product implements Parcelable {
         return productPriceFmt;
     }
 
-    public int getProductPrice() {
+    public long getProductPrice() {
         return productPrice;
     }
 
-    public int getProductOriginalPrice() {
+    public long getProductOriginalPrice() {
         return productOriginalPrice;
     }
 
-    public int getProductWholesalePrice() {
+    public long getProductWholesalePrice() {
         return productWholesalePrice;
     }
 
@@ -444,12 +445,12 @@ public class Product implements Parcelable {
         dest.writeString(errorMessage);
         dest.writeString(errorMessageDescription);
         dest.writeLong(cartId);
-        dest.writeInt(productId);
+        dest.writeLong(productId);
         dest.writeString(productName);
         dest.writeString(productPriceFmt);
-        dest.writeInt(productPrice);
-        dest.writeInt(productOriginalPrice);
-        dest.writeInt(productWholesalePrice);
+        dest.writeLong(productPrice);
+        dest.writeLong(productOriginalPrice);
+        dest.writeLong(productWholesalePrice);
         dest.writeString(productWholesalePriceFmt);
         dest.writeString(productWeightFmt);
         dest.writeInt(productWeight);
@@ -493,12 +494,12 @@ public class Product implements Parcelable {
         errorMessage = in.readString();
         errorMessageDescription = in.readString();
         cartId = in.readLong();
-        productId = in.readInt();
+        productId = in.readLong();
         productName = in.readString();
         productPriceFmt = in.readString();
-        productPrice = in.readInt();
-        productOriginalPrice = in.readInt();
-        productWholesalePrice = in.readInt();
+        productPrice = in.readLong();
+        productOriginalPrice = in.readLong();
+        productWholesalePrice = in.readLong();
         productWholesalePriceFmt = in.readString();
         productWeightFmt = in.readString();
         productWeight = in.readInt();

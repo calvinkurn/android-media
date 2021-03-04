@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -7,9 +8,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
-import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_card_image.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_product_banner.view.*
@@ -21,38 +23,52 @@ import kotlinx.android.synthetic.main.view_recharge_home_product_banner.view.*
 class RechargeHomepageProductBannerViewHolder(
         val view: View,
         val listener: RechargeHomepageItemListener
-): AbstractViewHolder<RechargeHomepageProductBannerModel>(view) {
+) : AbstractViewHolder<RechargeHomepageProductBannerModel>(view) {
 
     companion object {
-        @LayoutRes val LAYOUT = R.layout.view_recharge_home_product_banner
-
-        // TODO: Replace background color with backend data
-        val PRODUCT_BANNER_BACKGROUND_GRADIENT = arrayListOf("#32AFFF", "#0066A9")
+        @LayoutRes
+        val LAYOUT = R.layout.view_recharge_home_product_banner
     }
 
     override fun bind(element: RechargeHomepageProductBannerModel) {
         val section = element.section
         if (section.items.isNotEmpty()) {
-            itemView.view_recharge_home_product_banner_shimmering.hide()
-
             setBackground(section)
-            setHeader(section)
+            setHeader(element.channelModel, element.visitableId())
             setProduct(section)
+
+            itemView.view_recharge_home_product_banner_shimmering.hide()
+            itemView.view_recharge_home_product_banner_layout.show()
         } else {
             itemView.view_recharge_home_product_banner_shimmering.show()
+            itemView.view_recharge_home_product_banner_layout.hide()
 
-            listener.loadRechargeSectionData(element.visitableId())
+            listener.loadRechargeSectionData(element.visitableId(), element.isLoadFromCloud)
         }
     }
 
-    private fun setHeader(section: RechargeHomepageSections.Section) {
+    private fun setHeader(channel: ChannelModel?,
+                          sectionId: String) {
         RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
-                itemView.view_recharge_home_product_banner_header, section
+                itemView.view_recharge_home_product_banner_header, channel,
+                object : HeaderListener {
+                    override fun onSeeAllClick(link: String) {
+
+                    }
+
+                    override fun onChannelExpired(channelModel: ChannelModel) {
+                        listener.onRechargeSectionEmpty(sectionId)
+                    }
+                }
         )
     }
 
     private fun setBackground(section: RechargeHomepageSections.Section) {
-        itemView.view_recharge_home_product_banner_background.setGradientBackground(PRODUCT_BANNER_BACKGROUND_GRADIENT)
+        try {
+            itemView.view_recharge_home_product_banner_background.setBackgroundColor(Color.parseColor(section.label1))
+        } catch (e: Throwable) {
+            /* do nothing */
+        }
     }
 
     private fun setProduct(section: RechargeHomepageSections.Section) {
@@ -68,7 +84,7 @@ class RechargeHomepageProductBannerViewHolder(
     }
 
     private fun setProductListener(section: RechargeHomepageSections.Section, item: RechargeHomepageSections.Item) {
-        with (itemView) {
+        with(itemView) {
             btn_recharge_home_product_banner_buy.setOnClickListener {
                 listener.onRechargeSectionItemClicked(item)
             }
@@ -94,7 +110,7 @@ class RechargeHomepageProductBannerViewHolder(
     }
 
     private fun setProductSlashedPrice(slashedPrice: String) {
-        with (itemView) {
+        with(itemView) {
             if (slashedPrice.isEmpty()) {
                 tv_recharge_home_product_banner_slashed_price.hide()
             } else {

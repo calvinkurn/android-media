@@ -25,6 +25,12 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
         }
     }
 
+    override fun getParentViewResourceID(): Int = com.tokopedia.home_recom.R.id.recom_container
+
+    override fun getLayoutRes(): Int = com.tokopedia.home_recom.R.layout.recommendation_activity
+
+    override fun getToolbarResourceID(): Int = com.tokopedia.home_recom.R.id.recom_toolbar
+
     override fun getNewFragment(): Fragment? {
         return when {
             intent.hasExtra(EXTRA_REF) -> SimilarProductRecommendationFragment.newInstance(

@@ -2,4 +2,6 @@
 <resources>
     <color name="interest_background_inactive">#51000000</color>
     <color name="interest_background_active">#900a8f08</color>
+    <color name="ip_green_600">#0a8f08</color>
+    <color name="ip_grey_title">#60000000</color>
 </resources>

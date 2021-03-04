@@ -6,7 +6,7 @@ import javax.inject.Inject
 class SendTopAdsUseCase @Inject constructor(val topAdsUrlHitter: TopAdsUrlHitter) {
 
     companion object {
-        private const val className: String = "com.tokopedia.common_category.usecase.SendTopAdsUseCase";
+        private const val className: String = "category_levels_top";
     }
 
     fun hitImpressions(url: String, productId: String, productName: String, imageUrl: String) {

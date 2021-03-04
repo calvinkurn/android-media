@@ -1,5 +1,0 @@
-mutation {
-  mpLogisticEditRefNum(input: {order_id: "#orderId", shipping_ref:"#shippingRef"}) {
-    message
-  }
-}

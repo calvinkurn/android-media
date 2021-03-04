@@ -13,7 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.otp.R
-import com.tokopedia.otp.verification.domain.data.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import kotlinx.android.synthetic.main.item_verification_method.view.*
 
 /**
@@ -61,7 +61,7 @@ class VerificationMethodAdapter(
                 override fun onClick(widget: View) {}
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(itemView.context, R.color.Neutral_N700)
+                    ds.color = MethodChecker.getColor(itemView.context, R.color.Unify_N700)
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             }

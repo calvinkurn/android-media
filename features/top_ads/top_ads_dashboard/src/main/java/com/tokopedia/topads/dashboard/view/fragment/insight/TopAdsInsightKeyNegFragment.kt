@@ -103,6 +103,8 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
         val withValue = text?.replace(COUNT, dataInsight?.get(key)?.negative?.size.toString())?.replace(VALUE, "Rp"+Utils.convertToCurrencyString(totalPotential.toLong()))
         insight_desc.text = Html.fromHtml(withValue)
         btnTambah.text = data?.negative?.box?.button?.title?.replace(COUNT, dataInsight?.get(key)?.negative?.size.toString())
+        if (dataInsight?.get(key)?.negative?.size == 0)
+            btnTambah.isEnabled = false
     }
 
     override fun onAttach(context: Context) {

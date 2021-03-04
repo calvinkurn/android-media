@@ -4,7 +4,7 @@
   "query": [
     {
       "eventCategory": "product detail page",
-      "eventAction": "impression - modular component",
+      "eventAction": "{{.*}}",
       "event": "view_item",
       "categoryId": "{{productId : \\d{1,}}}",
       "productId": "{{\\d{1,}}}",
@@ -27,7 +27,7 @@
     },
     {
       "eventCategory": "product detail page",
-      "eventAction": "click - choose product variant",
+      "eventAction": "{{.*}}",
       "event": "clickPDP",
       "productId": "{{\\d{1,}}}",
       "sessionIris": "{{.{1,}}}",
@@ -37,14 +37,14 @@
     },
     {
       "eventCategory": "product detail page",
-      "eventAction": "click - Beli Langsung on pdp",
-      "event": "add_to_cart",
+      "eventAction": "{{.*}}",
+      "event": "{{.*}}",
       "shopType": "{{.*}}",
       "productId": "{{\\d{1,}}}",
       "isLoggedInStatus": "{{true|false}}",
       "sessionIris": "{{.{1,}}}",
       "shopId": "{{\\d{1,}}}",
-      "eventLabel": "fitur : Beli Langsung occ",
+      "eventLabel": "{{.*}}",
       "user_id": "{{\\d{1,}}}",
       "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
       "items": [

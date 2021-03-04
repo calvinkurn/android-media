@@ -27,12 +27,13 @@ class TableMapper @Inject constructor() {
         private const val MAX_ROWS_PER_PAGE = 5
     }
 
-    fun mapRemoteModelToUiModel(tableData: List<TableDataModel>): List<TableDataUiModel> {
+    fun mapRemoteModelToUiModel(tableData: List<TableDataModel>, isFromCache: Boolean): List<TableDataUiModel> {
         return tableData.map {
             TableDataUiModel(
                     dataKey = it.dataKey,
                     error = it.errorMsg,
-                    dataSet = getTableDataSet(it.data)
+                    dataSet = getTableDataSet(it.data),
+                    isFromCache = isFromCache
             )
         }
     }

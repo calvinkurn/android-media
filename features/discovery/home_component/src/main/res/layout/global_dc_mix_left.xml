@@ -5,6 +5,7 @@
     android:id="@+id/content_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
@@ -21,13 +22,12 @@
         android:id="@+id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <FrameLayout
+        android:id="@+id/container_mixleft"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -52,7 +52,8 @@
                 android:layout_width="@dimen/product_card_flashsale_width"
                 android:clickable="true"
                 android:focusable="true"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/content_desc_mix_left" />
 
         </FrameLayout>
 
@@ -60,9 +61,8 @@
             android:id="@+id/rv_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/home_component_margin_default"
             android:paddingRight="@dimen/dp_8"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

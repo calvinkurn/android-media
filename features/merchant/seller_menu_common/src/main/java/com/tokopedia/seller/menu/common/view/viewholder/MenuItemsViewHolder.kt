@@ -6,17 +6,17 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.menu.common.R
-import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
-import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
+import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.setting_menu_list.view.*
 
 class MenuItemsViewHolder(
     itemView: View,
+    private val userSession: UserSessionInterface?,
     private val trackingListener: SettingTrackingListener,
     private val sellerMenuTracker: SellerMenuTracker?
 ) : AbstractViewHolder<MenuItemUiModel>(itemView) {
@@ -33,7 +33,8 @@ class MenuItemsViewHolder(
 
     override fun bind(element: MenuItemUiModel) {
         with(itemView) {
-            element.drawableReference?.let { settingMenuIcon.setImageDrawable(ContextCompat.getDrawable(context, it)) }
+            element.drawableReference?.let { settingMenuIcon?.setImageDrawable(ContextCompat.getDrawable(context, it)) }
+            element.iconUnify?.let { settingMenuIcon?.setImage(it) }
             settingMenuTitle.text = element.title
             if (element.isNoIcon) {
                 element.trackingAlias?.let {
@@ -58,6 +59,7 @@ class MenuItemsViewHolder(
     private fun sendTracker(menuItem: MenuItemUiModel) {
         when(menuItem) {
             is SellerMenuItemUiModel -> sendClickSellerMenuEvent(menuItem)
+            is StatisticMenuItemUiModel -> sendEventClickStatisticMenuItem(userSession?.userId.orEmpty())
             else -> menuItem.sendSettingShopInfoClickTracking()
         }
     }

@@ -39,8 +39,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
                 }
 
-        val QUERY = """
-        query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
           pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession) {
             error {
               Code
@@ -54,6 +53,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 subTitle
                 titlePDP
                 subTitlePDP
+                iconURL
+                partnerText
+                partnerLogo
+                linkURL
+                isAppLink
               }
             }
             productView
@@ -101,10 +105,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   minimumWeight
                   uiHidden
                 }
-              }
-              favoriteData {
-                totalFavorite
-                alreadyFavorited
               }
               activeProduct
               createInfo {
@@ -301,6 +301,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   show_recommendation
                 }
                 unavailable_buttons
+                hide_floating_button
               }
             }
             upcomingCampaigns {
@@ -327,8 +328,29 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             shopFeature{
               IsGoApotik
             }
-          }
-        }""".trimIndent()
+            restrictionInfo{
+                message
+                restrictionData{
+                    productID
+                    isEligible
+                    action{
+                        actionType
+                        title
+                        description
+                        attributeName
+                    }
+                }
+            }
+            merchantVoucherSummary{
+                title{
+                    text
+                }
+                subtitle
+                imageURL
+                isShown
+            }
+        }
+    }""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
@@ -386,6 +408,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) }?.filter { it.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE } ?: listOf()
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
+            p2UiData.restrictionInfo = restrictionInfo
+            p2UiData.merchantVoucherSummary = merchantVoucherSummary
         }
         return p2UiData
     }

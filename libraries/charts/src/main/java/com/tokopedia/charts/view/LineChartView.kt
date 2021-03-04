@@ -10,6 +10,8 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.Utils
 import com.tokopedia.charts.R
 import com.tokopedia.charts.config.LineChartConfig
@@ -49,9 +51,18 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             setupXAxis()
             setupYAxis()
 
-            setDrawMarkers(config.isTooltipEnabled)
+            setDrawMarkers(false)
             setScaleEnabled(config.isScaleXEnabled)
             setPinchZoom(config.isPitchZoomEnabled)
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onNothingSelected() {
+
+                }
+
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    this@with.setDrawMarkers(config.isTooltipEnabled)
+                }
+            })
         }
 
         setChartAnimation()
@@ -59,47 +70,54 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     }
 
     fun setDataSets(vararg dataSet: LineChartData) {
-        val dateSets: List<LineDataSet> = dataSet.mapIndexed { i, data ->
-            val entries: List<Entry> = getLineChartEntry(data.chartEntry)
-
-            setXAxisLabelFormatter(data.chartEntry)
-            setYAxisLabelFormatter()
-
-            val lineDataSet = LineDataSet(entries, "Data Set $i")
-
-            with(lineDataSet) {
-                mode = when (config.chartLineMode) {
-                    LINE_MODE_CURVE -> LineDataSet.Mode.CUBIC_BEZIER
-                    else -> LineDataSet.Mode.LINEAR
-                }
-
-                setDrawHorizontalHighlightIndicator(false)
-                setDrawVerticalHighlightIndicator(false)
-
-                //setup chart line
-                lineWidth = data.config.lineWidth
-                color = data.config.lineColor
-
-                //setup chart fill color
-                setDrawFilled(data.config.drawFillEnabled)
-                if (data.config.fillDrawable != null && Utils.getSDKInt() >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    fillDrawable = data.config.fillDrawable
-                } else {
-                    fillColor = data.config.fillColor
-                }
-
-                setDrawValues(config.isShowValueEnabled)
-
-                //chart dot
-                setDrawCircles(config.isChartDotEnabled)
-                setCircleColor(config.chartDotColor)
-                setDrawCircleHole(config.isChartDotHoleEnabled)
-            }
-
-            return@mapIndexed lineDataSet
+        val dateSets: List<LineDataSet> = dataSet.map { data ->
+            return@map getLineDataSet(data)
         }
 
         lineChart.data = LineData(dateSets)
+    }
+
+    private fun getLineDataSet(data: LineChartData): LineDataSet {
+        val entries: List<Entry> = getLineChartEntry(data.chartEntry)
+
+        setXAxisLabelFormatter(data.chartEntry)
+        setYAxisLabelFormatter()
+
+        val lineDataSet = LineDataSet(entries, "Data Set")
+
+        with(lineDataSet) {
+            mode = when (config.chartLineMode) {
+                LINE_MODE_CURVE -> LineDataSet.Mode.CUBIC_BEZIER
+                else -> LineDataSet.Mode.LINEAR
+            }
+
+            setDrawHorizontalHighlightIndicator(false)
+            setDrawVerticalHighlightIndicator(false)
+
+            //setup chart line
+            lineWidth = data.config.lineWidth
+            color = data.config.lineColor
+            if (data.config.isLineDashed) {
+                enableDashedLine(20f, 10f, 0f)
+            }
+
+            //setup chart fill color
+            setDrawFilled(data.config.drawFillEnabled)
+            if (data.config.fillDrawable != null && Utils.getSDKInt() >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                fillDrawable = data.config.fillDrawable
+            } else {
+                fillColor = data.config.fillColor
+            }
+
+            setDrawValues(config.isShowValueEnabled)
+
+            //chart dot
+            setDrawCircles(config.isChartDotEnabled)
+            setCircleColor(config.chartDotColor)
+            setDrawCircleHole(config.isChartDotHoleEnabled)
+        }
+
+        return lineDataSet
     }
 
     fun invalidateChart() {

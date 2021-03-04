@@ -6,12 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_SPECIFICATION_COUNTER
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
@@ -20,12 +25,19 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
@@ -33,7 +45,10 @@ import javax.inject.Inject
 class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase
+        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+        private val validateProductUseCase: ValidateProductUseCase,
+        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
+        private val annotationCategoryUseCase: AnnotationCategoryUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -42,14 +57,19 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isDrafting = false
 
+    var isReloadingShowCase = false
+
     var isFirstMoved = false
 
     var shouldUpdateVariant = false
 
     var productInputModel = ProductInputModel()
     val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
+    val hasTransaction get() = productInputModel.itemSold > 0
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
+
+    var productShowCases: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     var isAddingWholeSale = false
 
@@ -93,6 +113,11 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
+    private val mIsProductSkuInputError = MutableLiveData<Boolean>()
+    val isProductSkuInputError: LiveData<Boolean>
+        get() = mIsProductSkuInputError
+    var productSkuMessage: String = ""
+
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
             this.value = isInputValid()
@@ -129,11 +154,26 @@ class AddEditProductDetailViewModel @Inject constructor(
         addSource(wholeSaleErrorCounter) {
             this.value = isInputValid()
         }
+        addSource(mIsProductSkuInputError) {
+            this.value = isInputValid()
+        }
     }
     val isInputValid: LiveData<Boolean>
         get() = mIsInputValid
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
+
+    private val mShopShowCases = MutableLiveData<Result<List<ShopEtalaseModel>>>()
+    val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
+        get() = mShopShowCases
+
+    var specificationList: List<SpecificationInputModel> = emptyList()
+    private val mAnnotationCategoryData = MutableLiveData<Result<List<AnnotationCategoryData>>>()
+    val annotationCategoryData: LiveData<Result<List<AnnotationCategoryData>>>
+        get() = mAnnotationCategoryData
+    private val mSpecificationText = MutableLiveData<String>()
+    val specificationText: LiveData<String>
+        get() = mSpecificationText
 
     private fun isInputValid(): Boolean {
 
@@ -165,9 +205,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         val isPreOrderActivated = isPreOrderActivated.value ?: false
         val isPreOrderDurationError = isPreOrderActivated && mIsPreOrderDurationInputError.value ?: false
 
+        // by default the product sku is allowed to empty
+        val isProductSkuError = mIsProductSkuInputError.value ?: false
+
         return (!isProductPhotoError && !isProductNameError &&
                 !isProductPriceError && !isProductStockError &&
-                !isOrderQuantityError && !isProductWholeSaleError && !isPreOrderDurationError)
+                !isOrderQuantityError && !isProductWholeSaleError &&
+                !isPreOrderDurationError && !isProductSkuError)
     }
 
     fun validateProductPhotoInput(productPhotoCount: Int) {
@@ -176,14 +220,35 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun validateProductNameInput(productNameInput: String) {
         if (productNameInput.isEmpty()) {
+            // show product error when product name is empty
             val errorMessage = provider.getEmptyProductNameErrorMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
-            return
+        } else {
+            // show product name tips
+            val productNameTips = provider.getProductNameTips()
+            productNameTips?.let { productNameMessage = it }
+            mIsProductNameInputError.value = false
+
+            if (productNameInput != productInputModel.detailInputModel.currentProductName) {
+                // remote product name validation
+                launchCatchError(block = {
+                    val response = withContext(Dispatchers.IO) {
+                        validateProductUseCase.setParamsProductName(productNameInput)
+                        validateProductUseCase.executeOnBackground()
+                    }
+                    val validationMessage = response.productValidateV3.data.productName
+                            .joinToString("\n")
+                    if (validationMessage.isNotEmpty()) {
+                        productNameMessage = validationMessage
+                    }
+                    mIsProductNameInputError.value = validationMessage.isNotEmpty()
+                }, onError = {
+                    // log error
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+                })
+            }
         }
-        val productNameTips = provider.getProductNameTips()
-        productNameTips?.let { productNameMessage = it }
-        mIsProductNameInputError.value = false
     }
 
     fun validateProductPriceInput(productPriceInput: String) {
@@ -250,7 +315,11 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductStockInput(productStockInput: String) {
-        if (hasVariants) return
+        if (hasVariants) {
+            productStockMessage = ""
+            mIsProductStockInputError.value = false
+            return
+        }
         if (productStockInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
@@ -288,6 +357,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsOrderQuantityInputError.value = true
             return
         }
+        if (productMinOrder > MAX_MIN_ORDER_QUANTITY.toBigInteger()) {
+            val errorMessage = provider.getMinOrderExceedLimitQuantityErrorMessage()
+            errorMessage?.let { orderQuantityMessage = it }
+            mIsOrderQuantityInputError.value = true
+            return
+        }
         if (!hasVariants && productStockInput.isNotEmpty()) {
             val productStock = productStockInput.toBigIntegerOrNull().orZero()
             if (productMinOrder > productStock) {
@@ -297,8 +372,26 @@ class AddEditProductDetailViewModel @Inject constructor(
                 return
             }
         }
+
         orderQuantityMessage = ""
         mIsOrderQuantityInputError.value = false
+    }
+
+    fun validateProductSkuInput(productSkuInput: String) {
+        // remote product sku validation
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                validateProductUseCase.setParamsProductSku(productSkuInput)
+                validateProductUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.productSku
+                    .joinToString("\n")
+            productSkuMessage = validationMessage
+            mIsProductSkuInputError.value = validationMessage.isNotEmpty()
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
     }
 
     fun validatePreOrderDurationInput(timeUnit: Int, preOrderDurationInput: String) {
@@ -339,7 +432,7 @@ class AddEditProductDetailViewModel @Inject constructor(
      * @param originalImageUrl is the list of product photo paths that returned from the image picker which contains all the original image path (it doesn't contain image path of any added or edited image)
      * @param editted is the list of image edit status any image added and edited will have true value
      **/
-    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>): DetailInputModel {
+    fun updateProductPhotos(imagePickerResult: MutableList<String>, originalImageUrl: MutableList<String>, editted: MutableList<Boolean>): DetailInputModel {
         val pictureList = productInputModel.detailInputModel.pictureList.filter {
             originalImageUrl.contains(it.urlOriginal)
         }.filterIndexed { index, _ -> !editted[index] }
@@ -355,6 +448,10 @@ class AddEditProductDetailViewModel @Inject constructor(
             this.pictureList = pictureList
             this.imageUrlOrPathList = imageUrlOrPathList
         }
+    }
+
+    fun updateProductShowCases(selectedShowcaseList: ArrayList<ShowcaseItemPicker>) {
+        productShowCases = selectedShowcaseList
     }
 
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {
@@ -378,5 +475,62 @@ class AddEditProductDetailViewModel @Inject constructor(
         }, onError = {
             productCategoryRecommendationLiveData.value = Fail(it)
         })
+    }
+
+    fun getShopShowCasesUseCase() {
+        launchCatchError(block = {
+            mShopShowCases.value = Success(withContext(Dispatchers.IO) {
+                val response = getShopEtalaseUseCase.executeOnBackground()
+                response.shopShowcases.result
+            })
+        }, onError = {
+            mShopShowCases.value = Fail(it)
+        })
+    }
+
+    fun getAnnotationCategory(categoryId: String, productId: String) {
+        launchCatchError(block = {
+            mAnnotationCategoryData.value = Success(withContext(Dispatchers.IO) {
+                delay(DEBOUNCE_DELAY_MILLIS)
+                annotationCategoryUseCase.setParamsCategoryId(categoryId)
+                annotationCategoryUseCase.setParamsProductId(productId)
+                val response = annotationCategoryUseCase.executeOnBackground()
+                response.drogonAnnotationCategoryV2.data
+            })
+        }, onError = {
+            mAnnotationCategoryData.value = Fail(it)
+        })
+    }
+
+    fun updateSpecification(specificationList: List<SpecificationInputModel>) {
+        this.specificationList = specificationList
+        updateSpecificationText(specificationList)
+    }
+
+    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
+        val result: MutableList<SpecificationInputModel> = mutableListOf()
+        annotationCategoryList.forEach {
+            val selectedValue = it.data.firstOrNull { value -> value.selected }
+            selectedValue?.apply {
+                val specificationInputModel = SpecificationInputModel(id.toString(), name)
+                result.add(specificationInputModel)
+            }
+        }
+
+        updateSpecification(result)
+    }
+
+    fun updateSpecificationText(specificationList: List<SpecificationInputModel>) {
+        val specificationNames = specificationList.map { it.data }
+        mSpecificationText.value = if (specificationNames.isEmpty()) {
+            provider.getProductSpecificationTips()
+        } else {
+            val result = specificationNames.take(MAX_SPECIFICATION_COUNTER).joinToString(", ")
+            if (specificationNames.size > MAX_SPECIFICATION_COUNTER) {
+                result + provider.getProductSpecificationCounter(specificationNames.size - MAX_SPECIFICATION_COUNTER)
+            } else {
+                result
+            }
+        }
     }
 }

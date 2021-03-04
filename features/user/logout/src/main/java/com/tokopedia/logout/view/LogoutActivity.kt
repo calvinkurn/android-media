@@ -38,9 +38,10 @@ import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
 import com.tokopedia.logout.di.module.LogoutModule
 import com.tokopedia.logout.viewmodel.LogoutViewModel
+import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -73,7 +74,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private var isClearDataOnly = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-
     private var tetraDebugger: TetraDebugger? = null
 
     override fun getNewFragment(): Fragment? = null
@@ -117,7 +117,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun initGoogleClient() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).apply {
-            requestIdToken(GOOGLE_API_KEY)
+            requestIdToken(getGoogleClientId(this@LogoutActivity))
             requestEmail()
             requestProfile()
         }.build()
@@ -176,6 +176,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         userSession.clearToken()
         userSession.logoutSession()
 
+        PushNotificationApi.bindService(applicationContext)
+
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
                 val mIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN).apply {
@@ -226,7 +228,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearWebView() {
-        WebView(this).clearCache(true)
+        WebView(applicationContext).clearCache(true)
         val cookieManager: CookieManager
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CookieSyncManager.createInstance(this)

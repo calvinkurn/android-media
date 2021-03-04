@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel;
 
 import rx.Subscriber;
 
@@ -12,7 +12,7 @@ import rx.Subscriber;
  * Created by milhamj on 27/12/17.
  */
 
-public class GetWarningSubscriber extends Subscriber<WarningViewModel> {
+public class GetWarningSubscriber extends Subscriber<WarningUIModel> {
     private final ChangePhoneNumberWarningFragmentListener.View view;
 
     public GetWarningSubscriber(ChangePhoneNumberWarningFragmentListener.View view) {
@@ -30,7 +30,7 @@ public class GetWarningSubscriber extends Subscriber<WarningViewModel> {
     }
 
     @Override
-    public void onNext(WarningViewModel object) {
+    public void onNext(WarningUIModel object) {
         if (object.isOvoEligible() && !TextUtils.isEmpty(object.getUrlOvo())) {
             view.goToOvoWebView(object.getUrlOvo());
         } else {

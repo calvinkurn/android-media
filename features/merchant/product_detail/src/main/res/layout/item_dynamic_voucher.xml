@@ -9,7 +9,7 @@
         android:id="@+id/voucher_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

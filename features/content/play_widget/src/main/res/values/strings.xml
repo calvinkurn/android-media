@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play_widget_success_add_reminder">Berhasil pasang pengingat</string>
+    <string name="play_widget_success_remove_reminder">Berhasil menghapus pengingat</string>
+    <string name="play_widget_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+
+    <string name="play_widget_banner_fallback_text">Masuk ke Tokopedia Play</string>
+
+    <string name="play_widget_transcode_loading_text">Menyimpan…</string>
+    <string name="play_widget_transcode_loading_failed">Gagal disimpan</string>
+
+    <string name="play_widget_delete">Hapus</string>
+    <string name="play_widget_delete_confirmation_title">Yakin ingin hapus video?</string>
+    <string name="play_widget_delete_confirmation_desc">
+        Live streaming ini tidak akan
+            jadi video di Halaman Toko
+            jika kamu ingin menghapusnya.
+    </string>
+    <string name="play_widget_delete_cancel">Kembali</string>
+
+    <string name="play_widget_delete_loading_text">Menghapus…</string>
+    
+    <string name="play_widget_watch_title">Tonton videomu di aplikasi Tokopedia, ya!</string>
+    <string name="play_widget_watch_desc">
+        Download aplikasi Tokopedia buat
+        tonton video di Tokopedia Play!
+    </string>
+    <string name="play_widget_download_tokopedia">Download Tokopedia</string>
+    <string name="play_widget_watch_later">Nanti Dulu</string>
+
+</resources>

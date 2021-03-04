@@ -20,6 +20,7 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsInput
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelListActivity
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelListAdapterTypeFactory
@@ -68,7 +69,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahTravelListViewModel.travelAgents.observe(this, Observer {
+        umrahTravelListViewModel.travelAgents.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> {
                     onSuccessResult(it.data)
@@ -90,7 +91,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
 
     private fun requestData(page: Int){
         umrahTravelListViewModel.requestTravelAgentsData(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_common_travel_agents),
+                UmrahQuery.UMRAH_COMMON_TRAVEL_AGENT_QUERY,
                 page, true
         )
     }

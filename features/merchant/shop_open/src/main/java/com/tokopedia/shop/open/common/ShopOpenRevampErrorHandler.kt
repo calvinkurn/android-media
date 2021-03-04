@@ -1,6 +1,6 @@
 package com.tokopedia.shop.open.common
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.shop.open.BuildConfig
 import timber.log.Timber
 
@@ -9,21 +9,19 @@ import timber.log.Timber
  */
 object ShopOpenRevampErrorHandler {
 
-    fun logMessage(message: String) {
-        try {
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.log(message)
-            } else {
-                Timber.e(message)
-            }
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
+    fun logMessage(title: String, userId: String, message: String) {
+        val errorMessage = String.format(
+                "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
+                title,
+                userId,
+                message
+        )
+        Timber.w("P2#SHOP_OPEN#%s", errorMessage)
     }
 
     fun logExceptionToCrashlytics(t: Throwable) {
         try {
-            Crashlytics.logException(t)
+            FirebaseCrashlytics.getInstance().recordException(t)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }

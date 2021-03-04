@@ -30,6 +30,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingShopPageSetting
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.setting.di.component.ShopPageSettingComponent
@@ -52,7 +53,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         const val SHOP_DOMAIN = "domain"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
-        const val BUNDLE = "bundle"
 
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
@@ -260,7 +260,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopInfo!!.shopCore.shopID)
 
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-            intent.putExtra(BUNDLE, bundle)
+            intent.putExtra(EXTRA_BUNDLE, bundle)
             startActivityForResult(intent, REQUEST_CODE_ETALASE)
         }
     }

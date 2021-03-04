@@ -1,0 +1,20 @@
+query tokopointsUserSaving($year: Int, $month: Int, $type: Int){
+    tokopointsUserSaving:tokopointsUserSaving(year: $year, month: $month, type: $type){
+    resultStatus {
+      code
+      status
+    }
+    userSaving{
+      title
+      userTotalSaving
+      userTotalSavingStr
+      backgroundImageURL
+      backgroundImageURLOptimized
+      backgroundImageURLDesktop
+      descriptions{
+        text
+        fontStyle
+      }
+    }
+  }
+}

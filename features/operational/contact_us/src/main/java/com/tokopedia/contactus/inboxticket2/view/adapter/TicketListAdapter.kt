@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
@@ -29,7 +29,7 @@ private const val READ = "read"
 private const val UNREAD = "unread"
 
 class TicketListAdapter(private val itemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>,
-                        private val mPresenter: InboxListPresenter) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                        private val mPresenter: InboxListContract.Presenter) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val footerItem = InboxTicketListResponse.Ticket.Data.TicketItem()
     private var isFooterAdded = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

@@ -9,17 +9,16 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
 
 class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
     private var isEdit = false
     private var isReturnablePolicy = false
-    private var shopNote = ShopNoteViewModel()
+    private var shopNote = ShopNoteUiModel()
 
     private val saveTextView: TextView? by lazy {
         toolbar?.findViewById<TextView>(R.id.tvSave)
@@ -31,7 +30,7 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
         private const val PARAM_SHOP_NOTE = "SHOP_NOTE"
 
         @JvmStatic
-        fun createIntent(context: Context, isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteViewModel = ShopNoteViewModel()) =
+        fun createIntent(context: Context, isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteUiModel = ShopNoteUiModel()) =
                 Intent(context, ShopSettingNotesAddEditActivity::class.java)
                         .putExtra(PARAM_SHOP_NOTE, shopNoteModel)
                         .putExtra(PARAM_IS_RETURNABLE_POLICY, isReturnablePolicy)
@@ -39,7 +38,7 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        shopNote = intent.getParcelableExtra(PARAM_SHOP_NOTE) ?: ShopNoteViewModel()
+        shopNote = intent.getParcelableExtra(PARAM_SHOP_NOTE) ?: ShopNoteUiModel()
         isEdit = intent.getBooleanExtra(PARAM_IS_EDIT, false)
         isReturnablePolicy = intent.getBooleanExtra(PARAM_IS_RETURNABLE_POLICY, false)
 

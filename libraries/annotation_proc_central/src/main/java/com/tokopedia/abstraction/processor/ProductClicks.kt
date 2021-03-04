@@ -10,16 +10,17 @@ import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.checkers.ProductListClickChecker
 import com.tokopedia.checkers.ProductListImpressionProductChecker
-import com.tokopedia.firebase.analytic.rules.ProductClicksRules
+import com.tokopedia.firebase.analytic.rules.ProductListClicksRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
 
 /**
  * Product List Click
  */
+@Deprecated("use in beta package", replaceWith = ReplaceWith("use in beta package", imports = ["com.tokopedia.abstraction.processor.beta.ProductListClick"]))
 @ErrorHandler(GTMErrorHandlerImpl::class)
 @Logger(GTMLoggerImpl::class)
-@AnalyticEvent(true, Event.SELECT_CONTENT, ProductClicksRules::class)
+@AnalyticEvent(true, Event.SELECT_CONTENT, ProductListClicksRules::class)
 data class ProductListClick(
         @DefaultValueString("Search Results")
         val item_list: String,
@@ -73,5 +74,5 @@ data class ProductListClickProduct(
         val index: Long,
         @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["checkMap"])
         @DefinedInCollections
-        val stringCollection: HashMap<String, String>
+        val stringCollection: Map<String, String>
 )

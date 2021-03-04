@@ -1,11 +1,10 @@
 package com.tokopedia.logisticaddaddress.data;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticCommon.data.apiservice.PeopleActApi;
+import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope;
 
 import org.json.JSONException;
 

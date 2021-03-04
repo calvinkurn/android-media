@@ -17,7 +17,7 @@
             android:id="@+id/image_view_search"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:tint="@color/color_search_icon"
+            android:tint="@color/Unify_N150"
             app:srcCompat="@drawable/ic_search_deal" />
 
         <EditText
@@ -35,8 +35,8 @@
             android:inputType="text"
             android:maxLines="1"
             android:textCursorDrawable="@drawable/deals_cursor_color"
-            android:textColorHint="@color/black_50"
-            android:textColor="@color/black_39"
+            android:textColorHint="@color/Unify_N700_20"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14" />
 
         <ImageButton

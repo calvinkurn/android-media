@@ -1,17 +1,18 @@
 package com.tokopedia.shop.feed.view.fragment
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,6 +21,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
+import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -69,8 +72,8 @@ import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
-import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
+import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -105,8 +108,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var isForceRefresh = false
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
-
-    private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -167,10 +168,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         return view!!.findViewById(R.id.recyclerView)
     }
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return view!!.findViewById(R.id.swipeToRefresh)
-    }
-
     override fun callInitialLoadAutomatically(): Boolean {
         return false
     }
@@ -178,15 +175,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
-        userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let{
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         isLoadingInitialData = true
     }
 
     override fun onPause() {
         super.onPause()
         feedAnalytics.sendPendingAnalytics()
+        unregisterBroadcastReceiver()
     }
 
     override fun onDestroy() {
@@ -206,14 +205,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (isSellerMigrationEnabled(context)) {
-                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                        if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
+                            showBottomSheetSellerMigration()
                         } else {
-                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                            hideBottomSheetSellerMigration()
                             FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
-                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                        hideBottomSheetSellerMigration()
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
@@ -282,7 +281,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     loadInitialData()
                 }
                 CREATE_POST -> {
-                    onSwipeRefresh()
                 }
             }
         }
@@ -300,6 +298,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (userVisibleHint && isLoadingInitialData) {
             loadInitialData()
         }
+        registerBroadcastReceiver()
     }
 
     override fun loadData(page: Int) {
@@ -315,8 +314,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onSwipeRefresh() {
         hideSnackBarRetry()
-        swipeToRefresh.isRefreshing = true
+        presenter.clearCache()
+        isLoadingInitialData = true
         presenter.getFeedFirstPage(shopId, true)
+        recyclerView.scrollToPosition(0)
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
@@ -334,8 +335,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            if (isSellerMigrationEnabled(context)) {
-                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+            if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
+                hideBottomSheetSellerMigration()
                 dataList.add(EmptyFeedShopSellerMigrationUiModel())
             } else {
                 dataList.add(getEmptyResultViewModel())
@@ -376,7 +377,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onWhitelistClicked(element: WhitelistViewModel) {
+    override fun onWhitelistClicked(element: WhitelistUiModel) {
         goToCreatePost()
     }
 
@@ -412,7 +413,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onSuccessDeletePost(rowNumber: Int) {
         adapter.list.removeAt(rowNumber)
-        adapter.notifyItemRemoved(rowNumber)
+        if (adapter.list.isEmpty()) {
+            adapter.addElement(getEmptyResultViewModel())
+            adapter.notifyItemChanged(0)
+        } else {
+            adapter.notifyItemRemoved(rowNumber)
+        }
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
@@ -759,6 +765,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         )
     }
 
+    private fun showBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun hideBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
     fun hideFAB() {
         fab_feed.hide()
     }
@@ -850,8 +864,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {
-        return EmptyFeedShopViewModel()
+    private fun getEmptyResultViewModel(): EmptyFeedShopUiModel {
+        return EmptyFeedShopUiModel()
     }
 
     private fun onSuccessReportContent() {
@@ -914,4 +928,39 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
 
     }
+
+    private val submitPostReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (context == null || intent == null) {
+                    return
+                }
+
+                if (intent.action == BROADCAST_SUBMIT_POST
+                        && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true) {
+                    onSwipeRefresh()
+                }
+            }
+        }
+    }
+
+    private fun registerBroadcastReceiver() {
+        context?.applicationContext?.let {
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(BROADCAST_SUBMIT_POST)
+
+            LocalBroadcastManager
+                    .getInstance(it)
+                    .registerReceiver(submitPostReceiver, intentFilter)
+        }
+    }
+
+    private fun unregisterBroadcastReceiver() {
+        context?.applicationContext?.let {
+            LocalBroadcastManager
+                    .getInstance(it)
+                    .unregisterReceiver(submitPostReceiver)
+        }
+    }
+
 }

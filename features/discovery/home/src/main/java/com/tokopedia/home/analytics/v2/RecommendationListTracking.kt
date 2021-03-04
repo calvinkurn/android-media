@@ -21,7 +21,7 @@ object RecommendationListTracking: BaseTrackerConst(){
     private const val RECOMMENDATION_LIST_CLOSE_EVENT_ACTION = "click on close dynamic channel list carousel"
     private const val LIST_DYNAMIC_CHANNEL_LIST_CAROUSEL = "/ - p%s - dynamic channel list carousel - product - %s - %s - %s - %s"
 
-    fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false, userId: String): Map<String, Any> {
+    fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false, userId: String, parentPosition: Int): Map<String, Any> {
         val baseTracker = BaseTrackerBuilder()
         return baseTracker.constructBasicProductView(event = if (isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
@@ -43,12 +43,13 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isTopAds = grid.isTopads,
                             headerName = channel.header.name,
                             isCarousel = true,
+                            pageName = channel.pageName,
                             recommendationType = grid.recommendationType
 
                     )
                 },
                 list = String.format(
-                        "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
@@ -58,8 +59,8 @@ object RecommendationListTracking: BaseTrackerConst(){
                 .build()
     }
 
-    fun getRecommendationListImpression(channel: ChannelModel, isToIris: Boolean = false, userId: String): Map<String, Any> {
-        val baseTracker =  BaseTrackerBuilder()
+    fun getRecommendationListImpression(channel: ChannelModel, isToIris: Boolean = false, userId: String, parentPosition: Int): Map<String, Any> {
+        val baseTracker = BaseTrackerBuilder()
         return baseTracker.constructBasicProductView(
                 event = if (isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
@@ -86,7 +87,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                     )
                 },
                 list = String.format(
-                        "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
@@ -95,39 +96,35 @@ object RecommendationListTracking: BaseTrackerConst(){
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
-
-    private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, userId: String): Map<String, Any> {
-        val trackerBuilder = BaseTrackerBuilder()
-        return trackerBuilder.constructBasicProductClick(
-                event = Event.PRODUCT_CLICK,
+    fun getRecommendationListProductImpression(channel: ChannelModel, grid: ChannelGrid, isToIris: Boolean = false, userId: String, itemPosition: Int, parentPosition: Int): Map<String, Any> {
+        val baseTracker =  BaseTrackerBuilder()
+        return baseTracker.constructBasicProductView(
+                event = if (isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
-                eventLabel = channel.id +" - "+ channel.header.name,
+                eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
+                eventLabel = Label.NONE,
                 products = listOf(
-                        Product(
-                                name = grid.name,
-                                id = grid.id,
-                                productPrice = convertRupiahToInt(grid.price).toString(),
-                                brand = Value.NONE_OTHER,
-                                category = Value.NONE_OTHER,
-                                variant = Value.NONE_OTHER,
-                                productPosition = (position + 1).toString(),
-                                channelId = channel.id,
-                                isFreeOngkir = grid.freeOngkir.isActive,
-                                persoType = channel.persoType,
-                                categoryId = channel.categoryID,
-                                isTopAds = grid.isTopads,
-                                headerName = channel.header.name,
-                                pageName = channel.pageName,
-                                isCarousel = true,
-                                recommendationType = grid.recommendationType
-                        )
-                ),
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(grid.price).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (itemPosition + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.isFreeOngkirActive,
+                            persoType = channel.trackingAttributionModel.persoType,
+                            categoryId = channel.trackingAttributionModel.categoryId,
+                            isTopAds = grid.isTopads,
+                            headerName = channel.channelHeader.name,
+                            isCarousel = true,
+                            pageName = channel.pageName,
+                            recommendationType = grid.recommendationType)),
                 list = String.format(
-                        "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
-                .appendCampaignCode(channel.campaignCode)
                 .appendUserId(userId)
                 .appendScreen(Screen.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
@@ -135,7 +132,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                 .build()
     }
 
-    private fun getRecommendationListClickHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int, userId: String): Map<String, Any> {
+    private fun getRecommendationListClickHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int, userId: String, parentPosition: Int): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicProductClick(event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
@@ -162,7 +159,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                         )
                 ),
                 list = String.format(
-                        "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
@@ -173,12 +170,8 @@ object RecommendationListTracking: BaseTrackerConst(){
                 .build()
     }
 
-    fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, userId: String) {
-        getTracker().sendEnhanceEcommerceEvent(getRecommendationListClick(channel, grid, position, userId))
-    }
-
-    fun sendRecommendationListHomeComponentClick(channel: ChannelModel, grid: ChannelGrid, position: Int, userId: String) {
-        getTracker().sendEnhanceEcommerceEvent(getRecommendationListClickHomeComponent(channel, grid, position, userId))
+    fun sendRecommendationListHomeComponentClick(channel: ChannelModel, grid: ChannelGrid, position: Int, userId: String, parentPosition: Int) {
+        getTracker().sendEnhanceEcommerceEvent(getRecommendationListClickHomeComponent(channel, grid, position, userId, parentPosition))
     }
 
     private fun getRecommendationListSeeAllClick(channelId: String, headerName: String, userId: String): HashMap<String, Any>{

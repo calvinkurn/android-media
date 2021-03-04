@@ -1,13 +1,15 @@
-{
-  "data": {
-    "shopInfoByID": {
-      "result": [
-        {
-          "shippingLoc": {
-            "provinceID": 13
+[
+  {
+    "data": {
+      "shopInfoByID": {
+        "result": [
+          {
+            "shippingLoc": {
+              "provinceID": 13
+            }
           }
-        }
-      ]
+        ]
+      }
     }
   }
-}
+]

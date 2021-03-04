@@ -2,7 +2,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
@@ -19,8 +19,8 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getNotificationUseCase: GetNotificationUseCase,
         private val getSopInfoUseCase: GetShopInfoUseCase,
-        private val dispatcher: SellerHomeCoroutineDispatcher
-) : CustomBaseViewModel(dispatcher.main()) {
+        dispatcher: CoroutineDispatchers
+) : CustomBaseViewModel(dispatcher) {
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
     val notifications: LiveData<Result<NotificationUiModel>>

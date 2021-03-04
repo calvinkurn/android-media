@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
@@ -21,13 +22,13 @@ class GetPieChartDataUseCase(
 
     override suspend fun executeOnBackground(): List<PieChartDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetPieChartDataResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetPieChartDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPieChartDataResponse>()
             val pieChartData: List<PieChartWidgetDataModel> = data.fetchPieChartWidgetData.data
-            return mapper.mapRemoteModelToUiModel(pieChartData)
+            return mapper.mapRemoteModelToUiModel(pieChartData, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }

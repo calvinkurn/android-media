@@ -62,7 +62,6 @@ subscription.add(subsribeWebsocket)
 - features/content/play
 - features/user/chat_common
 - features/user/chatbot
-- features/user/groupchat
 - features/user/topchat
 
 

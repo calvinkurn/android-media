@@ -95,10 +95,12 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel = chatRoomViewModel.headerModel
+    override fun useDefaultReplyWatcher(): Boolean = false
 
     override fun initView() {
         super.initView()
         recyclerView.setHasFixedSize(true)
+        recyclerView.itemAnimator = null
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
@@ -205,8 +207,9 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun clearAttachmentPreview() {
-        hideProductPreviewLayout()
+        attachmentPreviewAdapter.clear()
         sendListener.onEmptyProductPreview()
+        hideProductPreviewLayout()
     }
 
     override fun hideProductPreviewLayout() {
@@ -233,7 +236,9 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onSetCustomMessage(customMessage: String) {
-        replyEditText.setText(customMessage)
+        if (customMessage.isNotEmpty()) {
+            replyEditText.setText(customMessage)
+        }
     }
 
     override fun getAdapter(): TopChatRoomAdapter {
@@ -562,7 +567,7 @@ class TopChatViewStateImpl constructor(
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
-        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.imagepicker.R.string.cancel))
+        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.resources.common.R.string.general_label_cancel))
         myAlertDialog.setOnCancelClickListener { myAlertDialog.dismiss() }
         myAlertDialog.show()
     }

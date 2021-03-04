@@ -24,7 +24,12 @@ class FlightFilterModel(
         var isSpecialPrice: Boolean = false,
         var isBestPairing: Boolean = false,
         var isReturn: Boolean = false,
-        var journeyId: String = ""
+        var journeyId: String = "",
+        var isSeatDistancing: Boolean = false,
+        var isFreeRapidTest: Boolean = false,
+        var canFilterSeatDistancing: Boolean = false,
+        var canFilterFreeRapidTest: Boolean = false,
+        var departureArrivalTime: String = ""
 ) : Parcelable, Cloneable {
 
     fun setHasFilter(searchStatisticModel: FlightSearchStatisticModel?) {
@@ -42,7 +47,9 @@ class FlightFilterModel(
                 departureTimeList.size > 0 ||
                 arrivalTimeList.size > 0 ||
                 refundableTypeList.size > 0 ||
-                facilityList.size > 0
+                facilityList.size > 0 ||
+                (canFilterSeatDistancing && isSeatDistancing) ||
+                (canFilterFreeRapidTest && isFreeRapidTest)
     }
 
     fun copy(): FlightFilterModel {
@@ -62,6 +69,10 @@ class FlightFilterModel(
             this.isBestPairing = it.isBestPairing
             this.isReturn = it.isReturn
             this.journeyId = it.journeyId
+            this.isSeatDistancing = it.isSeatDistancing
+            this.isFreeRapidTest = it.isFreeRapidTest
+            this.canFilterSeatDistancing = it.canFilterSeatDistancing
+            this.canFilterFreeRapidTest = it.canFilterFreeRapidTest
         }
         return flightFilterModel
     }

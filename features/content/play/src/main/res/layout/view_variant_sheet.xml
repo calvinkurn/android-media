@@ -48,7 +48,7 @@
             android:id="@+id/btn_container"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0"
+            android:background="@color/Unify_N0"
             android:elevation="@dimen/play_product_variant_elevation"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -91,21 +91,27 @@
 
         <include layout="@layout/bottom_sheet_bottom_overlay"/>
 
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/global_error_variant"
+        <ScrollView
+            android:id="@+id/global_error_variant_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            android:background="@color/Neutral_N0"
-            android:gravity="center"
-            android:visibility="gone"
-            android:clickable="true"
-            android:focusable="true"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingBottom="@dimen/spacing_lvl3"
+            android:background="@color/Unify_N0"
             app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_variant_content"
-            tools:visibility="visible"
-            />
+            >
+
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/global_error_variant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                />
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

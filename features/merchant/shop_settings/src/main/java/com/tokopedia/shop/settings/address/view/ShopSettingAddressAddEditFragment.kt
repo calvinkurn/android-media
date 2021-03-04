@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
+import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
 import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
 import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddressAddEditView {
 
-    private var shopLocationViewModel: ShopLocationViewModel? = null
+    private var shopLocationUiModel: ShopLocationUiModel? = null
     private var isAddNew = true
     private var selectedDistrictId = -1
     private var selectedCityId = -1
@@ -52,9 +52,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
         private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
         private const val PARAM_EXTRA_IS_SUCCESS = "is_success"
 
-        fun createInstance(shopAddressViewModel: ShopLocationViewModel?, isAddNew: Boolean) =
+        fun createInstance(shopAddressUiModel: ShopLocationUiModel?, isAddNew: Boolean) =
                 ShopSettingAddressAddEditFragment().also { it.arguments = Bundle().apply {
-                    putParcelable(PARAM_EXTRA_SHOP_ADDRESS, shopAddressViewModel)
+                    putParcelable(PARAM_EXTRA_SHOP_ADDRESS, shopAddressUiModel)
                     putBoolean(PARAM_EXTRA_IS_ADD_NEW, isAddNew)
                 }}
     }
@@ -74,8 +74,8 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let { it ->
-            shopLocationViewModel = it.getParcelable(PARAM_EXTRA_SHOP_ADDRESS)
-            shopLocationViewModel?.let {
+            shopLocationUiModel = it.getParcelable(PARAM_EXTRA_SHOP_ADDRESS)
+            shopLocationUiModel?.let {
                 selectedProvinceId = it.stateId
                 selectedCityId = it.cityId
                 selectedDistrictId = it.districtId
@@ -96,7 +96,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     }
 
     private fun initializeFillData() {
-        shopLocationViewModel?.let {
+        shopLocationUiModel?.let {
             edit_text_name.setText(it.name)
             edit_text_address.setText(it.address)
             val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
@@ -188,9 +188,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
         }
     }
 
-    private fun populateData(): ShopLocationViewModel {
-        shopLocationViewModel = shopLocationViewModel ?: ShopLocationViewModel()
-        return shopLocationViewModel!!.apply {
+    private fun populateData(): ShopLocationUiModel {
+        shopLocationUiModel = shopLocationUiModel ?: ShopLocationUiModel()
+        return shopLocationUiModel!!.apply {
             name = edit_text_name.text.toString()
             address = edit_text_address.text.toString()
             districtId = selectedDistrictId

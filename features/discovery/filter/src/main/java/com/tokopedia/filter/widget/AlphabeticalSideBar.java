@@ -70,15 +70,15 @@ public class AlphabeticalSideBar extends View {
         contentTextPaint.setTextSize(itemTextSize);
         contentTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         contentTextPaint.setTextAlign(Paint.Align.CENTER);
-        contentTextPaint.setColor(getContext().getResources().getColor(R.color.tkpd_main_green));
+        contentTextPaint.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
         contentTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         magnifierBackPaint = new Paint();
-        magnifierBackPaint.setColor(getContext().getResources().getColor(R.color.tkpd_main_green));
+        magnifierBackPaint.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
         magnifierBackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         magnifierTextPaint = new Paint();
-        magnifierTextPaint.setColor(getContext().getResources().getColor(R.color.white));
+        magnifierTextPaint.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
         magnifierTextPaint.setTextSize(magnifierTextSize);
         magnifierTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         magnifierTextPaint.setTextAlign(Paint.Align.CENTER);

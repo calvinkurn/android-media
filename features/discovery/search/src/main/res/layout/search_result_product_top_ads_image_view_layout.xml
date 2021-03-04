@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+        If TopAdsImageView is at the top of the recycler view, it will not be shown.
+        Added weird hack android:layout_marginTop="1dp"
+-->
+<com.tokopedia.topads.sdk.widget.TopAdsImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/searchProductTopAdsImageView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="1dp"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16" />

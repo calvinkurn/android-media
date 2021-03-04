@@ -69,8 +69,8 @@
                 android:paddingEnd="@dimen/dp_topchat_44"
                 android:paddingRight="@dimen/dp_topchat_44"
                 android:paddingBottom="@dimen/spacing_lvl3"
-                android:textColor="#fd31353b"
-                android:textColorHint="@color/Neutral_N700_44"
+                android:textColor="@color/Unify_N700"
+                android:textColorHint="@color/Unify_N700_44"
                 android:textSize="@dimen/fontSize_lvl3" />
 
             <ImageView

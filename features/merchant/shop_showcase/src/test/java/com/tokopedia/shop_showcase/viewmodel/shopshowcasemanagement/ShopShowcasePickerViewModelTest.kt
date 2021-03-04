@@ -1,9 +1,9 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
@@ -21,13 +21,12 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
 
 @ExperimentalCoroutinesApi
 class ShopShowcasePickerViewModelTest {
 
     @RelaxedMockK
-    lateinit var getBuyerShowcaseList: GetShopEtalaseByShopUseCase
+    lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
 
     @RelaxedMockK
     lateinit var getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase
@@ -44,28 +43,28 @@ class ShopShowcasePickerViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopShowcasePickerViewModel(
-                getBuyerShowcaseList,
+                getShopEtalaseUseCase,
                 getShopShowcaseTotalProductUseCase,
                 createShopShowcaseUseCase,
-                TestCoroutineDispatchers()
+                CoroutineTestDispatchersProvider
         )
     }
 
     @Test
-    fun `given showcase list as a buyer when shopid and isowner is provided`() {
+    fun `given showcase list as a seller`() {
         runBlocking {
-            val shopId = "123456"
-            val isOwner = false
-            val etalaseId = "1"
-            val etalaseName = "Gadget"
-            val etalaseList = arrayListOf(ShopEtalaseModel(id = etalaseId, name = etalaseName))
+            coEvery {
+                getShopEtalaseUseCase.executeOnBackground()
+            } returns ShopShowcaseListSellerResponse()
 
-            coEvery { getBuyerShowcaseList.createObservable(any()) } returns Observable.just(etalaseList)
+            viewModel.getShopShowcaseListAsSeller()
 
-            viewModel.getShopShowcaseListAsBuyer(shopId = shopId, isOwner = isOwner)
+            coVerify {
+                getShopEtalaseUseCase.executeOnBackground()
+            }
 
-            val expectedResponse = Success(etalaseList)
-            val actualResponse = viewModel.getListBuyerShopShowcaseResponse.value as Success<List<ShopEtalaseModel>>
+            val expectedResponse = Success(ShopShowcaseListSellerResponse())
+            val actualResponse = viewModel.getListSellerShopShowcaseResponse.value as Success<ShopShowcaseListSellerResponse>
             assertEquals(expectedResponse, actualResponse)
         }
     }

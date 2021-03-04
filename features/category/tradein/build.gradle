@@ -6,7 +6,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -24,23 +24,28 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.features.logisticcart)
-    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -70,7 +75,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.testDependencies.json
     testImplementation rootProject.ext.firebase.fireStore

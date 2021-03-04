@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <RadioGroup
         android:id="@+id/radioGroupFlightClass"
@@ -23,6 +23,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:layoutDirection="rtl"
+            android:textColor="@color/Unify_N700_96"
             app:bold="true"
             tools:text="Ekonomi" />
 
@@ -34,6 +35,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:layoutDirection="rtl"
+            android:textColor="@color/Unify_N700_96"
             app:bold="true"
             tools:text="Bisnis" />
 
@@ -45,6 +47,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:layoutDirection="rtl"
+            android:textColor="@color/Unify_N700_96"
             app:bold="true"
             tools:text="Utama" />
 

@@ -7,14 +7,17 @@ import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.*
 
@@ -36,7 +39,9 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
-        fun onSuccessLoginEmail()
+        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo)
+
+        fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo)
 
         fun showLoadingDiscover()
 
@@ -71,6 +76,8 @@ interface LoginEmailPhoneContract {
         fun onSuccessGetUserInfo(): Function1<ProfilePojo, Unit>
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
+
+        fun showPopup(): Function1<PopupError, Unit>
 
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
 
@@ -113,6 +120,30 @@ interface LoginEmailPhoneContract {
         fun goToFingerprintRegisterPage()
 
         fun getFingerprintConfig(): Boolean
+
+        fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int)
+
+        fun goToChooseAccountPage(accessToken: String, phoneNumber: String)
+
+        fun goToChooseAccountPageFacebook(accessToken: String)
+
+        fun goToAddPin2FA(enableSkip2FA: Boolean)
+
+        fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String)
+
+        fun onGoToChangeName()
+
+        fun goToForgotPassword()
+
+        fun goToTokopediaCareWebview()
+
+        fun goToRegisterInitial(source: String)
+
+        fun openGoogleLoginIntent()
+
+        fun onSuccessActivateUser(activateUserData: ActivateUserData)
+
+        fun onFailedActivateUser(throwable: Throwable)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -145,5 +176,7 @@ interface LoginEmailPhoneContract {
         fun removeFingerprintData()
 
         fun getDynamicBanner(page: String)
+
+        fun cancelJobs()
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.preference.PreferenceListResponseModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -25,6 +26,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class PreferenceListBottomSheet(
+        private val isNewFlow: Boolean,
         private val getPreferenceListUseCase: GetPreferenceListUseCase,
         private val paymentProfile: String,
         private val listener: PreferenceListBottomSheetListener) {
@@ -53,7 +55,7 @@ class PreferenceListBottomSheet(
             Timber.d(throwable)
             handleError(throwable)
             OccIdlingResource.decrement()
-        }, getPreferenceListUseCase.generateRequestParams(paymentProfile))
+        }, getPreferenceListUseCase.generateRequestParams(paymentProfile, PreferenceEditActivity.FROM_FLOW_OSP_STRING))
     }
 
     private fun handleError(throwable: Throwable) {
@@ -94,7 +96,11 @@ class PreferenceListBottomSheet(
                 bottomSheet = BottomSheetUnify().apply {
                     isDragable = true
                     isHideable = true
-                    setTitle(context.getString(R.string.lbl_osp_secondary_header))
+                    if (isNewFlow) {
+                        setTitle(context.getString(R.string.lbl_new_occ_profile_name))
+                    } else {
+                        setTitle(context.getString(R.string.lbl_osp_secondary_header))
+                    }
                     val child = View.inflate(context, R.layout.bottom_sheet_preference_list, null)
                     setupChild(child, profileId)
                     fragment.view?.height?.div(2)?.let { height ->
@@ -121,10 +127,13 @@ class PreferenceListBottomSheet(
         rvPreferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.top = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
-                outRect.bottom = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
+                outRect.top = child.context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+                outRect.bottom = child.context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             }
         })
+        if (isNewFlow) {
+            btnAddPreference?.text = child.context?.getString(R.string.lbl_add_new_occ_profile_name)
+        }
         btnAddPreference?.setOnClickListener {
             bottomSheet?.dismiss()
             listener.onAddPreference(adapter?.itemCount ?: 1)
@@ -132,7 +141,7 @@ class PreferenceListBottomSheet(
     }
 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
-        override fun onPreferenceSelected(preference: ProfilesItemModel) {
+        override fun onPreferenceSelected(preference: ProfilesItemModel, isMainProfile: Boolean) {
             bottomSheet?.dismiss()
             listener.onChangePreference(preference)
         }
@@ -144,7 +153,10 @@ class PreferenceListBottomSheet(
     }
 
     private fun updateList(preferences: PreferenceListResponseModel) {
-        adapter?.submitList(preferences.profiles)
+        adapter?.submitList(preferences.profiles, isNewFlow)
+        if (isNewFlow) {
+            listener.onShowNewLayout()
+        }
         progressBar?.gone()
         val tickerMessage = preferences.ticker
         if (tickerMessage != null) {
@@ -170,5 +182,7 @@ class PreferenceListBottomSheet(
         fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int)
 
         fun onAddPreference(itemCount: Int)
+
+        fun onShowNewLayout()
     }
 }

@@ -1,34 +1,28 @@
 package com.tokopedia.home.analytics;
 
 import android.app.Activity;
-import android.content.Context;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper;
-import com.tokopedia.home.analytics.v2.BaseTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
-import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
-import com.tokopedia.home_component.model.ChannelGrid;
-import com.tokopedia.home_component.model.ChannelModel;
-import com.tokopedia.home_component.model.TrackingAttributionModel;
+import com.tokopedia.iris.util.ConstantKt;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by Akmal on 2/6/18.
@@ -44,42 +38,25 @@ public class HomePageTracking {
     public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
-    public static final String LEGO_BANNER_3_IMAGE_CLICK = "lego banner 3 image click";
-    public static final String LEGO_BANNER_4_IMAGE_CLICK = "lego banner 4 image click";
-
-    private static final String ACTION_CLICK_POINT = "click point & tier status";
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
-    private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
-    private static final String EVENT_TOKO_POINT = "eventTokopoint";
 
     public static final String CATEGORY_HOME_PAGE = "homepage";
     private static final String CATEGORY_GIMMICK = "Gimmick";
-    private static final String CATEGORY_TOKOPOINTS_USER_PAGE = "tokopoints - user profile page";
-    private static final String CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
-    private static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
 
     private static final String ACTION_CLICK_HOME_PAGE = "clickHomePage";
     private static final String ACTION_CLICK_VIEW_ALL_PROMO = "slider banner click view all";
     private static final String ACTION_GIMMICK_CLICK = "Click";
-    private static final String ACTION_CLICK_TOKO_POINTS = "click tokopoints";
-    private static final String ACTION_CLICK_SALDO = "click saldo";
-    private static final String ACTION_CLICK_ACTIVATE = "click activate";
     private static final String ACTION_CLICK_JUMP_RECOMENDATION = "cek rekomendasi jumper click";private static final String ACTION_CLICK_HOME_USE_CASE = "click 5 use cases";
     private static final String ACTION_CLICK_TAB_EXPLORER = "click explorer tab";
-    private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT = "sprint sale click view all";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_PRODUCT = "click view all on lego product";
     private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND = "sprint sale with backgroud click view all";
     private static final String ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL = "curated list click view all";
-    private static final String ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL = "lego banner click view all";
     private static final String ACTION_CLICK_SEE_ALL_DC_BANNER_CHANNEL = "lego banner gif click view all";
-    private static final String ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL = "lego banner 3 image click view all";
     private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
     private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
-    private static final String EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON = "click on tokopoints new coupon";
 
-    private static final String LABEL_TOKOPOINTS = "tokopoints";
     private static final String LABEL_EMPTY = "";
     public static final String EVENT = "event";
     public static final String PROMO_VIEW = "promoView";
@@ -112,23 +89,18 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close ticker";
 
     public static final String ON = "on";
-    public static final String NON_LOGIN = "non login";
     public static final String QR_CODE = "qr code";
     public static final String EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION = "click on allow geolocation";
     public static final String EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION = "click on not allow geolocation";
     public static final String EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT = "click on geolocation component";
     public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
     public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
-    public static final String ACTION_CLICK_VIEW_ALL_ON_DYNAMIC_CHANNEL_MIX = "click view all on dynamic channel mix";
 
     public static final String CHANNEL_ID = "channelId";
 
-    private static final String VALUE_PROMO_NAME_SIX_BANNER = "/ - p%s - lego banner - %s";
-    private static final String VALUE_PROMO_NAME_THREE_BANNER = "/ - p%s - lego banner 3 image - %s";
     private static final String VALUE_PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner";
     public static final String EVENT_PROMO_VIEW_IRIS = "promoViewIris";
     public static final String EVENT_ACTION_IMPRESSION_ON_BANNER_SPOTLIGHT = "impression on banner spotlight";
-    public static final String EVENT_ACTION_LEGO_BANNER_3_IMAGE_IMPRESSION = "lego banner 3 image impression";
     public static final String FIELD_ID = "id";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_CREATIVE = "creative";
@@ -138,32 +110,25 @@ public class HomePageTracking {
     public static final String FIELD_BRAND = "brand";
     public static final String FIELD_CATEGORY = "category";
     public static final String FIELD_VARIANT = "variant";
-    public static final String FIELD_DIMENSION_84 = "dimension84";
     public static final String PRODUCT_VIEW_IRIS = "productViewIris";
     public static final String EVENT_ACTION_IMPRESSION_ON_LEGO_PRODUCT = "impression on lego product";
     public static final String NONE_OTHER = "none / other";
     public static final String PROMO_VIEW_IRIS = "promoViewIris";
-    public static final String EVENT_ACTION_LEGO_BANNER_IMPRESSION = "lego banner impression";
-    public static final String VALUE_NAME_PROMO_OVERLAY = "/ - p1 - promo overlay";
-    public static final String VALUE_NAME_PROMO = "/ - p1 - promo";
     public static final String FIELD_PROMO_CODE = "promo_code";
     public static final String EVENT_ACTION_CLICK_ON_DYNAMIC_ICON = "click on dynamic icon";
     public static final String VALUE_NAME_DYNAMIC_ICON = "/ - dynamic icon";
     public static final String EVENT_ACTION_IMPRESSION_ON_DYNAMIC_ICON = "impression on dynamic icon";
     public static final String SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus";
     public static final String EVENT_ACTION_CLICK_ON_BANNER_SPOTLIGHT = "click on banner spotlight";
-    public static final String EVENT_ACTION_LEGO_BANNER_CLICK = "lego banner click";
     public static final String EVENT_ACTION_CLICK_ON_BANNER_INSIDE_RECOMMENDATION_TAB = "click on banner inside recommendation tab";
     public static final String VALUE_CREATIVE_BANNER_INSIDE_RECOM_TAB = "/ - banner inside recom tab - %s - ";
     public static final String FIELD_PROMO_ID = "promo_id";
-    public static final String EVENT_ACTION_CLICK_ON_BANNER_DYNAMIC_CHANNEL_MIX = "click on banner dynamic channel mix";
-    public static final String VALUE_DYNAMIC_CHANNEL_MIX_BANNER_NAME = "/ - p1 - dynamic channel mix - banner - ";
 
     public static ContextAnalytics getTracker() {
         return TrackApp.getInstance().getGTM();
     }
 
-    public static void eventClickViewAllPromo(Context context) {
+    public static void eventClickViewAllPromo() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -190,7 +155,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickJumpRecomendation(Context context) {
+    public static void eventClickJumpRecomendation() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -202,7 +167,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickHomeUseCase(Context context, String title) {
+    public static void eventClickHomeUseCase(@NonNull String title) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -214,8 +179,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickTabExplorer(Context context,
-                                             String title) {
+    public static void eventClickTabExplorer(String title) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -227,7 +191,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventEnhancedClickDynamicIconHomePage(Context context, DynamicHomeIcon.DynamicIcon homeIconItem, int position) {
+    public static void eventEnhancedClickDynamicIconHomePage(DynamicHomeIcon.DynamicIcon homeIconItem, int position) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
@@ -236,7 +200,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickSeeAllLegoProduct(Context context, String headerName, String channelId) {
+    public static void eventClickSeeAllLegoProduct(String headerName, String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
@@ -246,7 +210,7 @@ public class HomePageTracking {
         getTracker().sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllProductSprintBackground(Context context, String channelId) {
+    public static void eventClickSeeAllProductSprintBackground(String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
@@ -256,8 +220,7 @@ public class HomePageTracking {
         getTracker().sendGeneralEvent(map);
     }
 
-    public static void eventEnhancedClickSprintSaleProduct(Context context,
-                                                           Map<String, Object> data) {
+    public static void eventEnhancedClickSprintSaleProduct(Map<String, Object> data) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(data);
@@ -308,7 +271,7 @@ public class HomePageTracking {
         );
     }
 
-    public static void eventClickSeeAllDynamicChannel(Context context, String applink, String channelId) {
+    public static void eventClickSeeAllDynamicChannel(String applink, String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
@@ -318,9 +281,8 @@ public class HomePageTracking {
         getTracker().sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllGifDCBannerChannel(Context context,
-                                                         String headerName,
-                                                         String channelId) {
+    public static void eventClickSeeAllGifDCBannerChannel(String headerName,
+                                                          String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
@@ -331,7 +293,7 @@ public class HomePageTracking {
     }
 
 
-    public static void eventClickExplorerItem(Context context, String action, String label) {
+    public static void eventClickExplorerItem(String action, String label) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -343,23 +305,21 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventEnhancedImpressionFavoriteCategory(Context context,
-                                                               Map<String, Object> data) {
+    public static void eventEnhancedImpressionFavoriteCategory(Map<String, Object> data) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
-    public static void eventEnhancedClickFavoriteCategory(Context context,
-                                                          Map<String, Object> data) {
+    public static void eventEnhancedClickFavoriteCategory(Map<String, Object> data) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
-    public static void eventClickOpenShop(Context context) {
+    public static void eventClickOpenShop() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -371,7 +331,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickEditShop(Context context) {
+    public static void eventClickEditShop() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -383,7 +343,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventHomeGimmick(Context context, String label) {
+    public static void eventHomeGimmick(String label) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -392,42 +352,6 @@ public class HomePageTracking {
                     ACTION_GIMMICK_CLICK,
                     label
             );
-        }
-    }
-
-    public static void eventUserProfileTokopoints(Context context) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_TOKO_POINT,
-                    CATEGORY_TOKOPOINTS_USER_PAGE,
-                    ACTION_CLICK_TOKO_POINTS,
-                    LABEL_TOKOPOINTS
-            ));
-        }
-    }
-
-    public static void eventTokoCashActivateClick(Context context) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_USER_INTERACTION_HOMEPAGE,
-                    CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
-                    ACTION_CLICK_ACTIVATE,
-                    LABEL_EMPTY
-            ));
-        }
-    }
-
-    public static void eventTokoCashCheckSaldoClick(Context context) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_USER_INTERACTION_HOMEPAGE,
-                    CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
-                    ACTION_CLICK_SALDO,
-                    LABEL_EMPTY
-            ));
         }
     }
 
@@ -452,7 +376,6 @@ public class HomePageTracking {
     }
 
     public static void eventClickOnHomePageRecommendationTab(
-            Context context,
             RecommendationTabDataModel recommendationTabDataModel) {
 
         ContextAnalytics tracker = getTracker();
@@ -473,7 +396,7 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventClickTickerHomePage(Context context, String tickerId) {
+    public static void eventClickTickerHomePage(String tickerId) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -485,7 +408,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickOnCloseTickerHomePage(Context context, String tickerId) {
+    public static void eventClickOnCloseTickerHomePage(String tickerId) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -497,32 +420,8 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventQrCode(Context context) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    String.format("%s %s %s", CLICK, ON, QR_CODE),
-                    ""
-            );
-        }
-    }
-
-    public static void eventTokopointNonLogin(Context context) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    String.format("%s %s %s - %s", CLICK, ON, LABEL_TOKOPOINTS, NON_LOGIN),
-                    ""
-            );
-        }
-    }
-
     //on permission
-    public static void eventClickAllowGeolocation(Context context) {
+    public static void eventClickAllowGeolocation() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -535,7 +434,7 @@ public class HomePageTracking {
     }
 
     //on permission
-    public static void eventClickNotAllowGeolocation(Context context) {
+    public static void eventClickNotAllowGeolocation() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -547,7 +446,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickGeolocationComponent(Context context) {
+    public static void eventClickGeolocationComponent() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -559,7 +458,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickCloseGeolocationComponent(Context context) {
+    public static void eventClickCloseGeolocationComponent() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -571,7 +470,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickOnAtur(Context context) {
+    public static void eventClickOnAtur() {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendGeneralEvent(
@@ -879,6 +778,7 @@ public class HomePageTracking {
                 AFFINITY_LABEL, homeIconItem.getPersona(),
                 GALAXY_CATEGORY_ID, homeIconItem.getCategoryPersona(),
                 SHOP_ID, homeIconItem.getBrandId(),
+                CAMPAIGN_CODE, homeIconItem.getCampaignCode(),
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
@@ -932,24 +832,16 @@ public class HomePageTracking {
         return list;
     }
 
-    public static void sendTokopointTrackerClick() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        HomePageTracking.EVENT_TOKO_POINT,
-                        HomePageTracking.CATEGORY_HOMEPAGE_TOKOPOINTS,
-                        HomePageTracking.ACTION_CLICK_POINT,
-                        HomePageTracking.LABEL_TOKOPOINTS));
-    }
-
     public static void homeReviewImpression(
             TrackingQueue trackingQueue,
             SuggestedProductReviewResponse reviewData,
             int position,
             String orderId,
             String productId,
-            String channelId
+            String channelId,
+            String message
     ) {
-        trackingQueue.putEETracking(getHomeReviewImpression(reviewData, position, orderId, productId, channelId, false));
+        trackingQueue.putEETracking(getHomeReviewImpression(reviewData, position, orderId, productId, channelId, false, message));
     }
 
     public static HashMap<String, Object>  getHomeReviewImpressionIris(
@@ -957,8 +849,9 @@ public class HomePageTracking {
             int position,
             String orderId,
             String productId,
-            String channelId) {
-        return getHomeReviewImpression(reviewData, position, orderId, productId, channelId,true);
+            String channelId,
+            String message) {
+        return getHomeReviewImpression(reviewData, position, orderId, productId, channelId,true, message);
     }
 
     private static HashMap<String, Object> getHomeReviewImpression(SuggestedProductReviewResponse reviewData,
@@ -966,7 +859,8 @@ public class HomePageTracking {
                                                                    String orderId,
                                                                    String productId,
                                                                   String channelId,
-                                                                  boolean isToIris) {
+                                                                  boolean isToIris,
+                                                                   String message) {
         List<Object> promotionBody = DataLayer.listOf(DataLayer.mapOf(
                 "id", orderId + " - " + productId + " - " + channelId,
                 "name", "product review notification - " + orderId + " - " + productId,
@@ -981,7 +875,7 @@ public class HomePageTracking {
                 EVENT, isToIris? "promoViewIris" : "promoView",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "view - product review notification",
-                EVENT_LABEL, orderId + " - " + productId,
+                EVENT_LABEL, orderId + " - " + productId + " - message:" + message + ";",
                 ECOMMERCE, DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
                                 "promotions", promotionBody
@@ -991,40 +885,33 @@ public class HomePageTracking {
 
     }
 
-    public static void homeReviewOnCloseTracker(String orderId, String productId) {
+    public static void homeReviewOnCloseTracker(String orderId, String productId, String message, String channelId) {
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 EVENT, "clickReview",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "click - back button on home product review widget",
-                EVENT_LABEL, orderId + " - " + productId
-        ));
-    }
-
-    public static void homeReviewOnRatingChangedTracker(String orderId, String productId, int starCount) {
-        getTracker().sendGeneralEvent(DataLayer.mapOf(
-                EVENT, "clickReview",
-                EVENT_CATEGORY, "homepage-pdp",
-                EVENT_ACTION, "click - product rating stars on home product review widget",
-                EVENT_LABEL, orderId + " - " + productId + " - " + Integer.toString(starCount, 10)
-        ));
-    }
-
-    public static void homeReviewOnBlankSpaceClickTracker(String orderId, String productId, String channelId) {
-        getTracker().sendGeneralEvent(DataLayer.mapOf(
-                EVENT, "clickReview",
-                EVENT_CATEGORY, "homepage-pdp",
-                EVENT_ACTION, "click - home product review widget",
-                EVENT_LABEL, orderId + " - " + productId,
+                EVENT_LABEL, orderId + " - " + productId + " - " + message,
                 CHANNEL_ID, channelId
         ));
     }
 
-    public static void sendClickOnTokopointsNewCouponTracker() {
+    public static void homeReviewOnRatingChangedTracker(String orderId, String productId, int starCount, String message, String channelId) {
         getTracker().sendGeneralEvent(DataLayer.mapOf(
-                EVENT, EVENT_TOKO_POINT,
-                EVENT_CATEGORY, CATEGORY_HOMEPAGE_TOKOPOINTS,
-                EVENT_ACTION, EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON,
-                EVENT_LABEL, LABEL_EMPTY
+                EVENT, "clickReview",
+                EVENT_CATEGORY, "homepage-pdp",
+                EVENT_ACTION, "click - product rating stars on home product review widget",
+                EVENT_LABEL, orderId + " - " + productId + " - " + Integer.toString(starCount, 10) + " - " + message,
+                CHANNEL_ID, channelId
+        ));
+    }
+
+    public static void homeReviewOnBlankSpaceClickTracker(String orderId, String productId, String channelId, String message) {
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
+                EVENT, "clickReview",
+                EVENT_CATEGORY, "homepage-pdp",
+                EVENT_ACTION, "click - home product review widget",
+                EVENT_LABEL, orderId + " - " + productId + " - " + message,
+                CHANNEL_ID, channelId
         ));
     }
 }

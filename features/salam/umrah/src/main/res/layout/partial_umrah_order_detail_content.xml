@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingBottom="@dimen/dp_16">
+    android:background="@color/Neutral_N0"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="@dimen/spacing_lvl4"
         android:text="@string/umrah_order_detail_detail_title"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -23,9 +23,9 @@
         android:id="@+id/my_umrah_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_detail_title"
@@ -35,7 +35,7 @@
         android:id="@+id/tv_umrah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="@dimen/spacing_lvl4"
         android:background="@drawable/umrah_bg_order_detail_ticket"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -44,55 +44,54 @@
 
         <com.tokopedia.salam.umrah.common.presentation.widget.UmrahCustomTicketView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/unify_space_0"
             android:layout_alignBottom="@+id/divider1"
             android:layout_alignParentTop="true"
-            app:borderColor="@color/grey_200"
-            app:borderWidth="1dp"
-            app:cornerRadius="4dp"
+            app:borderColor="@color/Neutral_N100"
+            app:borderWidth="@dimen/dimen_dp_1"
+            app:cornerRadius="@dimen/spacing_lvl2"
             app:umrahCornerType="roundedscallop"
-            app:scallopRadius="8dp"
+            app:scallopRadius="@dimen/spacing_lvl3"
             app:showBorder="true"
             app:showTopShadow="true"
-            app:ticketElevation="4dp" />
+            app:ticketElevation="@dimen/spacing_lvl2" />
 
         <com.tokopedia.salam.umrah.common.presentation.widget.UmrahCustomTicketView
             android:id="@+id/customView2"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/unify_space_0"
             android:layout_alignTop="@+id/divider1"
             android:layout_alignBottom="@+id/ticket_bottom"
-            app:borderColor="@color/grey_200"
-            app:borderWidth="1dp"
-            app:cornerRadius="4dp"
+            app:borderColor="@color/Neutral_N100"
+            app:borderWidth="@dimen/dimen_dp_1"
+            app:cornerRadius="@dimen/spacing_lvl2"
             app:umrahCornerType="scalloprounded"
-            app:scallopRadius="8dp"
+            app:scallopRadius="@dimen/spacing_lvl3"
             app:showBorder="false"
             app:showBottomShadow="true"
-
-            app:ticketElevation="4dp" />
+            app:ticketElevation="@dimen/spacing_lvl2" />
 
 
         <!--v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);-->
         <ImageView
             android:id="@+id/divider1"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
+            android:layout_height="@dimen/spacing_lvl2"
             android:layout_below="@+id/ticket_head"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl3"
             android:background="@drawable/umrah_dash_line" />
 
         <LinearLayout
             android:id="@+id/ticket_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16">
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_order_package"
@@ -123,9 +122,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/divider1"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16">
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/spacing_lvl4">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
@@ -141,10 +140,10 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:background="@color/grey_250" />
+                android:layout_height="@dimen/dimen_dp_1"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:background="@color/Neutral_N100" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -194,27 +193,27 @@
         android:id="@+id/container_umrah_e_voucher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="@dimen/spacing_lvl4"
         android:background="@drawable/umrah_bg_order_detail_ticket"
-        android:elevation="@dimen/dp_4"
+        android:elevation="@dimen/spacing_lvl2"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_16"
+        android:padding="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_umrah">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/ic_umrah_e_voucher" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_show_e_voucher"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_weight="1"
             android:text="@string/umrah_order_detail_show_e_voucher_label"
             android:textColor="@color/Neutral_N700_96"
@@ -222,7 +221,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_12"
+            android:layout_height="@dimen/unify_space_12"
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/ic_arrow_right_grey" />
@@ -234,8 +233,8 @@
     <View
         android:id="@+id/divider_payment_method"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_height="@dimen/dimen_dp_1"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_umrah_e_voucher" />

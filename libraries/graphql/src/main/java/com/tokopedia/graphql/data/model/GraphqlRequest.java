@@ -27,6 +27,12 @@ public class GraphqlRequest {
     /*transient by nature hence it will not be part of request body*/
     private transient Type typeOfT; /*Mandatory parameter*/
 
+    private transient String queryCopy;
+
+    private transient int queryHashRetryCount = 1;
+
+    private transient boolean doQueryHash = false;
+
     /*transient by nature hence it will not be part of request body*/
     private transient boolean shouldThrow = true; /*Optional parameter*/
 
@@ -36,9 +42,46 @@ public class GraphqlRequest {
     @Expose(serialize = false, deserialize = false)
     private String md5;
 
+    public String getQueryCopy() {
+        return queryCopy;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public void setQueryCopy(String queryCopy) {
+        this.queryCopy = queryCopy;
+    }
+
+    public boolean isDoQueryHash() {
+        return doQueryHash;
+    }
+
+    public void setDoQueryHash(boolean doQueryHash) {
+        this.doQueryHash = doQueryHash;
+    }
+
+    public int getQueryHashRetryCount() {
+        return queryHashRetryCount;
+    }
+
+    public void setQueryHashRetryCount(int queryHashRetryCount) {
+        this.queryHashRetryCount = queryHashRetryCount;
+    }
+
     public GraphqlRequest(String query, Type typeOfT) {
         this.query = query;
+        this.queryCopy = query;
         this.typeOfT = typeOfT;
+        this.md5 = FingerprintManager.md5(query);
+    }
+
+    public GraphqlRequest(String query, boolean doQueryHash, Type typeOfT) {
+        this.query = query;
+        this.queryCopy = query;
+        this.typeOfT = typeOfT;
+        this.doQueryHash = doQueryHash;
         this.md5 = FingerprintManager.md5(query);
     }
 
@@ -57,6 +100,12 @@ public class GraphqlRequest {
     public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables) {
         this(query, typeOfT);
         this.variables = variables;
+    }
+
+    public GraphqlRequest(boolean doQueryHash, String query, Type typeOfT, Map<String, Object> variables) {
+        this(query, typeOfT);
+        this.variables = variables;
+        this.doQueryHash = doQueryHash;
     }
 
     /**

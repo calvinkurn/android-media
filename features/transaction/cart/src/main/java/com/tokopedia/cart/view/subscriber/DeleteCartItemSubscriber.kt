@@ -13,8 +13,9 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                                private val presenter: ICartListPresenter,
                                private val toBeDeletedCartIds: List<String>,
                                private val removeAllItems: Boolean,
-                               private val removeInsurance: Boolean,
-                               private val forceExpandCollapsedUnavailableItems: Boolean) : Subscriber<DeleteCartData>() {
+                               private val forceExpandCollapsedUnavailableItems: Boolean,
+                               private val isMoveToWishlist: Boolean,
+                               private val isFromGlobalCheckbox: Boolean) : Subscriber<DeleteCartData>() {
     override fun onCompleted() {
 
     }
@@ -35,20 +36,14 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
             view.renderLoadGetCartDataFinish()
 
             if (deleteCartData.isSuccess) {
-                if (removeInsurance) {
-                    view.getInsuranceCartShopData()?.let {
-                        presenter.processDeleteCartInsurance(it, false)
-                    }
-                }
-
-                view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems)
+                view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, isMoveToWishlist, isFromGlobalCheckbox)
 
                 val params = view.generateGeneralParamValidateUse()
                 if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
                     view.showPromoCheckoutStickyButtonLoading()
                     presenter.doUpdateCartAndValidateUse(params)
                 }
-                view.updateCartCounter(deleteCartData.cartCounter)
+                presenter.processUpdateCartCounter()
             } else {
                 view.hideProgressLoading()
                 view.showToastMessageRed(deleteCartData.message ?: "")

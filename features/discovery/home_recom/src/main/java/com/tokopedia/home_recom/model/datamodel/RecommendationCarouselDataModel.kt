@@ -12,13 +12,11 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  * This class for holding data for type factory pattern [RecommendationCarouselViewHolder]
  * @param title the title of widget recommendation carousel
  * @param products the list of recommendation item, it hold data for carousel
- * @param listener the default listener for recommendation widget, it will handling on impression, click, wishlist tracker
  */
 class RecommendationCarouselDataModel(
         val title: String,
         val appLinkSeeMore: String,
-        val products: List<RecommendationCarouselItemDataModel>,
-        val listener: RecommendationListener
+        val products: List<RecommendationCarouselItemDataModel>
 ) : HomeRecommendationDataModel {
 
     companion object{

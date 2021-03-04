@@ -3,21 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "event": "openScreen",
-      "screenName": "/digital/pascabayar",
-      "isLoggedInStatus": "{{true|false}}",
-      "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
-      "businessUnit": "recharge",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "shopId": "{{.*}}",
-      "appsflyerId": "{{.*}}",
-      "networkSpeed": "{{.*}}"
-    },
-    {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input manual number",
@@ -55,35 +40,6 @@
       "eventAction": "click salin promo digital",
       "eventLabel": "{{.* - .*}}",
       "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "clickHomepage",
-      "eventCategory": "digital - homepage",
-      "eventAction": "click cek tagihan",
-      "eventLabel": "{{.* - .*}}",
-      "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
-      "businessUnit": "recharge",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "select_content",
-      "eventCategory": "digital - homepage",
-      "eventAction": "click promo digital",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}",
-      "promotions": [
-        {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "promo_code": "{{.*}}",
-          "promo_id": "{{.*}}",
-          "category": "{{.*}}",
-          "creative_url": "{{.*}}"
-        }
-      ]
     },
     {
       "event": "clickHomepage",

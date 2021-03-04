@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
@@ -146,7 +145,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     open fun initializeToolbarData() {
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                FlightDateUtil.FORMAT_DATE_SHORT_MONTH,
                 flightSearchPassDataModel.departureDate
         )
         passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
@@ -214,7 +213,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         val arrivalCode = if (getArrivalAirport().airportCode != null && getArrivalAirport().airportCode.isNotEmpty())
             getArrivalAirport().airportCode else getArrivalAirport().cityCode
         val title = "${getDepartureAirport().cityName} (${departureCode}) ➝ ${getArrivalAirport().cityName} (${arrivalCode})"
-        val subtitle = "$dateString | $passengerString | $classString"
+        val subtitle = "$dateString | $passengerString"
 
         flight_search_header.title = title
         flight_search_header.subtitle = subtitle
@@ -323,8 +322,9 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     private fun showMessageErrorInSnackbar(@StringRes stringResourceId: Int) {
-        Toaster.make(findViewById(parentViewResourceID), getString(stringResourceId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay))
-        NetworkErrorHelper.showRedCloseSnackbar(this, getString(stringResourceId))
+        Toaster.build(findViewById(parentViewResourceID), getString(stringResourceId),
+                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                getString(R.string.flight_booking_action_okay)).show()
     }
 
     companion object {

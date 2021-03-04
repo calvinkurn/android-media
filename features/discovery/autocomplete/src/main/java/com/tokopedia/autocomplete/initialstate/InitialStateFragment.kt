@@ -15,10 +15,11 @@ import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
 import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateContextModule
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.iris.Iris
@@ -210,8 +211,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.impressedRecentSearch(iris, list, keyword)
     }
 
-    override fun onPopularSearchImpressed(list: List<Any>) {
-        AutocompleteTracking.impressedPopularSearch(iris, list)
+    override fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel) {
+        AutocompleteTracking.impressedDynamicSection(iris, model)
     }
 
     override fun onSeeMoreRecentSearchImpressed(userId: String) {
@@ -230,7 +231,35 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.eventClickSeeMoreRecentSearch(userId)
     }
 
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        presenter.onDynamicSectionItemClicked(item, adapterPosition)
+    }
+
+    override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String) {
+        AutocompleteTracking.eventClickDynamicSection(userId, label, type)
+    }
+
+    override fun refreshViewWithPosition(position: Int) {
+        adapter.refreshPopularSection(position)
+    }
+
+    override fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel) {
+        AutocompleteTracking.impressedDynamicSection(iris, model)
+    }
+
     override fun dropKeyBoard() {
         initialStateViewUpdateListener?.dropKeyboard()
+    }
+
+    override fun onCuratedCampaignCardClicked(curatedCampaignViewModel: CuratedCampaignViewModel) {
+        presenter.onCuratedCampaignCardClicked(curatedCampaignViewModel)
+    }
+
+    override fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String) {
+        AutocompleteTracking.eventClickCuratedCampaignCard(userId, label, type)
+    }
+
+    override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String) {
+        AutocompleteTracking.impressedCuratedCampaign(iris, userId, label, type)
     }
 }

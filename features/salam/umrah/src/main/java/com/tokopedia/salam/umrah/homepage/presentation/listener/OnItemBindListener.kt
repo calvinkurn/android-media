@@ -6,6 +6,8 @@ import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
+import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetData
+import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageBottomSheetAdapter
 
 /**
  * @author by firman on 28/10/19
@@ -40,4 +42,8 @@ interface onItemBindListener{
     fun onImpressionPartnerTravel(headerTitle: String, umrahTravelAgentsEntity: UmrahTravelAgentsEntity)
     fun onClickPartnerTravel(headerTitle: String, travelAgent: TravelAgent)
     fun onClickAllPartner()
+
+    fun showBottomSheetSearchParam(title: String, listBottomSheet: UmrahHomepageBottomSheetData,
+                                   defaultOption: Int,
+                                   adapter: UmrahHomepageBottomSheetAdapter)
 }

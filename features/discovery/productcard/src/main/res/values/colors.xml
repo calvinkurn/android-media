@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#FFFFFF</color>
-    <color name="charcoal_grey_96">#f531353b</color>
-    <color name="charcoal_grey_88">#e131353b</color>
-    <color name="charcoal_grey_44">#7031353b</color>
-    <color name="charcoal_grey_40">#6631353b</color>
-    <color name="charcoal_grey_68">#ae31353b</color>
+    <color name="white">@color/Unify_N0</color>
+    <color name="charcoal_grey_96">@color/Unify_N700_96</color>
+    <color name="charcoal_grey_88">@color/Unify_N700_96</color>
+    <color name="charcoal_grey_44">@color/Unify_N700_44</color>
+    <color name="charcoal_grey_40">@color/Unify_N700_44</color>
+    <color name="charcoal_grey_68">@color/Unify_N700_68</color>
 
-    <color name="icon_product_card_background_color">#f3f4f5</color>
-    <color name="discountTextColor">#ef144a</color>
+    <color name="icon_product_card_background_color">@color/Unify_N50</color>
+    <color name="discountTextColor">@color/Unify_R500</color>
 
-    <color name="product_card_shop_name_text_color">#f531353b</color>
-    <color name="product_card_product_name_text_color">#f531353b</color>
-    <color name="product_card_slashed_price_text_color">#7031353b</color>
-    <color name="product_card_price_text_color">#fa591d</color>
-    <color name="product_card_location_text_color">#ae31353b</color>
-    <color name="product_card_review_count_text_color">#7031353b</color>
+    <color name="product_card_shop_name_text_color">@color/Unify_N700_96</color>
+    <color name="product_card_product_name_text_color">@color/Unify_N700_96</color>
+    <color name="product_card_slashed_price_text_color">@color/Unify_N700_44</color>
+    <color name="product_card_price_text_color">@color/Unify_Y500</color>
+    <color name="product_card_location_text_color">@color/Unify_N700_68</color>
+    <color name="product_card_review_count_text_color">@color/Unify_N700_44</color>
 
-    <color name="product_card_button_buy_background_color">#fa591d</color>
-    <color name="product_card_layout_sold_out_background_color">#ae31353b</color>
+    <color name="product_card_button_buy_background_color">@color/Unify_Y500</color>
+    <color name="product_card_layout_sold_out_background_color">@color/Unify_N700_68</color>
+
+    <color name="product_card_dms_placeholder_color">#E5E7E9</color>
 </resources>

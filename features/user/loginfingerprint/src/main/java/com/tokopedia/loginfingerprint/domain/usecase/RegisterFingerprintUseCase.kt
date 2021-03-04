@@ -2,7 +2,7 @@ package com.tokopedia.loginfingerprint.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
+import com.tokopedia.loginfingerprint.data.model.SignatureData
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class RegisterFingerprintUseCase @Inject constructor(
         }
     }
 
-    fun createRequestParam(signature: FingerprintSignature, publicKey: String): Map<String, String>{
+    fun createRequestParam(signature: SignatureData, publicKey: String): Map<String, String>{
         return mapOf(
                 LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to publicKey,
                 LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,

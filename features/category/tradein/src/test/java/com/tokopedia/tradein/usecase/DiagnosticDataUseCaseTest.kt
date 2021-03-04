@@ -90,7 +90,7 @@ class DiagnosticDataUseCaseTest {
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
 
-        val queries = diagnosticDataUseCase.getQueries(resources, tradeInParams)
+        val queries = diagnosticDataUseCase.getQueries(tradeInParams)
 
         assertEquals(queries.size, 2)
     }
@@ -101,7 +101,7 @@ class DiagnosticDataUseCaseTest {
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
 
-        val queries = diagnosticDataUseCase.getQueries(resources, tradeInParams)
+        val queries = diagnosticDataUseCase.getQueries(tradeInParams)
 
         assertEquals(queries.size, 1)
     }
@@ -119,7 +119,7 @@ class DiagnosticDataUseCaseTest {
             coEvery { graphqlResponse.getData<DeviceDiagGQL>(DeviceDiagGQL::class.java) } returns null
             coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
 
-            diagnosticDataUseCase.getDiagnosticData(resources, tradeInParams, tradeInType)
+            diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
         }
     }
 
@@ -135,7 +135,7 @@ class DiagnosticDataUseCaseTest {
             coEvery { graphqlResponse.getData<KYCDetailGQL>(KYCDetailGQL::class.java) } returns null
             coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
 
-            val variable = diagnosticDataUseCase.getDiagnosticData(resources, tradeInParams, tradeInType)
+            val variable = diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
 
             assertEquals(variable, deviceDiagGQL.diagResponse)
         }
@@ -156,7 +156,7 @@ class DiagnosticDataUseCaseTest {
             coEvery { graphqlResponse.getData<KYCDetailGQL>(KYCDetailGQL::class.java) } returns kycDetailGQL
             coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
 
-            val variable = diagnosticDataUseCase.getDiagnosticData(resources, tradeInParams, tradeInType)
+            val variable = diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
 
             assertEquals(variable?.kycDetails, kycDetailGQL.kycDetails)
         }

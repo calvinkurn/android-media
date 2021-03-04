@@ -1,8 +1,8 @@
 package com.tokopedia.contactus.inboxticket2
 
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
-import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImplTest
-import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterImplTest
+import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterTest
+import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
@@ -18,7 +18,7 @@ import org.junit.runners.Suite
         PostMessageUseCaseTest::class,
         SubmitRatingUseCaseTest::class,
         UploadImageUseCaseTest::class,
-        InboxDetailPresenterImplTest::class,
-        InboxListPresenterImplTest::class
+        InboxDetailPresenterTest::class,
+        InboxListPresenterTest::class
 )
 class ContactUsSuite

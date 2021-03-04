@@ -1,28 +1,22 @@
-package com.tokopedia.shop_settings.viewmodel
+package com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
-import com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo.ShopEditBasicInfoViewModelTestFixture
+import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.mockkObject
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.junit.Assert
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
-
-    @Test
-    fun `when detach view should unsubscribe use case`() {
-        shopEditBasicInfoViewModel.detachView()
-        verifyUnsubscribeUseCase()
-    }
-
 
     @Test
     fun `when get shop basic data should return success`() {
@@ -52,7 +46,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             val expectedResult = Success(allowShopNameDomainChanges)
 
             assertTrue(shopEditBasicInfoViewModel.allowShopNameDomainChanges.value is Success)
-            shopEditBasicInfoViewModel.allowShopNameDomainChanges.verifyValueEquals(expectedResult)
+            shopEditBasicInfoViewModel.allowShopNameDomainChanges.verifySuccessEquals(expectedResult)
         }
     }
 
@@ -98,14 +92,14 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate shop name should return success`() {
-        runBlocking {
+        coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopName_thenReturn()
 
             val shopName: String = "shopname"
             shopEditBasicInfoViewModel.validateShopName(shopName = shopName)
-            Thread.sleep(1000)
+            advanceTimeBy(1000)
 
             verifySuccessValidateShopNameRequestParamsCalled(shopName)
 
@@ -120,14 +114,14 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate domain name should return success`() {
-        runBlocking {
+        coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateDomainName_thenReturn()
 
             val domainName: String = "domain"
-            shopEditBasicInfoViewModel.validateShopDomain(domain = domainName)
-            Thread.sleep(2000)
+            shopEditBasicInfoViewModel.validateShopDomain(domainName)
+            advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameRequestParamsCalled(domainName)
 
@@ -140,41 +134,60 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when validate domain name should return success and get domain suggestion should return success`() {
+        coroutineTestRule.runBlockingTest {
+            onValidateDomainName_thenReturn()
+            privateCurrentShopNameField.set(shopEditBasicInfoViewModel, "shop")
+
+            onGetShopDomainNameSuggestion_thenReturn()
+            shopEditBasicInfoViewModel.validateShopDomain("domain")
+            advanceTimeBy(2000)
+
+            verifySuccessValidateDomainNameCalled()
+            verifyGetShopDomainNameSuggestionCalled()
+
+            assertTrue(shopEditBasicInfoViewModel.validateShopDomain.value is Success)
+            assertNotNull(shopEditBasicInfoViewModel.validateShopDomain.value)
+            assertTrue(shopEditBasicInfoViewModel.shopDomainSuggestion.observeAwaitValue() is Success)
+        }
+    }
 
     @Test
-    fun onSuccessCancelValidateShopNameJob() {
-        shopEditBasicInfoViewModel.cancelValidateShopName()
-
-        val job = shopEditBasicInfoViewModel.validateShopNameJob
-        runBlocking {
-            job?.cancel()
+    fun `when validate shop name but must return cause shop name is the same as current shop name`() {
+        val shopBasicDataModel = ShopBasicDataModel().apply {
+            name = "shop"
         }
-
-        assertTrue(shopEditBasicInfoViewModel.validateShopNameJob == null)
+        val shopName = "shop"
+        shopEditBasicInfoViewModel.setCurrentShopData(shopBasicDataModel)
+        shopEditBasicInfoViewModel.validateShopName(shopName)
+        assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).name == shopName)
     }
 
     @Test
-    fun onSuccessCancelValidateShopDomainNameJob() {
-        shopEditBasicInfoViewModel.cancelValidateShopDomain()
-
-        val job = shopEditBasicInfoViewModel.validateShopDomainJob
-        runBlocking {
-            job?.cancel()
+    fun `when validate domain name but must return cause domain name is the same as current domain name`() {
+        val shopBasicDataModel = ShopBasicDataModel().apply {
+            domain = "domain"
         }
-
-        assertTrue(shopEditBasicInfoViewModel.validateShopDomainJob == null)
+        val shopDomain = "domain"
+        shopEditBasicInfoViewModel.setCurrentShopData(shopBasicDataModel)
+        shopEditBasicInfoViewModel.validateShopDomain(shopDomain)
+        assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).domain == shopDomain)
     }
 
-    private fun <T> LiveData<T>.observeAwaitValue(): T? {
-        var value: T? = null
-        val latch = CountDownLatch(1)
-        val observer = Observer<T> { t ->
-            value = t
-            latch.countDown()
+    @Test
+    fun `when update shop basic data and current shop name is the same as previous name`() {
+        val shopName = "shop"
+        val shopDomain = "domain"
+        val shopBasicDataModel = ShopBasicDataModel().apply {
+            name = "shop"
+            domain = "domain"
         }
-        observeForever(observer)
-        latch.await(2, TimeUnit.SECONDS)
-        return value
-    }
+        privateCurrentShopField.set(shopEditBasicInfoViewModel, shopBasicDataModel)
 
+        shopEditBasicInfoViewModel.updateShopBasicData(shopName, shopDomain, "", "")
+
+        assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).name == shopName)
+        assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).domain == shopDomain)
+    }
 }

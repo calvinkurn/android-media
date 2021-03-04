@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.label.LabelView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:background="@android:color/white"
-    android:id="@+id/label_view"
-    android:paddingLeft="@dimen/dp_0"
-    android:paddingStart="@dimen/dp_0"
-    android:paddingRight="@dimen/dp_0"
-    android:paddingEnd="@dimen/dp_0"
     android:paddingTop="@dimen/dp_12"
-    android:paddingBottom="@dimen/dp_12"
-    app:lv_title="@string/service_title_format"
-    app:lv_content="@string/see_message"
-    app:lv_title_text_size="@dimen/sp_14"
-    app:lv_content_text_size="@dimen/sp_14"
-    app:lv_content_color="@color/font_black_secondary_54"
-    app:lv_content_max_width_percentage="0.5"/>
+    android:paddingBottom="@dimen/dp_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rate_label_title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/rate_label_value"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tools:text="JNE" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rate_label_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tools:text="Rp.20.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

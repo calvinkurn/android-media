@@ -30,7 +30,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_14"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toEndOf="@id/filterCategoryIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_2"
         android:visibility="gone"
-        android:background="@color/Green_G500"
+        android:background="@color/Unify_G500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

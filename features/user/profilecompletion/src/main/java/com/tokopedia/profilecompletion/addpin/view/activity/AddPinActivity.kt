@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.addpin.view.activity
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFragment
@@ -28,6 +30,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     var enableBackBtn = true
+    var isFrom2FA = false
 
     override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionSettingComponent.builder()
@@ -40,6 +43,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
         intent?.extras?.run {
             if(getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA)){
                 enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
+                isFrom2FA = getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, false)
             }
         }
         super.onCreate(savedInstanceState)
@@ -56,7 +60,14 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
 
     override fun onBackPressed() {
         if (fragment != null && fragment is AddPinFragment) {
-            if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) super.onBackPressed()
+            if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) {
+                if (isFrom2FA && enableBackBtn) {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                } else {
+                    super.onBackPressed()
+                }
+            }
         } else {
             super.onBackPressed()
         }
@@ -73,7 +84,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
             setDisplayHomeAsUpEnabled(enableBackBtn)
             setDisplayShowTitleEnabled(false)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@AddPinActivity, R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this@AddPinActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
         }
     }
 
@@ -89,7 +100,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

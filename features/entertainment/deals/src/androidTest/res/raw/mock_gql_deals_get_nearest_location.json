@@ -1,0 +1,123 @@
+[
+  {
+    "data": {
+      "event_location_search": {
+        "locations": [
+          {
+            "id": "80345",
+            "name": "Trans Studio Makassar Theme Park",
+            "search_name": "Kawasan Terpadu, Jl. Metro Tj. Bunga, Maccini Sombala, Kec. Tamalate, Kota Makassar, Sulawesi Selatan 90224, Indonesia",
+            "coordinates": "-5.1586857,119.3946179",
+            "address": "Maccini Sombala, Kecamatan Tamalate, Kota Makassar, Sulawesi Selatan",
+            "city_id": "78431",
+            "city_name": "Kota Makassar",
+            "priority": "1",
+            "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "image_web": "",
+            "image_app": "",
+            "location_type": {
+              "id": 5,
+              "name": "city",
+              "display_name": "Landmark",
+              "search_radius": "500m",
+              "outer_radius": "250m",
+              "icon": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "type_id": "0",
+              "status": 1,
+              "custom_text_1": "-1",
+              "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+            }
+          },
+          {
+            "id": "80201",
+            "name": "Ramayana Mal Bali",
+            "search_name": "Jl. Diponegoro No.103, Dauh Puri, Kec. Denpasar Bar., Kota Denpasar, Bali 80113, Indonesia",
+            "coordinates": "-8.6659653,115.2161682",
+            "address": "Dauh Puri, Kecamatan Denpasar Barat, Kota Denpasar, Bali",
+            "city_id": "78434",
+            "city_name": "Kota Denpasar",
+            "priority": "1",
+            "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "image_web": "",
+            "image_app": "",
+            "location_type": {
+              "id": 5,
+              "name": "city",
+              "display_name": "Landmark",
+              "search_radius": "500m",
+              "outer_radius": "250m",
+              "icon": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "type_id": "0",
+              "status": 1,
+              "custom_text_1": "-1",
+              "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+            }
+          },
+          {
+            "id": "80105",
+            "name": "Level 21 mall",
+            "search_name": "Jl. Teuku Umar No.1, Dauh Puri Klod, Kec. Denpasar Bar., Kota Denpasar, Bali 80113, Indonesia",
+            "coordinates": "-8.669802299999999,115.2143811",
+            "address": "Dauh Puri Klod, Kecamatan Denpasar Barat, Kota Denpasar, Bali",
+            "city_id": "78434",
+            "city_name": "Kota Denpasar",
+            "priority": "1",
+            "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "image_web": "",
+            "image_app": "",
+            "location_type": {
+              "id": 5,
+              "name": "landmark",
+              "display_name": "Landmark",
+              "search_radius": "500m",
+              "outer_radius": "250m",
+              "icon": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "type_id": "0",
+              "status": 1,
+              "custom_text_1": "-1",
+              "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+            }
+          },
+          {
+            "id": "80116",
+            "name": "Mal Bali Galeria",
+            "search_name": "Jl. By Pass Ngurah Rai, Kuta, Kabupaten Badung, Bali 80361, Indonesia",
+            "coordinates": "-8.7232069,115.1845649",
+            "address": "Kuta, Kabupaten Badung, Bali",
+            "city_id": "78358",
+            "city_name": "Kabupaten Badung",
+            "priority": "1",
+            "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "image_web": "",
+            "image_app": "",
+            "location_type": {
+              "id": 5,
+              "name": "city",
+              "display_name": "Landmark",
+              "search_radius": "500m",
+              "outer_radius": "250m",
+              "icon": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "type_id": "0",
+              "status": 1,
+              "custom_text_1": "-1",
+              "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+            }
+          }
+        ],
+        "page": {
+          "next_page": "2",
+          "prev_page": "0"
+        },
+        "count": "4"
+      }
+    }
+  }
+]

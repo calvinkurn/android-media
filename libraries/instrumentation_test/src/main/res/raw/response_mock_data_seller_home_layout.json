@@ -1,272 +1,457 @@
-{
-  "data": {
-    "GetSellerDashboardLayout": {
-      "widget": [
-        {
-          "widgetType": "section",
-          "title": "Penting hari ini",
-          "subtitle": "",
-          "tooltip": {
+[
+  {
+    "data": {
+      "GetSellerDashboardPageLayout": {
+        "widget": [
+          {
+            "widgetType": "description",
+            "title": "Tambah produk pertamamu!",
+            "subtitle": "Kata orang, jutaan mimpi berawal dari satu langkah kecil. Ciptakan peluangmu sekarang dan mulai berjualan.",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "",
+            "ctaText": "Tambah produk sekarang!"
+          },
+          {
+            "widgetType": "section",
             "title": "Penting hari ini",
-            "content": "",
-            "show": true,
-            "list": [
-              {
-                "title": "Pesanan baru",
-                "description": "Jumlah pesanan yang perlu diproses."
-              },
-              {
-                "title": "Siap dikirim",
-                "description": "Jumlah pesanan yang perlu dikirim."
-              },
-              {
-                "title": "Komplain pesanan",
-                "description": "Jumlah komplain dari pembeli yang perlu diselesaikan."
-              },
-              {
-                "title": "Chat belum dibaca",
-                "description": "Jumlah chat dari pembeli yang perlu dibaca."
-              },
-              {
-                "title": "Diskusi belum dibaca",
-                "description": "Jumlah diskusi dari pembeli yang perlu dibaca."
-              }
-            ]
+            "subtitle": "",
+            "tooltip": {
+              "title": "Penting hari ini",
+              "content": "",
+              "show": true,
+              "list": [
+                {
+                  "title": "Pesanan baru",
+                  "description": "Jumlah pesanan yang perlu diproses."
+                },
+                {
+                  "title": "Siap dikirim",
+                  "description": "Jumlah pesanan yang perlu dikirim."
+                },
+                {
+                  "title": "Komplain pesanan",
+                  "description": "Jumlah komplain dari pembeli yang perlu diselesaikan."
+                },
+                {
+                  "title": "Chat belum dibaca",
+                  "description": "Jumlah chat dari pembeli yang perlu dibaca."
+                },
+                {
+                  "title": "Diskusi belum dibaca",
+                  "description": "Jumlah diskusi dari pembeli yang perlu dibaca."
+                }
+              ]
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "",
+            "ctaText": ""
           },
-          "url": "",
-          "applink": "",
-          "dataKey": "",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "card",
-          "title": "Pesanan baru",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "card",
+            "title": "Pesanan baru",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "newOrder",
+            "ctaText": ""
           },
-          "url": "https://seller-staging.tokopedia.com/myshop_order?status=new_order",
-          "applink": "tokopedia://seller/new-order",
-          "dataKey": "newOrder",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "card",
-          "title": "Siap dikirim",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "card",
+            "title": "Siap dikirim",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "readyToShipOrder",
+            "ctaText": ""
           },
-          "url": "https://seller.tokopedia.com/myshop_order?status=confirm_shipping",
-          "applink": "tokopedia://seller/shipment",
-          "dataKey": "readyToShipOrder",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "card",
-          "title": "Komplain pesanan",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "card",
+            "title": "Komplain pesanan",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "complaint",
+            "ctaText": ""
           },
-          "url": "https://seller.tokopedia.com/resolution-center/inbox/seller",
-          "applink": "tokopedia://webview?url=https://m.tokopedia.com/resolution-center/inbox/seller/mobile",
-          "dataKey": "complaint",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "card",
-          "title": "Chat belum dibaca",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "card",
+            "title": "Chat belum dibaca",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "unreadChat",
+            "ctaText": ""
           },
-          "url": "https://seller.tokopedia.com/chat",
-          "applink": "tokopedia://topchat",
-          "dataKey": "unreadChat",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "card",
-          "title": "Diskusi belum dibaca",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": true,
-            "list": [
-              {
-                "title": "",
-                "description": ""
-              }
-            ]
+          {
+            "widgetType": "card",
+            "title": "Diskusi belum dibaca",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": true,
+              "list": [
+                {
+                  "title": "",
+                  "description": ""
+                }
+              ]
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "discussion",
+            "ctaText": ""
           },
-          "url": "https://seller.tokopedia.com/inbox-talk",
-          "applink": "tokopedia://talk",
-          "dataKey": "discussion",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "section",
-          "title": "Ringkasan penjualan",
-          "subtitle": "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
-          "tooltip": {
+          {
+            "widgetType": "card",
+            "title": "Ulasan belum dibalas",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "unrepliedReview",
+            "ctaText": ""
+          },
+          {
+            "widgetType": "section",
             "title": "Ringkasan penjualan",
-            "content": "",
-            "show": true,
-            "list": [
-              {
-                "title": "Produk dilihat",
-                "description": "Jumlah calon pembeli yang masuk ke halaman produkmu."
-              },
-              {
-                "title": "Produk terjual",
-                "description": "Jumlah produk terjual dari setiap transaksi sukses."
-              },
-              {
-                "title": "Pendapatan kotor",
-                "description": "Jumlah pemasukan dari produk terjual beserta ongkos kirim."
-              }
-            ]
+            "subtitle": "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
+            "tooltip": {
+              "title": "Ringkasan penjualan",
+              "content": "",
+              "show": true,
+              "list": [
+                {
+                  "title": "Produk dilihat",
+                  "description": "Jumlah calon pembeli yang masuk ke halaman produkmu."
+                },
+                {
+                  "title": "Produk terjual",
+                  "description": "Jumlah produk terjual dari setiap transaksi sukses."
+                },
+                {
+                  "title": "Pendapatan bersih baru",
+                  "description": "Didapat dari pesanan yang baru masuk, di luar ongkos kirim."
+                }
+              ]
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "",
+            "ctaText": ""
           },
-          "url": "",
-          "applink": "",
-          "dataKey": "",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "card",
-          "title": "Produk dilihat",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "card",
+            "title": "Produk dilihat",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "productViewStatistic",
+            "ctaText": ""
           },
-          "url": "https://seller.tokopedia.com/home-beta",
-          "applink": "",
-          "dataKey": "productViewStatistic",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "card",
-          "title": "Produk terjual",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "card",
+            "title": "Produk terjual",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "productSoldVerified",
+            "ctaText": ""
           },
-          "url": "https://seller.tokopedia.com/home-beta",
-          "applink": "",
-          "dataKey": "productSoldStatistic",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "lineGraph",
-          "title": "Pendapatan kotor",
-          "subtitle": "7 hari terakhir",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "lineGraph",
+            "title": "Pendapatan bersih baru",
+            "subtitle": "7 hari terakhir",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "netRevenueVerified",
+            "ctaText": "Selengkapnya"
           },
-          "url": "https://seller.tokopedia.com/statistic/dashboard",
-          "applink": "tokopedia://gold-merchant-statistic-dashboard",
-          "dataKey": "grossIncome",
-          "ctaText": "Selengkapnya"
-        },
-        {
-          "widgetType": "section",
-          "title": "Performa toko",
-          "subtitle": "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "section",
+            "title": "Performa toko",
+            "subtitle": "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "",
+            "ctaText": ""
           },
-          "url": "",
-          "applink": "",
-          "dataKey": "",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "progressBar",
-          "title": "Regular Merchant",
-          "subtitle": "Skor",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "progressBar",
+            "title": "Power Merchant (Aktif)",
+            "subtitle": "Skor",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "shopScore",
+            "ctaText": "Selengkapnya"
           },
-          "url": "",
-          "applink": "tokopedia://shop-score-detail",
-          "dataKey": "shopScore",
-          "ctaText": "Selengkapnya"
-        },
-        {
-          "widgetType": "carouselImage",
-          "title": "Khusus untukmu",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "carouselImage",
+            "title": "Khusus untukmu",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "home",
+            "ctaText": "Selengkapnya"
           },
-          "url": "",
-          "applink": "",
-          "dataKey": "home",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "post",
-          "title": "Info Seller",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
+          {
+            "widgetType": "post",
+            "title": "Info Seller",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "sellerInfo",
+            "ctaText": "Selengkapnya"
           },
-          "url": "https://seller.tokopedia.com/edu/seller-events/",
-          "applink": "",
-          "dataKey": "sellerInfo",
-          "ctaText": ""
-        },
-        {
-          "widgetType": "post",
-          "title": "Artikel",
-          "subtitle": "",
-          "tooltip": {
-            "title": "",
-            "content": "",
-            "show": false,
-            "list": []
-          },
-          "url": "https://seller.tokopedia.com/edu/articles/",
-          "applink": "tokopedia://webview?url=https://seller.tokopedia.com/edu/articles/",
-          "dataKey": "article",
-          "ctaText": "Selengkapnya"
-        }
-      ]
+          {
+            "widgetType": "post",
+            "title": "Artikel",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
+            "applink": "tokopedia-android-internal://sellerapp/sellerhome",
+            "dataKey": "article",
+            "ctaText": "Selengkapnya"
+          }
+        ]
+      }
     }
   }
-}
+]

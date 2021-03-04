@@ -2,13 +2,14 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nsvFlightHomepage"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:paddingBottom="@dimen/spacing_lvl4">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
@@ -40,20 +41,19 @@
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/margin_top_flight_dashboard"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:background="@color/white"
-            app:cardCornerRadius="@dimen/spacing_lvl3"
-            app:cardElevation="@dimen/spacing_lvl2"
-            app:cardUseCompatPadding="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivFlightHomepageBanner">
+            app:layout_constraintTop_toTopOf="@+id/ivFlightHomepageBanner"
+            app:cardCornerRadius="@dimen/spacing_lvl3"
+            app:cardElevation="@dimen/spacing_lvl2"
+            app:cardUseCompatPadding="false"
+            >
 
             <com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
                 android:id="@+id/flightHomepageSearchForm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4" />
+                android:paddingHorizontal="@dimen/spacing_lvl4"/>
 
         </androidx.cardview.widget.CardView>
 
@@ -62,23 +62,43 @@
             android:id="@+id/flightHomepageBannerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@color/Neutral_N0"
+            android:layout_marginTop="@dimen/flight_dp_20"
+            android:background="@color/Unify_N0"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_20"
+            android:paddingBottom="@dimen/flight_dp_20"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/flightHomepageSearchFormContainer"
             tools:visibility="visible">
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/flightHomepageBannerTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_3"
+                tools:text="Promo tiket pesawat" />
+
             <com.tokopedia.banner.Banner
                 android:id="@+id/flightHomepageBanner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3" />
 
         </LinearLayout>
+
+        <!-- Video Banner disini -->
+        <com.tokopedia.common.travel.widget.TravelVideoBannerWidget
+            android:id="@+id/flightHomepageVideoBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/flightHomepageBannerLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

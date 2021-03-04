@@ -23,6 +23,7 @@ import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutAct
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahVariant
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.di.UmrahPdpComponent
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_IS_EMPTY
@@ -68,7 +69,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahPdpDetailViewModel.pdpAvailability.observe(this, Observer {
+        umrahPdpDetailViewModel.pdpAvailability.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> showGetListError()
@@ -93,7 +94,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
 
     private fun requestAvailabilityData() {
         umrahPdpDetailViewModel.getPdpAvailability(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_pdp), paramPurchase.slugName)
+                UmrahQuery.UMRAH_PDP_QUERY, paramPurchase.slugName)
     }
 
     private fun setupAll() {

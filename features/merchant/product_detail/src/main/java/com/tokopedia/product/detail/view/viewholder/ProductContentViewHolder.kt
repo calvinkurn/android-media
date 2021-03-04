@@ -39,6 +39,7 @@ class ProductContentViewHolder(private val view: View,
 
         header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
         header?.renderTradein(element.showTradeIn())
+        header?.renderShareButton(getComponentTrackData(element))
     }
 
     override fun bind(element: ProductContentDataModel?, payloads: MutableList<Any>) {
@@ -49,6 +50,7 @@ class ProductContentViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
+            ProductDetailConstant.PAYLOAD_TRADEIN -> header?.renderTradein(element.showTradeIn())
         }
     }
 

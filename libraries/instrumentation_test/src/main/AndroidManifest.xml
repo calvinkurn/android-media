@@ -6,6 +6,9 @@
 
     <application
         android:requestLegacyExternalStorage="true" >
+        <meta-data
+            android:name="io.branch.sdk.TestMode"
+            android:value="true" />
         <activity
             android:name="com.tokopedia.test.application.benchmark_component.activity.TkpdIsolationActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>

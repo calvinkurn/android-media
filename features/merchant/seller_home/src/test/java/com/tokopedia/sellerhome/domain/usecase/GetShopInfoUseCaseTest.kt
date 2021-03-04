@@ -87,15 +87,8 @@ class GetShopInfoUseCaseTest {
 
     private fun getExpectedShopInfo(): ShopInfoUiModel {
         return ShopInfoUiModel(
-                dateShopCreated = "2016-09-27",
                 shopAvatar = "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2018/10/19/1479278/1479278_fa306e59-f15f-4048-b2f7-8ddc5d798926.jpeg",
-                shopCover = "https://ecs7.tokopedia.net/img/seller_no_cover_2.png",
-                shopDomain = "tumblersbux",
-                shopId = "1479278",
-                shopLocation = "Jakarta Selatan",
-                shopName = "Tumbler Starbucks 123",
-                shopScore = 36,
-                totalActiveProduct = 0
+                shopName = "Tumbler Starbucks 123"
         )
     }
 }

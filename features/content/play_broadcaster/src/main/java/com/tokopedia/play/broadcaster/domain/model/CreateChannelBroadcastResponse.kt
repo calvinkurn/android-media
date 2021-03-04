@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.play_common.domain.model.ChannelId
 
 
 /**

@@ -3,7 +3,6 @@
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_18">18dp</dimen>
-    <dimen name="dp_175">175dp</dimen>
     <dimen name="dp_36">36dp</dimen>
     <dimen name="product_manage_list_padding_top">9dp</dimen>
     <dimen name="product_manage_list_padding_bottom">20dp</dimen>

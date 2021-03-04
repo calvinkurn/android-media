@@ -2,7 +2,6 @@ package com.tokopedia.topads.credit.history.data.extensions
 
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 

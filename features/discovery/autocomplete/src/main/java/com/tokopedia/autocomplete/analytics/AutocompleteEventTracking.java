@@ -19,6 +19,7 @@ public interface AutocompleteEventTracking {
         String TOP_NAV = "top nav";
         String INITIAL_STATE = "initial-state";
         String SEARCH = "Search";
+        String TOP_NAV_INITIAL_STATE = "top nav - initial state";
     }
 
     interface Action {
@@ -38,10 +39,15 @@ public interface AutocompleteEventTracking {
         String CLICK_TOP_SHOP = "click - shop - carousel";
         String CLICK_TOP_SHOP_SEE_MORE = "click - lihat toko lainnya - carousel";
         String CLICK_RECENT_VIEW_PRODUCT = "click - recent view product";
+        String CLICK_DYNAMIC_SECTION = "click - popular search";
+        String CLICK_LOCAL_KEYWORD = "click - autocomplete local";
+        String CLICK_GLOBAL_KEYWORD = "click - autocomplete global";
         String IMPRESSION_RECENT_VIEW = "impression - recent view product";
         String IMPRESSION_RECENT_SEARCH = "impression - recent search";
         String IMPRESSION_POPULAR_SEARCH = "impression - popular search";
         String IMPRESSION_SEE_MORE_RECENT_SEARCH = "impression see more - recent search";
+        String CLICK_CURATED_CAMPAIGN = "click - curated campaign";
+        String IMPRESSION_CURATED_CAMPAIGN = "impression - curated campaign";
     }
 
     interface Label {

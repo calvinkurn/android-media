@@ -8,7 +8,7 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
-import com.tokopedia.review.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevMarkAsSeenUseCase
@@ -23,27 +23,27 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewPendingViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatcherProvider,
-        private val userSession: UserSessionInterface,
-        private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
-        private val getProductIncentiveOvo: GetProductIncentiveOvo,
-        private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase
-) : BaseViewModel(dispatchers.io()) {
+    private val dispatchers: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
+    private val getProductIncentiveOvo: GetProductIncentiveOvo,
+    private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase
+) : BaseViewModel(dispatchers.io) {
 
     private val _reviewList = MutableLiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>()
     val reviewList: LiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>
         get() = _reviewList
 
-    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
-    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>>
+    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>?>()
+    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>?>
         get() = _incentiveOvo
 
     fun getReviewData(page: Int, isRefresh: Boolean = false) {
-        if(isRefresh) {
+        if (isRefresh) {
             _reviewList.value = LoadingView()
         }
         launchCatchError(block = {
-            val response = withContext(dispatchers.io()) {
+            val response = withContext(dispatchers.io) {
                 productrevWaitForFeedbackUseCase.setParams(page = page)
                 productrevWaitForFeedbackUseCase.executeOnBackground()
             }
@@ -55,16 +55,22 @@ class ReviewPendingViewModel @Inject constructor(
 
     fun getProductIncentiveOvo() {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) { getProductIncentiveOvo.getIncentiveOvo() }
-            _incentiveOvo.postValue(CoroutineSuccess(data))
+            val data = withContext(Dispatchers.IO) {
+                getProductIncentiveOvo.getIncentiveOvo()
+            }
+            if (data == null) {
+                _incentiveOvo.postValue(null)
+            } else {
+                _incentiveOvo.postValue(CoroutineSuccess(data))
+            }
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))
         }
     }
 
-    fun markAsSeen(inboxReviewId: Int) {
+    fun markAsSeen(inboxReviewId: Long) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 markAsSeenUseCase.setParams(inboxReviewId)
                 markAsSeenUseCase.executeOnBackground()
             }

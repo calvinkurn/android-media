@@ -20,14 +20,14 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath ('com.android.tools.build:gradle:3.5.3') {
+        classpath ('com.android.tools.build:gradle:4.0.1') {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
         classpath('net.sf.proguard:proguard-gradle:6.0') {
             force = true
         }
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.9.0") {
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.18.2") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         if (!project.hasProperty("disable-performance-plugin")) {

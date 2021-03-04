@@ -1,13 +1,11 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.shipping
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -55,6 +53,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private var contentLayout: Group? = null
     private var globalError: GlobalError? = null
 
+    private var isNewFlow = false
+
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
 
@@ -88,15 +88,16 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             if (parent.getShippingId() > 0) {
                 viewModel.selectedId = parent.getShippingId()
             }
+            isNewFlow = parent.isNewFlow()
         }
 
-        viewModel.shippingDuration.observe(viewLifecycleOwner, Observer {
+        viewModel.shippingDuration.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     globalError?.gone()
                     contentLayout?.visible()
-                    adapter.renderData(it.data.services)
+                    adapter.renderData(it.data.services, isNewFlow)
                     validateButton()
                 }
 
@@ -129,7 +130,9 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     }
 
     private fun initViews() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         tickerInfo = view?.findViewById(R.id.ticker_info)
         shippingDurationList = view?.findViewById(R.id.shipping_duration_rv)
@@ -161,7 +164,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private fun hitRates() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam())
+            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam(), parent.isNewFlow())
         }
     }
 

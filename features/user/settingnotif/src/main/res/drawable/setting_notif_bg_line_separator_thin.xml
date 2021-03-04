@@ -2,5 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <size android:height="@dimen/setting_notif_dp_0_5"/>
-    <solid android:color="@color/settingnotif_grey_300"/>
+    <solid android:color="@color/Unify_N100"/>
 </shape>

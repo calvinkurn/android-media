@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class GetSearchQueryUseCase @Inject constructor(
+open class GetSearchQueryUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetMultiChatSearchResponse>,
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {
@@ -152,7 +152,6 @@ class GetSearchQueryUseCase @Inject constructor(
                   msgId
                   oppositeId
                   oppositeType
-                  replyId
                   roomId
                   productId
                 }
@@ -188,7 +187,6 @@ class GetSearchQueryUseCase @Inject constructor(
                   msgId
                   oppositeId
                   oppositeType
-                  replyId
                   roomId
                   productId
                 }

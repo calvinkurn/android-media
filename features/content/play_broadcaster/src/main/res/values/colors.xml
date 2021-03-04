@@ -11,4 +11,8 @@
     <color name="play_bg_choose_cover">#4D40454C</color>
     <color name="play_white_68">#ADFFFFFF</color>
     <color name="play_white_96">#F5FFFFFF</color>
+
+    <!--Schedule-->
+    <color name="play_broadcast_schedule_info">#FFFFFF</color>
+    <color name="play_broadcast_schedule_divider">#66FFFFFF</color>
 </resources>

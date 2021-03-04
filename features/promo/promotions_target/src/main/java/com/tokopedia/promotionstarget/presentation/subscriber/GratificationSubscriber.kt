@@ -13,16 +13,18 @@ import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
-import com.tokopedia.promotionstarget.data.di.components.AppModule
 import com.tokopedia.promotionstarget.data.di.components.DaggerPromoTargetComponent
+import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.presenter.DialogManagerPresenter
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimPopGratificationUseCase
+import com.tokopedia.promotionstarget.presentation.GratifCmInitializer
 import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDialog
 import com.tokopedia.user.session.UserSession
 import dagger.Lazy
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -72,16 +74,17 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         processOnActivityCreated(activity, newIntent)
     }
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        super.onActivityCreated(activity, savedInstanceState)
         if (savedInstanceState != null) {
             val waitingForLogin = savedInstanceState.getBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN)
             val refIdList = savedInstanceState.getIntArray(TargetPromotionsDialog.PARAM_REFERENCE_ID)
             if (waitingForLogin) {
-                activity?.intent?.putExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
-                activity?.intent?.putExtra(TargetPromotionsDialog.PARAM_REFERENCE_ID, refIdList)
+                activity.intent?.putExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
+                activity.intent?.putExtra(TargetPromotionsDialog.PARAM_REFERENCE_ID, refIdList)
             }
         }
-        processOnActivityCreated(activity, activity?.intent)
+        processOnActivityCreated(activity, activity.intent)
     }
 
     private fun processOnActivityCreated(activity: Activity?, intent: Intent?) {
@@ -98,11 +101,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {
+    override fun onActivityDestroyed(activity: Activity) {
         super.onActivityDestroyed(activity)
-        if (activity != null) {
-            clearMaps(activity)
-        }
+        clearMaps(activity)
     }
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
@@ -141,45 +142,50 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     }
 
     private fun shouldOpenTargetedPromotionsDialog(activity: Activity?, intent: Intent?): GratificationData? {
-        var showGratificationDialog = false
-        var gratificationData: GratificationData? = null
-        if (activity != null && intent != null) {
+        try {
+            var showGratificationDialog = false
+            var gratificationData: GratificationData? = null
+            if (activity != null && intent != null) {
 
-            val bundle = intent.extras?.getBundle(RouteManager.QUERY_PARAM)
+                val bundle = intent.extras?.getBundle(RouteManager.QUERY_PARAM)
 
-            var popSlug = bundle?.getString(CouponGratificationParams.POP_SLUG)
-            var page = bundle?.getString(CouponGratificationParams.PAGE)
+                var popSlug = bundle?.getString(CouponGratificationParams.POP_SLUG)
+                var page = bundle?.getString(CouponGratificationParams.PAGE)
 
-            if (page.isNullOrEmpty()) {
-                page = intent.getStringExtra(CouponGratificationParams.PAGE)
-            }
+                if (page.isNullOrEmpty()) {
+                    page = intent.getStringExtra(CouponGratificationParams.PAGE)
+                }
 
-            if (popSlug.isNullOrEmpty()) {
-                popSlug = intent.getStringExtra(CouponGratificationParams.POP_SLUG)
-            }
+                if (popSlug.isNullOrEmpty()) {
+                    popSlug = intent.getStringExtra(CouponGratificationParams.POP_SLUG)
+                }
 
-            if (popSlug.isNullOrEmpty()) {
-                val uri = intent.data
-                if (uri != null) {
-                    popSlug = uri.getQueryParameter(CouponGratificationParams.POP_SLUG)
-                    page = uri.getQueryParameter(CouponGratificationParams.PAGE)
+                if (popSlug.isNullOrEmpty()) {
+                    val uri = intent.data
+                    if (uri != null) {
+                        popSlug = uri.getQueryParameter(CouponGratificationParams.POP_SLUG)
+                        page = uri.getQueryParameter(CouponGratificationParams.PAGE)
+                    }
+                }
+
+                if (page.isNullOrEmpty()) {
+                    page = ""
+                    val activityName = activity?.javaClass?.canonicalName
+                    if (!TextUtils.isEmpty(activityName)) {
+                        page = activityName
+                    }
+                }
+
+                showGratificationDialog = (!TextUtils.isEmpty(popSlug))
+                if (showGratificationDialog) {
+                    gratificationData = GratificationData(popSlug!!, page!!)
                 }
             }
-
-            if (page.isNullOrEmpty()) {
-                page = ""
-                val activityName = activity?.javaClass?.canonicalName
-                if (!TextUtils.isEmpty(activityName)) {
-                    page = activityName
-                }
-            }
-
-            showGratificationDialog = (!TextUtils.isEmpty(popSlug))
-            if (showGratificationDialog) {
-                gratificationData = GratificationData(popSlug!!, page!!)
-            }
+            return gratificationData
+        } catch (ex: Exception) {
+            Timber.e(ex)
+            return null
         }
-        return gratificationData
     }
 
     private fun showGratificationDialog(activity: Activity, gratificationData: GratificationData, intent: Intent) {
@@ -356,7 +362,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         } catch (th: Throwable) {
         }
     }
-
 }
 
 data class GratificationData(val popSlug: String, val page: String)

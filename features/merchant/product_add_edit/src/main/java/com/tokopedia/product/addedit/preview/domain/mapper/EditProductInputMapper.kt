@@ -11,8 +11,10 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
 /**
@@ -66,15 +68,20 @@ class EditProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                null,
+                mapProductShowCases(detailInputModel.productShowCases),
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel)
-
+                mapVariantParam(variantInputModel),
+                mapSpecificationParam(detailInputModel.specifications)
         )
     }
+
+    private fun mapProductShowCases(productShowCases: List<ShowcaseItemPicker>): List<ProductEtalase> =
+            productShowCases.map {
+                ProductEtalase(menuID = it.showcaseId, name = it.showcaseName)
+            }
 
     private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
         return if (variantInputModel.selections.isEmpty()) {
@@ -223,7 +230,8 @@ class EditProductInputMapper @Inject constructor() {
                     ))
                 }
             } else {
-                data.add(Picture(uploadId = uploadIdList[idxUploadIdList++]))
+                val uploadId = uploadIdList.getOrNull(idxUploadIdList++) ?: ""
+                data.add(Picture(uploadId = uploadId))
             }
         }
         return Pictures(data)
@@ -241,4 +249,7 @@ class EditProductInputMapper @Inject constructor() {
                 preorder.isActive
         )
     }
+
+    private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?): List<String>? =
+            specifications?.map { it.id }
 }

@@ -3,12 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingTop="@dimen/dp_8"
     android:paddingBottom="@dimen/dp_16">
 
-    <TextView style="@style/TextView.Micro.BlackSecondary"
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
         android:lineSpacingExtra="@dimen/sp_6"
         tools:text="@string/app_name"
         android:id="@+id/title"/>
@@ -17,6 +22,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:id="@+id/buttonAddNote"
         style="@style/Button.Shop.Page.Header"
+        android:textColor="@color/Unify_N700_68"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
         android:text="@string/label_add"

@@ -18,7 +18,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.CategoryFavoriteDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
  * Created by errysuprayogi on 1/31/18.
  */
 
-public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavoriteViewModel> {
+public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavoriteDataModel> {
 
     private static final String MARKETPLACE = "Marketplace";
     private static final String DIGITAL = "Digital";
@@ -59,14 +59,13 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
     }
 
     @Override
-    public void bind(CategoryFavoriteViewModel element) {
+    public void bind(CategoryFavoriteDataModel element) {
         titleTxt.setText(element.getTitle());
         rowModelList.addAll(element.getItemList());
         adapter.setData(rowModelList);
         if (!isImpressed()) {
             HomePageTracking.eventEnhancedImpressionFavoriteCategory(
-                    context,
-                element.getHomePageEnhanceDataLayer()
+                    element.getHomePageEnhanceDataLayer()
             );
             setImpressed(true);
         }
@@ -109,7 +108,6 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
                 @Override
                 public void onClick(View view) {
                     HomePageTracking.eventEnhancedClickFavoriteCategory(
-                            context,
                             rowModel.getHomePageEnhanceDataLayer(
                                     position + 1,
                                     "/explore beli - p1 - Kategori Favorit Anda"

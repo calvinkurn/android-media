@@ -5,41 +5,42 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.graphql)
 
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.networkDependencies.retrofitKotlinCoroutine
+    implementation rootProject.ext.unifyDependencies.principles
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.viewModelKtx
-    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
+    api rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.testDependencies.junit
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.assertJCore

@@ -33,7 +33,8 @@
                     android:id="@+id/iv_productImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:contentDescription="@null" />
 
             </RelativeLayout>
 
@@ -48,7 +49,7 @@
                     android:id="@+id/tv_stock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/cm_sisa_ongkir"
+                    android:textColor="@color/Unify_R500"
                     android:layout_alignParentTop="true"
                     android:visibility="gone"
                     tools:visibility="visible"
@@ -63,7 +64,7 @@
                     android:layout_below="@+id/tv_stock"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/black_39"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_14"
                     tools:text="Lorem ipsum dolor sit amet" />
 
@@ -84,7 +85,7 @@
                         android:paddingTop="@dimen/dp_2"
                         android:paddingRight="@dimen/dp_5"
                         android:paddingBottom="@dimen/dp_2"
-                        android:textColor="@color/red_500"
+                        android:textColor="@color/Unify_R500"
                         android:textSize="@dimen/sp_12"
                         tools:text="20%" />
 
@@ -93,9 +94,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:textColor="@color/black_40"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_12"
                         tools:text="Rp1500000" />
+
                 </LinearLayout>
 
                 <TextView
@@ -104,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ll_oldPriceAndDiscount"
                     android:layout_marginTop="@dimen/dp_5"
-                    android:textColor="@color/black_39"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_15"
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
@@ -123,14 +125,15 @@
                         android:id="@+id/img_star"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:src="@drawable/cm_ic_star_review" />
+                        android:src="@drawable/cm_ic_star_review"
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:id="@+id/txt_review"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:textColor="@color/cm_review"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_12"
                         android:layout_marginStart="@dimen/dp_4"
                         tools:text="4.5" />
@@ -140,7 +143,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_12"
-                        android:textColor="@color/cm_count_review"
+                        android:textColor="@color/Unify_N700_68"
                         android:layout_marginStart="@dimen/dp_4"
                         tools:text="(60)" />
 
@@ -155,7 +158,8 @@
                     android:scaleType="fitStart"
                     android:visibility="gone"
                     tools:src="@tools:sample/avatars"
-                    tools:visibility="visible" />
+                    tools:visibility="visible"
+                    android:contentDescription="@null" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -168,7 +172,7 @@
                     <Button
                         android:id="@+id/btn_icon"
                         android:layout_width="@dimen/dp_32"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:background="@drawable/cm_btn_atc"
                         android:gravity="center"
                         android:layout_marginEnd="@dimen/dp_12" />
@@ -205,7 +209,8 @@
             tools:visibility="visible"
             android:padding="8dp"
             android:rotation="180"
-            android:src="@drawable/cm_ic_arrow" />
+            android:src="@drawable/cm_ic_arrow"
+            android:contentDescription="@null" />
 
         <!--Don't convert these image to Vector: Strictly Prohibited-->
         <ImageView
@@ -221,7 +226,8 @@
             android:visibility="gone"
             tools:visibility="visible"
             android:padding="8dp"
-            android:src="@drawable/cm_ic_arrow" />
+            android:src="@drawable/cm_ic_arrow"
+            android:contentDescription="@null" />
 
     </RelativeLayout>
 

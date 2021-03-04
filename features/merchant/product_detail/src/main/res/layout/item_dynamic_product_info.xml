@@ -13,7 +13,7 @@
         android:id="@+id/product_info_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"
         />
 
@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@+id/rv_info"
         />
 
@@ -101,7 +101,7 @@
         android:ellipsize="end"
         android:longClickable="false"
         app:typographyType="body_2"
-        android:textColor="@color/light_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:maxLines="@integer/default_description_lines"
         android:transitionName="@string/transition_description"
         android:textIsSelectable="false"
@@ -120,7 +120,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_8"
         android:text="@string/label_read_detail"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/Unify_G500"
         app:typographyType="body_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

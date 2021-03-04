@@ -14,24 +14,24 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
-import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
 
 class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFinishedListener? = null,
-                                          private var product: ProductViewModel? = null) : BottomSheetUnify() {
+                                          private var product: ProductUiModel? = null) : BottomSheetUnify() {
 
     companion object {
         private const val KEY_CACHE_MANAGER_ID = "cache_manager_id"
         private const val KEY_PRODUCT = "product"
 
-        fun createInstance(product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
+        fun createInstance(product: ProductUiModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
             return ProductManageQuickEditPriceFragment(onFinishedListener, product)
         }
     }
@@ -41,12 +41,12 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
         savedInstanceState?.let {
             val cacheManagerId = it.getString(KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
-            product = cacheManager?.get<ProductViewModel>(KEY_PRODUCT, ProductViewModel::class.java, null)
+            product = cacheManager?.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
         }
         val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
         setChild(view)
         setTitle(getString(R.string.product_manage_menu_set_price))
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.product.manage.common.R.style.DialogStyle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -158,7 +158,7 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
     }
 
     interface OnFinishedListener {
-        fun onFinishEditPrice(product: ProductViewModel)
+        fun onFinishEditPrice(product: ProductUiModel)
     }
 
 }

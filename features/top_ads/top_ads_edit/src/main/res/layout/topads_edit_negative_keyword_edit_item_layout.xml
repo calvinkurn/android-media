@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,7 +10,7 @@
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardUseCompatPadding="true"
-    app:contentPadding="@dimen/dp_16">
+    android:padding="@dimen/dp_16">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout9"
@@ -42,24 +42,23 @@
             app:typographyType="heading_6"
             tools:text="Pencarian Luas" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/drop_down_arrow"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
             android:tint="@color/tkpd_green_header"
             app:layout_constraintBottom_toBottomOf="@+id/sort"
             app:layout_constraintStart_toEndOf="@id/sort"
             app:layout_constraintTop_toBottomOf="@+id/keyword_name"
-            app:layout_constraintTop_toTopOf="@+id/sort"
-            app:srcCompat="@drawable/ic_dropdown_arrow" />
+            app:layout_constraintTop_toTopOf="@+id/sort" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/topads_ic_delete" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

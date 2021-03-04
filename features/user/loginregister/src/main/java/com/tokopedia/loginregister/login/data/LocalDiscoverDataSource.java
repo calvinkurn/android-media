@@ -3,8 +3,8 @@ package com.tokopedia.loginregister.login.data;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
 
 import javax.inject.Inject;
@@ -21,11 +21,11 @@ public class LocalDiscoverDataSource {
     public static final String KEY_DISCOVER = "KEY_DISCOVER";
     private static final String CACHE_EXPIRED = "Cache has expired";
     public static final long CACHE_DURATION = 3600;
-    private final CacheManager globalCacheManager;
+    private final CacheManager cacheManager;
 
     @Inject
-    public LocalDiscoverDataSource(CacheManager globalCacheManager) {
-        this.globalCacheManager = globalCacheManager;
+    public LocalDiscoverDataSource(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
 
     public Observable<DiscoverViewModel> getDiscover(String source) {
@@ -44,6 +44,6 @@ public class LocalDiscoverDataSource {
     }
 
     private String getCache(String source) {
-        return globalCacheManager.get(source);
+        return cacheManager.getString(source);
     }
 }

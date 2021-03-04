@@ -22,7 +22,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
@@ -39,9 +38,10 @@ import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
-import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
 import javax.inject.Inject
 
@@ -139,7 +139,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.popularSearch.observe(this, androidx.lifecycle.Observer {
+        destinationViewModel.popularSearch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     showOnlyList(false)
@@ -154,7 +154,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
             }
         })
 
-        destinationViewModel.recentSearch.observe(this, androidx.lifecycle.Observer {
+        destinationViewModel.recentSearch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     showOnlyList(false)
@@ -168,7 +168,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
             }
         })
 
-        destinationViewModel.longLat.observe(this, androidx.lifecycle.Observer {
+        destinationViewModel.longLat.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onClickCurrentLocation(lang = it.data.first, lat = it.data.second)
                 is Fail -> if (!it.throwable.message.isNullOrEmpty() && it.throwable.message.equals(GPS_FAILED_SHOW_ERROR)) {
@@ -211,9 +211,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     override fun loadData(page: Int) {
         showOnlyList(true)
-        destinationViewModel.getHotelRecommendation(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_popular),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_recent_search))
+        destinationViewModel.getHotelRecommendation()
     }
 
     private fun showOnlyList(showListOnly: Boolean) {
@@ -291,7 +289,11 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     }
 
     private fun onErrorGetLocation() {
-        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.hotel_destination_error_get_location))
+        view?.let { v ->
+            Toaster.build(v, getString(R.string.hotel_destination_error_get_location),
+                    Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

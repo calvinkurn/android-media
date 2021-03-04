@@ -3,9 +3,7 @@ package com.tokopedia.play.broadcaster.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStoreImpl
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
 import com.tokopedia.play.broadcaster.model.ModelBuilder
@@ -46,8 +44,11 @@ class PlayBroadcastPrepareViewModelTest {
 
     private lateinit var productDataStore: MockProductDataStore
     private lateinit var coverDataStore: MockCoverDataStore
+    private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var dataStore: PlayBroadcastDataStore
+
+    private val playBroadcastMapper = PlayBroadcastUiMapper()
 
     private lateinit var createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
     private lateinit var getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase
@@ -66,7 +67,8 @@ class PlayBroadcastPrepareViewModelTest {
 
         productDataStore = MockProductDataStore(dispatcherProvider)
         coverDataStore = MockCoverDataStore(dispatcherProvider)
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore)
+        broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore)
 
         dataStore = PlayBroadcastDataStoreImpl(mockSetupDataStore)
 
@@ -86,7 +88,8 @@ class PlayBroadcastPrepareViewModelTest {
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
                 getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
-                mDataStore = dataStore
+                mDataStore = dataStore,
+                playBroadcastMapper = playBroadcastMapper
         )
     }
 
@@ -205,7 +208,8 @@ class PlayBroadcastPrepareViewModelTest {
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
                 getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
-                mDataStore = dataStore
+                mDataStore = dataStore,
+                playBroadcastMapper = playBroadcastMapper
         )
 
         val result = viewModel.observableFollowers.getOrAwaitValue()
@@ -225,7 +229,8 @@ class PlayBroadcastPrepareViewModelTest {
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
                 getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
-                mDataStore = dataStore
+                mDataStore = dataStore,
+                playBroadcastMapper = playBroadcastMapper
         )
 
         val result = viewModel.observableFollowers.getOrAwaitValue()
@@ -233,7 +238,7 @@ class PlayBroadcastPrepareViewModelTest {
         Assertions
                 .assertThat(result)
                 .isEqualTo(
-                        PlayBroadcastUiMapper.mapLiveFollowers(liveFollowerResponse)
+                        playBroadcastMapper.mapLiveFollowers(liveFollowerResponse)
                 )
     }
 }

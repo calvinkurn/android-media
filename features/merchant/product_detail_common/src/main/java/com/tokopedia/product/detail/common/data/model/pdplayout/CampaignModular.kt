@@ -46,6 +46,9 @@ data class CampaignModular(
         const val CAMPAIGN_ID_NEW_USER = 68
     }
 
+    var discountedPriceFmt: String = ""
+    var originalPriceFmt:String = ""
+
     private fun timeIsUnder1Day(): Boolean {
         return try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -76,6 +79,6 @@ data class CampaignModular(
     val activeAndHasId
         get() = isActive && (campaignID.toIntOrNull() ?: 0) > 0
 
-    val getEndDataInt
-        get() = endDateUnix.toIntOrNull() ?: 0
+    val getEndDateLong
+        get() = endDateUnix.toLongOrNull() ?: 0
 }

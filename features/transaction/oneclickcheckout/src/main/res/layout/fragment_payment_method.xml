@@ -13,7 +13,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_6"
+        android:layout_height="@dimen/layout_lvl1"
         android:visibility="visible"
         app:loader_type="line" />
 

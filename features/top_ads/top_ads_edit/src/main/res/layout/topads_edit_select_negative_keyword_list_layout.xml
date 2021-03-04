@@ -15,44 +15,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/editText"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
+            app:text_field_label_static="true"
+            app:text_field_label="@string/topads_edit_ketik_kata_kunci"
+            app:text_field_input_type="text"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_weight="1"
-            android:hint="@string/topads_edit_ketik_kata_kunci"
-            android:imeOptions="actionDone"
-            android:lines="1"
-            android:singleLine="true"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="@+id/add_btn"
             app:layout_constraintEnd_toStartOf="@+id/add_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/add_btn" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/error_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/bright_red"
-            android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="@+id/editText"
-            app:layout_constraintTop_toBottomOf="@+id/editText"
-            app:typographyType="body_3"
-            tools:text="@string/error_max_length_keyword"
-            tools:visibility="visible" />
-
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/add_btn"
-            style="@style/Button.Submit.Green.Full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:text="@string/topads_edit_tambah"
-            app:buttonCompatSize="medium"
-            app:buttonCompatType="primary"
+            app:unifyButtonType="main"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -82,26 +67,24 @@
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_edit_add_keyword_negative_item_layout" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/view2"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_6"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/topads_create_bg_shader_gray"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_next"
-        style="@style/Button.Submit.Green"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:text="@string/topads_edit_tambah"
-        app:buttonCompatType="primary"
+        app:unifyButtonType="main"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/selected_info" />

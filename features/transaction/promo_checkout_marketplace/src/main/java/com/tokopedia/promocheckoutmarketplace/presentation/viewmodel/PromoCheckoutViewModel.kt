@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
@@ -108,20 +109,32 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         get() = _getPromoLastSeenResponse
 
     // Page source : CART, CHECKOUT, OCC
-    private fun getPageSource(): Int {
+    fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
     }
 
+    // Used for mocking _fragmentUiModel value.
+    // Should only be called from unit test.
+    fun setFragmentUiModelValue(value: FragmentUiModel) {
+        _fragmentUiModel.value = value
+    }
+
     // Used for mocking _promoListUiModel value.
-    // Called from unit test.
+    // Should only be called from unit test.
     fun setPromoListValue(value: ArrayList<Visitable<*>>) {
         _promoListUiModel.value = value
     }
 
     // Used for mocking _promoRecommendationUiModel value.
-    // Called from unit test.
+    // Should only be called from unit test.
     fun setPromoRecommendationValue(value: PromoRecommendationUiModel) {
         _promoRecommendationUiModel.value = value
+    }
+
+    // Used for mocking _promoInputUiModel value.
+    // Should only be called from unit test.
+    fun setPromoInputUiModelValue(value: PromoInputUiModel) {
+        _promoInputUiModel.value = value
     }
 
 
@@ -142,11 +155,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest)
 
         // Get response data
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, getPromoRequestParam)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<CouponListRecommendationResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         // Handle response data
         handleGetPromoListResponse(response, tmpPromoCode)
@@ -587,11 +602,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         )
 
         // Get response data
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, applyPromoRequestParam)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<ValidateUseResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         // Handle response data
         handleApplyPromoResponse(response, selectedPromoList, validateUsePromoRequest)
@@ -855,11 +872,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         tmpMutation = tmpMutation.replace("#isOCC", (validateUsePromoRequest.cartType == "occ").toString())
 
         // Get response
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<ClearPromoResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         handleClearPromoResponse(response, validateUsePromoRequest, toBeRemovedPromoCodes)
     }
@@ -976,11 +995,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     private suspend fun doGetPromoLastSeen(query: String) {
         // Get response
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<GetPromoSuggestionResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         handleGetPromoLastSeenResponse(response)
     }
@@ -1027,6 +1048,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     fun resetPromo() {
         analytics.eventClickResetPromo(getPageSource())
+        resetSelectedPromo()
+    }
+
+    private fun resetSelectedPromo() {
         val promoList = ArrayList<Visitable<*>>()
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel) {
@@ -1194,6 +1219,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     fun applyRecommendedPromo() {
+        resetSelectedPromo()
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             analytics.eventClickPilihPromoRecommendation(getPageSource(), it.uiData.promoCodes)
@@ -1617,55 +1643,4 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun sendAnalyticsClickLihatDetailKupon(promoCode: String) {
-        analytics.eventClickLihatDetailKupon(getPageSource(), promoCode)
-    }
-
-    fun sendAnalyticsClickRemovePromoCode() {
-        analytics.eventClickRemovePromoCode(getPageSource())
-    }
-
-    fun sendAnalyticsViewPopupSavePromo() {
-        analytics.eventViewPopupSavePromo(getPageSource())
-    }
-
-    fun sendAnalyticsClickKeluarHalaman() {
-        analytics.eventClickKeluarHalaman(getPageSource())
-    }
-
-    fun sendAnalyticsClickSimpanPromoBaru() {
-        analytics.eventClickSimpanPromoBaru(getPageSource())
-    }
-
-    fun sendAnalyticsClickButtonVerifikasiNomorHp() {
-        analytics.eventClickButtonVerifikasiNomorHp(getPageSource())
-    }
-
-    fun sendAnalyticsViewErrorPopup() {
-        analytics.eventViewErrorPopup(getPageSource())
-    }
-
-    fun sendAnalyticsClickCobaLagi() {
-        analytics.eventClickCobaLagi(getPageSource())
-    }
-
-    fun sendAnalyticsClickPakaiPromoFailed(errorMessage: String) {
-        analytics.eventClickPakaiPromoFailed(getPageSource(), errorMessage)
-    }
-
-    fun sendAnalyticsClickBeliTanpaPromo() {
-        analytics.eventClickBeliTanpaPromo(getPageSource())
-    }
-
-    fun sendAnalyticsDismissLastSeen() {
-        analytics.eventDismissLastSeen(getPageSource())
-    }
-
-    fun sendAnalyticsClickPromoInputField() {
-        analytics.eventClickInputField(getPageSource(), userSession.userId)
-    }
-
-    fun sendAnalyticsViewLastSeenPromo() {
-        analytics.eventShowLastSeenPopUp(getPageSource(), userSession.userId)
-    }
 }

@@ -37,7 +37,7 @@
                 android:paddingRight="@dimen/dp_20"
                 android:paddingTop="@dimen/dp_4"
                 tools:text="Rp 520.000"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_16"
                 tools:text="Cashback 3%"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 android:textSize="20sp"
                 android:layout_toRightOf="@id/tv_price"
                 android:textStyle="bold"/>
@@ -66,10 +66,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="34sp"
             android:textStyle="bold"
-            android:shadowColor="@color/grey_title"
+            android:shadowColor="@color/Unify_N700_32"
             android:shadowRadius="5"
             android:shadowDy="5"
             android:shadowDx="5"/>
@@ -81,7 +81,7 @@
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_6"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="22sp" />
 
     </LinearLayout>

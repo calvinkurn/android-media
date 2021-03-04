@@ -22,6 +22,9 @@ class PaymentTestInterceptor : BaseOccInterceptor() {
             }
             return mockResponse(copy, getJsonFromResource(GET_LISTING_PARAM_DEFAULT_RESPONSE_PATH))
         }
+        if (requestString.contains(GET_OVO_TOP_UP_URL_QUERY)) {
+            return mockResponse(copy, getJsonFromResource(GET_LISTING_PARAM_DEFAULT_RESPONSE_PATH))
+        }
         return chain.proceed(chain.request())
     }
 
@@ -34,3 +37,7 @@ class PaymentTestInterceptor : BaseOccInterceptor() {
 const val GET_LISTING_PARAM_QUERY = "getListingParams"
 
 const val GET_LISTING_PARAM_DEFAULT_RESPONSE_PATH = "payment/get_payment_listing_default_response.json"
+
+const val GET_OVO_TOP_UP_URL_QUERY = "fetchInstantTopupURL"
+
+const val GET_OVO_TOP_UP_URL_DEFAULT_RESPONSE_PATH = "payment/get_ovo_top_up_url_default_response.json"

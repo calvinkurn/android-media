@@ -5,20 +5,18 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.common.OfficialStoreConstant
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class OfficialProductRecommendationViewHolder(
-        view: View,
-        val recommendationListener: RecommendationListener
-): AbstractViewHolder<ProductRecommendationViewModel>(view) {
+        view: View
+): AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
 
-    override fun bind(element: ProductRecommendationViewModel) {
+    override fun bind(element: ProductRecommendationDataModel) {
         productCardView?.run {
             setProductModel(
                     ProductCardModel(
@@ -27,7 +25,7 @@ class OfficialProductRecommendationViewHolder(
                             formattedPrice = element.productItem.price,
                             productImageUrl = element.productItem.imageUrl,
                             isTopAds = element.productItem.isTopAds,
-                            discountPercentage = element.productItem.discountPercentage.toString(),
+                            discountPercentage = element.productItem.discountPercentage,
                             reviewCount = element.productItem.countReview,
                             ratingCount = element.productItem.rating,
                             shopLocation = element.productItem.shopName,
@@ -56,8 +54,8 @@ class OfficialProductRecommendationViewHolder(
                 override fun onViewHint() {
                     if (element.productItem.isTopAds) {
                         context?.run {
-                            TopAdsUrlHitter(className).hitImpressionUrl(
-                                    this,
+                            TopAdsUrlHitter(context).hitImpressionUrl(
+                                    className,
                                     element.productItem.trackerImageUrl,
                                     element.productItem.productId.toString(),
                                     element.productItem.name,
@@ -73,8 +71,8 @@ class OfficialProductRecommendationViewHolder(
             setOnClickListener {
                 if (element.productItem.isTopAds) {
                     context?.run {
-                        TopAdsUrlHitter(className).hitClickUrl(
-                                this,
+                        TopAdsUrlHitter(context).hitClickUrl(
+                                className,
                                 element.productItem.clickUrl,
                                 element.productItem.productId.toString(),
                                 element.productItem.name,
@@ -92,7 +90,7 @@ class OfficialProductRecommendationViewHolder(
         }
     }
 
-    override fun bind(element: ProductRecommendationViewModel, payloads: MutableList<Any>) {
+    override fun bind(element: ProductRecommendationDataModel, payloads: List<Any>) {
         if (payloads.getOrNull(0) !is Boolean) return
 
         productCardView?.setThreeDotsOnClickListener {

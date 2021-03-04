@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.domain.model.PostDataModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostCtaDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
 import javax.inject.Inject
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 class PostMapper @Inject constructor() {
 
-    fun mapRemoteDataModelToUiDataModel(widgetDataList: List<PostDataModel>): List<PostListDataUiModel> {
+    fun mapRemoteDataModelToUiDataModel(widgetDataList: List<PostDataModel>, isFromCache: Boolean): List<PostListDataUiModel> {
         return widgetDataList.map {
             PostListDataUiModel(
                     dataKey = it.dataKey.orEmpty(),
@@ -24,7 +25,12 @@ class PostMapper @Inject constructor() {
                                 postItem.subtitle.orEmpty()
                         )
                     }.orEmpty(),
-                    error = it.error.orEmpty()
+                    cta = PostCtaDataUiModel(
+                            text = it.cta?.text.orEmpty(),
+                            appLink = it.cta?.appLink.orEmpty()
+                    ),
+                    error = it.error.orEmpty(),
+                    isFromCache = isFromCache
             )
         }
     }

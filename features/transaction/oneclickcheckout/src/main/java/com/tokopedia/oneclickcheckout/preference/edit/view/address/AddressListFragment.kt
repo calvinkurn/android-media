@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +25,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -204,7 +204,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
     }
 
     private fun initView() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         addressListRv = view?.findViewById(R.id.address_list_rv)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         searchAddress = view?.findViewById(R.id.search_input_view)

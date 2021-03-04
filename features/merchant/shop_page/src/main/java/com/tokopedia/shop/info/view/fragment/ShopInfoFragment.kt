@@ -37,7 +37,7 @@ import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
 import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel
+import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,7 +71,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     private var shopPageConfig: ShopPageConfig? = null
     private var shopViewModel: ShopInfoViewModel? = null
     private var shopPageTracking: ShopPageTrackingShopPageInfo? = null
-    private var noteAdapter: BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>? = null
+    private var noteAdapter: BaseListAdapter<ShopNoteUiModel, ShopNoteAdapterTypeFactory>? = null
     private var shopInfo: ShopInfoData? = null
     private val isOfficial: Boolean
 
@@ -120,7 +120,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         }
     }
 
-    override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
+    override fun onNoteClicked(position: Long, shopNoteUiModel: ShopNoteUiModel) {
         shopInfo?.run {
             shopPageTracking?.clickReadNotes(
                     shopViewModel?.isMyShop(shopId) == true, position.toInt(),
@@ -129,7 +129,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
             startActivity(ShopNoteDetailActivity.createIntent(
                     activity,
                     shopId,
-                    shopNoteViewModel.shopNoteId.toString()
+                    shopNoteUiModel.shopNoteId.toString()
             ))
         }
     }
@@ -271,7 +271,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
     }
 
-    private fun renderListNote(notes: List<ShopNoteViewModel>) {
+    private fun renderListNote(notes: List<ShopNoteUiModel>) {
         getShopId()?.let {
             val isMyShop = shopViewModel?.isMyShop(it) ?: false
 
@@ -295,7 +295,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         noteLabelView.setOnClickListener { onEmptyButtonClicked() }
     }
 
-    private fun showShopNotes(notes: List<ShopNoteViewModel>) {
+    private fun showShopNotes(notes: List<ShopNoteUiModel>) {
         noteAdapter?.addElement(notes)
     }
 
@@ -312,7 +312,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
 
     private fun setToolbarTitle(title: String) {
         val toolbar = (activity as? AppCompatActivity)?.supportActionBar
-        toolbar?.title = title
+        toolbar?.title = MethodChecker.fromHtml(title)
     }
 
     private fun getShopId(): String? {

@@ -3,13 +3,13 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
     }
     dependencies {
@@ -18,6 +18,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.graphql)
@@ -25,6 +26,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -40,6 +42,13 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    //-------------------------------------------------------------------//
+    //--------------------- Testing Library Section ---------------------//
+    //-------------------------------------------------------------------//
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    //-------------------------------------------------------------------//
 }
 
 project.ext {
@@ -50,6 +59,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
-//apply from: '../../../sonar_config.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 

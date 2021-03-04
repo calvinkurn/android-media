@@ -3,18 +3,19 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
-import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
+import com.tokopedia.sellerhome.view.model.NotificationUiModel
+import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -42,18 +43,21 @@ class SellerHomeActivityViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
     }
 
     private fun createViewModel() =
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, SellerHomeCoroutineTestDispatcher)
+        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, coroutineTestRule.dispatchers)
 
     @Test
     fun `get notifications then returns success result`() {
 
-        val notifications = NotificationUiModel(NotificationChatUiModel(), NotificationCenterUnreadUiModel(),
+        val notifications = NotificationUiModel(0, 0,
             NotificationSellerOrderStatusUiModel())
 
         coEvery {
@@ -123,7 +127,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get shop info then returns failed result`() = runBlocking {
+    fun `get shop info then returns failed result`() = coroutineTestRule.runBlockingTest {
         val userId = "123456"
         val throwable = MessageErrorException()
 
@@ -170,7 +174,7 @@ class SellerHomeActivityViewModelTest {
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 
-    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(Dispatchers.Unconfined) {
+    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(coroutineTestRule.dispatchers) {
 
         private val _mockLiveData = MutableLiveData<Result<Any>>()
         val mockLiveData: LiveData<Result<Any>>

@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 
 /**
  * Created by fwidjaja on 2019-05-22.

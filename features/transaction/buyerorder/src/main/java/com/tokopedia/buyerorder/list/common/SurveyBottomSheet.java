@@ -107,9 +107,9 @@ public class SurveyBottomSheet extends BottomSheets implements View.OnClickListe
 
     private void setSelectedItem(ImageView selectedRatingView, String selectedRating) {
         for (ImageView ratingView : ratingView) {
-            ratingView.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_ATOP);
+            ratingView.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N300), PorterDuff.Mode.SRC_ATOP);
         }
-        selectedRatingView.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), PorterDuff.Mode.SRC_ATOP);
+        selectedRatingView.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_ATOP);
         ratingTextView.setText(selectedRating);
         ratingTextView.setVisibility(View.VISIBLE);
         submitBtn.setEnabled(true);

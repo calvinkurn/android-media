@@ -1,0 +1,16 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{search( - no result|$)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    }
+  ]
+}

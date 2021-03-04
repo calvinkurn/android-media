@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/checkout_module_color_background">
+        android:background="@color/Unify_N50">
 
         <include
             android:id="@+id/partial_countdown"

@@ -3,7 +3,6 @@ package com.tokopedia.flight.cancellation.view.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
 import android.view.LayoutInflater;
@@ -13,7 +12,7 @@ import android.widget.CompoundButton;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.component.TextViewCompat;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 /**
  * @author by furqan on 16/04/18.
@@ -21,9 +20,9 @@ import com.tokopedia.design.component.TextViewCompat;
 
 public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFragment {
 
-    private TextViewCompat txtTerms;
+    private AppCompatTextView txtTerms;
     private AppCompatTextView txtDescription;
-    private AppCompatButton btnSelengkapnya;
+    private UnifyButton btnSelengkapnya;
     private AppCompatCheckBox checkBox;
 
     public static FlightCancellationTermsAndConditionsFragment createInstance() {

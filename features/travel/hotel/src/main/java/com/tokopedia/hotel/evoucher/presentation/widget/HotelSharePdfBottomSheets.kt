@@ -67,7 +67,7 @@ class HotelSharePdfBottomSheets : BottomSheetUnify(), HotelShareAsPdfAdapter.Sha
             evError = ev_error_email
             containerEmail = container_add_email
 
-            evError.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Red_R500))
+            evError.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
 
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.layoutManager = layoutManager

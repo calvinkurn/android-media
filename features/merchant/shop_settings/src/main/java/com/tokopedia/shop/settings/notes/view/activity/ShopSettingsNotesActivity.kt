@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
@@ -76,8 +76,8 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
         return R.layout.activity_shop_setting_note
     }
 
-    override fun goToReorderFragment(shopNoteViewModels: ArrayList<ShopNoteViewModel>) {
-        val fragment = ShopSettingsNotesReorderFragment.newInstance(shopNoteViewModels)
+    override fun goToReorderFragment(shopNoteUiModels: ArrayList<ShopNoteUiModel>) {
+        val fragment = ShopSettingsNotesReorderFragment.newInstance(shopNoteUiModels)
         replaceAndHideOldFragment(fragment, true, ShopSettingsNotesReorderFragment.TAG)
         invalidateOptionsMenu()
         // handler is to prevent flicker when invalidating option menu

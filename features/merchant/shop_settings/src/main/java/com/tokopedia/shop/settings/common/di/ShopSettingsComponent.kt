@@ -6,9 +6,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressFragment
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditBasicInfoFragment
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
@@ -35,7 +34,6 @@ interface ShopSettingsComponent {
 //    fun getDispatcherProvider(): ShopSettingDispatcherProvider
 
     fun inject(shopSettingsInfoFragment: ShopSettingsInfoFragment)
-    fun inject(shopEditBasicInfoActivity: ShopEditBasicInfoActivity)
     fun inject(shopEditBasicInfoFragment: ShopEditBasicInfoFragment)
     fun inject(shopEditScheduleActivity: ShopEditScheduleActivity)
     fun inject(shopSettingsNotesFragment: ShopSettingsNotesListFragment)

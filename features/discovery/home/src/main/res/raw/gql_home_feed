@@ -21,6 +21,7 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
           slashed_price
           slashed_price_int
           rating
+          ratingAverage
           count_review
           recommendation_type
           shop{

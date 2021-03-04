@@ -1,10 +1,9 @@
 package com.tokopedia.logisticaddaddress.data;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.logisticdata.data.entity.address.FormAddressDomainModel;
-import com.tokopedia.logisticdata.data.entity.address.db.Province;
+import com.tokopedia.logisticCommon.data.entity.address.FormAddressDomainModel;
+import com.tokopedia.logisticCommon.data.entity.address.db.Province;
 
 import java.util.ArrayList;
 import java.util.Map;

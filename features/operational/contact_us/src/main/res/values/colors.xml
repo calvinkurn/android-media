@@ -46,7 +46,7 @@
     <color name="contact_us_unread_ticket_bg_color">#66ebffef</color>
     <color name="contact_us_priority_label_color">#7a08c9</color>
     <color name="contact_us_g_500">#03ac0e</color>
+    <color name="contact_us_red_500">#EF144A</color>
 
-
-
+    <color name="tkpd_bg_color">#EAEAEA</color>
 </resources>

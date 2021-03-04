@@ -3,20 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginBottom="@dimen/dp_8"
     android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginLeft="@dimen/dp_minus4"
-    android:layout_marginRight="@dimen/dp_minus4"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:orientation="vertical"
     android:clipToPadding="false"
     android:clipChildren="false">
 
-    <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
-        android:id="@+id/merchantVoucherListWidget"
+    <com.tokopedia.mvcwidget.views.MvcView
+        android:id="@+id/merchantVoucherWidget"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_64"
         app:mvlwTitleString="@string/merchant_voucher"
         android:clipToPadding="false"
+        android:visibility="gone"
         android:clipChildren="false"/>
+
+    <include
+        layout="@layout/partial_shop_home_get_failed"/>
+
+    <include
+        layout="@layout/partial_shop_home_voucher_shimmering"/>
 
 </LinearLayout>

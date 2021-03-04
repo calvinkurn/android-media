@@ -6,7 +6,7 @@
         <shape>
             <corners
                 android:radius="@dimen/dp_8" />
-            <solid android:color="@color/Neutral_N75"/>
+            <solid android:color="@color/Unify_N75"/>
         </shape>
     </item>
 
@@ -15,7 +15,7 @@
         <clip>
             <shape>
                 <corners android:radius="@dimen/dp_8" />
-                <solid android:color="@color/Red_R500"/>
+                <solid android:color="@color/Unify_R500"/>
             </shape>
         </clip>
     </item>

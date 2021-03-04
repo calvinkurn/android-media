@@ -11,14 +11,19 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.*
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ImageAnnouncementViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductCarouselListAttachmentViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -36,7 +41,8 @@ class BroadcastViewHolder constructor(
         private val searchListener: SearchListener,
         private val commonListener: CommonViewHolderListener,
         private val adapterListener: AdapterListener,
-        private val chatMessageListener: ChatLinkHandlerListener
+        private val chatMessageListener: ChatLinkHandlerListener,
+        private val hideBanner: Boolean
 ) : AbstractViewHolder<BroadCastUiModel>(itemView) {
 
     private val broadcastContainer: LinearLayout? = itemView?.findViewById(R.id.bubble_broadcast_container)
@@ -75,12 +81,6 @@ class BroadcastViewHolder constructor(
                 bindProductCarousel(element)
                 bindSingleProduct(element)
             }
-            is TopchatProductAttachmentViewHolder.OccState -> {
-                ProductCarouselListAttachmentViewHolderBinder.bindNewOccState(adapterProductCarousel, payload)
-                element.singleProduct?.let {
-                    TopchatProductAttachmentViewHolderBinder.bindNewOccState(it, singleProduct)
-                }
-            }
         }
     }
 
@@ -96,9 +96,24 @@ class BroadcastViewHolder constructor(
 
     private fun bindBanner(element: BroadCastUiModel) {
         val banner = element.banner ?: return
-        ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
-        ImageAnnouncementViewHolderBinder.bindBannerClick(banner, bannerView, imageAnnouncementListener)
-        bindBannerMargin(element)
+        if (hideBanner) {
+            bannerView?.hide()
+            setPaddingTop(paddingWithoutBanner)
+        } else {
+            bannerView?.show()
+            setPaddingTop(paddingWithBanner)
+            ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
+            ImageAnnouncementViewHolderBinder.bindBannerClick(banner, bannerView, imageAnnouncementListener)
+            bindBannerMargin(element)
+        }
+    }
+
+    private fun setPaddingTop(topPadding: Float) {
+        broadcastContainer?.apply {
+            post {
+                setPadding(paddingLeft, topPadding.toInt(), paddingRight, paddingBottom)
+            }
+        }
     }
 
     private fun bindBannerMargin(element: BroadCastUiModel) {
@@ -178,5 +193,11 @@ class BroadcastViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.item_broadcast_message_bubble
+        const val AB_TEST_KEY = "broadcast banner"
+        const val VARIANT_CONTROL = "control_variant"
+        const val VARIANT_NO_BANNER = "no_banner"
+
+        private val paddingWithBanner = 1f.toPx()
+        private val paddingWithoutBanner = 6f.toPx()
     }
 }

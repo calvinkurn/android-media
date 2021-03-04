@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/play_frame_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="wrap_content">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bannerPlay"
         android:layout_width="match_parent"
@@ -19,12 +20,12 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:lines="1"
+            android:textColor="@color/Unify_N700"
             android:textSize="@dimen/heading_3"
-            android:textColor="@color/Neutral_N700"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3"
-            tools:text="Tonton Keseruannya"/>
+            tools:text="Tonton Keseruannya" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
@@ -35,31 +36,31 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:lines="1"
-            android:textSize="@dimen/sp_12"
-            android:textColor="@color/Neutral_N700"
+            android:textColor="@color/Unify_N700"
+            android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
             app:typographyType="body_3"
-            tools:text="Tonton Keseruannya!"/>
+            tools:text="Tonton Keseruannya!" />
 
         <ImageView
             android:id="@+id/thumbnail_image_play"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:visibility="visible"
             android:scaleType="centerCrop"
+            android:visibility="visible"
             app:layout_constraintDimensionRatio="2:1"
-            tools:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@+id/title"/>
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:visibility="visible" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:gravity="center_vertical"
             android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
             app:layout_constraintBottom_toTopOf="@+id/title_play"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -67,30 +68,29 @@
                 android:id="@+id/live"
                 layout="@layout/layout_live_badge"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_20"
+                android:layout_height="@dimen/video_highlight_live_badge_height"
                 android:layout_marginEnd="@dimen/spacing_lvl2"
                 android:layout_marginRight="@dimen/spacing_lvl2"
                 android:visibility="gone"
-                tools:visibility="visible"
-                />
+                tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_viewer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/spacing_lvl2"
                 android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_marginRight="@dimen/spacing_lvl2"
                 app:srcCompat="@drawable/ic_recharge_homepage_video_highlight_viewers"
-                tools:visibility="gone"/>
+                tools:visibility="gone" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/viewer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:textColor="@color/Unify_N0"
                 android:visibility="visible"
                 app:typographyType="body_3"
-                tools:text="2382"/>
+                tools:text="2382" />
 
         </LinearLayout>
 
@@ -100,35 +100,37 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/video_highlight_title_margin_bottom"
-            android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/video_highlight_title_margin_bottom"
             android:ellipsize="end"
-            android:lineSpacingExtra="6sp"
+            android:lineSpacingExtra="@dimen/video_highlight_title_line_spacing"
             android:lines="1"
-            android:textColor="@android:color/white"
-            app:layout_constraintHorizontal_bias="0"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toTopOf="@+id/title_description"
             app:layout_constraintEnd_toStartOf="@+id/play"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="Review Australia fabulous vintage and green" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lines="1"
-            android:ellipsize="end"
-            android:lineSpacingExtra="6sp"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/video_highlight_desc_margin_bottom"
-            android:textColor="@android:color/white"
-            app:typographyType="body_3"
+            android:ellipsize="end"
+            android:lineSpacingExtra="@dimen/video_highlight_title_line_spacing"
+            android:lines="1"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_3"
             tools:text="Yoenik Apparel" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/play"
             android:layout_width="@dimen/video_highlight_play_icon_size"
@@ -136,13 +138,13 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/bg_recharge_homepage_video_highlight_play_background"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/bg_recharge_homepage_video_highlight_play_background"
-            app:srcCompat="@drawable/ic_play_play_round"
-            app:layout_constraintStart_toEndOf="@+id/title_play"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/title_play"
+            app:srcCompat="@drawable/ic_play_play_round" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

@@ -65,6 +65,15 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
             } else {
                 container_pay_at_hotel.hide()
             }
+
+            if (element.propertySafetyBadge.isShow && element.propertySafetyBadge.title.isNotEmpty()) {
+                tv_tag_hotel_badge.show()
+                ic_tag_hotel_badge_outline.show()
+                tv_tag_hotel_badge.text = element.propertySafetyBadge.title
+            } else {
+                tv_tag_hotel_badge.hide()
+                ic_tag_hotel_badge_outline.hide()
+            }
         }
     }
 

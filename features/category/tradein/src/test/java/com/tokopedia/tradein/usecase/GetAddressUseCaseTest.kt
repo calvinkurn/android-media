@@ -75,14 +75,14 @@ class GetAddressUseCaseTest {
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
             coEvery { tradeInRepository.getGQLData(any(), ResponseData::class.java, any()) } returns address
 
-            val addressResult = getAddressUseCase.getAddress(resources)
+            val addressResult = getAddressUseCase.getAddress()
 
             assertEquals(addressResult, AddressResult(address.keroGetAddress.data.firstOrNull { it.isPrimary }, address.keroGetAddress.token))
 
             /**Empty Address case**/
             (address.keroGetAddress.data as MutableList).clear()
 
-            val emptyAddressResult = getAddressUseCase.getAddress(resources)
+            val emptyAddressResult = getAddressUseCase.getAddress()
 
             assertEquals(emptyAddressResult, AddressResult(address.keroGetAddress.data.firstOrNull { it.isPrimary }, address.keroGetAddress.token))
         }

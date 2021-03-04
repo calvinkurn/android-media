@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.util.extension
 
 import android.content.Context
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 
@@ -30,11 +30,23 @@ internal fun Context.getDialog(
     setOverlayClose(overlayClose)
 }
 
+internal fun DialogUnify.setLoading(isLoading: Boolean) {
+    dialogPrimaryCTA.isLoading = isLoading
+    setCancelable(!isLoading)
+    setCanceledOnTouchOutside(!isLoading)
+    dialogOverlay.setOnClickListener {
+        if (!isLoading) dismiss()
+    }
+}
+
 internal fun sendCrashlyticsLog(throwable: Throwable) {
     if (GlobalConfig.DEBUG) {
         throwable.printStackTrace()
     }
     try {
-        Crashlytics.logException(throwable)
-    } catch (e: Exception) {}
+        FirebaseCrashlytics.getInstance().recordException(throwable)
+    } catch (e: Exception) {
+    }
 }
+
+class PlayBroadcasterException(message: String) : Throwable(message)

@@ -11,13 +11,10 @@
         android:layout_height="?actionBarSize"
         app:elevation="@dimen/dp_4"
         android:elevation="@dimen/dp_4"
-        android:theme="?toolbarTheme"
+        android:background="@color/Unify_N0"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance"
-        tools:targetApi="lollipop" />
+        app:contentInsetStartWithNavigation="0dp" />
 
     <FrameLayout
         android:id="@+id/parent_view"

@@ -5,7 +5,7 @@
     android:id="@+id/mainView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -15,7 +15,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@color/font_black_primary_70"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3"
@@ -66,7 +66,7 @@
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:orientation="vertical"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,14 +82,14 @@
             android:layout_marginRight="@dimen/dp_16" />
 
         <include
-            layout="@layout/item_shimmering_grid_image"
+            layout="@layout/feed_item_shimmering_grid_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16" />
 
         <include
-            layout="@layout/item_shimmering_grid_image"
+            layout="@layout/feed_item_shimmering_grid_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"

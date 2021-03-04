@@ -7,11 +7,20 @@
     <application
         android:debuggable="true"
         android:label="Chat"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:debuggable,android:label">
 
         <activity
             android:name="com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".stub.chatroom.view.activity.TopChatRoomActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".stub.chatsearch.view.activity.ChatSearchActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

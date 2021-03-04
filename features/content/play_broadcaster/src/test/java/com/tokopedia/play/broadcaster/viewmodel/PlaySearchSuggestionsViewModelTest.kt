@@ -22,7 +22,6 @@ import org.junit.Test
 
 /**
  * Created by jegul on 25/09/20
- */
 class PlaySearchSuggestionsViewModelTest {
 
     @get:Rule
@@ -30,6 +29,8 @@ class PlaySearchSuggestionsViewModelTest {
 
     private val testDispatcher = TestCoroutineDispatcher()
     private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
+
+    private val playBroadcastMapper = PlayBroadcastUiMapper()
 
     private val getProductInEtalaseUseCase: GetProductsInEtalaseUseCase = mockk(relaxed = true)
 
@@ -43,7 +44,8 @@ class PlaySearchSuggestionsViewModelTest {
         viewModel = PlaySearchSuggestionsViewModel(
                 dispatcherProvider,
                 getProductInEtalaseUseCase,
-                mockk(relaxed = true)
+                mockk(relaxed = true),
+                playBroadcastMapper
         )
     }
 
@@ -69,7 +71,7 @@ class PlaySearchSuggestionsViewModelTest {
                 )
                 .isEqualToComparingFieldByFieldRecursively(
                         NetworkResult.Success(
-                                PlayBroadcastUiMapper.mapSearchSuggestionList(keyword, mockProductsInEtalase)
+                                playBroadcastMapper.mapSearchSuggestionList(keyword, mockProductsInEtalase)
                         )
                 )
     }
@@ -93,3 +95,4 @@ class PlaySearchSuggestionsViewModelTest {
     }
 
 }
+ */

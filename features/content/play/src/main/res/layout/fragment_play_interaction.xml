@@ -125,6 +125,18 @@
         />
 
     <include
+        android:id="@+id/view_pip_control"
+        layout="@layout/view_pip_control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/play_offset_12"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        />
+
+    <include
         android:id="@+id/view_end_live_info"
         layout="@layout/view_end_live_info"
         android:layout_width="@dimen/layout_lvl0"
@@ -135,6 +147,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_onboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_onboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gl_onboarding"
+        app:srcCompat="@drawable/ic_play_onboarding"
+        tools:alpha="1"
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_toolbar"

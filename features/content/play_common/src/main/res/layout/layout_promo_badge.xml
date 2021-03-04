@@ -6,7 +6,7 @@
     android:layout_height="20dp"
     android:background="@drawable/bg_promo_badge">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/promo_image"
         android:layout_width="14dp"
         android:layout_height="14dp"
@@ -14,13 +14,14 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:tint="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/promo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_play_banner_promo"
-        android:tint="@android:color/white"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/promo"
@@ -33,11 +34,12 @@
         android:layout_marginRight="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl1"
         android:text="@string/play_banner_carousel_promo"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_Static_White"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/promo_image"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

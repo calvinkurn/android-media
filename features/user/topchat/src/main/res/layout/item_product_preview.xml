@@ -21,7 +21,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/background_cashback_enable" />
+            tools:src="@color/Unify_G200" />
 
         <LinearLayout
             android:id="@+id/ll_variant"
@@ -54,7 +54,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/spacing_lvl2"
                     android:layout_marginRight="@dimen/spacing_lvl2"
-                    tools:background="@color/black" />
+                    tools:background="@color/Unify_N700" />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/tv_variant_color"
@@ -116,7 +116,7 @@
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/orange_red"
+            android:textColor="@color/Unify_Y500"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

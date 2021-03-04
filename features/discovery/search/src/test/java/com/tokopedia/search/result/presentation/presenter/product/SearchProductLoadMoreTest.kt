@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -13,6 +14,8 @@ import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
+
+private const val searchProductThirdPageJSON = "searchproduct/loaddata/third-page.json"
 
 internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
@@ -31,7 +34,8 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         val loadMoreSearchParameter = createLoadMoreSearchParameter()
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
-        `Then verify load more use case request params`()
+        val expectedStart = 8
+        `Then verify load more use case request params`(expectedStart, searchProductModelFirstPage.searchProduct.header.additionalParams)
         `Then verify view interaction when load more data success`(searchProductModelFirstPage)
         `Then verify start from is incremented twice`()
         val topAdsIndexStart = searchProductModelFirstPage.topAdsModel.data.size
@@ -83,10 +87,25 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         productListPresenter.loadMoreData(searchParameter)
     }
 
-    private fun `Then verify load more use case request params`() {
+    private fun `Then verify load more use case request params`(expectedStart: Int, additionalParams: String) {
         val requestParams = requestParamsSlot.captured
 
-        requestParams.getInt(SearchApiConst.START, -1) shouldBe 8
+        val params = requestParams.getSearchProductParams()
+        params[SearchApiConst.START] shouldBe expectedStart
+
+        verifyRequestContainsAdditionalParams(params, additionalParams)
+
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, false) shouldBe false
+    }
+
+    private fun verifyRequestContainsAdditionalParams(params: Map<String, Any>, additionalParams: String) {
+        UrlParamUtils.getParamMap(additionalParams).forEach { (key, value) ->
+            params[key] shouldBe value
+        }
     }
 
     private fun `Then verify view interaction when load more data success`(searchProductModelFirstPage: SearchProductModel) {
@@ -125,7 +144,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
         `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException, searchProductModelCommon)
-        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.parameters)
+        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.getSearchProductParams())
     }
 
     private fun `Given Search Product Load More API will throw exception`(exception: Exception?) {
@@ -160,5 +179,30 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         val message = slotSearchParameterErrorLog.captured
 
         message shouldBe UrlParamUtils.generateUrlParamString(searchParameter)
+    }
+
+    @Test
+    fun `Load More for third page should send additional params from second page`() {
+        val searchProductModelFirstPage = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
+        val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
+        val searchProductModelThirdPage = searchProductThirdPageJSON.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
+
+        every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelSecondPage)
+        } andThen {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelThirdPage)
+        }
+
+        `Given Mechanism to save and get product position from cache`()
+        `Given Product List Presenter already Load Data`()
+
+        val loadMoreSearchParameter = createLoadMoreSearchParameter()
+        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
+
+        `When Product List Presenter Load More Data`(createLoadMoreSearchParameter())
+
+        val expectedStart = 16
+        `Then verify load more use case request params`(expectedStart, searchProductModelSecondPage.searchProduct.header.additionalParams)
     }
 }

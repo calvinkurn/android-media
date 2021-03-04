@@ -3,14 +3,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:orientation="vertical"
         android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"

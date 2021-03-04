@@ -37,6 +37,7 @@ class FlightSearchRepository @Inject constructor(
                 val returnJourneyId = data.journeys[RETURN_JOURNEY_INDEX][journeyIndexs[RETURN_JOURNEY_INDEX].toInt()].journeyId
 
                 val comboTable = FlightComboTable(
+                        it.comboKey,
                         onwardJourneyId,
                         it.fares[ONWARD_JOURNEY_INDEX].adultPrice,
                         it.fares[ONWARD_JOURNEY_INDEX].childPrice,
@@ -51,7 +52,6 @@ class FlightSearchRepository @Inject constructor(
                         it.fares[RETURN_JOURNEY_INDEX].adultPriceNumeric,
                         it.fares[RETURN_JOURNEY_INDEX].childPriceNumeric,
                         it.fares[RETURN_JOURNEY_INDEX].infantPriceNumeric,
-                        it.comboKey,
                         it.isBestPairing
                 )
 

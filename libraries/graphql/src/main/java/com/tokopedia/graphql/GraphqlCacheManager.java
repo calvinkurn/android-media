@@ -1,6 +1,8 @@
 package com.tokopedia.graphql;
 
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.db.GQLQueryHashMapDao;
+import com.tokopedia.graphql.data.db.GQLQueryHashModel;
 import com.tokopedia.graphql.data.db.GraphqlDatabaseDao;
 import com.tokopedia.graphql.data.db.GraphqlDatabaseModel;
 
@@ -16,6 +18,7 @@ public class GraphqlCacheManager {
     private String Value;
     private long expiredTime = 0;
     private GraphqlDatabaseDao databaseDao;
+    private GQLQueryHashMapDao gqlQueryHashMapDao;
 
     public static long lastDeleteExpired = 0L;
     public final static long periodOfExpirationDeletion = TimeUnit.MINUTES.toMillis(5);
@@ -23,6 +26,7 @@ public class GraphqlCacheManager {
     @Inject
     public GraphqlCacheManager() {
         databaseDao = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao();
+        gqlQueryHashMapDao = GraphqlClient.getGraphqlDatabase().getGQLQueryHashMapDao();
     }
 
     public GraphqlCacheManager setKey(String key) {
@@ -133,4 +137,25 @@ public class GraphqlCacheManager {
         GraphqlDatabaseModel cache = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao().getGraphqlModel(key);
         return cache != null;
     }
+
+    public void saveQueryHash(String key, String value){
+        GQLQueryHashModel gqlQueryHashModel = new GQLQueryHashModel();
+        gqlQueryHashModel.setKey(key);
+        gqlQueryHashModel.setValue(value);
+        gqlQueryHashMapDao.insertSingle(gqlQueryHashModel);
+    }
+
+    public String getQueryHashValue(String key){
+        String value = "";
+        GQLQueryHashModel gqlQueryHashModel = gqlQueryHashMapDao.getGraphqlModel(key);
+        if(gqlQueryHashModel != null){
+            value = gqlQueryHashModel.getValue();
+        }
+        return value;
+    }
+
+    public void deleteQueryHashValue(String key){
+        gqlQueryHashMapDao.deleteQueryHash(key);
+    }
+
 }

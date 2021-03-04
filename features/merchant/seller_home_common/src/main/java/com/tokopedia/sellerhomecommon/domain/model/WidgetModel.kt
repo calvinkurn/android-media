@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName
 
 data class WidgetModel(
         @Expose
+        @SerializedName("ID")
+        val id: Long?,
+        @Expose
         @SerializedName("applink")
         val appLink: String?,
         @Expose
@@ -27,9 +30,18 @@ data class WidgetModel(
         @SerializedName("title")
         val title: String?,
         @Expose
-        @SerializedName("url")
-        val url: String?,
-        @Expose
         @SerializedName("widgetType")
-        val widgetType: String?
+        val widgetType: String?,
+        @Expose
+        @SerializedName("showEmpty")
+        val isShowEmpty: Boolean?,
+        @Expose
+        @SerializedName("postFilter")
+        val postFilter: List<PostFilterModel>?,
+        @Expose
+        @SerializedName("emptyState")
+        val emptyStateModel: WidgetEmptyStateModel,
+        @Expose
+        @SerializedName("comparePeriode")
+        val isComparePeriodeOnly: Boolean = false
 )
