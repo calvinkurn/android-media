@@ -17,10 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
@@ -94,6 +91,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     private var _binding: FragmentPinpointMapBinding? = null
     private val binding get() = _binding!!
+
+    lateinit var mapView: MapView
 
     private var composite = CompositeSubscription()
 
@@ -191,6 +190,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
+        mapView = binding.mapView
         binding.mapView.run {
             onCreate(savedInstanceState)
             getMapAsync(this@PinpointMapFragment)
@@ -339,6 +339,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onResume() {
         super.onResume()
+        mapView.onResume()
         binding.mapView.onResume()
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             binding.icCurrentLocation.setImageResource(R.drawable.ic_gps_enable)
@@ -378,22 +379,22 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onPause() {
         super.onPause()
-        binding.mapView.onPause()
+        mapView.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        binding.mapView.onStop()
+        mapView.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.mapView.onDestroy()
+        mapView.onDestroy()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        binding.mapView.onLowMemory()
+        mapView.onLowMemory()
     }
 
     private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double, search: String) {
