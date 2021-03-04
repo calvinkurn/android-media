@@ -51,7 +51,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
         private val homeDefaultDataSource: HomeDefaultDataSource,
         private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
-        private val applicationContext: Context,
+        private val applicationContext: Context?,
         private val remoteConfig: RemoteConfig
 ): HomeRevampRepository {
 
@@ -185,7 +185,9 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 try {
                                     val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(
                                             params = atfData.param,
-                                            locationParams = ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams() ?: "")
+                                            locationParams = applicationContext?.let {
+                                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
+                                    )
                                     dynamicChannel.let {
                                         val channelFromResponse = it.dynamicHomeChannel
                                         atfData.content = gson.toJson(channelFromResponse)
@@ -235,7 +237,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
             val dynamicChannelResponseValue = try {
                 val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(
                         numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION,
-                        locationParams = ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams() ?: "")
+                        locationParams = applicationContext?.let {
+                            ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
                 if (!isAtfSuccess) {
                     homeData.atfData = null
                 }
@@ -342,7 +345,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
     override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
         val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(
                 groupIds = groupId,
-                locationParams = ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams() ?: "")
+                locationParams = applicationContext?.let {
+                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
         val homeChannelData = HomeChannelData(dynamicChannelResponse.dynamicHomeChannel)
 
         return homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(
@@ -356,7 +360,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
         var dynamicChannelCompleteResponse = homeRemoteDataSource.getDynamicChannelData(
                 numOfChannel = 0,
                 token = homeDataResponse?.token?:"",
-                locationParams = ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams() ?: "")
+                locationParams = applicationContext?.let {
+                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
         val currentChannelList = homeDataResponse?.dynamicHomeChannel?.channels?.toMutableList()?: mutableListOf()
         currentChannelList.addAll(dynamicChannelCompleteResponse.dynamicHomeChannel.channels)
 
