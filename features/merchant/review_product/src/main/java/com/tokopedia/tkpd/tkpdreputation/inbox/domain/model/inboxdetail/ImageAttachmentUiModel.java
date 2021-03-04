@@ -7,37 +7,37 @@ import android.os.Parcelable;
  * @author by nisie on 8/24/17.
  */
 
-public class ImageAttachmentViewModel implements Parcelable {
+public class ImageAttachmentUiModel implements Parcelable {
 
     private int attachmentId;
     private String description;
     private String uriThumbnail;
     private String uriLarge;
 
-    public ImageAttachmentViewModel(int attachmentId, String description,
-                                    String uriThumbnail, String uriLarge) {
+    public ImageAttachmentUiModel(int attachmentId, String description,
+                                  String uriThumbnail, String uriLarge) {
         this.attachmentId = attachmentId;
         this.description = description;
         this.uriThumbnail = uriThumbnail;
         this.uriLarge = uriLarge;
     }
 
-    protected ImageAttachmentViewModel(Parcel in) {
+    protected ImageAttachmentUiModel(Parcel in) {
         attachmentId = in.readInt();
         description = in.readString();
         uriThumbnail = in.readString();
         uriLarge = in.readString();
     }
 
-    public static final Creator<ImageAttachmentViewModel> CREATOR = new Creator<ImageAttachmentViewModel>() {
+    public static final Creator<ImageAttachmentUiModel> CREATOR = new Creator<ImageAttachmentUiModel>() {
         @Override
-        public ImageAttachmentViewModel createFromParcel(Parcel in) {
-            return new ImageAttachmentViewModel(in);
+        public ImageAttachmentUiModel createFromParcel(Parcel in) {
+            return new ImageAttachmentUiModel(in);
         }
 
         @Override
-        public ImageAttachmentViewModel[] newArray(int size) {
-            return new ImageAttachmentViewModel[size];
+        public ImageAttachmentUiModel[] newArray(int size) {
+            return new ImageAttachmentUiModel[size];
         }
     };
 
