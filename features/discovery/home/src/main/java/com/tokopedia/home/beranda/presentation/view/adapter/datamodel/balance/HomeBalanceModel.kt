@@ -109,7 +109,7 @@ data class HomeBalanceModel (
                         if (pendingCashBackData.walletType == OVO_WALLET_TYPE) {
                             balanceDrawerItemModels[it] =
                                     BalanceDrawerItemModel(
-                                            applink = "",
+                                            applinkActionText = "",
                                             iconImageUrl = "",
                                             defaultIconRes = R.drawable.wallet_ic_ovo_home,
                                             balanceTitleTextAttribute = BalanceTextAttribute(
@@ -203,9 +203,9 @@ data class HomeBalanceModel (
                 itemTypeCondition(
                         itemType,
                         typeTokopointCondition = { action.invoke(0) },
-                        typeCouponCondition = { action.invoke(2) },
-                        typeRewardsCondition = { action.invoke(2) },
-                        typeFreeOngkirCondition = { action.invoke(3) }
+                        typeCouponCondition = { action.invoke(1) },
+                        typeRewardsCondition = { action.invoke(1) },
+                        typeFreeOngkirCondition = { action.invoke(2) }
                 )
             }
         }
@@ -221,7 +221,7 @@ data class HomeBalanceModel (
     ) {
         when(type) {
             TYPE_TOKOPOINT -> typeTokopointCondition.invoke()
-            TYPE_WALLET_OVO, TYPE_WALLET_OTHER, TYPE_WALLET_OVO, TYPE_WALLET_PENDING_CASHBACK -> typeWalletCondition.invoke()
+            TYPE_WALLET_OVO, TYPE_WALLET_OTHER, TYPE_WALLET_PENDING_CASHBACK, TYPE_WALLET_WITH_TOPUP -> typeWalletCondition.invoke()
             TYPE_COUPON -> typeCouponCondition.invoke()
             TYPE_FREE_ONGKIR -> typeFreeOngkirCondition.invoke()
             TYPE_REWARDS -> typeRewardsCondition.invoke()

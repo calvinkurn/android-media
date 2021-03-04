@@ -40,10 +40,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -295,8 +295,7 @@ open class HomeRevampViewModel @Inject constructor(
         if (balanceWidgetRollanceType == AbTestPlatform.BALANCE_VARIANT_NEW) {
             isNewBalanceWidget.invoke()
         } else {
-//            isOldBalanceWidget.invoke()
-            isNewBalanceWidget.invoke()
+            isOldBalanceWidget.invoke()
         }
     }
 
@@ -483,7 +482,8 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             homeHeaderOvoDataModel.headerDataModel = HeaderDataModel(
-                    homeBalanceModel = homeBalanceModel
+                    homeBalanceModel = homeBalanceModel,
+                    isUserLogin = userSession.get().isLoggedIn
             )
             this.homeBalanceModel = homeBalanceModel
             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
@@ -1554,7 +1554,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getWalletBalanceData() {
         //set loading to wallet item
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setBalanceState(type = TYPE_WALLET, state = STATE_LOADING))
+        newUpdateHeaderViewModel(homeBalanceModel.copy().setBalanceState(type = TYPE_WALLET_OVO, state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
             val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
@@ -1564,7 +1564,7 @@ open class HomeRevampViewModel @Inject constructor(
                 _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
             }
         }){
-            homeBalanceModel.setBalanceState(type = TYPE_WALLET, state = STATE_ERROR)
+            homeBalanceModel.setBalanceState(type = TYPE_WALLET_OVO, state = STATE_ERROR)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }
     }

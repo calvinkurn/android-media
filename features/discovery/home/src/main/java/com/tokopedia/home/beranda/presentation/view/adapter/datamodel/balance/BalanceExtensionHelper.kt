@@ -6,13 +6,18 @@ import com.tokopedia.home.beranda.data.model.TextAttributes
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
 fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
-    val drawerItemType = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) TYPE_WALLET_OVO else TYPE_WALLET_OTHER
+    var drawerItemType = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) TYPE_WALLET_OVO else TYPE_WALLET_OTHER
+    if (topupUrl.isNotEmpty()) {
+        drawerItemType = TYPE_WALLET_WITH_TOPUP
+    }
     return BalanceDrawerItemModel(
-            applink = appLinkActionButton,
+            applinkContainer = if (drawerItemType == TYPE_WALLET_WITH_TOPUP) topupUrl else appLinkBalance,
+            applinkActionText = appLinkActionButton,
             iconImageUrl = "",
             defaultIconRes = iconRes,
             balanceTitleTextAttribute = buildWalletTitleTextAttribute(),
@@ -132,7 +137,9 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
     val balanceSubTitleTagAttribute = sectionContent.getOrNull(1)?.tagAttributes?.mapToBalanceTagAttributes()
 
     return BalanceDrawerItemModel(
-            applink = if (redirectAppLink.isNotEmpty()) redirectAppLink else redirectURL,
+            applinkContainer = redirectAppLink,
+            applinkActionText = redirectAppLink,
+            redirectUrl = redirectURL,
             iconImageUrl = iconImageURL,
             defaultIconRes = defaultIconRes,
             balanceTitleTextAttribute = balanceTitleTextAttribute,
@@ -140,7 +147,8 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
             balanceTitleTagAttribute = balanceTitleTagAttribute,
             balanceSubTitleTagAttribute = balanceSubTitleTagAttribute,
             drawerItemType = drawerItemType,
-            state = state
+            state = state,
+            mainPageTitle = mainPageTitle
     )
 }
 
