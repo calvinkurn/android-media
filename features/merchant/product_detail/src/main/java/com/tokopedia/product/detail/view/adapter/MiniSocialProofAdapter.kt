@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -38,6 +39,13 @@ class MiniSocialProofAdapter(
     }
 
     override fun onBindViewHolder(holder: ProductMiniSocialProofChipViewHolder, position: Int) {
+        holder.itemView.apply {
+            if (position == socialProof.lastIndex && getItemViewType(position) == TYPE_CHIP) {
+                setPadding(0, 0, 16, 0)
+            } else {
+                setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+            }
+        }
         holder.bind(socialProof[position], componentTrackDataModel)
     }
 

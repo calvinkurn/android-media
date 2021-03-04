@@ -9,6 +9,7 @@
     android:layout_height="wrap_content"
     android:drawablePadding="@dimen/dp_4"
     android:paddingEnd="@dimen/dp_8"
+    android:paddingStart="@dimen/layout_lvl2"
     app:typographyType="body_3"
     tools:ignore="RtlSymmetry"
     tools:text="Dilihat 200" />
