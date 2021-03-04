@@ -53,8 +53,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
-import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -94,7 +92,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isCircuitBreaker: Boolean = false
     private var isGpsEnable: Boolean = true
 
-    lateinit var binding: FragmentPinpointMapBinding
+    private var _binding: FragmentPinpointMapBinding? = null
+    private val binding get() = _binding!!
+
     private var composite = CompositeSubscription()
 
     @Inject
@@ -167,8 +167,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        _binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -181,6 +183,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         val zoom = googleMap?.cameraPosition?.zoom ?: 0f
         presenter.autoFill(currentLat, currentLong, zoom)
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -218,8 +225,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
             bottomSheetGetDistrict.etDetailAddress.run {
                 setOnClickListener {
-                    getdistrict_container?.findViewById<ButtonCompat>(R.id.btn_choose_location)?.requestFocusFromTouch()
-                    getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
+                    bottomSheetGetDistrict.getdistrictContainer.requestFocusFromTouch()
+                    bottomSheetGetDistrict.etDetailAddress.requestFocusFromTouch()
                 }
 
                 setOnTouchListener { view, event ->
@@ -311,7 +318,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             }, 500)
         }
 
-        var zoomLevel = ZOOM_LEVEL
         if (lat == 0.0 && long == 0.0) {
             currentLat = DEFAULT_LAT
             currentLong = DEFAULT_LONG
@@ -319,7 +325,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             currentLat = lat
             currentLong = long
         }
-        moveMap(getLatLng(currentLat, currentLong), zoomLevel)
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
     }
 
     private fun moveMap(latLng: LatLng, zoomLevel: Float) {
@@ -637,7 +643,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun setResultPinpoint() {
-        saveAddressDataModel?.editDetailAddress = et_detail_address?.text.toString()
+        saveAddressDataModel?.editDetailAddress = binding.bottomSheetGetDistrict.etDetailAddress.text.toString()
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)
@@ -668,7 +674,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun doLoadAddEdit() {
-        saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
+        saveAddressDataModel?.editDetailAddress = binding.bottomSheetGetDistrict.etDetailAddress.text.toString()
         if (this.isPolygon) {
             isMismatchSolved = true
         }
@@ -745,7 +751,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     finishActivity(newAddress)
                 } else if (data.hasExtra(EXTRA_DETAIL_ADDRESS_LATEST)) {
                     val latestDetailAddress = data.getStringExtra(EXTRA_DETAIL_ADDRESS_LATEST)
-                    et_detail_address.setText(latestDetailAddress)
+                    binding.bottomSheetGetDistrict.etDetailAddress.setText(latestDetailAddress)
                 }
             }
         }

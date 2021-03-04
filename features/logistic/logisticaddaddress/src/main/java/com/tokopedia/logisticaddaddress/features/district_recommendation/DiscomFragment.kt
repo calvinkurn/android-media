@@ -8,29 +8,30 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.databinding.FragmentDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
-import com.tokopedia.logisticCommon.data.entity.address.Token
 import javax.inject.Inject
 
 class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), DiscomContract.View {
 
     private var mToken: Token? = null
-    private var swipeRefreshLayout: SwipeToRefresh? = null
-    private var tvMessage: TextView? = null
     private var analytics: ActionListener? = null
+
+    private var _binding: FragmentDistrictRecommendationBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var addressMapper: AddressMapper
+
     @Inject
     lateinit var presenter: DiscomContract.Presenter
 
@@ -55,13 +56,12 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
         arguments?.let {
             mToken = it.getParcelable(ARGUMENT_DATA_TOKEN)
         }
+        binding.searchInputView.visibility = View.VISIBLE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_district_recommendation, container, false)
-        tvMessage = view.findViewById(R.id.tv_message)
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        return view
+        _binding = FragmentDistrictRecommendationBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,7 +73,7 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
             searchInputView.searchText = ""
             analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
-        swipeRefreshLayout!!.isEnabled = false
+        binding.swipeRefreshLayout.isEnabled = false
     }
 
     override fun getSearchInputViewResourceId(): Int {
@@ -87,6 +87,11 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
     override fun onDetach() {
         analytics = null
         super.onDetach()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onDestroy() {
@@ -160,18 +165,18 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
     }
 
     override fun showEmpty() {
-        tvMessage!!.text = getString(R.string.message_search_address_no_result)
+        binding.tvMessage.text = getString(R.string.message_search_address_no_result)
         setMessageSection(true)
     }
 
     private fun showInitialLoadMessage() {
-        tvMessage!!.text = getString(R.string.message_advice_search_address)
+        binding.tvMessage.text = getString(R.string.message_advice_search_address)
         setMessageSection(true)
     }
 
     private fun setMessageSection(active: Boolean) {
-        tvMessage!!.visibility = if (active) View.VISIBLE else View.GONE
-        swipeRefreshLayout!!.visibility = if (active) View.GONE else View.VISIBLE
+        binding.tvMessage.visibility = if (active) View.VISIBLE else View.GONE
+        binding.swipeRefreshLayout.visibility = if (active) View.GONE else View.VISIBLE
     }
 
     interface ActionListener {
