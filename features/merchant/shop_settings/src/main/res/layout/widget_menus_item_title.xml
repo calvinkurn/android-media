@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:divider="@drawable/bg_line_separator"
+    android:divider="@drawable/bg_menus_line_separator"
     android:orientation="vertical"
     android:showDividers="end">
 
@@ -24,7 +24,7 @@
             android:layout_height="@dimen/dp_32"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            app:srcCompat="@drawable/ic_close_default" />
+            app:srcCompat="@drawable/ic_menus_close_default" />
 
         <TextView
             android:id="@+id/tv_title"
