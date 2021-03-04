@@ -1646,11 +1646,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 HomeChooseAddressData(isActive = true)
                         .setLocalCacheModel(localCacheModel)
         )
-        Toast.makeText(requireContext(), "Address changed to : "+localCacheModel?.label?:"", Toast.LENGTH_SHORT).show()
+        chooseAddressWidgetInitialized = false
     }
 
     override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
-        if (chooseAddressWidgetInitialized) {
+        if (!chooseAddressWidgetInitialized) {
             chooseAddressWidget.bindChooseAddress(ChooseAddressWidgetCallback(context, this, this))
             chooseAddressWidget.run {
                 visibility = if (needToShowChooseAddress) {
