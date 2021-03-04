@@ -9,6 +9,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
@@ -20,6 +23,7 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOper
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
+import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
@@ -352,4 +356,78 @@ class ShopPageViewModelTest {
         } returns mockUserShopId
         assert(shopPageViewModel.userShopId == mockUserShopId)
     }
+
+    @Test
+    fun `check whether userId should return same value as mocked userId`() {
+        val mockUserId = "123"
+        every {
+            userSessionInterface.userId
+        } returns mockUserId
+        assert(shopPageViewModel.userId == mockUserId)
+    }
+
+    @Test
+    fun `check whether checkShopRequestModerateStatus post shopModerateRequestStatus success value`() {
+        coEvery {
+            shopModerateRequestStatusUseCase.get().executeOnBackground()
+        } returns ShopModerateRequestData(ShopModerateRequestStatus())
+        shopPageViewModel.checkShopRequestModerateStatus()
+        assert(shopPageViewModel.shopModerateRequestStatus.value is Success)
+    }
+
+    @Test
+    fun `check whether checkShopRequestModerateStatus post shopModerateRequestStatus fail value`() {
+        coEvery {
+            shopModerateRequestStatusUseCase.get().executeOnBackground()
+        } throws Exception()
+        shopPageViewModel.checkShopRequestModerateStatus()
+        assert(shopPageViewModel.shopModerateRequestStatus.value is Fail)
+    }
+
+    @Test
+    fun `check whether sendRequestUnmoderateShop post shopUnmoderateData success value`() {
+        val mockShopId = 123.0
+        val mockOptionValue = "optionValue"
+        coEvery {
+            shopRequestUnmoderateUseCase.get().executeOnBackground()
+        } returns ShopRequestUnmoderateSuccessResponse()
+        shopPageViewModel.sendRequestUnmoderateShop(mockShopId, mockOptionValue)
+        assert(shopPageViewModel.shopUnmoderateData.value is Success)
+    }
+
+    @Test
+    fun `check whether sendRequestUnmoderateShop post shopUnmoderateData fail value`() {
+        val mockShopId = 123.0
+        val mockOptionValue = "optionValue"
+        coEvery {
+            shopRequestUnmoderateUseCase.get().executeOnBackground()
+        } throws Exception()
+        shopPageViewModel.sendRequestUnmoderateShop(mockShopId, mockOptionValue)
+        assert(shopPageViewModel.shopUnmoderateData.value is Fail)
+    }
+
+    @Test
+    fun `check whether sendShopShareTracker post shopShareTracker success value`() {
+        val mockShopId = "123"
+        val mockChannel = "channel"
+        coEvery {
+            shopQuestGeneralTrackerUseCase.get().executeOnBackground()
+        } returns ShopQuestGeneralTracker()
+        shopPageViewModel.sendShopShareTracker(mockShopId, mockChannel)
+        assert(shopPageViewModel.shopShareTracker.value is Success)
+    }
+
+    @Test
+    fun `check whether sendShopShareTracker post shopShareTracker fail value`() {
+        val mockShopId = "123"
+        val mockChannel = "channel"
+        coEvery {
+            shopQuestGeneralTrackerUseCase.get().executeOnBackground()
+        } throws Exception()
+        shopPageViewModel.sendShopShareTracker(mockShopId, mockChannel)
+        assert(shopPageViewModel.shopShareTracker.value is Fail)
+    }
+
+
+
 }
