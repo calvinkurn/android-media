@@ -2,29 +2,27 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.topads
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.*
 import com.tokopedia.feedcomponent.util.util.UrlParamHelper
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
-import com.tokopedia.feedcomponent.view.widget.TopAdsHeadlineView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
+import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface,
                                private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener {
 
     private val topadsHeadlineView: TopAdsHeadlineView = view.findViewById(R.id.topads_headline_view)
-    private val shimmerView: LoaderImageView = view.findViewById(R.id.shimmer_view)
     private var topadsHeadlineUiModel: TopadsHeadlineUiModel? = null
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_topads_headline
+        val LAYOUT = R.layout.item_topads_headline_feed
     }
 
     init {
@@ -56,7 +54,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun hideHeadlineView() {
-        shimmerView.show()
+        topadsHeadlineView.showShimmerView()
         topadsHeadlineView.hide()
     }
 
@@ -73,7 +71,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun showHeadlineView(cpmModel: CpmModel) {
-        shimmerView.hide()
+        topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
         topadsHeadlineView.displayAds(cpmModel)
     }

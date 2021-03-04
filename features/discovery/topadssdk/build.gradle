@@ -63,6 +63,9 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation('de.hdodenhof:circleimageview:2.2.0') {
         exclude group: 'com.android.support', module: 'support-annotations'

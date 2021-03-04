@@ -9,21 +9,8 @@
     android:layout_marginBottom="@dimen/dp_8"
     app:cardCornerRadius="@dimen/dp_8">
 
-    <LinearLayout
+    <com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+        android:id="@+id/topads_headline_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
-            android:id="@+id/shimmer_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_240" />
-
-        <com.tokopedia.feedcomponent.view.widget.TopAdsHeadlineView
-            android:id="@+id/topads_headline_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
+        android:layout_height="wrap_content" />
 </androidx.cardview.widget.CardView>

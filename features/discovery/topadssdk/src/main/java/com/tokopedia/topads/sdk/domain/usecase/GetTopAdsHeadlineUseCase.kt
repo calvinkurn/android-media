@@ -1,11 +1,11 @@
-package com.tokopedia.feedcomponent.domain.usecase
+package com.tokopedia.topads.sdk.domain.usecase
 
-import com.tokopedia.feedcomponent.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 
 const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${'$'}displayParams: String!) {
   displayAdsV3(displayParams: ${'$'}displayParams) {

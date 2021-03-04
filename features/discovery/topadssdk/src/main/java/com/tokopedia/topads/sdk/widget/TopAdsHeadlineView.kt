@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.view.custom
+package com.tokopedia.topads.sdk.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,12 +7,15 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.home_account.R
-import com.tokopedia.home_account.view.viewmodel.topads.TopAdsHeadlineViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 
 class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
@@ -22,10 +25,12 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private var topadsBannerView: TopAdsBannerView
+    private val shimmerView: LoaderUnify
 
     init {
-        val view = View.inflate(context, R.layout.layout_widget_topads_headline_new, this)
+        val view = View.inflate(context, R.layout.layout_widget_topads_headline, this)
         topadsBannerView = view.findViewById(R.id.top_ads_banner)
+        shimmerView= view.findViewById(R.id.shimmer_view)
         topadsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { _, appLink, _ ->
             RouteManager.route(context, appLink)
         })
@@ -41,4 +46,15 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         topadsBannerView.displayAdsWithProductShimmer(cpmModel)
     }
 
+    fun setFollowBtnClickListener(context: TopAdsShopFollowBtnClickListener) {
+        topadsBannerView.setTopAdsShopFollowClickListener(context)
+    }
+
+    fun showShimmerView() {
+        shimmerView.show()
+    }
+
+    fun hideShimmerView() {
+        shimmerView.hide()
+    }
 }
