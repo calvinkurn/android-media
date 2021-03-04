@@ -87,6 +87,7 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -186,7 +187,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onResume() {
         super.onResume()
-        if (userSession.isLoggedIn && activityShouldEnd) {
+        if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -228,7 +229,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             drawable = TextDrawable(this)
             drawable?.text = resources.getString(R.string.register)
             drawable?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-
         }
         return drawable
     }
@@ -329,8 +329,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginEmailClick() {
-        val email = arguments?.getString(AUTO_LOGIN_EMAIL, "") ?: ""
-        val pw = arguments?.getString(AUTO_LOGIN_PASS, "") ?: ""
+        val email = arguments?.getString(AUTO_LOGIN_EMAIL, "")?: ""
+        val pw = arguments?.getString(AUTO_LOGIN_PASS, "")?: ""
         partialRegisterInputView.showLoginEmailView(email)
         emailPhoneEditText.setText(email)
         wrapper_password?.textFieldInput?.setText(pw)
@@ -604,8 +604,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     fun onDismissBottomSheet() {
-        if(::bottomSheet.isInitialized)
+        if(::bottomSheet.isInitialized) {
             bottomSheet.dismiss()
+        }
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
@@ -755,6 +756,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         saveFirstInstallTime()
+
+        /*
+        * broadcast through AIDL service if user have login
+        * (send the flag into another app).
+        * */
+        context?.let { PushNotificationApi.bindService(it) }
     }
 
     override fun setLoginSuccessSellerApp() {
