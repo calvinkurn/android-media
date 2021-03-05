@@ -64,6 +64,7 @@ import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialItemViewHolder
+import com.tokopedia.home_account.view.viewholder.ErrorFinancialViewHolder
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
@@ -288,7 +289,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onFailedGetUserPageAssetConfig() {
-        viewModel.getSaldoBalance()
+//        viewModel.getSaldoBalance()
+        financialAdapter?.showError()
     }
 
     private fun onSuccessGetTokopointsDrawerList(tokopointsDrawerList: TokopointsDrawerList) {
@@ -350,6 +352,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO -> {
                 financialAdapter?.removeByType(type)
                 viewModel.getSaldoBalance()
+            }
+            ErrorFinancialViewHolder.ERROR_TYPE -> {
+                financialAdapter?.removeByType(type)
+                viewModel.getUserPageAssetConfig()
             }
         }
     }
@@ -487,6 +493,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun getProfileData() {
+        isShowHomeAccountTokopoints = true
         if (isShowHomeAccountTokopoints) {
             viewModel.getUserPageAssetConfig()
         } else {
@@ -671,6 +678,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 goToApplink(item.applink)
             }
             AccountConstants.SettingCode.SETTING_TOKOPOINTS -> {
+                homeAccountAnalytic.eventClickTokopoints()
+                goToApplink(item.applink)
+            }
+            AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {
                 homeAccountAnalytic.eventClickOnMoreMemberOption()
                 goToApplink(item.applink)
             }

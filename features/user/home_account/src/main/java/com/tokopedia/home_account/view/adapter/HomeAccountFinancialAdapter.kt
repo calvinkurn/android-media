@@ -8,6 +8,7 @@ import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialItemViewHolder
+import com.tokopedia.home_account.view.viewholder.ErrorFinancialViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorItemViewHolder
 import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
 import java.util.*
@@ -34,6 +35,9 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener) : Recyc
             }
             is ErrorFinancialItemViewHolder -> {
                 holder.bind(list[position])
+            }
+            is ErrorFinancialViewHolder -> {
+                holder.bind()
             }
         }
     }
@@ -105,6 +109,9 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener) : Recyc
                 view.setOnClickListener { listener.onFinancialErrorClicked(viewType) }
                 ErrorItemViewHolder(view, listener)
             }
+            ErrorFinancialViewHolder.ERROR_TYPE -> {
+                createErrorFinancialViewHolder(parent)
+            }
             else -> {
                 val view = LayoutInflater.from(parent.context).inflate(FinancialItemViewHolder.LAYOUT, parent, false)
                 FinancialItemViewHolder(view, listener)
@@ -115,5 +122,16 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener) : Recyc
     private fun createErrorFinancialItemViewHolder(parent: ViewGroup): ErrorFinancialItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(ErrorFinancialItemViewHolder.LAYOUT, parent, false)
         return ErrorFinancialItemViewHolder(view, listener)
+    }
+
+    private fun createErrorFinancialViewHolder(parent: ViewGroup): ErrorFinancialViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(ErrorFinancialViewHolder.LAYOUT, parent, false)
+        return ErrorFinancialViewHolder(view, listener)
+    }
+
+    fun showError() {
+        this.list.clear()
+        this.list.add(CommonDataView(type = ErrorFinancialViewHolder.ERROR_TYPE))
+        notifyDataSetChanged()
     }
 }

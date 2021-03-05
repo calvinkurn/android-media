@@ -69,6 +69,7 @@ object AccountConstants {
             const val ACTION_CLICK_PROFILE = "click - profile page - click profile"
             const val ACTION_VIEW_OVO_HOMEPAGE = "view ovo homepage"
             const val ACTION_CLICK_BALANCE = "click - tokopedia pay - saldo"
+            const val ACTION_CLICK_TOKOPOINTS = "click - tokopedia pay - tokopoints"
             const val ACTION_CLICK_ON_MORE_OPTION = "click on more option"
             const val ACTION_CLICK_REWARD_SECTION = "click reward section"
             const val ACTION_CLICK_ACCOUNT_SETTING_SECTION = "click account settings section"
@@ -154,11 +155,12 @@ object AccountConstants {
         const val SETTING_OLD_ACCOUNT = 40
         const val SETTING_OVO = 41
         const val SETTING_SALDO = 42
-        const val SETTING_TOKOPOINTS = 43
+        const val SETTING_MORE_MEMBER = 43
         const val SETTING_INSTANT_PAYMENT = 44
         const val SETTING_INSTANT_BUY = 45
         const val SETTING_APP_SETTING = 46
         const val SETTING_ABOUT_TOKOPEDIA = 47
+        const val SETTING_TOKOPOINTS = 48
     }
 
     object KEY {

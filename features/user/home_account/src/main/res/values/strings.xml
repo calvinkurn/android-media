@@ -85,4 +85,7 @@
 
     <string name="new_home_account_finance_failed_config_title">Gagal memuat transaksi</string>
     <string name="new_home_account_finance_failed_config_desc">Klik untuk coba lagi.</string>
+
+    <string name="new_home_account_local_load_title">Gagal memuat menu ini</string>
+    <string name="new_home_account_local_load_desc">Klik untuk coba lagi.</string>
 </resources>

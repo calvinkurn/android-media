@@ -125,6 +125,7 @@ class DataViewMapper @Inject constructor(
         val title = tokopoint?.sectionContent?.get(0)
         val body = tokopoint?.sectionContent?.get(1)
         return CommonDataView(
+                id = AccountConstants.SettingCode.SETTING_TOKOPOINTS,
                 title = title?.textAttributes?.text ?: "",
                 body = body?.textAttributes?.text ?: "",
                 type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS,

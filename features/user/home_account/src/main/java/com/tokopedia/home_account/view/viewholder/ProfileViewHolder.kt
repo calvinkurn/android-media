@@ -129,7 +129,7 @@ class ProfileViewHolder(
         itemView.home_account_member_layout_member_forward?.setOnClickListener {
             listener.onSettingItemClicked(
                     CommonDataView(
-                            id = AccountConstants.SettingCode.SETTING_TOKOPOINTS,
+                            id = AccountConstants.SettingCode.SETTING_MORE_MEMBER,
                             applink = ApplinkConst.TOKOPOINTS
                     )
             )
