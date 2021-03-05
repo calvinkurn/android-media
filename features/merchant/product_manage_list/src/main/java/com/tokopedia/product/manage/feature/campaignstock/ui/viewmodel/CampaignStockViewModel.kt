@@ -374,8 +374,10 @@ class CampaignStockViewModel @Inject constructor(
             productManageAccess.await()
         ).also {
             val sellableProductList = stockAllocationData.detail.sellable
-            val variants = it.variants.mapIndexed { index, variant ->
-                val stock = sellableProductList.getOrNull(index)?.stock.toIntOrZero()
+            val variants = it.variants.map { variant ->
+                val stock = sellableProductList.firstOrNull { product ->
+                    product.productId == variant.id
+                }?.stock.toIntOrZero()
                 variant.copy(stock = stock)
             }
             val getVariantResult = it.copy(variants = variants)
