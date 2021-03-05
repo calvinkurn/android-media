@@ -1,4 +1,4 @@
-package com.tokopedia.home_account
+package com.tokopedia.topads.sdk.utils
 
 const val PARAM_DEVICE = "device"
 const val PARAM_PAGE = "page"

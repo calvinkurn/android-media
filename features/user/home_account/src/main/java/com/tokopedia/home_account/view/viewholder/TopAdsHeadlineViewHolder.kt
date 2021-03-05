@@ -3,13 +3,12 @@ package com.tokopedia.home_account.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.home_account.*
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.UrlParamHelper
 import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
