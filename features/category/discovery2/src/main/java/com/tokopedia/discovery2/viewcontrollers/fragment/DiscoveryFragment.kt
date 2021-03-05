@@ -364,6 +364,7 @@ class DiscoveryFragment :
         chooseAddressWidget?.let {
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 val coachMark = CoachMark2(requireContext())
+                coachMark.isOutsideTouchable = true
                 coachMarkItem.add(
                         CoachMark2Item(
                                 it,
@@ -724,6 +725,7 @@ class DiscoveryFragment :
         })
         context?.let {
             if (ChooseAddressUtils.isRollOutUser(it) && discoveryViewModel.getAddressVisibilityValue()) {
+                updateChooseAddressWidget()
                 checkAddressUpdate()
             }
         }
@@ -788,6 +790,7 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
+        updateChooseAddressWidget()
         checkAddressUpdate()
     }
 
@@ -833,5 +836,9 @@ class DiscoveryFragment :
                 }
             }
         }
+    }
+
+    private fun updateChooseAddressWidget(){
+        chooseAddressWidget?.updateWidget()
     }
 }
