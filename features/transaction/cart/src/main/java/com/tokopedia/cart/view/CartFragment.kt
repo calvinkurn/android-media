@@ -1820,7 +1820,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             setInitialCheckboxGlobalState(cartListData)
             setGlobalDeleteVisibility()
-            setTopLayoutVisibility(false)
 
             validateGoToCheckout()
         }
@@ -1860,8 +1859,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun validateRenderCart(it: CartListData) {
         if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
             renderCartEmpty(it)
+            setTopLayoutVisibility(false)
         } else {
             renderCartNotEmpty(it)
+            setTopLayoutVisibility(true)
         }
     }
 
