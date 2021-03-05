@@ -10,6 +10,8 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
@@ -232,7 +234,7 @@ class DigitalCartViewModel @Inject constructor(
 
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
-            paymentSummary.addToSummary(Payment(PAYMENT_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
+            paymentSummary.addToSummary(Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
             _payment.postValue(paymentSummary)
 
             requestCheckoutParam.transactionAmount = pricePlain
@@ -285,39 +287,18 @@ class DigitalCartViewModel @Inject constructor(
         resetAdditionalInfoAndTotalPrice()
         val promoDataValue = promoData.value?.amount ?: 0
         if (promoDataValue > 0) {
-            val additionals: MutableList<CartItemDigitalWithTitle> = ArrayList(_cartAdditionalInfoList.value
-                    ?: listOf())
-            val items: MutableList<CartItemDigital> = ArrayList()
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PRICE, cartDigitalInfoData.value?.attributes?.price
-                    ?: ""))
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
-            val totalPayment = (cartDigitalInfoData.value?.attributes?.pricePlain
-                    ?: 0.0) - promoDataValue.toDouble()
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_TOTAL_PAYMENT, getStringIdrFormat(totalPayment)))
-            val cartAdditionalInfo = CartItemDigitalWithTitle(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT, items)
-            additionals.add(cartAdditionalInfo)
-            _cartAdditionalInfoList.postValue(additionals)
-
-            paymentSummary.addToSummary(Payment(PAYMENT_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
+            paymentSummary.addToSummary(Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
             _payment.postValue(paymentSummary)
             _totalPrice.forceRefresh()
         } else {
-            paymentSummary.removeFromSummary(PAYMENT_KODE_PROMO)
+            paymentSummary.removeFromSummary(STRING_KODE_PROMO)
             _payment.postValue(paymentSummary)
         }
     }
 
+    // TODO: change function name
     fun resetAdditionalInfoAndTotalPrice() {
-        val additionalInfos = cartAdditionalInfoList.value?.toMutableList() ?: mutableListOf()
-        for ((i, additionalInfo) in additionalInfos.withIndex()) {
-            if (additionalInfo.title.contains(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT)) {
-                additionalInfos.removeAt(i)
-                break
-            }
-        }
-        _cartAdditionalInfoList.postValue(additionalInfos)
-
-        paymentSummary.removeFromSummary(PAYMENT_KODE_PROMO)
+        paymentSummary.removeFromSummary(STRING_KODE_PROMO)
         _payment.postValue(paymentSummary)
         _totalPrice.forceRefresh()
     }
@@ -424,10 +405,5 @@ class DigitalCartViewModel @Inject constructor(
 
     private fun <T> MutableLiveData<T>.forceRefresh() {
         this.value = this.value
-    }
-
-    companion object {
-        private const val PAYMENT_SUBTOTAL_TAGIHAN = "Subtotal Tagihan"
-        private const val PAYMENT_KODE_PROMO = "Kode Promo"
     }
 }

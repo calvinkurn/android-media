@@ -16,4 +16,9 @@ object DigitalCheckoutConst {
         const val STRING_TOTAL_PAYMENT = "Total Bayar"
         const val STRING_PAYMENT = "Pembayaran"
     }
+
+    object SummaryInfo {
+        const val STRING_SUBTOTAL_TAGIHAN = "Subtotal Tagihan"
+        const val STRING_KODE_PROMO = "Kode Promo"
+    }
 }
