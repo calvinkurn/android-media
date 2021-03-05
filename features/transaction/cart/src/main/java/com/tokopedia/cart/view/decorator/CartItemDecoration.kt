@@ -27,6 +27,17 @@ class CartItemDecoration : RecyclerView.ItemDecoration() {
 
         when (val viewHolder = parent.getChildViewHolder(view)) {
             is TickerAnnouncementViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+            is CartChooseAddressViewHolder -> {
+                try {
+                    if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == TickerAnnouncementViewHolder.LAYOUT) {
+                        outRect.top = verticalSpaceHeight
+                    } else {
+                        outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+                    }
+                } catch (e: Exception) {
+                    // No-op
+                }
+            }
             is CartTickerErrorViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is CartShopViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is CartSectionHeaderViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
