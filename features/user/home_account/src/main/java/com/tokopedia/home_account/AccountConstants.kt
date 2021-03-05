@@ -132,6 +132,7 @@ object AccountConstants {
         const val KEY_IMAGE_HOST = "image_host"
         const val CDN_URL = "https://ecs7.tokopedia.net"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
+        const val TOKOPOINTS_ICON = "https://images.tokopedia.net/img/img/phoenix/tokopoints.png"
     }
 
     object SettingCode {

@@ -289,7 +289,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onFailedGetUserPageAssetConfig() {
-//        viewModel.getSaldoBalance()
         financialAdapter?.showError()
     }
 
@@ -374,6 +373,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             notifyDataSetChanged()
         }
         hideLoading()
+        fpmBuyer?.run { stopTrace() }
     }
 
     private fun setStatusBarAlpha(alpha: Float) {
