@@ -373,9 +373,15 @@ class CampaignStockViewModel @Inject constructor(
             getProductVariantData.await().getProductV3,
             productManageAccess.await()
         ).also {
-            val variantsEditResult = ProductManageVariantMapper.mapVariantsToEditResult(productId, it)
+            val sellableProductList = stockAllocationData.detail.sellable
+            val variants = it.variants.mapIndexed { index, variant ->
+                val stock = sellableProductList.getOrNull(index)?.stock.toIntOrZero()
+                variant.copy(stock = stock)
+            }
+            val getVariantResult = it.copy(variants = variants)
+            val variantsEditResult = ProductManageVariantMapper.mapVariantsToEditResult(productId, getVariantResult)
             editVariantResult = variantsEditResult
-            variantList = variantsEditResult.variants
+            variantList = variants
         }
 
         mProductManageAccess.postValue(productManageAccess.await())
