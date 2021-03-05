@@ -419,6 +419,7 @@ object ShopPageHomeMapper {
                 freeOngkirPromoIcon = it.freeOngkirPromoIcon
                 recommendationType = it.recommendationType
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
+                minimumOrder = it.minimumOrder ?: 1
             }
         }
     }

@@ -45,7 +45,8 @@ interface ShopHomeCarouselProductListener {
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductUiModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
+            isOcc: Boolean = false
     )
 
     fun onThreeDotsCarouselProductItemClicked(

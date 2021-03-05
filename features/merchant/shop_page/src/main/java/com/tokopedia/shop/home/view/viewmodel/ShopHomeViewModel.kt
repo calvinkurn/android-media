@@ -32,6 +32,8 @@ import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
@@ -43,6 +45,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -61,6 +64,7 @@ class ShopHomeViewModel @Inject constructor(
     private val getShopProductUseCase: GqlGetShopProductUseCase,
     private val dispatcherProvider: CoroutineDispatchers,
     private val addToCartUseCase: AddToCartUseCase,
+    private val addToCartOccUseCase: AddToCartOccUseCase,
     private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
     private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
     private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
@@ -252,6 +256,25 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
+    fun addProductToCartOcc(
+            product: ShopHomeProductUiModel,
+            shopId: String,
+            onSuccessAddToCartOcc: (dataModelAtc: DataModel) -> Unit,
+            onErrorAddToCartOcc: (exception: Throwable) -> Unit
+    ) {
+        launchCatchError(block = {
+            val addToCartOccSubmitData = withContext(dispatcherProvider.io) {
+                submitAddProductToCartOcc(shopId, product)
+            }
+            if (addToCartOccSubmitData.data.success == 1)
+                onSuccessAddToCartOcc(addToCartOccSubmitData.data)
+            else
+                onErrorAddToCartOcc(MessageErrorException(addToCartOccSubmitData.data.message.first()))
+        }) {
+            onErrorAddToCartOcc(it)
+        }
+    }
+
     fun clearGetShopProductUseCase() {
         getShopProductUseCase.clearCache()
     }
@@ -343,6 +366,20 @@ class ShopHomeViewModel @Inject constructor(
                 ?: "", shopId, productName = product.name ?: "", price = product.displayedPrice
                 ?: "", userId = userId)
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
+    }
+
+    private fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel?): AddToCartDataModel {
+        val requestParams = RequestParams.create().apply {
+            putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
+                    productId = product?.id ?: "",
+                    shopId = shopId,
+                    quantity = product?.minimumOrder.toString(),
+                    productName = product?.name ?: "",
+                    price = product?.displayedPrice ?: "",
+                    userId = userId
+            ))
+        }
+        return addToCartOccUseCase.createObservable(requestParams).toBlocking().first()
     }
 
     private suspend fun checkListProductWishlist(

@@ -691,15 +691,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductUiModel?,
             parentPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            isPersonalizationWidget: Boolean = false
+            isPersonalizationWidget: Boolean = false,
+            isOcc: Boolean = false
     ) {
-        view?.let { view ->
-            NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
-        }
+
         if(isPersonalizationWidget) {
             trackClickAddToCartPersonalization(dataModelAtc, shopHomeProductViewModel, shopHomeCarousellProductUiModel)
         } else {
             trackClickAddToCart(dataModelAtc, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
+        }
+
+        if (isOcc) {
+            context?.let {
+                RouteManager.route(it, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        } else {
+            view?.let { view ->
+                NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
+            }
         }
     }
 
@@ -1085,19 +1094,51 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onCarouselPersonalizationProductItemClickAddToCart(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
+    override fun onCarouselPersonalizationProductItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
+            isOcc: Boolean
+    ) {
         if (isLogin) {
             shopHomeProductViewModel?.let { product ->
-                viewModel?.addProductToCart(
+                if (isOcc) {
+                    viewModel?.addProductToCartOcc(
+                            product,
+                            shopId,
+                            {
+                                onSuccessAddToCart(
+                                        it,
+                                        shopHomeProductViewModel,
+                                        parentPosition,
+                                        shopHomeCarousellProductUiModel,
+                                        isPersonalizationWidget = true,
+                                        isOcc = isOcc
+                                )
+                            },
+                            {
+                                onErrorAddToCart(it)
+                            }
+                    )
+                } else {
+                    viewModel?.addProductToCart(
                         product,
                         shopId,
                         {
-                            onSuccessAddToCart(it, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel, isPersonalizationWidget = true)
+                            onSuccessAddToCart(
+                                    it,
+                                    shopHomeProductViewModel,
+                                    parentPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    isPersonalizationWidget = true
+                            )
                         },
                         {
                             onErrorAddToCart(it)
                         }
-                )
+                    )
+                }
             }
         } else {
             redirectToLoginPage()

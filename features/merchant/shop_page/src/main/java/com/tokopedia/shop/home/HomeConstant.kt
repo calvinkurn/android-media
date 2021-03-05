@@ -10,6 +10,7 @@ object GqlQueryConstant {
     const val GQL_GET_CAMPAIGN_NOTIFY_ME = "gql_get_campaign_notify_me"
     const val GQL_CHECK_CAMPAIGN_NOTIFY_ME = "gql_check_campaign_notify_me"
     const val GQL_ATC_MUTATION = "atcMutation"
+    const val GQL_ATC_OCC_MUTATION = "atcOccMutation"
 }
 
 object WidgetType {

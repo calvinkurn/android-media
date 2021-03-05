@@ -120,7 +120,9 @@ data class ShopLayoutWidget(
                 @SerializedName("labelGroups")
                 val labelGroups: List<LabelGroup> = listOf(),
                 @SerializedName("recommendationType")
-                val recommendationType: String = ""
+                val recommendationType: String = "",
+                @SerializedName("minimumOrder")
+                val minimumOrder: Int? = 1
         ) {
             data class Banner(
                     @SerializedName("imageID")

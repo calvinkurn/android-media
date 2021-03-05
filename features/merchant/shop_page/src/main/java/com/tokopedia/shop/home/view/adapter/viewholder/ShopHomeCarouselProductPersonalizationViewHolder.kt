@@ -61,7 +61,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                         adapterPosition,
                         carouselProductCardPosition,
                         element,
-                        productItem
+                        productItem,
+                        isOcc = element.name == BUY_AGAIN
                 )
             }
         }
