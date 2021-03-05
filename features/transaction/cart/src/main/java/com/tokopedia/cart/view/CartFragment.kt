@@ -2104,6 +2104,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         cartListData?.shoppingSummaryData?.promoValue = lastApplyData.benefitSummaryInfo.finalBenefitAmount
+        cartListData?.promoSummaryData?.details?.clear()
+        cartListData?.promoSummaryData?.details?.addAll(
+                lastApplyData.additionalInfo.usageSummaries.map {
+                    PromoSummaryDetailData(
+                            description = it.description,
+                            type = it.type,
+                            amountStr = it.amountStr,
+                            amount = it.amount.toDouble(),
+                            currencyDetailStr = it.currencyDetailsStr
+                    )
+                }.toList()
+        )
     }
 
     private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
