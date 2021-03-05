@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -98,7 +97,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
-    private var isFromCheckout: Boolean? = false
+    private var isFromCheckoutChangeAddress: Boolean? = false
+    private var isFromCheckoutSnippet: Boolean? = false
     private var isLocalization: Boolean? = false
     private var typeRequest: Int? = -1
     private var prevState: Int = -1
@@ -125,7 +125,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         address_list.adapter = adapter
         address_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initSearchView()
-        isFromCheckout = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT)
+        isFromCheckoutChangeAddress = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
+        isFromCheckoutSnippet = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET)
         isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
@@ -233,7 +234,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         viewModel.setDefault.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is ManageAddressState.Success ->
-                    if (isLocalization == true || isFromCheckout ==  true) {
+                    if (isLocalization == true || isFromCheckoutChangeAddress ==  true || isFromCheckoutSnippet == true) {
                         bottomSheetLainnya?.dismiss()
                         setChosenAddress()
                     } else {
@@ -286,11 +287,13 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, "${data.addressName} ${data.receiverName}", data.postalCode)
                     }
-                    if (isFromCheckout == true) {
+                    if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
                             putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, data)
                         }
-                        activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS, resultIntent)
+                        activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS, resultIntent)
+                    } else if (isFromCheckoutSnippet == true) {
+                        activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_SELECT_ADDRESS_FOR_SNIPPET)
                     }
                     activity?.finish()
                 }
