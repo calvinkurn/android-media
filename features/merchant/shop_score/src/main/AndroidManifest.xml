@@ -20,5 +20,21 @@
                     android:path="@string/path_shop_score_detail"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".performance.presentation.activity.ShopPerformancePageActivity"
+            android:label="@string/title_shop_performance"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_shop_score_performance"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

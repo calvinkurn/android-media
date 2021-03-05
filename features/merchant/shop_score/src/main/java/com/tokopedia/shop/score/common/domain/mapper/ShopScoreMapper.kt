@@ -29,8 +29,10 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER
 import com.tokopedia.shop.score.performance.presentation.model.*
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-object ShopScoreMapper {
+class ShopScoreMapper @Inject constructor(val userSession: UserSessionInterface) {
 
     fun mapToShopPerformanceDetail(titlePerformanceDetail: String): ShopPerformanceDetailUiModel {
         val shopPerformanceDetailUiModel = ShopPerformanceDetailUiModel()

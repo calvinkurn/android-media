@@ -8,3 +8,7 @@ interface ShopPerformanceListener {
 interface ItemShopPerformanceListener {
     fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String)
 }
+
+interface ItemCurrentStatusPowerMerchantListener {
+    fun onItemClickedCurrentStatus()
+}

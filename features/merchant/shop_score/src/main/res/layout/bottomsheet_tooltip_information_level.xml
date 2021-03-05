@@ -172,7 +172,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_desc_next_update"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:text="Update selanjutnya: 2 Feb 2021"/>
+                tools:text="@string/title_update_date"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
