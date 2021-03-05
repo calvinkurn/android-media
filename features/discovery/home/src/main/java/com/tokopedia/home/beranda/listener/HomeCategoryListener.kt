@@ -10,6 +10,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import java.util.*
 
 /**
@@ -133,4 +134,6 @@ interface HomeCategoryListener {
     fun getRechargeBUWidget(source: WidgetSource)
 
     fun onChooseAddressUpdated()
+
+    fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
 }

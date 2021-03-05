@@ -62,6 +62,7 @@ import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.logisticCommon.data.analytics.CodAnalytics;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
@@ -1281,23 +1282,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         switch (resultCode) {
             case CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS:
                 RecipientAddressModel currentAddress = shipmentAdapter.getAddressShipmentData();
-                RecipientAddressModel newAddress = data.getParcelableExtra(
-                        CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
-
-                if (currentAddress != null && newAddress != null) {
-                    if (!currentAddress.getId().equals(newAddress.getId()) ||
-                            !currentAddress.getAddressName().equals(newAddress.getAddressName()) ||
-                            !currentAddress.getStreet().equals(newAddress.getStreet()) ||
-                            !currentAddress.getRecipientName().equals(newAddress.getRecipientName()) ||
-                            !currentAddress.getRecipientPhoneNumber().equals(newAddress.getRecipientPhoneNumber()) ||
-                            !String.valueOf(currentAddress.getLatitude()).equals(String.valueOf(newAddress.getLatitude())) ||
-                            !String.valueOf(currentAddress.getLongitude()).equals(String.valueOf(newAddress.getLongitude())) ||
-                            !currentAddress.getPostalCode().equals(newAddress.getPostalCode()) ||
-                            !currentAddress.getDestinationDistrictId().equals(newAddress.getDestinationDistrictId()) ||
-                            !currentAddress.getCityId().equals(newAddress.getCityId()) ||
-                            !currentAddress.getProvinceId().equals(newAddress.getProvinceId())) {
-                        shipmentPresenter.changeShippingAddress(newAddress, isOneClickShipment(), false, false, true);
-                    }
+                ChosenAddressModel chosenAddressModel = data.getParcelableExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
+                if (currentAddress != null && chosenAddressModel != null) {
+                    shipmentPresenter.changeShippingAddress(currentAddress, chosenAddressModel, isOneClickShipment(), false, false, true);
                 }
                 break;
 
@@ -2660,6 +2647,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             // If ticker not exist, add ticker to list, then update the list
             TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
             shipmentAdapter.addTickerAnnouncementdata(tickerAnnouncementHolderData);
+            if (rvShipment.isComputingLayout()) {
+                rvShipment.post(this::onAddTickerAnnouncementMessage);
+            } else {
+                onAddTickerAnnouncementMessage();
+            }
+        }
+    }
+
+    private void onAddTickerAnnouncementMessage() {
+        if (!rvShipment.canScrollVertically(-1)) {
+            shipmentAdapter.notifyItemInserted(ShipmentAdapter.HEADER_POSITION);
+            rvShipment.scrollToPosition(0);
+        } else {
             shipmentAdapter.notifyItemInserted(ShipmentAdapter.HEADER_POSITION);
         }
     }
@@ -2729,7 +2729,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel.setLocationDataModel(locationDataModel);
                 recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
                 recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
-                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true, true);
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, null, true, true, true, true);
             }
         }
     }
@@ -2758,12 +2758,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
             checkoutTradeInAnalytics.eventClickJemputTab();
             if (recipientAddressModel.getLocationDataModel() != null) {
-                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true, true);
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, null, true, false, true, true);
             }
         } else {
             checkoutTradeInAnalytics.eventClickDropOffTab();
             if (recipientAddressModel.getLocationDataModel() != null) {
-                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true, true);
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, null, true, true, true, true);
             }
         }
     }

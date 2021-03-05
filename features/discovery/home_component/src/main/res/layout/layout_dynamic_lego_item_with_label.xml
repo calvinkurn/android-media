@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="@id/image"
         tools:text="Test product label"
         app:typographyType="body_3"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_Static_White"
         android:gravity="center"
         android:maxLines="1"
         android:ellipsize="end"

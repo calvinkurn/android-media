@@ -99,7 +99,6 @@ class ShopHomeViewModelTest {
     lateinit var shopProductSortMapper: ShopProductSortMapper
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
-
     private lateinit var viewModel: ShopHomeViewModel
 
     private val mockShopId = "1234"
@@ -264,7 +263,7 @@ class ShopHomeViewModelTest {
                         )
                 )
         )
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
 
         coEvery {
             mvcSummaryUseCase.getResponse(any())
@@ -283,7 +282,7 @@ class ShopHomeViewModelTest {
                         )
                 )
         )
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
 
         coEvery {
             mvcSummaryUseCase.getResponse(any())
@@ -310,7 +309,7 @@ class ShopHomeViewModelTest {
                         )
                 )
         )
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
         viewModel.getMerchantVoucherCoupon(mockShopId)
         assertTrue(viewModel.shopHomeLayoutData.value is Success)
     }

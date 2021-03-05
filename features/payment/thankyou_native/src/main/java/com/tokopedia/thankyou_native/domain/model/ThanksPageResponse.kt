@@ -83,6 +83,7 @@ data class ThanksPageData(
         var paymentMethodCount: Int
 ) : Parcelable
 
+
 data class PaymentDetail(
         @SerializedName("gateway_code")
         val gatewayCode: String,

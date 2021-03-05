@@ -59,13 +59,9 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                     view.showToastError(cartShipmentAddressFormData.errorMessage)
                 }
             } else {
-                val groupAddressList: List<GroupAddress?> = cartShipmentAddressFormData.groupAddress
-                if (cartShipmentAddressFormData.errorCode == 0 && (groupAddressList.isEmpty() || groupAddressList[0] == null || groupAddressList[0]?.userAddress == null)) {
-                    view.onShipmentAddressFormEmpty()
-                } else {
-                    val userAddress = groupAddressList.firstOrNull()?.userAddress
-                    validateRenderCheckoutPage(cartShipmentAddressFormData, userAddress)
-                }
+                val groupAddressList: List<GroupAddress> = cartShipmentAddressFormData.groupAddress
+                val userAddress = groupAddressList.firstOrNull()?.userAddress
+                validateRenderCheckoutPage(cartShipmentAddressFormData, userAddress)
             }
         }
     }
@@ -79,16 +75,20 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                 view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress?.state ?: 0)
             }
             CartShipmentAddressFormData.NO_ERROR -> {
-                view.updateLocalCacheAddressData(userAddress)
-                if (userAddress?.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH) {
-                    shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
-                    view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
-                    if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
-                        view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
-                    }
+                if (userAddress == null) {
+                    view.onShipmentAddressFormEmpty()
                 } else {
-                    shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
-                    view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
+                    view.updateLocalCacheAddressData(userAddress)
+                    if (userAddress.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH) {
+                        shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
+                        view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
+                        if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
+                            view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
+                        }
+                    } else {
+                        shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
+                        view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
+                    }
                 }
             }
         }

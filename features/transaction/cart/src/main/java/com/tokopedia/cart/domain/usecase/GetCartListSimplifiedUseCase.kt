@@ -29,7 +29,7 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
 
         const val PARAM_KEY_LANG = "lang"
         const val PARAM_KEY_SELECTED_CART_ID = "selected_cart_id"
-        const val PARAM_KEY_ADDITIONAL = "additional_param"
+        const val PARAM_KEY_ADDITIONAL = "additional_params"
 
         const val PARAM_VALUE_ID = "id"
     }

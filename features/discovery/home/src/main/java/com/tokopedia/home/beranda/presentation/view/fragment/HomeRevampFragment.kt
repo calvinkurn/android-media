@@ -110,6 +110,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -327,6 +328,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private val bannerCarouselCallback = BannerComponentCallback(context, this)
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private var chooseAddressWidgetInitialized: Boolean = false
 
     private fun isNavRevamp(): Boolean {
         return try {
@@ -1397,8 +1399,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 RechargeBUWidgetCallback(context, this),
                 bannerCarouselCallback,
                 DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this),
-                ChooseAddressWidgetCallback(context, this, this)
+                Lego6AutoBannerComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1645,7 +1646,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 HomeChooseAddressData(isActive = true)
                         .setLocalCacheModel(localCacheModel)
         )
-        Toast.makeText(requireContext(), "Address changed to : "+localCacheModel?.label?:"", Toast.LENGTH_SHORT).show()
+        chooseAddressWidgetInitialized = false
+    }
+
+    override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
+        if (!chooseAddressWidgetInitialized) {
+            chooseAddressWidget.bindChooseAddress(ChooseAddressWidgetCallback(context, this, this))
+            chooseAddressWidget.run {
+                visibility = if (needToShowChooseAddress) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+            chooseAddressWidgetInitialized = true
+        }
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce

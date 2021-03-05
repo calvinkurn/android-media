@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.common.feature.promo.data.request.promol
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -24,9 +23,7 @@ data class PromoRequest(
         @SerializedName("is_trade_in")
         var isTradeIn: Int = 0,
         @SerializedName("is_trade_in_drop_off")
-        var isTradeInDropOff: Int = 0,
-        @SerializedName("chosen_address")
-        var chosenAddress: ChosenAddress? = null
+        var isTradeInDropOff: Int = 0
 ) : Parcelable
 
 @Parcelize

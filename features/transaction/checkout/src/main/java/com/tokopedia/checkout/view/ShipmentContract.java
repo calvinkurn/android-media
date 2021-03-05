@@ -13,6 +13,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
@@ -274,7 +275,12 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared);
 
-        void changeShippingAddress(RecipientAddressModel newRecipientAddressModel, boolean isOneClickShipment, boolean isTradeInDropOff, boolean isHandleFallback, boolean reloadCheckoutPage);
+        void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
+                                   ChosenAddressModel chosenAddressModel,
+                                   boolean isOneClickShipment,
+                                   boolean isTradeInDropOff,
+                                   boolean isHandleFallback,
+                                   boolean reloadCheckoutPage);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 

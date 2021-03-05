@@ -38,6 +38,7 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomC
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
@@ -283,6 +284,7 @@ PopularCityAdapter.ActionListener {
                         @SuppressLint("MissingPermission")
                         override fun onPermissionGranted() {
                             if (AddNewAddressUtils.isGpsEnabled(context)) {
+                                ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                                 fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                                     if (data != null) {
                                         ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
@@ -384,6 +386,14 @@ PopularCityAdapter.ActionListener {
         }
     }
 
+    override fun showToasterError() {
+        val toaster = Toaster
+        view?.let { v ->
+            toaster.build(v, getString(R.string.toaster_failed_get_district), Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR, "").show()
+        }
+    }
+
     @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -396,6 +406,7 @@ PopularCityAdapter.ActionListener {
             }
         }
         if (isAllowed) {
+            ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
             if (AddNewAddressUtils.isGpsEnabled(context)) {
                 fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                     if (data != null) {
@@ -407,6 +418,8 @@ PopularCityAdapter.ActionListener {
                 hasRequestedLocation = false
                 showDialogAskGps()
             }
+        } else {
+            ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
         }
     }
 

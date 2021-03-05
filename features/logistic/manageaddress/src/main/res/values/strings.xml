@@ -3,6 +3,7 @@
 
     <!--Manage Address-->
     <string name="address_name">Rumah</string>
+    <string name="image_desc">imageDesc</string>
     <string name="address_label">Alamat Utama</string>
     <string name="address_label_new">Utama</string>
     <string name="receiver_name">Nama</string>
