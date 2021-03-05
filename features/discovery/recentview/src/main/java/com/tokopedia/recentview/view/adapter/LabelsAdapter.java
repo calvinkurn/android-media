@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,6 @@ import java.util.List;
 
 public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder> {
 
-    private static final String DEFAULT_WHITE = "#ffffff";
     private static final double MEDIAN_VALUE = 135;
     private List<LabelsDataModel> listLabel;
 
@@ -45,7 +45,12 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder
         LayerDrawable bgShape = (LayerDrawable) holder.label.getBackground();
         GradientDrawable background = (GradientDrawable) bgShape.findDrawableByLayerId(R.id
                 .recent_view_container);
-        if (!listLabel.get(position).getColor().toLowerCase().equals(DEFAULT_WHITE)) {
+        String defaultWhiteColor = "#"+Integer.toHexString(
+                ContextCompat.getColor(
+                        holder.itemView.getContext(),
+                        R.color.recentview_dms_label_background)
+        );
+        if (!listLabel.get(position).getColor().toLowerCase().equals(defaultWhiteColor)) {
             background.setColor(Color.parseColor(listLabel.get(position)
                     .getColor()));
             background.setStroke(0, 0);
