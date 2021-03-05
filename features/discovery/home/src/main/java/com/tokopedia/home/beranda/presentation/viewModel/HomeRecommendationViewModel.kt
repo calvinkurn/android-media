@@ -7,6 +7,8 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import javax.inject.Inject
@@ -28,7 +30,8 @@ class HomeRecommendationViewModel @Inject constructor(
     fun loadInitialPage(tabName: String, recommendationId: Int,count: Int){
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1)
+            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1,
+                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams() ?: "")
             val data = getHomeRecommendationUseCase.executeOnBackground()
             if(data.homeRecommendations.isEmpty()){
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
