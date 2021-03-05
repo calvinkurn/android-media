@@ -1,6 +1,8 @@
 package com.tokopedia.talk.feature.sellersettings.template.presentation.viewmodel
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.feature.sellersettings.template.data.*
+import com.tokopedia.talk.util.verifyTemplateMutationErrorEquals
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -52,7 +54,7 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
 
     @Test
     fun `when arrangeTemplate fail due to network error should execute expected use case and return fail`() {
-        val expectedResponse = Throwable()
+        val expectedResponse = MessageErrorException()
 
         onFailArrangeTemplate_thenReturn(expectedResponse)
 
@@ -68,9 +70,23 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
 
         onSuccessEnableTemplate_thenReturn(expectedResponse)
 
-        viewModel.enableTemplate(anyBoolean())
+        viewModel.enableTemplate(true)
 
-        val expectedValue = TalkTemplateMutationResults.TemplateMutationSuccess
+        val expectedValue = TalkTemplateMutationResults.TemplateActivateSuccess
+
+        verifyEnableTemplateUseCaseCalled()
+        verifyTemplateMutationSuccess(expectedValue)
+    }
+
+    @Test
+    fun `when disableTemplate success should execute expected use case`() {
+        val expectedResponse = EnableTemplateResponseWrapper(TemplateMutationResult(success = 1))
+
+        onSuccessEnableTemplate_thenReturn(expectedResponse)
+
+        viewModel.enableTemplate(false)
+
+        val expectedValue = TalkTemplateMutationResults.TemplateDeactivateSuccess
 
         verifyEnableTemplateUseCaseCalled()
         verifyTemplateMutationSuccess(expectedValue)
@@ -90,7 +106,7 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
 
     @Test
     fun `when enableTemplate fail due to network error should execute expected use case and return fail`() {
-        val expectedResponse = Throwable()
+        val expectedResponse = MessageErrorException()
 
         onFailEnableTemplate_thenReturn(expectedResponse)
 
@@ -173,10 +189,10 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
     }
 
     private fun verifyTemplateMutationFail() {
-        viewModel.templateMutation.verifyValueEquals(TalkTemplateMutationResults.MutationFailed())
+        viewModel.templateMutation.verifyTemplateMutationErrorEquals(TalkTemplateMutationResults.MutationFailed())
     }
 
     private fun verifyTemplateMutationFail(talkTemplateMutationResults: TalkTemplateMutationResults) {
-        viewModel.templateMutation.verifyValueEquals(talkTemplateMutationResults)
+        viewModel.templateMutation.verifyTemplateMutationErrorEquals(talkTemplateMutationResults)
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.DiscussionSmartReplyMutationResult
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.DiscussionSetSmartReplySettingResponseWrapper
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.DiscussionSetSmartReplyTemplateResponseWrapper
@@ -33,7 +34,7 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
 
         viewModel.setSmartReply()
 
-        val expectedData = Throwable(expectedResponse.discussionSetSmartReplySetting.reason)
+        val expectedData = MessageErrorException(expectedResponse.discussionSetSmartReplySetting.reason)
 
         verifyDiscussionSetSmartReplySettingsUseCaseCalled()
         viewModel.setSmartReplyResult.verifyErrorEquals(Fail(expectedData))
@@ -71,7 +72,7 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
 
         viewModel.setSmartReplyTemplate()
 
-        val expectedData = Throwable(expectedResponse.discussionSetSmartReplyTemplate.reason)
+        val expectedData = MessageErrorException(expectedResponse.discussionSetSmartReplyTemplate.reason)
 
         verifyDiscussionSetSmartReplyTemplateUseCaseCalled()
         viewModel.setSmartReplyResult.verifyErrorEquals(Fail(expectedData))

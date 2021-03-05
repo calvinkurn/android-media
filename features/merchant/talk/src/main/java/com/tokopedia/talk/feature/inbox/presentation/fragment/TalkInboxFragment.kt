@@ -52,6 +52,7 @@ import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.inbox.util.TalkInboxPreference
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -75,14 +76,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val EMPTY_SELLER_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
         const val EMPTY_SELLER_PROBLEM = "https://ecs7.tokopedia.net/android/others/talk_empty_reported_discussion.png"
         const val EMPTY_SELLER_AUTOREPLIED = "https://images.tokopedia.net/img/android/talk/talk_inbox_empty_autoreplied.png"
-        const val KEY_SHOW_COACH_MARK = "showCoachMark"
-        const val COACH_MARK_INITIAL_VALUE = true
         const val COACH_MARK_SHOWN = false
         const val COACH_MARK_LAST_INDEX = 2
         const val INDEX_UNRESPONDED_FILTER = 0
         const val INDEX_PROBLEM_FILTER = 1
         const val INDEX_AUTOREPLY_FILTER = 2
-        private const val DISCUSSION_PREF = "discussion.pref"
 
         fun createNewInstance(tab: TalkInboxTab? = null, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
@@ -114,7 +112,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private var containerListener: InboxFragmentContainer? = null
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var shouldHitRoleChangedTracker = false
-    private var sharedPrefs: SharedPreferences? = null
+    private var talkInboxPreference: TalkInboxPreference? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REPLY_REQUEST_CODE) {
@@ -259,6 +257,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
+        initSharedPrefs()
         setupSettingsIcon()
         initSortFilter()
         initErrorPage()
@@ -628,22 +627,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
     }
 
-    private fun updateSharedPrefs(flag: Boolean) {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(DISCUSSION_PREF, Context.MODE_PRIVATE)
-            sharedPrefs?.run {
-                edit().putBoolean(KEY_SHOW_COACH_MARK, flag).apply()
-            }
-        }
+    private fun updateSharedPrefs() {
+        talkInboxPreference?.updateSharedPrefs(COACH_MARK_SHOWN)
     }
 
     private fun isShowCoachMark(): Boolean {
-        return context?.let {
-            sharedPrefs = it.getSharedPreferences(DISCUSSION_PREF, Context.MODE_PRIVATE)
-            val result = sharedPrefs?.getBoolean(KEY_SHOW_COACH_MARK, COACH_MARK_INITIAL_VALUE)
-                    ?: false
-            result
-        } ?: false
+        return talkInboxPreference?.isShowCoachMark() ?: false
     }
 
     private fun initCoachmark() {
@@ -665,7 +654,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 }
             })
             coachMark?.showCoachMark(coachMarkItem)
-            updateSharedPrefs(COACH_MARK_SHOWN)
+            updateSharedPrefs()
         }
     }
 
@@ -728,5 +717,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             talkInboxTracking.eventClickTab(inboxType, viewModel.getUserId(), viewModel.getShopId(), getCounterForTracking())
             shouldHitRoleChangedTracker = false
         }
+    }
+
+    private fun initSharedPrefs() {
+        talkInboxPreference = TalkInboxPreference(context)
     }
 }

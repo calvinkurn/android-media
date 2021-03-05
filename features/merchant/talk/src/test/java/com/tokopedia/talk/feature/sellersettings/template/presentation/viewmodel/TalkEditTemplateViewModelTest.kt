@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.sellersettings.template.presentation.viewmodel
 
 import com.tokopedia.talk.feature.sellersettings.template.data.*
+import com.tokopedia.talk.util.verifyTemplateMutationErrorEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -32,7 +33,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
         viewModel.addTemplate(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString())
 
         verifyAddTemplateUseCaseCalled()
-        verifyTemplateMutationFail()
+        verifyTemplateMutationFail(TalkTemplateMutationResults.MutationFailed())
     }
 
     @Test
@@ -44,7 +45,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
         viewModel.addTemplate(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString())
 
         verifyAddTemplateUseCaseCalled()
-        verifyTemplateMutationFail()
+        verifyTemplateMutationFail(TalkTemplateMutationResults.MutationFailed())
     }
 
     @Test
@@ -108,7 +109,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
         viewModel.updateSpecificTemplate(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt())
 
         verifyUpdateSpecificTemplateUseCaseCalled()
-        verifyTemplateMutationFail()
+        verifyTemplateMutationFail(TalkTemplateMutationResults.MutationFailed())
     }
 
     @Test
@@ -120,7 +121,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
         viewModel.updateSpecificTemplate(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt())
 
         verifyUpdateSpecificTemplateUseCaseCalled()
-        verifyTemplateMutationFail()
+        verifyTemplateMutationFail(TalkTemplateMutationResults.MutationFailed())
     }
 
     private fun verifyAddTemplateUseCaseCalled() {
@@ -163,12 +164,12 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
         viewModel.templateMutation.verifyValueEquals(talkTemplateMutationResults)
     }
 
-    private fun verifyTemplateMutationFail() {
-        viewModel.templateMutation.verifyValueEquals(TalkTemplateMutationResults.MutationFailed())
+    private fun verifyTemplateMutationFail(talkTemplateMutationFailed: TalkTemplateMutationResults.MutationFailed) {
+        viewModel.templateMutation.verifyTemplateMutationErrorEquals(talkTemplateMutationFailed)
     }
 
     private fun verifyTemplateMutationFail(talkTemplateMutationResults: TalkTemplateMutationResults) {
-        viewModel.templateMutation.verifyValueEquals(talkTemplateMutationResults)
+        viewModel.templateMutation.verifyTemplateMutationErrorEquals(talkTemplateMutationResults)
     }
 
 }

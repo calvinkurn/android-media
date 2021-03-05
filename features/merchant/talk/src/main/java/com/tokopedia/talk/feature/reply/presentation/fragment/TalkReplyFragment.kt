@@ -517,7 +517,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onFailUnmaskCommentOrQuestion(throwable: Throwable) {
-
+        logException(throwable)
         hidePageLoading()
         showErrorToaster(getString(R.string.reply_unmask_toaster_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
@@ -677,6 +677,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     replyTemplateContainer.show()
                 }
                 is Fail -> {
+                    logException(it.throwable)
                     replyTemplateContainer.hide()
                 }
             }

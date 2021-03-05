@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.reply
 
 import android.accounts.NetworkErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.data.TalkMutationData
 import com.tokopedia.talk.common.data.TalkMutationResponse
 import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewComment
@@ -89,7 +90,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
         viewModel.followUnfollowTalk(questionId)
 
-        val expectedResponse = Fail(Throwable(message = response.talkFollowUnfollowTalkResponse.messageError.first()))
+        val expectedResponse = Fail(MessageErrorException(response.talkFollowUnfollowTalkResponse.messageError.first()))
 
         verifyTalkFollowUnfollowTalkUseCaseExecuted()
         verifyTalkFollowUnfollowTalkErrorEquals(expectedResponse)
@@ -134,7 +135,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
         viewModel.deleteTalk(questionId)
 
-        val expectedResponse = Fail(Throwable(response.talkDeleteTalk.messageError.first()))
+        val expectedResponse = Fail(MessageErrorException(response.talkDeleteTalk.messageError.first()))
 
         verifyTalkDeleteTalkUseCaseExecuted()
         verifyTalkDeleteTalkErrorEquals(expectedResponse)
@@ -181,7 +182,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
         viewModel.deleteComment(questionId, commentId)
 
-        val expectedResponse = Fail(Throwable(response.talkDeleteComment.messageError.first()))
+        val expectedResponse = Fail(MessageErrorException(response.talkDeleteComment.messageError.first()))
 
         verifyTalkDeleteCommentUseCaseExecuted()
         verifyTalkDeleteCommentErrorEquals(expectedResponse)
@@ -229,7 +230,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
         viewModel.createNewComment(comment, questionId)
 
-        val expectedResponse = Fail(Throwable(response.talkCreateNewComment.messageError.first()))
+        val expectedResponse = Fail(MessageErrorException(response.talkCreateNewComment.messageError.first()))
 
         verifyTalkCreateNewCommentUseCaseExecuted()
         verifyTalkCreateNewCommentErrorEquals(expectedResponse)
@@ -307,7 +308,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         viewModel.markCommentNotFraud(anyString(), anyString())
 
         verifyTalkMarkCommentNotFraudUseCaseExecuted()
-        verifyMarkCommentNotFraudErrorEquals(Fail(Throwable(expectedResponse.talkMarkCommentNotFraud.messageError.firstOrNull())))
+        verifyMarkCommentNotFraudErrorEquals(Fail(MessageErrorException(expectedResponse.talkMarkCommentNotFraud.messageError.firstOrNull())))
     }
 
     @Test
@@ -343,7 +344,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         viewModel.markQuestionNotFraud(anyString())
 
         verifyTalkMarkNotFraudUseCaseExecuted()
-        verifyMarkNotFraudErrorEquals(Fail(Throwable(expectedResponse.talkMarkNotFraud.messageError.firstOrNull())))
+        verifyMarkNotFraudErrorEquals(Fail(MessageErrorException(expectedResponse.talkMarkNotFraud.messageError.firstOrNull())))
     }
 
     @Test
@@ -379,7 +380,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         viewModel.reportComment(anyString())
 
         verifyTalkReportCommentUseCaseExecuted()
-        verifyReportCommentErrorEquals(Fail(Throwable(expectedResponse.talkReportComment.messageError.firstOrNull())))
+        verifyReportCommentErrorEquals(Fail(MessageErrorException(expectedResponse.talkReportComment.messageError.firstOrNull())))
     }
 
     @Test
@@ -415,7 +416,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         viewModel.reportTalk(anyString())
 
         verifyTalkReportTalkUseCaseExecuted()
-        verifyReportTalkErrorEquals(Fail(Throwable(expectedResponse.talkReportTalk.messageError.firstOrNull())))
+        verifyReportTalkErrorEquals(Fail(MessageErrorException(expectedResponse.talkReportTalk.messageError.firstOrNull())))
     }
 
     @Test
