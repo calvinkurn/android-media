@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -166,14 +167,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun setupObserver() {
-        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, {
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetBuyerAccount(it.data)
                 is Fail -> onFailGetData()
             }
         })
 
-        viewModel.firstRecommendationData.observe(viewLifecycleOwner, {
+        viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when (it) {
                 is Success -> onSuccessGetFirstRecommendationData(it.data)
@@ -184,7 +185,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.getRecommendationData.observe(viewLifecycleOwner, {
+        viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when (it) {
                 is Success -> addRecommendationItem(it.data)
@@ -195,7 +196,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.ovoBalance.observe(viewLifecycleOwner, {
+        viewModel.ovoBalance.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetOvoBalance(it.data)
@@ -206,7 +207,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.shortcutData.observe(viewLifecycleOwner, {
+        viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val mappedMember = mapper.mapMemberItemDataView(it.data)
@@ -224,7 +225,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.userPageAssetConfig.observe(viewLifecycleOwner, {
+        viewModel.userPageAssetConfig.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetUserPageAssetConfig(it.data)
@@ -235,7 +236,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.tokopointsDrawerList.observe(viewLifecycleOwner, {
+        viewModel.tokopointsDrawerList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetTokopointsDrawerList(it.data)
@@ -246,7 +247,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.saldoBalance.observe(viewLifecycleOwner, {
+        viewModel.saldoBalance.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetSaldoBalance(it.data)
@@ -1101,10 +1102,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
-                    getString(R.string.new_home_account_go_to_wishlist)
-            ) {
-                RouteManager.route(activity, ApplinkConst.WISHLIST)
-            }
+                    getString(R.string.new_home_account_go_to_wishlist),
+                    setOnClickSuccessAddWishlist())
+        }
+    }
+
+    private fun setOnClickSuccessAddWishlist(): View.OnClickListener {
+        return View.OnClickListener {
+            RouteManager.route(activity, ApplinkConst.WISHLIST)
         }
     }
 
@@ -1133,10 +1138,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         if (view != null && userVisibleHint) {
             view?.let {
                 Toaster.make(it, getString(R.string.new_home_account_error_no_internet_connection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                        getString(R.string.title_try_again)) { getData() }
+                        getString(R.string.title_try_again), setOnClickErrorNoConnection())
             }
         }
         fpmBuyer?.run { stopTrace() }
+    }
+
+    private fun setOnClickErrorNoConnection(): View.OnClickListener {
+        return View.OnClickListener { getData() }
     }
 
     override fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter) {
