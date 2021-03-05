@@ -23,6 +23,7 @@ class CardViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_card_widget
+        private const val GO_TO_INBOX_REVIEW = "GO_TO_INBOX_REVIEW"
     }
 
     override fun bind(element: CardWidgetUiModel) {

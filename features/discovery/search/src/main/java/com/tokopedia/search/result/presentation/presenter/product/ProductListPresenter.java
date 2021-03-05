@@ -163,6 +163,7 @@ final class ProductListPresenter
     private String navSource = "";
     private String pageId = "";
     private String pageTitle = "";
+    private String searchRef = "";
     private String autoCompleteApplink = "";
     private boolean isGlobalNavWidgetAvailable = false;
     private boolean isShowHeadlineAdsBasedOnGlobalNav = false;
@@ -656,6 +657,7 @@ final class ProductListPresenter
         setNavSource(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.NAVSOURCE));
         setPageId(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_ID));
         setPageTitle(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_TITLE));
+        setSearchRef(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SEARCH_REF));
         resetAdditionalParams();
 
         if (searchParameter == null) return;
@@ -683,6 +685,10 @@ final class ProductListPresenter
 
     private void setPageTitle(String pageTitle) {
         this.pageTitle = pageTitle;
+    }
+
+    private void setSearchRef(String searchRef) {
+        this.searchRef = searchRef;
     }
 
     private void resetAdditionalParams() {
@@ -1288,8 +1294,13 @@ final class ProductListPresenter
     }
 
     private void processHeadlineAdsAtPosition(List<Visitable> visitableList, int position, CpmViewModel cpmViewModel) {
+        List<Visitable> headlineAdsVisitableList = new ArrayList<>();
+        headlineAdsVisitableList.add(new SeparatorViewModel());
+        headlineAdsVisitableList.add(cpmViewModel);
+        headlineAdsVisitableList.add(new SeparatorViewModel());
+
         Visitable product = productList.get(position - 1);
-        visitableList.add(visitableList.indexOf(product) + 1, cpmViewModel);
+        visitableList.addAll(visitableList.indexOf(product) + 1, headlineAdsVisitableList);
     }
 
     private BannedProductsTickerViewModel createBannedProductsTickerViewModel(String errorMessage) {
@@ -1854,13 +1865,19 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
-        getView().sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword());
+        getView().sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword(), getDimension90());
     }
 
     public String getSuggestedRelatedKeyword() {
         if (!trackRelatedKeywordResponseCodeList.contains(responseCode)) return "";
 
         return (relatedViewModel != null && !relatedViewModel.getRelatedKeyword().isEmpty()) ? relatedViewModel.getRelatedKeyword() : "";
+    }
+
+    private String getDimension90() {
+        if (isLocalSearch()) return pageTitle + "." + navSource + ".local_search." + pageId;
+
+        return searchRef;
     }
 
     @Override
@@ -1899,7 +1916,7 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
-        getView().sendGTMTrackingProductClick(item, getUserId(), getSuggestedRelatedKeyword());
+        getView().sendGTMTrackingProductClick(item, getUserId(), getSuggestedRelatedKeyword(), getDimension90());
     }
 
     @Override

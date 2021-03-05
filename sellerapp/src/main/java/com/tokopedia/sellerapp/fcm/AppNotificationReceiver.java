@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.moengage.push.PushManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.gcm.Constants;
@@ -15,6 +14,7 @@ import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.pushnotif.PushNotification;
@@ -105,7 +105,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
 
     @Override
     public void onMoengageNotificationReceived(RemoteMessage message) {
-        PushManager.getInstance().getPushHandler().handlePushPayload(SellerMainApplication.getAppContext(), message.getData());
+        MoengageInteractor.INSTANCE.handlePushPayload(message.getData());
     }
 
     @Override

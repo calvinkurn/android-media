@@ -8,7 +8,7 @@
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_invoice">Invoice</string>
     <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
-    <string name="hint_search_product">Cari nama pembeli, produk, resi, atau invoice</string>
+    <string name="som_list_hint_search_product">Cari nama pembeli, produk, resi, atau invoice</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
     <string name="btn_show_order">Tampilkan Pesanan</string>
 
@@ -253,9 +253,12 @@
     <string name="som_list_bulk_print_dialog_print_button">Ya, Cetak Label</string>
     <string name="som_list_bulk_print_dialog_cancel_print_button">Batal</string>
     <string name="som_list_bulk_print_button">Cetak Label Sekaligus</string>
+    <string name="som_print_awb_error_message">Terjadi kesalahan, silahkan coba lagi.</string>
 
     <string name="som_detail_som_print_not_available">Fitur ini hanya tersedia di aplikasi Tokopedia Seller</string>
-    <string name="som_print_awb_minimum_os_error_message">Maaf fitur cetak label hanya dapat dijalankan pada smartphone dengan minimal versi OS Kitkat</string>
-    
+    <string name="som_detail_other_bottomsheet_title">Lainnya</string>
+
     <string name="som_detail_ticker_description">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
+    <string name="som_list_failed_refresh_order">Gagal memperbarui informasi pesanan!</string>
+    <string name="content_description_ic_load_more_product_drop_down_indicator">Load More Product Button</string>
 </resources>
