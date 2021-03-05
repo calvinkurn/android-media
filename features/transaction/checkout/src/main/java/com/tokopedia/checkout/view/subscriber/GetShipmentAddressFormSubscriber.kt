@@ -81,10 +81,8 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                     view.updateLocalCacheAddressData(userAddress)
                     shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
                     view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
-                    if (userAddress.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH) {
-                        if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
-                            view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
-                        }
+                    if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
+                        view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
                     }
                 }
             }
