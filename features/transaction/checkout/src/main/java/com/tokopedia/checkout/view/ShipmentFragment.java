@@ -3041,7 +3041,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     userAddress.getDistrictId(),
                     userAddress.getLatitude(),
                     userAddress.getLongitude(),
-                    userAddress.getAddressName(),
+                    String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
                     userAddress.getPostalCode()
             );
         }
