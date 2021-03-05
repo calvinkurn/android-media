@@ -27,6 +27,7 @@ import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper.getRequestBodyCheckout
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.ResponseDataNullException
@@ -111,10 +112,10 @@ class DigitalCartViewModel @Inject constructor(
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
             digitalGetCartUseCase.execute(
-                    DigitalGetCartUseCase.createParams(categoryId.toInt()),
+                    DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
                     onSuccessGetCart(),
                     onErrorGetCart()
-                )
+            )
         }
     }
 
