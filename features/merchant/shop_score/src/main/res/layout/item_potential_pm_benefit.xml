@@ -23,8 +23,9 @@
         app:typographyType="body_2"
         android:layout_marginStart="@dimen/dp_12"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/iv_potential_pm_benefit"
         app:layout_constraintStart_toEndOf="@id/iv_potential_pm_benefit"
-        tools:text="@string/example_text_item_potential_pm_benefit"/>
+        tools:text="@string/text_item_potential_pm_benefit"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

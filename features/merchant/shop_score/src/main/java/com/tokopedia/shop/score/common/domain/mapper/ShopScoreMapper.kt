@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.common.domain.mapper
 
+import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
@@ -200,6 +201,31 @@ class ShopScoreMapper @Inject constructor(val userSession: UserSessionInterface)
         return ItemDetailPerformanceUiModel()
     }
 
+    fun mapToCardPotentialBenefit(): SectionPotentialPMBenefitUiModel {
+        return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit())
+    }
+
+    private fun mapToItemPotentialBenefit(): List<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
+        val itemPotentialPMBenefitList = mutableListOf<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>()
+        itemPotentialPMBenefitList.apply {
+            add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                    iconPotentialPMUrl = "",
+                    titlePotentialPMU = R.string.text_item_potential_pm_benefit_1
+            ))
+
+            add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                    iconPotentialPMUrl = "",
+                    titlePotentialPMU = R.string.text_item_potential_pm_benefit_2
+            ))
+
+            add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                    iconPotentialPMUrl = "",
+                    titlePotentialPMU = R.string.text_item_potential_pm_benefit_3
+            ))
+        }
+        return itemPotentialPMBenefitList
+    }
+
     private fun mapToCardTooltipLevel(level: Int): List<CardTooltipLevelUiModel> {
         val cardTooltipLevelUiModelList = mutableListOf<CardTooltipLevelUiModel>()
 
@@ -219,7 +245,6 @@ class ShopScoreMapper @Inject constructor(val userSession: UserSessionInterface)
                 }
             }
         }
-
         return cardTooltipLevelUiModelList
     }
 }

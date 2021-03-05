@@ -85,7 +85,9 @@
     <string name="title_eligible_status_power_merchant">Selamat! Karena Performamu, kamu bisa jadi %s</string>
     <string name="desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga <![CDATA[<b>%1s kali lipat</b>]]></string>
     <string name="title_shop_pm_potential">Toko dengan Power Merchant berpotensi:</string>
-    <string name="text_item_potential_pm_benefit">Menerima pesanan lebih banyak <![CDATA[<b>%1s kali lipat</b>]]></string>
+    <string name="text_item_potential_pm_benefit_1">Menerima pesanan lebih banyak <![CDATA[<b>5 kali lipat</b>]]></string>
+    <string name="text_item_potential_pm_benefit_2">Meningkatkan penghasilan hingga <![CDATA[<b>5,5 kali lipat</b>]]></string>
+    <string name="text_item_potential_pm_benefit_3">Lebih sering dikunjungi pembeli hingga <![CDATA[<b>4,3 kali lipat</b>]]></string>
     <string name="title_calculation_shop_performance">Perhitungan</string>
     <string name="title_tips_shop_performance">Tips</string>
     <string name="desc_calculation_shop_performance">Skor melambangkan kualitas layanan dan produkmu. Target disesuaikan dengan levelmu.</string>

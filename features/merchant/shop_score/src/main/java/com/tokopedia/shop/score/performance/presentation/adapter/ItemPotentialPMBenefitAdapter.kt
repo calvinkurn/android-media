@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMBenefitUiModel
@@ -36,7 +37,7 @@ class ItemPotentialPMBenefitAdapter : RecyclerView.Adapter<ItemPotentialPMBenefi
         fun bind(data: SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel) {
             with(itemView) {
                 iv_potential_pm_benefit?.loadImage(data.iconPotentialPMUrl)
-                tv_potential_pm_benefit?.text = data.titlePotentialPMU
+                tv_potential_pm_benefit?.text = MethodChecker.fromHtml(context.getString(data.titlePotentialPMU))
             }
         }
     }

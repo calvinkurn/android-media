@@ -1,10 +1,10 @@
 package com.tokopedia.shop.score.performance.presentation.model
 
+import androidx.annotation.StringRes
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapterTypeFactory
 
 data class SectionPotentialPMBenefitUiModel(
-        var datePotentialPMBenefit: String = "",
-        var potentialPMBenefitList: List<ItemPotentialPMBenefitUIModel> = listOf()
+        val potentialPMBenefitList: List<ItemPotentialPMBenefitUIModel> = listOf()
 ): BaseShopPerformance {
 
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
@@ -13,6 +13,6 @@ data class SectionPotentialPMBenefitUiModel(
 
     data class ItemPotentialPMBenefitUIModel(
             val iconPotentialPMUrl: String = "",
-            val titlePotentialPMU: String = ""
+            @StringRes val titlePotentialPMU: Int = 0
     )
 }
