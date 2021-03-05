@@ -111,6 +111,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
+import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -750,9 +751,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val adapterData = cartAdapter.getData()
         if (topItemPosition >= adapterData.size) return
 
-        val firstItemData = adapterData[topItemPosition]
-        if (firstItemData is CartShopHolderData) {
-            if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
+        val firstVisibleItemData = adapterData[topItemPosition]
+        if (firstVisibleItemData is CartSelectAllHolderData ||
+                firstVisibleItemData is TickerAnnouncementHolderData ||
+                firstVisibleItemData is CartChooseAddressHolderData ||
+                firstVisibleItemData is CartItemTickerErrorHolderData ||
+                firstVisibleItemData is CartShopHolderData ||
+                firstVisibleItemData is ShipmentSellerCashbackModel) {
+            if (!cartAdapter.allAvailableCartItemData.isEmpty()) {
+                if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
+            }
         } else {
             if (topLayout.visibility == View.VISIBLE) setTopLayoutVisibility(false)
         }
@@ -981,11 +989,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         textActionDelete.setOnClickListener {
             onGlobalDeleteClicked()
         }
-
-        val dp16 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
-        val dp14 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
-        topLayout.setPadding(dp16, 0, 0, dp14)
-        textActionDelete.setPadding(dp16, 0, dp16, 0)
     }
 
     private fun handleCheckboxGlobalChangeEvent() {
@@ -998,7 +1001,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             reloadAppliedPromoFromGlobalCheck()
         }
-        cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
         isCheckUncheckDirectAction = true
     }
 
@@ -1699,7 +1701,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val isAllAvailableItemCheked = cartAdapter.isAllAvailableItemCheked()
         if (checkboxGlobal.isChecked == isAllAvailableItemCheked) {
             isCheckUncheckDirectAction = true
-            cartAdapter.resetGlobalItemLock()
         }
         checkboxGlobal.isChecked = isAllAvailableItemCheked
     }
@@ -1707,10 +1708,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun setGlobalDeleteVisibility() {
         if (cartAdapter.hasSelectedCartItem()) {
             textActionDelete.show()
-            cartAdapter.setGlobalDeleteVisibility(true)
         } else {
             textActionDelete.invisible()
-            cartAdapter.setGlobalDeleteVisibility(false)
         }
     }
 
@@ -1808,6 +1807,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             updateStateAfterFinishGetCartList(it)
 
             renderAbTestButton(cartListData.abTestButton)
+            renderCheckboxGlobal(cartListData)
             renderTickerAnnouncement(it)
             renderChooseAddressWidget(cartListData.localizationChooseAddressData)
 
@@ -1986,7 +1986,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.removeCartEmptyData()
 
         renderTickerError(cartListData)
-        renderCheckboxGlobal(cartListData)
         renderCartAvailableItems(cartListData)
         renderCartUnavailableItems(cartListData)
 
