@@ -1,6 +1,5 @@
 package com.tokopedia.shop.score.common.domain.mapper
 
-import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
