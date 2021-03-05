@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.jvm.Throws
 
 
 fun convertToBitmap(path: String): Bitmap? {
@@ -17,14 +18,14 @@ fun convertToBitmap(path: String): Bitmap? {
         bmOptions.inSampleSize = 2
         bmOptions.inJustDecodeBounds = false
         val bitmap =  BitmapFactory.decodeFile(file.absolutePath, bmOptions)
-        return modifyOrientation(bitmap, file.absolutePath)
+        return bitmap?.let { modifyOrientation(it, file.absolutePath) }
     }
 
     return null
 }
 
 @Throws(IOException::class)
-fun modifyOrientation(bitmap: Bitmap, filePath: String): Bitmap {
+fun modifyOrientation(bitmap: Bitmap, filePath: String): Bitmap? {
     val ei = ExifInterface(filePath)
     return when (ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
         ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
@@ -36,13 +37,13 @@ fun modifyOrientation(bitmap: Bitmap, filePath: String): Bitmap {
     }
 }
 
-fun rotate(bitmap: Bitmap, degrees: Float): Bitmap {
+fun rotate(bitmap: Bitmap, degrees: Float): Bitmap? {
     val matrix = Matrix()
     matrix.postRotate(degrees)
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 }
 
-fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap {
+fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap? {
     val matrix = Matrix()
     matrix.preScale(if (horizontal) -1f else 1f, if (vertical) -1f else 1f)
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)

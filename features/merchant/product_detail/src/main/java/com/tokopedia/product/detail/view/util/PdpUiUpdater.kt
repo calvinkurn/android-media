@@ -331,6 +331,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
+                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    setSocialProofData()
                 }
             }
 
@@ -353,6 +355,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateDataTradein(context, it.validateTradeIn)
             updateNotifyMeUpcoming(productId, it.upcomingCampaigns)
+            updateData(ProductDetailConstant.REVIEW) {
+                productReviewMap?.run {
+                    listOfReviews = it.helpfulReviews
+                    imageReviews = it.imageReviews?.imageReviewItems
+                }
+            }
+
+            updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW) {
+                productReviewOldMap?.run {
+                    listOfReviews = it.helpfulReviews
+                    imageReviews = it.imageReviews?.imageReviewItems
+                }
+            }
         }
     }
 
@@ -411,20 +426,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateDataP2General(data: ProductInfoP2Other?) {
         data?.let {
-            updateData(ProductDetailConstant.REVIEW) {
-                productReviewMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews
-                }
-            }
-
-            updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW) {
-                productReviewOldMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews
-                }
-            }
-
             updateData(ProductDetailConstant.DISCUSSION_FAQ) {
                 productDiscussionMostHelpfulMap?.run {
                     if (it.discussionMostHelpful == null) {

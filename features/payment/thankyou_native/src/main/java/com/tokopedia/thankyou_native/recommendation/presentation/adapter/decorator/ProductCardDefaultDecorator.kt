@@ -3,7 +3,6 @@ package com.tokopedia.thankyou_native.recommendation.presentation.adapter.decora
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.thankyou_native.R
 
 class ProductCardDefaultDecorator : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect,
