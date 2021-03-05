@@ -41,7 +41,7 @@ class SwipeContainerViewComponent(
 
             override fun onPageSelected(position: Int) {
                 val totalItem = adapter.itemCount
-                if (!isLoading && totalItem + PAGE_LOAD_THRESHOLD >= position) {
+                if (!isLoading && position + PAGE_LOAD_THRESHOLD >= totalItem) {
                     isLoading = true
                     listener.onShouldLoadNextPage()
                 }
