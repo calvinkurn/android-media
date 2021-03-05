@@ -250,8 +250,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                     tncBottomSheet.show(templateData)
                 }
             } else {
-                tncBottomSheet = BankTNCBottomSheet(activity!!)
-                tncBottomSheet.show(templateData)
+                activity?.let {activity->
+                    tncBottomSheet = BankTNCBottomSheet(activity)
+                    tncBottomSheet.show(templateData)
+                }
             }
         }
     }
@@ -366,24 +368,26 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
 
     private fun openDeleteConfirmationPopUp(bankAccount: BankAccount) {
-        deleteBankAccount = bankAccount
-        val dialogBuilder = AlertDialog.Builder(activity!!)
-        val inflater = activity!!.layoutInflater
-        val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
-        (dialogView.findViewById(R.id.heading) as TextView).text = context?.getString(R.string.sbank_delete_this_account)
-        (dialogView.findViewById<View>(R.id.continue_btn) as TextView).text = context?.getString(R.string.sbank_delete_account)
-        (dialogView.findViewById<View>(R.id.back_btn) as TextView).text = context?.getString(R.string.sbank_back)
-        (dialogView.findViewById(R.id.description) as TextView).text = context?.getString(R.string.sbank_delete_bank_confirm,
-                bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
-        dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
-            bankSettingAnalytics.eventDialogConfirmDeleteAccountClick()
-            confirmationDialog?.dismiss()
-            deleteBankAccount()
+        activity?.let { activity->
+            deleteBankAccount = bankAccount
+            val dialogBuilder = AlertDialog.Builder(activity)
+            val inflater = activity.layoutInflater
+            val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
+            (dialogView.findViewById(R.id.heading) as TextView).text = context?.getString(R.string.sbank_delete_this_account)
+            (dialogView.findViewById<View>(R.id.continue_btn) as TextView).text = context?.getString(R.string.sbank_delete_account)
+            (dialogView.findViewById<View>(R.id.back_btn) as TextView).text = context?.getString(R.string.sbank_back)
+            (dialogView.findViewById(R.id.description) as TextView).text = context?.getString(R.string.sbank_delete_bank_confirm,
+                    bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
+            dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
+                bankSettingAnalytics.eventDialogConfirmDeleteAccountClick()
+                confirmationDialog?.dismiss()
+                deleteBankAccount()
+            }
+            dialogView.findViewById<View>(R.id.back_btn).setOnClickListener {
+                confirmationDialog?.dismiss()
+            }
+            confirmationDialog = dialogBuilder.setView(dialogView).show()
         }
-        dialogView.findViewById<View>(R.id.back_btn).setOnClickListener {
-            confirmationDialog?.dismiss()
-        }
-        confirmationDialog = dialogBuilder.setView(dialogView).show()
     }
 
     private fun deleteBankAccount() {

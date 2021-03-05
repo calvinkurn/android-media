@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -155,9 +156,11 @@ class AccountDocumentFragment : BaseDaggerFragment() {
             AccountConfirmationType.FAMILY -> bankSettingAnalytics.eventFamilyDocumentSubmitClick()
             AccountConfirmationType.COMPANY -> bankSettingAnalytics.eventCompanyDocumentSubmitClick()
         }
-        val uploadDocumentPojo = getUploadDocumentPojo()
-        uploadDocumentPojo?.let {
-            uploadDocumentViewModel.uploadDocument(it)
+        context?.let {context->
+            val uploadDocumentPojo = getUploadDocumentPojo(context)
+            uploadDocumentPojo?.let {
+                uploadDocumentViewModel.uploadDocument(it)
+            }
         }
     }
 
@@ -255,7 +258,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getUploadDocumentPojo(): UploadDocumentPojo? {
+    private fun getUploadDocumentPojo(context: Context): UploadDocumentPojo? {
         val docType = when (accountConfirmationType) {
             AccountConfirmationType.OTHER -> DOC_TYPE_OTHER
             AccountConfirmationType.FAMILY -> DOC_TYPE_FAMILY
@@ -274,7 +277,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
                 document_name = ImageUtils.getFileName(selectedFilePath),
                 document_base64 = ImageUtils.encodeToBase64(selectedFilePath),
                 document_ext = ImageUtils.getFileExt(selectedFilePath),
-                document_mime = ImageUtils.getMimeType(context!!, selectedFilePath))
+                document_mime = ImageUtils.getMimeType(context, selectedFilePath))
     }
 
 }

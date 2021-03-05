@@ -172,8 +172,10 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun setDownArrowBankName() {
-        etBankName.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                ContextCompat.getDrawable(context!!, com.tokopedia.design.R.drawable.ic_arrow_down_grey), null)
+        context?.let {
+            etBankName.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    ContextCompat.getDrawable(it, com.tokopedia.design.R.drawable.ic_arrow_down_grey), null)
+        }
     }
 
     private fun startObservingViewModels() {
