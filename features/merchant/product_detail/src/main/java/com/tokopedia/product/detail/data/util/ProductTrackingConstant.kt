@@ -63,6 +63,7 @@ object ProductTrackingConstant {
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_DEFAULT_VALUE = "IDR"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         const val VALUE_NONE_OTHER = "none / other"
         const val KEY_PRODUCT_ID = "productId"
         const val KEY_LAYOUT = "layout"
@@ -118,7 +119,6 @@ object ProductTrackingConstant {
         const val CLICK_READ_MORE = "click - baca selengkapnya"
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
-        const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BUTTON_CHAT = "click - sticky chat"
@@ -140,7 +140,6 @@ object ProductTrackingConstant {
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
         const val CLICK_WHOLESALE = "click - info harga grosir"
-        const val CLICK_REVIEW_IMAGE_MEDIA = "click - foto dari pembeli on product image"
         const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
         const val CLICK_TICKER = "click - selengkapnya on component ticker"
         const val CLICK_CUSTOM_INFO = "click - custom info component"
@@ -187,6 +186,8 @@ object ProductTrackingConstant {
         const val CLICK_MUTE_VIDEO = "click - mute on video"
 
         const val CLICK_CHECK_CART = "click - cek keranjang"
+        const val CLICK_PELAJARI_TOKO_CABANG = "click pelajari dikirim dari tokocabang"
+        const val CLICK_SEE_OTHER_COURIER = "click - lihat kurir lainnya"
     }
 
 
@@ -202,6 +203,8 @@ object ProductTrackingConstant {
         const val VIDEO_DURATION = "duration:"
         const val VIDEO_LAST_STOP_TIME = "stop time:"
         const val VIDEO_AUTO_PLAY = "auto play:"
+        const val EVENT_LABEL_CLICK_SHIPMENT = "title:%s;labelShipping:%s;cod:%s"
+
     }
 
     object Report {
@@ -216,6 +219,7 @@ object ProductTrackingConstant {
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
+        const val EVENT_CLICK_COURIER = "clickCourier"
     }
 
     object Affiliate {

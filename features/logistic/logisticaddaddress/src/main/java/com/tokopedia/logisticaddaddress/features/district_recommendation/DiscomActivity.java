@@ -1,19 +1,39 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.ArrayList;
 
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.ARGUMENT_DATA_TOKEN;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.IS_LOCALIZATION;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME;
+import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES;
 
 /**
  * Created by Irfan Khoirul on 17/11/18.
@@ -24,10 +44,13 @@ public class DiscomActivity extends BaseSimpleActivity
         implements HasComponent, DiscomFragment.ActionListener {
 
     private CheckoutAnalyticsChangeAddress analytics;
+    private FusedLocationProviderClient fusedLocationClient;
+    private Boolean isLocalization;
 
-    public static Intent newInstance(Activity activity, Token token) {
+    public static Intent newInstance(Activity activity, Token token, Boolean isLocalization) {
         Intent intent = new Intent(activity, DiscomActivity.class);
         intent.putExtra(ARGUMENT_DATA_TOKEN, token);
+        intent.putExtra(IS_LOCALIZATION, isLocalization);
         return intent;
     }
 
@@ -44,10 +67,11 @@ public class DiscomActivity extends BaseSimpleActivity
     @Override
     protected Fragment getNewFragment() {
         Token  token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
+        isLocalization = getIntent().getBooleanExtra(IS_LOCALIZATION, false);
         if (token == null) {
-            return DiscomFragment.newInstance();
+            return DiscomFragment.newInstance(isLocalization);
         } else {
-            return DiscomFragment.newInstance(token);
+            return DiscomFragment.newInstance(token, isLocalization);
         }
     }
 
@@ -58,7 +82,9 @@ public class DiscomActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        gtmOnBackPressClicked();
+        UserSessionInterface userSession = new UserSession(this);
+        if (isLocalization) ChooseAddressTracking.INSTANCE.onClickCloseKotaKecamatan(userSession.getUserId());
+        else gtmOnBackPressClicked();
         super.onBackPressed();
     }
 
@@ -76,5 +102,4 @@ public class DiscomActivity extends BaseSimpleActivity
     public void gtmOnClearTextDistrictRecommendationInput() {
         analytics.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
     }
-
 }

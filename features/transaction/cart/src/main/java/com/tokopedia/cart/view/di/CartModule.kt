@@ -25,9 +25,11 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,6 +46,7 @@ import javax.inject.Named
  */
 
 @Module(includes = [
+    RecommendationModule::class,
     PromoCheckoutModule::class,
     PurchasePlatformBaseModule::class
 ])
@@ -83,20 +86,6 @@ class CartModule {
     @Provides
     fun providesGraphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
-    }
-
-    @Provides
-    @CartScope
-    @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
-    }
-
-    @Provides
-    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
-                                        graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
     }
 
     @Provides
@@ -142,8 +131,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers)
+    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper, chosenAddressRequestHelper: ChosenAddressRequestHelper): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers, chosenAddressRequestHelper)
 
     @Provides
     @CartScope

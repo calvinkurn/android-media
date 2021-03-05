@@ -55,4 +55,19 @@ object Constant {
         const val FILTER_BUTTON_TEXT = "Reset Filter"
         const val FILTER_EMPTY_IMAGE = "filtered_product_empty_state.png"
     }
+
+    object ChooseAddressQueryParams{
+        const val RPC_USER_ADDRESS_ID = "rpc_user_addressId"
+        const val RPC_USER_CITY_ID = "rpc_user_cityId"
+        const val RPC_USER_DISTRICT_ID = "rpc_user_districtId"
+        const val RPC_USER_LAT = "rpc_user_lat"
+        const val RPC_USER_LONG = "rpc_user_long"
+        const val RPC_USER_POST_CODE = "rpc_user_postCode"
+    }
+
+    object ChooseAddressGTMSSource{
+        const val HOST_SOURCE = "discovery"
+    }
+
+    const val LABEL_FULFILLMENT = "fulfillment"
 }

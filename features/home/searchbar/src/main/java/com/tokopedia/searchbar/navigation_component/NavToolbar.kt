@@ -366,6 +366,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    //this needed to enable coachmark on homepage
+    fun getInboxIconView(): View? {
+        val globalNavPosition = navIconAdapter?.getInboxIconPosition()
+        globalNavPosition?.let {
+            val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
     internal fun setBackgroundAlpha(alpha: Float) {
         navToolbar?.let {
             val drawable = it.background
@@ -513,7 +523,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, com.tokopedia.iconunify.R.color.icon_enable_default_color)
+    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
 
     private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
 

@@ -65,6 +65,7 @@ const val RATES_DEFAULT_RESPONSE_PATH = "logistic/rates_default_response.json"
 const val RATES_WITH_INSURANCE_RESPONSE_PATH = "logistic/rates_with_insurance_response.json"
 const val RATES_WITH_NO_PROFILE_DURATION_RESPONSE_PATH = "logistic/rates_no_profile_duration_response.json"
 const val RATES_ETA_RESPONSE_PATH = "logistic/rates_eta_response.json"
+const val RATES_ETA_WITH_BOE_RESPONSE_PATH = "logistic/rates_eta_with_boe_response.json"
 
 const val GET_ADDRESS_LIST_DEFAULT_RESPONSE_PATH = "logistic/get_address_list_default_response.json"
 

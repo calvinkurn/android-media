@@ -53,6 +53,10 @@ object WishlistQuery {
                   is_active
                   image_url
                 }
+                free_ongkir_extra{
+                  is_active
+                  image_url
+                }
               }
               pagination {
                 next_url

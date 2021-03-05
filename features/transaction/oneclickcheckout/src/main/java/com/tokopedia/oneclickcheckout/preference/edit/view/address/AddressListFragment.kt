@@ -25,7 +25,9 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -81,14 +83,30 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
 
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val ARG_IS_EDIT = "is_edit"
+        private const val ARG_IS_AUTO_SELECT_ADDRESS = "ARG_IS_AUTO_SELECT_ADDRESS"
+        private const val ARGS_ADDRESS_STATE = "ARGS_ADDRESS_STATE"
 
-        fun newInstance(isEdit: Boolean = false): AddressListFragment {
+        fun newInstance(isEdit: Boolean = false, isAutoSelectAddress: Boolean = false, addressState: Int): AddressListFragment {
             val addressListFragment = AddressListFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            bundle.putBoolean(ARG_IS_AUTO_SELECT_ADDRESS, isAutoSelectAddress)
+            bundle.putInt(ARGS_ADDRESS_STATE, addressState)
             addressListFragment.arguments = bundle
             return addressListFragment
         }
+    }
+
+    private fun getAddressState(): Int {
+        return arguments?.getInt(ARGS_ADDRESS_STATE) ?: 0
+    }
+
+    private fun getLocalCacheAddressId(): String {
+        context?.let {
+            return ChooseAddressUtils.getLocalizingAddressData(it)?.address_id ?: "0"
+        }
+
+        return "0"
     }
 
     override fun getScreenName(): String = ""
@@ -123,6 +141,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                     globalErrorLayout?.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
                     addressListRv?.scrollToPosition(0)
+                    validateAutoSelectAddress(it)
                     adapter?.setData(it.data.listAddress, it.data.hasNext ?: false)
                     endlessScrollListener?.resetState()
                     endlessScrollListener?.setHasNextPage(it.data.hasNext ?: false)
@@ -130,7 +149,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 }
 
                 is OccState.Success -> {
-                    adapter?.setData(it.data.listAddress, it. data.hasNext ?: false)
+                    adapter?.setData(it.data.listAddress, it.data.hasNext ?: false)
                     endlessScrollListener?.updateStateAfterGetData()
                     endlessScrollListener?.setHasNextPage(it.data.hasNext ?: false)
                     validateButton()
@@ -146,6 +165,20 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 is OccState.Loading -> swipeRefreshLayout?.isRefreshing = true
             }
         })
+    }
+
+    private fun validateAutoSelectAddress(addressModel: OccState.FirstLoad<AddressListModel>) {
+        activity?.let { activity ->
+            if (arguments?.getBoolean(ARG_IS_AUTO_SELECT_ADDRESS) == true) {
+                val localizingAddressData = ChooseAddressUtils.getLocalizingAddressData(activity)
+                addressModel.data.listAddress.forEach { address ->
+                    if (address.id == localizingAddressData?.address_id) {
+                        address.isSelected = true
+                        return@forEach
+                    }
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -200,7 +233,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         val searchKey = viewModel.savedQuery
         searchAddress?.searchBarTextField?.setText(searchKey)
 
-        viewModel.searchAddress(searchKey)
+        context?.let {
+            viewModel.searchAddress(searchKey, getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+        }
     }
 
     private fun initView() {
@@ -228,7 +263,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         addressListRv?.clearOnScrollListeners()
         endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadMore()
+                context?.let {
+                    viewModel.loadMore(getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
             }
         }
         endlessScrollListener?.let {
@@ -293,11 +330,15 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 viewModel.destinationLatitude = saveAddressDataModel.latitude
                 viewModel.destinationPostalCode = saveAddressDataModel.postalCode
                 viewModel.destinationDistrict = saveAddressDataModel.districtId.toString()
-                viewModel.searchAddress("")
+                context?.let {
+                    viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
                 goToNextStep()
             }
         } else if (requestCode == REQUEST_CREATE) {
-            viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+            context?.let {
+                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
 
     }
@@ -310,13 +351,17 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchAddress?.clearFocus()
-                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+                context?.let {
+                    viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
         searchAddress?.clearListener = {
-            viewModel.searchAddress("")
+            context?.let {
+                viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
         searchAddress?.searchBarPlaceholder = getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
     }
@@ -359,7 +404,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
             val shippingParam = parent.getShippingParam()
             if (shippingParam != null) {
                 shippingParam.destinationDistrictId = viewModel.destinationDistrict
-                shippingParam.addressId = viewModel.selectedId.toInt()
+                shippingParam.addressId = viewModel.selectedId
                 shippingParam.destinationLatitude = viewModel.destinationLatitude
                 shippingParam.destinationLongitude = viewModel.destinationLongitude
                 shippingParam.destinationPostalCode = viewModel.destinationPostalCode
@@ -400,7 +445,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
             searchAddress?.searchBarTextField?.setText("")
-            viewModel.searchAddress("")
+            context?.let {
+                viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
         searchAddress?.gone()
         textSearchError?.gone()

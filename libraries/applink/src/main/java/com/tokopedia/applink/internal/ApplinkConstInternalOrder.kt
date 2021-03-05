@@ -55,6 +55,10 @@ object ApplinkConstInternalOrder {
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
 
+    // snapshot
+    const val PARAM_ORDER_DETAIL_ID = "order_detail_id"
+    const val IS_SNAPSHOT_FROM_SOM = "is_snapshot_from_som"
+
     @JvmField
     val HOST_SELLER = "seller"
 
@@ -242,4 +246,10 @@ object ApplinkConstInternalOrder {
     val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
 
 
+    // order snapshot
+    @JvmField
+    val PATH_SNAPSHOT = "snapshot"
+
+    @JvmField
+    val INTERNAL_ORDER_SNAPSHOT = "${DeeplinkConstant.SCHEME_INTERNAL}://$PATH_SNAPSHOT/$HOST_ORDER"
 }

@@ -229,9 +229,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             if (it.status.isSuccess()) {
                 it.data?.let { data ->
                     sortFilterView?.show()
-                    val popularOption = data.filterAndSort.filterChip.map { it.copy(
-                            options = it.options.filter { it.isPopular }
-                    ) }
                     setRecommendationFilterAndSort(data.quickFilterList.mapToUnifyFilterModel(this::onQuickFilterClick), data.filterAndSort.mapToFullFilterModel())
                 }
             } else if(it.status.isLoading()){

@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -22,8 +23,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
 
     companion object {
         val QUERY = """
-            query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String) {
-              pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID) {
+            query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation) {
+              pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation) {
                 name
                 pdpSession
                 basicInfo {
@@ -100,6 +101,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             		}
             		... on pdpDataProductContent {
                       name
+                      isCOD
                       price {
                         value
                       }
@@ -141,13 +143,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       isCashback {
                         percentage
                       }
-                      isFreeOngkir {
-                        isActive
-                        imageURL
-                      }
                       preorder {
                         duration
                         isActive
+                        preorderInDays
                       }
                       isTradeIn
                       isOS
@@ -227,6 +226,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         optionID
                         productName
                         productURL
+                        isCOD
                         picture {
                           url
                           url200
@@ -266,29 +266,23 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             }
         """.trimIndent()
 
-        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): RequestParams =
+        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, userLocationRequest: UserLocationRequest): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
                     putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
                     putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
+                    putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
                 }
     }
 
     var requestParams = RequestParams.EMPTY
-    var forceRefresh = false
-    var enableCaching = false
 
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(GraphqlRequest(QUERY, ProductDetailLayout::class.java, requestParams.parameters))
-        if (enableCaching) {
-            gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
-        } else {
-            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                    .Builder(CacheType.ALWAYS_CLOUD).build())
-        }
+        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
 

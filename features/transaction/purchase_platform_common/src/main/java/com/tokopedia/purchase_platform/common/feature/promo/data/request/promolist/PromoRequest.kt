@@ -1,9 +1,10 @@
 package com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class PromoRequest(
         @SerializedName("codes")
         var codes: ArrayList<String> = ArrayList(),
@@ -23,47 +24,9 @@ data class PromoRequest(
         var isTradeIn: Int = 0,
         @SerializedName("is_trade_in_drop_off")
         var isTradeInDropOff: Int = 0
-) : Parcelable {
+) : Parcelable
 
-    constructor(parcel: Parcel) : this(
-            parcel.createStringArrayList() ?: ArrayList(),
-            parcel.createStringArrayList() ?: ArrayList(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.createTypedArrayList(Order) ?: emptyList(),
-            parcel.readInt(),
-            parcel.readInt()) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeStringList(codes)
-        parcel.writeStringList(attemptedCodes)
-        parcel.writeInt(skipApply)
-        parcel.writeInt(isSuggested)
-        parcel.writeString(cartType)
-        parcel.writeString(state)
-        parcel.writeTypedList(orders)
-        parcel.writeInt(isTradeIn)
-        parcel.writeInt(isTradeInDropOff)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<PromoRequest> {
-        override fun createFromParcel(parcel: Parcel): PromoRequest {
-            return PromoRequest(parcel)
-        }
-
-        override fun newArray(size: Int): Array<PromoRequest?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
+@Parcelize
 data class Order(
         @SerializedName("shop_id")
         var shopId: Long = 0,
@@ -81,72 +44,12 @@ data class Order(
         var spId: Int = 0,
         @SerializedName("is_insurance_price")
         var isInsurancePrice: Int = 0
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readLong(),
-            parcel.readString() ?: "",
-            parcel.createTypedArrayList(ProductDetail) ?: emptyList(),
-            parcel.createStringArrayList() ?: ArrayList(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readInt())
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(shopId)
-        parcel.writeString(uniqueId)
-        parcel.writeTypedList(product_details)
-        parcel.writeStringList(codes)
-        parcel.writeByte(if (isChecked) 1 else 0)
-        parcel.writeInt(shippingId)
-        parcel.writeInt(spId)
-        parcel.writeInt(isInsurancePrice)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Order> {
-        override fun createFromParcel(parcel: Parcel): Order {
-            return Order(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Order?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
-
+@Parcelize
 data class ProductDetail(
         @SerializedName("product_id")
         var productId: Long = 0,
         @SerializedName("quantity")
         var quantity: Int = -1
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readLong(),
-            parcel.readInt()) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(productId)
-        parcel.writeInt(quantity)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ProductDetail> {
-        override fun createFromParcel(parcel: Parcel): ProductDetail {
-            return ProductDetail(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ProductDetail?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
+) : Parcelable

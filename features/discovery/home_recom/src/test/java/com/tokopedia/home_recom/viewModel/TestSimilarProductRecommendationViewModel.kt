@@ -3,8 +3,8 @@ package com.tokopedia.home_recom.viewModel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -51,9 +51,7 @@ class TestSimilarProductRecommendationViewModel {
     fun `get success data from network`(){
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         Assert.assertTrue(viewModel.recommendationItem.value != null && viewModel.recommendationItem.value!!.isSuccess())
     }
@@ -62,9 +60,7 @@ class TestSimilarProductRecommendationViewModel {
     fun `get success data from network with default page`(){
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(
                 queryParam = "", productId =  "", pageName = "")
         Assert.assertTrue(viewModel.recommendationItem.value != null && viewModel.recommendationItem.value!!.isSuccess())
@@ -72,7 +68,7 @@ class TestSimilarProductRecommendationViewModel {
 
     @Test
     fun `get error timeout data from network`(){
-        val slot = slot<Subscriber<SingleProductRecommendationEntity.RecommendationData>>()
+        val slot = slot<Subscriber<RecommendationEntity.RecommendationData>>()
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
         every { getSingleRecommendationUseCase.execute(any(), capture(slot)) } answers {
@@ -179,11 +175,7 @@ class TestSimilarProductRecommendationViewModel {
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
 
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        ) andThen SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData() andThen RecommendationEntity.RecommendationData()
 
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         assert(viewModel.filterSortChip.value?.isSuccess() == true)
@@ -202,9 +194,7 @@ class TestSimilarProductRecommendationViewModel {
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
 
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        ) andThenThrows Exception()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData() andThenThrows Exception()
 
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         assert(viewModel.filterSortChip.value?.isSuccess() == true)
@@ -223,9 +213,7 @@ class TestSimilarProductRecommendationViewModel {
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
 
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        ) andThen SingleProductRecommendationEntity.RecommendationData()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData() andThen RecommendationEntity.RecommendationData()
 
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         assert(viewModel.filterSortChip.value?.isSuccess() == true)
@@ -251,9 +239,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
 
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         assert(viewModel.filterSortChip.value?.isSuccess() == true)
@@ -267,9 +253,7 @@ class TestSimilarProductRecommendationViewModel {
     fun `get error full filter click`(){
         coEvery { getRecommendationFilterChips.executeOnBackground() } throws Exception()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        ) andThenThrows Exception()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData() andThenThrows Exception()
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         viewModel.getRecommendationFromFullFilter(mapOf("terlaris" to "true"), mapOf("os" to "true"), "", "")
         assert(viewModel.filterSortChip.value?.isError() == true)
@@ -284,11 +268,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation(
-
-                ))
-        ) andThen SingleProductRecommendationEntity.RecommendationData()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData() andThen RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         viewModel.getRecommendationFromFullFilter(mapOf("terlaris" to "true"), mapOf("os" to "true"), "", "")
         assert(viewModel.filterSortChip.value?.isEmpty() == false)
@@ -304,9 +284,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         viewModel.getRecommendationFromFullFilter(mapOf("terlaris" to "true"), mapOf("os" to "true"), "", "")
         assert(viewModel.filterSortChip.value?.isSuccess() == true)
@@ -335,7 +313,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData()
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getRecommendationFromEmptyFilter( filterChip.filterChip.first().options.first(), "", "", "")
         assert(viewModel.recommendationItem.value?.isEmpty() == true)
         assert(viewModel.recommendationItem.value?.isEmpty() == true)
@@ -349,9 +327,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
         assert(viewModel.getSelectedSortFilter().isNotEmpty())
     }
@@ -364,9 +340,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
         assert(viewModel.getSelectedSortFilter().isNotEmpty())
     }
@@ -379,9 +353,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
         assert(viewModel.getSelectedSortFilter().isNotEmpty())
     }
@@ -394,9 +366,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns filterChip
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
         assert(viewModel.getSelectedSortFilter().isNotEmpty())
     }
@@ -409,9 +379,7 @@ class TestSimilarProductRecommendationViewModel {
         )
         coEvery { getRecommendationFilterChips.executeOnBackground() } throws Exception()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns SingleProductRecommendationEntity.RecommendationData(
-                recommendation = listOf(SingleProductRecommendationEntity.Recommendation())
-        )
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns RecommendationEntity.RecommendationData()
         viewModel.getSimilarProductRecommendation(1, "" , "", "")
         assert(viewModel.getSelectedSortFilter().isNotEmpty())
     }

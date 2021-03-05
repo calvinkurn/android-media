@@ -85,7 +85,8 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                         ProductCardModel.LabelGroup(
                                 position = recommendationLabel.position,
                                 title = recommendationLabel.title,
-                                type = recommendationLabel.type
+                                type = recommendationLabel.type,
+                                imageUrl = recommendationLabel.imageUrl
                         )
                     }
             )

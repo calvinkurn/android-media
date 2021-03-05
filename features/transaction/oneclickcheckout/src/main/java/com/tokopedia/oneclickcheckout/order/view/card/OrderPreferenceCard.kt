@@ -214,7 +214,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
     private fun renderBbo(shipping: OrderShipment, tvBboPrice: Typography?) {
         if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-            tvShippingName?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.logisticPromoViewModel.title)
+            tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
             tvShippingDuration?.text = generateServiceDuration(shipping.logisticPromoViewModel.title)
             if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
                 tvBboPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)

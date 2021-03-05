@@ -1,19 +1,20 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ProductTagging
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
  * Created by mzennis on 2020-03-06.
  */
-class GetProductTagItemsUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) :
-        UseCase<ProductTagging>() {
+class GetProductTagItemsUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<ProductTagging>(graphqlRepository) {
 
     var params: HashMap<String, Any> = HashMap()
 

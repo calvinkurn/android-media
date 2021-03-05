@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
@@ -52,7 +53,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun initInjector(context: Context) {
         try {
             GraphqlClient.init(context)
+            val baseMainApplication = context.applicationContext as BaseMainApplication
             DaggerCMNotificationComponent.builder()
+                    .baseAppComponent(baseMainApplication.baseAppComponent)
                     .notificationModule(NotificationModule(context))
                     .build()
                     .inject(this)

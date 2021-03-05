@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -120,6 +121,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             addSource(mGetProductResult) {
                 productInputModel.value = when (it) {
                     is Success -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
                         productDomain = it.data
                         val productInputModel = getProductMapper.mapRemoteModelToUiModel(it.data)
 
@@ -148,7 +152,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(detailInputModel) {
@@ -339,13 +348,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     .joinToString("\n")
             val validationResult = if (response.productValidateV3.isSuccess)
                 VALIDATION_SUCCESS else VALIDATION_ERROR
-            mValidationResult.value = ValidationResultModel(validationResult, validationMessage)
+            mValidationResult.value = ValidationResultModel(validationResult, MessageErrorException(validationMessage))
             mIsLoading.value = false
         }, onError = {
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR,
-                    resourceProvider.getGqlErrorMessage().orEmpty())
+            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR, it)
             mIsLoading.value = false
         })
     }
@@ -384,7 +392,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun resetValidateResult() {
         mValidationResult.value?.result = UNVALIDATED
-        mValidationResult.value?.message = ""
+        mValidationResult.value?.exception = Exception()
     }
 
     fun updateSpecificationFromRemote(categoryId: String, productId: String) {

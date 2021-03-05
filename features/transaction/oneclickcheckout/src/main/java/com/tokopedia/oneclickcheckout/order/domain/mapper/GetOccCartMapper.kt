@@ -30,14 +30,7 @@ class GetOccCartMapper @Inject constructor() {
                 tickerMessage = mapProductTickerMessage(data.tickerMessage)
                 purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
             }
-            shop = generateOrderShop(cart.shop).apply {
-                errors = cart.errors
-                isFulfillment = cart.warehouse.isFulfillment
-                fulfillmentBadgeUrl = cart.tokoCabangInfo.badgeUrl
-                if (isFulfillment) {
-                    cityName = cart.tokoCabangInfo.message
-                }
-            }
+            shop = generateOrderShop(cart)
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
         }
         return OrderData(mapTicker(data.tickers),
@@ -49,7 +42,9 @@ class GetOccCartMapper @Inject constructor() {
                 LastApplyMapper.mapPromo(data.promo),
                 mapOrderPayment(data),
                 mapPrompt(data.prompt),
-                mapOccRevamp(data.revamp))
+                mapOccRevamp(data.revamp),
+                data.errorCode,
+                data.popUpMessage)
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -84,7 +79,8 @@ class GetOccCartMapper @Inject constructor() {
         return shopShipmentListResult
     }
 
-    private fun generateOrderShop(shop: ShopDataResponse): OrderShop {
+    private fun generateOrderShop(cart: CartDataResponse): OrderShop {
+        val shop = cart.shop
         return OrderShop().apply {
             shopId = shop.shopId
             userId = shop.userId
@@ -107,8 +103,11 @@ class GetOccCartMapper @Inject constructor() {
             addressStreet = shop.addressStreet
             provinceId = shop.provinceId
             cityId = shop.cityId
-            cityName = shop.cityName
             shopShipment = generateShopShipment(shop.shopShipments)
+            errors = cart.errors
+            isFulfillment = cart.warehouse.isFulfillment
+            fulfillmentBadgeUrl = cart.tokoCabangInfo.badgeUrl
+            cityName = if (cart.warehouse.isFulfillment) cart.tokoCabangInfo.message else shop.cityName
         }
     }
 
@@ -119,7 +118,7 @@ class GetOccCartMapper @Inject constructor() {
             productId = product.productId
             productName = product.productName
             productPrice = product.productPrice
-            productImageUrl = product.productImage.imageSrc
+            productImageUrl = product.productImage.imageSrc200Square
             maxOrderQuantity = product.productMaxOrder
             minOrderQuantity = product.productMinOrder
             originalPrice = product.productPriceOriginalFmt
@@ -285,7 +284,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapAddress(address: Address): OrderProfileAddress {
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
-                address.latitude, address.postalCode)
+                address.latitude, address.postalCode, address.state, address.stateDetail)
     }
 
     private fun mapTicker(tickers: List<Ticker>): TickerData? {
@@ -301,7 +300,6 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
-        var isEnable = revamp.isEnable
-        return OccRevampData(isEnable, revamp.totalProfile, revamp.changeTemplateText)
+        return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
     }
 }
