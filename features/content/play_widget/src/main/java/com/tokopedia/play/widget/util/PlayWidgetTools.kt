@@ -50,10 +50,10 @@ class PlayWidgetTools @Inject constructor(
     }
 
     suspend fun updateToggleReminder(channelId: String,
-                                     actionReminder: PlayWidgetActionReminder,
+                                     reminderType: PlayWidgetReminderType,
                                      coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidgetReminder {
         return withContext(coroutineContext) {
-            reminderUseCase.setRequestParams(PlayWidgetReminderUseCase.createParams(channelId, actionReminder == PlayWidgetActionReminder.Remind))
+            reminderUseCase.setRequestParams(PlayWidgetReminderUseCase.createParams(channelId, reminderType.reminded))
             reminderUseCase.executeOnBackground()
         }
     }
@@ -108,9 +108,9 @@ class PlayWidgetTools @Inject constructor(
         }
     }
 
-    fun updateActionReminder(model: PlayWidgetUiModel, channelId: String, actionReminder: PlayWidgetActionReminder): PlayWidgetUiModel {
+    fun updateActionReminder(model: PlayWidgetUiModel, channelId: String, reminderType: PlayWidgetReminderType): PlayWidgetUiModel {
         return when (model) {
-            is PlayWidgetUiModel.Medium -> updateMediumWidgetActionReminder(model, channelId, actionReminder)
+            is PlayWidgetUiModel.Medium -> updateMediumWidgetActionReminder(model, channelId, reminderType)
             else -> model
         }
     }
@@ -189,10 +189,10 @@ class PlayWidgetTools @Inject constructor(
         )
     }
 
-    private fun updateMediumWidgetActionReminder(model: PlayWidgetUiModel.Medium, channelId: String, actionReminder: PlayWidgetActionReminder): PlayWidgetUiModel.Medium {
+    private fun updateMediumWidgetActionReminder(model: PlayWidgetUiModel.Medium, channelId: String, reminderType: PlayWidgetReminderType): PlayWidgetUiModel.Medium {
         return model.copy(
                 items = model.items.map { mediumWidget ->
-                    if (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(actionReminder = actionReminder)
+                    if (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(reminderType = reminderType)
                     else mediumWidget
                 }
         )

@@ -16,9 +16,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.model.PlayWidgetActionReminder
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderEvent
-import com.tokopedia.play.widget.ui.model.revert
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -122,13 +121,13 @@ class ShopHomeViewModel @Inject constructor(
         get() = _playWidgetObservable
     private val _playWidgetObservable = MutableLiveData<CarouselPlayWidgetUiModel?>()
 
-    val playWidgetReminderActionEvent: LiveData<PlayWidgetReminderEvent>
-        get() = _playWidgetReminderActionEvent
-    private val _playWidgetReminderActionEvent = MutableLiveData<PlayWidgetReminderEvent>()
+    val playWidgetReminderEvent: LiveData<Pair<String, PlayWidgetReminderType>>
+        get() = _playWidgetReminderEvent
+    private val _playWidgetReminderEvent = MutableLiveData<Pair<String, PlayWidgetReminderType>>()
 
-    val playWidgetReminderObservable: LiveData<Result<PlayWidgetActionReminder>>
+    val playWidgetReminderObservable: LiveData<Result<PlayWidgetReminderType>>
         get() = _playWidgetReminderObservable
-    private val _playWidgetReminderObservable = MutableLiveData<Result<PlayWidgetActionReminder>>()
+    private val _playWidgetReminderObservable = MutableLiveData<Result<PlayWidgetReminderType>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -505,37 +504,37 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun shouldUpdatePlayWidgetToggleReminder(channelId: String, actionReminder: PlayWidgetActionReminder) {
-        if (!isLogin) _playWidgetReminderActionEvent.value = PlayWidgetReminderEvent.NeedLoggedIn(channelId, actionReminder)
-        else updatePlayWidgetToggleReminder(channelId, actionReminder)
+    fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
+        if (!isLogin) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
+        else updatePlayWidgetToggleReminder(channelId, reminderType)
     }
 
-    private fun updatePlayWidgetToggleReminder(channelId: String, actionReminder: PlayWidgetActionReminder) {
+    private fun updatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
         updateWidget {
-            it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, actionReminder))
+            it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType))
         }
 
         launchCatchError(block = {
             val response = playWidgetTools.updateToggleReminder(
                     channelId,
-                    actionReminder,
+                    reminderType,
                     dispatcherProvider.io
             )
 
             when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
                 success -> {
-                    _playWidgetReminderObservable.postValue(Success(actionReminder))
+                    _playWidgetReminderObservable.postValue(Success(reminderType))
                 }
                 else -> {
                     updateWidget {
-                        it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, actionReminder.revert()))
+                        it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
                     }
                     _playWidgetReminderObservable.postValue(Fail(Throwable()))
                 }
             }
         }) { throwable ->
             updateWidget {
-                it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, actionReminder.revert()))
+                it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
             }
             _playWidgetReminderObservable.postValue(Fail(throwable))
         }

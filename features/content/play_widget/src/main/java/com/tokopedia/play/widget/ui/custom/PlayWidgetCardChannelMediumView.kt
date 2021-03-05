@@ -18,9 +18,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
-import com.tokopedia.play.widget.ui.model.PlayWidgetActionReminder
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.revert
+import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -109,9 +109,9 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvStartTime.text = model.startTime
         tvTotalView.text = model.totalView
 
-        setIconToggleReminder(model.actionReminder)
+        setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
-            mListener?.onToggleReminderChannelClicked(model, model.actionReminder.revert())
+            mListener?.onToggleReminderChannelClicked(model, model.reminderType.switch())
         }
 
         setOnClickListener {
@@ -150,10 +150,10 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         llLoadingContainer.visibility = View.VISIBLE
     }
 
-    private fun setIconToggleReminder(actionReminder: PlayWidgetActionReminder) {
-        val drawableIconReminder = when (actionReminder) {
-            PlayWidgetActionReminder.Remind -> R.drawable.ic_play_reminder
-            PlayWidgetActionReminder.UnRemind ->  R.drawable.ic_play_reminder_non_active
+    private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
+        val drawableIconReminder = when (reminderType) {
+            PlayWidgetReminderType.Remind -> R.drawable.ic_play_reminder
+            PlayWidgetReminderType.UnRemind ->  R.drawable.ic_play_reminder_non_active
         }
         reminderBadge.setImageDrawable(
                 ContextCompat.getDrawable(context, drawableIconReminder)
@@ -213,7 +213,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         fun onToggleReminderChannelClicked(
                 item: PlayWidgetMediumChannelUiModel,
-                actionReminder: PlayWidgetActionReminder
+                reminderType: PlayWidgetReminderType
         )
 
         fun onMenuActionButtonClicked(

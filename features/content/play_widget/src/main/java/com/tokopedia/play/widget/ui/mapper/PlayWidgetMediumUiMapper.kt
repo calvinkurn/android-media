@@ -74,7 +74,6 @@ class PlayWidgetMediumUiMapper @Inject constructor(
 
     private fun mapWidgetItemChannel(prevItem: PlayWidgetMediumChannelUiModel?, item: PlayWidgetItem): PlayWidgetMediumChannelUiModel {
         val channelType = PlayWidgetChannelType.getByValue(item.widgetType)
-        val actionReminder = if (item.config.isReminderSet) PlayWidgetActionReminder.Remind else PlayWidgetActionReminder.UnRemind
 
         return PlayWidgetMediumChannelUiModel(
                 channelId = item.id,
@@ -86,7 +85,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 totalView = item.stats.view.formatted,
                 totalViewVisible = item.video.isShowTotalView,
                 hasPromo = item.config.hasPromo,
-                actionReminder = actionReminder,
+                reminderType = getReminderType(item.config.isReminderSet),
                 partner = mapWidgetPartnerInfo(item.partner),
                 video = videoMapper.mapWidgetItemVideo(item.video),
                 hasAction = shouldHaveActionMenu(channelType, item.partner.id),

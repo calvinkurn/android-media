@@ -31,6 +31,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -53,9 +54,8 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetActionReminder
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderEvent
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -878,8 +878,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     (parentFragment as? ShopPageFragment)?.refreshData()
             }
             REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
-                val playWidgetReminderEvent = viewModel?.playWidgetReminderActionEvent?.value
-                if (playWidgetReminderEvent != null) viewModel?.shouldUpdatePlayWidgetToggleReminder(playWidgetReminderEvent.channelId, playWidgetReminderEvent.actionReminder)
+                val lastEvent = viewModel?.playWidgetReminderEvent?.value
+                if (lastEvent != null) viewModel?.shouldUpdatePlayWidgetToggleReminder(lastEvent.first, lastEvent.second)
             }
             else -> {
             }
@@ -1230,7 +1230,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+//            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalTestApp.LOGIN)
             startActivityForResult(intent, requestCode)
         }
     }
@@ -1637,8 +1638,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, actionReminder: PlayWidgetActionReminder, position: Int) {
-        viewModel?.shouldUpdatePlayWidgetToggleReminder(channelId, actionReminder)
+    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+        viewModel?.shouldUpdatePlayWidgetToggleReminder(channelId, reminderType)
     }
 
     override fun onDeleteFailedTranscodingChannel(view: PlayWidgetMediumView, channelId: String) {
@@ -1711,8 +1712,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> showToastSuccess(
                         when (it.data) {
-                            PlayWidgetActionReminder.Remind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                            PlayWidgetActionReminder.UnRemind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                            PlayWidgetReminderType.Remind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                            PlayWidgetReminderType.UnRemind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
                         }
                 )
                 is Fail -> showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))
@@ -1721,10 +1722,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observePlayWidgetReminderEvent() {
-        viewModel?.playWidgetReminderActionEvent?.observe(viewLifecycleOwner, Observer {
-            if (it is PlayWidgetReminderEvent.NeedLoggedIn) {
-                redirectToLoginPage(requestCode = REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
-            }
+        viewModel?.playWidgetReminderEvent?.observe(viewLifecycleOwner, Observer {
+            redirectToLoginPage(requestCode = REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
         })
     }
 

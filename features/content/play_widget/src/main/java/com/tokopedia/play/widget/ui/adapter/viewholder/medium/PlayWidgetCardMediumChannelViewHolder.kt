@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelMediumView
-import com.tokopedia.play.widget.ui.model.PlayWidgetActionReminder
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 
 /**
@@ -24,8 +24,8 @@ class PlayWidgetCardMediumChannelViewHolder(
             listener.onChannelClicked(view, item, adapterPosition)
         }
 
-        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, actionReminder: PlayWidgetActionReminder) {
-            listener.onToggleReminderChannelClicked(item, actionReminder, adapterPosition)
+        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, reminderType: PlayWidgetReminderType) {
+            listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
         }
 
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel) {
@@ -69,7 +69,7 @@ class PlayWidgetCardMediumChannelViewHolder(
 
         fun onToggleReminderChannelClicked(
                 item: PlayWidgetMediumChannelUiModel,
-                actionReminder: PlayWidgetActionReminder,
+                reminderType: PlayWidgetReminderType,
                 position: Int
         )
 
