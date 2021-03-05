@@ -1934,8 +1934,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun validateLocalCacheAddress(activity: FragmentActivity, localizationChooseAddressData: LocalizationChooseAddressData) {
-        if (localizationChooseAddressData.state == LocalizationChooseAddressData.STATE_CHOSEN_ADDRESS_MATCH ||
-                localizationChooseAddressData.state == LocalizationChooseAddressData.STATE_ADDRESS_ID_NOT_MATCH) {
+        var snippetMode = false
+        ChooseAddressUtils.getLocalizingAddressData(activity)?.let {
+            if (it.address_id.toLongOrZero() == 0L && it.district_id.toLongOrZero() != 0L) {
+                snippetMode = true
+            }
+        }
+
+        if (!snippetMode) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
                     addressId = localizationChooseAddressData.addressId,
