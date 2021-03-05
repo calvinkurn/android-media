@@ -651,8 +651,6 @@ class DynamicProductDetailViewModelTest {
             viewModel.userId
         } returns "123"
 
-        viewModel.enableCaching = false
-
         every {
             userSessionInterface.isLoggedIn
         } returns true
@@ -673,7 +671,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
         Assert.assertTrue(viewModel.topAdsImageView.value is Success)
-        Assert.assertFalse(viewModel.enableCaching)
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
@@ -735,7 +732,6 @@ class DynamicProductDetailViewModelTest {
     @Test
     fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
-        viewModel.enableCaching = true
 
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
@@ -751,8 +747,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNull(viewModel.p2Data.value)
         Assert.assertNull(viewModel.p2Login.value)
         Assert.assertNull(viewModel.p2Other.value)
-
-        Assert.assertTrue(viewModel.enableCaching)
 
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -830,8 +824,6 @@ class DynamicProductDetailViewModelTest {
         every {
             viewModel.isShopOwner()
         } returns true
-
-        viewModel.enableCaching = false
 
         every {
             userSessionInterface.isLoggedIn
