@@ -198,7 +198,8 @@
         android:gravity="center"
         android:visibility="gone"
         app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStateType="page" />
+        app:unifyEmptyStateType="page"
+        android:background="@color/Unify_N0" />
 
     <LinearLayout
         android:id="@+id/loaderCheckout"

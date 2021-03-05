@@ -38,12 +38,12 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         var subParams: DigitalSubscriptionParams? = null
 
         uriData?.let { uri ->
-            if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL && uri.getQueryParameter(DeeplinkMapperDigital.IS_FROM_WIDGET_PARAM).isNullOrEmpty()) {
-                cartPassData = intent.getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA)
-                subParams = intent.getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA)
-            } else if (uri.queryParameterNames.size > 0) {
+            if (uri.queryParameterNames.size > 0) {
                 cartPassData = processIntentDataCheckoutFromApplink(applicationContext, uriData)
                 subParams = processIntentDataSubscription(uriData)
+            } else if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL && uri.getQueryParameter(DeeplinkMapperDigital.IS_FROM_WIDGET_PARAM).isNullOrEmpty()) {
+                cartPassData = intent.getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA)
+                subParams = intent.getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA)
             }
             return DigitalCartFragment.newInstance(cartPassData, subParams)
         }
