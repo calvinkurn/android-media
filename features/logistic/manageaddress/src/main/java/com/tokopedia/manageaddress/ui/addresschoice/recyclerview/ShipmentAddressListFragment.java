@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.addresschoice.recyclerview;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -450,6 +451,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initSearchView() {
         mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
         mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());

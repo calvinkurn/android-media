@@ -148,7 +148,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                                 variant = Value.NONE_OTHER,
                                 productPosition = (position + 1).toString(),
                                 channelId = channel.id,
-                                isFreeOngkir = grid.isFreeOngkirActive,
+                                    isFreeOngkir = grid.isFreeOngkirActive,
                                 persoType = channel.trackingAttributionModel.persoType,
                                 categoryId = channel.trackingAttributionModel.categoryId,
                                 isTopAds = grid.isTopads,

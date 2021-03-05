@@ -24,6 +24,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/container_constraint_promo_checkout"
             app:layout_constraintCircleRadius="@dimen/dp_4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -39,18 +40,28 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_promo_item_title"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
                 android:textColor="@color/Unify_N700_96"
-                app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
+                app:layout_constraintEnd_toStartOf="@id/label_promo_item_title_info"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_image_promo_item"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Gratis Ongkir hingga Rp1.200.000" />
+                app:typographyType="heading_5"
+                tools:text="Cashback Rp10.000" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/label_promo_item_title_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintBottom_toBottomOf="@id/label_promo_item_title"
+                app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
+                app:layout_constraintStart_toEndOf="@id/label_promo_item_title"
+                app:typographyType="body_3"
+                tools:text="(20.000 TokoPoints)" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_promo_code_info"

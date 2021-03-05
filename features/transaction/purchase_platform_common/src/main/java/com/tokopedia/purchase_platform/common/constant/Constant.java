@@ -22,6 +22,4 @@ public interface Constant {
     String EXTRA_ATC_REQUEST = "EXTRA_ATC_REQUEST";
     String TRACKER_ATTRIBUTION = "tracker_attribution";
     String TRACKER_LIST_NAME = "tracker_list_name";
-
-    String EXTRA_OCC_SOURCE_PDP = "EXTRA_OCC_SOURCE_PDP";
 }

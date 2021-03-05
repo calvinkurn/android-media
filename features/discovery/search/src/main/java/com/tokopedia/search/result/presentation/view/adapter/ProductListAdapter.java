@@ -46,20 +46,24 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     public void changeSearchNavigationListView(int position) {
-        if (position >= 0 && position < list.size() && list.get(position) instanceof SearchProductCountViewModel) {
+        if (position >= 0 && position < list.size()) {
             typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
             notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_LIST);
         }
     }
 
     public void changeSearchNavigationDoubleGridView(int position) {
-        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
-        notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+        if (position >= 0 && position < list.size()) {
+            typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+            notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+        }
     }
 
     public void changeSearchNavigationSingleGridView(int position) {
-        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
-        notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+        if (position >= 0 && position < list.size()) {
+            typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+            notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+        }
     }
 
     public void changeListView() {

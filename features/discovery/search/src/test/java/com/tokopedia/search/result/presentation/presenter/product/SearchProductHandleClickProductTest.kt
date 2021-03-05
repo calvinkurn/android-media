@@ -109,7 +109,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     private fun `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot))
+            productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot), any())
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
 
@@ -156,7 +156,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot))
+            productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot), any())
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
 

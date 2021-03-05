@@ -74,8 +74,8 @@ class ShopProductModule {
     @Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT)
     fun getShopFeaturedProductQuery(@ShopPageContext context: Context): String {
         return """
-            query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!){
-              shop_featured_product(shopID:${'$'}shopId, userID:${'$'}userID){
+            query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!,${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String){
+              shop_featured_product(shopID:${'$'}shopId, userID:${'$'}userID, districtID:${'$'}districtId, cityID:${'$'}cityId, latitude:${'$'}latitude, longitude:${'$'}longitude){
                 data{
                   parent_id
                   product_id
@@ -105,6 +105,7 @@ class ShopProductModule {
                     position
                     type
                     title
+                    url
                   }
                   total_review
                   rating
@@ -176,6 +177,7 @@ class ShopProductModule {
                     position
                     type
                     title
+                    url
                   }
                 }
                 totalData

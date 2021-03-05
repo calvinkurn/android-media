@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.isSalamWidgetAvailable
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperRechargetoReminder
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamtoReminder
+import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
@@ -263,6 +264,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     private var homeNotifModel = HomeNotifModel()
 
+    private var homeChooseAddressData = HomeChooseAddressData()
+
     init {
         initialShimmerData = HomeInitialShimmerDataModel()
         _isViewModelInitialized.value = Event(true)
@@ -272,7 +275,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun refresh(isFirstInstall: Boolean, forceRefresh: Boolean = false){
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
-        if (forceRefresh || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
+        if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         }
@@ -496,6 +499,7 @@ open class HomeRevampViewModel @Inject constructor(
     private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             var newHomeRevampViewModel = homeDataModel
+            newHomeRevampViewModel = evaluateChooseAddressData(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluatePlayWidget(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluateBuWidgetData(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluateRecommendationSection(newHomeRevampViewModel)
@@ -797,6 +801,23 @@ open class HomeRevampViewModel @Inject constructor(
 // ============================== Evaluate Controller ==============================
 // =================================================================================
 
+    private fun evaluateChooseAddressData(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { HomeRevampViewModel ->
+            // find the old data from current list
+            val list = HomeRevampViewModel.list.toMutableList()
+
+            val homeHeaderOvoDataModel = homeVisitableListData.find { visitable -> visitable is HomeHeaderOvoDataModel}
+            val headerIndex = homeDataModel.list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
+            (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
+                it.needToShowChooseAddress = getAddressData().isActive
+                list[headerIndex] = homeHeaderOvoDataModel
+            }
+
+            return HomeRevampViewModel.copy(list = list)
+        }
+        return homeDataModel
+    }
+
     private fun evaluatePlayWidget(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { HomeRevampViewModel ->
             // find the old data from current list
@@ -894,20 +915,23 @@ open class HomeRevampViewModel @Inject constructor(
 
         launch {
             val homeCacheData = homeUseCase.get().getHomeCachedData()
-            homeCacheData?.let {
+            homeCacheData?.let {it ->
                 homeVisitableListData = it.list.toMutableList()
-                _homeLiveData.postValue(it)
+                val homeDataModel = evaluateChooseAddressData(it)
+                homeDataModel?.let {
+                    _homeLiveData.postValue(homeDataModel)
 
-                if (it.list.size > 1) {
-                    _isRequestNetworkLiveData.postValue(Event(false))
-                    takeTicker = false
-                }
-                if (it.list.size == 1) {
-                    val initialHomeDataModel = HomeDataModel(list = listOf(
-                            HomeHeaderOvoDataModel(),
-                            HomeInitialShimmerDataModel()
-                    ))
-                    homeProcessor.get().sendWithQueueMethod(UpdateHomeData(initialHomeDataModel, this@HomeRevampViewModel))
+                    if (homeDataModel.list.size > 1) {
+                        _isRequestNetworkLiveData.postValue(Event(false))
+                        takeTicker = false
+                    }
+                    if (homeDataModel.list.size == 1) {
+                        val initialHomeDataModel = HomeDataModel(list = listOf(
+                                HomeHeaderOvoDataModel(),
+                                HomeInitialShimmerDataModel()
+                        ))
+                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(initialHomeDataModel, this@HomeRevampViewModel))
+                    }
                 }
             }
             initFlow()
@@ -955,8 +979,10 @@ open class HomeRevampViewModel @Inject constructor(
                         takeTicker = false
                     }
                     if (homeDataModel?.list?.size?:0 > 0) {
-                        homeDataModel?.let {
-                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        val evaluatedData = evaluateChooseAddressData(homeDataModel)
+
+                        evaluatedData?.let {
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
                         }
                     }
                     refreshHomeData()
@@ -1167,6 +1193,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun getFeedTabData() {
         if (getTabRecommendationJob != null) return
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
+            getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
             val findRetryModel = homeVisitableListData.withIndex().find { data -> data.value is HomeRetryModel
             }
@@ -1343,6 +1370,8 @@ open class HomeRevampViewModel @Inject constructor(
             )
         }
     }
+
+
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         launchCatchError(coroutineContext, block = {
@@ -1659,5 +1688,51 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun setRollanceNavigationType(type: String) {
         navRollanceType = type
+    }
+
+    fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
+        this.homeChooseAddressData = homeChooseAddressData
+        refresh(isFirstInstall = false, forceRefresh = true)
+    }
+
+    fun getAddressData(): HomeChooseAddressData {
+        return homeChooseAddressData
+    }
+
+    fun isAddressDataEmpty(): Boolean {
+        return getAddressData().lat.isEmpty() &&
+                getAddressData().long.isEmpty() &&
+                getAddressData().districId.isEmpty() &&
+                getAddressData().cityId.isEmpty() &&
+                getAddressData().addressId.isEmpty() &&
+                getAddressData().postCode.isEmpty()
+
+    }
+
+    private fun getHomeLocationDataParam() : String {
+        return if (!isAddressDataEmpty()) {
+            buildLocationParams(
+                    getAddressData().lat,
+                    getAddressData().long,
+                    getAddressData().addressId,
+                    getAddressData().cityId,
+                    getAddressData().districId,
+                    getAddressData().postCode)
+        } else ""
+    }
+
+    private fun buildLocationParams(
+            lat: String = "",
+            long: String = "",
+            addressId: String = "",
+            cityId: String = "",
+            districtId: String = "",
+            postCode: String = ""): String {
+        return "user_lat=" + lat +
+                "&user_long=" + long +
+                "&user_addressId=" + addressId +
+                "&user_cityId=" + cityId +
+                "&user_districtId=" + districtId +
+                "&user_postCode=" + postCode
     }
 }

@@ -1,5 +1,5 @@
-mutation coupon_list_recommendation($params: PromoStackRequest) {
-    coupon_list_recommendation(params: $params) {
+mutation coupon_list_recommendation($params: PromoStackRequest, $chosen_address: ChosenAddressParam) {
+    coupon_list_recommendation(params: $params, chosen_address: $chosen_address) {
         message
         error_code
         status
@@ -69,6 +69,12 @@ mutation coupon_list_recommendation($params: PromoStackRequest) {
                         clashing_infos {
                             code
                             message
+                        }
+                        currency_details_str
+                        coachmark {
+                            is_shown
+                            title
+                            content
                         }
                     }
                 }
