@@ -39,12 +39,38 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:textColor="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="@id/shop_image"
-        app:layout_constraintEnd_toStartOf="@id/menu_button"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/shop_badge"
         app:layout_constraintTop_toTopOf="@id/shop_image"
         app:typographyType="heading_6"
         tools:text="Fellow Official" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_name_separator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:text="@string/feed_header_separator"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="@id/shop_image"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/shop_name"
+        app:layout_constraintTop_toTopOf="@id/shop_image"
+        app:typographyType="heading_6" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/follow_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:text="@string/kol_action_follow"
+        android:textColor="@color/light_G500"
+        app:layout_constraintBottom_toBottomOf="@id/shop_image"
+        app:layout_constraintEnd_toStartOf="@id/menu_button"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/shop_name_separator"
+        app:layout_constraintTop_toTopOf="@id/shop_image"
+        app:typographyType="heading_6" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/menu_button"
@@ -88,7 +114,7 @@
         android:id="@+id/share_button"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        app:icon_name="SHARE"
+        app:icon_name="SHARE_MOBILE"
         app:layout_constraintBottom_toBottomOf="@id/like_button"
         app:layout_constraintEnd_toEndOf="@id/menu_button"
         app:layout_constraintTop_toTopOf="@id/like_button" />

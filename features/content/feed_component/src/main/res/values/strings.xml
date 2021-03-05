@@ -78,6 +78,7 @@
     <string name="feed_try_again">Coba Lagi</string>
 
     <string name="feed_header_time_format" formatted="false">%s • %s</string>
+    <string name="feed_header_separator" formatted="false">•</string>
 
     <string name="content_desc_authorImage">image profil</string>
     <string name="content_desc_authorBadge">image badge</string>
@@ -85,4 +86,16 @@
     <string name="content_desc_headerAction">button action</string>
     <string name="content_desc_menu">button menu</string>
     <string name="content_desc_caption">text caption</string>
+
+    <!--MENU OPTION BOTTOM SHEETS ASSETS-->
+    <string name="feed_component_report_it">Laporkan</string>
+    <string name="feed_component_follow">Follow</string>
+    <string name="feed_component_unfollow">Unfollow</string>
+    <string name="feed_component_not_interested">Tidak Tertarik</string>
+
+    <!--REPORT BOTTOM SHEETS ASSETS-->
+    <string name="feed_component_report_Header">Kenapa kamu ingin laporkan postingan ini?</string>
+    <string name="feed_component_report_description">Kamu akan melaporkan sebagai anonim, kecuali jika kamu melaporkan pelanggaran kekayaan intelektual. Jika ada seseorang dalam bahaya, segera hubungi layanan darurat terdekat.</string>
+    <string name="feed_component_report_subtext1">Postingan  ini spam</string>
+    <string name="feed_component_report_subtext2">Postingan tidak pantas</string>
 </resources>
