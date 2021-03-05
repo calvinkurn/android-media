@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -24,6 +23,8 @@ internal class ChooseAddressViewHolder(
         @JvmField
         @LayoutRes
         val LAYOUT = R.layout.search_result_product_choose_address_layout
+
+        private const val SOURCE = "search page"
     }
 
     private var chooseAddressContainer: ConstraintLayout? = null
@@ -59,7 +60,7 @@ internal class ChooseAddressViewHolder(
 
             override fun getLocalizingAddressHostFragment() = chooseAddressListener.getFragment()
 
-            override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+            override fun getLocalizingAddressHostSourceData() = SOURCE
 
             override fun onLocalizingAddressLoginSuccess() {
 
