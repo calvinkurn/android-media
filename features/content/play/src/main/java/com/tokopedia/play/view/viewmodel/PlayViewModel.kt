@@ -690,7 +690,7 @@ class PlayViewModel @Inject constructor(
                     is ProductTag -> {
                         val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
                         val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
-                        if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                        _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
                             currentPinnedProduct.copy(
                                     shouldShow = shouldShow,
                                     productTags = currentPinnedProduct.productTags.copy(
@@ -707,7 +707,6 @@ class PlayViewModel @Inject constructor(
                                     )
                             )
                         }
-                        _observablePinnedProduct.value = currentPinnedProduct
                         trackProductTag(
                                 channelId = channelId,
                                 productList = mappedProductTags
@@ -716,7 +715,7 @@ class PlayViewModel @Inject constructor(
                     is MerchantVoucher -> {
                         val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
                         val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
-                        if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                        _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
                             currentPinnedProduct.copy(
                                     productTags = currentPinnedProduct.productTags.copy(
                                             voucherList = mappedVouchers
@@ -731,7 +730,6 @@ class PlayViewModel @Inject constructor(
                                     )
                             )
                         }
-                        _observablePinnedProduct.value = currentPinnedProduct
                     }
                 }
             }
