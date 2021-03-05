@@ -29,7 +29,6 @@
     <string name="content_desc_actionUpButton">button back search</string>
     <string name="content_desc_autocompleteIconSearch">image search icon</string>
     <string name="content_desc_actionVoiceButton">voice button</string>
-    <string name="content_desc_searchTextView">input search</string>
     <string name="content_desc_actionEmptyButton">button hapus search</string>
     <string name="content_desc_titleTextView">text title autocomplete</string>
     <string name="content_desc_actionDeleteButton">button hapus semua</string>
