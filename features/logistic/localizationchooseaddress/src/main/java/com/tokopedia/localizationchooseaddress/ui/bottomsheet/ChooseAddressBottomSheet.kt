@@ -328,8 +328,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                         chooseAddressPref?.setLocalCache(localData)
                         if (isLoginFlow) {
                             listener?.onLocalizingAddressLoginSuccessBottomSheet()
+                            dismissBottomSheet()
                         }
-                        dismissBottomSheet()
                     }
                 }
 
