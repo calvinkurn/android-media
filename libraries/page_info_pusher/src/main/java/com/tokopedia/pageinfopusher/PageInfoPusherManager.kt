@@ -1,7 +1,6 @@
 package com.tokopedia.pageinfopusher
 
 import android.app.Activity
-import android.util.Log
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -48,6 +47,7 @@ class PageInfoPusherManager(val activity: Activity) {
             val manufacturers: String? = config.optString("device_manufacturers")
             val models: String? = config.optString("device_models")
             val osVersions: String? = config.optString("android_os_versions")
+            val isForceClose: Boolean = config.optBoolean("is_force_close")
             val message: String? = config.optString("message")
 
             if (!isEligibleForGeneralInfo(pages, className)) return
@@ -62,9 +62,12 @@ class PageInfoPusherManager(val activity: Activity) {
             Timber.w("P1#DISPLAY_GENERAL_INFO#'" + className
                     + "';dev='" + GlobalConfig.isAllowDebuggingTools()
                     + "';ver='" + GlobalConfig.VERSION_NAME
+                    + "';manufacturer='" + android.os.Build.MANUFACTURER
+                    + "';model='" + android.os.Build.MODEL
+                    + "';os='" + android.os.Build.VERSION.SDK_INT.toString()
                     + "';message='" + message + "'")
 
-            message?.let { showPopUp(it) }
+            message?.let { showPopUp(it, isForceClose) }
 
         } catch (e: java.lang.Exception) {
         }
@@ -77,7 +80,7 @@ class PageInfoPusherManager(val activity: Activity) {
         return ("all" == requirementList[0] || requirementList.contains(value))
     }
 
-    private fun showPopUp(message: String) {
+    private fun showPopUp(message: String, isForceClose: Boolean) {
         DialogUnify(context = activity,
                 actionType = DialogUnify.SINGLE_ACTION,
                 imageType = DialogUnify.NO_IMAGE).apply {
@@ -88,7 +91,7 @@ class PageInfoPusherManager(val activity: Activity) {
                 this.dismiss()
             }
             setOnDismissListener {
-                Log.d("PageInfoPusherManager", "dialog dismissed")
+                if (isForceClose) activity.finish()
             }
             setOverlayClose(false)
             show()
