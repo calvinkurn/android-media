@@ -9,9 +9,11 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import com.tokopedia.play.widget.data.*
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
@@ -37,11 +39,11 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.*
@@ -485,38 +487,32 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether playWidgetToggleReminderObservable success value is true`() {
-        /**
-         * Need to be fixed later
         val mockChannelId = "123"
-        val mockPlayWidgetReminder = PlayWidgetReminder(PlayWidgetHeaderReminder())
-        coEvery {
-            playWidgetTools.setToggleReminder(any(), any(), any())
-        } returns mockPlayWidgetReminder
-        coEvery {
-            playWidgetTools.mapWidgetToggleReminder(mockPlayWidgetReminder)
-        } returns PlayWidgetReminderUiModel(success = true)
-        viewModel.setToggleReminderPlayWidget(mockChannelId, true, 1)
-        coVerify { playWidgetTools.setToggleReminder(any(), any(), any()) }
-        assert(viewModel.playWidgetToggleReminderObservable.value?.success == true)
-         */
+        val mockPlayWidgetReminder = PlayWidgetReminder()
+
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } returns mockPlayWidgetReminder
+        coEvery { playWidgetTools.mapWidgetToggleReminder(mockPlayWidgetReminder) } returns true
+
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+
+        coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
+
+        assert(viewModel.playWidgetReminderObservable.value is Success)
     }
 
     @Test
     fun `check whether playWidgetToggleReminderObservable success value is false`() {
-        /**
-         * Need to be fixed later
         val mockChannelId = "123"
-        val mockPlayWidgetReminder = Header(PlayWidgetHeaderReminder())
-        coEvery {
-            playWidgetTools.updateToggleReminder(any(), any(), any())
-        } returns mockPlayWidgetReminder
-        coEvery {
-            playWidgetTools.mapWidgetToggleReminder(mockPlayWidgetReminder)
-        } returns PlayWidgetReminderUiModel(success = false)
-        viewModel.updatePlayWidgetToggleReminder(mockChannelId, true, 1)
+
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } throws Throwable()
+
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+
         coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
-        assert(viewModel.playWidgetToggleReminderObservable.value?.success == false)
-         */
+
+        assert(viewModel.playWidgetReminderObservable.value is Fail)
     }
 
     @Test
