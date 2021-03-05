@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
@@ -72,9 +71,8 @@ class SellableStockProductViewHolder(itemView: View?,
         setValue(element.stock.toIntOrZero())
 
         stockEditTextWatcher = getStockTextChangeListener {
-            val input = it
-            val stock = if(input.isNotEmpty()) {
-                input.toInt()
+            val stock = if(it.isNotEmpty()) {
+                getValue()
             } else {
                 EditProductConstant.MINIMUM_STOCK
             }
@@ -149,15 +147,12 @@ class SellableStockProductViewHolder(itemView: View?,
         }
     }
 
-    private fun String.toInt(): Int {
-        return replace(".", "").toIntOrZero()
-    }
-
     private fun getCurrentStockInput(): Int {
-        val input = itemView.qte_campaign_stock_variant_editor?.editText?.text.toString()
+        val stockEditor = itemView.qte_campaign_stock_variant_editor
+        val input = stockEditor?.editText?.text.toString()
 
         return if(input.isNotEmpty()) {
-            input.toIntOrZero()
+            stockEditor.getValue()
         } else {
             MINIMUM_INPUT
         }
