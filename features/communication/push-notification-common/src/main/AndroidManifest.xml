@@ -7,8 +7,8 @@
             android:name=".service.PushNotificationService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.tokopedia.tkpd"/>
-                <action android:name="com.tokopedia.sellerapp"/>
+                <action android:name="com.tokopedia.tkpd.AIDL_ACTION"/>
+                <action android:name="com.tokopedia.sellerapp.AIDL_ACTION"/>
             </intent-filter>
         </service>
     </application>
