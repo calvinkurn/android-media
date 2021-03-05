@@ -690,18 +690,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         //add balance widget
         //uncomment this to activate balance widget coachmark
-        val balanceWidget = getBalanceWidgetView()
-        balanceWidget?.let {
-            if (it.isVisible) {
-                this.add(
-                        CoachMark2Item(
-                                balanceWidget,
-                                getString(R.string.onboarding_coachmark_wallet_title),
-                                getString(R.string.onboarding_coachmark_wallet_description)
-                        )
-                )
-            }
-        }
+//        val balanceWidget = getBalanceWidgetView()
+//        balanceWidget?.let {
+//            if (it.isVisible) {
+//                this.add(
+//                        CoachMark2Item(
+//                                balanceWidget,
+//                                getString(R.string.onboarding_coachmark_wallet_title),
+//                                getString(R.string.onboarding_coachmark_wallet_description)
+//                        )
+//                )
+//            }
+//        }
     }
 
     private fun showCoachMark() {
@@ -731,9 +731,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getLocationWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val locationView = it.itemView.widget_choose_address.findViewById<View>(R.id.text_chosen_address)
+            val locationView = it.itemView.widget_choose_address
             if (locationView.isVisible)
-                return locationView
+                return locationView.findViewById(R.id.text_chosen_address)
         }
         return null
     }
@@ -741,8 +741,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            if (it.itemView.widget_choose_address.isVisible)
-                return it.itemView.widget_choose_address
+            if (it.itemView.view_ovo.isVisible)
+                return it.itemView.view_ovo
         }
         return null
     }
