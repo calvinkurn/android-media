@@ -72,7 +72,14 @@ class CategoryGqlPageRepository(private val departmentName: String,
             }
         }
         for (component in data.components) {
-            val componentsItem = ComponentsItem(name = componentMap[component.type], id = component.id.toString(), isSticky = component.sticky, pagePath = data.basicInfo.url, showFilterCount = false, renderByDefault = true,  properties = Properties(targetId = "4"))
+            val componentsItem = ComponentsItem(
+                    name = componentMap[component.type],
+                    id = component.id.toString(),
+                    isSticky = component.sticky,
+                    pagePath = data.basicInfo.url,
+                    showFilterCount = false,
+                    renderByDefault = true,
+                    properties = Properties(targetId = component.targetId.toString()))
             if(component.data.isNotEmpty()) {
                 val dataItems = arrayListOf<DataItem>()
                 component.data.forEachIndexed { index, dataItem ->

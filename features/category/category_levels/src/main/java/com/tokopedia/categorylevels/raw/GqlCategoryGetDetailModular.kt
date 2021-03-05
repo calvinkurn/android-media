@@ -35,6 +35,7 @@ const val GQL_CATEGORY_GET_DETAIL_MODULAR: String = """query categoryGetDetailMo
       id
       name
       type
+      targetID
       sticky
       data{
         ... on CategoryModularChildrenNav{

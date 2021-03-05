@@ -84,6 +84,8 @@ data class CategoryGetDetailModularData(
             var name: String,
             @SerializedName("type")
             var type: String,
+            @SerializedName("targetID")
+            var targetId: Int,
             @SerializedName("sticky")
             var sticky: Boolean,
             @SerializedName("data")
