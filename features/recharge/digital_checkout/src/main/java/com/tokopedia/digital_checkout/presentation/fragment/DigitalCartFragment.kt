@@ -124,13 +124,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         initViews()
 
-        Log.d("RaceCondition", "start observing")
-        viewModel.payment.observe(viewLifecycleOwner, Observer {payment ->
-//            if (isChecked) {
-//                checkoutSummaryWidget.addItem(payment)
-//            } else {
-//                checkoutSummaryWidget.removeItem(payment)
-//            }
+        viewModel.payment.observe(viewLifecycleOwner, Observer { payment ->
             checkoutSummaryWidget.setSummaries(payment)
         })
 

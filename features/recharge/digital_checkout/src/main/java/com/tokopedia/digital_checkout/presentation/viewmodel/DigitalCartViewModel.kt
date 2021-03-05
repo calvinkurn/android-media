@@ -1,6 +1,5 @@
 package com.tokopedia.digital_checkout.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
@@ -303,7 +302,7 @@ class DigitalCartViewModel @Inject constructor(
             _payment.postValue(paymentSummary)
             _totalPrice.forceRefresh()
         } else {
-            paymentSummary.removeFromSummary(Payment(PAYMENT_KODE_PROMO, getStringIdrFormat(promoDataValue.toDouble())))
+            paymentSummary.removeFromSummary(PAYMENT_KODE_PROMO)
             _payment.postValue(paymentSummary)
         }
     }
@@ -318,8 +317,7 @@ class DigitalCartViewModel @Inject constructor(
         }
         _cartAdditionalInfoList.postValue(additionalInfos)
 
-        // TODO: ini rada maksa bgt masukin priceAmount dummy
-        paymentSummary.removeFromSummary(Payment(PAYMENT_KODE_PROMO, ""))
+        paymentSummary.removeFromSummary(PAYMENT_KODE_PROMO)
         _payment.postValue(paymentSummary)
         _totalPrice.forceRefresh()
     }
@@ -341,7 +339,7 @@ class DigitalCartViewModel @Inject constructor(
                 totalPrice += fintechProductPrice
                 paymentSummary.addToSummary(Payment(fintechProductName, getStringIdrFormat(fintechProductPrice)))
             } else {
-                paymentSummary.removeFromSummary(Payment(fintechProductName, getStringIdrFormat(fintechProductPrice)))
+                paymentSummary.removeFromSummary(fintechProductName)
             }
             _payment.postValue(paymentSummary)
             _totalPrice.postValue(totalPrice)

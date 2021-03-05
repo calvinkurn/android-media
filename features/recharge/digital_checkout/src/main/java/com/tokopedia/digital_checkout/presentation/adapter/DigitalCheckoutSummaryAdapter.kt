@@ -42,8 +42,8 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
     data class PaymentSummary (
             val summaries: MutableList<Payment>
     ) {
-        fun removeFromSummary(payment: Payment) {
-            val item: Payment = summaries.firstOrNull { it.title == payment.title } ?: return
+        fun removeFromSummary(title: String) {
+            val item: Payment = summaries.firstOrNull { it.title == title } ?: return
             val deletePosition = summaries.indexOf(item)
             summaries.removeAt(deletePosition)
         }
