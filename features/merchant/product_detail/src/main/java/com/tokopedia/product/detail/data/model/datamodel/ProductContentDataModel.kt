@@ -4,7 +4,6 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.common.data.model.pdplayout.IsFreeOngkir
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -50,6 +49,7 @@ data class ProductContentDataModel(
                     && shouldShowTradein == newData.shouldShowTradein
                     && upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
                     && isWishlisted == newData.isWishlisted
+                    && freeOngkirImgUrl == newData.freeOngkirImgUrl
         } else {
             false
         }
