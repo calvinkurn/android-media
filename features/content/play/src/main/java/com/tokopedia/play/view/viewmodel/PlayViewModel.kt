@@ -707,6 +707,7 @@ class PlayViewModel @Inject constructor(
                                     )
                             )
                         }
+                        _observablePinnedProduct.value = currentPinnedProduct
                         trackProductTag(
                                 channelId = channelId,
                                 productList = mappedProductTags
@@ -730,6 +731,7 @@ class PlayViewModel @Inject constructor(
                                     )
                             )
                         }
+                        _observablePinnedProduct.value = currentPinnedProduct
                     }
                 }
             }
