@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.domain.Bank
+import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.view.adapter.BankListClickListener
 
 class BankViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
