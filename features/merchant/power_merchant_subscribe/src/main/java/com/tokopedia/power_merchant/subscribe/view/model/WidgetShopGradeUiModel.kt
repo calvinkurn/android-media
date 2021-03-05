@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.model
 
+import com.tokopedia.power_merchant.subscribe.common.constant.ShopGrade
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
 /**
@@ -7,10 +8,10 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  */
 
 class WidgetShopGradeUiModel(
+        @ShopGrade val shopGrade: Int = ShopGrade.BRONZE,
         val shopScore: Int = 0,
         val threshold: Int = 0,
         val shopLevel: Int = 0,
-        val shopGrade: String = "",
         val shopGradeBgUrl: String = "",
         val nextPmCalculationDate: String = "",
         val isPmActive: Boolean = false

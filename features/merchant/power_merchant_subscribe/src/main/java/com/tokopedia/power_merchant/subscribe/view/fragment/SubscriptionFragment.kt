@@ -9,7 +9,7 @@ import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.Constant
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.PMFeatureAdapter
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.ContentSliderBottomSheet

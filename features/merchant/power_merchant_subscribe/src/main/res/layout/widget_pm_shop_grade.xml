@@ -51,12 +51,12 @@
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingEnd="@dimen/spacing_lvl2"
             android:paddingBottom="@dimen/spacing_lvl1"
+            android:text="@string/pm_active"
             android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="@+id/tvPmShopGradeStatusLbl"
             app:layout_constraintStart_toEndOf="@+id/tvPmShopGradeStatusLbl"
             app:layout_constraintTop_toTopOf="@+id/tvPmShopGradeStatusLbl"
-            app:typographyType="heading_5"
-            tools:text="Aktif" />
+            app:typographyType="heading_5" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgPmShopGrade"
@@ -75,18 +75,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imgPmShopGrade"
             app:typographyType="heading_4"
-            tools:text="Grade tokomu: Bronze" />
+            tools:text="@string/pm_your_shop_grade" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmShopGradeMessage"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:text="@string/pm_shop_grade_message"
             android:textColor="@color/Unify_N0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPmShopGrade"
-            app:typographyType="body_3"
-            tools:text="@string/pm_shop_grade_message" />
+            app:typographyType="body_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography

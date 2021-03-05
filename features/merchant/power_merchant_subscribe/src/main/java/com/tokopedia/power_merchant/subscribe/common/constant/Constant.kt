@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.common
+package com.tokopedia.power_merchant.subscribe.common.constant
 
 import android.content.Context
 import com.tokopedia.power_merchant.subscribe.R
@@ -54,5 +54,12 @@ object Constant {
                     )
             )
         }
+    }
+
+    object ShopLevel {
+        const val ONE = 1
+        const val TWO = 2
+        const val THREE = 3
+        const val FOUR = 4
     }
 }
