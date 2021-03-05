@@ -64,7 +64,8 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                 if (restResponse.id != null) {
                     rechargeAnalytics.eventAddToCart(DigitalAtcMapper.mapToDigitalAtcTrackingModel(restResponse,
                             digitalCheckoutPassData, userSession.userId))
-                    _addToCartResult.postValue(Success(digitalCheckoutPassData.categoryId ?: ""))
+                    _addToCartResult.postValue(Success(restResponse.relationships?.category?.data?.id
+                            ?: ""))
                 } else _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
 
             }) {
