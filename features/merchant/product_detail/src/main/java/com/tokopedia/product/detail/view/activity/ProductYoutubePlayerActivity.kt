@@ -65,8 +65,13 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
     }
 
     private fun playVideoAt(selectedIndex: Int) {
-        youtubePlayerScreen.loadVideo(videoUrls[selectedIndex])
-        this.selectedIndex = selectedIndex
+        if (::youtubePlayerScreen.isInitialized) {
+            try {
+                youtubePlayerScreen.loadVideo(videoUrls[selectedIndex])
+                this.selectedIndex = selectedIndex
+            } catch (e: Throwable) {
+            }
+        }
     }
 
     override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {}

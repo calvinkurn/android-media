@@ -27,15 +27,7 @@ class DigitalCheckoutSummaryWidget @JvmOverloads constructor(@NotNull context: C
         }
     }
 
-    fun addItem(payment: DigitalCheckoutSummaryAdapter.Payment) {
-        mAdapter.addItem(payment)
-//        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("A", 12000), 0)
-//        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("B", 12000), 1)
-//        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("C", 12000), 2)
-//        mAdapter.addItem(DigitalCheckoutSummaryAdapter.Payment("D", 12000), 5)
-    }
-
-    fun removeItem(payment: DigitalCheckoutSummaryAdapter.Payment) {
-        mAdapter.removeItem(payment)
+    fun setSummaries(paymentSummary: DigitalCheckoutSummaryAdapter.PaymentSummary) {
+        mAdapter.setSummaries(paymentSummary)
     }
 }

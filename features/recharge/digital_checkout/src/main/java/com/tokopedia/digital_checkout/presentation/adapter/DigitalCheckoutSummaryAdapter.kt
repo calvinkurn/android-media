@@ -22,20 +22,9 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
 
     override fun getItemCount(): Int = summaries.size
 
-    fun addItem(payment: Payment) {
-//        val insertPosition = if (position < itemCount) position else itemCount
-//        summaries.add(insertPosition, payment)
-//        notifyItemInserted(insertPosition)
-
-        summaries.add(payment)
-        notifyItemInserted(itemCount - 1)
-    }
-
-    fun removeItem(payment: Payment) {
-        val item: Payment = summaries.firstOrNull {it.title == payment.title} ?: return
-        val deletePosition = summaries.indexOf(item)
-        summaries.removeAt(deletePosition)
-        notifyItemRemoved(deletePosition)
+    fun setSummaries(paymentSummary: PaymentSummary) {
+        summaries = paymentSummary.summaries
+        notifyDataSetChanged()
     }
 
     class DigitalCheckoutSummaryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -45,8 +34,22 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
         fun bind(item: Payment) {
             with(itemView) {
                 tvCheckoutSummaryDetailLabel.text = item.title
-                tvCheckoutSummaryDetailValue.text = item.priceAmount.toString()
+                tvCheckoutSummaryDetailValue.text = item.priceAmount
             }
+        }
+    }
+
+    data class PaymentSummary (
+            val summaries: MutableList<Payment>
+    ) {
+        fun removeFromSummary(payment: Payment) {
+            val item: Payment = summaries.firstOrNull { it.title == payment.title } ?: return
+            val deletePosition = summaries.indexOf(item)
+            summaries.removeAt(deletePosition)
+        }
+
+        fun addToSummary(payment: Payment) {
+            summaries.add(payment)
         }
     }
 
