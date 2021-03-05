@@ -31,6 +31,7 @@
                 android:layout_width="@dimen/thank_dp_200"
                 android:layout_height="@dimen/thank_dp_148"
                 android:layout_marginTop="@dimen/spacing_lvl4"
+                android:contentDescription="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/topTicker"

@@ -19,6 +19,7 @@
             android:layout_height="@dimen/layout_lvl4"
             android:layout_marginTop="@dimen/layout_lvl1"
             android:scaleType="fitStart"
+            android:contentDescription="@null"
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_marginStart="@dimen/layout_lvl1"
             app:layout_constraintLeft_toLeftOf="parent"
