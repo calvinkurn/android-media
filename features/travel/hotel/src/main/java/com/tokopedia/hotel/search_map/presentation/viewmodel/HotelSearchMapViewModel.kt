@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.VisibleRegion
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
@@ -210,6 +211,10 @@ class HotelSearchMapViewModel @Inject constructor(
         }
     }
 
+    fun getMidPoint(latLong: LatLng){
+        if (latLong.latitude == 0.0 && latLong.longitude == 0.0) mutableLatLong.postValue(Fail(Throwable()))
+        else mutableLatLong.postValue(Success(Pair(latLong.longitude, latLong.longitude)))
+    }
     fun getVisibleRadius(googleMap: GoogleMap){
         try {
             val visibleRegion: VisibleRegion = googleMap.projection.visibleRegion

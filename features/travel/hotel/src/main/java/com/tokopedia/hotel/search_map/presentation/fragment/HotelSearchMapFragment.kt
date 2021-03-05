@@ -73,7 +73,7 @@ import kotlin.math.abs
  * @author by furqan on 01/03/2021
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
-        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -198,6 +198,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
+    override fun onCameraIdle() {
+        Handler().postDelayed({
+            hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
+        }, DELAY_BUTTON_RADIUS)
+    }
+
     override fun onMarkerClick(marker: Marker): Boolean {
         allMarker.forEach {
             if(it.tag == marker.tag){
@@ -307,6 +313,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             toolbarConstraintContainer.requestLayout()
 
             appBarHotelSearchMap.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+                /**
                 val oneThreeOfScreen = (screenHeight * COLLAPSING_ONE_THREE_OF_SCREEN).toInt()
 
                 if (abs(verticalOffset) < oneThreeOfScreen && !isInAnimation) {
@@ -321,7 +328,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 } else {
                     hideFindNearHereView()
                     hideTargetView()
-                }
+                }*/
             })
         }
     }
@@ -395,6 +402,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
+            showCardListView()
+            showLoadingCardListMap()
             hotelSearchMapViewModel.getVisibleRadius(googleMap)
         }
 
@@ -448,6 +457,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     /**Location permission is handled by LocationDetector*/
     private fun initGetMyLocation(){
         ivGetLocationHotelSearchMap.setOnClickListener {
+            googleMap.setOnCameraIdleListener(this)
+            hideCardListView()
             getCurrentLocation()
         }
     }
@@ -695,6 +706,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
 
         const val SELECTED_POSITION_INIT = 0
+        const val DELAY_BUTTON_RADIUS : Long = 1000L
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
