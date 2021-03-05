@@ -27,11 +27,10 @@ class HomeRecommendationViewModel @Inject constructor(
 
     var topAdsBannerNextPageToken = ""
 
-    fun loadInitialPage(tabName: String, recommendationId: Int,count: Int){
+    fun loadInitxialPage(tabName: String, recommendationId: Int,count: Int, locationParam: String){
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1,
-                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams() ?: "")
+            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1, locationParam)
             val data = getHomeRecommendationUseCase.executeOnBackground()
             if(data.homeRecommendations.isEmpty()){
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
@@ -77,14 +76,14 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun loadNextData(tabName: String, recomId: Int, count: Int, page: Int) {
+    fun loadNextData(tabName: String, recomId: Int, count: Int, page: Int, locationParam: String) {
         val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
         list.add(loadMoreModel)
         _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(
                 homeRecommendations = list.copy()
         ))
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recomId, count, page)
+            getHomeRecommendationUseCase.setParams(tabName, recomId, count, page, locationParam)
             val data = getHomeRecommendationUseCase.executeOnBackground()
             list.remove(loadMoreModel)
             try{
