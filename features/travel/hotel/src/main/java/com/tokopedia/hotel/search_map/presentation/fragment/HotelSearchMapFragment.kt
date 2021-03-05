@@ -370,6 +370,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
 
+            /**Will include this after radius from BE is ready
+            googleMap.setOnCameraIdleListener(this)
+             */
+
             googleMap.setOnMapClickListener {
                 // do nothing
             }
@@ -403,7 +407,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         wrapper.addView(textView)
         wrapper.setOnClickListener {
             showCardListView()
-            showLoadingCardListMap()
             hotelSearchMapViewModel.getVisibleRadius(googleMap)
         }
 
@@ -457,7 +460,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     /**Location permission is handled by LocationDetector*/
     private fun initGetMyLocation(){
         ivGetLocationHotelSearchMap.setOnClickListener {
-            googleMap.setOnCameraIdleListener(this)
             hideCardListView()
             getCurrentLocation()
         }

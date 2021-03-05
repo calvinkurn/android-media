@@ -211,10 +211,12 @@ class HotelSearchMapViewModel @Inject constructor(
         }
     }
 
+    /**Temp variable mutableLatLong will change it to midPoint afterwards*/
     fun getMidPoint(latLong: LatLng){
         if (latLong.latitude == 0.0 && latLong.longitude == 0.0) mutableLatLong.postValue(Fail(Throwable()))
         else mutableLatLong.postValue(Success(Pair(latLong.longitude, latLong.longitude)))
     }
+
     fun getVisibleRadius(googleMap: GoogleMap){
         try {
             val visibleRegion: VisibleRegion = googleMap.projection.visibleRegion
