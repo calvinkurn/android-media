@@ -2462,7 +2462,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
         if (channelId == null || totalView == null) return
         getHomeViewModel().updatePlayWidgetTotalView(channelId, totalView)
-        getHomeViewModel().updateBannerTotalView(channelId, totalView)
     }
 
     private fun playWidgetOnVisibilityChanged(
