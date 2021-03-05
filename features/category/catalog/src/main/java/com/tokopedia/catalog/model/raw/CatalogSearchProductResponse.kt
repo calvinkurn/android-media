@@ -71,37 +71,9 @@ data class CatalogSearchProductResponse(
             @Expose
             val autocompleteApplink: String = "",
 
-            @SerializedName("redirection")
-            @Expose
-            val redirection: Redirection = Redirection(),
-
-            @SerializedName("ticker")
-            @Expose
-            val ticker: Ticker = Ticker(),
-
             @SerializedName("products")
             @Expose
             val catalogProductItemList: ArrayList<CatalogProductItem?> = ArrayList()
-    )
-
-    data class Redirection(
-            @SerializedName("redirectApplink")
-            @Expose
-            val redirectApplink: String = ""
-    )
-
-    data class Ticker(
-            @SerializedName("text")
-            @Expose
-            val text: String = "",
-
-            @SerializedName("query")
-            @Expose
-            val query: String = "",
-
-            @SerializedName("typeId")
-            @Expose
-            val typeId: Int = 0
     )
 }
 
@@ -233,11 +205,7 @@ data class CatalogProductItem(
 
         @SerializedName("countReview")
         @Expose
-        var countReview: Int = 0,
-
-        @SerializedName("categoryID")
-        @Expose
-        var categoryID: Int? = null
+        var countReview: Int = 0
 
 ) : ImpressHolder() , Parcelable , Visitable<CatalogTypeFactory> {
 

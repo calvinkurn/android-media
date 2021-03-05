@@ -61,7 +61,7 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
 
     private fun attachFragmentToContainer(containerId: Int) {
         val fragment = if (context.supportFragmentManager.fragments.firstOrNull { it is CatalogDetailProductListingFragment } == null)
-            CatalogDetailProductListingFragment.newInstance(catalogId,"","","")
+            CatalogDetailProductListingFragment.newInstance(catalogId,"")
         else
             null
 

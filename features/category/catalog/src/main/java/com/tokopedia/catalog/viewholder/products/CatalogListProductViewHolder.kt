@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_catalog_preffered_product.view.*
 
 
-class CatalogListProductViewHolder(itemView: View, private val catalogProductCardListener: CatalogProductCardListener) : AbstractViewHolder<CatalogProductItem>(itemView) {
+open class CatalogListProductViewHolder(itemView: View, private val catalogProductCardListener: CatalogProductCardListener) : AbstractViewHolder<CatalogProductItem>(itemView) {
 
     companion object {
         @LayoutRes

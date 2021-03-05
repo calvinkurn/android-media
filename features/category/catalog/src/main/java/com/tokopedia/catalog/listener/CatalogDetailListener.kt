@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.listener
 
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.catalog.model.raw.CatalogImage
 
 interface CatalogDetailListener {
@@ -9,16 +10,10 @@ interface CatalogDetailListener {
      */
     fun onViewMoreDescriptionClick()
 
-
     /**
      * CatalogImageViewHolder
      */
     fun onProductImageClick(catalogImage : CatalogImage, position: Int)
-
-    /**
-     * CatalogSpecificationViewHolder
-     */
-
 
     /**
      * CatalogSpecificationsContainerViewHolder
@@ -28,9 +23,10 @@ interface CatalogDetailListener {
     /**
      * CatalogProductsContainerViewHolder
      */
-
     fun hideFloatingLayout()
 
     fun showFloatingLayout()
+
+    val childsFragmentManager: FragmentManager?
 
 }

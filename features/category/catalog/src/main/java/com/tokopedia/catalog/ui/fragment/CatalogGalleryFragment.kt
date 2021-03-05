@@ -88,7 +88,7 @@ class CatalogGalleryFragment : Fragment() {
     }
 
     private val onImageClick : (Int) -> Unit = {adapterPosition ->
-        CatalogDetailPageAnalytics.trackEventClickIndexPicture(adapterPosition)
+        //CatalogDetailPageAnalytics.trackEventClickIndexPicture(adapterPosition)
         view_pager_intermediary.setCurrentItem(adapterPosition, true)
         catalogBottomGalleyRecyclerViewAdapter.changeSelectedPosition(adapterPosition)
         catalogBottomGalleyRecyclerViewAdapter.notifyDataSetChanged()

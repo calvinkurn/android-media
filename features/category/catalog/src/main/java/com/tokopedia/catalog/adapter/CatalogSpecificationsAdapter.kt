@@ -30,9 +30,6 @@ class CatalogSpecificationsAdapter (val list : ArrayList<TopSpecificationsCompon
                 itemView.specification_iv.loadImage(model.icon)
             itemView.specification_name.text = model.key
             itemView.specification_description.text = model.value
-            itemView.setOnClickListener {
-
-            }
         }
     }
 }

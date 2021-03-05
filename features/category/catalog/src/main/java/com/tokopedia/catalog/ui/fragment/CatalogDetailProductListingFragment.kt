@@ -111,13 +111,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): BaseCategorySectionFragment {
+        fun newInstance(catalogId: String, catalogName: String): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
             bundle.putString(ARG_EXTRA_CATALOG_NAME, catalogName)
-            bundle.putString(ARG_CATEGORY_DEPARTMENT_ID, departmentid)
-            bundle.putString(ARG_CATEGORY_DEPARTMENT_NAME, departmentName)
             fragment.arguments = bundle
             return fragment
         }
@@ -143,6 +141,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         initView()
         observeData()
         setUpAdapter()
+        setupRecyclerView()
         setUpNavigation()
         setUpVisibleFragmentListener()
         initSearchQuickSortFilter(view)
@@ -165,12 +164,18 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         catalogTypeFactory = CatalogTypeFactoryImpl(this)
         productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this)
         productNavListAdapter?.changeListView()
-        product_recyclerview.adapter = productNavListAdapter
-        product_recyclerview.layoutManager = getLinearLayoutManager()
         if(viewModel.list.size == 0)
             productNavListAdapter?.addShimmer()
 
         attachScrollListener()
+    }
+
+    private fun setupRecyclerView() {
+        product_recyclerview.apply {
+            layoutManager = getLinearLayoutManager()
+            setHasFixedSize(true)
+            adapter = productNavListAdapter
+        }
     }
 
     private fun attachScrollListener() {
@@ -185,7 +190,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                fetchProductData(getProductListParams(page))
+                fetchProductData(getProductListParams(viewModel.pageCount))
                 productNavListAdapter?.addLoading()
             }
         }
@@ -194,7 +199,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun observeData() {
 
         viewModel.sortFilterItems.observe(viewLifecycleOwner, Observer {
-            if (it.size > 0) {
+            if (it.isNotEmpty()) {
                 hideQuickFilterShimmering()
                 setQuickFilter(it)
             }
@@ -223,6 +228,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                         viewModel.list.addAll(it.data as ArrayList<Visitable<CatalogTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
+                        viewModel.pageCount++
                         loadMoreTriggerListener?.updateStateAfterGetData()
                         viewModel.isPagingAllowed = true
                     } else {
@@ -360,9 +366,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         val param = RequestParams.create()
         val searchFilterParams = RequestParams.create()
         searchFilterParams.apply {
-            putString(CategoryNavConstants.DEVICE, "android")
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
             putString(CategoryNavConstants.Q,"")
-            putString(CategoryNavConstants.SOURCE, "quick_filter")
+            putString(CategoryNavConstants.SOURCE, CatalogConstant.QUICK_FILTER_SOURCE)
         }
         param.putString(CatalogConstant.QUICK_FILTER_PARAMS, createParametersForQuery(searchFilterParams.parameters))
         return param
@@ -373,8 +379,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         val daFilterQueryType = DAFilterQueryType()
         daFilterQueryType.sc = departmentId
         paramMap.apply {
-            putString(CategoryNavConstants.DEVICE, "android")
-            putString(CategoryNavConstants.SOURCE, "search_product")
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
+            putString(CategoryNavConstants.SOURCE, CatalogConstant.SEARCH_PRODUCT_SOURCE)
             putObject(CategoryNavConstants.FILTER, daFilterQueryType)
             putString(CategoryNavConstants.Q, "")
         }
@@ -387,11 +393,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         searchProductRequestParams.apply {
             putString(CategoryNavConstants.START, (start * pagingRowCount).toString())
             putString(CategoryNavConstants.SC, departmentId)
-            putString(CategoryNavConstants.DEVICE, "android")
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
             putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
             putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
             putString(CategoryNavConstants.ROWS, pagingRowCount.toString())
-            putString(CategoryNavConstants.SOURCE, "catalog")
+            putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
             putAllString(getSelectedSort())
             putAllString(getSelectedFilter())
@@ -402,7 +408,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         val topAdsRequestParam = RequestParams.create()
         topAdsRequestParam.apply {
             putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-            putString(CategoryNavConstants.DEVICE, "android")
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
             putString(CategoryNavConstants.KEY_SRC, "directory")
             putString(CategoryNavConstants.KEY_PAGE, start.toString())
             putString(CategoryNavConstants.KEY_EP, "product")
@@ -445,21 +451,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onItemClicked(item: CatalogProductItem, adapterPosition: Int) {
-        val intent = getProductIntent(item.id, item.categoryID.toString())
+        val intent = getProductIntent(item.id, item.categoryId.toString())
 
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
         }
-
-        CatalogDetailPageAnalytics.eventProductListClick(
-                item.name,
-                item.id,
-                CurrencyFormatHelper.convertRupiahToInt(item.price),
-                adapterPosition,
-                "catalog/$catalogName - $catalogId",
-                item.categoryBreadcrumb ?: "",
-                item.isTopAds)
     }
 
     override fun onLongClick(item: CatalogProductItem, adapterPosition: Int) {
@@ -518,14 +515,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
-            CatalogDetailPageAnalytics.trackEvenClickQuickFilter(option, true)
+            //CatalogDetailPageAnalytics.trackEvenClickQuickFilter(option, true)
         } else {
             val filter = getSelectedFilter()
             filter.remove(option.key)
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
-            CatalogDetailPageAnalytics.trackEvenClickQuickFilter(option, false)
+            //CatalogDetailPageAnalytics.trackEvenClickQuickFilter(option, false)
         }
     }
 
@@ -573,17 +570,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
-        if (viewedProductList.isNotEmpty()) {
-            CatalogDetailPageAnalytics.eventProductListImpression(
-                    "catalog/$catalogName - $catalogId",
-                    viewedProductList, false)
-        }
 
-        if (viewedTopAdsList.isNotEmpty()) {
-            CatalogDetailPageAnalytics.eventProductListImpression(
-                    "catalog/$catalogName - $catalogId",
-                    viewedTopAdsList, true)
-        }
     }
 
     override fun onPause() {
@@ -594,7 +581,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     override fun hasThreeDots() = true
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
-        CatalogDetailPageAnalytics.trackEvenSortApplied(selectedSortName, sortValue)
+        //CatalogDetailPageAnalytics.trackEvenSortApplied(selectedSortName, sortValue)
     }
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {

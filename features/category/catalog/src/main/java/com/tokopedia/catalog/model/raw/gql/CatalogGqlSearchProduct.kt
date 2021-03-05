@@ -18,59 +18,6 @@ const val CATALOG_GQL_SEARCH_PRODUCT: String =  """
                 redirection {
                     redirectApplink
                 }
-                ticker {
-                    text
-                    query
-                    typeId
-                }
-                related {
-                    relatedKeyword
-                    position
-                    otherRelated {
-                        keyword
-                        url
-                        applink
-                        product {
-                            id
-                            name
-                            price
-                            imageUrl
-                            url
-                            applink
-                            priceStr
-                            wishlist
-                            ratingAverage
-                            labelGroups {
-                                title
-                                position
-                                type
-                                url
-                            }
-                            shop {
-                                city
-                            }
-                            badges {
-                                imageUrl
-                                show
-                            }
-                            freeOngkir {
-                                isActive
-                                imgUrl
-                            }
-                            ads {
-                                id
-                                productClickUrl
-                                productWishlistUrl
-                                productViewUrl
-                            }
-                        }
-                    }
-                }
-                suggestion {
-                    suggestion
-                    query
-                    text
-                }
                 products {
                     id
                     name

@@ -10,9 +10,8 @@ object CatalogDetailMapper {
     fun mapIntoVisitable(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular): MutableList<BaseCatalogDataModel> {
         val listOfComponents : MutableList<BaseCatalogDataModel> = mutableListOf()
 
-        // Adding CatalogInfoDataModel
         catalogGetDetailModular.basicInfo.run {
-            listOfComponents.add(CatalogInfoDataModel(name = "Catalog Info",type= CatalogConstant.CATALOG_INFO,
+            listOfComponents.add(CatalogInfoDataModel(name = CatalogConstant.CATALOG_INFO_NAME,type= CatalogConstant.CATALOG_INFO,
                     productName = name, productBrand = brand, tag = tag,
                     priceRange = "${marketPrice.firstOrNull()?.minFmt} - ${marketPrice.firstOrNull()?.maxFmt}" ,
                     description = description, shortDescription = shortDescription,
@@ -32,11 +31,7 @@ object CatalogDetailMapper {
                 }
 
                 CatalogConstant.CATALOG_PRODUCT_LIST -> {
-                    listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type))
-                }
-
-                CatalogConstant.CATALOG_PRODUCT_FILTER -> {
-
+                    listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type, catalogId = catalogGetDetailModular.basicInfo.id))
                 }
             }
         }

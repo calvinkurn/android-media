@@ -48,7 +48,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     override fun getScreenName(): String? {
-        return AppScreen.SCREEN_CATALOG
+        return "${AppScreen.SCREEN_CATALOG} - $catalogId"
     }
 
     private fun getNewCatalogDetailFragment(): CatalogDetailPageFragment {

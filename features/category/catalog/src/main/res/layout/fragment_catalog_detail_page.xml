@@ -6,10 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
         android:id="@+id/catalog_detail_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
         android:layout_marginTop="?android:attr/actionBarSize"
         />
 

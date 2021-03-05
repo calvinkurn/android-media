@@ -9,6 +9,7 @@ object CatalogConstant {
     const val CATALOG_PRODUCT_FILTER = "product-filter"
     const val CATALOG_PRODUCT_LIST = "product-list-infinite-scroll"
     // Self Made
+    const val CATALOG_INFO_NAME = "Catalog Info"
     const val CATALOG_INFO = "catalog-info"
 
     const val TOP_ADS_PARAMS = "top_params"
@@ -20,4 +21,10 @@ object CatalogConstant {
     const val ZERO_VALUE = "0"
 
     const val CATALOG_URL = "tokopedia://catalog/"
+
+    const val SOURCE = "catalog"
+    const val DEVICE = "android"
+
+    const val QUICK_FILTER_SOURCE = "quick_filter"
+    const val SEARCH_PRODUCT_SOURCE = "search_product"
 }

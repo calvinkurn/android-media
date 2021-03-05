@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.ScrollView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.catalog.R
@@ -28,6 +28,7 @@ import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
+import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
@@ -62,7 +63,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogId: String = ""
 
     private var navToolbar: NavToolbar? = null
-    private var catalogPageRecyclerView: RecyclerView? = null
+    private var catalogPageRecyclerView: NestedRecyclerView? = null
     private var shimmerLayout : ScrollView? = null
 
     private val catalogAdapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
@@ -225,7 +226,6 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun viewMoreClicked(openPage : String) {
-        CatalogDetailPageAnalytics.trackEventClickSpecification()
         val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(
                 catalogUiUpdater?.productInfoMap?.description ?: "",
                 fullSpecificationDataModel.fullSpecificationsList
@@ -281,4 +281,8 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onViewMoreDescriptionClick() {
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
+
+    override val childsFragmentManager: FragmentManager?
+        get() = childFragmentManager
+
 }

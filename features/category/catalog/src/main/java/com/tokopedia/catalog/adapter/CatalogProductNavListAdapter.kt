@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -7,10 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
 import com.tokopedia.catalog.model.raw.CatalogProductItem
+import com.tokopedia.catalog.viewholder.products.CatalogListProductViewHolder
 import com.tokopedia.catalog.viewholder.products.CatalogListShimmerModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.factory.BaseProductTypeFactory
-import com.tokopedia.common_category.viewholders.ProductCardViewHolder
 
 class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFactory,
                                    private val visitables: ArrayList<Visitable<CatalogTypeFactory>>,
@@ -135,7 +136,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        if (holder is ProductCardViewHolder) {
+        if (holder is CatalogListProductViewHolder) {
             val position = holder.adapterPosition
             if (!viewMap.containsKey(position)) {
                 viewMap[position] = true
@@ -159,5 +160,10 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         }
         viewedProductList.clear()
         viewedTopAdsList.clear()
+    }
+
+    override fun onViewRecycled(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewRecycled(holder)
+        Log.d("TAG","RECYCLE WORKING")
     }
 }
