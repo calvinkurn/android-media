@@ -2434,7 +2434,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
-        startActivityForResult(RouteManager.getIntent(requireContext(), appLink), REQUEST_CODE_PLAY_ROOM)
+        startActivityForResult(RouteManager.getIntent(requireContext(), appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
     }
 
     private fun observePlayWidgetReminder() {
