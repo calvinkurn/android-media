@@ -21,7 +21,7 @@ class CatalogProductsContainerViewHolder(private val view: View,
     private fun attachFragmentToContainer(containerId: Int, catalogId: String) {
 
         catalogDetailListener.childsFragmentManager?.beginTransaction()
-                ?.add(containerId, CatalogDetailProductListingFragment.newInstance(catalogId, ""))
+                ?.add(containerId, CatalogDetailProductListingFragment.newInstance(catalogId))
                 ?.commit()
 
     }

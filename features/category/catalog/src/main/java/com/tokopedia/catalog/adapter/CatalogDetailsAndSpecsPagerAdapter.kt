@@ -8,7 +8,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.unifyprinciples.Typography
 
-
 class CatalogDetailsAndSpecsPagerAdapter(
         fa: FragmentActivity,
         var context: Context?,

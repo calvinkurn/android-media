@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
-import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.core.analytics.AppScreen
@@ -93,5 +92,13 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
 
     override fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String, departmentId: String) {
 
+    }
+
+    override fun onBackPressed() {
+        if(supportFragmentManager.backStackEntryCount > 0){
+            supportFragmentManager.popBackStack()
+        }else {
+            super.onBackPressed()
+        }
     }
 }

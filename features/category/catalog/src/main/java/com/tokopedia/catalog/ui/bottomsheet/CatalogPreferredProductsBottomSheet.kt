@@ -37,7 +37,7 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
         childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                CatalogDetailProductListingFragment.newInstance(catalogId,"")).commit()
+                CatalogDetailProductListingFragment.newInstance(catalogId)).commit()
 
     }
 

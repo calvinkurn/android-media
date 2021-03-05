@@ -86,9 +86,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private lateinit var catalogComponent: CatalogComponent
 
     private var catalogId: String = ""
-    private var catalogName: String = ""
     private var departmentId: String = ""
-    private var departmentName: String = ""
 
     var productNavListAdapter: CatalogProductNavListAdapter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -103,19 +101,15 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
-        private const val ARG_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
-        private const val ARG_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
 
         private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
         private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogName: String): BaseCategorySectionFragment {
+        fun newInstance(catalogId: String): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
-            bundle.putString(ARG_EXTRA_CATALOG_NAME, catalogName)
             fragment.arguments = bundle
             return fragment
         }
@@ -133,9 +127,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         arguments?.let {
             if (it.containsKey(ARG_EXTRA_CATALOG_ID)) {
                 catalogId = it.getString(ARG_EXTRA_CATALOG_ID, "")
-                catalogName = it.getString(ARG_EXTRA_CATALOG_NAME, "")
-                departmentId = it.getString(ARG_CATEGORY_DEPARTMENT_ID, "")
-                departmentName = it.getString(ARG_CATEGORY_DEPARTMENT_NAME, "")
             }
         }
         initView()
@@ -637,6 +628,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         if (searchParameter.get(SearchApiConst.OB).isEmpty()) {
             searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
         }
+        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
     }
 
     private fun hideQuickFilterShimmering() {
@@ -700,12 +692,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     /*******************************  Bottom Sheet Filter **************************/
 
     private fun openBottomSheetFilterRevamp(){
-        sortFilterBottomSheet?.show(
-                requireFragmentManager(),
-                viewModel.searchParametersMap.value,
-                viewModel.dynamicFilterModel.value,
-                this
-        )
+        activity?.supportFragmentManager?.let{
+            sortFilterBottomSheet?.show(
+                    it,
+                    viewModel.searchParametersMap.value,
+                    viewModel.dynamicFilterModel.value,
+                    this
+            )
+        }
     }
 
     private fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel){

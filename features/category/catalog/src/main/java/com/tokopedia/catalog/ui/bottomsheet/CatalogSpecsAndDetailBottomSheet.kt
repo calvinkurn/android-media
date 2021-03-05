@@ -18,6 +18,8 @@ import com.tokopedia.catalog.adapter.CatalogDetailsAndSpecsPagerAdapter
 import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
 import com.tokopedia.catalog.ui.fragment.CatalogSpecsAndDetailFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_bottomsheet_catalog_specifications.*
 
