@@ -1934,7 +1934,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun validateLocalCacheAddress(activity: FragmentActivity, localizationChooseAddressData: LocalizationChooseAddressData) {
-        if (localizationChooseAddressData.state == LocalizationChooseAddressData.STATE_ADDRESS_ID_NOT_MATCH) {
+        if (localizationChooseAddressData.state == LocalizationChooseAddressData.STATE_CHOSEN_ADDRESS_MATCH ||
+                localizationChooseAddressData.state == LocalizationChooseAddressData.STATE_ADDRESS_ID_NOT_MATCH) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
                     addressId = localizationChooseAddressData.addressId,
