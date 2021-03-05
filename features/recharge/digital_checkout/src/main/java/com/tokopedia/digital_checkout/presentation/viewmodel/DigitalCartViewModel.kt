@@ -332,6 +332,11 @@ class DigitalCartViewModel @Inject constructor(
         updateTotalPriceWithFintechProduct(isFintechProductChecked, totalPrice)
     }
 
+    fun setSubtotalPaymentSummaryOnUserInput(totalPrice: Double) {
+        paymentSummary.changeSummaryValue(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(totalPrice))
+        _payment.postValue(paymentSummary)
+    }
+
     fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
         val promoCode = promoData.value?.promoCode ?: ""
         val cartDigitalInfoData = _cartDigitalInfoData.value

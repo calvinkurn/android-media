@@ -514,6 +514,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
                     override fun onInputPriceByUserFilled(paymentAmount: Long?) {
                         viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0,
                                 fintechProductWidget.isChecked())
+                        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble() ?: 0.0)
                     }
 
                     override fun enableCheckoutButton() {

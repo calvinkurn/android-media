@@ -628,28 +628,6 @@ class DigitalCartViewModelTest {
     }
 
     @Test
-    fun onRecievedPromoCode_addOnAdditionalInfoAndUpdateTotalPayment() {
-        // given
-        val promoData = PromoData()
-        promoData.amount = 12000
-        promoData.promoCode = "dummyPromoCode"
-        promoData.state = TickerCheckoutView.State.ACTIVE
-
-        // when
-        addToCart_onSuccess()
-        digitalCartViewModel.setPromoData(promoData)
-        digitalCartViewModel.applyPromoData(promoData)
-
-        // then
-        // if promo has its amount, then apply promo to total price and add additional info
-        assert(digitalCartViewModel.promoData.value?.amount == 12000)
-        assert(digitalCartViewModel.promoData.value?.promoCode == "dummyPromoCode")
-        assert(digitalCartViewModel.totalPrice.value == getDummyCartData().attributes?.pricePlain ?: 0 - promoData.amount)
-        assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 2)
-        assert(digitalCartViewModel.cartAdditionalInfoList.value?.lastOrNull()?.title == "Pembayaran")
-    }
-
-    @Test
     fun onRecievedPromoCode_notUpdateTotalPayment() {
         // given
         val promoData = PromoData()
@@ -671,9 +649,15 @@ class DigitalCartViewModelTest {
     @Test
     fun onResetVoucherCart_addOnAdditionalInfoAndUpdateTotalPayment() {
         // given
+        val promoData = PromoData()
+        promoData.amount = 12000
+        promoData.promoCode = "dummyPromoCode"
+        promoData.state = TickerCheckoutView.State.ACTIVE
 
         // when
-        onRecievedPromoCode_addOnAdditionalInfoAndUpdateTotalPayment()
+        addToCart_onSuccess()
+        digitalCartViewModel.setPromoData(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
         digitalCartViewModel.resetAdditionalInfoAndTotalPrice()
 
         // then

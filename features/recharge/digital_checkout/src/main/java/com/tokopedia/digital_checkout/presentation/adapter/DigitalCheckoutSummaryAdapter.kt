@@ -51,10 +51,15 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
         fun addToSummary(payment: Payment) {
             summaries.add(payment)
         }
+
+        fun changeSummaryValue(title: String, priceAmount: String) {
+            val item: Payment = summaries.firstOrNull { it.title == title } ?: return
+            item.priceAmount = priceAmount
+        }
     }
 
     data class Payment (
             val title: String,
-            val priceAmount: String
+            var priceAmount: String
     )
 }
