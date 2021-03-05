@@ -123,11 +123,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
         }
 
         initViews()
-
-        viewModel.payment.observe(viewLifecycleOwner, Observer { payment ->
-            checkoutSummaryWidget.setSummaries(payment)
-        })
-
         loadData()
     }
 
@@ -192,6 +187,11 @@ class DigitalCartFragment : BaseDaggerFragment() {
         viewModel.paymentPassData.observe(viewLifecycleOwner, Observer {
             redirectToTopPayActivity(it)
         })
+
+        viewModel.payment.observe(viewLifecycleOwner, Observer { payment ->
+            checkoutSummaryWidget.setSummaries(payment)
+        })
+
 
         observePromoData()
     }
