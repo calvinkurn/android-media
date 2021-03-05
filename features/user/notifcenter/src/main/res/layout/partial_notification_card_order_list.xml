@@ -56,7 +56,7 @@
         android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/unify_space_4"
-        app:icon_color_light_enable="@color/Unify_N500"
+        app:icon_color_light_enable="@color/Unify_N200"
         app:icon_name="CHEVRON_RIGHT"
         tools:src="@drawable/ic_arrow_right_grey" />
 </merge>
