@@ -167,7 +167,9 @@ class DigitalCartFragment : BaseDaggerFragment() {
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
-            if (it != null) checkoutBottomViewWidget.totalPayment = getStringIdrFormat((it - getPromoData().amount))
+            it?.let { totalPrice ->
+                checkoutBottomViewWidget.totalPayment = getStringIdrFormat((totalPrice - getPromoData().amount))
+            }
         })
 
         viewModel.showContentCheckout.observe(viewLifecycleOwner, Observer { showContent ->
