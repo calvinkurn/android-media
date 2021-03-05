@@ -34,7 +34,8 @@
             app:srcCompat="@drawable/ic_mark_ico"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/dp_12"/>
+            android:layout_marginTop="@dimen/dp_12"
+            tools:ignore="ContentDescription"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_name"
