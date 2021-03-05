@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.screenshot
 
 import android.content.Context
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -9,9 +10,11 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.instrumentation.test.R
 import com.tokopedia.product.detail.ProductDetailActivityCommonTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.espresso_component.CommonActions.findViewHolderAndScreenshot
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
 import com.tokopedia.test.application.util.setupDarkModeTest
@@ -42,25 +45,33 @@ abstract class BaseProductDetailScreenShotTest {
     @Test
     fun screenShot() {
         waitForData()
-        screenShot(filePrefix(), "1")
 
-        Thread.sleep(3000)
-        scrollToTop()
-        screenShot(filePrefix(), "2")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp,0) {
+            screenShot(it, filePrefix(), "1")
+        }
 
-        Thread.sleep(6000)
-        scrollToCenter()
-        screenShot(filePrefix(), "3")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp,1) {
+            screenShot(it, filePrefix(), "2")
+        }
 
-        Thread.sleep(6000)
-        scrollToCenter2()
-        screenShot(filePrefix(), "4")
 
-        Thread.sleep(3000)
-        scrollToBottom()
-        waitForData()
-        scrollToBottom()
-        screenShot(filePrefix(), "5")
+//        Thread.sleep(3000)
+//        scrollToTop()
+//        screenShot(filePrefix(), "2")
+//
+//        Thread.sleep(6000)
+//        scrollToCenter()
+//        screenShot(filePrefix(), "3")
+//
+//        Thread.sleep(6000)
+//        scrollToCenter2()
+//        screenShot(filePrefix(), "4")
+//
+//        Thread.sleep(3000)
+//        scrollToBottom()
+//        waitForData()
+//        scrollToBottom()
+//        screenShot(filePrefix(), "5")
 
         activityCommonRule.activity.finishAndRemoveTask()
     }
@@ -75,6 +86,10 @@ abstract class BaseProductDetailScreenShotTest {
 
     private fun screenShot(filename: String, postfix: String) {
         activityCommonRule.activity.takeScreenShot("$filename-$postfix")
+    }
+
+    private fun screenShot(view: View?, filename: String, postfix: String) {
+        activityCommonRule.activity.takeScreenShot(view, "$filename-$postfix")
     }
 
     private fun scrollToTop() {

@@ -6,6 +6,8 @@ import android.graphics.Canvas
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.tokopedia.instrumentation.test.R
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -17,6 +19,28 @@ import java.io.IOException
  */
 object ViewUtils {
 
+    /**
+     * Screenshot specific view
+     */
+    @JvmStatic
+    fun Activity.takeScreenShot(view: View?, fileName: String, dir: String = "") {
+        if (view != null) {
+            view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.Unify_N0))
+            Handler(Looper.getMainLooper()).post {
+                val bitmap = Bitmap.createBitmap(
+                        view.width,
+                        view.height, Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
+                view.draw(canvas)
+                saveImage(this, dir, fileName, bitmap)
+            }
+        }
+    }
+
+    /**
+     * Screenshot entire activity/fragment
+     */
     @JvmStatic
     fun Activity.takeScreenShot(fileName: String, dir: String = "") {
         Handler(Looper.getMainLooper()).post {

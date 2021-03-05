@@ -7,10 +7,10 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.unifycomponents.TabsUnify
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
@@ -106,6 +106,29 @@ object CommonActions {
             override fun perform(uiController: UiController?, view: View) {
                 val v: View = view.findViewById(id)
                 v.performClick()
+            }
+        }
+    }
+
+    fun findViewHolderAndScreenshot(recyclerViewId: Int, position: Int, screenShot: (View?) -> Unit) {
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, screenShotChild { view->
+                    screenShot(view)
+                })
+        )
+    }
+
+    private fun screenShotChild(listener: (View?) -> Unit): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String {
+                return "Click on a child view with specified id."
+            }
+
+            override fun perform(uiController: UiController?, view: View) {
+                listener.invoke(view)
             }
         }
     }
