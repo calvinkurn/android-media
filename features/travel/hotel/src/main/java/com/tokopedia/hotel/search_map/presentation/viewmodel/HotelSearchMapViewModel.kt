@@ -65,6 +65,10 @@ class HotelSearchMapViewModel @Inject constructor(
     val radius: LiveData<Result<Double>>
         get() = mutableRadius
 
+    private val mutableScreenMidPoint = MutableLiveData<Result<LatLng>>()
+    val screenMidPoint: LiveData<Result<LatLng>>
+        get() = mutableScreenMidPoint
+
     private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
     val tickerData: LiveData<Result<TravelTickerModel>>
         get() = mutableTickerData
@@ -211,10 +215,9 @@ class HotelSearchMapViewModel @Inject constructor(
         }
     }
 
-    /**Temp variable mutableLatLong will change it to midPoint afterwards*/
     fun getMidPoint(latLong: LatLng){
-        if (latLong.latitude == 0.0 && latLong.longitude == 0.0) mutableLatLong.postValue(Fail(Throwable()))
-        else mutableLatLong.postValue(Success(Pair(latLong.longitude, latLong.longitude)))
+        if (latLong.latitude == 0.0 && latLong.longitude == 0.0) mutableScreenMidPoint.postValue(Fail(Throwable()))
+        else mutableScreenMidPoint.postValue(Success(latLong))
     }
 
     fun getVisibleRadius(googleMap: GoogleMap){

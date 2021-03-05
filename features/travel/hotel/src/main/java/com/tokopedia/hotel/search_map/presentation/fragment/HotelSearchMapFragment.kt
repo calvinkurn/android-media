@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -169,6 +170,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 }
             }
         })
+
+        hotelSearchMapViewModel.screenMidPoint.observe(viewLifecycleOwner,{
+            when(it){
+                is Success -> Log.d("SUKSES","MidPoint ${it.data.latitude} ${it.data.longitude}")
+            }
+        })
     }
 
     override fun loadInitialData() {
@@ -200,6 +207,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onCameraIdle() {
         Handler().postDelayed({
+            showFindNearHereView()
             hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
         }, DELAY_BUTTON_RADIUS)
     }
@@ -370,9 +378,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
 
-            /**Will include this after radius from BE is ready
             googleMap.setOnCameraIdleListener(this)
-             */
 
             googleMap.setOnMapClickListener {
                 // do nothing
