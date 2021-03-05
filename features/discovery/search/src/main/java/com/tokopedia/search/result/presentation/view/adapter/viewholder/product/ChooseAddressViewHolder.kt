@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -60,7 +61,9 @@ internal class ChooseAddressViewHolder(
 
             override fun getLocalizingAddressHostFragment() = chooseAddressListener.getFragment()
 
-            override fun getLocalizingAddressHostSourceData() = SOURCE
+            override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+
+            override fun getLocalizingAddressHostSourceTrackingData() = SOURCE
 
             override fun onLocalizingAddressLoginSuccess() {
 
