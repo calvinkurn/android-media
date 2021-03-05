@@ -113,5 +113,6 @@
     <dimen name="product_card_text_fulfillment_height">18dp</dimen>
 
     <dimen name="carousel_product_card_grid_width">140dp</dimen>
+    <dimen name="carousel_product_card_list_width">248dp</dimen>
 
 </resources>
