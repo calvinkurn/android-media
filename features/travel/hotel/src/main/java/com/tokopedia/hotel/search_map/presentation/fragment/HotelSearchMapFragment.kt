@@ -151,16 +151,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         long = it.data.first.toFloat()
                         lat = it.data.second.toFloat()
                     }
-                    hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
                     addMyLocation(LatLng(it.data.first, it.data.second))
-                    loadInitialData()
                 }
             }
         })
 
+        /**Will add radius as search param*/
         hotelSearchMapViewModel.radius.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> ""
+                is Success -> {
+                    hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
+                    loadInitialData()
+                }
             }
         })
     }
@@ -379,6 +381,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         wrapper.gravity = Gravity.CENTER
 
         val imageView = ImageView(context)
+        imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
         imageView.setImageResource(R.drawable.ic_hotel_search_map_search)
         wrapper.addView(imageView)
 
@@ -467,7 +470,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         with(txtPrice){
             text = price
             background = resources.getDrawable(getPin(markerType))
-            if(markerType == HOTEL_PRICE_ACTIVE_PIN) setTextColor(color = resources.getColor(R.color.Unify_N0))
+            if(markerType == HOTEL_PRICE_ACTIVE_PIN) {
+                setTextColor(color = resources.getColor(R.color.Unify_N0))
+                setWeight(Typography.BOLD)
+            }
         }
 
         val displayMetrics = DisplayMetrics()
@@ -674,6 +680,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val HOTEL_PRICE_INACTIVE_PIN = "HOTEL PRICE INACTIVE"
 
         private const val BUTTON_RADIUS_HEADING_SIZE = 6
+        private const val BUTTON_RADIUS_PADDING_ALL = 0
+        private const val BUTTON_RADIUS_PADDING_RIGHT = 6
 
         private const val DROP_FIRST_STRING_MARKER_ID = 1
 
