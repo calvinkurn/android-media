@@ -110,6 +110,7 @@ class ManageAddressViewModel @Inject constructor(
             _result.value = ManageAddressState.Success("Success")
             isClearData = true
             searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
+            getStateChosenAddress("address")
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")
         })

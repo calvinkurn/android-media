@@ -149,6 +149,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+            viewModel.getStateChosenAddress("address")
         }
     }
 

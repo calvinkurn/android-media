@@ -193,7 +193,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>, isGrid: Boolean): Int {
         return if (isGrid) {
-            val productCardWidth = context.resources.getDimensionPixelSize(R.dimen.carousel_product_card_grid_width)
+            val productCardWidth = context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
             productCardModelList.getMaxHeightForGridView(context, Dispatchers.Default, productCardWidth)
         }
         else {
