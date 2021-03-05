@@ -367,7 +367,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun loadFirstPageData() {
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
-            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE)
+            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
         }
     }
 

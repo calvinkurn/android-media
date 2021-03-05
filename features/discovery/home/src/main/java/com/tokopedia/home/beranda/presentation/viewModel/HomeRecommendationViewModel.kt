@@ -27,7 +27,7 @@ class HomeRecommendationViewModel @Inject constructor(
 
     var topAdsBannerNextPageToken = ""
 
-    fun loadInitxialPage(tabName: String, recommendationId: Int,count: Int, locationParam: String){
+    fun loadInitialPage(tabName: String, recommendationId: Int,count: Int, locationParam: String){
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
         launchCatchError(coroutineContext, block = {
             getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1, locationParam)
