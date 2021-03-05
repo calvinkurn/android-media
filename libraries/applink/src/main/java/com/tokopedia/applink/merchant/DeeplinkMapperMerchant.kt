@@ -28,6 +28,7 @@ object DeeplinkMapperMerchant {
     private const val SHOP_FEED_SEGMENT_SIZE = 2
     private const val PARAM_PRODUCT_ID = "productId"
     private const val PARAM_SELLER_TAB = "tab"
+    private const val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/"
 
     private const val PARAM_URL = "url"
 
@@ -298,5 +299,9 @@ object DeeplinkMapperMerchant {
         val segments = parsedUri.pathSegments
 
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, segments[0])
+    }
+
+    fun getRegisteredSellerCenter(): String {
+        return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
     }
 }

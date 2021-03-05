@@ -825,8 +825,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check seller center appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_CENTER, "")
+    fun `check seller center appLink then should return to seller center webview in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global//webview?url=https://seller.tokopedia.com/edu/"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_CENTER, expectedDeepLink)
     }
 
     @Test
