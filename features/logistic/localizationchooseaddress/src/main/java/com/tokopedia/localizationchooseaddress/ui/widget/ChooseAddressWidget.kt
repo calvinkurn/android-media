@@ -224,13 +224,13 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         fun getLocalizingAddressHostFragment(): Fragment
 
         /**
-         * String API Source of Host Page
+         * String Source of Host Page
          */
         fun getLocalizingAddressHostSourceData(): String
 
         /**
          * String Tracking Source of Host Page
-         * By default, this method will return String API Source
+         * By default, this method will return String Source from getLocalizingAddressHostSourceData
          */
         fun getLocalizingAddressHostSourceTrackingData(): String {
             return getLocalizingAddressHostSourceData()
