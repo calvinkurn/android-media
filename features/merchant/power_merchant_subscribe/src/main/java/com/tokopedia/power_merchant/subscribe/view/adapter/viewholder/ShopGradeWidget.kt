@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.ShopGrade
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
@@ -19,9 +20,10 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
 
     override fun bind(element: WidgetShopGradeUiModel) {
         with(itemView) {
-            containerPmShopGrade.setBackgroundResource(R.drawable.bg_pm_registration_header)
+            containerPmShopGrade.setBackgroundResource(R.drawable.tmp_bg_silver)
 
             tvPmShopGrade.text = getShopGradeStr(element.shopGrade)
+            imgPmShopGrade.loadImageDrawable(R.drawable.tmp_pm_badge_silver)
         }
     }
 

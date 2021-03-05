@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="pm_spacing_18dp">18dp</dimen>
+    <dimen name="pm_spacing_36dp">36dp</dimen>
     <dimen name="pm_spacing_88dp">88dp</dimen>
     <dimen name="pm_spacing_128dp">128dp</dimen>
     <dimen name="pm_spacing_140dp">140dp</dimen>

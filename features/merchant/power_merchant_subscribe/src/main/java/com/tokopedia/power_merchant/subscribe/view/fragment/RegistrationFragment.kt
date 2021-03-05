@@ -64,7 +64,7 @@ class RegistrationFragment : BaseListFragment<BaseWidgetUiModel, WidgetAdapterFa
     private fun renderDummyFinalPeriod() {
         view?.pmRegistrationFooterView?.gone()
         val widgets = listOf(
-                WidgetQuitSubmissionUiModel(),
+                //WidgetQuitSubmissionUiModel(),
                 WidgetShopGradeUiModel(),
                 WidgetDividerUiModel,
                 WidgetExpandableUiModel(
