@@ -76,8 +76,6 @@ class DataViewMapper @Inject constructor(
     }
 
     fun mapToFinancialData(context: Context?, wallet: WalletModel): CommonDataView {
-        val cdnUrl = remoteConfig.getString(AccountConstants.Url.KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL)
-
         var item = CommonDataView()
         if (wallet.walletType != null && wallet.walletType == OVO) {
             if (!wallet.isLinked) {
@@ -91,7 +89,7 @@ class DataViewMapper @Inject constructor(
                         id = AccountConstants.SettingCode.SETTING_OVO,
                         title = wallet.action?.text.toEmptyStringIfNull(),
                         body = body,
-                        urlIcon = cdnUrl + AccountConstants.Url.OVO_IMG,
+                        urlIcon = AccountConstants.Url.OVO_ICON,
                         applink = wallet.action?.applink.toEmptyStringIfNull(),
                         icon = R.drawable.ic_account_ovo,
                         type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS
@@ -101,7 +99,7 @@ class DataViewMapper @Inject constructor(
                         title = CurrencyFormatUtil.convertPriceValueToIdrFormat(wallet.rawCashBalance, false),
                         body = getString(context, R.string.account_title_points_item) + " " + wallet.pointBalance.toEmptyStringIfNull(),
                         applink = wallet.applink.toEmptyStringIfNull(),
-                        icon = R.drawable.ic_account_ovo,
+                        urlIcon = AccountConstants.Url.OVO_ICON,
                         type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS
                 )
             }
@@ -115,7 +113,7 @@ class DataViewMapper @Inject constructor(
                 title = CurrencyFormatUtil.convertPriceValueToIdrFormat(balance.buyerAll.toLong(), false),
                 body = getString(context, R.string.account_title_saldo_item),
                 type = FinancialItemViewHolder.TYPE_SALDO,
-                icon = R.drawable.ic_account_balance,
+                urlIcon = AccountConstants.Url.SALDO_ICON,
                 applink = ApplinkConstInternalGlobal.SALDO_DEPOSIT
         )
     }
