@@ -8,8 +8,8 @@
     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
         android:id="@+id/choose_address_widget"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
-        android:paddingTop="@dimen/dp_8"
+        android:layout_height="@dimen/dp_32"
+        android:paddingTop="@dimen/dp_4"
         android:paddingStart="@dimen/dp_19"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
