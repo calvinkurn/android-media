@@ -90,10 +90,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var searchDestinationName = ""
     private var searchDestinationType = ""
     private var allMarker: ArrayList<Marker> = ArrayList()
+    private var markerCounter : Int = INIT_MARKER_TAG
     private var screenHeight: Int = 0
     private var isInAnimation: Boolean = false
     private var cardListPosition: Int = SELECTED_POSITION_INIT
-    private lateinit var hotelSearchModel: HotelSearchModel
+    private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -138,7 +139,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessGetResult(it.data)
+                is Success -> {
+                    onSuccessGetResult(it.data)
+                    changeMarkerState(cardListPosition)
+                }
             }
         })
 
@@ -194,14 +198,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
-    /** Marker ID consists m{position} ex. m3. To track the position dropped the the first string*/
     override fun onMarkerClick(marker: Marker): Boolean {
         allMarker.forEach {
-            if (it.id  == marker.id) {
-                val idMarker = it.id.drop(DROP_FIRST_STRING_MARKER_ID).toInt()
-                cardListPosition = idMarker
-                rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(idMarker)
-                changeMarkerState(idMarker)
+            if(it.tag == marker.tag){
+                cardListPosition = it.tag as Int
+                rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(cardListPosition)
+                changeMarkerState(cardListPosition)
             }
         }
         return true
@@ -413,10 +415,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         val latLng = LatLng(latitude, longitude)
 
         context?.run {
-            allMarker.add(googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, HOTEL_PRICE_INACTIVE_PIN, price))
+            val marker = googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, HOTEL_PRICE_INACTIVE_PIN, price))
                     .title(price)
                     .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
-                    .draggable(false)))
+                    .draggable(false))
+            marker.tag = markerCounter
+            allMarker.add(marker)
+            markerCounter++
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
@@ -433,6 +438,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun removeAllMarker(){
+        markerCounter = INIT_MARKER_TAG
         allMarker.forEach {
             it.remove()
         }
@@ -683,12 +689,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val BUTTON_RADIUS_PADDING_ALL = 0
         private const val BUTTON_RADIUS_PADDING_RIGHT = 6
 
-        private const val DROP_FIRST_STRING_MARKER_ID = 1
+        private const val INIT_MARKER_TAG = 0
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         private const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
 
-        const val SELECTED_POSITION_INIT = -1
+        const val SELECTED_POSITION_INIT = 0
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
