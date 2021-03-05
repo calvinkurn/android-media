@@ -94,7 +94,13 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
 
     override fun initView(view: View) {
         _binding = BottomsheetAutocompleteBinding.bind(view)
-        prepareLayout(view)
+        adapter = AutocompleteBottomSheetAdapter(this)
+        hideListLocation()
+
+        val linearLayoutManager = LinearLayoutManager(
+                context, LinearLayoutManager.VERTICAL, false)
+        binding.rvPoiList.layoutManager = linearLayoutManager
+        binding.rvPoiList.adapter = adapter
         setViewListener()
     }
 
@@ -115,23 +121,13 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         }
     }
 
-    private fun finishActivity(saveAddressDataModel: SaveAddressDataModel) {
+    private fun finishActivity(saveAddressDataModel: SaveAddressDataModel?) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
             })
             finish()
         }
-    }
-
-    private fun prepareLayout(view: View) {
-        adapter = AutocompleteBottomSheetAdapter(this)
-        hideListLocation()
-
-        val linearLayoutManager = LinearLayoutManager(
-                context, LinearLayoutManager.VERTICAL, false)
-        binding.rvPoiList.layoutManager = linearLayoutManager
-        binding.rvPoiList.adapter = adapter
     }
 
     private fun setViewListener() {
@@ -299,9 +295,12 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     }
 
     private fun showLocationInfoBottomSheet() {
-        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow, isLogisticLabel)
-        fragmentManager?.run {
-            locationInfoBottomSheetFragment.show(this, "")
+        try {
+            LocationInfoBottomSheetFragment
+                    .newInstance(isFullFlow, isLogisticLabel)
+                    .show(parentFragmentManager, "")
+        } catch (e: Exception) {
+            Timber.e(e)
         }
         dismiss()
     }
