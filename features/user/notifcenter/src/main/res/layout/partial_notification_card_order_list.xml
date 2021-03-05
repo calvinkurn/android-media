@@ -19,6 +19,7 @@
         android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/unify_space_4"
+        android:contentDescription="@null"
         android:scaleType="fitCenter"
         tools:src="@tools:sample/avatars" />
 
