@@ -25,13 +25,10 @@ class TooltipBottomSheet : BottomSheetUnify() {
 
     init {
         listAdapter = BaseListAdapter(TooltipTypeFactory())
+        isKeyboardOverlap = false
         setCloseClickListener {
             dismiss()
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,7 +48,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
         bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
         context?.also { context ->
             bottomSheetClose.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.product.addedit.R.drawable.ic_bottomsheet_close))
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close))
                 layoutParams.apply {
                     width = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
                     height = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
@@ -81,7 +78,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
             setHasFixedSize(true)
             adapter = listAdapter
             if (isDividerVisible) {
-                ContextCompat.getDrawable(context, com.tokopedia.product.addedit.R.drawable.tooltip_divider)?.also {
+                ContextCompat.getDrawable(context, R.drawable.tooltip_divider)?.also {
                     addItemDecoration(TooltipDividerItemDecoration(
                             drawable = it,
                             drawOnLastItem = false,
@@ -105,9 +102,5 @@ class TooltipBottomSheet : BottomSheetUnify() {
 
     fun setDividerVisible(visible: Boolean) {
         isDividerVisible = visible
-    }
-
-    companion object {
-        const val TAG = "Tag list"
     }
 }
