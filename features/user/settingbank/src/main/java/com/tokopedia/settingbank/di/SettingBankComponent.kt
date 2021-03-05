@@ -10,8 +10,7 @@ import dagger.Component
 @SettingBankScope
 @Component(modules =
         [SettingBankModule::class,
-            ViewModelModule::class,
-            GqlRawQueryModule::class],
+            ViewModelModule::class],
         dependencies = [BaseAppComponent::class])
 interface SettingBankComponent {
 
