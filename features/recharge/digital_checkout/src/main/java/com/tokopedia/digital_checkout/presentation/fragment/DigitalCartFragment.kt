@@ -511,11 +511,11 @@ class DigitalCartFragment : BaseDaggerFragment() {
                     }
 
                     override fun enableCheckoutButton() {
-                        btnCheckout.isEnabled = true
+                        checkoutBottomViewWidget.isCheckoutButtonEnabled = true
                     }
 
                     override fun disableCheckoutButton() {
-                        btnCheckout.isEnabled = false
+                        checkoutBottomViewWidget.isCheckoutButtonEnabled = false
                     }
                 }
 
