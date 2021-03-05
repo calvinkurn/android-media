@@ -895,6 +895,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         // do nothing
     }
 
+    override fun onLoadingAtc(showLoading: Boolean) {
+        recharge_general_enquiry_button.isLoading = showLoading
+    }
+
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
         updateFavoriteNumberInputField()

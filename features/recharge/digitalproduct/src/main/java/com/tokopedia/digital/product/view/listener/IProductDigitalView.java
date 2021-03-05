@@ -76,4 +76,6 @@ public interface IProductDigitalView extends IBaseView {
     void showPromoContainer();
 
     void navigateToDigitalCart(DigitalCheckoutPassData digitalCheckoutPassData);
+
+    void onBuyButtonLoading(Boolean showLoading);
 }

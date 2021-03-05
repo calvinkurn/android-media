@@ -1,17 +1,17 @@
 package com.tokopedia.digital.common.view.compoundview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 
@@ -146,6 +146,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
     public abstract void renderClientNumber(String clientNumber);
 
     public abstract boolean isInstantCheckoutChecked();
+
+    public abstract void onBuyButtonLoading(Boolean showLoading);
 
     public abstract String getClientNumber();
 

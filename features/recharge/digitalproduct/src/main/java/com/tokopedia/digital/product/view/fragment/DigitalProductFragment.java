@@ -683,6 +683,11 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onBuyButtonLoading(Boolean showLoading) {
+        digitalProductView.onBuyButtonLoading(showLoading);
+    }
+
+    @Override
     public void showPromoContainer() {
         containerPromo.setVisibility(View.VISIBLE);
     }

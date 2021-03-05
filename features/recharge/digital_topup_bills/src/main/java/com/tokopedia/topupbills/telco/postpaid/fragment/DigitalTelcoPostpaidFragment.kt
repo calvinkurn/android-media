@@ -422,6 +422,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun onLoadingAtc(showLoading: Boolean) {
+        buyWidget.onBuyButtonLoading(showLoading)
+    }
+
     override fun onCollapseAppBar() {
         //do nothing
     }

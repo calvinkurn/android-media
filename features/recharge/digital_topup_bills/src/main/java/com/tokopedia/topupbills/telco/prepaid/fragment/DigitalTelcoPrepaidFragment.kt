@@ -417,6 +417,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun onLoadingAtc(showLoading: Boolean) {
+        buyWidget.onBuyButtonLoading(showLoading)
+    }
+
     private val clientNumberCallback = object : DigitalClientNumberWidget.ActionListener {
         override fun onNavigateToContact() {
             inputNumberActionType = InputNumberActionType.CONTACT

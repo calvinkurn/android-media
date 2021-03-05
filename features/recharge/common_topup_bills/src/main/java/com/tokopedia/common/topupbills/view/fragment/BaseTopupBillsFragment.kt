@@ -98,6 +98,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 is Success -> navigateToCart()
                 is Fail -> showErrorMessage(it.throwable)
             }
+            onLoadingAtc(false)
         })
 
         topupBillsViewModel.enquiryData.observe(viewLifecycleOwner, Observer {
@@ -427,6 +428,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun onLoadingMenuDetail(showLoading: Boolean)
 
+    abstract fun onLoadingAtc(showLoading: Boolean)
+
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
     abstract fun onEnquiryError(error: Throwable)
@@ -457,6 +460,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     fun addToCart() {
         if (::checkoutPassData.isInitialized) {
+            onLoadingAtc(true)
             checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
             checkoutPassData.voucherCodeCopied = promoCode
             addToCartViewModel.addToCart(checkoutPassData,

@@ -1,16 +1,16 @@
 package com.tokopedia.digital.common.view.compoundview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
@@ -133,6 +133,11 @@ public class CategoryProductStyle1View extends
     @Override
     public boolean isInstantCheckoutChecked() {
         return false;
+    }
+
+    @Override
+    public void onBuyButtonLoading(Boolean showLoading) {
+        btnBuyDigital.setLoading(showLoading);
     }
 
     @Override

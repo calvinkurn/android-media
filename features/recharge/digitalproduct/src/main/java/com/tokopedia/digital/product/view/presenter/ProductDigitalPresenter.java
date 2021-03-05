@@ -145,6 +145,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                           RequestBodyIdentifier digitalIdentifierParam,
                           DigitalSubscriptionParams digitalSubscriptionParams) {
 
+        getView().onBuyButtonLoading(true);
         addToCartUseCase.setRequestParams(
                 DigitalAddToCartUseCase.Companion.getRequestBodyAtcDigital(
                         digitalCheckoutPassData,
@@ -173,10 +174,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                     digitalCheckoutPassData, userSession.getUserId()));
             getView().navigateToDigitalCart(digitalCheckoutPassData);
         } else onError(new Throwable());
+        getView().onBuyButtonLoading(false);
     }
 
     private void onError(Throwable e) {
         handleCategoryError(e);
+        getView().onBuyButtonLoading(false);
     }
 
     @NonNull
