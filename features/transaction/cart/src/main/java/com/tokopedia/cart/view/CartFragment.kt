@@ -1392,7 +1392,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecentViewProductImpression(element: CartRecentViewItemHolderData) {
         recentViewList?.let {
             if (element.isTopAds) {
-                TopAdsUrlHitter(context).hitImpressionUrl(
+                TopAdsUrlHitter(context?.applicationContext).hitImpressionUrl(
                         this::class.java.simpleName,
                         element.trackerImageUrl,
                         element.id,
@@ -1407,7 +1407,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         (recentViewList as List<CartRecentViewItemHolderData>).withIndex().forEach { (position, recentView) ->
             if (recentView.id.equals(productId, ignoreCase = true)) {
                 if (recentView.isTopAds) {
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    TopAdsUrlHitter(context?.applicationContext).hitClickUrl(
                             this::class.java.simpleName,
                             recentView.clickUrl,
                             recentView.id,
