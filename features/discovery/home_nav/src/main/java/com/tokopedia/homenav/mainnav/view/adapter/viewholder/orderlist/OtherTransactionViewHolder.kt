@@ -20,6 +20,7 @@ class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavLis
 
     override fun bind(otherTransactionModel: OtherTransactionModel) {
         val context = itemView.context
+        itemView.holder_view.setBackgroundResource(R.drawable.bg_transaction_other)
         itemView.transaction_others_count.text = context.getString(R.string.transaction_others_count)
 
         itemView.setOnClickListener {

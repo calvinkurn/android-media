@@ -2,6 +2,8 @@ package com.tokopedia.graphql.data;
 
 import android.content.Context;
 
+import androidx.annotation.AnyThread;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 
 import com.akamai.botman.CYFMonitor;
@@ -48,13 +50,24 @@ public class GraphqlClient {
     private static Retrofit sRetrofit = null;
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
-
+    private static Context applicationContext;
     private static Function function;
 
     private GraphqlClient() {
 
     }
 
+    @MainThread
+    /***Marking important method for main thread.
+     * Idea behind this method is A library initialisation may need some critical data.
+     * In this case it was context and we need to mark on which thread the critical data will be set.
+     * This approach decouples the library initialisation, we can use the any thread to initialise the library.
+    **/
+    public static void setContextData(Context context){
+        applicationContext = context.getApplicationContext();
+    }
+
+    @AnyThread
     public synchronized static void init(@NonNull Context context) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
@@ -63,6 +76,7 @@ public class GraphqlClient {
         }
     }
 
+    @AnyThread
     public synchronized static void init(@NonNull Context context, boolean addBrotliInterceptor) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
@@ -101,12 +115,36 @@ public class GraphqlClient {
         function = new Function(context);
     }
 
-
+    @AnyThread
     public static Function getFunction() {
         if (function == null) {
-            throw new RuntimeException("Please call init() before using graphql library");
+            if(canBeInitialized()){
+                init(applicationContext);
+            }
+            else {
+                throw new RuntimeException("Please call init() before using graphql library");
+            }
         }
         return function;
+    }
+
+    @AnyThread
+    //Use this method for safe usage
+    public static Function getFunctionWithContext(Context context) {
+        if (!isInitialized()) {
+            init(context);
+        }
+        return function;
+    }
+
+    @AnyThread
+    public static boolean isInitialized(){
+        return function != null;
+    }
+
+    @AnyThread
+    public static boolean canBeInitialized(){
+        return applicationContext != null;
     }
 
     public static void reInitRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
@@ -151,36 +189,25 @@ public class GraphqlClient {
     }
 
     public static class Function {
-        Function0<Long> currentTime;
-        Function0<Long> getExpiredTime;
-        Function1<Long, Unit> setExpiredTime;
-        Function0<Unit> setAkamaiValue;
-        Function0<String> getAkamaiValue;
         private WeakReference<Context> context;
 
         public Function(Context mContext) {
             this.context = new WeakReference<>(mContext);
-
-            currentTime = () -> System.currentTimeMillis() ;
-            getExpiredTime = () -> getExpiredTime(context.get());
-            setExpiredTime = (time) -> {
-                setExpiredTime(context.get(), time);
-                return null;
-            };
-            setAkamaiValue = () -> {
-                UtilsKt.setAkamaiValue(context.get(), CYFMonitor.getSensorData());
-                return null;
-            };
-            getAkamaiValue = () -> UtilsKt.getAkamaiValue(context.get());
         }
 
         public String getAkamaiValue() {
             return UtilsKt.setExpire(
-                    currentTime,
-                    getExpiredTime,
-                    setExpiredTime,
-                    setAkamaiValue,
-                    getAkamaiValue
+                    () -> System.currentTimeMillis(),
+                    () -> getExpiredTime(context.get()),
+                    (time) -> {
+                        setExpiredTime(context.get(), time);
+                        return Unit.INSTANCE;
+                    },
+                    () -> {
+                        UtilsKt.setAkamaiValue(context.get(), CYFMonitor.getSensorData());
+                        return Unit.INSTANCE;
+                    },
+                    () -> UtilsKt.getAkamaiValue(context.get())
             );
         }
     }
