@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -194,7 +195,8 @@ class DynamicChannelMixLeftViewHolder(
             gradient.cornerRadius = 0f
             view.background = gradient
         } else {
-            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: "#ffffff"))
+            val defaultColorString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_N0))}"
+            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: defaultColorString))
         }
     }
 }

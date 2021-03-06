@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -64,7 +65,8 @@ class ProductHighlightComponentViewHolder(
             val expiredTime = DateHelper.getExpiredTime(dataModel.channelModel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(dataModel.channelModel.channelConfig.serverTimeOffset, expiredTime)) {
                 itemView.deals_count_down?.run {
-                    timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != "#ffffff" || dataModel.channelModel.channelBanner.gradientColor.size > 1){
+                    val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_Static_White))}"
+                    timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
                         TimerUnifySingle.VARIANT_MAIN

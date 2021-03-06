@@ -91,12 +91,12 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         DigitalCheckoutPassData cartPassData = null;
         DigitalSubscriptionParams subParams = null;
 
-        if (uriData.getScheme().equals(DeeplinkConstant.SCHEME_INTERNAL)) {
+        if (uriData.getQueryParameterNames().size() > 0) {
+            cartPassData = processIntentDataCheckoutFromApplink(getApplicationContext(), uriData);
+            subParams = processIntentDataSubscription(uriData);
+        } else if (uriData.getScheme().equals(DeeplinkConstant.SCHEME_INTERNAL)) {
             cartPassData = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA);
             subParams = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA);
-        } else if (uriData.getQueryParameterNames().size() > 0) {
-                cartPassData = processIntentDataCheckoutFromApplink(getApplicationContext(), uriData);
-                subParams = processIntentDataSubscription(uriData);
         }
         return DigitalCartDefaultFragment.newInstance(cartPassData, subParams);
     }

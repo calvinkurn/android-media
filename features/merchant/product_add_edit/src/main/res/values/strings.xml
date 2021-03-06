@@ -142,6 +142,7 @@
     <string name="action_refresh_showcases">Muat Ulang</string>
 
     <!--Description-->
+    <string name="title_gifting_description_bottom_sheet">Tips deskripsi Paket Lebaran</string>
     <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
     <string name="label_product_name">Nama produk</string>
     <string name="label_product_price">Harga</string>
@@ -159,6 +160,15 @@
     <string name="label_video_title">Video</string>
     <string name="label_video_subtitle">Tambah video agar pembeli lebih paham tentang produkmu</string>
     <string name="label_video_url_placeholder">Link Video</string>
+    <string name="label_gifting_description_numbers">Maksimalkan potensi pembelian dengan tulis informasi di deskripsi produkmu seperti ini:</string>
+    <string name="label_gifting_description_first">Deskripsikan produk dan varian apa saja yang ada di dalam Paket Lebaranmu</string>
+    <string name="label_gifting_description_second">Tuliskan juga informasi mengenai ukuran paket dan tanggal kedaluwarsa produk</string>
+    <string name="label_gifting_description_third">Jika paket sudah termasuk dengan kartu ucapan, infokan pembeli untuk menulis pesan kartu ucapan di Catatan Toko, ya.</string>
+    <string name="label_gifting_description_example">Contoh deskripsi produk</string>
+    <string name="label_gifting_description_template">Detail Paket Lebaran\n[Makanan/Sembako/Barang]\n\n1 set Paket terdiri dari:\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- 1 kartu ucapan \n\nTanggal kedaluwarsa produk (jika ada):\n[Tanggal Bulan Tahun]\n\nSetiap Paket berukuran:\n[Ukuran dalam cm] x [Ukuran dalam cm] x [Ukuran dalam cm]\n\nCatatan lain untuk pemesanan Paket Lebaran ini:\n- Jika ada ucapan personal, tuliskan detail ucapan di Catatan Toko pada saat checkout.\n- Chat langsung ke toko kami jika ada yang ditanyakan, ya.</string>
+    <string name="label_gifting_description_copied_message">Template deskripsi produk berhasil disalin.</string>
+    <string name="label_gifting_description_tips">Tips buat deskripsi produk Parcel/Hampers</string>
+    <string name="action_copy_template">Salin Template Deskripsi Produk</string>
     <string name="action_add_video">Tambah video</string>
     <string name="action_next_button">Lanjut</string>
     <string name="error_video_not_valid">Pastikan link Youtube kamu benar</string>

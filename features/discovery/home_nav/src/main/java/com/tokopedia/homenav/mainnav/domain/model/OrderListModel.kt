@@ -8,7 +8,7 @@ data class NavOrderListModel (
 data class NavProductOrder(
         val id: String = "",
         val statusText: String = "",
-        val statusTextColor: String = "#000000",
+        val statusTextColor: String = "",
         val productNameText: String = "",
         val descriptionText: String = "",
         val descriptionTextColor: String = "",
@@ -20,7 +20,7 @@ data class NavProductOrder(
 data class NavPaymentOrder(
         val id: String = "",
         val statusText: String = "",
-        val statusTextColor: String = "#000000",
+        val statusTextColor: String = "",
         val paymentAmountText: String = "",
         val descriptionText: String = "",
         val imageUrl: String = "",
