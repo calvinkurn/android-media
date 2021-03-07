@@ -110,6 +110,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_add_edit_product_detail_layout.*
 import javax.inject.Inject
 
 class AddEditProductDetailFragment : BaseDaggerFragment(),
@@ -681,6 +682,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+
+        add_edit_product_product_recommendation_layout.price = "Rp. 250.000"
+        add_edit_product_product_recommendation_layout.setButtonToBlack()
+        add_edit_product_product_recommendation_layout.setOnButtonNextClicked {
+            Toaster.build(requireView(), "sa1", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+        add_edit_product_product_recommendation_layout.setOnSuggestedPriceSelected {
+            Toaster.build(requireView(), "sa2", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
