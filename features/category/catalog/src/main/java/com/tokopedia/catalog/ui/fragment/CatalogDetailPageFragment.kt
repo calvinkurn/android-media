@@ -147,13 +147,6 @@ class CatalogDetailPageFragment : Fragment(),
         })
     }
 
-    private fun addProductListingFragment(){
-//        requireActivity().supportFragmentManager.beginTransaction().replace(
-//                R.id.products_fragment_container,
-//                CatalogDetailProductListingFragment.newInstance(catalogId,"","","")
-//        ).commit()
-    }
-
     private fun setObservers() {
         catalogDetailPageViewModel.getCatalogResponseData().observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -163,7 +156,6 @@ class CatalogDetailPageFragment : Fragment(),
                     }
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     updateUi()
-                    addProductListingFragment()
                 }
                 is Fail -> {
                     onError(it.throwable)
@@ -233,6 +225,8 @@ class CatalogDetailPageFragment : Fragment(),
         catalogPageRecyclerView = view.findViewById(R.id.catalog_detail_rv)
         catalogPageRecyclerView?.apply {
             layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+            setHasFixedSize(true)
+            setNestedCanScroll(true)
             itemAnimator = null
             ContextCompat.getDrawable(context, R.drawable.divider)?.let {
                 addItemDecoration(DividerItemDecorator(it))
@@ -300,5 +294,13 @@ class CatalogDetailPageFragment : Fragment(),
 
     override val childsFragmentManager: FragmentManager?
         get() = childFragmentManager
+
+
+    override val windowHeight: Int
+        get() = if (activity != null) {
+            catalog_layout.height
+        } else {
+            0
+        }
 
 }

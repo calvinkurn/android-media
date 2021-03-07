@@ -43,8 +43,7 @@
         app:layout_constrainedHeight="true"
         android:paddingStart="@dimen/unify_space_12"
         android:paddingEnd="@dimen/unify_space_12"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:nestedScrollingEnabled="true"
+        android:paddingBottom="@dimen/unify_space_64"
         app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter"/>
 
     <include

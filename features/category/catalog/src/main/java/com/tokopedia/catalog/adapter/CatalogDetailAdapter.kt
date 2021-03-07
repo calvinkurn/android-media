@@ -46,7 +46,6 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
         if(holder is CatalogProductsContainerViewHolder){
             catalogDetailListener.hideFloatingLayout()
-            attachFragmentToContainer(R.id.products_container_frame)
         }
         super.onViewAttachedToWindow(holder)
     }
@@ -57,18 +56,5 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
         }
         super.onViewDetachedFromWindow(holder)
 
-    }
-
-    private fun attachFragmentToContainer(containerId: Int) {
-        val fragment = if (context.supportFragmentManager.fragments.firstOrNull { it is CatalogDetailProductListingFragment } == null)
-            CatalogDetailProductListingFragment.newInstance(catalogId)
-        else
-            null
-
-        if (fragment != null) {
-            context.supportFragmentManager.beginTransaction()
-                    .add(containerId, fragment)
-                    .commitNowAllowingStateLoss()
-        }
     }
 }

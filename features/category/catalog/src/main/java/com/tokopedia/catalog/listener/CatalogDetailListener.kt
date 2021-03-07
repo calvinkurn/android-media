@@ -29,4 +29,6 @@ interface CatalogDetailListener {
 
     val childsFragmentManager: FragmentManager?
 
+    val windowHeight: Int
+
 }
