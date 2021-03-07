@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -23,6 +24,13 @@ class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDat
     private var elementBanner: OfficialBannerDataModel? = null
 
     private var officialStoreTracking: OfficialStoreTracking? = null
+
+    init {
+        banner = view?.findViewById(R.id.banner_official)
+        itemView.context?.let {
+            officialStoreTracking = OfficialStoreTracking(it)
+        }
+    }
 
     override fun bind(element: OfficialBannerDataModel) {
         elementBanner = element

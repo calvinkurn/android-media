@@ -1,5 +1,6 @@
 package com.tokopedia.digital.product.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -37,6 +38,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.common_digital.cart.DigitalCheckoutUtil;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
@@ -67,13 +69,11 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.unifycomponents.Toaster;
-import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -361,6 +361,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         rechargeParamFromSlice = arguments.getString(ARG_PARAM_EXTRA_RECHARGE_SLICE);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     protected void initView(View view) {
         pbMainLoading = view.findViewById(com.tokopedia.digital.R.id.pb_main_loading);
         holderProductDetail = view.findViewById(com.tokopedia.digital.R.id.digital_holder_product_detail);
@@ -668,7 +669,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 userSession.getUserId());
 
         if (userSession.isLoggedIn()) {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+            Intent intent = RouteManager.getIntent(getActivity(), DigitalCheckoutUtil.Companion.getApplinkCartDigital(getActivity()));
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassData);
             startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
         } else {
@@ -692,7 +693,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 userSession.getUserId());
 
         if (userSession.isLoggedIn()) {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+            Intent intent = RouteManager.getIntent(getActivity(), DigitalCheckoutUtil.Companion.getApplinkCartDigital(getActivity()));
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassData);
             startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
         } else {
@@ -868,7 +869,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 break;
             case REQUEST_CODE_LOGIN:
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
-                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+                    Intent intent = RouteManager.getIntent(getActivity(), DigitalCheckoutUtil.Companion.getApplinkCartDigital(getActivity()));
                     intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassDataState);
                     startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
                 }

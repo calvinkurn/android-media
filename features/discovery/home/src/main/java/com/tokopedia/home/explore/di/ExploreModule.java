@@ -28,7 +28,6 @@ import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_S
  * Created by errysuprayogi on 2/2/18.
  */
 
-@ExploreScope
 @Module
 public class ExploreModule {
 

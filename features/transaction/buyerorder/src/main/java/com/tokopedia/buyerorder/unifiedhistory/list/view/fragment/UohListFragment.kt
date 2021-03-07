@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -213,16 +215,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var isFetchRecommendation = false
     private var currPage = 1
     private var currRecommendationListPage = 0
-    private var textChangedJob: Job? = null
     private var isReset = false
     private var filterStatus = ""
     private var orderIdNeedUpdated = ""
     private var currIndexNeedUpdate = -1
-    private var isTyping = false
     private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
     private val REQUEST_CODE_LOGIN = 288
+    private val MIN_KEYWORD_CHARACTER_COUNT = 3
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -419,38 +420,35 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
-        search_bar?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                textChangedJob?.cancel()
-                textChangedJob = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500L)
-
-                    if (!isTyping) {
-                        isTyping = true
-                        resetFilter()
-                    }
-
-                    paramUohOrder.searchableText = s.toString()
-                    refreshHandler?.startRefresh()
-                    scrollRecommendationListener.resetState()
-                    userSession.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-        })
-
         search_bar?.searchBarIcon?.setOnClickListener {
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
             search_bar?.searchBarTextField?.text?.clear()
+            triggerSearch()
+        }
+
+        search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                UohUtils.hideKeyBoard(search_bar.context, view)
+                if (search_bar?.searchBarTextField?.text?.length ?: 0 < MIN_KEYWORD_CHARACTER_COUNT) {
+                    showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
+                } else {
+                    triggerSearch()
+                }
+                true
+            } else false
         }
 
         addEndlessScrollListener()
+    }
+
+    private fun triggerSearch() {
+        search_bar?.searchBarTextField?.text?.toString()?.let { keyword ->
+            resetFilter()
+            paramUohOrder.searchableText = keyword
+            refreshHandler?.startRefresh()
+            scrollRecommendationListener.resetState()
+            userSession.userId?.let { UohAnalytics.submitSearch(keyword, it) }
+        }
     }
 
     private fun addEndlessScrollListener() {
@@ -554,32 +552,30 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingFinishOrder() {
-        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
                     if (responseFinishOrder.success == 1) {
-                        if (responseFinishOrder.message.isNotEmpty()) {
-                            showToaster(responseFinishOrder.message.first(), Toaster.TYPE_NORMAL)
-                        }
+                        responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
                         loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
-                            showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                            responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         } else {
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
                 }
                 is Fail -> {
-                    showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                    responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
         })
     }
 
     private fun observingAtcMulti() {
-        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
@@ -597,7 +593,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingLsFinishOrder() {
-        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     responseLsPrintFinishOrder = it.data.oiaction
@@ -622,7 +618,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingFlightResendEmail() {
-        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val flightEmailResponse = it.data.flightResendEmailV2
@@ -646,7 +642,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingTrainResendEmail() {
-        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val trainEmailResponse = it.data.trainResendBookingEmail
@@ -670,7 +666,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingRechargeSetFail() {
-        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
@@ -688,7 +684,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingAtc() {
-        uohListViewModel.atcResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.atcResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     if (it.data.isDataError()) {
@@ -775,7 +771,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true)) && !isReset) {
-            filter3?.title = orderList.categories.first().label
+            filter3?.title = orderList.categories.firstOrNull()?.label.toString()
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             filter3?.title = orderList.categories[1].label
@@ -1013,12 +1009,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
             listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
-            recommendationList.first().recommendationItemList.forEach {
+            recommendationList.firstOrNull()?.recommendationItemList?.forEach {
                 listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.addList(listRecomm)
         } else {
-            recommendationList.first().recommendationItemList.forEach {
+            recommendationList.firstOrNull()?.recommendationItemList?.forEach {
                 listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.appendList(listRecomm)
@@ -1106,6 +1102,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
+                        filterStatus = ""
                         val labelTrackingCategory: String
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
@@ -1542,45 +1539,50 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ))
             i++
         }
+
         userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+        // requested as old flow (from old order list)
+        UohAnalytics.orderDetailOpenScreenEvent()
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
-        val button = order.metadata.buttons.first()
-        if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-            RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
-        } else {
-            when {
-                button.actionType.equals(GQL_FINISH_ORDER, true) -> {
-                    orderIdNeedUpdated = order.orderUUID
-                    showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
-                }
-                button.actionType.equals(GQL_ATC, true) -> {
-                    atc(order)
-                }
-                button.actionType.equals(GQL_TRACK, true) -> {
-                    val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
-                    RouteManager.route(context, applinkTrack)
-                }
-                button.actionType.equals(GQL_LS_FINISH, true) -> {
-                    orderIdNeedUpdated = order.orderUUID
-                    showBottomSheetLsFinishOrder(index, order.verticalID)
-                }
-                button.actionType.equals(GQL_LS_LACAK, true) -> {
-                    val linkUrl = button.appURL
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                }
-                button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
-                    currIndexNeedUpdate = index
-                    orderIdNeedUpdated = order.orderUUID
-                    if (order.verticalID.isNotEmpty()) {
-                        uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
+        order.metadata.buttons.firstOrNull()?.let { button ->
+            if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
+                RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
+            } else {
+                when {
+                    button.actionType.equals(GQL_FINISH_ORDER, true) -> {
+                        orderIdNeedUpdated = order.orderUUID
+                        showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
+                    }
+                    button.actionType.equals(GQL_ATC, true) -> {
+                        atc(order)
+                    }
+                    button.actionType.equals(GQL_TRACK, true) -> {
+                        val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
+                        RouteManager.route(context, applinkTrack)
+                    }
+                    button.actionType.equals(GQL_LS_FINISH, true) -> {
+                        orderIdNeedUpdated = order.orderUUID
+                        showBottomSheetLsFinishOrder(index, order.verticalID)
+                    }
+                    button.actionType.equals(GQL_LS_LACAK, true) -> {
+                        val linkUrl = button.appURL
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                    }
+                    button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
+                        currIndexNeedUpdate = index
+                        orderIdNeedUpdated = order.orderUUID
+                        if (order.verticalID.isNotEmpty()) {
+                            uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
+                        }
                     }
                 }
             }
-        }
 
-        userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+            userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+        }
     }
 
     override fun onEmptyResultResetBtnClicked() {
@@ -1745,8 +1747,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         intent.putExtra(ApplinkConst.Chat.INVOICE_ID, order.verticalID)
         intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode)
         if (order.metadata.products.isNotEmpty()) {
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.first().title)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.first().imageURL)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.firstOrNull()?.title)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.firstOrNull()?.imageURL)
         }
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, order.metadata.paymentDateStr)
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)

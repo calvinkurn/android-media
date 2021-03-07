@@ -242,7 +242,7 @@
             android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Client Analytics Validator"
+            android:text="Cassava"
             android:textColor="@color/white" />
 
         <TextView
@@ -255,18 +255,6 @@
             android:gravity="center"
             android:padding="@dimen/margin_small"
             android:text="View Analytics Log"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/goto_analytics_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
-            android:gravity="center"
-            android:padding="@dimen/margin_small"
-            android:text="View Analytics Error Log"
             android:textColor="@color/white" />
 
         <LinearLayout
@@ -345,6 +333,20 @@
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
             android:text="@string/remote_config_start_button"
+            android:textColor="@color/Neutral_N0" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ab_test_rollence_editor_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/ab_test_rollence_start_button"
             android:textColor="@color/Neutral_N0" />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -452,6 +454,15 @@
             android:text="Send Log to Server"
             android:textColor="@color/Neutral_N0" />
 
+        <CheckBox
+            android:id="@+id/toggle_seller_app_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Seller App Review Debugging" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -546,16 +557,51 @@
             android:id="@+id/resetOnboardingNavigation"
             android:text="RESET ONBOARDING NAVIGATION!" />
 
-        <Button
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonAlwaysOldNavigation"
-            android:text="ALWAYS_OLD_NAVIGATION" />
+            android:text="Home and Navigation Revamp Switcher : "/>
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonAlwaysNewNavigation"
-            android:text="ALWAYS_NEW_NAVIGATION" />
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysOldNavigation"
+                android:text="ALWAYS_OLD_NAVIGATION" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysNewNavigation"
+                android:text="ALWAYS_NEW_NAVIGATION" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysOldHome"
+                android:text="ALWAYS_OLD_HOME" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysNewHome"
+                android:text="ALWAYS_NEW_HOME" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

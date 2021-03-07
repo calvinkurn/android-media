@@ -11,7 +11,6 @@ import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProviderImpl
 import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
-import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.user.session.UserSession
@@ -23,7 +22,6 @@ import dagger.Provides
  * Author errysuprayogi on 16,May,2019
  */
 @Module
-@AutoAdsScope
 class AutoAdsModule {
 
     @AutoAdsScope
@@ -59,12 +57,4 @@ class AutoAdsModule {
                                            topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                                            bidInfoUseCase: BidInfoUseCase):
             DailyBudgetViewModelFactory = DailyBudgetViewModelFactory(context, dispatcher, repository, query, topAdsGetShopDepositUseCase, bidInfoUseCase)
-
-    @AutoAdsScope
-    @Provides
-    fun provideTopAdsInfoViewModelFactory(dispatcher: AutoAdsDispatcherProvider,
-                                          repository: GraphqlRepository,
-                                          query: Map<String, String>):
-            TopAdsInfoViewModelFactory = TopAdsInfoViewModelFactory(dispatcher, repository, query)
-
 }

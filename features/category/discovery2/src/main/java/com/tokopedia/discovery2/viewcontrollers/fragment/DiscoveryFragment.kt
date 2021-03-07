@@ -44,6 +44,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -54,6 +55,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -74,6 +83,7 @@ import java.net.UnknownHostException
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 const val PAGE_REFRESH_LOGIN = 35771
+private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
@@ -159,6 +169,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mDiscoveryFab = view.findViewById(R.id.fab)
         initToolbar(view)
         initView(view)
     }
@@ -239,6 +250,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     fun reSync() {
         fetchDiscoveryPageData()
+
+    }
+
+    private fun bindStickyViewHolder() {
+        recyclerView.rebindStickyViewHolder()
     }
 
     private fun setUpObserver() {
@@ -248,6 +264,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
+                        bindStickyViewHolder()
                         if (listComponent.isNullOrEmpty()) {
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
@@ -360,12 +377,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             if (showOldToolbar) {
                 ivShare.show()
                 ivShare.setOnClickListener {
-                    handleShareClick(data.share)
+                    handleShareClick(data)
                 }
             } else {
                 navToolbar.setIcon(
                         IconBuilder()
-                                .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data.share) }, disableDefaultGtmTracker = true)
+                                .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data) }, disableDefaultGtmTracker = true)
                                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
@@ -379,13 +396,35 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
     }
 
-    private fun handleShareClick(share: Share) {
+    private fun handleShareClick(data: PageInfo?) {
         if (showOldToolbar) {
             getDiscoveryAnalytics().trackShareClick()
         } else {
             handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         }
-        Utils.shareData(activity, share.description, share.url)
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                linkerDataMapper(data), object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult) {
+                if(linkerShareData.url != null) {
+                    Utils.shareData(activity, data?.share?.description, linkerShareData.url)
+                }
+            }
+            override fun onError(linkerError: LinkerError) {
+                Utils.shareData(activity, data?.share?.description, data?.share?.url)
+            }
+        }))
+    }
+
+    private fun linkerDataMapper(data : PageInfo?): LinkerShareData {
+        val linkerData = LinkerData()
+        linkerData.id = data?.id?.toString() ?: ""
+        linkerData.name = data?.name ?: ""
+        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url ?: "", discoComponentQuery)
+        linkerData.description = data?.share?.description ?: ""
+        linkerData.isThrowOnError = true
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
     }
 
     private fun setToolBarPageInfoOnFail() {
@@ -539,6 +578,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         showVerificationBottomSheet()
     }
 
+    fun openPlay(componentPosition: Int = -1, appLink: String) {
+        this.componentPosition = componentPosition
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, OPEN_PLAY_CHANNEL)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -562,6 +607,14 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 if (resultCode == Activity.RESULT_OK) {
                     refreshPage()
                 }
+            }
+            OPEN_PLAY_CHANNEL -> {
+                if (data == null)
+                    return
+                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
+                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
             }
         }
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {

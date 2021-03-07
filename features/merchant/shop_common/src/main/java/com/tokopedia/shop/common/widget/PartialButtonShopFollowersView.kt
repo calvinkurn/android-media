@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.common.util.RoundedShadowUtill
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -60,7 +62,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         }
     }
 
-    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true) = with(view) {
+    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true, buttonLabel: String? = null, voucherIconUrl: String? = null) = with(view) {
         if (alreadyFollowShop) {
             setupVisibility = false
             return@with
@@ -69,7 +71,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         shop_followers_title.text = title
         shop_followers_desc.text = desc
 
-        setupButtonFollowers()
+        setupButtonFollowers(buttonLabel, voucherIconUrl)
         setOnClickListener {}
         setupRoundedTopShadow()
 
@@ -96,7 +98,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
     }
 
     private fun animateSlideUp() = with(view) {
-        base_btn_follow?.visibility = View.VISIBLE
+        visibility = View.VISIBLE
         animate().translationY(0F).setDuration(GONE_ANIMATION_DURATION).setListener(null)
     }
 
@@ -104,17 +106,26 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 super.onAnimationEnd(animation)
-                base_btn_follow?.visibility = View.GONE
+                visibility = View.GONE
                 stopLoading()
             }
         })
     }
 
-    private fun setupButtonFollowers() {
+    private fun setupButtonFollowers(buttonLabel: String?, voucherIconUrl: String?) {
+        voucherIconUrl?.run {
+            followersBtn?.loadLeftDrawable(
+                    context = view.context,
+                    url = voucherIconUrl,
+                    convertIntoSize = 50
+            )
+        }
         followersBtn?.run {
+            if (!buttonLabel.isNullOrBlank()) {
+                text = buttonLabel
+            }
             setOnClickListener {
                 if (!isLoading) {
-                    followersBtn?.isLoading = true
                     listener.onButtonFollowNplClick()
                 }
             }

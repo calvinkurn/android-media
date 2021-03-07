@@ -59,11 +59,14 @@ object ProductDetailConstant {
 
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
+    const val PAYLOAD_TRADEIN = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_UPDATE_IMAGE = 5
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
+    const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
+    const val DIFFUTIL_PAYLOAD = "payload"
 
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
@@ -99,7 +102,6 @@ object ProductDetailConstant {
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
-    const val PRODUCT_LAST_SEEN = "product_last_seen"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
@@ -115,6 +117,7 @@ object ProductDetailConstant {
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
+    const val MVC = "mvc"
 
 
     //Arguments
@@ -177,4 +180,9 @@ object ProductDetailConstant {
     const val HIDE_VALUE = 0F
     const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
 
+
+    //General Ticker
+    const val LAYOUT_FLOATING = "floating"
+    const val PARAMS_PAGE = "page"
+    const val PARAMS_PAGE_PDP = "pdp"
 }

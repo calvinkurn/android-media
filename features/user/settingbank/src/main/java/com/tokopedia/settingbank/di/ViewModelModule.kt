@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@SettingBankScope
 abstract class ViewModelModule {
 
     @SettingBankScope
@@ -22,10 +21,6 @@ abstract class ViewModelModule {
     @ViewModelKey(SettingBankViewModel::class)
     internal abstract fun settingBankViewModel(viewModel: SettingBankViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(SettingBankTNCViewModel::class)
-    internal abstract fun addBankTermsConditionViewModel(viewModel: SettingBankTNCViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -34,33 +29,10 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(BankNumberTextWatcherViewModel::class)
-    internal abstract fun addAccountNumberTextWatcherViewModel(viewModel: BankNumberTextWatcherViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(CheckAccountNumberViewModel::class)
-    internal abstract fun checkAccountNumberViewModel(viewModel: CheckAccountNumberViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(AccountHolderNameViewModel::class)
-    internal abstract fun validateAccountViewModel(viewModel: AccountHolderNameViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(AddAccountViewModel::class)
     internal abstract fun addAddAccountViewModel(viewModel: AddAccountViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(DeleteBankAccountViewModel::class)
-    internal abstract fun addDeleteBankAccountViewModel(viewModel: DeleteBankAccountViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(GetKYCViewModel::class)
-    internal abstract fun addGetKYCViewModel(viewModel: GetKYCViewModel): ViewModel
     @Binds
     @IntoMap
     @ViewModelKey(UploadDocumentViewModel::class)

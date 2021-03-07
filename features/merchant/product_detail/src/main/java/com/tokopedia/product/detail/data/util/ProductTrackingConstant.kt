@@ -118,7 +118,6 @@ object ProductTrackingConstant {
         const val CLICK_READ_MORE = "click - baca selengkapnya"
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
-        const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BUTTON_CHAT = "click - sticky chat"
@@ -140,7 +139,6 @@ object ProductTrackingConstant {
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
         const val CLICK_WHOLESALE = "click - info harga grosir"
-        const val CLICK_REVIEW_IMAGE_MEDIA = "click - foto dari pembeli on product image"
         const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
         const val CLICK_TICKER = "click - selengkapnya on component ticker"
         const val CLICK_CUSTOM_INFO = "click - custom info component"
@@ -185,12 +183,14 @@ object ProductTrackingConstant {
         const val CLICK_FULLSCREEN_VIDEO = "click - fullscreen on video"
         const val CLICK_INTERACTION_VIDEO = "click - video on product image"
         const val CLICK_MUTE_VIDEO = "click - mute on video"
+
+        const val CLICK_CHECK_CART = "click - cek keranjang"
     }
 
 
     object Label {
         const val EMPTY_LABEL = ""
-        const val PDP = "pdp"
+        const val PDP = "PDP"
         const val DISCUSSION_EMPTY_QUESTION = "count thread:0;variant selected:%s;variant available:%s;"
         const val DISCUSSION_SEE_ALL ="count thread:%s;"
         const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
@@ -241,6 +241,10 @@ object ProductTrackingConstant {
     object TopAds {
         const val PDP_BANNER_TOPADS = "/product - tdn banner ads"
         const val DFAULT_CREATIVE_NAME_BANNER_TOP_ADS = "none / other"
+    }
+
+    object MiniSocialProof {
+        const val CLICK_BUYER_PHOTOS = "click - foto dari pembeli on social proof"
     }
 
 }

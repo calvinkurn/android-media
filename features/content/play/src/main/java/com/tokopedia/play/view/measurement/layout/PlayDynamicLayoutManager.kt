@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 
 /**
  * Created by jegul on 04/08/20
@@ -22,9 +22,9 @@ class PlayDynamicLayoutManager(
         else getPortraitManager().onVideoOrientationChanged(videoOrientation)
     }
 
-    override fun onVideoPlayerChanged(videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
-        if (dataSource.getScreenOrientation().isLandscape) getLandscapeManager().onVideoPlayerChanged(videoPlayerUiModel, channelType)
-        else getPortraitManager().onVideoPlayerChanged(videoPlayerUiModel, channelType)
+    override fun onVideoPlayerChanged(videoPlayer: PlayVideoPlayerUiModel, channelType: PlayChannelType) {
+        if (dataSource.getScreenOrientation().isLandscape) getLandscapeManager().onVideoPlayerChanged(videoPlayer, channelType)
+        else getPortraitManager().onVideoPlayerChanged(videoPlayer, channelType)
     }
 
     /**

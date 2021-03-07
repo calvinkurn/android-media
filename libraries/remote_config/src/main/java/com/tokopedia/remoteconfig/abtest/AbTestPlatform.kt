@@ -106,6 +106,18 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         fetch(listener)
     }
 
+    fun getRevisionValue() = sharedPreferences.getInt(REVISION, 0)
+
+    fun getFilteredKeyByKeyName(keyName: String): MutableSet<String> {
+        return mutableSetOf<String>().apply {
+            for ((key, value) in sharedPreferences.all){
+                val valueClassType = value?.let { it::class.java }
+                if ((key.equals(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
+                    add(key)
+            }
+        }
+    }
+
     override fun fetch(listener: RemoteConfig.Listener?) {
         // Get existing revision for next Gql request
         val revision = sharedPreferences.getInt(REVISION, 0)
@@ -200,6 +212,14 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val NAVIGATION_EXP_TOP_NAV = "Navigation P0.1"
         const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
         const val NAVIGATION_VARIANT_REVAMP = "Navigation Revamp"
+
+        const val HOME_EXP = "Home Revamp 2021"
+        const val HOME_VARIANT_OLD = "Existing Home"
+        const val HOME_VARIANT_REVAMP = "home revamp"
+
+        const val KEY_AB_INBOX_REVAMP = "Inbox Revamp"
+        const val VARIANT_OLD_INBOX = ""
+        const val VARIANT_NEW_INBOX = "Inbox Revamp"
     }
 
 }

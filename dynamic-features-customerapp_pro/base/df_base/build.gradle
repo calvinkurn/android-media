@@ -65,6 +65,7 @@ dependencies {
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.interestPick)
+    implementation project(rootProject.ext.features.feed)
 
     //Digital
     implementation project(rootProject.ext.features.digitalTopupBills)
@@ -104,6 +105,7 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
     implementation project(rootProject.ext.features.shopPage)
@@ -137,6 +139,7 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.inbox)
 
     //Transaction
     implementation project(rootProject.ext.features.checkout)

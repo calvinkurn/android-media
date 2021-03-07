@@ -2,6 +2,8 @@ package com.tokopedia.topads.dashboard.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -13,7 +15,6 @@ import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
@@ -31,7 +32,6 @@ import javax.inject.Named
  * Created by hadi.putra on 23/04/18.
  */
 
-@TopAdsDashboardScope
 @Module
 class TopAdsDashboardModule {
 
@@ -87,10 +87,6 @@ class TopAdsDashboardModule {
 
     @TopAdsDashboardScope
     @Provides
-    fun provideDeleteTopAdsStatisticsUseCase(@ApplicationContext context: Context) = DeleteTopAdsStatisticsUseCase(context)
-
-    @TopAdsDashboardScope
-    @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
     @Provides
@@ -100,6 +96,11 @@ class TopAdsDashboardModule {
     @Provides
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    @TopAdsDashboardScope
+    @Named("Main")
+    fun provideDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)

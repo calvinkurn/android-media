@@ -23,6 +23,7 @@ import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.ScrollHelper
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
 import com.tokopedia.thankyou_native.presentation.views.GyroView
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
@@ -43,7 +44,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         viewModelProvider.get(CheckWhiteListViewModel::class.java)
     }
 
-    override fun getLoadingView(): View? = loadingView
+    override fun getLoadingView(): View? = loadingLayout
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
@@ -51,6 +52,8 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         //not required
     }
+
+    override fun getTopTickerView(): Ticker? = topTicker
 
     override fun getScreenName(): String = SCREEN_NAME
 
@@ -137,7 +140,10 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
             tv_payment_method.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
-            //use installment info here in case of credit card
+            if (thanksPageData.additionalInfo.installmentInfo.isNotBlank()) {
+                tvInstallmentInfo.text = thanksPageData.additionalInfo.installmentInfo
+                tvInstallmentInfo.visible()
+            }
         } else
             tv_payment_method.text = thanksPageData.gatewayName
 
@@ -173,12 +179,12 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     private fun onSingleAuthRegisterFail() {
-        loadingView.gone()
+        loadingLayout.gone()
         showErrorOnUI(getString(R.string.thank_enable_single_authentication_error)) { enableSingleAuthentication() }
     }
 
     private fun onSuccessFullyRegister() {
-        loadingView.gone()
+        loadingLayout.gone()
         showToaster(getString(R.string.thank_enable_single_authentication_success))
     }
 
@@ -205,7 +211,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private fun enableSingleAuthentication() {
         if (::dialogUnify.isInitialized)
             dialogUnify.cancel()
-        loadingView.visible()
+        loadingLayout.visible()
         checkWhiteListViewModel.registerForSingleAuth()
     }
 

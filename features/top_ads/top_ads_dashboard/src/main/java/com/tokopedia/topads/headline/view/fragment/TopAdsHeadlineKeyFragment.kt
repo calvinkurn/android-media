@@ -24,8 +24,8 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemModel
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
@@ -92,7 +92,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
             putExtra(ParamObject.GROUP_ID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
         }
-        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
+        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
     }
 
 
@@ -103,7 +103,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         else
             TopAdsDashboardConstant.ACTION_DEACTIVATE
         viewModel.setKeywordAction(actionActivate,
-                listOf((adapter.items[pos] as KeywordItemViewModel).result.keywordId.toString()), resources, ::onSuccessAction)
+                listOf((adapter.items[pos] as KeywordItemModel).result.keywordId.toString()), resources, ::onSuccessAction)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -231,7 +231,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         loader.visibility = View.GONE
         recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
-            adapter.items.add(KeywordItemViewModel(result))
+            adapter.items.add(KeywordItemModel(result))
         }
         adapter.notifyDataSetChanged()
         setFilterCount()
@@ -281,7 +281,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     }
 
     private fun onEmpty() {
-        adapter.items.add(KeywordEmptyViewModel())
+        adapter.items.add(KeywordEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, true)
             btn_submit?.isEnabled = false

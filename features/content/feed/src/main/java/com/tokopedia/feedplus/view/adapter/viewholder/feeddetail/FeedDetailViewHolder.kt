@@ -75,8 +75,8 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
     private fun setDiscountTypeTag(tagTypeText: Typography?, typeText: String) {
         tagTypeText?.run {
             text = typeText
-            background = MethodChecker.getDrawable(itemView.context, R.drawable.discount_text_background)
-            setTextColor(MethodChecker.getColor(itemView.context, R.color.red_pink))
+            background = MethodChecker.getDrawable(itemView.context, com.tokopedia.feedcomponent.R.drawable.discount_text_background)
+            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
             show()
         }
 
@@ -85,8 +85,8 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
     private fun setCashBackTypeTag(tagTypeText: Typography?, typeText: String) {
         tagTypeText?.run {
             text = typeText
-            background = MethodChecker.getDrawable(itemView.context, R.drawable.cashback_text_background)
-            setTextColor(MethodChecker.getColor(itemView.context, R.color.bg_button_green_border_outline))
+            background = MethodChecker.getDrawable(itemView.context, com.tokopedia.feedcomponent.R.drawable.cashback_text_background)
+            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             show()
         }
     }

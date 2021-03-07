@@ -23,7 +23,7 @@ class BuyerGetRecommendationUseCase @Inject constructor(private val graphqlUseCa
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<RecommendationResponse> {
-        val graphqlRequest = GraphqlRequest(query, RecommendationResponse::class.java)
+        val graphqlRequest = GraphqlRequest(query, RecommendationResponse::class.java, params, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {

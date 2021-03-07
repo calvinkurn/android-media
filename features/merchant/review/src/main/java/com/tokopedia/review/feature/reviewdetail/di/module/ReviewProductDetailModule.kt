@@ -5,7 +5,6 @@ import com.tokopedia.review.feature.reviewdetail.di.scope.ReviewDetailScope
 import dagger.Module
 import dagger.Provides
 
-@ReviewDetailScope
 @Module(includes = [ReviewProductDetailViewModelModule::class])
 class ReviewProductDetailModule {
 

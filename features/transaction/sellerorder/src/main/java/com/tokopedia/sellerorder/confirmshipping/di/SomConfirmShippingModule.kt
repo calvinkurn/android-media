@@ -3,26 +3,18 @@ package com.tokopedia.sellerorder.confirmshipping.di
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
-import com.tokopedia.sellerorder.common.SomProductionDispatcherProvider
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 /**
  * Created by fwidjaja on 06/05/20.
  */
 
 @Module
-@SomConfirmShippingScope
 class SomConfirmShippingModule {
-    @SomConfirmShippingScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @SomConfirmShippingScope
     @Provides
@@ -41,8 +33,4 @@ class SomConfirmShippingModule {
     @SomConfirmShippingScope
     @Provides
     fun provideSomChangeCourierUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomChangeCourier.Data> = GraphqlUseCase(graphqlRepository)
-
-    @SomConfirmShippingScope
-    @Provides
-    fun provideSomDispatcherProvider(): SomDispatcherProvider = SomProductionDispatcherProvider()
 }

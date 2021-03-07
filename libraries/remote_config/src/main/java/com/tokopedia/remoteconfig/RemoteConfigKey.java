@@ -88,9 +88,6 @@ public class RemoteConfigKey {
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
-    public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
-    public static final String ANDROID_MAIN_APP_ENABLED_CACHE_PDP = "android_main_app_enabled_cache_pdp";
-
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
     public static final String NONB2_TTL = "app_nonb_2_ttl";
@@ -150,8 +147,6 @@ public class RemoteConfigKey {
     public static final String TOPCHAT_OLD = "android_topchat_old";
     public static final String TOPCHAT_SELLER_BROADCAST = "android_topchat_seller_broadcast";
     public static final String ENABLE_PASS_GA_CLIENT_ID_WEB = "enable_pass_ga_client_to_web";
-
-    public static final String APP_ENABLE_INSURANCE_RECOMMENDATION = "app_enable_insurance_recommendation";
 
     public static final String LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE = "android_mainapp_merchant_label_free_ongkir_title";
     public static final String MAINAPP_FREE_ONGKIR_MSG = "android_mainapp_merchant_freeongkir_title";

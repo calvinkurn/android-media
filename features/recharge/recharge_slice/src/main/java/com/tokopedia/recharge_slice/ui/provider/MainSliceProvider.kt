@@ -16,9 +16,10 @@ import androidx.slice.SliceProvider
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.*
 import com.bumptech.glide.Glide
+import com.google.android.play.core.splitcompat.SplitCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.recharge_slice.R
 import com.tokopedia.recharge_slice.data.Data
 import com.tokopedia.recharge_slice.data.Recommendation
@@ -30,6 +31,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recharge_slice.data.Product
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
+import com.tokopedia.recharge_slice.util.RechargeSliceGqlQuery
 import com.tokopedia.recharge_slice.util.SliceTracking
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -58,7 +60,6 @@ class MainSliceProvider : SliceProvider() {
 
     var recommendationModel: List<Recommendation>? = null
 
-    var loadString: String? = ""
     var alreadyLoadData: Boolean = false
     var isError: Boolean = false
 
@@ -101,7 +102,7 @@ class MainSliceProvider : SliceProvider() {
             contextNonNull,
             0,
             allowReads {
-                RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                RouteManager.getIntent(contextNonNull, RECHARGE_NEW_HOME_PAGE)
                         .putExtra(RECHARGE_HOME_PAGE_EXTRA, true)
             },
             0
@@ -162,7 +163,11 @@ class MainSliceProvider : SliceProvider() {
                                                     product = Product(it.get(i).productId.toString(), it.get(i).title, rupiahFormatter(it.get(i).productPrice))
                                                     listProduct.add(i, product)
                                                 }
-                                                it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                                if(!it?.get(i)?.productName.isNullOrEmpty()) {
+                                                    it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                                } else {
+                                                    it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                                }
                                                 it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
                                             }
                                             primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, getClickProduct(recommendationModel?.get(i)))?.let {
@@ -237,7 +242,7 @@ class MainSliceProvider : SliceProvider() {
 
 
     private fun getData(sliceUri: Uri) {
-        val gqlQuery = GraphqlHelper.loadRawString(contextNonNull.resources, R.raw.recharge_slice_gql)
+        val gqlQuery = RechargeSliceGqlQuery.rechargeFavoriteRecommendationList
         val deviceId = 0
         val params = mapOf(RECHARGE_SLICE_DEVICE_ID to deviceId)
         val graphqlRequest = GraphqlRequest(gqlQuery, Data::class.java, params)
@@ -275,7 +280,11 @@ class MainSliceProvider : SliceProvider() {
         contextNonNull = context?.applicationContext ?: return false
         remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         LocalCacheHandler(context, APPLINK_DEBUGGER)
-        loadString = contextNonNull.resources.getString(R.string.slice_loading)
+        try {
+            SplitCompat.install(contextNonNull)
+        } catch (e: Exception){
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
         return true
     }
 
@@ -319,6 +328,7 @@ class MainSliceProvider : SliceProvider() {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
+        const val RECHARGE_NEW_HOME_PAGE = "tokopedia://recharge/home?platform_id=31"
         private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
     }
 }

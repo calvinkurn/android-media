@@ -1,8 +1,10 @@
 package com.tokopedia.buyerorder.detail.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,8 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.Items;
@@ -34,6 +37,8 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Items> itemsList;
     private Context context;
     private Status status;
+    private String userId;
+    private String orderId;
     private OrderListDetailPresenter presenter;
     private boolean isOrderTradeIn;
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
@@ -41,12 +46,16 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final String BUY_AGAIN_ACTION_BUTTON_KEY = "buy_again";
     private static final String CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT = "click lihat produk serupa - product";
 
-    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn, Status status) {
+
+    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter,
+                              boolean isTradeIn, Status status, String userId, String orderId) {
         this.context = context;
         this.itemsList = itemsList;
         this.presenter = presenter;
         this.isOrderTradeIn = isTradeIn;
         this.status = status;
+        this.userId = userId;
+        this.orderId = orderId;
         orderListAnalytics = new OrderListAnalytics();
     }
 
@@ -135,12 +144,12 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setText(actionButton.getLabel());
                 GradientDrawable shape = new GradientDrawable();
                 shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadius(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
                 if (!actionButton.getActionColor().getBackground().equals("")) {
                     shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
                 }
                 if (!actionButton.getActionColor().getBorder().equals("")) {
-                    shape.setStroke(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+                    shape.setStroke(context.getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_2), Color.parseColor(actionButton.getActionColor().getBorder()));
                 }
                 buyBtn.setBackground(shape);
                 if (!actionButton.getActionColor().getTextColor().equals("")) {
@@ -149,7 +158,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setOnClickListener(view -> {
                     if (!TextUtils.isEmpty(actionButton.getUri())) {
                         if (actionButton.getKey().equalsIgnoreCase(MarketPlaceDetailFragment.SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
-                            orderListAnalytics.sendActionButtonClickEvent(CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT, String.valueOf(items.getId()));
+                            orderListAnalytics.sendActionButtonClickEvent(CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT, items.getId());
                         }
                         RouteManager.route(context, actionButton.getUri());
                     } else if (actionButton.getKey().equalsIgnoreCase(BUY_AGAIN_ACTION_BUTTON_KEY)) {
@@ -160,12 +169,11 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 });
             }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    orderListAnalytics.sendProductClickDetailsEvent(items, getIndex(), status.status());
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
-                }
+            itemView.setOnClickListener(view -> {
+                orderListAnalytics.sendProductClickDetailsEvent(items, getIndex(), status.status());
+
+                String applinkSnapshot = ApplinkConst.SNAPSHOT_ORDER+"/"+ orderId +"/"+ items.getOrderDetailId();
+                RouteManager.route(context, applinkSnapshot);
             });
 
         }

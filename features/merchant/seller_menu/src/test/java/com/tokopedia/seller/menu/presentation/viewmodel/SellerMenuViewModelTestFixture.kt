@@ -99,7 +99,7 @@ open class SellerMenuViewModelTestFixture {
     }
 
     protected fun createShopSettingsResponse(
-        totalFollowers: Int = 35000,
+        totalFollowers: Long = 35000,
         topAdsBalance: Float = 2000f,
         isAutoTopUp: Boolean = true,
         shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
@@ -121,7 +121,7 @@ open class SellerMenuViewModelTestFixture {
     }
 
     protected fun createShopInfoUiModel(
-        totalFollowers: Int = 35000,
+        totalFollowers: Long = 35000,
         topAdsBalance: Float = 2000f,
         isAutoTopUp: Boolean = true,
         shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",

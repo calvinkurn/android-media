@@ -30,7 +30,7 @@ data class RestrictionEngineDataRequest(
 data class RestrictionEngineDataRequestProduct(
         @Expose
         @SerializedName("productID")
-        var productID: Int = 0
+        var productID: String = ""
 )
 
 data class RestrictionEngineDataRequestShop(

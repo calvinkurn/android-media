@@ -12,7 +12,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import javax.inject.Named
 
-@ProductDetailScope
 @Module
 class GqlRawQueryModule {
 
@@ -34,23 +33,9 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW)
-    fun provideRawGetImageReview(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.gallery.R.raw.gql_image_review)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_GET_TOP_ADS_MANAGE_PRODUCT)
     fun provideRawGetTopAds(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_top_ads_product_manage)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW)
-    fun provideRawGetMostHelpfulReview(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_most_helpful_review)
 
     @ProductDetailScope
     @Provides
@@ -72,13 +57,6 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.MUTATION_FAVORITE_SHOP)
     fun providePostFavorite(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_TICKER)
-    fun provideQueryTicker(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.stickylogin.R.raw.gql_sticky_login_query)
 
     @ProductDetailScope
     @Provides

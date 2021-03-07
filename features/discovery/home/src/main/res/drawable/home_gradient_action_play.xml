@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <gradient android:startColor="#00000000"
+    <gradient android:startColor="@color/home_dms_gradient_action_play"
         android:endColor="@color/Unify_N700_44"
         android:centerColor="@color/Unify_N700_44"
         android:angle="-90"/>

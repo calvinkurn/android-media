@@ -19,7 +19,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -59,6 +58,7 @@ import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewM
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
+import com.tokopedia.rechargegeneral.util.RechargeGeneralGqlQuery
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
@@ -381,6 +381,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         val dropdownData = groups.map { TopupBillsInputDropdownData(it.name) }
                         showOperatorSelectDropdown(operator_cluster_select, dropdownData, cluster.text)
                     }
+
+                    override fun onTextChangeInput() {
+                        //do nothing
+                    }
                 }
                 operator_cluster_select.show()
 
@@ -418,6 +422,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         TopupBillsInputDropdownData(it.attributes.name, it.attributes.imageUrl)
                     }
                     showOperatorSelectDropdown(operator_select, dropdownData)
+                }
+
+                override fun onTextChangeInput() {
+                    //do nothing
                 }
             }
 
@@ -778,7 +786,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun getOperatorCluster(menuId: Int) {
         viewModel.getOperatorCluster(
-                GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
+                RechargeGeneralGqlQuery.catalogOperatorSelectGroup,
                 viewModel.createOperatorClusterParams(menuId),
                 recharge_general_swipe_refresh_layout.isRefreshing
         )
@@ -786,7 +794,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun getProductList(menuId: Int, operator: Int) {
         viewModel.getProductList(
-                GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogProductInput,
                 viewModel.createProductListParams(menuId, operator),
                 recharge_general_swipe_refresh_layout.isRefreshing
         )
@@ -797,6 +805,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
         }
         updateInputData(label, input)
+    }
+
+    override fun onTextChangeInput() {
+        recharge_general_enquiry_button.isEnabled = false
     }
 
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget,

@@ -27,7 +27,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
-                  alias
                   shopName
                   productID
                   shopID
@@ -35,12 +34,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   maxOrder
                   weight
                   weightUnit
-                  condition
                   status
                   url
                   sku
-                  gtin
-                  isMustInsurance
                   needPrescription
                   catalogID
                   isLeasing
@@ -95,21 +91,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         URL300
                         description
                         videoURLAndroid
-                        videoURLIOS
                         isAutoplay
-                      }
-                      pictures {
-                        picID
-                        description
-                        filePath
-                        fileName
-                        width
-                        height
-                        isFromIG
-                        urlOriginal
-                        urlThumbnail
-                        url300
-                        Status
                       }
                       videos {
                         source
@@ -120,8 +102,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       name
                       price {
                         value
-                        currency
-                        lastUpdateUnix
                       }
                       campaign {
                         campaignID
@@ -156,8 +136,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         minQty
                         price {
                           value
-                          lastUpdateUnix
-                          currency
                         }
                       }
                       isCashback {
@@ -169,7 +147,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       }
                       preorder {
                         duration
-                        timeUnit
                         isActive
                       }
                       isTradeIn
@@ -201,8 +178,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         title
                         subtitle
                         applink
-                        type
-                        rating
                       }
                     }
                     ... on pdpDataInfo {
@@ -302,18 +277,11 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
     }
 
     var requestParams = RequestParams.EMPTY
-    var forceRefresh = false
-    var enableCaching = false
 
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(GraphqlRequest(QUERY, ProductDetailLayout::class.java, requestParams.parameters))
-        if (enableCaching) {
-            gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
-        } else {
-            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                    .Builder(CacheType.ALWAYS_CLOUD).build())
-        }
+        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
 

@@ -6,7 +6,6 @@ import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import dagger.Module;
 import dagger.Provides;
 
-@SearchScope
 @Module
 public class TkpdBaseInterceptorModule {
 

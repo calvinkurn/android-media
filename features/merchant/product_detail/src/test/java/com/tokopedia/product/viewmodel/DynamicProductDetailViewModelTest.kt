@@ -29,7 +29,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.util.ProductDetailTestUtil
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
@@ -43,6 +42,7 @@ import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -473,6 +473,7 @@ class DynamicProductDetailViewModelTest {
         val listOfRecom = arrayListOf(recomWidget)
         val listOfFilter = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
         val pageName = "pdp3"
+
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
@@ -481,9 +482,11 @@ class DynamicProductDetailViewModelTest {
             getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOfFilter
 
-        viewModel.loadRecommendation(pageName)
+        (1..2).forEach { _ ->
+            viewModel.loadRecommendation(pageName)
+        }
 
-        coVerify {
+        coVerify(exactly = 1) {
             getRecommendationUseCase.createObservable(any())
         }
 
@@ -648,8 +651,6 @@ class DynamicProductDetailViewModelTest {
             viewModel.userId
         } returns "123"
 
-        viewModel.enableCaching = false
-
         every {
             userSessionInterface.isLoggedIn
         } returns true
@@ -670,7 +671,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
         Assert.assertTrue(viewModel.topAdsImageView.value is Success)
-        Assert.assertFalse(viewModel.enableCaching)
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
@@ -732,7 +732,6 @@ class DynamicProductDetailViewModelTest {
     @Test
     fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
-        viewModel.enableCaching = true
 
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
@@ -748,8 +747,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNull(viewModel.p2Data.value)
         Assert.assertNull(viewModel.p2Login.value)
         Assert.assertNull(viewModel.p2Other.value)
-
-        Assert.assertTrue(viewModel.enableCaching)
 
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -827,8 +824,6 @@ class DynamicProductDetailViewModelTest {
         every {
             viewModel.isShopOwner()
         } returns true
-
-        viewModel.enableCaching = false
 
         every {
             userSessionInterface.isLoggedIn

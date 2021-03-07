@@ -61,7 +61,7 @@ class KeywordAdsViewModelTest {
             }
         }
         every {
-            suggestionKeywordUseCase.execute(captureLambda(), any())
+            suggestionKeywordUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {
             onSuccess.invoke(data)
         }
@@ -76,13 +76,13 @@ class KeywordAdsViewModelTest {
 
     @Test
     fun `check invocation of onSuccess validateGroup`() {
-        val expected = listOf(KeywordData(productId = 1, keywordData = listOf(KeywordDataItem(keyword = "test1"))))
+        val expected = listOf(KeywordData(productId = "1", keywordData = listOf(KeywordDataItem(keyword = "test1"))))
         var actual:List<KeywordData> = listOf()
         val onSuccess:(List<KeywordData>) -> Unit = {
             actual = it
         }
         every {
-            suggestionKeywordUseCase.execute(captureLambda(), any())
+            suggestionKeywordUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {
             onSuccess.invoke(expected)
         }
