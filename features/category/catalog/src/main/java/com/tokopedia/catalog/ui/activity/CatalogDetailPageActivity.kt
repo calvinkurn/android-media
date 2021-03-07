@@ -96,7 +96,11 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
 
     override fun onBackPressed() {
         if(supportFragmentManager.backStackEntryCount > 0){
-            supportFragmentManager.popBackStack()
+            supportFragmentManager.fragments.firstOrNull()?.let {
+                if(it is CatalogDetailPageFragment){
+                    it.onBackPressed()
+                }
+            }
         }else {
             super.onBackPressed()
         }

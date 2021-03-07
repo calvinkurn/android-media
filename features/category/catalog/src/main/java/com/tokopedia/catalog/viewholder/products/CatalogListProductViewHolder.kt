@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.raw.CatalogProductItem
+import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -51,11 +52,11 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
     }
 
     private fun showTerjual(catalogProductItem: CatalogProductItem?){
-        val integrity = catalogProductItem?.labelGroupList?.find { it.position == "integrity" }
+        val integrity = catalogProductItem?.labelGroupList?.find { it.position == CatalogConstant.INTEGRITY_GROUP }
         integrity?.let {
             if (it.title.isNotBlank()){
                 itemView.sales_tv.show()
-                itemView.sales_tv.displayTextOrHide(getString(R.string.terjual_text,it.title))
+                itemView.sales_tv.displayTextOrHide(it.title)
             }
         }
     }

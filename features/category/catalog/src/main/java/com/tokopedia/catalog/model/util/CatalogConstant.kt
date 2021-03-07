@@ -27,4 +27,6 @@ object CatalogConstant {
 
     const val QUICK_FILTER_SOURCE = "quick_filter"
     const val SEARCH_PRODUCT_SOURCE = "search_product"
+
+    const val INTEGRITY_GROUP ="integrity"
 }

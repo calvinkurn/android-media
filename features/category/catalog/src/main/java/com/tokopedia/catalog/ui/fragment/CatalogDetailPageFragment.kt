@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ScrollView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -65,6 +66,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var navToolbar: NavToolbar? = null
     private var catalogPageRecyclerView: NestedRecyclerView? = null
     private var shimmerLayout : ScrollView? = null
+    private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
 
     private val catalogAdapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
 
@@ -77,6 +79,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private var isBottomSheetOpen = false
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
@@ -128,19 +131,20 @@ class CatalogDetailPageFragment : Fragment(),
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
                 R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId)
-        ).commit()
+        ).addToBackStack("").commit()
 
-        BottomSheetBehavior.from(bottom_sheet_fragment_container).addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
+        mBottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when(newState){
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-
+                        isBottomSheetOpen = false
                     }
                     BottomSheetBehavior.STATE_EXPANDED -> {
-
+                        isBottomSheetOpen = true
                     }
                 }
             }
@@ -290,6 +294,10 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewMoreDescriptionClick() {
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
+    }
+
+    fun onBackPressed(){
+        mBottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     override val childsFragmentManager: FragmentManager?

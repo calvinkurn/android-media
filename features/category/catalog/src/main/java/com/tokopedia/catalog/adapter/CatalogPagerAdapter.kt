@@ -8,8 +8,8 @@ import com.tokopedia.catalog.model.datamodel.CatalogProductsContainerDataModel
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
 
 class CatalogPagerAdapter(val catalogDetailListener: CatalogDetailListener,
-                          val catalogProductsContainerDataModel: CatalogProductsContainerDataModel,
-                          private val fragmentManager: FragmentManager  ) : FragmentStatePagerAdapter(fragmentManager) {
+                          private val catalogProductsContainerDataModel: CatalogProductsContainerDataModel,
+                          fragmentManager: FragmentManager  ) : FragmentStatePagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
         return CatalogDetailProductListingFragment.newInstance(catalogProductsContainerDataModel.catalogId)

@@ -22,16 +22,11 @@ class CatalogProductsContainerViewHolder(private val view: View,
 
     override fun bind(element: CatalogProductsContainerDataModel) {
         val layoutParams = container.layoutParams
-        layoutParams.height = catalogDetailListener.windowHeight
+        layoutParams.height = catalogDetailListener.windowHeight - context.resources.getDimensionPixelSize(R.dimen.dp_8)
         container.layoutParams = layoutParams
 
-        initViewPager(element)
-    }
-
-    private fun initViewPager(element: CatalogProductsContainerDataModel){
         catalogPageAdapter = CatalogPagerAdapter(catalogDetailListener,
                 element,catalogDetailListener.childsFragmentManager!!)
-
         viewPager.adapter = catalogPageAdapter
     }
 }
