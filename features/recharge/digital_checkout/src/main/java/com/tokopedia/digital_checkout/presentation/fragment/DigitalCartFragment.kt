@@ -464,6 +464,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
                     }
 
                     viewModel.updateTotalPriceWithFintechProduct(fintechProductWidget.isChecked(), getPriceInput())
+                    viewModel.updateCheckoutSummaryWithFintechProduct(fintechProductWidget.isChecked())
                 }
 
                 fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
@@ -478,6 +479,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
                             digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
                         }
                         viewModel.updateTotalPriceWithFintechProduct(isChecked, getPriceInput())
+                        viewModel.updateCheckoutSummaryWithFintechProduct(isChecked)
                     }
                 }
             }

@@ -312,18 +312,27 @@ class DigitalCartViewModel @Inject constructor(
 
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = inputPrice ?: attributes.pricePlain
+            if (isChecked) {
+                val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
+                        ?: 0.0
+                totalPrice += fintechProductPrice
+            }
+            _totalPrice.postValue(totalPrice)
+        }
+    }
+
+    fun updateCheckoutSummaryWithFintechProduct(isChecked: Boolean) {
+        cartDigitalInfoData.value?.attributes?.let { attributes ->
             val fintechProductName = attributes.fintechProduct.getOrNull(0)?.info?.title
                     ?: ""
             val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
                     ?: 0.0
             if (isChecked) {
-                totalPrice += fintechProductPrice
                 paymentSummary.addToSummary(Payment(fintechProductName, getStringIdrFormat(fintechProductPrice)))
             } else {
                 paymentSummary.removeFromSummary(fintechProductName)
             }
             _payment.postValue(paymentSummary)
-            _totalPrice.postValue(totalPrice)
         }
     }
 

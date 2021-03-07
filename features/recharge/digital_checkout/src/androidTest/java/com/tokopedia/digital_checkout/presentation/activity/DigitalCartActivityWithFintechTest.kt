@@ -6,7 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -57,6 +59,7 @@ class DigitalCartActivityWithFintechTest {
         validateCartInfoOnUi()
         validateSubscriptionWidgetUi()
         validateFintechWidgetOnUi()
+        validateCheckoutSummaryOnUi()
         validateOnClickPromoView()
         validatePaymentPrice()
 
@@ -187,8 +190,22 @@ class DigitalCartActivityWithFintechTest {
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.500")))
         Thread.sleep(1000)
+    }
+
+    private fun validateCheckoutSummaryOnUi() {
+        onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
+        onView(withId(R.id.tvCheckoutSummaryTitle)).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Subtotal Tagihan"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Yuk mulai nabung emas"))).check(doesNotExist())
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 12.500"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(doesNotExist())
+
+        // Check fintech product
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(isChecked()))
+
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Yuk mulai nabung emas"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(matches(isDisplayed()))
     }
 
     @After
