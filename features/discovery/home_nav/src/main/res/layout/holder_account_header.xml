@@ -250,7 +250,7 @@
             android:id="@+id/usr_shop_notif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="@dimen/user_shop_notif_margin_start"
             app:layout_constraintLeft_toRightOf="@id/usr_shop_info"
             app:layout_constraintTop_toTopOf="@id/usr_shop_info"
             app:layout_constraintBottom_toBottomOf="@id/usr_shop_info"
