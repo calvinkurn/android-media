@@ -186,7 +186,7 @@ class PlayAnalytic(
                     hashMapOf<String, Any>(
                             "ecommerce" to hashMapOf(
                                     "currencyCode" to "IDR",
-                                    "impressions" to convertProductsToListOfObject(listOfProducts)
+                                    "impressions" to convertProductsToListOfObject(listOfProducts, "bottom sheet")
                             )
                     )
             )
@@ -206,7 +206,7 @@ class PlayAnalytic(
                         "ecommerce" to hashMapOf(
                                 "click" to hashMapOf(
                                         "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                                        "products" to  listOf(convertProductToHashMapWithList(product, position))
+                                        "products" to  listOf(convertProductToHashMapWithList(product, position, "bottom sheet"))
                                 )
                         )
                 )
@@ -377,7 +377,7 @@ class PlayAnalytic(
                     hashMapOf(
                             "ecommerce" to hashMapOf(
                                     "currencyCode" to "IDR",
-                                    "impressions" to convertProductsToListOfObject(featuredProducts)
+                                    "impressions" to convertProductsToListOfObject(featuredProducts, "featured product")
                             )
                     ),
                     hashMapOf(
@@ -402,7 +402,7 @@ class PlayAnalytic(
                         "ecommerce" to hashMapOf(
                                 "click" to hashMapOf(
                                         "actionField" to hashMapOf( "list" to "/groupchat - featured product" ),
-                                        "products" to  listOf(convertProductToHashMapWithList(featuredProduct, position))
+                                        "products" to  listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
                                 )
                         )
                 ),
@@ -466,15 +466,15 @@ class PlayAnalytic(
     /**
      * Private methods
      */
-    private fun convertProductsToListOfObject(listOfProducts: List<PlayProductUiModel.Product>): MutableList<HashMap<String, Any>> {
+    private fun convertProductsToListOfObject(listOfProducts: List<PlayProductUiModel.Product>, sourceFrom: String): MutableList<HashMap<String, Any>> {
         val products = mutableListOf<HashMap<String, Any>>()
         listOfProducts.forEachIndexed { index, product ->
-            products.add(convertProductToHashMapWithList(product, index))
+            products.add(convertProductToHashMapWithList(product, index, sourceFrom))
         }
         return products
     }
 
-    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int): HashMap<String, Any> {
+    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
         return hashMapOf(
                 "name" to product.title,
                 "id" to product.id,
@@ -485,7 +485,7 @@ class PlayAnalytic(
                 "brand" to "",
                 "category" to "",
                 "variant" to "",
-                "list" to "/groupchat - bottom sheet",
+                "list" to "/groupchat - $sourceFrom",
                 "position" to position
         )
     }

@@ -27,8 +27,6 @@ import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel.Product
-import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -305,18 +303,6 @@ class PlayBottomSheetFragment @Inject constructor(
         if (shouldFinish) activity?.finish()
     }
 
-    private fun sendTrackerImpression(playResult: PlayResult<PlayProductTagsUiModel.Complete>) {
-        if (playResult is PlayResult.Success) {
-            if (playResult.data.productList.isNotEmpty()
-                    && playResult.data.productList.first() is Product) {
-                with(analytic) { impressionProductList(playResult.data.productList.filterIsInstance<Product>()) }
-            }
-            if (playResult.data.voucherList.isNotEmpty()) {
-                analytic.impressionPrivateVoucher(playResult.data.voucherList.filterIsInstance<MerchantVoucherUiModel>())
-            }
-        }
-    }
-
     private fun copyToClipboard(content: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                 .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
@@ -341,8 +327,6 @@ class PlayBottomSheetFragment @Inject constructor(
                         onError = it.onRetry
                 )
             }
-
-            sendTrackerImpression(it)
         })
     }
 
