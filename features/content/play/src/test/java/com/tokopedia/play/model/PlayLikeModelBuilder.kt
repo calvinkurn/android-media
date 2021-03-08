@@ -21,7 +21,7 @@ class PlayLikeModelBuilder {
     )
 
     fun buildStatus(
-            totalLike: Int = 1,
+            totalLike: Long = 1,
             totalLikeFormatted: String = "1",
             isLiked: Boolean = false,
             source: LikeSource = LikeSource.Network
