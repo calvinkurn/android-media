@@ -8,9 +8,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
-fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel {
+fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
-    val drawerItemType = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) TYPE_WALLET_OVO else TYPE_WALLET_OTHER
     return BalanceDrawerItemModel(
             applink = appLinkActionButton,
             iconImageUrl = "",
@@ -19,7 +18,7 @@ fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(state: Int): BalanceDrawerI
             balanceSubTitleTextAttribute = buildWalletSubTitleTextAttribute(),
             balanceTitleTagAttribute = null,
             balanceSubTitleTagAttribute = null,
-            drawerItemType = drawerItemType,
+            drawerItemType = itemType,
             state = state
     )
 }
