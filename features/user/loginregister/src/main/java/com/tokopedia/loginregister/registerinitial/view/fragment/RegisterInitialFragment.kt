@@ -169,8 +169,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private val draw: Drawable?
         get() {
             var drawable: TextDrawable? = null
-            if (activity != null) {
-                drawable = TextDrawable(activity!!)
+            activity?.let {
+                drawable = TextDrawable(it)
                 drawable.text = resources.getString(R.string.login)
                 drawable.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
                 drawable.textSize = 14f
@@ -746,19 +746,21 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 listTickerInfo.forEach {
                     mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
                 }
-                val adapter = TickerPagerAdapter(activity!!, mockData)
-                adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
+                activity?.let {
+                    val adapter = TickerPagerAdapter(it, mockData)
+                    adapter.setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        }
 
-                    override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
-                    }
+                        override fun onDismiss() {
+                            registerAnalytics.trackClickCloseTickerButton()
+                        }
 
-                })
-                tickerAnnouncement.addPagerView(adapter, mockData)
+                    })
+                    tickerAnnouncement.addPagerView(adapter, mockData)
+                }
             } else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
@@ -938,7 +940,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
-                val uuid = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                 goToAddName(uuid)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity
                             .RESULT_CANCELED) {
@@ -952,8 +954,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
-                val accessToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                val phoneNumber = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 goToChooseAccountPage(accessToken, phoneNumber)
 
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
