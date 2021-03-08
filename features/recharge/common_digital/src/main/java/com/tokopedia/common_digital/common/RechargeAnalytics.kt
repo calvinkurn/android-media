@@ -89,8 +89,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         }
 
         val eventLabel = digitalAtcTrackingModel.categoryName.toLowerCase() + " - " +
-                if (digitalAtcTrackingModel.isInstantCheckout) DigitalTrackingConst.Value.INSTANT
-                else DigitalTrackingConst.Value.NON_INSTANT
+                digitalAtcTrackingModel.operatorName
 
         products.add(constructProductEnhanceEcommerce(digitalAtcTrackingModel, productName))
 

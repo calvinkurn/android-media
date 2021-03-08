@@ -57,7 +57,7 @@ class DigitalAnalytics {
                 TrackAppUtils.EVENT_ACTION, actionValue,
                 TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
                 DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
     }
@@ -114,7 +114,7 @@ class DigitalAnalytics {
                         TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.VIEW_CHECKOUT,
                         TrackAppUtils.EVENT_LABEL, label,
                         DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
                         DigitalCheckoutTrackingConst.Label.USER_ID, userId,
                         BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(DigitalCheckoutTrackingConst.Event.CHECKOUT,
                         DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
@@ -148,7 +148,7 @@ class DigitalAnalytics {
                         TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.CLICK_PROCEED_PAYMENT,
                         TrackAppUtils.EVENT_LABEL, label,
                         DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
                         DigitalCheckoutTrackingConst.Label.USER_ID, userId,
                         BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
                         DigitalCheckoutTrackingConst.Event.CHECKOUT, DataLayer.mapOf(

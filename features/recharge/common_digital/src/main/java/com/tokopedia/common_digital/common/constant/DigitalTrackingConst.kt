@@ -44,9 +44,7 @@ object DigitalTrackingConst {
 
     object Value {
         const val NONE = "none"
-        const val INSTANT = "instant"
-        const val NON_INSTANT = "non instant"
-        const val SITE = "tokopediadigital"
+        const val SITE = "tokopediadigitalRecharge"
         const val RECHARGE_BU = "recharge"
     }
 

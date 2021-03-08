@@ -45,6 +45,7 @@ object DigitalCheckoutTrackingConst {
     object Value {
         const val RECHARGE_BU = "recharge"
         const val SITE = "tokopediadigital"
+        const val RECHARGE_SITE = "tokopediadigitalRecharge"
 
         const val NO_PROMO = "no promo"
         const val PROMO = "no promo"
