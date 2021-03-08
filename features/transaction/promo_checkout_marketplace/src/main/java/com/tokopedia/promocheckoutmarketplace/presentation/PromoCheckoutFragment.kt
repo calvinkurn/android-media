@@ -902,6 +902,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                                 promoCoachMark.isShowing) {
                             promoCoachMark.dismissCoachMark()
                             recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
+                        } else if (promoWithCoachMarkIndex != -1 && layoutManager.findLastVisibleItemPosition() == promoWithCoachMarkIndex &&
+                                promoCoachMark.isShowing) {
+                            promoCoachMark.dismissCoachMark()
+                            recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
                         }
                     }
                 }
