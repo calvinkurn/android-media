@@ -18,6 +18,8 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
+
+        initInjector()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -35,4 +37,6 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
     protected abstract fun getChildResLayout(): Int
 
     protected abstract fun setupView(): Unit?
+
+    protected open fun initInjector() { }
 }

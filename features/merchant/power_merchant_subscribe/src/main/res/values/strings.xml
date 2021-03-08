@@ -156,4 +156,7 @@
     <string name="pm_silver">Silver</string>
     <string name="pm_gold">Gold</string>
     <string name="pm_diamond">Diamond</string>
+    <string name="pm_later">Nanti Saja</string>
+    <string name="pm_label_rating_power_merchant_experience">Bagaimana Anda menilai pengalaman menggunakan Power Merchant</string>
+    <string name="pm_label_deactivation_questionnaire_intro_desc"><![CDATA[Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada <b>%s</b>]]></string>
 </resources>

@@ -18,6 +18,17 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerPmCommunicationPeriod"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="full"
+                app:tickerType="announcement" />
+
             <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantRegistrationView
                 android:id="@+id/registrationLayout"
                 android:layout_width="match_parent"

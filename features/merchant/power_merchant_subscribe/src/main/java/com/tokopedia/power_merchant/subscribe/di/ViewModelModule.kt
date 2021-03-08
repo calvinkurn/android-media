@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.DeactivationViewModel
 import com.tokopedia.power_merchant.subscribe.view_old.viewmodel.PMCancellationQuestionnaireViewModel
 import com.tokopedia.power_merchant.subscribe.view_old.viewmodel.PmSubscribeViewModel
 import com.tokopedia.power_merchant.subscribe.view_old.viewmodel.PmTermsViewModel
@@ -36,4 +37,10 @@ abstract class ViewModelModule {
     @PowerMerchantSubscribeScope
     @ViewModelKey(PmSubscribeViewModel::class)
     internal abstract fun pmSubscribeViewModel(viewModel: PmSubscribeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @PowerMerchantSubscribeScope
+    @ViewModelKey(DeactivationViewModel::class)
+    internal abstract fun provideDeactivationViewModel(viewModel: DeactivationViewModel): ViewModel
 }
