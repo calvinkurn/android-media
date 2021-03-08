@@ -48,18 +48,22 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
                     when {
                         // Merge broadcast bubble
-                        chatDateTime.isBroadCast() && chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
+                        chatDateTime.isBroadCast() &&
+                                chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
                             val broadcast = mergeBroadcast(
                                     replyIndex,
                                     chatItemPojoByDate.replies,
                                     chatDateTime.blastId
                             )
-                            val broadcastUiModel = createBroadCastUiModel(chatDateTime, broadcast.first)
+                            val broadcastUiModel = createBroadCastUiModel(
+                                    chatDateTime, broadcast.first
+                            )
                             listChat.add(broadcastUiModel)
                             replyIndex += broadcast.second
                         }
                         // Merge product bubble
-                        hasAttachment(chatDateTime) && chatDateTime.isAlsoProductAttachment(nextItem) -> {
+                        hasAttachment(chatDateTime) &&
+                                chatDateTime.isAlsoProductAttachment(nextItem) -> {
                             val products = mergeProduct(
                                     replyIndex,
                                     chatItemPojoByDate.replies,
