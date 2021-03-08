@@ -28,7 +28,7 @@ interface DigitalCommonComponent {
 
     fun rechargeAnalytics(): RechargeAnalytics
 
-    @DigitalCommonQualifier
+    @DigitalAddToCartQualifier
     fun restRepository(): RestRepository
 
     fun digitalInterceptor(): DigitalInterceptor

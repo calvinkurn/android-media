@@ -3,4 +3,4 @@ package com.tokopedia.common_digital.common.di
 import javax.inject.Qualifier
 
 @Qualifier
-annotation class DigitalCommonQualifier
+annotation class DigitalAddToCartQualifier

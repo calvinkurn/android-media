@@ -59,8 +59,8 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    @DigitalCommonQualifier
-    fun provideRestRepository(@DigitalCommonQualifier interceptors: ArrayList<Interceptor>,
+    @DigitalAddToCartQualifier
+    fun provideRestRepository(@DigitalAddToCartQualifier interceptors: ArrayList<Interceptor>,
                               @ApplicationContext context: Context): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
@@ -69,12 +69,12 @@ class DigitalCommonModule {
 
     @DigitalCommonScope
     @Provides
-    fun provideDigitalAtcUseCase(@DigitalCommonQualifier restRepository: RestRepository)
+    fun provideDigitalAtcUseCase(@DigitalAddToCartQualifier restRepository: RestRepository)
             : DigitalAddToCartUseCase = DigitalAddToCartUseCase(restRepository)
 
     @Provides
     @DigitalCommonScope
-    @DigitalCommonQualifier
+    @DigitalAddToCartQualifier
     fun provideDigitalInterceptor(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(digitalInterceptor)

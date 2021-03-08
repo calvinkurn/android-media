@@ -6,7 +6,7 @@ import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
-import com.tokopedia.common_digital.common.di.DigitalCommonQualifier
+import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
@@ -45,7 +45,7 @@ interface VoucherGameComponent {
 
     fun inject(baseVoucherGameActivity: BaseVoucherGameActivity)
 
-    @DigitalCommonQualifier
+    @DigitalAddToCartQualifier
     fun restRepository(): RestRepository
 
     fun digitalInterceptor(): DigitalInterceptor

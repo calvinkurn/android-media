@@ -5,8 +5,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common_digital.common.RechargeAnalytics
+import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
-import com.tokopedia.common_digital.common.di.DigitalCommonQualifier
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
 import com.tokopedia.digital.newcart.domain.mapper.ICartMapperData
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,7 +33,7 @@ interface DigitalComponent {
 
     fun cartMapperData(): ICartMapperData
 
-    @DigitalCommonQualifier
+    @DigitalAddToCartQualifier
     fun restRepository(): RestRepository
 
 }

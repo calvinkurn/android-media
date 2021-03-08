@@ -17,14 +17,14 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalUrl
-import com.tokopedia.common_digital.common.di.DigitalCommonQualifier
+import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class DigitalAddToCartUseCase @Inject constructor(@DigitalCommonQualifier val repository: RestRepository)
+class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val repository: RestRepository)
     : RestRequestUseCase(repository) {
 
     private val url = DigitalUrl.CART
