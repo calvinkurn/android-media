@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -16,7 +17,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.extensions.isAnyShown
@@ -28,7 +28,7 @@ import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel.Product
+import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
@@ -77,12 +77,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val generalErrorMessage: String
         get() = getString(R.string.play_general_err_message)
-
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
-
-    private val channelId: String
-        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
@@ -154,6 +148,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 toasterType = Toaster.TYPE_NORMAL,
                 message = getString(R.string.play_voucher_code_copied)
         )
+        analytic.clickCopyVoucher(voucher)
     }
 
     /**
@@ -182,6 +177,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun setupObserve() {
         observeLoggedInInteractionEvent()
         observeProductSheetContent()
+        observePinned()
         observeVariantSheetContent()
         observeBottomInsetsState()
         observeBuyEvent()
@@ -311,17 +307,6 @@ class PlayBottomSheetFragment @Inject constructor(
         if (shouldFinish) activity?.finish()
     }
 
-    private fun sendTrackerImpression(playResult: PlayResult<PlayProductTagsUiModel.Complete>) {
-        if (playResult is PlayResult.Success) {
-            if (playResult.data.productList.isNotEmpty()
-                    && playResult.data.productList.first() is PlayProductUiModel.Product) {
-                with(analytic) { impressionProductList(
-                        playResult.data.productList as List<PlayProductUiModel.Product>
-                ) }
-            }
-        }
-    }
-
     private fun copyToClipboard(content: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                 .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
@@ -330,24 +315,27 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Observe
      */
+    private fun observePinned() {
+        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
+            if (it is PlayPinnedUiModel.PinnedProduct && it.productTags is PlayProductTagsUiModel.Complete) {
+                if (it.productTags.productList.isNotEmpty()) {
+                    productSheetView.setProductSheet(it.productTags)
+                } else {
+                    productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
+                }
+            }
+        })
+    }
+
     private fun observeProductSheetContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is PlayResult.Loading -> if (it.showPlaceholder) productSheetView.showPlaceholder()
-                is PlayResult.Success -> {
-                    if (it.data.productList.isNotEmpty()) {
-                        productSheetView.setProductSheet(it.data)
-                    } else {
-                        productSheetView.showEmpty(it.data.basicInfo.partnerId)
-                    }
-                }
                 is PlayResult.Failure -> productSheetView.showError(
                         isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
                         onError = it.onRetry
                 )
             }
-
-            sendTrackerImpression(it)
         })
     }
 

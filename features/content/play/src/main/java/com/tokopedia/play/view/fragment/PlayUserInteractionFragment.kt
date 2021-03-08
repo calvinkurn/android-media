@@ -380,10 +380,12 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
+        analytic.clickFeaturedProduct(product, position)
     }
 
     override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
         openProductSheet()
+        analytic.clickFeaturedProductSeeMore()
     }
 
     /**
@@ -394,6 +396,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         copyToClipboard(content = voucher.code)
         doShowToaster(message = getString(R.string.play_voucher_code_copied))
+        analytic.clickHighlightedVoucher(voucher)
     }
     //endregion
 
@@ -906,7 +909,10 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> shouldComposeChat()
-            InteractionEvent.ClickPinnedProduct -> openProductSheet()
+            InteractionEvent.ClickPinnedProduct -> {
+                openProductSheet()
+                analytic.clickPinnedProduct()
+            }
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
             is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
@@ -962,8 +968,8 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProductSheet() {
-        analytic.clickPinnedProduct()
         playViewModel.onShowProductSheet(productSheetMaxHeight)
+        sendTrackerImpressionBottomSheetProduct()
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
@@ -1053,6 +1059,33 @@ class PlayUserInteractionFragment @Inject constructor(
                 type = toasterType).show()
     }
 
+    private fun doAutoSwipe() {
+        scope.launch {
+            delay(AUTO_SWIPE_DELAY)
+            playNavigation.navigateToNextPage()
+        }
+    }
+
+    private fun sendTrackerImpressionPinnedProduct(productTags: PlayProductTagsUiModel.Complete) {
+        val highlightedVouchers = productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
+        val featuredProducts = productTags.productList.filterIsInstance<PlayProductUiModel.Product>()
+        analytic.impressionHighlightedVoucher(highlightedVouchers)
+        analytic.impressionFeaturedProduct(featuredProducts, productTags.basicInfo.maxFeaturedProducts)
+    }
+
+    private fun sendTrackerImpressionBottomSheetProduct() {
+        val playResult = playViewModel.observableProductSheetContent.value
+        if (playResult is PlayResult.Success) {
+            val productTag = playResult.data
+            if (productTag.productList.first() is PlayProductUiModel.Product) {
+                with(analytic) { impressionProductList(productTag.productList.filterIsInstance<PlayProductUiModel.Product>()) }
+            }
+            if (productTag.voucherList.isNotEmpty()) {
+                analytic.impressionPrivateVoucher(productTag.voucherList.filterIsInstance<MerchantVoucherUiModel>())
+            }
+        }
+    }
+
     //region OnStateChanged
     private fun playButtonViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
@@ -1064,7 +1097,10 @@ class PlayUserInteractionFragment @Inject constructor(
         }
         when (state) {
             PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
-            PlayViewerVideoState.End -> playButtonView.showRepeatButton()
+            PlayViewerVideoState.End -> {
+                if (playViewModel.bottomInsets.isAnyShown) playButtonView.showRepeatButton()
+                else doAutoSwipe()
+            }
             else -> playButtonView.hide()
         }
     }
@@ -1133,7 +1169,8 @@ class PlayUserInteractionFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (isFreezeOrBanned) {
-            pinnedView?.hide()
+            pinnedVoucherView?.hide()
+            productFeaturedView?.hide()
             return
         }
 
@@ -1142,13 +1179,14 @@ class PlayUserInteractionFragment @Inject constructor(
                 if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
                     pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
                     productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
+                    sendTrackerImpressionPinnedProduct(pinnedModel.productTags)
                 }
 
                 if (!bottomInsets.isAnyShown) {
-                    pinnedVoucherView?.show()
-                    productFeaturedView?.show()
+                    pinnedVoucherView?.showIfNotEmpty()
+                    productFeaturedView?.showIfNotEmpty()
                 } else {
-                    pinnedVoucherView?.show()
+                    pinnedVoucherView?.hide()
                     productFeaturedView?.hide()
                 }
             } else -> {
@@ -1216,7 +1254,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
-            quickReplyView?.show()
+            quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
     }
 
@@ -1261,5 +1299,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         private const val FADE_DURATION = 200L
         private const val FADE_TRANSITION_DELAY = 3000L
+
+        private const val AUTO_SWIPE_DELAY = 500L
     }
 }

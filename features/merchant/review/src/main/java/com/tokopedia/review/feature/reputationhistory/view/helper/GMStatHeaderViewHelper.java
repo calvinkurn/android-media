@@ -15,6 +15,7 @@ import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
+import com.tokopedia.kotlin.extensions.view.ImageViewExtKt;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.reputationhistory.util.DateHeaderFormatter;
 import com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationDatePickerActivity;
@@ -35,6 +36,7 @@ import java.util.Locale;
 
 public class GMStatHeaderViewHelper {
 
+    public static final String CALENDAR_IMAGE_URL = "https://images.tokopedia.net/img/android/review/review_calendar.png";
     public static final int MOVE_TO_SET_DATE = 1;
     public static final String YYYY_M_MDD = "yyyyMMdd";
     private static final int MAX_DATE_RANGE = 60;
@@ -113,7 +115,7 @@ public class GMStatHeaderViewHelper {
     }
 
     protected void setImageIcon() {
-        calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
+        ImageViewExtKt.loadImage(calendarIcon, CALENDAR_IMAGE_URL, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
     }
 
     public void stopLoading() {
