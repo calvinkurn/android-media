@@ -98,7 +98,7 @@ class CreditCardViewModel @Inject constructor(
 
     fun getRedirectionUrl(): String {
         if (creditCardPdpMetaInfoLiveData.value is Success)
-            return (creditCardPdpMetaInfoLiveData.value as Success).data.ctaRedirectionAppLink ?: ""
+            return (creditCardPdpMetaInfoLiveData.value as Success).data.ctaRedirectionUrl ?: ""
         return ""
     }
 
