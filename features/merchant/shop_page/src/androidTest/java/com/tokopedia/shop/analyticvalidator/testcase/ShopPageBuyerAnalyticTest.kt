@@ -5,7 +5,6 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -26,7 +25,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.util.EspressoIdlingResource
 import com.tokopedia.shop.mock.ShopPageAnalyticValidatorHomeTabMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
@@ -80,7 +78,6 @@ class ShopPageBuyerAnalyticTest {
             putExtra(SHOP_ID, SAMPLE_SHOP_ID)
         }
         activityRule.launchActivity(intent)
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.idlingResource)
     }
 
     @Test
@@ -193,6 +190,12 @@ class ShopPageBuyerAnalyticTest {
     }
 
     private fun testHeader() {
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withId(R.id.searchBarText)
+        )))
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withId(R.id.tabLayout)
+        )))
         testClickSearchBar()
         testClickTabs()
     }

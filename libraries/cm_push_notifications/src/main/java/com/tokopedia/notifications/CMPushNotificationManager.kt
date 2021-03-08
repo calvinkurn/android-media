@@ -9,14 +9,12 @@ import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notification.common.utils.NotificationValidationManager
-import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
-import com.tokopedia.notifications.common.CMRemoteConfigUtils
-import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
-import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.common.PayloadConverter.advanceTargetNotification
 import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle
 import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -191,6 +189,11 @@ class CMPushNotificationManager : CoroutineScope {
     }
 
     private fun validateAndRenderNotification(notification: Bundle) {
+
+        val baseNotificationModel = PayloadConverter.convertToBaseModel(notification)
+        if (baseNotificationModel.notificationMode != NotificationMode.OFFLINE) {
+            IrisAnalyticsEvents.sendPushEvent(applicationContext, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel)
+        }
         // aidlApiBundle : the data comes from AIDL service (including userSession data from another app)
         aidlApiBundle?.let { aidlBundle ->
 

@@ -102,7 +102,7 @@ class ApplinkLogger private constructor(private val context: Context) : ApplinkL
         fun getInstance(context: Context): ApplinkLoggerInterface {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {
-                    instance = ApplinkLogger(context)
+                    instance = ApplinkLogger(context.applicationContext)
                 } else {
                     instance = emptyInstance()
                 }
