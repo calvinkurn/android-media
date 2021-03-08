@@ -4,7 +4,9 @@ import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
+import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordV2Response
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
+import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2UseCase
 import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordResponseModel
 import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordV2ResponseModel
 import com.tokopedia.managepassword.changepassword.domain.usecase.ChangePasswordUseCase
@@ -51,6 +53,12 @@ class ManagePasswordUseCaseModule {
     @Provides
     fun provideAddPasswordUseCase(@ManagePasswordContext context: Context,useCase: GraphqlUseCase<AddPasswordResponseModel>): AddPasswordUseCase {
         return AddPasswordUseCase(context, useCase)
+    }
+
+    @ManagePasswordScope
+    @Provides
+    fun provideAddPasswordV2UseCase(useCase: GraphqlUseCase<AddPasswordV2Response>): AddPasswordV2UseCase {
+        return AddPasswordV2UseCase(useCase)
     }
 
     @Provides
