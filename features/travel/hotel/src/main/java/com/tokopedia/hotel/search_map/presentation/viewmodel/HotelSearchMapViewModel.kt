@@ -65,6 +65,10 @@ class HotelSearchMapViewModel @Inject constructor(
     val radius: LiveData<Result<Double>>
         get() = mutableRadius
 
+    private val mutableScreenMidPoint = MutableLiveData<Result<LatLng>>()
+    val screenMidPoint: LiveData<Result<LatLng>>
+        get() = mutableScreenMidPoint
+
     private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
     val tickerData: LiveData<Result<TravelTickerModel>>
         get() = mutableTickerData
@@ -199,9 +203,11 @@ class HotelSearchMapViewModel @Inject constructor(
                 permissionCheckerHelper,
                 fusedLocationProviderClient,
                 activity.applicationContext)
-        locationDetectorHelper.getLocation(onGetLocation(), activity,
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                activity.getString(R.string.hotel_destination_need_permission))
+        launch(dispatcher.ui()) {
+            locationDetectorHelper.getLocation(onGetLocation(), activity,
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    activity.getString(R.string.hotel_destination_need_permission))
+        }
     }
 
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
@@ -211,30 +217,31 @@ class HotelSearchMapViewModel @Inject constructor(
         }
     }
 
-    /**Temp variable mutableLatLong will change it to midPoint afterwards*/
     fun getMidPoint(latLong: LatLng){
-        if (latLong.latitude == 0.0 && latLong.longitude == 0.0) mutableLatLong.postValue(Fail(Throwable()))
-        else mutableLatLong.postValue(Success(Pair(latLong.longitude, latLong.longitude)))
+        if (latLong.latitude == 0.0 && latLong.longitude == 0.0) mutableScreenMidPoint.postValue(Fail(Throwable()))
+        else mutableScreenMidPoint.postValue(Success(latLong))
     }
 
     fun getVisibleRadius(googleMap: GoogleMap){
-        try {
-            val visibleRegion: VisibleRegion = googleMap.projection.visibleRegion
-            val diagonalDistance = FloatArray(1)
+        launch (dispatcher.io()){
+            try {
+                val visibleRegion: VisibleRegion = googleMap.projection.visibleRegion
+                val diagonalDistance = FloatArray(1)
 
-            val farLeft = visibleRegion.farLeft
-            val nearRight = visibleRegion.nearRight
+                val farLeft = visibleRegion.farLeft
+                val nearRight = visibleRegion.nearRight
 
-            Location.distanceBetween(
-                    farLeft.latitude,
-                    farLeft.longitude,
-                    nearRight.latitude,
-                    nearRight.longitude,
-                    diagonalDistance
-            )
-            mutableRadius.postValue(Success((diagonalDistance[0] / 2).toDouble()))
-        }catch (error: Throwable){
-            mutableRadius.postValue(Fail(error))
+                Location.distanceBetween(
+                        farLeft.latitude,
+                        farLeft.longitude,
+                        nearRight.latitude,
+                        nearRight.longitude,
+                        diagonalDistance
+                )
+                mutableRadius.postValue(Success((diagonalDistance[0] / 2).toDouble()))
+            } catch (error: Throwable) {
+                mutableRadius.postValue(Fail(error))
+            }
         }
     }
 

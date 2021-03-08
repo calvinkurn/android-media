@@ -36,6 +36,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -60,11 +61,17 @@ import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivi
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setHeadingText
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
@@ -140,8 +147,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    showCollapsingHeader()
                     onSuccessGetResult(it.data)
                     changeMarkerState(cardListPosition)
+                }
+                is Fail -> {
+                    hideCollapsingHeader()
+                    animateCollapsingToolbar(COLLAPSING_FULL_SCREEN)
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -150,8 +163,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             when (it) {
                 is Success -> {
                     hotelSearchModel.apply {
-                        searchType = HotelTypeEnum.COORDINATE.value
-                        searchId = ""
                         long = it.data.first.toFloat()
                         lat = it.data.second.toFloat()
                     }
@@ -164,16 +175,49 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.radius.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    hideFindNearHereView()
+                    hotelSearchModel.apply {
+                        searchType = HotelTypeEnum.COORDINATE.value
+                        searchId = ""
+                    }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
                     loadInitialData()
+                }
+                is Fail -> {
+                    Toaster.make(requireView(), it.throwable.message.toString(), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                }
+            }
+        })
+
+        hotelSearchMapViewModel.screenMidPoint.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    /** Should have trigger the LatLng here
+                    hotelSearchModel.apply {
+                        long = it.data.longitude.toFloat()
+                        lat = it.data.latitude.toFloat()
+                    }
+                    */
                 }
             }
         })
     }
 
     override fun loadInitialData() {
-        super.loadInitialData()
-        showLoadingCardListMap()
+        isLoadingInitialData = true
+        adapter.clearAllElements()
+        adapterCardList.clearAllElements()
+        showLoading()
+        loadData(defaultInitialPage)
+    }
+
+    override fun showLoading() {
+        adapter.removeErrorNetwork()
+        adapter.setLoadingModel(loadingModel)
+        adapter.showLoading()
+        adapterCardList.setLoadingModel(loadingModel)
+        adapterCardList.showLoading()
+        hideSnackBarRetry()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -199,9 +243,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun onCameraIdle() {
-        Handler().postDelayed({
-            hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
-        }, DELAY_BUTTON_RADIUS)
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(DELAY_BUTTON_RADIUS)
+            showFindNearHereView()
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -382,9 +427,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
 
-            /**Will include this after radius from BE is ready
             googleMap.setOnCameraIdleListener(this)
-             */
 
             googleMap.setOnMapClickListener {
                 // do nothing
@@ -419,6 +462,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         wrapper.addView(textView)
         wrapper.setOnClickListener {
             showCardListView()
+            hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
             hotelSearchMapViewModel.getVisibleRadius(googleMap)
         }
 
@@ -473,6 +517,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun initGetMyLocation() {
         ivGetLocationHotelSearchMap.setOnClickListener {
             hideCardListView()
+            showFindNearHereView()
             getCurrentLocation()
         }
     }
@@ -540,11 +585,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         showCoachMark()
-    }
-
-    private fun showLoadingCardListMap() {
-        adapterCardList.setLoadingModel(loadingModel)
-        adapterCardList.showLoading()
     }
 
     private fun hideLoadingCardListMap() {
@@ -649,6 +689,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
+    private fun showCollapsingHeader(){
+        tvHotelSearchListTitle.visible()
+        topHotelSearchMapListKnob.visible()
+    }
+
+    private fun hideCollapsingHeader(){
+        tvHotelSearchListTitle.gone()
+        topHotelSearchMapListKnob.gone()
+    }
+
     private fun showCardListView() {
         rvHorizontalPropertiesHotelSearchMap.visible()
     }
@@ -689,6 +739,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
+    override fun onDestroyView() {
+        googleMap.clear()
+        super.onDestroyView()
+    }
+
     companion object {
         private const val KEY_SEARCH_MAP_COACHMARK = "key_hotel_search_map_coachmark"
         private const val COACHMARK_LIST_STEP_POSITION = 1
@@ -700,6 +755,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val COLLAPSING_HALF_OF_SCREEN = 1.0 / 2.0
         private const val COLLAPSING_ONE_THREE_OF_SCREEN = 1.0 / 3.0
         private const val COLLAPSING_ONE_TENTH_OF_SCREEN = 1.0 / 10.0
+        private const val COLLAPSING_FULL_SCREEN = 1.0
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
 
