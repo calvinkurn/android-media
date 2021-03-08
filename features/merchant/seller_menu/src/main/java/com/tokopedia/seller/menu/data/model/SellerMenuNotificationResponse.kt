@@ -13,16 +13,16 @@ data class SellerMenuNotificationResponse(
         @SerializedName("notifcenter_total_unread")
         val notifCenterTotalUnread: NotifCenterTotalUnread,
         @SerializedName("inbox")
-        val inbox: Inbox,
-        @SerializedName("resolutionAs")
-        val resolution: Resolution
+        val inbox: Inbox
     )
 
     data class SellerOrderStatus(
         @SerializedName("newOrder")
         val newOrder: Int,
         @SerializedName("readyToShip")
-        val readyToShip: Int
+        val readyToShip: Int,
+        @SerializedName("inResolution")
+        val inResolution: Int
     )
 
     data class NotifCenterTotalUnread(
@@ -33,10 +33,5 @@ data class SellerMenuNotificationResponse(
     data class Inbox(
         @SerializedName("talk")
         val talk: Int
-    )
-
-    data class Resolution(
-        @SerializedName("resolution_as_seller")
-        val sellerResolutionCount: Int
     )
 }

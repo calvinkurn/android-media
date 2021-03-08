@@ -73,9 +73,9 @@ class AccountHeaderMapper (
 
     private fun getTotalOrderCount(notificationPojo: ShopData.NotificationPojo?): Int {
         return notificationPojo?.let {
-            it.resolution.sellerResolutionCount
-                    .plus(it.sellerOrderStatus.newOrderCount)
+            it.sellerOrderStatus.newOrderCount
                     .plus(it.sellerOrderStatus.readyToShipOrderCount)
+                    .plus(it.sellerOrderStatus.inResolution)
         }.orZero()
     }
 

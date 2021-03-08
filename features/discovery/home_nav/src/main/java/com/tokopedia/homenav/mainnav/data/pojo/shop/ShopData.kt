@@ -22,20 +22,15 @@ data class ShopData(
 
     data class NotificationPojo(
             @SerializedName("sellerOrderStatus")
-            val sellerOrderStatus: SellerOrderStatus,
-            @SerializedName("resolutionAs")
-            val resolution: Resolution
+            val sellerOrderStatus: SellerOrderStatus
     ) {
         data class SellerOrderStatus(
                 @SerializedName("newOrder")
                 val newOrderCount: Int,
                 @SerializedName("readyToShip")
-                val readyToShipOrderCount: Int
-        )
-
-        data class Resolution(
-                @SerializedName("resolution_as_seller")
-                val sellerResolutionCount: Int
+                val readyToShipOrderCount: Int,
+                @SerializedName("inResolution")
+                val inResolution: Int
         )
     }
 }

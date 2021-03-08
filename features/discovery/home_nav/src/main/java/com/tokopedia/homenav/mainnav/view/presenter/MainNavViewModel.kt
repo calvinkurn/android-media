@@ -418,9 +418,9 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun getTotalOrderCount(notificationPojo: ShopData.NotificationPojo): Int {
-        return notificationPojo.resolution.sellerResolutionCount
-                .plus(notificationPojo.sellerOrderStatus.newOrderCount)
+        return notificationPojo.sellerOrderStatus.newOrderCount
                 .plus(notificationPojo.sellerOrderStatus.readyToShipOrderCount)
+                .plus(notificationPojo.sellerOrderStatus.inResolution)
     }
 
     fun refreshUserShopData() {

@@ -29,9 +29,7 @@ class GetShopInfoUseCase @Inject constructor(
                     sellerOrderStatus {
                         newOrder
                         readyToShip
-                    }
-                    resolutionAs {
-                        resolution_as_seller
+                        inResolution
                     }
                  }
             }
