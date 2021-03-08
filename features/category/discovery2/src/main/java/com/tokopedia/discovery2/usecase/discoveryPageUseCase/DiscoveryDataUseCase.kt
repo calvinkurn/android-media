@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.usecase
+package com.tokopedia.discovery2.usecase.discoveryPageUseCase
 
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoveryPageData

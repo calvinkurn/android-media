@@ -229,6 +229,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
@@ -250,7 +251,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     fun reSync() {
         fetchDiscoveryPageData()
-
     }
 
     private fun bindStickyViewHolder() {
@@ -594,6 +594,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
+                discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                 discoveryBaseViewModel?.loggedInCallback()
             }
             MOBILE_VERIFICATION_REQUEST_CODE -> {
