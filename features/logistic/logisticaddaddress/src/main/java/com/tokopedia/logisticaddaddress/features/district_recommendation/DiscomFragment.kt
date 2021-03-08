@@ -19,6 +19,7 @@ import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), DiscomContract.View {
@@ -26,8 +27,7 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
     private var mToken: Token? = null
     private var analytics: ActionListener? = null
 
-    private var _binding: FragmentDistrictRecommendationBinding? = null
-    private val binding get() = _binding!!
+    private var binding by autoCleared<FragmentDistrictRecommendationBinding>()
 
     @Inject
     lateinit var addressMapper: AddressMapper
@@ -60,7 +60,7 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentDistrictRecommendationBinding.inflate(inflater, container, false)
+        binding = FragmentDistrictRecommendationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -87,11 +87,6 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
     override fun onDetach() {
         analytics = null
         super.onDetach()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onDestroy() {
