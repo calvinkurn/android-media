@@ -1603,14 +1603,19 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    private fun List<TokopointsDrawer>.getDrawerListByType(type: String) : TokopointsDrawer? {
+        return this.find { it.type == type }
+    }
+
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
         getTokopointJob = if (navRollanceType.equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)) {
             launchCatchError(coroutineContext, block = {
                 val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
                 updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
-                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
+                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
+                                ?: data.tokopointsDrawerList.drawerList.getDrawerListByType("Coupon"),
+                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("BBO"),
                         isTokoPointDataError = false
                 )
             }){
