@@ -1003,6 +1003,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
     }
 
+    override fun onStop() {
+        super.onStop()
+        chooseAddressWidgetInitialized = false
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (::playWidgetCoordinator.isInitialized) {
