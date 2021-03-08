@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "order_id": 627813915
+  },
+  "data": {
+    "type": "scrooge_parameter",
+    "id": "1626277097",
+    "attributes": {
+      "redirect_url": "https://pay.tokopedia.com/v2/payment",
+      "callback_url_success": "https://pulsa.tokopedia.com/checkout/back-to-app",
+      "callback_url_failed": "https://pulsa.tokopedia.com/checkout",
+      "thanks_url": "",
+      "query_string": "Items\u003d%7B0+578+-+Rp+20.000+%286032984072952405%29+1+22500%7D\u0026SubscriptionToken\u003d\u0026SubscriptionUUID\u003d\u0026ValidationType\u003d\u0026additional_fee\u003d\u0026amount\u003d22500\u0026currency\u003dIDR\u0026customer_email\u003dhefdy.elprama%2Bh5%40tokopedia.com\u0026customer_msisdn\u003d6281908878591\u0026customer_name\u003dHefdy+Wiguna\u0026expired_on\u003d\u0026fee\u003d\u0026items%5Bname%5D\u003d578+-+Rp+20.000+%286032984072952405%29\u0026items%5Bprice%5D\u003d22500\u0026items%5Bquantity%5D\u003d1\u0026language\u003did-ID\u0026merchant_code\u003dtokopediapulsa\u0026nid\u003d\u0026payment_identifier\u003d\u0026payment_metadata\u003d%7B%22user_data%22%3A%7B%22device_id%22%3A%22cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR%22%2C%22device_version%22%3A%223.90%22%2C%22device_type%22%3A%22android%22%7D%2C%22order_data%22%3A%7B%22order_data%22%3A%5B%7B%22order_id%22%3A%22627813915%22%2C%22order_code%22%3A%22IVR%2F20210203%2FXXI%2FII%2F627853931%22%2C%22product_code%22%3A%22emoney%22%2C%22invoice_url%22%3A%22https%3A%2F%2Fpulsa.tokopedia.com%2Finvoice%2F%3Fpdf%3DInvoice-Recharge-17211378-2069-20210203150926-do2S5s8UcmZa.pdf%5Cu0026id%3D627813915%22%2C%22product_data%22%3A%5B%7B%22operator_id%22%3A%22578%22%2C%22product_id%22%3A%222069%22%2C%22product_name%22%3A%22Mandiri+E-Money+Rp+20.000%22%2C%22product_code%22%3A%22man20k%22%2C%22price%22%3A22500%2C%22quantity%22%3A1%2C%22campaign_id%22%3A%22%22%2C%22client_number%22%3A%226032984072952405%22%2C%22identity_number%22%3A%22%22%2C%22is_product_pre_order%22%3Afalse%2C%22product_category%22%3A%7B%22id%22%3A34%2C%22name%22%3A%22Uang+Elektronik%22%2C%22identifier%22%3A%22Top+Up+Uang+Elektronik+melalui+Tokopedia%22%2C%22parent%22%3A0%7D%7D%5D%2C%22expire_time%22%3A%220001-01-01T00%3A00%3A00Z%22%7D%5D%7D%2C%22promo_data%22%3A%7B%22voucher_code%22%3A%22%22%2C%22promo_code_id%22%3A0%2C%22payment_description%22%3A%22%22%2C%22subsidized_amount%22%3A0%2C%22total_discount%22%3A0%2C%22total_cashback%22%3A0%2C%22is_stacking%22%3Afalse%7D%2C%22config_data%22%3A%7B%22hide_header_flag%22%3Afalse%2C%22device%22%3A0%2C%22is_verified_msisdn%22%3Afalse%2C%22va_code%22%3A%22%22%2C%22thanks_data%22%3A%7B%22custom_order_url%22%3A%22tokopedia%3A%2F%2Fdigital%2Fsmartcard%3Fidem_potency_key%3D1%22%2C%22custom_order_url_app%22%3A%22tokopedia%3A%2F%2Fdigital%2Fsmartcard%3Fidem_potency_key%3D1%22%2C%22custom_home_url%22%3A%22https%3A%2F%2Fm.tokopedia.com%2Ftop-up-tagihan%22%2C%22custom_home_url_app%22%3A%22tokopedia%3A%2F%2Frecharge%2Fhome%3Fplatform_id%3D31%22%2C%22custom_title%22%3A%22Selamat%2C+pembayaran+Mandiri+E-Money+Rp+20.000+berhasil%21%22%2C%22custom_subtitle%22%3A%22Kamu+bisa+cek+status+transaksimu+di+Detail+Transaksi%2C+ya.%22%2C%22custom_title_order_button%22%3A%22Update+Saldo%22%2C%22custom_wtv_text%22%3A%22Transaksimu+baru+dilanjutkan+setelah+pembayaran+terverifikasi.%22%2C%22custom_title_home_button%22%3A%22%22%2C%22tracking_data%22%3A%22%5B%7B%5C%22event%5C%22%3A+%5C%22transaction%5C%22%2C%5C%22eventCategory%5C%22%3A+%5C%22digital+-+thanks%5C%22%2C%5C%22eventAction%5C%22%3A+%5C%22view+purchase+attempt%5C%22%2C%5C%22eventLabel%5C%22%3A+%5C%22Uang+Elektronik+-+Mandiri+E-Money+-+Waiting+Payment%5C%22%2C%5C%22currentSite%5C%22%3A+%5C%22tokopediadigital%5C%22%2C%5C%22environment%5C%22%3A+%5C%22android%5C%22%2C%5C%22loginStatus%5C%22%3A+%5C%221%5C%22%2C%5C%22userId%5C%22%3A+%5C%2217211378%5C%22%2C%5C%22siteName%5C%22%3A+%5C%22Recharge+Site%5C%22%2C%5C%22businessUnit%5C%22%3A+%5C%22payment%5C%22%2C%5C%22payment_id%5C%22%3A+%5C%221626277097%5C%22%2C%5C%22ecommerce%5C%22%3A+%7B%5C%22currencyCode%5C%22%3A+%5C%22IDR%5C%22%2C%5C%22purchase%5C%22%3A+%7B%5C%22actionField%5C%22%3A+%7B%5C%22id%5C%22%3A+%5C%22627813915%5C%22%2C%5C%22revenue%5C%22%3A+%5C%2222500.00%5C%22%2C%5C%22tax%5C%22%3A+%5C%22%5C%22%2C%5C%22coupon%5C%22%3A+%5C%22%5C%22%7D%2C%5C%22products%5C%22%3A+%5B%7B%5C%22name%5C%22%3A+%5C%22Mandiri+E-Money+Rp+20.000%5C%22%2C%5C%22id%5C%22%3A+%5C%222069%5C%22%2C%5C%22price%5C%22%3A+%5C%2222500.00%5C%22%2C%5C%22quantity%5C%22%3A+%5C%221%5C%22%7D%5D%7D%7D%2C%5C%22categoryId%5C%22%3A+%5C%2234%5C%22%2C%5C%22categoryName%5C%22%3A+%5C%22Uang+Elektronik%5C%22%2C%5C%22operator%5C%22%3A+%5C%22Mandiri+E-Money%5C%22%7D%5D%22%2C%22thank_you_page_token%22%3A%22hv6tGJqtJhBLiUaHlHK6m0YuZ7ltfF-r-mI5umgE2lV5w-2qXFm2AcCTktwAUyf2i_nenLHk-XUuWf4L6MTfqA%22%7D%7D%7D\u0026pid\u003d147569448895550317119\u0026profile_code\u003dPULSA_ETOLL\u0026signature\u003deec655483e7fe0ff4b5f295a274093524b384ff0\u0026state\u003d0\u0026transaction_code\u003d\u0026transaction_date\u003d2021-02-03T08%3A09%3A26Z\u0026transaction_id\u003d1626277097\u0026user_defined_value\u003d%7B%22user_id%22%3A17211378%2C%22voucher_code%22%3A%22%22%2C%22device%22%3A3%2C%22product_id%22%3A2069%2C%22price%22%3A22500%2C%22client_number%22%3A%226032984072952405%22%2C%22payment_description%22%3A%22%22%2C%22promo_code_id%22%3A0%2C%22discount_amount%22%3A0%2C%22cashback_amount%22%3A0%2C%22cashback_voucher_amount%22%3A0%2C%22cashback_top_cash_amount%22%3A0%2C%22va_code%22%3A%22081908878591%22%2C%22fingerprint_id%22%3A%22%22%2C%22hide_header_flag%22%3Atrue%2C%22category_code%22%3A%2234%22%2C%22product_code%22%3A%22man20k%22%2C%22is_mitra%22%3Afalse%2C%22order_type%22%3A8%2C%22coda_amount%22%3A0%2C%22xshop_flag%22%3A0%2C%22api_key%22%3A%22%22%7D",
+      "parameter": {
+        "merchant_code": "tokopediapulsa",
+        "profile_code": "PULSA_ETOLL",
+        "transaction_id": "1626277097",
+        "transaction_code": "",
+        "payment_identifier": "",
+        "transaction_date": "2021-02-03T08:09:26Z",
+        "customer_name": "Hefdy Wiguna",
+        "customer_email": "hefdy.elprama+h5@tokopedia.com",
+        "customer_msisdn": "6281908878591",
+        "amount": "22500",
+        "currency": "IDR",
+        "items": [
+          {
+            "id": 0,
+            "name": "578 - Rp 20.000 (6032984072952405)",
+            "quantity": 1,
+            "price": 22500
+          }
+        ],
+        "items[name]": [
+          "578 - Rp 20.000 (6032984072952405)"
+        ],
+        "items[quantity]": [
+          1
+        ],
+        "items[price]": [
+          22500
+        ],
+        "signature": "eec655483e7fe0ff4b5f295a274093524b384ff0",
+        "language": "id-ID",
+        "user_defined_value": "{\"user_id\":17211378,\"voucher_code\":\"\",\"device\":3,\"product_id\":2069,\"price\":22500,\"client_number\":\"6032984072952405\",\"payment_description\":\"\",\"promo_code_id\":0,\"discount_amount\":0,\"cashback_amount\":0,\"cashback_voucher_amount\":0,\"cashback_top_cash_amount\":0,\"va_code\":\"081908878591\",\"fingerprint_id\":\"\",\"hide_header_flag\":true,\"category_code\":\"34\",\"product_code\":\"man20k\",\"is_mitra\":false,\"order_type\":8,\"coda_amount\":0,\"xshop_flag\":0,\"api_key\":\"\"}",
+        "nid": "",
+        "state": 0,
+        "fee": "",
+        "additional_fee": "",
+        "payments[amount]": null,
+        "payments[name]": null,
+        "payments[info]": null,
+        "pid": "147569448895550317119",
+        "expired_on": "",
+        "payment_metadata": "{\"user_data\":{\"device_id\":\"cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR\",\"device_version\":\"3.90\",\"device_type\":\"android\"},\"order_data\":{\"order_data\":[{\"order_id\":\"627813915\",\"order_code\":\"IVR/20210203/XXI/II/627853931\",\"product_code\":\"emoney\",\"invoice_url\":\"https://pulsa.tokopedia.com/invoice/?pdf\u003dInvoice-Recharge-17211378-2069-20210203150926-do2S5s8UcmZa.pdf\\u0026id\u003d627813915\",\"product_data\":[{\"operator_id\":\"578\",\"product_id\":\"2069\",\"product_name\":\"Mandiri E-Money Rp 20.000\",\"product_code\":\"man20k\",\"price\":22500,\"quantity\":1,\"campaign_id\":\"\",\"client_number\":\"6032984072952405\",\"identity_number\":\"\",\"is_product_pre_order\":false,\"product_category\":{\"id\":34,\"name\":\"Uang Elektronik\",\"identifier\":\"Top Up Uang Elektronik melalui Tokopedia\",\"parent\":0}}],\"expire_time\":\"0001-01-01T00:00:00Z\"}]},\"promo_data\":{\"voucher_code\":\"\",\"promo_code_id\":0,\"payment_description\":\"\",\"subsidized_amount\":0,\"total_discount\":0,\"total_cashback\":0,\"is_stacking\":false},\"config_data\":{\"hide_header_flag\":false,\"device\":0,\"is_verified_msisdn\":false,\"va_code\":\"\",\"thanks_data\":{\"custom_order_url\":\"tokopedia://digital/smartcard?idem_potency_key\u003d1\",\"custom_order_url_app\":\"tokopedia://digital/smartcard?idem_potency_key\u003d1\",\"custom_home_url\":\"https://m.tokopedia.com/top-up-tagihan\",\"custom_home_url_app\":\"tokopedia://recharge/home?platform_id\u003d31\",\"custom_title\":\"Selamat, pembayaran Mandiri E-Money Rp 20.000 berhasil!\",\"custom_subtitle\":\"Kamu bisa cek status transaksimu di Detail Transaksi, ya.\",\"custom_title_order_button\":\"Update Saldo\",\"custom_wtv_text\":\"Transaksimu baru dilanjutkan setelah pembayaran terverifikasi.\",\"custom_title_home_button\":\"\",\"tracking_data\":\"[{\\\"event\\\": \\\"transaction\\\",\\\"eventCategory\\\": \\\"digital - thanks\\\",\\\"eventAction\\\": \\\"view purchase attempt\\\",\\\"eventLabel\\\": \\\"Uang Elektronik - Mandiri E-Money - Waiting Payment\\\",\\\"currentSite\\\": \\\"tokopediadigital\\\",\\\"environment\\\": \\\"android\\\",\\\"loginStatus\\\": \\\"1\\\",\\\"userId\\\": \\\"17211378\\\",\\\"siteName\\\": \\\"Recharge Site\\\",\\\"businessUnit\\\": \\\"payment\\\",\\\"payment_id\\\": \\\"1626277097\\\",\\\"ecommerce\\\": {\\\"currencyCode\\\": \\\"IDR\\\",\\\"purchase\\\": {\\\"actionField\\\": {\\\"id\\\": \\\"627813915\\\",\\\"revenue\\\": \\\"22500.00\\\",\\\"tax\\\": \\\"\\\",\\\"coupon\\\": \\\"\\\"},\\\"products\\\": [{\\\"name\\\": \\\"Mandiri E-Money Rp 20.000\\\",\\\"id\\\": \\\"2069\\\",\\\"price\\\": \\\"22500.00\\\",\\\"quantity\\\": \\\"1\\\"}]}},\\\"categoryId\\\": \\\"34\\\",\\\"categoryName\\\": \\\"Uang Elektronik\\\",\\\"operator\\\": \\\"Mandiri E-Money\\\"}]\",\"thank_you_page_token\":\"hv6tGJqtJhBLiUaHlHK6m0YuZ7ltfF-r-mI5umgE2lV5w-2qXFm2AcCTktwAUyf2i_nenLHk-XUuWf4L6MTfqA\"}}}",
+        "validation_type": "",
+        "subscription_id": "",
+        "subscription_token": ""
+      }
+    }
+  }
+}
+
+

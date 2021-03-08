@@ -3,13 +3,8 @@ package com.tokopedia.tokopoints.view.cataloglisting
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokopoints.view.model.CatalogStatusItem
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
-import com.tokopedia.tokopoints.view.model.RedeemCouponEntity
-import com.tokopedia.tokopoints.view.model.ValidateCouponEntity
-import com.tokopedia.tokopoints.view.util.Resources
-import com.tokopedia.tokopoints.view.util.Success
-import com.tokopedia.tokopoints.view.util.ValidationError
+import com.tokopedia.tokopoints.view.model.*
+import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -21,6 +16,7 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import org.junit.Rule
+import java.lang.Error
 import kotlin.reflect.KClass
 
 class CatalogListItemViewModelTest {
@@ -42,6 +38,45 @@ class CatalogListItemViewModelTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    @Test
+    fun `get catalog list item success`() {
+        val observer = mockk<Observer<Resources<CatalogEntity>>>(){
+            every { onChanged(any())  } just runs
+        }
+        val listItem = mockk<CatalogEntity> ()
+        coEvery {
+            repository.getListOfCatalog(1, 1, 0) } returns mockk {
+            every { catalog } returns listItem
+        }
+        viewModel.listCatalogItem.observeForever(observer)
+        viewModel.getCataloglistItem(1,1,0)
+
+        verify(ordering = Ordering.ORDERED) {
+            observer.onChanged(ofType(Loading::class as KClass<Loading<CatalogEntity>>))
+            observer.onChanged(ofType(Success::class as KClass<Success<CatalogEntity>>))
+        }
+
+        assert(listItem == (viewModel.listCatalogItem.value as Success).data)
+    }
+
+    @Test
+    fun `get catalog list item error`() {
+        val observer = mockk<Observer<Resources<CatalogEntity>>>(){
+            every { onChanged(any())  } just runs
+        }
+        coEvery {
+            repository.getListOfCatalog(1, 1, 0) } returns mockk {
+            every { catalog } returns null
+        }
+        viewModel.listCatalogItem.observeForever(observer)
+        viewModel.getCataloglistItem(1,1,0)
+
+        verify(ordering = Ordering.ORDERED) {
+            observer.onChanged(ofType(Loading::class as KClass<Loading<CatalogEntity>>))
+        }
+    }
+
 
     @Test
     fun `start Validate Coupon success case`() {
