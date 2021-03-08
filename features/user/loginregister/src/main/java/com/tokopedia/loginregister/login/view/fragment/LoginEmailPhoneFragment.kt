@@ -919,7 +919,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
 
         val variant = getAbTestPlatform().getString(rolloutKey)
-        return variant == LoginConstant.ROLLOUT_LOGIN_ENCRYPTION
+        return variant.isNotEmpty()
     }
 
     fun isEnableEncryptConfig(): Boolean {
