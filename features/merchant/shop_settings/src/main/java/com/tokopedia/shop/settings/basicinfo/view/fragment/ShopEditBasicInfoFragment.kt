@@ -164,18 +164,24 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun setupShopTagLineTextField() {
         shopTagLineTextField.textFieldInput.afterTextChanged {
-            shopTagLineTextField.setMessage("")
-            shopTagLineTextField.setError(false)
             determineSubmitButton()
+        }
+        shopTagLineTextField.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                container.scrollTo(0, shopTagLineTextField.y.toInt());
+            }
         }
     }
 
     private fun setupShopDescriptionTextField() {
         shopDescriptionTextField.textFieldInput.isSingleLine = false
         shopDescriptionTextField.textFieldInput.afterTextChanged {
-            shopDescriptionTextField.setMessage("")
-            shopDescriptionTextField.setError(false)
             determineSubmitButton()
+        }
+        shopDescriptionTextField.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                container.scrollTo(0, shopDescriptionTextField.y.toInt());
+            }
         }
     }
 
