@@ -3,8 +3,6 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.pinnedvoucher.adapter.PinnedVoucherAdapter
 import com.tokopedia.play.ui.pinnedvoucher.viewholder.PinnedVoucherViewHolder
