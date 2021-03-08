@@ -2,6 +2,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
@@ -161,7 +163,7 @@ data class HomeBalanceModel (
             flagStateCondition(
                     itemType = type,
                     action = {
-                        balanceDrawerItemModels[it] = homeHeaderWalletAction.mapToHomeBalanceItemModel(state = STATE_SUCCESS)
+                        balanceDrawerItemModels[it] = homeHeaderWalletAction.mapToHomeBalanceItemModel(itemType = type, state = STATE_SUCCESS)
                     }
             )
         }
@@ -179,6 +181,11 @@ data class HomeBalanceModel (
                         )
                     }
             )
+        }
+        balanceDrawerItemModels.forEach {
+            if (it.value.state == STATE_LOADING) {
+                balanceDrawerItemModels[it.key] = it.value.copy(state = STATE_ERROR)
+            }
         }
     }
 
@@ -200,7 +207,7 @@ data class HomeBalanceModel (
                         itemType,
                         typeWalletCondition = { action.invoke(0) },
                         typeCouponCondition = { action.invoke(1) },
-                        typeRewardsCondition = { action.invoke(2) },
+                        typeRewardsCondition = { action.invoke(1) },
                         typeFreeOngkirCondition = { action.invoke(2) }
                 )
             }
@@ -236,7 +243,7 @@ data class HomeBalanceModel (
     ) {
         when(type) {
             TYPE_TOKOPOINT -> typeTokopointCondition.invoke()
-            TYPE_WALLET_OVO, TYPE_WALLET_OTHER, TYPE_WALLET_PENDING_CASHBACK, TYPE_WALLET_WITH_TOPUP -> typeWalletCondition.invoke()
+            TYPE_WALLET_OVO, TYPE_WALLET_OTHER, TYPE_WALLET_WITH_TOPUP, TYPE_WALLET_PENDING_CASHBACK -> typeWalletCondition.invoke()
             TYPE_COUPON -> typeCouponCondition.invoke()
             TYPE_FREE_ONGKIR -> typeFreeOngkirCondition.invoke()
             TYPE_REWARDS -> typeRewardsCondition.invoke()

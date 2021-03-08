@@ -9,14 +9,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
-fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel {
+fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
-    var drawerItemType = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) TYPE_WALLET_OVO else TYPE_WALLET_OTHER
+    var drawerItemType = itemType
     if (topupUrl.isNotEmpty()) {
         drawerItemType = TYPE_WALLET_WITH_TOPUP
     }
     return BalanceDrawerItemModel(
-            applinkContainer = if (drawerItemType == TYPE_WALLET_WITH_TOPUP) topupUrl else appLinkBalance,
+            applinkContainer = if (itemType == TYPE_WALLET_WITH_TOPUP) topupUrl else appLinkBalance,
             applinkActionText = appLinkActionButton,
             iconImageUrl = "",
             defaultIconRes = iconRes,

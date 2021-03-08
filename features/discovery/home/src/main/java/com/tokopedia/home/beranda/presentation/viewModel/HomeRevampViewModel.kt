@@ -140,7 +140,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private var navRollanceType: String = ""
-    private var balanceWidgetRollanceType: String = ""
+    private var useNewBalanceWidget: Boolean = true
 
     var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().ui())
@@ -285,11 +285,11 @@ open class HomeRevampViewModel @Inject constructor(
         initCacheData()
     }
 
-    fun balanceAbTestCondition(
+    fun balanceRemoteConfigCondition(
             isNewBalanceWidget: () -> Unit,
             isOldBalanceWidget: () -> Unit
     ) {
-        if (balanceWidgetRollanceType == AbTestPlatform.BALANCE_VARIANT_NEW) {
+        if (useNewBalanceWidget) {
             isNewBalanceWidget.invoke()
         } else {
             isOldBalanceWidget.invoke()
@@ -305,7 +305,7 @@ open class HomeRevampViewModel @Inject constructor(
         if (needSendGeolocationRequest && hasGeoLocationPermission) {
             _sendLocationLiveData.postValue(Event(needSendGeolocationRequest))
         }
-        balanceAbTestCondition(
+        balanceRemoteConfigCondition(
                 isNewBalanceWidget = {
                     getBalanceWidgetData()
                 },
@@ -447,7 +447,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getHeaderData() {
         if (!userSession.get().isLoggedIn) return
-        balanceAbTestCondition(
+        balanceRemoteConfigCondition(
                 isNewBalanceWidget = {
                     getBalanceWidgetData()
                 },
@@ -779,12 +779,12 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun onRefreshTokoCash() {
-        balanceAbTestCondition(
+        balanceRemoteConfigCondition(
                 isNewBalanceWidget = {
                     getWalletBalanceData()
                 },
                 isOldBalanceWidget = {
-                    if (!userSession.get().isLoggedIn) return@balanceAbTestCondition
+                    if (!userSession.get().isLoggedIn) return@balanceRemoteConfigCondition
                     updateHeaderViewModel(
                             homeHeaderWalletAction = null,
                             isWalletDataError = false
@@ -1522,7 +1522,7 @@ open class HomeRevampViewModel @Inject constructor(
             try {
                 tokopointContent = tokopointContentDefered.await()
             } catch (e: Exception) {
-                newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
+                newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
             }
 
             walletContent?.let {
@@ -1550,7 +1550,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             tokopointContent?.let {
-                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContentDefered.await(), )
+                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContentDefered.await())
             }
 
             newUpdateHeaderViewModel(homeBalanceModel)
@@ -1871,8 +1871,8 @@ open class HomeRevampViewModel @Inject constructor(
         navRollanceType = type
     }
 
-    fun setRollanceBalanceWidgetType(type: String) {
-        balanceWidgetRollanceType = type
+    fun setNewBalanceWidget(useNewBalanceWidget: Boolean) {
+        this.useNewBalanceWidget = useNewBalanceWidget
     }
 
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {

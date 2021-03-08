@@ -855,9 +855,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
         )
 
-//        getHomeViewModel().setRollanceBalanceWidgetType(
-//                AbTestPlatform.BALANCE_VARIANT_NEW
-//        )
+        //TODO: Register remote config to turn off and on new balance widget
+        val showNewBalanceWidget = true
+        getHomeViewModel().setNewBalanceWidget(showNewBalanceWidget)
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
