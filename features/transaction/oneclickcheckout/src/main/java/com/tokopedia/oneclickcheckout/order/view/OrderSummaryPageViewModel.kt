@@ -360,7 +360,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     addressId = addressModel.id,
                     districtId = addressModel.destinationDistrictId,
                     postalCode = addressModel.postalCode,
-                    geolocation = String.format("%s %s", addressModel.addressName, addressModel.recipientName),
+                    geolocation = if (addressModel.latitude.isNotBlank() && addressModel.longitude.isNotBlank()) addressModel.latitude + "," + addressModel.longitude else "",
                     mode = ChosenAddress.MODE_ADDRESS
             )
             param.chosenAddress = chosenAddress
