@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.DeactivationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.fragment.RegistrationFragment
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PMCancellationQuestionnaireActivity
@@ -32,4 +33,6 @@ interface PowerMerchantSubscribeComponent {
     fun inject(deactivationBottomSheet: DeactivationBottomSheet)
 
     fun inject(fragment: com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment)
+
+    fun inject(subscriptionActivity: SubscriptionActivity)
 }

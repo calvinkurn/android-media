@@ -37,7 +37,6 @@ class GetPowerMerchantSettingInfoUseCase @Inject constructor(
     companion object {
         private const val KEY_SHOP_ID = "shopID"
         private const val KEY_SOURCE = "source"
-        private const val VALUE_SOURCE = "gql-ui"
         private val QUERY = """
            query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!) {
              goldGetPMSettingInfo(shopID: ${'$'}shopID, source:${'$'}source) {
@@ -54,10 +53,10 @@ class GetPowerMerchantSettingInfoUseCase @Inject constructor(
            }
         """.trimIndent()
 
-        fun createParams(shopId: String): RequestParams {
+        fun createParams(shopId: String, source: String): RequestParams {
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
-                putString(KEY_SOURCE, VALUE_SOURCE)
+                putString(KEY_SOURCE, source)
             }
         }
     }

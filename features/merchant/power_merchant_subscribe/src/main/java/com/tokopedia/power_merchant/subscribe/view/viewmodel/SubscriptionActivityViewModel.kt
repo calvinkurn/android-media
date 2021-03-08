@@ -25,6 +25,10 @@ class SubscriptionActivityViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
+    companion object {
+        private const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-ui"
+    }
+
     val powerMerchantSettingInfo: LiveData<Result<PowerMerchantSettingInfoUiModel>>
         get() = _powerMerchantSettingInfo
 
@@ -32,7 +36,8 @@ class SubscriptionActivityViewModel @Inject constructor(
 
     fun getPowerMerchantSettingInfo() {
         launchCatchError(block = {
-            getPowerMerchantSettingInfoUseCase.get().params = GetPowerMerchantSettingInfoUseCase.createParams(userSession.get().shopId)
+            val params = GetPowerMerchantSettingInfoUseCase.createParams(userSession.get().shopId, PM_SETTING_INFO_SOURCE)
+            getPowerMerchantSettingInfoUseCase.get().params = params
             val result = Success(withContext(dispatcher.io) {
                 getPowerMerchantSettingInfoUseCase.get().executeOnBackground()
             })
