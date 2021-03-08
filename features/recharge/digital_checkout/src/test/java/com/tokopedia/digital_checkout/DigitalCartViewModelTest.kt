@@ -699,7 +699,7 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.setPromoData(promoData)
         digitalCartViewModel.applyPromoData(promoData)
 
-        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
             it.title == STRING_KODE_PROMO}
         assertNull(summary)
     }

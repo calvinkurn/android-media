@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.digital_checkout.data.PaymentSummary
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCheckoutSummaryAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
@@ -27,7 +28,7 @@ class DigitalCheckoutSummaryWidget @JvmOverloads constructor(@NotNull context: C
         }
     }
 
-    fun setSummaries(paymentSummary: DigitalCheckoutSummaryAdapter.PaymentSummary) {
+    fun setSummaries(paymentSummary: PaymentSummary) {
         mAdapter.setSummaries(paymentSummary)
     }
 }

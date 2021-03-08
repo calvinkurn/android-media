@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.digital_checkout.data.PaymentSummary
+import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import kotlinx.android.synthetic.main.item_digital_checkout_summary_detail.view.*
 
 class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummaryAdapter.DigitalCheckoutSummaryViewHolder>() {
@@ -38,28 +40,4 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
             }
         }
     }
-
-    data class PaymentSummary (
-            val summaries: MutableList<Payment>
-    ) {
-        fun removeFromSummary(title: String) {
-            val item: Payment = summaries.firstOrNull { it.title == title } ?: return
-            val deletePosition = summaries.indexOf(item)
-            summaries.removeAt(deletePosition)
-        }
-
-        fun addToSummary(payment: Payment) {
-            summaries.add(payment)
-        }
-
-        fun changeSummaryValue(title: String, priceAmount: String) {
-            val item: Payment = summaries.firstOrNull { it.title == title } ?: return
-            item.priceAmount = priceAmount
-        }
-    }
-
-    data class Payment (
-            val title: String,
-            var priceAmount: String
-    )
 }
