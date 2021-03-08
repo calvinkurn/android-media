@@ -87,7 +87,7 @@ class PlayViewModelCreatePageTest {
 
     @Test
     fun `given channel data is set, when page is created, then like status value should be the same as in channel data`() {
-        val totalLike = 5
+        val totalLike = 5L
         val totalLikeFormatted = totalLike.toString()
         val isLiked = false
 

@@ -267,7 +267,7 @@ class PlayViewModelFieldTest {
                                     likeInfo = likeBuilder.buildCompleteData(
                                             param = initialChannelData.likeInfo.param,
                                             status = likeBuilder.buildStatus(
-                                                    totalLike = totalLike.toInt(),
+                                                    totalLike = totalLike.toLong(),
                                                     totalLikeFormatted = totalLike,
                                                     isLiked = isLiked,
                                                     source = LikeSource.Network
