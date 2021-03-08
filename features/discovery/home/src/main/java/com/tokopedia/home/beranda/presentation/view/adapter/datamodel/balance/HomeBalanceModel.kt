@@ -91,14 +91,29 @@ data class HomeBalanceModel (
         mapPendingCashback(pendingCashBackData)
     }
 
-    fun setBalanceState(type: Int, state: Int): HomeBalanceModel {
+    fun setWalletBalanceState(state: Int): HomeBalanceModel {
+        setBalanceState(TYPE_WALLET_OVO, state)
+        setBalanceState(TYPE_WALLET_WITH_TOPUP, state)
+        setBalanceState(TYPE_WALLET_PENDING_CASHBACK, state)
+        setBalanceState(TYPE_WALLET_OTHER, state)
+        return this
+    }
+
+    fun setTokopointBalanceState(state: Int): HomeBalanceModel {
+        setBalanceState(TYPE_TOKOPOINT, state)
+        setBalanceState(TYPE_COUPON, state)
+        setBalanceState(TYPE_REWARDS, state)
+        setBalanceState(TYPE_FREE_ONGKIR, state)
+        return this
+    }
+
+    private fun setBalanceState(type: Int, state: Int): HomeBalanceModel {
         flagStateCondition(
                 itemType = type,
                 action = { balanceDrawerItemModels[it]?.state = state }
         )
         return this
     }
-
 
     private fun mapPendingCashback(pendingCashBackData: PendingCashbackModel?) {
         pendingCashBackData?.let { pendingCashBackData ->
