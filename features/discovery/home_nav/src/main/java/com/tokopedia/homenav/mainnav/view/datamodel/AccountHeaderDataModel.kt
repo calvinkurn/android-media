@@ -39,7 +39,6 @@ data class AccountHeaderDataModel(
     companion object {
         const val LOGIN_STATE_LOGIN = 0
         const val LOGIN_STATE_NON_LOGIN = 1
-        const val LOGIN_STATE_LOGIN_AS = 2
         const val STICKY_LOGIN_REMINDER_PREF = "sticky_login_reminder.pref"
         const val KEY_USER_NAME = "user_name"
         const val KEY_PROFILE_PICTURE = "profile_picture"

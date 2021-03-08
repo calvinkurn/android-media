@@ -2,12 +2,26 @@ package com.tokopedia.home_account.analytics
 
 import android.content.Context
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.Analytics.ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.ACTION_FIELD
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ACCOUNT_SETTING_SECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_APP_SETTING_SECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_BALANCE
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_LOGOUT
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ON_MORE_OPTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PRODUCT_RECOMMENDATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PROFILE
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_REWARD_SECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOGGLE_ON_GEOLOCATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_OVO_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.CLICK
-import com.tokopedia.home_account.AccountConstants.Analytics.CLICK_ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.CURRENCY_CODE
+import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_BUYER
+import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_BUYER
+import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_HOMEPAGE
+import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_OVO_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_ATTRIBUTION
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_BRAND
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_CATEGORY
@@ -18,19 +32,43 @@ import com.tokopedia.home_account.AccountConstants.Analytics.DATA_POSITION
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_PRICE
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_VARIAN
 import com.tokopedia.home_account.AccountConstants.Analytics.ECOMMERCE
-import com.tokopedia.home_account.AccountConstants.Analytics.EMPTY
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_ACTION
-import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION
-import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_CATEGORY
-import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_CATEGORY_ACCOUNT_PAGE_BUYER
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_LABEL
-import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_PRODUCT_CLICK
-import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_PRODUCT_VIEW
+import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_ACCOUNT
+import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_HOME_PAGE
+import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_PRODUCT_CLICK
+import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_PRODUCT_VIEW
 import com.tokopedia.home_account.AccountConstants.Analytics.IDR
 import com.tokopedia.home_account.AccountConstants.Analytics.IMPRESSIONS
 import com.tokopedia.home_account.AccountConstants.Analytics.LIST
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ABOUT_TOKOPEDIA
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_APP_SETTING
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CLEAN_CACHE
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_DISABLE
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_EMPTY
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ENABLE
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_GEOLOCATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_GET_TO_KNOW_TOKOPEDIA
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_IMAGE_QUALITY
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_INSTANT_BUY
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER_STORE
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MY_COUPON
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_NOTIFICATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_PRIVACY_POLICY
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_REVIEW_THIS_APP
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_SAFE_MODE
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_SHAKE
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_STICKER_TOKOPEDIA
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_TERMS_AND_CONDITIONS
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_TOP_QUEST
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_VIEW_MODE
 import com.tokopedia.home_account.AccountConstants.Analytics.NONE_OTHER
 import com.tokopedia.home_account.AccountConstants.Analytics.PRODUCTS
 import com.tokopedia.home_account.AccountConstants.Analytics.SETTING
@@ -58,53 +96,58 @@ class HomeAccountAnalytics(val context: Context, val userSessionInterface: UserS
     fun eventClickSetting(item: String?) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE, String.format("%s %s", USER, SETTING), String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
+                EVENT_CLICK_HOME_PAGE,
+                String.format("%s %s", USER, SETTING),
+                String.format("%s %s", CLICK, item),
+                LABEL_EMPTY
         ))
     }
 
     fun eventClickAccountSetting(item: String?) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE, String.format("%s %s", ACCOUNT, SETTING), String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
+                EVENT_CLICK_HOME_PAGE,
+                String.format("%s %s", ACCOUNT, SETTING),
+                String.format("%s %s", CLICK, item),
+                LABEL_EMPTY
         ))
     }
-
 
     fun eventClickPaymentSetting(item: String?) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE, String.format("%s %s", SHOP, SETTING), String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
+                EVENT_CLICK_HOME_PAGE,
+                String.format("%s %s", SHOP, SETTING),
+                String.format("%s %s", CLICK, item),
+                LABEL_EMPTY
         ))
     }
 
-    fun eventClickToggleOnGeolocation(context: Context?) {
+    fun eventClickToggleOnGeolocation() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics?.sendGeneralEvent(
-                "clickHomePage",
-                "homepage",
-                "click toggle on geolocation",
-                ""
+        analytics.sendGeneralEvent(
+                EVENT_CLICK_HOME_PAGE,
+                CATEGORY_HOMEPAGE,
+                ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
+                LABEL_EMPTY
         )
     }
 
-    fun eventClickToggleOffGeolocation(context: Context?) {
+    fun eventClickToggleOffGeolocation() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics?.sendGeneralEvent(
-                "clickHomePage",
-                "homepage",
-                "click toggle off geolocation",
-                ""
+        analytics.sendGeneralEvent(
+                EVENT_CLICK_HOME_PAGE,
+                CATEGORY_HOMEPAGE,
+                ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
+                LABEL_EMPTY
         )
     }
 
     fun eventAccountProductView(trackingQueue: TrackingQueue, recommendationItem: RecommendationItem, position: Int) {
         val map: Map<String, Any> = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY, EVENT_CATEGORY_ACCOUNT_PAGE_BUYER,
-                EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
+                EVENT_CATEGORY, CATEGORY_ACCOUNT_PAGE_BUYER,
+                EVENT_ACTION, ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
                 EVENT_LABEL, "",
                 ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, IDR,
                 IMPRESSIONS, DataLayer.listOf(
@@ -138,31 +181,31 @@ class HomeAccountAnalytics(val context: Context, val userSessionInterface: UserS
         val tracker: Analytics = TrackApp.getInstance().gtm
         val map = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
-                EVENT_CATEGORY, EVENT_CATEGORY_ACCOUNT_PAGE_BUYER,
-                EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
-                EVENT_LABEL, EMPTY,
+                EVENT_CATEGORY, CATEGORY_ACCOUNT_PAGE_BUYER,
+                EVENT_ACTION, ACTION_CLICK_PRODUCT_RECOMMENDATION,
+                EVENT_LABEL, LABEL_EMPTY,
                 ECOMMERCE, DataLayer.mapOf(
-                    CLICK, DataLayer.mapOf(
-                        ACTION_FIELD,
-                        DataLayer.mapOf(LIST, list),
-                        PRODUCTS,
-                        DataLayer.listOf(
-                                DataLayer.mapOf(
-                                    DATA_NAME, recommendationItem.name,
-                                    DATA_ID, recommendationItem.productId,
-                                    DATA_PRICE, recommendationItem.price.replace("[^0-9]".toRegex(), ""),
-                                    DATA_BRAND, NONE_OTHER,
-                                    DATA_CATEGORY, recommendationItem.categoryBreadcrumbs,
-                                    DATA_VARIAN, NONE_OTHER,
-                                    LIST, widgetTitle,
-                                    DATA_POSITION, position.toString(),
-                                    DATA_ATTRIBUTION, NONE_OTHER,
-                                    DATA_DIMENSION_83, if (recommendationItem.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else NONE_OTHER
-                                )
+                CLICK, DataLayer.mapOf(
+                ACTION_FIELD,
+                DataLayer.mapOf(LIST, list),
+                PRODUCTS,
+                DataLayer.listOf(
+                        DataLayer.mapOf(
+                                DATA_NAME, recommendationItem.name,
+                                DATA_ID, recommendationItem.productId,
+                                DATA_PRICE, recommendationItem.price.replace("[^0-9]".toRegex(), ""),
+                                DATA_BRAND, NONE_OTHER,
+                                DATA_CATEGORY, recommendationItem.categoryBreadcrumbs,
+                                DATA_VARIAN, NONE_OTHER,
+                                LIST, widgetTitle,
+                                DATA_POSITION, position.toString(),
+                                DATA_ATTRIBUTION, NONE_OTHER,
+                                DATA_DIMENSION_83, if (recommendationItem.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else NONE_OTHER
                         )
-                    )
                 )
-            )
+        )
+        )
+        )
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
@@ -174,10 +217,281 @@ class HomeAccountAnalytics(val context: Context, val userSessionInterface: UserS
             "remove"
         }
         analytics.sendGeneralEvent(
-                CLICK_ACCOUNT,
-                EVENT_CATEGORY_ACCOUNT_PAGE_BUYER, String.format(VALUE_WISHLIST_PRODUCT, status),
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_PAGE_BUYER,
+                String.format(VALUE_WISHLIST_PRODUCT, status),
                 ""
         )
     }
 
+    fun eventClickProfile() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_PROFILE,
+                LABEL_EMPTY
+        ))
+    }
+
+    fun eventViewOvoHomepage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_OVO_HOMEPAGE,
+                ACTION_VIEW_OVO_HOMEPAGE,
+                LABEL_EMPTY
+        ))
+    }
+
+    fun eventClickBalance() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_BALANCE,
+                LABEL_EMPTY
+        ))
+    }
+
+    fun eventClickOnMoreMemberOption() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ON_MORE_OPTION,
+                LABEL_MEMBER
+        ))
+    }
+
+    fun eventClickRewardMemberStore() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_REWARD_SECTION,
+                LABEL_MEMBER_STORE
+        ))
+    }
+
+    fun eventClickRewardTopQuest() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_REWARD_SECTION,
+                LABEL_TOP_QUEST
+        ))
+    }
+
+    fun eventClickRewardMyCoupon() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_REWARD_SECTION,
+                LABEL_MY_COUPON
+        ))
+    }
+
+    fun eventClickAccountSettingListAddress() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+                LABEL_LIST_ADDRESS
+        ))
+    }
+
+    fun eventClickAccountSettingBankAccount() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+                LABEL_BANK_ACCOUNT
+        ))
+    }
+
+    fun eventClickAccountSettingInstantPayment() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+                LABEL_INSTANT_PAYMENT
+        ))
+    }
+
+    fun eventClickAccountSettingInstantBuy() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+                LABEL_INSTANT_BUY
+        ))
+    }
+
+    fun eventClickAccountSettingAccountSecurity() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+                LABEL_ACCOUNT_SECURITY
+        ))
+    }
+
+    fun eventClickAccountSettingNotification() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+                LABEL_NOTIFICATION
+        ))
+    }
+
+    fun eventClickOnMoreAppSettingOption() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ON_MORE_OPTION,
+                LABEL_APP_SETTING
+        ))
+    }
+
+    fun eventClickAppSettingShake(enable : Boolean) {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_APP_SETTING_SECTION,
+                String.format("%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+        ))
+    }
+
+    fun eventClickAppSettingGeolocation(enable : Boolean) {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_APP_SETTING_SECTION,
+                String.format("%s - %s", LABEL_GEOLOCATION, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+        ))
+    }
+
+    fun eventClickAppSettingSafeMode(enable : Boolean) {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_APP_SETTING_SECTION,
+                String.format("%s - %s", LABEL_SAFE_MODE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+        ))
+    }
+
+
+    fun eventClickAppSettingStickerTokopedia() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_APP_SETTING_SECTION,
+                LABEL_STICKER_TOKOPEDIA
+        ))
+    }
+
+    fun eventClickAppSettingImageQuality() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_APP_SETTING_SECTION,
+                LABEL_IMAGE_QUALITY
+        ))
+    }
+
+    fun eventClickAppSettingCleanCache() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_APP_SETTING_SECTION,
+                LABEL_CLEAN_CACHE
+        ))
+    }
+
+    fun eventClickAppSettingViewMode() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_APP_SETTING_SECTION,
+                LABEL_VIEW_MODE
+        ))
+    }
+
+    fun eventClickOnMoreAboutTokopediaOption() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ON_MORE_OPTION,
+                LABEL_ABOUT_TOKOPEDIA
+        ))
+    }
+
+    fun eventClickGetToKnowAboutTokopedia() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+                LABEL_GET_TO_KNOW_TOKOPEDIA
+        ))
+    }
+
+    fun eventClickTermsAndConditionsAboutTokopedia() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+                LABEL_TERMS_AND_CONDITIONS
+        ))
+    }
+
+    fun eventClickPrivacyPolicyAboutTokopedia() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+                LABEL_PRIVACY_POLICY
+        ))
+    }
+
+    fun eventClickReviewAboutTokopedia() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+                LABEL_REVIEW_THIS_APP
+        ))
+    }
+
+    fun eventClickLogout() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_LOGOUT,
+                LABEL_EMPTY
+        ))
+    }
 }

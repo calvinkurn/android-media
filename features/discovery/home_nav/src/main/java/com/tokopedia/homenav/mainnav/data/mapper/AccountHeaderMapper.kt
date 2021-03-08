@@ -64,7 +64,6 @@ class AccountHeaderMapper (
                 accountModel = data
 
             }
-            AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS,
             AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN -> {
                 accountModel = AccountHeaderDataModel(loginState = loginState)
             }
@@ -83,17 +82,7 @@ class AccountHeaderMapper (
     private fun getLoginState(): Int {
         return when {
             userSession.isLoggedIn -> AccountHeaderDataModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS
             else -> AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN
         }
-    }
-
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }

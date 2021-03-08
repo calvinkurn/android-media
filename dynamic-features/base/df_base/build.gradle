@@ -80,6 +80,7 @@ dependencies {
     implementation project(rootProject.ext.features.smartBills)
     implementation project(rootProject.ext.features.recharge_slice)
     implementation project(rootProject.ext.features.travel_slice)
+    implementation project(rootProject.ext.features.digitalCheckout)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
@@ -149,4 +150,5 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.features.buyerorder)
+    implementation project(rootProject.ext.features.snapshot)
 }

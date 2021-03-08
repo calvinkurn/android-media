@@ -100,6 +100,14 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FILTER_PRICE = "click filter price - min : %s - max : %s";
     public static final String CLICK_FILTER_RATING = "click filter rating - ";
     public static final String CLICK_FOLLOW_UNFOLLOW_TNC_PAGE = "click %1s on t&c page";
+    public static final String VIEW_FOLLOW_VOUCHER_ICON = "view follow voucher icon";
+    public static final String VIEW_COACHMARK_FOLLOW = "view coachmark follow";
+    public static final String VIEW_TOASTER_FOLLOW_SUCCESS = "view toaster follow success";
+    public static final String VIEW_TOASTER_FOLLOW_ERROR = "view toaster follow error";
+    public static final String VIEW_TOASTER_UNFOLLOW_SUCCESS = "view toaster unfollow success";
+    public static final String VIEW_TOASTER_UNFOLLOW_ERROR = "view toaster unfollow error";
+    public static final String CLICK_CEK_TOASTER_SUCCESS = "click cek toaster success";
+    public static final String SEE_ENTRY_POINT = "see entry point";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -129,6 +137,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_ADD_NOTE = "click add note";
     public static final String BUSINESS_UNIT = "businessUnit";
     public static final String PHYSICAL_GOODS = "physical goods";
+    public static final String HOME_AND_BROWSE = "home & browse";
     public static final String CURRENT_SITE = "currentSite";
     public static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     public static final String SEE_ALL = "see all";
@@ -152,6 +161,14 @@ public class ShopPageTrackingConstant {
     public static final String MEMBERSHIP_COUPON_CHECK = "click cek kupon saya";
     public static final String ETALASE_X = "etalase %1s";
     public static final String CLICK_PRODUCT = "click product";
+    public static final String PRODUCT_RECOMMENDATION = "product recommendation";
+    public static final String CLICK_PRODUCT_RECOMMENDATION = "click - "+PRODUCT_RECOMMENDATION;
+    public static final String CLICK_ATC_RECOMMENDATION = "click 'keranjang' - "+PRODUCT_RECOMMENDATION;
+    public static final String CLICK_OCC_RECOMMENDATION = "click 'beli sekarang' - "+PRODUCT_RECOMMENDATION;
+    public static final String IMPRESSION_PRODUCT_RECOMMENDATION = "impression - "+PRODUCT_RECOMMENDATION;
+    public static final String WIDGET_TYPE_CAROUSELL = "carousell";
+    public static final String WIDGET_TYPE_BUY_AGAIN = "buy it again";
+    public static final String BUYER_RECOMMENDATION = "rekomendasi untuk anda";
     public static final String SEARCH_PRODUCT = "search product";
     public static final String SEARCH_PRODUCT_RESULT = "search result";
     public static final String SEARCH_PRODUCT_NO_RESULT = "no search result";
@@ -165,9 +182,10 @@ public class ShopPageTrackingConstant {
     public static final String WISHLIST = "wishlist";
     public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
     public static final String CLICK_ADD_TO_CART = "click add to cart";
-
     public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
     public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
+    public static final String SHOP_PAGE_LABEL = "shop page - ";
+    public static final String COACHMARK_DISAPPEAR = " - coachmark disappear";
 
     //key
     public static final String EVENT = "event";
@@ -197,6 +215,7 @@ public class ShopPageTrackingConstant {
     public static final String PRICE = "price";
     public static final String BRAND = "brand";
     public static final String CATEGORY = "category";
+    public static final String CATEGORY_ID = "category_id";
     public static final String VARIANT = "variant";
     public static final String POSITION = "position";
     public static final String ATTRIBUTION = "attribution";

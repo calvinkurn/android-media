@@ -155,6 +155,7 @@
     <string name="review_edit_dialog_continue_writing">Lanjut Tulis Ulasan</string>
     <string name="review_edit_dialog_exit">Ya, Keluar</string>
     <string name="review_edit_fail">Ulasan tidak tersimpan. Cek koneksi internetmu dan coba lagi, ya</string>
+    <string name="review_edit_blank_error">Oops, tulis dulu komentarmu terkait barang ini atau pelayanan toko.</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 
@@ -182,7 +183,6 @@
     <string name="deadline_suffix">hari lagi</string>
     <string name="progress_dialog_loading">Loading</string>
     <string name="submit_review">Kirim</string>
-    <string name="favorite_button">Follow</string>
     <string name="already_favorite">\u2713</string>
     <string name="seller">Penjual</string>
     <string name="filter_time">Waktu</string>

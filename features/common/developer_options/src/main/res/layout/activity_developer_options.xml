@@ -242,7 +242,7 @@
             android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Client Analytics Validator"
+            android:text="Cassava"
             android:textColor="@color/white" />
 
         <TextView
@@ -255,18 +255,6 @@
             android:gravity="center"
             android:padding="@dimen/margin_small"
             android:text="View Analytics Log"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/goto_analytics_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
-            android:gravity="center"
-            android:padding="@dimen/margin_small"
-            android:text="View Analytics Error Log"
             android:textColor="@color/white" />
 
         <LinearLayout
@@ -345,6 +333,20 @@
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
             android:text="@string/remote_config_start_button"
+            android:textColor="@color/Neutral_N0" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ab_test_rollence_editor_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/ab_test_rollence_start_button"
             android:textColor="@color/Neutral_N0" />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -554,40 +556,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/resetOnboardingNavigation"
             android:text="RESET ONBOARDING NAVIGATION!" />
-
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Rollance AB Testing Manual Switcher : "/>
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_rollence_key"
-            android:hint="input rollence key"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dp_4">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_rollence_variant"
-                android:hint="input rollence variant"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btn_apply_rollence"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="APPLY"/>
-        </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_marginTop="@dimen/dp_10"

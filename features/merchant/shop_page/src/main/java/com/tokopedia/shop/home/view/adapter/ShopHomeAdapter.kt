@@ -10,12 +10,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.view.adapter.viewholder.*
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -121,7 +122,7 @@ class ShopHomeAdapter(
 
     fun setHomeMerchantVoucherData(shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
         visitables.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
-            if(shopHomeVoucherUiModel.data.isNullOrEmpty() && !shopHomeVoucherUiModel.isError){
+            if((shopHomeVoucherUiModel.data == null && !shopHomeVoucherUiModel.isError) || shopHomeVoucherUiModel.data?.isShown == false){
                 visitables.removeAt(index)
                 notifyItemRemoved(index)
             } else if(index != -1){
@@ -457,20 +458,5 @@ class ShopHomeAdapter(
     private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
         return (widget as? PlayWidgetUiModel.Small)?.items?.isEmpty() == true
                 || (widget as? PlayWidgetUiModel.Medium)?.items?.isEmpty() == true
-    }
-
-    fun updatePlayWidgetReminder(reminderUiModel: PlayWidgetReminderUiModel) {
-        visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
-            if (position == -1) return@let
-            if (reminderUiModel.position == -1) return@let
-            notifyItemChanged(position, reminderUiModel)
-        }
-    }
-
-    fun updatePlayWidgetTotalView(totalViewUiModel: PlayWidgetTotalViewUiModel) {
-        visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
-            if (position == -1) return@let
-            notifyItemChanged(position, totalViewUiModel)
-        }
     }
 }

@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -84,6 +85,10 @@ class SomListViewModel @Inject constructor(
     private val _bulkAcceptOrderResult = MutableLiveData<Result<SomListBulkAcceptOrderUiModel>>()
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
+
+    private val _isLoadingOrder = MutableLiveData<Boolean>()
+    val isLoadingOrder: LiveData<Boolean>
+        get() = _isLoadingOrder
 
     private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
@@ -184,6 +189,14 @@ class SomListViewModel @Inject constructor(
         return getOrderListParams.nextOrderId == 0L
     }
 
+    private fun updateLoadOrderStatus(job: Job) {
+        job.invokeOnCompletion {
+            launch(context = dispatcher.main) {
+                _isLoadingOrder.value = isRefreshingOrder()
+            }
+        }
+    }
+
     fun bulkAcceptOrder(orderIds: List<String>) {
         launchCatchError(block = {
             retryCount = 0
@@ -218,12 +231,16 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        getFiltersJob?.cancel()
-        getFiltersJob = launchCatchError(block = {
-            val result = somListGetFilterListUseCase.executeOnBackground().apply { refreshOrder = refreshOrders }
-            _filterResult.postValue(Success(result))
+        if (somListGetFilterListUseCase.isFirstLoad) {
+            somListGetFilterListUseCase.isFirstLoad = false
+            launchCatchError(context = dispatcher.main, block = {
+                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders })
+            }, onError = {})
+        }
+        launchCatchError(context = dispatcher.main, block = {
+            _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
         }, onError = {
-            _filterResult.postValue(Fail(it))
+            _filterResult.value = Fail(it)
         })
     }
 
@@ -249,7 +266,7 @@ class SomListViewModel @Inject constructor(
             _orderListResult.postValue(Success(result.second))
         }, onError = {
             _orderListResult.postValue(Fail(it))
-        })
+        }).apply { updateLoadOrderStatus(this) }
     }
 
     fun refreshSelectedOrder(orderId: String, invoice: String) {
@@ -273,7 +290,7 @@ class SomListViewModel @Inject constructor(
                     _refreshOrderResult.value = Fail(it)
                     containsFailedRefreshOrder = true
                 }
-            })
+            }).apply { updateLoadOrderStatus(this) }
             refreshOrder = RefreshOrder(orderId, invoice, job)
             refreshOrderJobs.add(refreshOrder)
         }
@@ -345,4 +362,8 @@ class SomListViewModel @Inject constructor(
     fun isRefreshingSelectedOrder() = refreshOrderJobs.any { !it.job.isCompleted }
 
     fun isRefreshingOrder() = isRefreshingAllOrder() || isRefreshingSelectedOrder()
+
+    fun isOrderStatusIdsChanged(orderStatusIds: List<Int>): Boolean {
+        return this.getOrderListParams.statusList != orderStatusIds
+    }
 }
