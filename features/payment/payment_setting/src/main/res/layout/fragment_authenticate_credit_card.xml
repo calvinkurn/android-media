@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/dp_16"
+    android:background="@color/Unify_N0"
     android:paddingTop="@dimen/dp_16"
-    android:background="@android:color/white">
+    android:paddingBottom="@dimen/dp_16">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_above="@+id/buttonUse"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/buttonUse" />
 
-    <Button
-        android:layout_alignParentBottom="true"
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonUse"
+        style="@style/Button.Submit.Green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_8"
         android:text="@string/payment_label_use"
-        style="@style/Button.Submit.Green"/>
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
 </RelativeLayout>

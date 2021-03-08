@@ -6,12 +6,21 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class SectionTitleViewHolder(itemView: View?) : AbstractViewHolder<SectionTitleUiModel>(itemView) {
+class SectionTitleViewHolder(
+        itemView: View?
+) : AbstractViewHolder<SectionTitleUiModel>(itemView) {
 
     private val title: Typography? = itemView?.findViewById(R.id.txt_section_title)
     private val topPadding = itemView?.context?.resources?.getDimension(
             R.dimen.notif_dp_12
     ) ?: 0f
+
+    override fun bind(element: SectionTitleUiModel?, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        when (payloads.first()) {
+            PAYLOAD_UPDATE_PADDING -> bindTopPadding()
+        }
+    }
 
     override fun bind(element: SectionTitleUiModel) {
         bindTopPadding()
@@ -38,5 +47,6 @@ class SectionTitleViewHolder(itemView: View?) : AbstractViewHolder<SectionTitleU
 
     companion object {
         val LAYOUT = R.layout.item_notifcenter_title
+        const val PAYLOAD_UPDATE_PADDING = "payload_update_padding"
     }
 }
