@@ -335,20 +335,6 @@
             android:text="@string/remote_config_start_button"
             android:textColor="@color/Neutral_N0" />
 
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/ab_test_rollence_editor_start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/btn_share"
-            android:gravity="center"
-            android:padding="@dimen/spacing_lvl3"
-            android:text="@string/ab_test_rollence_start_button"
-            android:textColor="@color/Neutral_N0" />
-
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_route_manager"
             android:layout_width="match_parent"
@@ -590,6 +576,19 @@
                 android:layout_height="wrap_content"
                 android:text="APPLY"/>
         </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ab_test_rollence_editor_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/ab_test_rollence_start_button"
+            android:textColor="@color/Neutral_N0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_marginTop="@dimen/dp_10"
