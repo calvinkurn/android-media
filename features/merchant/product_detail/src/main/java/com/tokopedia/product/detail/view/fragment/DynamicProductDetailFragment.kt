@@ -1452,7 +1452,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             if (view != null) {
                 val showLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it)
                         ?: false
-                val showBoe = coachMarkBoePref.shouldShowBoeCoachmark() && isBoeType
+                val showBoe = if (!isBoeType) false else coachMarkBoePref.shouldShowBoeCoachmark()
 
                 if (showLocalization || showBoe) {
                     val coachMarkList = arrayListOf<CoachMark2Item>()
