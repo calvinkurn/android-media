@@ -79,15 +79,10 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                     view.onShipmentAddressFormEmpty()
                 } else {
                     view.updateLocalCacheAddressData(userAddress)
-                    if (userAddress.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH) {
-                        shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
-                        view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
-                        if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
-                            view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
-                        }
-                    } else {
-                        shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
-                        view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
+                    shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
+                    view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
+                    if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
+                        view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
                     }
                 }
             }

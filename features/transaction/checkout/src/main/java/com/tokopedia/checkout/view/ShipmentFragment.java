@@ -153,7 +153,8 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_N
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
@@ -783,6 +784,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
         intent.putExtra(EXTRA_PREVIOUS_STATE_ADDRESS, addressState);
+        intent.putExtra(EXTRA_IS_FROM_CHECKOUT_SNIPPET, true);
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
@@ -1280,7 +1282,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromRequestCodeAddressOptions(int resultCode, Intent data) {
         switch (resultCode) {
-            case CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS:
+            case CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS:
                 RecipientAddressModel currentAddress = shipmentAdapter.getAddressShipmentData();
                 ChosenAddressModel chosenAddressModel = data.getParcelableExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
                 if (currentAddress != null && chosenAddressModel != null) {
@@ -1312,7 +1314,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
-        intent.putExtra(EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT, true);
+        intent.putExtra(EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true);
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
@@ -3041,7 +3043,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     userAddress.getDistrictId(),
                     userAddress.getLatitude(),
                     userAddress.getLongitude(),
-                    userAddress.getAddressName(),
+                    String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
                     userAddress.getPostalCode()
             );
         }

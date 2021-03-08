@@ -159,7 +159,6 @@ interface DynamicProductDetailListener {
      * ProductShippingViewHolder
      */
     fun openShipmentClickedBottomSheet(title:String, labelShipping:String, isCod:Boolean, componentTrackDataModel:ComponentTrackDataModel?)
-    fun openShipmentBottomSheetWhenError() : Boolean
-    fun goToShipmentErrorAddressOrChat(errorCode: Int)
+    fun clickShippingComponentError(errorCode: Int, title:String, componentTrackDataModel: ComponentTrackDataModel?)
     fun showCoachmark(view: Typography?, isBoeType:Boolean)
 }

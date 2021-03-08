@@ -188,6 +188,10 @@ object ProductTrackingConstant {
         const val CLICK_CHECK_CART = "click - cek keranjang"
         const val CLICK_PELAJARI_TOKO_CABANG = "click pelajari dikirim dari tokocabang"
         const val CLICK_SEE_OTHER_COURIER = "click - lihat kurir lainnya"
+        const val CLICK_SHIPMENT_ERROR_COMPONENT = "click - ganti alamat when error on component shipping"
+        const val VIEW_SHIPMENT_ERROR_BOTTOM_SHEET = "impression - bottomsheet on pdp"
+        const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHAT = "click - chat penjual on bottomsheet error"
+        const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHOOSE_ADDRESS = "click - ganti alamat on bottomsheet error"
     }
 
 
@@ -204,6 +208,8 @@ object ProductTrackingConstant {
         const val VIDEO_LAST_STOP_TIME = "stop time:"
         const val VIDEO_AUTO_PLAY = "auto play:"
         const val EVENT_LABEL_CLICK_SHIPMENT = "title:%s;labelShipping:%s;cod:%s"
+        const val EVENT_LABEL_CLICK_SHIPMENT_ERROR = "error message:%s;"
+        const val VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET = "bottomsheet title:%s;"
 
     }
 
@@ -248,5 +254,4 @@ object ProductTrackingConstant {
         const val PDP_BANNER_TOPADS = "/product - tdn banner ads"
         const val DFAULT_CREATIVE_NAME_BANNER_TOP_ADS = "none / other"
     }
-
 }

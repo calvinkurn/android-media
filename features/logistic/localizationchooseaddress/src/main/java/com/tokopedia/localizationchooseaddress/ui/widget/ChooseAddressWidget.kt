@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
@@ -160,7 +159,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         buttonChooseAddress?.setOnClickListener {
             if (hasClicked == false ) {
                 val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
-                val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+                val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceTrackingData()
                 source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
                 val chooseAddressBottomSheet = ChooseAddressBottomSheet()
                 chooseAddressBottomSheet.setListener(this)
@@ -224,11 +223,18 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          */
         fun getLocalizingAddressHostFragment(): Fragment
 
-
         /**
          * String Source of Host Page
          */
         fun getLocalizingAddressHostSourceData(): String
+
+        /**
+         * String Tracking Source of Host Page
+         * By default, this method will return String Source from getLocalizingAddressHostSourceData
+         */
+        fun getLocalizingAddressHostSourceTrackingData(): String {
+            return getLocalizingAddressHostSourceData()
+        }
 
         /**
          * this listen is use to notify host/fragment if login is success

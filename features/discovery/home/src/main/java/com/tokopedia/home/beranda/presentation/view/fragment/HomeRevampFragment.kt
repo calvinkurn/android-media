@@ -109,6 +109,7 @@ import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.locationmanager.DeviceLocation
@@ -650,25 +651,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         //add navigation
         val globalNavIcon = navToolbar?.getGlobalNavIconView()
         globalNavIcon?.let {
-            this.add(
-                    CoachMark2Item(
-                            globalNavIcon,
-                            getString(R.string.onboarding_coachmark_title),
-                            getString(R.string.onboarding_coachmark_description)
-                    )
-            )
+            if (it.isVisible) {
+                this.add(
+                        CoachMark2Item(
+                                globalNavIcon,
+                                getString(R.string.onboarding_coachmark_title),
+                                getString(R.string.onboarding_coachmark_description)
+                        )
+                )
+            }
         }
 
         //inbox
         val inboxIcon = navToolbar?.getInboxIconView()
         inboxIcon?.let {
-            this.add(
-                    CoachMark2Item(
-                            inboxIcon,
-                            getString(R.string.onboarding_coachmark_inbox_title),
-                            getString(R.string.onboarding_coachmark_inbox_description)
-                    )
-            )
+            if (it.isVisible) {
+                this.add(
+                        CoachMark2Item(
+                                inboxIcon,
+                                getString(R.string.onboarding_coachmark_inbox_title),
+                                getString(R.string.onboarding_coachmark_inbox_description)
+                        )
+                )
+            }
         }
 
         //add location
@@ -676,22 +681,26 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (needShowLocalization) {
             val chooseLocationWidget = getLocationWidgetView()
             chooseLocationWidget?.let {
-                this.add(
-                        ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
-                )
+                if (it.isVisible) {
+                    this.add(
+                            ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
+                    )
+                }
             }
         }
         //add balance widget
         //uncomment this to activate balance widget coachmark
 //        val balanceWidget = getBalanceWidgetView()
 //        balanceWidget?.let {
-//            this.add(
-//                    CoachMark2Item(
-//                            balanceWidget,
-//                            getString(R.string.onboarding_coachmark_wallet_title),
-//                            getString(R.string.onboarding_coachmark_wallet_description)
-//                    )
-//            )
+//            if (it.isVisible) {
+//                this.add(
+//                        CoachMark2Item(
+//                                balanceWidget,
+//                                getString(R.string.onboarding_coachmark_wallet_title),
+//                                getString(R.string.onboarding_coachmark_wallet_description)
+//                        )
+//                )
+//            }
 //        }
     }
 
@@ -721,19 +730,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun getLocationWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
-        if (view != null && view is HomeHeaderOvoViewHolder) {
-            val locationView = view.itemView.widget_choose_address.findViewById<View>(R.id.text_chosen_address)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            val locationView = it.itemView.widget_choose_address
             if (locationView.isVisible)
-                return locationView
+                return locationView.findViewById(R.id.text_chosen_address)
         }
         return null
     }
 
     private fun getBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
-        if (view != null && view is HomeHeaderOvoViewHolder) {
-            if (view.itemView.view_ovo.isVisible)
-                return view.itemView.view_ovo
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            if (it.itemView.view_ovo.isVisible)
+                return it.itemView.view_ovo
         }
         return null
     }
