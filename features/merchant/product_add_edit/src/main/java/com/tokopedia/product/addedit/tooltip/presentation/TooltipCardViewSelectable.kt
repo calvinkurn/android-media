@@ -24,6 +24,10 @@ class TooltipCardViewSelectable : BaseCustomView {
 
     var text: String = ""
     var description: String = ""
+        set(value) {
+            field = value
+            refreshViews()
+        }
     var price: String = ""
         set(value) {
             field = value
@@ -41,7 +45,7 @@ class TooltipCardViewSelectable : BaseCustomView {
     private var iconCheck: IconUnify? = null
     private var tvDescriptionLink: Typography? = null
     private var onButtonNextClicked: () -> Unit = {}
-    private var onSuggestedPriceSelected: () -> Unit = {}
+    private var onSuggestedPriceSelected: (price: String) -> Unit = {}
     private var rotated = false
 
     constructor(context: Context) : super(context) {
@@ -63,11 +67,30 @@ class TooltipCardViewSelectable : BaseCustomView {
         }
     }
 
+    fun collapse() {
+        iconExpand?.animateRotateCw()
+        layoutTooltipContent?.animateCollapse()
+        rotated = true
+    }
+
+    fun expand() {
+        iconExpand?.animateRotateCcw()
+        layoutTooltipContent?.animateExpand()
+        rotated = false
+    }
+
+    fun setSuggestedPriceSelected() {
+        tvApply?.hide()
+        loaderApply?.hide()
+        iconCheck?.show()
+        collapse()
+    }
+
     fun setOnButtonNextClicked(onClicked: () -> Unit) {
         onButtonNextClicked = onClicked
     }
 
-    fun setOnSuggestedPriceSelected(onSelected: () -> Unit) {
+    fun setOnSuggestedPriceSelected(onSelected: (price: String) -> Unit) {
         onSuggestedPriceSelected = onSelected
     }
 
@@ -103,12 +126,8 @@ class TooltipCardViewSelectable : BaseCustomView {
             iconCheck?.hide()
             loaderApply?.show()
             Handler().postDelayed({
-                rotated = true
-                loaderApply?.hide()
-                iconCheck?.show()
-                iconExpand?.animateRotateCw()
-                layoutTooltipContent?.animateCollapse()
-                onSuggestedPriceSelected()
+                setSuggestedPriceSelected()
+                onSuggestedPriceSelected(price.filter { it.isDigit() })
             }, duration)
         }
     }
@@ -133,14 +152,8 @@ class TooltipCardViewSelectable : BaseCustomView {
 
     private fun setupHideExpandButton() {
         iconExpand?.setOnClickListener {
-            if (rotated) {
-                iconExpand?.animateRotateCcw()
-                layoutTooltipContent?.animateExpand()
-            } else {
-                iconExpand?.animateRotateCw()
-                layoutTooltipContent?.animateCollapse()
-            }
-            rotated = !rotated
+            if (rotated) expand()
+            else collapse()
         }
     }
 }

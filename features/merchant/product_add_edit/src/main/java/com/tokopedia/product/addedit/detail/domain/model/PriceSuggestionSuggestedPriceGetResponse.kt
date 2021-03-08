@@ -11,22 +11,6 @@ data class PriceSuggestionSuggestedPriceGetResponse (
 )
 
 data class PriceSuggestionSuggestedPriceGet (
-        @SerializedName("productId")
-        @Expose
-        val productId: String = "",
-
-        @SerializedName("shopId")
-        @Expose
-        val shopId: String = "",
-
-        @SerializedName("title")
-        @Expose
-        val title: String = "",
-
-        @SerializedName("url")
-        @Expose
-        val url: String = "",
-
         @SerializedName("suggestedPrice")
         @Expose
         val suggestedPrice: Double = Double(0.0),
@@ -41,21 +25,5 @@ data class PriceSuggestionSuggestedPriceGet (
 
         @SerializedName("price")
         @Expose
-        val price: Double = Double(0.0),
-
-        @SerializedName("slashPrice")
-        @Expose
-        val slashPrice: Double = Double(0.0),
-
-        @SerializedName("processStep")
-        @Expose
-        val processStep: String = "",
-
-        @SerializedName("productStatus")
-        @Expose
-        val productStatus: String = "",
-
-        @SerializedName("updateTime")
-        @Expose
-        val updateTime: String = ""
+        val price: Double = Double(0.0)
 )

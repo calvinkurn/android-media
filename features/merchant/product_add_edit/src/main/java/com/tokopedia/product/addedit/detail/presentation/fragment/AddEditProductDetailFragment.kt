@@ -88,6 +88,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
+import com.tokopedia.product.addedit.tooltip.presentation.TooltipCardViewSelectable
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -110,7 +111,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_edit_product_detail_layout.*
 import javax.inject.Inject
 
 class AddEditProductDetailFragment : BaseDaggerFragment(),
@@ -175,6 +175,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productPriceField: TextFieldUnify? = null
     private var productPriceEditIcon: ImageView? = null
     private var productPriceBulkEditDialog: DialogUnify? = null
+    private var productPriceRecommendation: TooltipCardViewSelectable? = null
 
     // product wholesale price
     private var productWholeSaleSwitch: SwitchUnify? = null
@@ -351,6 +352,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product price views
         productPriceField = view.findViewById(R.id.tfu_product_price)
         productPriceEditIcon = view.findViewById(R.id.ic_edit_price)
+
+        // add edit product price recommendation views
+        productPriceRecommendation = view.findViewById(R.id.add_edit_product_product_recommendation_layout)
 
         // add edit product wholesale views
         productWholeSaleSwitch = view.findViewById(R.id.su_wholesale)
@@ -659,6 +663,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         setupSpecificationField()
+        setupProductPriceRecommendationField()
         enableProductNameField()
         onFragmentResult()
         setupBackPressed()
@@ -682,16 +687,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
-
-        add_edit_product_product_recommendation_layout.price = "Rp. 250.000"
-        add_edit_product_product_recommendation_layout.setButtonToBlack()
-        add_edit_product_product_recommendation_layout.setOnButtonNextClicked {
-            Toaster.build(requireView(), "sa1", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
-        add_edit_product_product_recommendation_layout.setOnSuggestedPriceSelected {
-            Toaster.build(requireView(), "sa2", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1460,7 +1455,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         //observe only if product has product id
         if (viewModel.productInputModel.productId == 0L) return
         viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
-            println(it)
+            if (it.suggestedPrice > 0.0) {
+                val minText = it.suggestedPriceMin.getCurrencyFormatted()
+                val maxText = it.suggestedPriceMax.getCurrencyFormatted()
+                val descriptionText = getString(R.string.label_price_recommendation_description, minText, maxText)
+
+                productPriceRecommendation?.price = it.suggestedPrice.getCurrencyFormatted()
+                productPriceRecommendation?.description = descriptionText
+            }
+            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0
+
+            if (it.price == it.suggestedPrice) {
+                productPriceRecommendation?.setSuggestedPriceSelected()
+            }
         }
         viewModel.getProductPriceRecommendation()
     }
@@ -1518,6 +1525,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         productSpecificationReloadButton?.setOnClickListener {
             getAnnotationCategory()
+        }
+    }
+
+    private fun setupProductPriceRecommendationField() {
+        productPriceRecommendation?.setButtonToBlack()
+        productPriceRecommendation?.setOnButtonNextClicked {
+            Toaster.build(requireView(), "sa1", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+        productPriceRecommendation?.setOnSuggestedPriceSelected { suggestedPrice ->
+            productPriceField.setText(suggestedPrice)
         }
     }
 
