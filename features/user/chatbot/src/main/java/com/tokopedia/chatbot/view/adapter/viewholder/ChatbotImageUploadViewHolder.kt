@@ -4,19 +4,18 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ImageUnify
 
-class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListener)
+class ChatbotImageUploadViewHolder(itemView: View?,
+                                   private val listener: ImageUploadListener)
     : ImageUploadViewHolder(itemView, listener) {
 
     override fun alwaysShowTime() = true
@@ -26,6 +25,8 @@ class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun getLeftActionId() = R.id.left_action
     override fun getChatBalloonId() = R.id.fl_image_container
     override fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
+
+    private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             chatBalloon,
@@ -42,7 +43,7 @@ class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
             getStrokeWidthSenderDimenRes()
     )
 
-//    private val attachmentUnify get() = attachment as? ImageUnify
+    private val attachmentUnify get() = attachment as? ImageUnify
 
     private val imageRadius = itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             ?: 0f
@@ -52,10 +53,11 @@ class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
         super.bind(element)
         chatStatus?.let { bindChatReadStatus(element, it) }
         bindBackground()
+        cancelUpload?.setOnClickListener { listener.onImageUploadCancelClicked(element) }
     }
 
     private fun bindBackground() {
-            chatBalloon?.background = bgSender
+        chatBalloon?.background = bgSender
     }
 
     override fun bindImageAttachment(element: ImageUploadViewModel) {
@@ -66,8 +68,8 @@ class ChatbotImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
         } else {
             setVisibility(progressBarSendImage, View.GONE)
         }
-        element.imageUrl?.let {
-            attachment?.let { it1 -> LoadImage(it1, it) }
+        element.imageUrl?.let { imageUrl ->
+            attachmentUnify?.let { attachementUnify -> LoadImage(attachementUnify, imageUrl) }
         }
     }
 

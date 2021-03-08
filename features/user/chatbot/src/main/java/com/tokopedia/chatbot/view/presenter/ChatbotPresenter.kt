@@ -63,7 +63,11 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
+import rx.Observable
 import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import java.util.Calendar
@@ -447,6 +451,11 @@ class ChatbotPresenter @Inject constructor(
 
                     })
         }
+
+    }
+
+    override fun cancelImageUpload() {
+        uploadImageUseCase.unsubscribe()
     }
 
     private fun sendUploadedImageToWebsocket(json: JsonObject) {

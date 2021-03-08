@@ -133,15 +133,15 @@
                     android:id="@+id/send_but"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
-                    android:layout_alignBottom="@+id/new_comment"
+                    android:layout_alignBottom="@+id/new_comment_container"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/ic_chatbot_send" />
 
-                <EditText
-                    android:id="@+id/new_comment"
+                <LinearLayout
+                    android:id="@+id/new_comment_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -150,25 +150,34 @@
                     android:layout_marginRight="@dimen/dp_8"
                     android:layout_toStartOf="@+id/send_but"
                     android:layout_toLeftOf="@+id/send_but"
-                    android:background="@drawable/bg_rounded_chat_input"
-                    android:hint="@string/cb_bot_reply_text"
-                    android:inputType="textMultiLine"
-                    android:maxLines="5"
                     android:paddingStart="@dimen/dp_12"
                     android:paddingLeft="@dimen/dp_12"
                     android:paddingTop="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_48"
                     android:paddingRight="@dimen/dp_48"
-                    android:paddingBottom="@dimen/dp_10"
-                    android:textSize="@dimen/sp_16"
-                    tools:text="@tools:sample/lorem/random" />
+                    android:paddingBottom="@dimen/dp_10">
+
+                    <EditText
+                        android:id="@+id/new_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/cb_bot_reply_text"
+                        android:inputType="textMultiLine"
+                        android:maxLines="5"
+                        android:textSize="@dimen/sp_16"
+                        android:background="@null"
+                        tools:text="" />
+
+                </LinearLayout>
+
+
 
                 <FrameLayout
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
-                    android:layout_alignEnd="@+id/new_comment"
-                    android:layout_alignRight="@+id/new_comment"
-                    android:layout_alignBottom="@+id/new_comment"
+                    android:layout_alignEnd="@+id/new_comment_container"
+                    android:layout_alignRight="@+id/new_comment_container"
+                    android:layout_alignBottom="@+id/new_comment_container"
                     android:layout_marginEnd="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
                     android:background="@drawable/bg_oval_transparent">

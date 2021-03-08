@@ -3,14 +3,17 @@ package com.tokopedia.chatbot.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -56,6 +59,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
+import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -131,6 +135,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var session: UserSessionInterface
 
     lateinit var replyEditText: EditText
+    lateinit var replyEditTextContainer: LinearLayout
 
     lateinit var mCsatResponse: WebSocketCsatResponse
     lateinit var attribute: Attributes
@@ -220,8 +225,27 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
+        replyEditTextContainer = view.findViewById(R.id.new_comment_container)
+        bindReplyTextBackground()
         ticker = view.findViewById(R.id.chatbot_ticker)
         return view
+    }
+
+    private fun getReplyBackground() = ViewUtil.generateBackgroundWithShadow(
+            replyEditTextContainer,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER
+    )
+
+    private fun bindReplyTextBackground() {
+        replyEditTextContainer.setReplyEditTextBackground(getReplyBackground())
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -475,6 +499,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
 
 
+    }
+
+    override fun onImageUploadCancelClicked(image : ImageUploadViewModel) {
+        presenter.cancelImageUpload()
+        getViewState().showRetryUploadImages(image, true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -885,4 +914,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
         return super.onBackPressed()
     }
+}
+
+private fun LinearLayout.setReplyEditTextBackground(replyBackground: Drawable?) {
+    val pl = paddingLeft
+    val pt = paddingTop
+    val pr = paddingRight
+    val pb = paddingBottom
+    setBackground(replyBackground)
+    setPadding(pl, pt, pr, pb)
 }

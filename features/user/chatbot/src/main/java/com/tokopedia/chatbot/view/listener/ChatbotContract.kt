@@ -104,5 +104,7 @@ interface ChatbotContract {
                            onsubmitingChatCsatSuccess: (String) -> Unit,
                            onError: (Throwable) -> Unit)
 
+        fun cancelImageUpload()
+
     }
 }
