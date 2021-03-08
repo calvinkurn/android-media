@@ -156,6 +156,7 @@ include "features:operational:csat_rating"
 include "features:ovop2p"
 
 include "features:ordermanagement:snapshot"
+include "features:ordermanagement:orderhistory"
 
 include "features:payment:common_payment"
 include "features:payment:payment"
@@ -240,7 +241,6 @@ include "features:user:fcm_common"
 
 include "tkpdcore"
 include "tkpddesign"
-include "tkpdseller"
 include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'

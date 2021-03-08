@@ -62,7 +62,7 @@ dependencies {
     implementation project(rootProject.ext.features.travelPassenger)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerActiveCommon)
-    implementation project(rootProject.ext.features.tkpdseller)
+    implementation project(rootProject.ext.features.ordermanagementhistory)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.variantCommon)
     implementation project(rootProject.ext.features.payment)
