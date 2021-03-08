@@ -455,8 +455,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
-                localChosenAddr?.address_id?.toInt()?.let { addrId ->
-                    viewModel.deletePeopleAddress(data.id, prevState, addrId, ChooseAddressUtils.isRollOutUser(context)) }
+                viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
             btn_alamat_utama_choose?.setOnClickListener {
