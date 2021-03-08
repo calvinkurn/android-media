@@ -84,4 +84,8 @@ class ChatListWebSocketViewModel @Inject constructor(
         pendingMessages.clear()
     }
 
+    fun deletePendingMsgWithId(msgId: String) {
+        pendingMessages.remove(msgId)
+    }
+
 }
