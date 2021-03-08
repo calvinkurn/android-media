@@ -55,8 +55,7 @@ class PdpGamificationView : LinearLayout {
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private lateinit var dataList: ArrayList<Visitable<*>>
-    var pageName = ""
-    var shopId = 0L
+    var shopId = ""
     var userId: String? = null
     var errorListener: PdpErrorListener?=null
 
@@ -172,19 +171,12 @@ class PdpGamificationView : LinearLayout {
                             val oldSize = dataList.size
                             if(oldSize == 0 && it.data?.isNullOrEmpty()){
                                 viewModel.useEmptyShopId = true
+                                viewModel.shopId = ""
                                 viewModel.getProducts(0)
                             }
                         }
                     }
                 }
-                LiveDataResult.STATUS.ERROR -> {
-                    hidePdp()
-                }
-            }
-        })
-
-        viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
-            when (it.status) {
                 LiveDataResult.STATUS.ERROR -> {
                     hidePdp()
                 }
@@ -202,12 +194,12 @@ class PdpGamificationView : LinearLayout {
         scrollListener.updateStateAfterGetData()
     }
 
-    fun getRecommendationParams(pageName: String, shopId: Long, isShopIdEmpty:Boolean) {
-        this.pageName = pageName
+    fun getRecommendationParams(pageName: String, shopId: String, isShopIdEmpty:Boolean) {
         this.shopId = shopId
         viewModel.shopId = shopId
+        viewModel.pageName = pageName
         viewModel.useEmptyShopId = isShopIdEmpty
-        viewModel.getRecommendationParams(pageName)
+        viewModel.getProducts(0)
     }
 
 

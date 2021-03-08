@@ -1053,6 +1053,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 type = toasterType).show()
     }
 
+    private fun doAutoSwipe() {
+        scope.launch {
+            delay(AUTO_SWIPE_DELAY)
+            playNavigation.navigateToNextPage()
+        }
+    }
+
     //region OnStateChanged
     private fun playButtonViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
@@ -1064,7 +1071,10 @@ class PlayUserInteractionFragment @Inject constructor(
         }
         when (state) {
             PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
-            PlayViewerVideoState.End -> playButtonView.showRepeatButton()
+            PlayViewerVideoState.End -> {
+                if (playViewModel.bottomInsets.isAnyShown) playButtonView.showRepeatButton()
+                else doAutoSwipe()
+            }
             else -> playButtonView.hide()
         }
     }
@@ -1261,5 +1271,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         private const val FADE_DURATION = 200L
         private const val FADE_TRANSITION_DELAY = 3000L
+
+        private const val AUTO_SWIPE_DELAY = 500L
     }
 }

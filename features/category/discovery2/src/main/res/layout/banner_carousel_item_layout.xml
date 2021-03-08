@@ -4,16 +4,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:paddingBottom="@dimen/dp_2"
     android:layout_height="match_parent">
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/banner_image"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:id="@+id/banner_image_container"
+        app:cardElevation="@dimen/dp_4"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/unify_space_8"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="@dimen/dp_140" />
+        app:layout_constraintTop_toTopOf="parent">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/banner_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subTitle_tv"
@@ -25,10 +33,11 @@
         android:textColor="@color/clr_f231353b"
         app:typographyWeight="bold"
         android:paddingHorizontal="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintTop_toBottomOf="@id/banner_image"
-        app:layout_constraintLeft_toLeftOf="@id/banner_image"
-        app:layout_constraintRight_toRightOf="@id/banner_image"
+        android:layout_marginTop="@dimen/dp_2"
+        android:paddingBottom="@dimen/dp_6"
+        app:layout_constraintTop_toBottomOf="@id/banner_image_container"
+        app:layout_constraintLeft_toLeftOf="@id/banner_image_container"
+        app:layout_constraintRight_toRightOf="@id/banner_image_container"
         tools:text="Tips adn fknk ofkfne kjfdkjf kncdknf kfdknffefefefefeefeffefefe"/>
 
 

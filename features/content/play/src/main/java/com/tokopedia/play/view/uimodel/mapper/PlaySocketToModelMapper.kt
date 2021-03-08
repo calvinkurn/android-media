@@ -29,7 +29,7 @@ class PlaySocketToModelMapper @Inject constructor(
     }
 
     fun mapTotalView(input: TotalView): String {
-        return input.totalViewFormatted
+        return if (input.totalViewFormatted.isBlank()) "0" else input.totalViewFormatted
     }
 
     fun mapPinnedMessage(input: PinnedMessage): PlayPinnedUiModel.PinnedMessage {
