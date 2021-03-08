@@ -104,6 +104,8 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl2"
             app:typographyType="body_3"
+            android:visibility="gone"
+            tools:visibility="visible"
             tools:text="4.8"
             />
 
@@ -125,16 +127,18 @@
             android:id="@+id/sales_tv"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_text_view_integrity_height"
-            app:layout_constraintTop_toTopOf="@id/rating_float"
+            app:layout_constraintTop_toBottomOf="@id/shop_name"
             app:layout_constraintStart_toEndOf="@id/rating_line"
             app:layout_constraintEnd_toEndOf="@id/product_name"
             app:layout_constraintBottom_toBottomOf="@id/rating_line"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="Terjual 1"
+            android:visibility="gone"
             tools:visibility="visible" />
 
         <ImageView

@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -34,12 +33,9 @@ import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
-import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
-import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
-import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -58,7 +54,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -102,8 +97,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
 
-        private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
-        private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+        private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
+        private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
         fun newInstance(catalogId: String): BaseCategorySectionFragment {
@@ -474,11 +469,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun enableWishListButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt() ?: 0, true)
+        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), true)
     }
 
     private fun disableWishListButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt() ?: 0, false)
+        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), false)
     }
 
     private fun removeWishList(productId: String, userId: String, adapterPosition: Int) {
@@ -594,7 +589,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun initSearchQuickSortFilter(rootView: View) {
         searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
-        searchSortFilter?.filterIcon?.setColorFilter(ContextCompat.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Blue_B100), android.graphics.PorterDuff.Mode.MULTIPLY);
         addDefaultSelectedSort()
     }
 
@@ -657,7 +651,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
-        if (item.refChipUnify != null) item.refChipUnify.showNewNotification = isNew
+        item.refChipUnify?.showNewNotification = isNew
     }
 
 
@@ -703,9 +697,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel){
-        if (searchParameter != null) {
-            filterController!!.appendFilterList(searchParameter.getSearchParameterHashMap(), dynamicFilterModel.data.filter)
-        }
+        filterController?.appendFilterList(searchParameter.getSearchParameterHashMap(), dynamicFilterModel.data.filter)
 
         if (sortFilterBottomSheet != null) {
             sortFilterBottomSheet!!.setDynamicFilterModel(dynamicFilterModel)
