@@ -654,6 +654,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && !viewModel.containsFailedRefreshOrder)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -682,6 +683,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && viewModel.containsFailedRefreshOrder)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -715,6 +717,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Fail)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -752,6 +755,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
         assert(refreshOrderResult is Success && refreshOrderResult.data.orderId == orderId && refreshOrderResult.data.order == order)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -771,6 +775,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
         assert(refreshOrderResult is Fail)
         assert(viewModel.containsFailedRefreshOrder)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -793,6 +798,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         }
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
         assert(refreshOrderResult == null)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == null)
     }
 
     @Test

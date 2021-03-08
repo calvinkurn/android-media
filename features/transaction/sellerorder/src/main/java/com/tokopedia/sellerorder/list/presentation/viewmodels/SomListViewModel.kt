@@ -24,6 +24,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -87,6 +88,10 @@ class SomListViewModel @Inject constructor(
     private val _bulkAcceptOrderResult = MutableLiveData<Result<SomListBulkAcceptOrderUiModel>>()
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
+
+    private val _isLoadingOrder = MutableLiveData<Boolean>()
+    val isLoadingOrder: LiveData<Boolean>
+        get() = _isLoadingOrder
 
     private val _isOrderManageEligible = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
     val isOrderManageEligible: LiveData<Result<Pair<Boolean, Boolean>>>
@@ -207,6 +212,14 @@ class SomListViewModel @Inject constructor(
         return getOrderListParams.nextOrderId == 0L
     }
 
+    private fun updateLoadOrderStatus(job: Job) {
+        job.invokeOnCompletion {
+            launch(context = dispatcher.main) {
+                _isLoadingOrder.value = isRefreshingOrder()
+            }
+        }
+    }
+
     fun bulkAcceptOrder(orderIds: List<String>) {
         launchCatchError(block = {
             retryCount = 0
@@ -283,7 +296,7 @@ class SomListViewModel @Inject constructor(
             }
         }, onError = {
             _orderListResult.postValue(Fail(it))
-        })
+        }).apply { updateLoadOrderStatus(this) }
     }
 
     fun refreshSelectedOrder(orderId: String, invoice: String) {
@@ -306,7 +319,7 @@ class SomListViewModel @Inject constructor(
                     _refreshOrderResult.value = Fail(it)
                     containsFailedRefreshOrder = true
                 }
-            })
+            }).apply { updateLoadOrderStatus(this) }
             refreshOrder = RefreshOrder(orderId, invoice, job)
             refreshOrderJobs.add(refreshOrder)
         }

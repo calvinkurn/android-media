@@ -24,6 +24,7 @@
 
     <!--    seller migration fragment tabs-->
     <string name="seller_migration_fragment_tab_product">Produk</string>
+    <string name="seller_migration_fragment_tab_discussion">Diskusi</string>
     <string name="seller_migration_fragment_tab_chat">Chat</string>
     <string name="seller_migration_fragment_tab_review">Ulasan</string>
     <string name="seller_migration_fragment_tab_promo_and_ads">Iklan &amp; Promosi</string>
@@ -114,5 +115,14 @@
     <string name="seller_migration_tab_ads_broadcast_chat_title">BROADCAST CHAT</string>
     <string name="seller_migration_tab_ads_broadcast_chat_description">Kirim pesan promosi langsung ke banyak calon pembeli.</string>
     <string name="seller_migration_entry_point_broadcast_chat_description">Kirim chat ke berbagai calon pembeli untuk promosikan produkmu.</string>
+
+    <!-- Discussion Template -->
+    <string name="seller_migration_template_title">Template BALASAN</string>
+    <string name="seller_migration_template_subtitle">Balas diskusi pembeli lebih cepat hingga 5 template.</string>
+
+    <!-- Discussion SmartReply -->
+    <string name="seller_migration_smart_reply_title">SMART REPLY</string>
+    <string name="seller_migration_smart_reply_subtitle">Atur balasan otomatis untuk jawab diskusi tentang stok.</string>
+
 
 </resources>

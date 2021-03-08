@@ -70,10 +70,11 @@ dependencies {
     implementation rootProject.ext.firebase.crashlytics
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.playWidget)
 
 
     androidTestImplementation rootProject.ext.testDependencies.assertJCore
-    androidTestImplementation rootProject.ext.testDependencies.couroutinesTest
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
@@ -27,8 +28,7 @@ import kotlinx.android.synthetic.main.fragment_credit_card_detail.*
 import kotlinx.android.synthetic.main.fragment_credit_card_detail.view.*
 import javax.inject.Inject
 
-class DetailCreditCardFragment : BaseDaggerFragment(),
-        DeleteCreditCardDialogPayment.DeleteCreditCardDialogListener {
+class DetailCreditCardFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -72,7 +72,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(),
     }
 
     private fun observeViewModel() {
-        viewModel.creditCardDeleteResultLiveData.observe(viewLifecycleOwner, Observer{
+        viewModel.creditCardDeleteResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onDeleteCCSuccess(it.data)
                 is Fail -> onDeleteCCError(it.throwable)
@@ -91,13 +91,19 @@ class DetailCreditCardFragment : BaseDaggerFragment(),
     }
 
     private fun showDeleteCcDialog() {
-        fragmentManager?.run {
-            val creditCardDialog = DeleteCreditCardDialogPayment.newInstance(
-                    settingListPaymentModel?.tokenId ?: "",
-                    settingListPaymentModel?.maskedNumber ?: "")
-            creditCardDialog.setListener(this@DetailCreditCardFragment)
-            creditCardDialog.show(this,
-                    "")
+        context?.let {
+            val creditCardDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            creditCardDialog.apply {
+                setTitle(getString(R.string.payment_title_delete_credit_card))
+                setDescription(getString(R.string.payment_label_forever_delete_credit_card))
+                setPrimaryCTAText(getString(R.string.payment_label_yes))
+                setPrimaryCTAClickListener {
+                    onConfirmDelete(settingListPaymentModel?.tokenId ?: "")
+                }
+                setSecondaryCTAText(getString(R.string.payment_label_no))
+                setSecondaryCTAClickListener { dismiss() }
+                show()
+            }
         }
     }
 
@@ -109,7 +115,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(),
         progressDialog.hide()
     }
 
-    override fun onConfirmDelete(tokenId: String?) {
+    fun onConfirmDelete(tokenId: String?) {
         tokenId?.let {
             showProgressDialog()
             viewModel.deleteCreditCard(tokenId)

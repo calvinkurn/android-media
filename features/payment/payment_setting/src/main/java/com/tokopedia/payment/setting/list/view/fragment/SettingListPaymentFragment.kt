@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
@@ -85,7 +85,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
 
     private fun observeViewModel() {
-        settingsListViewModel.paymentQueryResultLiveData.observe(viewLifecycleOwner, Observer{
+        settingsListViewModel.paymentQueryResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onPaymentSignature(it.data.paymentSignature)
@@ -94,7 +94,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
                 is Fail -> showGetListError(it.throwable)
             }
         })
-        settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, Observer{
+        settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, Observer {
             if (it) {
                 hideLoadingDialog()
                 onSuccessVerifPhone()
@@ -175,22 +175,25 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     private fun onNeedVerifPhone() {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.payment_label_title_dialog_verif_phone))
-        dialog.setDesc(getString(R.string.payment_label_desc_dialog_verif))
-        dialog.setBtnOk(getString(R.string.payment_label_continue_dialog_verif))
-        dialog.setBtnCancel(getString(R.string.payment_label_cancel_dialog_verif))
-        dialog.setOnOkClickListener {
-            activity?.run {
-                val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.SETTING_PROFILE)
-                this@SettingListPaymentFragment.startActivityForResult(intent, REQUEST_CODE_VERIF_PHONE)
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            //val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            dialog.setTitle(getString(R.string.payment_label_title_dialog_verif_phone))
+            dialog.setDescription(getString(R.string.payment_label_desc_dialog_verif))
+            dialog.setPrimaryCTAText(getString(R.string.payment_label_continue_dialog_verif))
+            dialog.setSecondaryCTAText(getString(R.string.payment_label_cancel_dialog_verif))
+            dialog.setPrimaryCTAClickListener {
+                activity?.run {
+                    val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.SETTING_PROFILE)
+                    this@SettingListPaymentFragment.startActivityForResult(intent, REQUEST_CODE_VERIF_PHONE)
+                }
+                dialog.dismiss()
             }
-            dialog.dismiss()
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        dialog.setOnCancelClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
     private fun onPaymentSignature(paymentSignature: PaymentSignature?) {

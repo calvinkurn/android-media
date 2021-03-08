@@ -165,9 +165,6 @@ class AddEditProductPreviewFragment :
     // action button
     private var doneButton: AppCompatTextView? = null
 
-    // notification
-    private var tickerAddEditProductNotification: Ticker? = null
-
     // photo
     private var addEditProductPhotoButton: Typography? = null
     private var productPhotosView: RecyclerView? = null
@@ -307,9 +304,6 @@ class AddEditProductPreviewFragment :
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
-
-        // ticker specification unavailable
-        tickerAddEditProductNotification = activity?.findViewById(R.id.ticker_add_edit_product_notification)
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
@@ -862,7 +856,6 @@ class AddEditProductPreviewFragment :
     private fun displayEditMode() {
         toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
-        tickerAddEditProductNotification?.isVisible = !RollenceUtil.getSpecificationRollence()
 
         enablePhotoEdit()
         enableDetailEdit()

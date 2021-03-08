@@ -25,6 +25,7 @@ object SellerMigrationConstants {
     const val URL_VARIANT_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_variant.png"
     const val URL_ATTACH_VOUCHER_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_attach_voucher.png"
     const val URL_TEMPLATE_CHAT_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_template_chat.png"
+    const val URL_SMART_REPLY_DISCUSSION_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_discussion_smart_reply.png"
     const val URL_SELLER_INSIGHT_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_seller_insight.png"
     const val URL_TEMPLATE_REVIEW_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_template_review.png"
     const val URL_TOPADS_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_topads.png"

@@ -1492,8 +1492,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             getAnnotationCategory()
         }
 
-        productSpecificationLayout?.isVisible = RollenceUtil.getSpecificationRollence()
-
         addProductSpecificationButton?.setOnClickListener {
             showSpecificationPicker()
         }
@@ -1504,7 +1502,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun getAnnotationCategory() {
-        if (!RollenceUtil.getSpecificationRollence()) return
         val productId = viewModel.productInputModel.productId
 
         productSpecificationLayout?.gone()

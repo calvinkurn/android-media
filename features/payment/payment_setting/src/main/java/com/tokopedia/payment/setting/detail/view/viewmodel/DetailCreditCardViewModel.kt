@@ -6,10 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.payment.setting.detail.domain.GQLDeleteCreditCardQueryUseCase
 import com.tokopedia.payment.setting.detail.model.DataResponseDeleteCC
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 class DetailCreditCardViewModel @Inject constructor(

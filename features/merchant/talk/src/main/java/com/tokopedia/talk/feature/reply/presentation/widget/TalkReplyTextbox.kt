@@ -31,6 +31,13 @@ class TalkReplyTextbox : BaseCustomView {
         View.inflate(context, R.layout.widget_talk_reply_textbox, this)
     }
 
+    fun setText(text: String) {
+        replyEditText.apply {
+            setText(text)
+            setSelection(text.length)
+        }
+    }
+
     fun bind(profilePicture: String, talkReplyTextboxListener: TalkReplyTextboxListener, textLimit: Int) {
         replyUserProfilePicture.loadImageCircle(profilePicture)
         replyAttachProduct.setOnClickListener {
