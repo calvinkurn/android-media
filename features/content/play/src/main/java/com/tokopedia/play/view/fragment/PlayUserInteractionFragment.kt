@@ -1143,7 +1143,8 @@ class PlayUserInteractionFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (isFreezeOrBanned) {
-            pinnedView?.hide()
+            pinnedVoucherView?.hide()
+            productFeaturedView?.hide()
             return
         }
 
@@ -1155,10 +1156,10 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
 
                 if (!bottomInsets.isAnyShown) {
-                    pinnedVoucherView?.show()
-                    productFeaturedView?.show()
+                    pinnedVoucherView?.showIfNotEmpty()
+                    productFeaturedView?.showIfNotEmpty()
                 } else {
-                    pinnedVoucherView?.show()
+                    pinnedVoucherView?.hide()
                     productFeaturedView?.hide()
                 }
             } else -> {
@@ -1226,7 +1227,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
-            quickReplyView?.show()
+            quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
     }
 
