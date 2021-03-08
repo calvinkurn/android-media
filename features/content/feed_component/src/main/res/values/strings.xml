@@ -98,4 +98,11 @@
     <string name="feed_component_report_description">Kamu akan melaporkan sebagai anonim, kecuali jika kamu melaporkan pelanggaran kekayaan intelektual. Jika ada seseorang dalam bahaya, segera hubungi layanan darurat terdekat.</string>
     <string name="feed_component_report_subtext1">Postingan  ini spam</string>
     <string name="feed_component_report_subtext2">Postingan tidak pantas</string>
+    <string name="feed_component_spam_report_header">Terima kasih sudah melapor, ya!</string>
+    <string name="feed_component_spam_report_subtext">Masukanmu sangat penting bagi kami untuk menjaga keamanan komunitas di Tokopedia.</string>
+    <string name="feed_component_report_option_text1">Pornografi atau aktivitas seksual</string>
+    <string name="feed_component_report_option_text2">Ucapan atau simbol kebencian</string>
+    <string name="feed_component_report_option_text3">Penipuan</string>
+    <string name="feed_component_report_option_text4">Penjualan barang ilegal dan terlarang</string>
+    <string name="feed_component_report_option_text5">Pelanggaran kekayaan intelektual</string>
 </resources>

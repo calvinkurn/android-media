@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class FeedXLike(
         @SerializedName("label")
-        var like: String,
+        var label: String,
         @SerializedName("count")
         var count: Int,
         @SerializedName("countFmt")

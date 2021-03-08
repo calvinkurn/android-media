@@ -3,7 +3,7 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 
 import com.google.gson.annotations.SerializedName
 
-data class FeedQuery(
+data class FeedXQuery(
     @SerializedName("data")
-    var feedData: FeedData
+    var feedData: FeedXData
 )
