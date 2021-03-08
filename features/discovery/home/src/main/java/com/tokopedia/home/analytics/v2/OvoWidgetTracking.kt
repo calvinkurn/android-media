@@ -18,6 +18,10 @@ object OvoWidgetTracking: BaseTracking() {
 
     private const val ACTION_CLICK_TOKO_POINTS = "click tokopoints"
     private const val EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON = "click on tokopoints new coupon"
+    private const val EVENT_ACTION_CLICK_ON_TOKOPOINTS_BALANCE_WIDGET_OVO = "click ovo on balance widget"
+    private const val EVENT_ACTION_CLICK_ON_TOKOPOINTS_BALANCE_WIDGET_TOKOPOINT = "click tokopoint on balance widget"
+    private const val EVENT_ACTION_CLICK_ON_TOKOPOINTS_BALANCE_WIDGET_COUPON = "click coupon on balance widget"
+    private const val EVENT_ACTION_CLICK_ON_TOKOPOINTS_BALANCE_WIDGET_BBO = "click bebas ongkir on balance widget"
     private const val ACTION_CLICK_ON_OVO = "click on ovo"
     private const val ACTION_CLICK_ON_TOPUP_OVO = "click on top up ovo"
     private const val ACTION_CLICK_ACTIVATE = "click activate"
@@ -25,6 +29,8 @@ object OvoWidgetTracking: BaseTracking() {
     private const val ACTION_CLICK_SALDO = "click saldo"
 
     private const val LABEL_TOKOPOINTS = "tokopoints"
+    private const val LABEL_OVO_STATUS_AVAILABLE = "ovo available"
+    private const val LABEL_OVO_STATUS_UNAVAILABLE = "ovo unavilable"
 
     private const val BEBAS_ONGKIR_KUOTA = "bebas ongkir kuota"
     private const val NON_LOGIN = "non login"
@@ -135,6 +141,58 @@ object OvoWidgetTracking: BaseTracking() {
                 Screen.KEY, Screen.DEFAULT,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
                 BusinessUnit.KEY, BusinessUnit.DEFAULT
+        ))
+    }
+
+    fun sendClickOnOVONewTokopointsWidget(isOvoAvailable: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY, EVENT_TOKO_POINT,
+                Category.KEY, CATEGORY_HOMEPAGE_TOKOPOINTS,
+                Action.KEY, EVENT_ACTION_CLICK_ON_TOKOPOINTS_BALANCE_WIDGET_OVO,
+                Label.KEY, if (isOvoAvailable) LABEL_OVO_STATUS_AVAILABLE else LABEL_OVO_STATUS_UNAVAILABLE,
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                UserId.KEY, userId
+        ))
+    }
+
+    fun sendClickOnTokopointsNewTokopointsWidget(isOvoAvailable: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY, EVENT_TOKO_POINT,
+                Category.KEY, CATEGORY_HOMEPAGE_TOKOPOINTS,
+                Action.KEY, EVENT_ACTION_CLICK_ON_TOKOPOINTS_BALANCE_WIDGET_TOKOPOINT,
+                Label.KEY, if (isOvoAvailable) LABEL_OVO_STATUS_AVAILABLE else LABEL_OVO_STATUS_UNAVAILABLE,
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                UserId.KEY, userId
+        ))
+    }
+
+    fun sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY, EVENT_TOKO_POINT,
+                Category.KEY, CATEGORY_HOMEPAGE_TOKOPOINTS,
+                Action.KEY, EVENT_ACTION_CLICK_ON_TOKOPOINTS_BALANCE_WIDGET_COUPON,
+                Label.KEY, if (isOvoAvailable) LABEL_OVO_STATUS_AVAILABLE else LABEL_OVO_STATUS_UNAVAILABLE,
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                UserId.KEY, userId
+        ))
+    }
+
+    fun sendClickOnBBONewTokopointsWidget(isOvoAvailable: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY, EVENT_TOKO_POINT,
+                Category.KEY, CATEGORY_HOMEPAGE_TOKOPOINTS,
+                Action.KEY, EVENT_ACTION_CLICK_ON_TOKOPOINTS_BALANCE_WIDGET_BBO,
+                Label.KEY, if (isOvoAvailable) LABEL_OVO_STATUS_AVAILABLE else LABEL_OVO_STATUS_UNAVAILABLE,
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                UserId.KEY, userId
         ))
     }
 }

@@ -11,10 +11,6 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 
 fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
-    var drawerItemType = itemType
-    if (topupUrl.isNotEmpty()) {
-        drawerItemType = TYPE_WALLET_WITH_TOPUP
-    }
     return BalanceDrawerItemModel(
             applinkContainer = if (itemType == TYPE_WALLET_WITH_TOPUP) topupUrl else appLinkBalance,
             applinkActionText = appLinkActionButton,
@@ -24,7 +20,7 @@ fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int):
             balanceSubTitleTextAttribute = buildWalletSubTitleTextAttribute(),
             balanceTitleTagAttribute = null,
             balanceSubTitleTagAttribute = null,
-            drawerItemType = drawerItemType,
+            drawerItemType = itemType,
             state = state
     )
 }
