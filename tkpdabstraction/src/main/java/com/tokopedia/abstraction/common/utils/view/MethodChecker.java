@@ -118,15 +118,15 @@ public class MethodChecker {
     public static void animateVectorDrawable(Boolean start, Drawable drawable, Context context, @Nullable ImageUnify view, @Nullable Integer animationResource) {
         try {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && drawable instanceof AnimatedVectorDrawable) {
-                AnimationUtil.INSTANCE.animateTypingImage(start, (AnimatedVectorDrawable) drawable);
+                AnimationUtil.INSTANCE.animateImage(start, (AnimatedVectorDrawable) drawable);
             } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M && drawable instanceof AnimatedVectorDrawable) { //lollipop device (API 21 & 22)
                 if(view != null && animationResource != null) {
                     AnimatedVectorDrawableCompat animatedVector = AnimatedVectorDrawableCompat.create(context, animationResource);
                     view.setImageDrawable(animatedVector);
-                    AnimationUtil.INSTANCE.animateTypingImage(start, animatedVector);
+                    AnimationUtil.INSTANCE.animateImageCompat(start, animatedVector);
                 }
             } else if(drawable instanceof AnimatedVectorDrawableCompat) {
-                AnimationUtil.INSTANCE.animateTypingImage(start, (AnimatedVectorDrawableCompat) drawable);
+                AnimationUtil.INSTANCE.animateImageCompat(start, (AnimatedVectorDrawableCompat) drawable);
             }
         } catch (Exception ignored) {}
     }

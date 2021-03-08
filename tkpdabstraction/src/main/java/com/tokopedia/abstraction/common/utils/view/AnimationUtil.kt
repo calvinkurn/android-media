@@ -12,13 +12,22 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 
 object AnimationUtil {
+
+    /**
+     * @param start Boolean toggle start animate / stop animate
+     * @param anim AnimatedVectorDrawable to animate & register to callback
+     */
     @RequiresApi(Build.VERSION_CODES.M)
-    fun animateTypingImage(start: Boolean, anim: AnimatedVectorDrawable) {
+    fun animateImage(start: Boolean, anim: AnimatedVectorDrawable) {
         toggleAnimation(start, anim as Animatable)
         anim.registerAnimationCallback(setAnimatable2Callback(anim))
     }
 
-    fun animateTypingImage(start: Boolean, anim: AnimatedVectorDrawableCompat) {
+    /**
+     * @param start Boolean toggle start animate / stop animate
+     * @param anim AnimatedVectorDrawableCompat to animate & register to callback
+     */
+    fun animateImageCompat(start: Boolean, anim: AnimatedVectorDrawableCompat) {
         toggleAnimation(start, anim as Animatable)
         anim.registerAnimationCallback(setAnimatable2CompatCallback(anim))
     }
@@ -31,6 +40,10 @@ object AnimationUtil {
         }
     }
 
+    /**
+     * @param anim Animatable2 loop animation when it ends
+     * @return Animatable2.AnimationCallback to be registered to Animatable2
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setAnimatable2Callback(anim: Animatable2): Animatable2.AnimationCallback {
         return object: Animatable2.AnimationCallback() {
@@ -40,6 +53,10 @@ object AnimationUtil {
         }
     }
 
+    /**
+     * @param anim Animatable2Compat loop animation when it ends
+     * @return Animatable2Compat.AnimationCallback to be registered to Animatable2
+     */
     private fun setAnimatable2CompatCallback(anim: Animatable2Compat): Animatable2Compat.AnimationCallback {
         return object: Animatable2Compat.AnimationCallback() {
             private val animHandler = Handler(Looper.getMainLooper())
