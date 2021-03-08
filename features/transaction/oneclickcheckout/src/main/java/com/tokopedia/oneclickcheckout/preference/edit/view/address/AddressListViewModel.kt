@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -124,10 +125,10 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         }
     }
 
-    fun setSelectedAddress(addressId: String) {
+    fun setSelectedAddress(address: RecipientAddressModel) {
         val addressModel = addressListModel
         if (addressModel != null && (_addressList.value is OccState.Success || _addressList.value is OccState.FirstLoad)) {
-            selectedId = addressId
+            selectedId = address.id
             logicSelection(addressModel, isChangeSelection = true)
         }
     }

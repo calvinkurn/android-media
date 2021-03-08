@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.oneclickcheckout.R
@@ -366,9 +367,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         searchAddress?.searchBarPlaceholder = getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
     }
 
-    override fun onSelect(addressId: String) {
+    override fun onSelect(addressModel: RecipientAddressModel) {
         preferenceListAnalytics.eventClickAddressOptionInPilihAlamatPage()
-        viewModel.setSelectedAddress(addressId)
+        viewModel.setSelectedAddress(addressModel)
     }
 
     private fun openSoftKeyboard() {

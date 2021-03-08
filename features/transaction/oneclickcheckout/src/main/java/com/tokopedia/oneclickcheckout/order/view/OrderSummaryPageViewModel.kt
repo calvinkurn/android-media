@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -24,6 +25,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.*
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -344,7 +346,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun chooseAddress(addressId: String) {
+    fun chooseAddress(addressModel: RecipientAddressModel) {
         launch(executorDispatchers.main) {
             var param = generateUpdateCartParam()
             if (param == null) {
@@ -352,11 +354,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 return@launch
             }
             param = param.copy(profile = param.profile.copy(
-                    addressId = addressId
+                    addressId = addressModel.id
             ))
+            val chosenAddress = ChosenAddress(
+                    addressId = addressModel.id,
+                    districtId = addressModel.destinationDistrictId,
+                    postalCode = addressModel.postalCode,
+                    geolocation = String.format("%s %s", addressModel.addressName, addressModel.recipientName),
+                    mode = ChosenAddress.MODE_ADDRESS
+            )
+            param.chosenAddress = chosenAddress
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
+                globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(addressModel)
                 clearBboIfExist()
             }
             globalEvent.value = newGlobalEvent

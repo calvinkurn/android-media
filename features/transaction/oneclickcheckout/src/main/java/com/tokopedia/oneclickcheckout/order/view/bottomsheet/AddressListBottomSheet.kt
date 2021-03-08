@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -131,9 +132,9 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
 
     private fun getAddressAdapterListener(): AddressListItemAdapter.OnSelectedListener {
         return object : AddressListItemAdapter.OnSelectedListener {
-            override fun onSelect(addressId: String) {
+            override fun onSelect(addressModel: RecipientAddressModel) {
                 bottomSheet?.dismiss()
-                listener.onSelect(addressId)
+                listener.onSelect(addressModel)
             }
         }
     }
@@ -350,7 +351,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         get() = SupervisorJob() + Dispatchers.Main.immediate
 
     interface AddressListBottomSheetListener {
-        fun onSelect(addressId: String)
+        fun onSelect(addressModel: RecipientAddressModel)
 
         fun onAddAddress(token: Token?)
     }
