@@ -322,12 +322,17 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = "${data.addressName} ${data.receiverName}",
+                                label = "${data.districtName}, ${data.cityName}",
+//                                label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         if (isLoginFlow) {
                             listener?.onLocalizingAddressLoginSuccessBottomSheet()
+                            dismissBottomSheet()
+                        } else {
+                            showToaster("success use location", Toaster.TYPE_NORMAL)
+                            listener?.onAddressDataChanged()
                             dismissBottomSheet()
                         }
                     }
@@ -497,20 +502,22 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun showGpsPopUp() {
         if (shouldShowGpsPopUp && hasBottomSheetShown && !hasAskedPermission) {
             hasAskedPermission = true
-            permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
-                override fun onPermissionDenied(permissionText: String) {
-                    ChooseAddressTracking.onClickDontAllowLocation(userSession.userId)
-                }
+            if (permissionCheckerHelper?.hasPermission(requireContext(), getPermissions()) == false) {
+                permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        ChooseAddressTracking.onClickDontAllowLocation(userSession.userId)
+                    }
 
-                override fun onNeverAskAgain(permissionText: String) {
-                    //no op
-                }
+                    override fun onNeverAskAgain(permissionText: String) {
+                        //no op
+                    }
 
-                override fun onPermissionGranted() {
-                    ChooseAddressTracking.onClickAllowLocation(userSession.userId)
-                    getLocation()
-                }
-            })
+                    override fun onPermissionGranted() {
+                        ChooseAddressTracking.onClickAllowLocation(userSession.userId)
+                        getLocation()
+                    }
+                })
+            }
         }
     }
 
