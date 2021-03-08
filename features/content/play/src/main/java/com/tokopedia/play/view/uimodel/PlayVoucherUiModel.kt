@@ -8,6 +8,7 @@ import com.tokopedia.play.view.type.MerchantVoucherType
 sealed class PlayVoucherUiModel
 
 data class MerchantVoucherUiModel(
+        val id: String,
         val type: MerchantVoucherType,
         val title: String,
         val description: String,
