@@ -1063,7 +1063,7 @@ class PlayUserInteractionFragment @Inject constructor(
         val highlightedVouchers = productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
         val featuredProducts = productTags.productList.filterIsInstance<PlayProductUiModel.Product>()
         analytic.impressionHighlightedVoucher(highlightedVouchers)
-        analytic.impressionFeaturedProduct(featuredProducts)
+        analytic.impressionFeaturedProduct(featuredProducts, productTags.basicInfo.maxFeaturedProducts)
     }
 
     private fun sendTrackerImpressionBottomSheetProduct() {

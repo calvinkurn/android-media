@@ -365,8 +365,9 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionFeaturedProduct(featuredProducts: List<PlayProductUiModel.Product>?) {
-        if (featuredProducts != null && featuredProducts.isNotEmpty()) {
+    fun impressionFeaturedProduct(products: List<PlayProductUiModel.Product>?, maxFeaturedProduct: Int) {
+        if (products != null && products.isNotEmpty()) {
+            val featuredProducts = products.take(maxFeaturedProduct)
             trackingQueue.putEETracking(
                     EventModel(
                             "productView",
