@@ -482,7 +482,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     Handler().postDelayed({
                         assignUserLocationData()
                         onSwipeRefresh()
-                    }, 300L)
+                    }, ProductDetailConstant.REFRESH_TIME_AFTER_LOGIN)
                 }
                 updateActionButtonShadow()
 
