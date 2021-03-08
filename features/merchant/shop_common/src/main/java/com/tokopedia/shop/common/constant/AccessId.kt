@@ -27,6 +27,7 @@ import androidx.annotation.IntDef
         AccessId.PRODUCT_EDIT,
         AccessId.PRODUCT_DUPLICATE,
         AccessId.EDIT_STOCK,
+        AccessId.CHAT,
         AccessId.COMPLAINT,
         AccessId.DISCUSSION,
         AccessId.REVIEW,
@@ -52,6 +53,7 @@ annotation class AccessId {
         const val PRODUCT_EDIT = 121
         const val PRODUCT_DUPLICATE = 123
         const val EDIT_STOCK = 124
+        const val CHAT = 207
         const val COMPLAINT = 14003
         const val DISCUSSION = 14005
         const val REVIEW = 14011

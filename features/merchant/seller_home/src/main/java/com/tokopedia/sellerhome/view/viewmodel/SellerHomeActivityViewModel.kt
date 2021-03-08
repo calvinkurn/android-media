@@ -98,7 +98,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     private suspend fun getIsRoleChatAdmin(): Boolean {
         return getEligiblityOnlyWhenAdminShouldCheckRole {
             try {
-                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.CHAT_LIST)
+                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.CHAT)
                 authorizeChatAccessUseCase.execute(requestParams)
             } catch (ex: Exception) {
                 false
