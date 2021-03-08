@@ -150,6 +150,7 @@ class DigitalCartActivityWithSubscriptionTest {
 
     private fun validatePaymentPriceOnUi() {
         //check payment price
+        onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))

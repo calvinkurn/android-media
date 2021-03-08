@@ -168,7 +168,9 @@ class DigitalCartFragment : BaseDaggerFragment() {
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
-            if (it != null) tvTotalPayment.text = getStringIdrFormat((it - getPromoData().amount))
+            it?.let { totalPrice ->
+                checkoutBottomViewWidget.totalPayment = getStringIdrFormat((totalPrice - getPromoData().amount))
+            }
         })
 
         viewModel.showContentCheckout.observe(viewLifecycleOwner, Observer { showContent ->
@@ -198,18 +200,18 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun observePromoData() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
             viewModel.applyPromoData(it)
-            digitalPromoBtnView.desc = getPromoData().description
+            checkoutBottomViewWidget.promoButtonDescription = getPromoData().description
             if (getPromoData().description.isEmpty()) {
                 renderDefaultEmptyPromoView()
             } else {
-                digitalPromoBtnView.title = getPromoData().title
+                checkoutBottomViewWidget.promoButtonTitle = getPromoData().title
             }
-            digitalPromoBtnView.state = getPromoData().state.mapToStatePromoCheckout()
+            checkoutBottomViewWidget.promoButtonState = getPromoData().state.mapToStatePromoCheckout()
 
             when (getPromoData().state) {
                 TickerCheckoutView.State.ACTIVE -> {
                     cartDetailInfoAdapter.isExpanded = true
-                    digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
+                    checkoutBottomViewWidget.promoButtonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
                 }
                 TickerCheckoutView.State.FAILED -> cartDetailInfoAdapter.isExpanded = true
                 else -> {
@@ -219,18 +221,18 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun renderDefaultEmptyPromoView() {
-        digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
-        digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
+        checkoutBottomViewWidget.promoButtonTitle = getString(R.string.digital_checkout_promo_title)
+        checkoutBottomViewWidget.promoButtonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
     }
 
     private fun showContent() {
         contentCheckout.visibility = View.VISIBLE
-        layout_digital_checkout_bottom_view.visibility = View.VISIBLE
+        checkoutBottomViewWidget.visibility = View.VISIBLE
     }
 
     private fun hideContent() {
         contentCheckout.visibility = View.GONE
-        layout_digital_checkout_bottom_view.visibility = View.GONE
+        checkoutBottomViewWidget.visibility = View.GONE
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
@@ -251,8 +253,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
         cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo)
 
         if (cartInfo.attributes.isEnableVoucher) {
-            digitalPromoBtnView.visibility = View.VISIBLE
-        } else digitalPromoBtnView.visibility = View.GONE
+            checkoutBottomViewWidget.promoButtonVisibility = View.VISIBLE
+        } else checkoutBottomViewWidget.promoButtonVisibility = View.GONE
 
         if (!digitalSubscriptionParams.isSubscribed) {
             renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
@@ -283,7 +285,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         showPromoTicker()
 
-        btnCheckout.setOnClickListener {
+        checkoutBottomViewWidget.setCheckoutButtonListener {
             viewModel.proceedToCheckout(getDigitalIdentifierParam())
         }
     }
@@ -318,19 +320,19 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun showPromoTicker() {
         renderDefaultEmptyPromoView()
 
-        digitalPromoBtnView.setOnClickListener {
+        checkoutBottomViewWidget.setDigitalPromoButtonListener {
             onClickUsePromo()
         }
 
-        digitalPromoBtnView.setListenerChevronIcon {
-            if (digitalPromoBtnView.desc.isNotEmpty()) {
-                digitalPromoBtnView.state = ButtonPromoCheckoutView.State.LOADING
+        checkoutBottomViewWidget.setButtonChevronIconListener {
+            if (checkoutBottomViewWidget.promoButtonDescription.isNotEmpty()) {
+                checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.LOADING
                 onResetPromoDiscount()
             } else {
                 onClickUsePromo()
             }
         }
-        digitalPromoBtnView.visibility = View.VISIBLE
+        checkoutBottomViewWidget.promoButtonVisibility = View.VISIBLE
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
@@ -412,7 +414,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
         if ((crossSellingConfig.bodyTitle).isNotEmpty()) {
             subscriptionWidget.visibility = View.VISIBLE
 
-            btnCheckout.text = crossSellingConfig.checkoutButtonText
+            checkoutBottomViewWidget.checkoutButtonText = crossSellingConfig.checkoutButtonText
 
             //if user has subscribe, hide subscriptionWidget's checkbox
             if (digitalSubscriptionParams.isSubscribed) {
@@ -519,11 +521,11 @@ class DigitalCartFragment : BaseDaggerFragment() {
                     }
 
                     override fun enableCheckoutButton() {
-                        btnCheckout.isEnabled = true
+                        checkoutBottomViewWidget.isCheckoutButtonEnabled = true
                     }
 
                     override fun disableCheckoutButton() {
-                        btnCheckout.isEnabled = false
+                        checkoutBottomViewWidget.isCheckoutButtonEnabled = false
                     }
                 }
 
