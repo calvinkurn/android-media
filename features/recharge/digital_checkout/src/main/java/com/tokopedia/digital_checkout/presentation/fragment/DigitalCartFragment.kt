@@ -44,6 +44,7 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -135,12 +136,13 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun loadData() {
-        loaderCheckout.visibility = View.VISIBLE
         cartPassData?.let {
             if (it.isFromPDP) {
                 viewModel.getCart(cartPassData?.categoryId
                         ?: "", getString(R.string.digital_cart_login_message))
             } else {
+                hideContent()
+                loaderCheckout.visibility = View.VISIBLE
                 addToCartViewModel.addToCart(it, getDigitalIdentifierParam(), digitalSubscriptionParams)
             }
         }
@@ -235,11 +237,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun showContent() {
         contentCheckout.visibility = View.VISIBLE
         layout_digital_checkout_bottom_view.visibility = View.VISIBLE
-    }
-
-    private fun hideContent() {
-        contentCheckout.visibility = View.GONE
-        layout_digital_checkout_bottom_view.visibility = View.GONE
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
@@ -587,6 +584,11 @@ class DigitalCartFragment : BaseDaggerFragment() {
         intent.putExtra(EXTRA_COUPON_ACTIVE, couponActive)
         intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
         startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
+    }
+
+    private fun hideContent() {
+        contentCheckout.hide()
+        layout_digital_checkout_bottom_view.hide()
     }
 
     private fun getPromoDigitalModel(): PromoDigitalModel = viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
