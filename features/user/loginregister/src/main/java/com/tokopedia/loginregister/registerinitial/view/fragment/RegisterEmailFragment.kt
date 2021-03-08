@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
@@ -518,9 +519,19 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private val abTestingRemoteConfig: RemoteConfig
         get() = RemoteConfigInstance.getInstance().abTestPlatform
 
+    fun isEnableEncryptRollout(): Boolean {
+        val rolloutKey = if(GlobalConfig.isSellerApp()) {
+            SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION_SELLER
+        } else {
+            SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION
+        }
+
+        val variant = abTestingRemoteConfig.getString(rolloutKey)
+        return variant.isNotEmpty()
+    }
+
     private fun isUseEncryption(): Boolean {
-        val variant = abTestingRemoteConfig.getString(SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION)
-        return variant == SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION && isEnableEncryption
+        return isEnableEncryptRollout() && isEnableEncryption
     }
 
     private fun onFailedRegisterEmail(errorMessage: String?) {

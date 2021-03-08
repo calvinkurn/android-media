@@ -77,7 +77,6 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.login.view.constant.LoginConstant
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
@@ -92,6 +91,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
@@ -324,7 +324,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER, false)
             isEnableFingerprint = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_LOGIN_FP, true)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
-            isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(LoginConstant.CONFIG_LOGIN_ENCRYPTION)
+            isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
         }
     }
 
@@ -913,13 +913,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     fun isEnableEncryptRollout(): Boolean {
         val rolloutKey = if(GlobalConfig.isSellerApp()) {
-            LoginConstant.ROLLOUT_LOGIN_ENCRYPTION_SELLER
+            SessionConstants.Rollout.ROLLOUT_LOGIN_ENCRYPTION_SELLER
         } else {
-            LoginConstant.ROLLOUT_LOGIN_ENCRYPTION
+            SessionConstants.Rollout.ROLLOUT_LOGIN_ENCRYPTION
         }
 
         val variant = getAbTestPlatform().getString(rolloutKey)
-        return variant == LoginConstant.ROLLOUT_LOGIN_ENCRYPTION
+        return variant.isNotEmpty()
     }
 
     fun isEnableEncryptConfig(): Boolean {
