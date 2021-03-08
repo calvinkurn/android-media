@@ -200,7 +200,7 @@ class DigitalCartActivityWithFintechTest {
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 12.500"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(doesNotExist())
 
-        // Check fintech product
+        // check fintech product
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(isChecked()))
 

@@ -192,7 +192,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
             checkoutSummaryWidget.setSummaries(payment)
         })
 
-
         observePromoData()
     }
 
