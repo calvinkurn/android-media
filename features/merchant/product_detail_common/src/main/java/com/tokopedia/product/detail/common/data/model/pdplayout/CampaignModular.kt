@@ -40,7 +40,11 @@ data class CampaignModular(
         @SerializedName("isCheckImei")
         val isCheckImei: Boolean = false,
         @SerializedName("isUsingOvo")
-        val isUsingOvo: Boolean = false
+        val isUsingOvo: Boolean = false,
+//        @SerializedName("campaignIdentifier")
+        val campaignIdentifier: Int = 1,
+//        @SerializedName("background")
+        val background: String = "#4F347A,#0EC3EB"
 ) {
     companion object {
         const val CAMPAIGN_ID_NEW_USER = 68

@@ -54,7 +54,10 @@ data class ProductP1VariantChild(
 
         @SerializedName("warehouseInfo")
         @Expose
-        val warehouseInfo: ProductP1VariantWarehouse? = null
+        val warehouseInfo: ProductP1VariantWarehouse? = null,
+
+        @SerializedName("thematicCampaign")
+        val thematicCampaign: ThematicCampaign? = null
 )
 
 data class ProductP1VariantWarehouse(
@@ -172,5 +175,11 @@ data class ProductP1VariantCampaign(
 
         @SerializedName("hideGimmick")
         @Expose
-        val hideGimmick: Boolean? = null
+        val hideGimmick: Boolean? = null,
+
+        @SerializedName("campaignIdentifier")
+        val campaignIdentifier: Int = 0,
+
+        @SerializedName("background")
+        val background: String = ""
 )

@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTy
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.IsFreeOngkir
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
+import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
@@ -49,6 +50,7 @@ data class ProductContentDataModel(
                     && shouldShowTradein == newData.shouldShowTradein
                     && upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
                     && isWishlisted == newData.isWishlisted
+                    && data?.thematicCampaign?.campaignName == newData.data?.thematicCampaign?.campaignName
         } else {
             false
         }
@@ -85,6 +87,7 @@ data class ProductContentDataModel(
 
 data class ProductContentMainData(
         var campaign: CampaignModular = CampaignModular(),
+        var thematicCampaign: ThematicCampaign = ThematicCampaign(),
         var freeOngkir: IsFreeOngkir = IsFreeOngkir(),
         var cashbackPercentage: Int = 0,
         var price: Price = Price(),

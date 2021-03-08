@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.variant_common.model.*
+import com.tokopedia.variant_common.model.ThematicCampaign
 
 object DynamicProductDetailMapper {
 
@@ -162,9 +163,16 @@ object DynamicProductDetailMapper {
                     stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
                     ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick)
 
+            val thematicCampaignData = it.thematicCampaign
+            val thematicCampaign: ThematicCampaign = ThematicCampaign(
+                    campaignName = thematicCampaignData?.campaignName,
+                    icon = thematicCampaignData?.icon,
+                    background = thematicCampaignData?.background,
+                    additionalInfo = thematicCampaignData?.additionalInfo)
+
             VariantChildCommon(productId = it.productId, price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
-                    campaign = campaign)
+                    campaign = campaign, thematicCampaign = thematicCampaign)
         }
 
         return ProductVariantCommon(

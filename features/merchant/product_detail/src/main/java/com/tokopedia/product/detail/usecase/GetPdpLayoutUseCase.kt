@@ -123,6 +123,12 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         isCheckImei
                         isUsingOvo
                       }
+                      thematicCampaign{
+                        campaignName
+                        icon
+                        background
+                        additionalInfo
+                      }
                       stock {
                         useStock
                         value
@@ -257,6 +263,12 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           isCheckImei
                           isUsingOvo
                           minOrder
+                        }
+                        thematicCampaign{
+                          campaignName
+                          icon
+                          background
+                          additionalInfo
                         }
                       }
                     }

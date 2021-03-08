@@ -82,6 +82,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatus
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
@@ -483,7 +484,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
+                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
                         stickyLoginView?.hide()
@@ -778,7 +780,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun getPurchaseProtectionUrl(): String {
-        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL ?: ""
+        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL
+                ?: ""
     }
 
     private fun getPPTitleName(): String {
@@ -1260,7 +1263,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
-        pdpUiUpdater?.updateNotifyMeUpcoming(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns)
+        pdpUiUpdater?.updateNotifyMeUpcoming(
+                productId = selectedChild?.productId.toString(),
+                upcomingData = viewModel.p2Data.value?.upcomingCampaigns,
+                campaignIdentifier = updatedDynamicProductInfo?.data?.campaign?.campaignIdentifier ?: 0,
+                background = updatedDynamicProductInfo?.data?.campaign?.background ?: "",
+                thematicCampaign = updatedDynamicProductInfo?.data?.thematicCampaign ?: ThematicCampaign())
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
@@ -1344,7 +1352,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     renderPageError(ProductDetailErrorHelper.getErrorType(ctx, it, isFromDeeplink, deeplinkUrl))
                 }
             })
-            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant() ?: false)
+            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
+                    ?: false)
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
         }
     }
@@ -1449,7 +1458,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
                 pdpUiUpdater?.updateRecommendationData(it.data)
-                    updateUi()
+                updateUi()
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
@@ -1535,8 +1544,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getDynamicProductInfoP1?.parentProductId
-                                    ?: ""
+                        viewModel.getDynamicProductInfoP1?.parentProductId
+                                ?: ""
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                                 viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -1710,10 +1719,16 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
-        pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID
-                ?: "", viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
-                ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
-                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
+        pdpUiUpdater?.updateDataP2(
+                context = context,
+                p2Data = it,
+                productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
+                thematicIdentifier =  viewModel.getDynamicProductInfoP1?.data?.campaign?.campaignIdentifier ?: 0,
+                background = viewModel.getDynamicProductInfoP1?.data?.campaign?.background ?: "",
+                thematicCampaign = viewModel.getDynamicProductInfoP1?.data?.thematicCampaign ?: ThematicCampaign(),
+                isProductWarehouse = viewModel.getDynamicProductInfoP1?.basic?.isWarehouse() ?: false,
+                isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
+                isOutOfStock = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
 
         updateUi()
     }

@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -111,6 +112,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                 basicContentMap?.run {
                     data = ProductContentMainData(
                             campaign = it.data.campaign,
+                            thematicCampaign = it.data.thematicCampaign,
                             freeOngkir = it.data.isFreeOngkir,
                             cashbackPercentage = it.data.isCashback.percentage,
                             price = it.data.price,
@@ -276,7 +278,15 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
+    fun updateDataP2(context: Context?,
+                     p2Data: ProductInfoP2UiData,
+                     productId: String,
+                     thematicIdentifier: Int,
+                     background: String,
+                     thematicCampaign: ThematicCampaign,
+                     isProductWarehouse: Boolean,
+                     isProductInCampaign: Boolean,
+                     isOutOfStock: Boolean) {
         p2Data.let {
             updateData(ProductDetailConstant.SHOP_INFO) {
                 shopInfoMap?.run {
@@ -339,7 +349,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateDataTradein(context, it.validateTradeIn)
-            updateNotifyMeUpcoming(productId, it.upcomingCampaigns)
+            updateNotifyMeUpcoming(productId, it.upcomingCampaigns, thematicIdentifier, background, thematicCampaign)
         }
     }
 
@@ -371,7 +381,12 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun updateNotifyMeUpcoming(productId: String, upcomingData: Map<String, ProductUpcomingData>?) {
+    fun updateNotifyMeUpcoming(productId: String,
+                               upcomingData: Map<String,
+                               ProductUpcomingData>?,
+                               campaignIdentifier: Int,
+                               background: String,
+                               thematicCampaign: ThematicCampaign) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
@@ -387,6 +402,9 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                 campaignID = selectedUpcoming?.campaignId ?: ""
                 campaignType = selectedUpcoming?.campaignType ?: ""
                 campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
+                this.campaignIdentifier = campaignIdentifier
+                this.background = background
+                this.thematicCampaign = thematicCampaign
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType

@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
+import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
@@ -12,6 +13,9 @@ data class ProductNotifyMeDataModel(
         var campaignID: String = "",
         var campaignType: String = "",
         var campaignTypeName: String = "",
+        var campaignIdentifier: Int = 0,
+        var background: String = "",
+        var thematicCampaign: ThematicCampaign = ThematicCampaign(),
         var startDate: String = "",
         var notifyMe: Boolean = false,
         var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
@@ -37,6 +41,7 @@ data class ProductNotifyMeDataModel(
                     && campaignTypeName == newData.campaignTypeName
                     && startDate == newData.startDate
                     && notifyMe == newData.notifyMe
+                    && thematicCampaign.campaignName == newData.thematicCampaign.campaignName
         } else {
             false
         }

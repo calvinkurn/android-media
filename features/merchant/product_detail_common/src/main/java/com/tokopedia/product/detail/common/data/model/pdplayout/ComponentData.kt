@@ -27,6 +27,8 @@ data class ComponentData(
         //region Content data
         @SerializedName("campaign")
         val campaign: CampaignModular = CampaignModular(),
+        @SerializedName("thematicCampaign")
+        val thematicCampaign: ThematicCampaign = ThematicCampaign(),
         @SerializedName("isCashback")
         val isCashback: Cashback = Cashback(),
         @SerializedName("isFreeOngkir")
@@ -69,7 +71,7 @@ data class ComponentData(
         val variants: List<ProductP1Variant> = listOf(),
         @SerializedName("children")
         val children : List<ProductP1VariantChild> = listOf()
-        //endregion
+        //endregioncopy
 )  {
     companion object{
         private const val PRODUCT_IMAGE_TYPE = "image"

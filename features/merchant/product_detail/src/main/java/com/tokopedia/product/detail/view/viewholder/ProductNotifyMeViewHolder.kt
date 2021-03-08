@@ -31,6 +31,9 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
         if (element.campaignID.isNotEmpty() && !element.isUpcomingNplType()) {
             itemView.layout_notify_me?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             itemView.layout_notify_me?.requestLayout()
+
+            itemView.layout_notify_me?.upcoming_campaign_ribbon?.renderUpComingCampaignRibbon(element)
+
             bindTitle(element)
             bindSubTitle(element)
             bindButton(element, listener.isOwner())

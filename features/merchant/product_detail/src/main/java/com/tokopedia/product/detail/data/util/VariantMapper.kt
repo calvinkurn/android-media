@@ -5,10 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
-import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantChildCommon
@@ -102,6 +99,13 @@ object VariantMapper {
                 hideGimmick = newData?.campaign?.hideGimmick ?: false
         )
 
+        val newThematicCampaign = ThematicCampaign(
+                campaignName = newData?.thematicCampaign?.campaignName ?: "",
+                icon = newData?.thematicCampaign?.icon ?: "",
+                background = newData?.thematicCampaign?.background ?: "",
+                additionalInfo = newData?.thematicCampaign?.additionalInfo ?: ""
+        )
+
         val newMedia = if (newData?.hasPicture == true) {
             val copyOfOldMedia = existingListMedia?.toMutableList()
             val newMedia = Media(type = "image", uRL300 = newData.picture?.original
@@ -129,6 +133,7 @@ object VariantMapper {
         val data = oldData.data.copy(
                 isWishlist = newData?.isWishlist ?: false,
                 campaign = newCampaign,
+                thematicCampaign = newThematicCampaign,
                 price = newPrice,
                 name = newData?.name ?: "",
                 media = newMedia,
