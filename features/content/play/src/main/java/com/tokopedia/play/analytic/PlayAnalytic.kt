@@ -174,8 +174,8 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionProductList(listOfProducts: List<PlayProductUiModel.Product>?) {
-        if (listOfProducts != null && listOfProducts.isNotEmpty()) {
+    fun impressionProductList(listOfProducts: List<PlayProductUiModel.Product>) {
+        if (listOfProducts.isNotEmpty()) {
             trackingQueue.putEETracking(
                     EventModel(
                             "productView",
@@ -334,8 +334,8 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionHighlightedVoucher(vouchers: List<MerchantVoucherUiModel>?) {
-        val voucherId = vouchers?.firstOrNull { it.highlighted }?.id ?: return
+    fun impressionHighlightedVoucher(vouchers: List<MerchantVoucherUiModel>) {
+        val voucherId = vouchers.firstOrNull { it.highlighted }?.id ?: return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
@@ -365,8 +365,8 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionFeaturedProduct(products: List<PlayProductUiModel.Product>?, maxFeaturedProduct: Int) {
-        if (products != null && products.isNotEmpty()) {
+    fun impressionFeaturedProduct(products: List<PlayProductUiModel.Product>, maxFeaturedProduct: Int) {
+        if (products.isNotEmpty()) {
             val featuredProducts = products.take(maxFeaturedProduct)
             trackingQueue.putEETracking(
                     EventModel(
@@ -416,8 +416,8 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionPrivateVoucher(vouchers: List<MerchantVoucherUiModel>?) {
-        val voucherId = vouchers?.firstOrNull { it.highlighted }?.id ?: return
+    fun impressionPrivateVoucher(vouchers: List<MerchantVoucherUiModel>) {
+        val voucherId = vouchers.firstOrNull { it.highlighted }?.id ?: return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
