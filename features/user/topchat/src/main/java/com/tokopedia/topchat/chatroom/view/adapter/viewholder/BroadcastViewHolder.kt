@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
@@ -94,13 +95,18 @@ class BroadcastViewHolder constructor(
 
     private fun bindBanner(element: BroadCastUiModel) {
         val banner = element.banner ?: return
-        bannerView?.show()
-        setPaddingTop(paddingWithBanner)
-        ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
-        ImageAnnouncementViewHolderBinder.bindBannerClick(
-                banner, bannerView, imageAnnouncementListener
-        )
-        bindBannerMargin(element)
+        if (banner.isHideBanner) {
+            bannerView?.hide()
+            setPaddingTop(paddingWithoutBanner)
+        } else {
+            bannerView?.show()
+            setPaddingTop(paddingWithBanner)
+            ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
+            ImageAnnouncementViewHolderBinder.bindBannerClick(
+                    banner, bannerView, imageAnnouncementListener
+            )
+            bindBannerMargin(element)
+        }
     }
 
     private fun setPaddingTop(topPadding: Float) {

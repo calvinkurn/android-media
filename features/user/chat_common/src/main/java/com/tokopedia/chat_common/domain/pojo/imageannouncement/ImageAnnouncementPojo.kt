@@ -15,4 +15,7 @@ class ImageAnnouncementPojo {
     @SerializedName("url")
     @Expose
     val url: String = ""
+    @SerializedName("is_hide_banner")
+    @Expose
+    val isHideBanner: Boolean = false
 }
