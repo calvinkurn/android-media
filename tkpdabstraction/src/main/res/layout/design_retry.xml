@@ -18,7 +18,7 @@
         android:id="@+id/retry_text"
 
         android:text="Mohon coba kembali"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_34" />
 
     <TextView
@@ -29,7 +29,7 @@
         android:id="@+id/retry_but"
         android:padding="@dimen/dp_10"
         android:text="Refresh"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:textStyle="bold" />
     
 </LinearLayout>
