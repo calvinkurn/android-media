@@ -12,7 +12,7 @@
     <path android:fillAlpha="0.8" android:pathData="M10.56 85.55a30.12 2.07 0 1 0 60.24 0 30.12 2.07 0 1 0-60.24 0z" android:strokeAlpha="0.8">
         <aapt:attr name="android:fillColor">
             <gradient android:endX="70.2386" android:endY="85.5529" android:startX="11.1816" android:startY="85.5529" android:type="linear">
-                <item android:color="#FFFFFFFF" android:offset="0"/>
+                <item android:color="@color/Unify_Static_White" android:offset="0"/>
                 <item android:color="#FFEDF5F9" android:offset="0.1739"/>
                 <item android:color="#FF95C7DB" android:offset="1"/>
             </gradient>

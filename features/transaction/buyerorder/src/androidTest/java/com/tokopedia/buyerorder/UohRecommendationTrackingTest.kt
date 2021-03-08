@@ -1,22 +1,22 @@
 package com.tokopedia.buyerorder
 
-import android.app.Application
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
-import com.tokopedia.buyerorder.test.R
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils.getJsonDataFromAsset
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.Utils.getJsonDataFromAsset
+import com.tokopedia.buyerorder.test.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
+import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import org.junit.*
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * Created by fwidjaja on 06/11/20.

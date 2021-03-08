@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/talkReplyProductHeaderConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -21,14 +22,40 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        app:layout_constraintBottom_toBottomOf="@id/replyProductHeaderImage"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintEnd_toEndOf="@id/replyProductHeaderKebab"
         app:layout_constraintStart_toEndOf="@id/replyProductHeaderImage"
         app:layout_constraintTop_toTopOf="@id/replyProductHeaderImage"
+        app:layout_constraintBottom_toBottomOf="@id/replyProductHeaderImage"
         app:typographyType="heading_5"
         app:typographyWeight="bold" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyProductStock"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@id/replyProductHeaderName"
+        app:layout_constraintStart_toStartOf="@id/replyProductHeaderName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <ImageView
+        android:id="@+id/replyProductHeaderKebab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/replyProductHeaderImage"
+        app:srcCompat="@drawable/talk_ic_kebab" />
+
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/reply_product_header_bottom_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"

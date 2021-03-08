@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
@@ -34,16 +33,12 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent;
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData;
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterUtil;
@@ -85,12 +80,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     String NAME = "NAME";
     String PASSWORD = "PASSWORD";
     String EMAIL = "EMAIL";
-
-    String TERM_CONDITION = "Syarat dan Ketentuan";
-    String PRIVACY_POLICY = "Kebijakan Privasi";
-
-    String TERM_CONDITION_URL = "launch.TermPrivacy://parent?param=0";
-    String PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1";
 
     private static final String ALREADY_REGISTERED = "sudah terdaftar";
 
@@ -359,20 +348,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperErrorNew(wrapper, null);
-                }
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                showPasswordHint();
-                if (s.length() == 0) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required));
-                } else if (wrapperPassword.getTextFieldInput().getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_minimal_password));
-                }
-
                 checkIsValidForm();
             }
         };
@@ -405,6 +385,18 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         };
     }
 
+    private Boolean validatePasswordInput() {
+        if (wrapperPassword.getTextFieldInput().getText().length() == 0) {
+            setWrapperErrorNew(wrapperPassword, getString(R.string.error_field_required));
+            return false;
+        } else if (wrapperPassword.getTextFieldInput().getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
+            setWrapperErrorNew(wrapperPassword, getString(R.string.error_minimal_password));
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public List<String> getEmailListOfAccountsUserHasLoggedInto() {
         Set<String> listOfAddresses = new LinkedHashSet<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS;
@@ -433,13 +425,17 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     private void registerEmail(){
         showLoadingProgress();
-        registerAnalytics.trackClickSignUpButtonEmail();
-        registerInitialViewModel.registerRequest(
-                wrapperEmail.getTextFieldInput().getText().toString(),
-                wrapperPassword.getTextFieldInput().getText().toString(),
-                wrapperName.getTextFieldInput().getText().toString(),
-                token
-        );
+        if (validatePasswordInput()) {
+            registerAnalytics.trackClickSignUpButtonEmail();
+            registerInitialViewModel.registerRequest(
+                    wrapperEmail.getTextFieldInput().getText().toString(),
+                    wrapperPassword.getTextFieldInput().getText().toString(),
+                    wrapperName.getTextFieldInput().getText().toString(),
+                    token
+            );
+        } else {
+            dismissLoadingProgress();
+        }
     }
 
     boolean isCanRegister(String name, String email, String password) {
@@ -471,7 +467,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     }
 
     private void checkIsValidForm() {
-        if (isCanRegister(wrapperName.getTextFieldInput().getText().toString(), wrapperEmail.getTextFieldInput().getText().toString(), wrapperPassword.getTextFieldInput().getText().toString())) {
+        if (isCanRegister(
+                wrapperName.getTextFieldInput().getText().toString(),
+                wrapperEmail.getTextFieldInput().getText().toString(),
+                wrapperPassword.getTextFieldInput().getText().toString())) {
             setRegisterButtonEnabled();
         } else {
             setRegisterButtonDisabled();
@@ -491,19 +490,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         }
     }
 
-
-    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
-        wrapper.setHelperEnabled(false);
-        wrapper.setHelper(null);
-        if (s == null) {
-            wrapper.setError(null);
-            wrapper.setErrorEnabled(false);
-        } else {
-            wrapper.setErrorEnabled(true);
-            wrapper.setError(s);
-        }
-    }
-
     private void setWrapperErrorNew(TextFieldUnify wrapper, String s) {
         if (s == null) {
             wrapper.setMessage("");
@@ -517,13 +503,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     private void setWrapperHint(TextFieldUnify wrapper, String s) {
         wrapper.setError(false);
         wrapper.setMessage(s);
-    }
-
-    public void resetError() {
-        setWrapperErrorNew(wrapperName, null);
-        setWrapperErrorNew(wrapperEmail, null);
-        showPasswordHint();
-        showNameHint();
     }
 
     public void showPasswordHint() {
@@ -551,20 +530,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
         progressBar.setVisibility(View.GONE);
-    }
-
-    public void goToAutomaticLogin() {
-        Intent intentLogin = LoginActivity.DeepLinkIntents.getAutomaticLogin(
-                getActivity(),
-                wrapperEmail.getTextFieldInput().getText().toString(),
-                wrapperPassword.getTextFieldInput().getText().toString(),
-                source
-        );
-        startActivityForResult(intentLogin, REQUEST_AUTO_LOGIN);
-    }
-
-    public void dropKeyboard() {
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
     public void onErrorRegister(String errorMessage) {
@@ -669,10 +634,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
-    }
-
-    public int getIsAutoVerify() {
-        return isEmailAddressFromDevice() ? 1 : 0;
     }
 
     private void onFailedRegisterEmail(String errorMessage){

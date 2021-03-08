@@ -83,6 +83,12 @@
                     android:text="@string/seller_migration_fragment_tab_product" />
 
                 <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabDiscussion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller_migration_fragment_tab_discussion" />
+
+                <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabChat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
