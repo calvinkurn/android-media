@@ -62,7 +62,7 @@
         android:layout_marginBottom="@dimen/unify_space_12"
         android:orientation="horizontal"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
+        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
         app:layout_constraintEnd_toEndOf="@id/space_size"
         app:layout_constraintStart_toStartOf="@id/space_size"
         />
@@ -122,7 +122,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
+        app:layout_constraintBottom_toTopOf="@id/view_pinned_voucher"
         app:layout_constraintEnd_toStartOf="@id/view_like"
         app:layout_constraintStart_toStartOf="@id/space_size"
         tools:visibility="visible"
@@ -233,19 +233,10 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/barrier_quick_reply_bottom"
+        app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
         app:layout_constraintEnd_toEndOf="@id/space_size"
         app:layout_constraintStart_toStartOf="@id/space_size"
         tools:visibility="visible"
-        />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_quick_reply_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="top"
-        app:barrierAllowsGoneWidgets="false"
-        app:constraint_referenced_ids="view_send_chat, view_pinned_voucher, view_product_featured"
         />
 
     <include
