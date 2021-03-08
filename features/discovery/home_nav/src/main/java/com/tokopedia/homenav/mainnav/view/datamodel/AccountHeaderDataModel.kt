@@ -12,6 +12,10 @@ data class AccountHeaderDataModel(
         var ovoSaldo: String = "",
         var ovoPoint: String = "",
         var saldo: String = "",
+        var tokopointPointAmount: String = "",
+        var tokopointExternalAmount: String = "",
+        var tokopointBadgeUrl: String = "",
+        var tierBadgeUrl: String = "",
         var shopName: String = "",
         var shopId: String = "",
         var shopNotifCount: String = "",
@@ -83,6 +87,14 @@ data class AccountHeaderDataModel(
     fun setSaldoData(saldo: String) {
         this.saldo = saldo
         this.isGetSaldoError = false
+    }
+
+    fun setTokopointData(amount: String, point: String, badge: String){
+        this.tokopointPointAmount = point
+        this.tokopointExternalAmount = amount
+        this.tokopointBadgeUrl = badge
+        this.isGetSaldoError = false
+        this.isGetOvoError = false
     }
 
     fun setUserBadge(badge: String) {
