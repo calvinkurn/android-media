@@ -34,8 +34,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerActivity;
+import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
@@ -49,6 +52,7 @@ import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
+import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
@@ -88,6 +92,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView reviewNotifBtn;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
+    private AppCompatTextView abTestRollenceEditorStartButton;
     private ToggleButton toggleTimberDevOption;
     private Spinner spinnerEnvironmentChooser;
 
@@ -112,7 +117,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToFpm;
     private TextView vGoToCassava;
     private TextView vGoToAnalytics;
-    private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
     private CheckBox toggleDarkMode;
@@ -215,7 +219,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoToFpm = findViewById(R.id.goto_fpm);
         vGoToCassava = findViewById(R.id.goto_cassava);
         vGoToAnalytics = findViewById(R.id.goto_analytics);
-        vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
@@ -229,6 +232,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
+        abTestRollenceEditorStartButton = findViewById(R.id.ab_test_rollence_editor_start);
 
         reviewNotifBtn = findViewById(R.id.review_notification);
 
@@ -339,6 +343,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             Editable prefix = remoteConfigPrefix.getText();
 
             startRemoteConfigEditor(prefix != null ? prefix.toString() : "");
+        });
+
+        abTestRollenceEditorStartButton.setOnClickListener(v -> {
+            startAbTestRollenceEditor();
         });
 
         vForceCrash.setOnClickListener(v -> {
@@ -508,11 +516,8 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
-        vGoToCassava.setOnClickListener(v -> GtmLogger.getInstance(this).navigateToValidator());
-        vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
-        vGoToAnalyticsError.setOnClickListener(v -> {
-            GtmLogger.getInstance(DeveloperOptionActivity.this).openErrorActivity();
-        });
+        vGoToCassava.setOnClickListener(v -> startActivity(MainValidatorActivity.newInstance(this)));
+        vGoToAnalytics.setOnClickListener(v -> startActivity(AnalyticsDebuggerActivity.newInstance(this)));
 
         vGoToIrisSaveLogDB.setOnClickListener(v -> {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSaveActivity();
@@ -575,6 +580,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             new FakeResponseActivityProvider().startActivity(this);
         });
 
+    }
+
+    private void startAbTestRollenceEditor() {
+        Intent intent = new Intent(DeveloperOptionActivity.this, AbTestRollenceConfigFragmentActivity.class);
+        startActivity(intent);
     }
 
     private int toInt(String str) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fl_loading"
@@ -9,28 +10,16 @@
     tools:background="@color/Unify_Static_Black"
     >
 
-<!--    <com.tokopedia.unifycomponents.LoaderUnify-->
-<!--        android:id="@+id/iv_loading"-->
-<!--        android:layout_width="@dimen/dp_40"-->
-<!--        android:layout_height="@dimen/dp_40"-->
-<!--        app:layout_constraintVertical_chainStyle="packed"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/iv_loading_text"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:loader_type="circular"-->
-<!--        />-->
-
-    <com.tokopedia.play.view.custom.PlayUnifyLoader
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/iv_loading"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/play_viewer_loading_size"
+        android:layout_height="@dimen/play_viewer_loading_size"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@id/iv_loading_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular"
+        app:loader_type="circular_white"
         />
 
     <com.tokopedia.unifyprinciples.Typography
