@@ -32,7 +32,6 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
         itemView.product_name.displayTextOrHide(catalogProductItem.name)
         itemView.product_price.displayTextOrHide(catalogProductItem.price)
         itemView.shop_name.displayTextOrHide(catalogProductItem.shop.name)
-        itemView.rating_float.displayTextOrHide(catalogProductItem.ratingAverage)
         itemView.imageThreeDots.setOnClickListener {
             catalogProductCardListener.onThreeDotsClicked(catalogProductItem, adapterPosition)
         }
@@ -42,7 +41,7 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
         }
 
         if(catalogProductItem.ratingAverage.isNotBlank()){
-            itemView.rating_float.text = catalogProductItem.ratingAverage
+            itemView.rating_float.displayTextOrHide(catalogProductItem.ratingAverage)
             itemView.icon_rating.show()
             itemView.rating_line.show()
         }

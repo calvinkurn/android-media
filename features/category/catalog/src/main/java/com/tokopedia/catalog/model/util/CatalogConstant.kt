@@ -29,4 +29,7 @@ object CatalogConstant {
     const val SEARCH_PRODUCT_SOURCE = "search_product"
 
     const val INTEGRITY_GROUP ="integrity"
+
+    const val CART_LOCAL_CACHE_NAME = "CART"
+    const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
 }

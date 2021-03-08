@@ -186,7 +186,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         viewModel.sortFilterItems.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()) {
-                hideQuickFilterShimmering()
                 setQuickFilter(it)
             }
         })
@@ -211,10 +210,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
                     if (it.data.isNotEmpty()) {
                         showNoDataScreen(false)
-                        viewModel.list.addAll(it.data as ArrayList<Visitable<CatalogTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
-                        viewModel.pageCount++
                         loadMoreTriggerListener?.updateStateAfterGetData()
                         viewModel.isPagingAllowed = true
                     } else {
@@ -290,8 +287,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
             layout_no_data.show()
+            product_recyclerview.hide()
         } else {
-            layout_no_data.visibility = View.GONE
+            layout_no_data.hide()
+            product_recyclerview.show()
         }
     }
 
@@ -305,6 +304,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
         showRefreshLayout()
         productNavListAdapter?.clearData()
+        viewModel.list.clear()
         if(viewModel.list.size == 0)
             productNavListAdapter?.addShimmer()
         layout_no_data?.hide()
@@ -378,10 +378,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         val searchProductRequestParams = RequestParams.create()
         searchProductRequestParams.apply {
             putString(CategoryNavConstants.START, (start * pagingRowCount).toString())
-            putString(CategoryNavConstants.SC, departmentId)
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
             putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
-            putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
             putString(CategoryNavConstants.ROWS, pagingRowCount.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
@@ -589,7 +587,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun initSearchQuickSortFilter(rootView: View) {
         searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
-        addDefaultSelectedSort()
+        if(viewModel.searchParametersMap.value == null) {
+            viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
+            addDefaultSelectedSort()
+        }
     }
 
     private fun startFilter(quickFilterData : DataValue){
@@ -611,7 +612,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun initFilterControllerForQuickFilter(quickFilterList : List<Filter>) {
-        filterController!!.initFilterController(searchParameter.getSearchParameterHashMap(), quickFilterList)
+        filterController?.initFilterController(searchParameter.getSearchParameterHashMap(), quickFilterList)
     }
 
     private fun setSortFilterIndicatorCounter() {
@@ -625,12 +626,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
     }
 
-    private fun hideQuickFilterShimmering() {
-
-    }
-
     private fun setQuickFilter(items : List<SortFilterItem> ) {
-        hideQuickFilterShimmering()
         searchSortFilter!!.sortFilterItems.removeAllViews()
         searchSortFilter!!.visibility = View.VISIBLE
         searchSortFilter!!.sortFilterHorizontalScrollView.scrollX = 0

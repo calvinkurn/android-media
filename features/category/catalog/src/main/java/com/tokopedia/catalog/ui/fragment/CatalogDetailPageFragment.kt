@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailAdapter
 import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
@@ -36,6 +37,7 @@ import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.share.DefaultShare
@@ -64,6 +66,8 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogId: String = ""
 
     private var navToolbar: NavToolbar? = null
+    private var cartLocalCacheHandler: LocalCacheHandler? = null
+
     private var catalogPageRecyclerView: NestedRecyclerView? = null
     private var shimmerLayout : ScrollView? = null
     private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
@@ -79,7 +83,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        private var isBottomSheetOpen = false
+        var isBottomSheetOpen = false
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
@@ -102,7 +106,6 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
-        initNavToolbar()
         initViews()
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
@@ -126,12 +129,16 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun initViews() {
         shimmerLayout = view?.findViewById(R.id.shimmer_layout)
+        activity?.let {
+            cartLocalCacheHandler = LocalCacheHandler(it, CatalogConstant.CART_LOCAL_CACHE_NAME)
+        }
+        initNavToolbar()
     }
 
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
                 R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId)
-        ).addToBackStack("").commit()
+        ).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
         mBottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
@@ -173,7 +180,7 @@ class CatalogDetailPageFragment : Fragment(),
     private fun onError(e: Throwable) {
         shimmerLayout?.hide()
         catalogPageRecyclerView?.hide()
-
+        bottom_sheet_fragment_container.hide()
         if (e is UnknownHostException
                 || e is SocketTimeoutException) {
             global_error.setType(GlobalError.NO_CONNECTION)
@@ -185,6 +192,7 @@ class CatalogDetailPageFragment : Fragment(),
         global_error.setOnClickListener {
             catalogPageRecyclerView?.show()
             shimmerLayout?.show()
+            bottom_sheet_fragment_container.show()
             global_error.hide()
             catalogDetailPageViewModel.getProductCatalog(catalogId)
         }
@@ -201,22 +209,29 @@ class CatalogDetailPageFragment : Fragment(),
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
+            setBadgeCounter(IconList.ID_CART, getCartCounter())
             show()
         }
     }
 
+    private fun getCartCounter(): Int {
+        return cartLocalCacheHandler?.getInt(CatalogConstant.TOTAL_CART_CACHE_KEY, 0).orZero()
+    }
+
     private fun showShimmer(){
         if(catalogUiUpdater?.mapOfData?.size ?: 0 == 0)
-            shimmerLayout?.visibility = View.VISIBLE
+            shimmerLayout?.show()
     }
 
     private fun hideShimmer(){
         if(catalogUiUpdater?.mapOfData?.size ?: 0 > 0)
-            shimmerLayout?.visibility = View.GONE
+            shimmerLayout?.hide()
     }
 
     private fun updateUi() {
         hideShimmer()
+        catalogPageRecyclerView?.show()
+        bottom_sheet_fragment_container.show()
         val newData = catalogUiUpdater?.mapOfData?.values?.toList()
         submitList(newData ?: listOf())
     }
@@ -297,7 +312,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     fun onBackPressed(){
-        mBottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
     }
 
     override val childsFragmentManager: FragmentManager?

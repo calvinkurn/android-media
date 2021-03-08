@@ -95,10 +95,12 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     override fun onBackPressed() {
-        if(supportFragmentManager.backStackEntryCount > 0){
+        if(supportFragmentManager.fragments.firstOrNull() is CatalogDetailPageFragment){
             supportFragmentManager.fragments.firstOrNull()?.let {
-                if(it is CatalogDetailPageFragment){
+                if(it is CatalogDetailPageFragment && CatalogDetailPageFragment.isBottomSheetOpen){
                     it.onBackPressed()
+                }else{
+                    super.onBackPressed()
                 }
             }
         }else {

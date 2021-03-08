@@ -48,6 +48,8 @@ class CatalogDetailProductListingViewModel
                     (productResponse.searchProduct)?.let { searchProduct ->
                         searchProduct.data.catalogProductItemList.let { productList ->
                             mProductList.value = Success((productList) as List<CatalogProductItem>)
+                            list.addAll(productList as ArrayList<Visitable<CatalogTypeFactory>>)
+                            pageCount++
                         }
                         mProductCount.value = searchProduct.data.totalData.toString()
                     }
