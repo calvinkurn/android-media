@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -329,7 +330,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpAdNameEditText() {
-        headlineAdNameInput?.textFieldInput?.setText(stepperModel?.groupName)
+        headlineAdNameInput?.textFieldInput?.setText(MethodChecker.fromHtml(stepperModel?.groupName))
         headlineAdNameInput?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }

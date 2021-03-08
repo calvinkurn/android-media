@@ -1,8 +1,8 @@
 package com.tokopedia.gamification.pdp.domain
 
 const val GAMI_PRODUCT_RECOM_WIDGET_QUERY = """
-    query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}shopId:Int) {
-  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, shopId: ${'$'}shopId) {
+    query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xSource: String!, ${'$'}os: Boolean!, ${'$'}shopIDs:String) {
+  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xSource: ${'$'}xSource, os: ${'$'}os, shopIDs: ${'$'}shopIDs) {
     data {
       tID
       source

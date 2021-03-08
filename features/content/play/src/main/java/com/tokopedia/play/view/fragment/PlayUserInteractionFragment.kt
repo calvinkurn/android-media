@@ -1059,6 +1059,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 type = toasterType).show()
     }
 
+    private fun doAutoSwipe() {
+        scope.launch {
+            delay(AUTO_SWIPE_DELAY)
+            playNavigation.navigateToNextPage()
+        }
+    }
+
     private fun sendTrackerImpressionPinnedProduct(productTags: PlayProductTagsUiModel.Complete) {
         val highlightedVouchers = productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
         val featuredProducts = productTags.productList.filterIsInstance<PlayProductUiModel.Product>()
@@ -1090,7 +1097,10 @@ class PlayUserInteractionFragment @Inject constructor(
         }
         when (state) {
             PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
-            PlayViewerVideoState.End -> playButtonView.showRepeatButton()
+            PlayViewerVideoState.End -> {
+                if (playViewModel.bottomInsets.isAnyShown) playButtonView.showRepeatButton()
+                else doAutoSwipe()
+            }
             else -> playButtonView.hide()
         }
     }
@@ -1159,7 +1169,8 @@ class PlayUserInteractionFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (isFreezeOrBanned) {
-            pinnedView?.hide()
+            pinnedVoucherView?.hide()
+            productFeaturedView?.hide()
             return
         }
 
@@ -1172,10 +1183,10 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
 
                 if (!bottomInsets.isAnyShown) {
-                    pinnedVoucherView?.show()
-                    productFeaturedView?.show()
+                    pinnedVoucherView?.showIfNotEmpty()
+                    productFeaturedView?.showIfNotEmpty()
                 } else {
-                    pinnedVoucherView?.show()
+                    pinnedVoucherView?.hide()
                     productFeaturedView?.hide()
                 }
             } else -> {
@@ -1243,7 +1254,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
-            quickReplyView?.show()
+            quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
     }
 
@@ -1288,5 +1299,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         private const val FADE_DURATION = 200L
         private const val FADE_TRANSITION_DELAY = 3000L
+
+        private const val AUTO_SWIPE_DELAY = 500L
     }
 }

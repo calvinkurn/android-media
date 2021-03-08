@@ -36,9 +36,15 @@ class PinnedVoucherViewComponent(
     }
 
     fun setVoucher(vouchers: List<PlayVoucherUiModel>) {
-        pinnedVoucherAdapter.setItemsAndAnimateChanges(getHighlightedItems(vouchers))
+        val highlightedItems = getHighlightedItems(vouchers)
+        pinnedVoucherAdapter.setItemsAndAnimateChanges(highlightedItems)
 
-        if (vouchers.isEmpty()) hide()
+        if (highlightedItems.isEmpty()) hide()
+        else show()
+    }
+
+    fun showIfNotEmpty() {
+        if (pinnedVoucherAdapter.itemCount == 0) hide()
         else show()
     }
 
