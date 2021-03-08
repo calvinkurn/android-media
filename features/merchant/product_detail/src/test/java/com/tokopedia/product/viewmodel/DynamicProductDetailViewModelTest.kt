@@ -799,7 +799,7 @@ class DynamicProductDetailViewModelTest {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, true, false, "", false, false)
+        viewModel.getProductP1(productParams, true, false, "", false)
 
         `co verify p1 success`()
 
@@ -975,7 +975,7 @@ class DynamicProductDetailViewModelTest {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true, isUseOldNav = true, isNewShipment = true)
+        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true, isUseOldNav = true)
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 0)
