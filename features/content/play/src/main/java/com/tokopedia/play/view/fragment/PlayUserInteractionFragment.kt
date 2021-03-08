@@ -631,7 +631,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
             pinnedViewOnStateChanged(pinnedModel = it)
             productFeaturedViewOnStateChanged(pinnedModel = it)
         })
