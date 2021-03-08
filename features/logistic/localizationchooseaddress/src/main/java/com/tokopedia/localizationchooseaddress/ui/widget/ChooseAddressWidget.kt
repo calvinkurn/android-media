@@ -17,6 +17,7 @@ import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -108,6 +109,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                    } else {
+                        chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
                     }
                 }
                 is Fail -> {
@@ -123,7 +126,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     fun updateWidget(){
-         val data = ChooseAddressUtils.getLocalizingAddressData(context)
+        val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = data.label
         } else {
