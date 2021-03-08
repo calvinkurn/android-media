@@ -295,7 +295,8 @@ class BuyerAccountViewModelTest {
                                 roleType = AdminRoleType(
                                         isLocationAdmin = isLocationAdmin
                                 )
-                        )
+                        ),
+                        status = "1"
                 )
         )
 
@@ -344,7 +345,8 @@ class BuyerAccountViewModelTest {
                 data = AdminData(
                         detail = AdminDetailInformation(
                                 roleType = AdminRoleType(isShopAdmin, isLocationAdmin, isShopOwner)
-                        )
+                        ),
+                        status = "1"
                 )
         )
 
@@ -378,7 +380,8 @@ class BuyerAccountViewModelTest {
                                 roleType = AdminRoleType(
                                         isLocationAdmin = isLocationAdmin
                                 )
-                        )
+                        ),
+                        status = "1"
                 )
         )
 
@@ -401,6 +404,40 @@ class BuyerAccountViewModelTest {
             userSession.shopName = ""
             userSession.setIsGoldMerchant(false)
             userSession.setIsShopOfficialStore(false)
+        }
+    }
+
+    @Test
+    fun `success get not null account admin data with inactive shop will set shopId to empty`() = runBlockingTest {
+        val isShopOwner = false
+        val isShopAdmin = true
+        val isLocationAdmin = true
+        val isMultiLocationShop = true
+        val adminDataResponse = AdminDataResponse(
+                isMultiLocationShop = isMultiLocationShop,
+                data = AdminData(
+                        detail = AdminDetailInformation(
+                                roleType = AdminRoleType(isShopAdmin, isLocationAdmin, isShopOwner)
+                        ),
+                        status = "0"
+                )
+        )
+
+        setDefaultEveryReturnForNonAdminRelatedData()
+
+        coEvery {
+            accountAdminInfoUseCase.executeOnBackground()
+        } answers {
+            Pair(adminDataResponse, null)
+        }
+
+        getUserSessionIsShopOwner_thenReturn(false)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
+
+        viewModel.getBuyerData()
+
+        coVerify {
+            userSession.shopName = ""
         }
     }
 
@@ -455,7 +492,7 @@ class BuyerAccountViewModelTest {
         viewModel.getBuyerData()
 
         coVerify {
-            userSession.shopId = shopID
+            userSession.shopId = ""
             userSession.shopName = name
             userSession.shopAvatar = logo
             userSession.setIsGoldMerchant(anyBoolean())
