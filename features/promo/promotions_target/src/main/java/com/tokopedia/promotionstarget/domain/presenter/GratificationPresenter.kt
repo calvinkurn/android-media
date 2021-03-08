@@ -183,24 +183,30 @@ class GratificationPresenter @Inject constructor(val context: Context,
                                   closeCurrentActivity: Boolean,
                                   inAppId: Long?
     ) {
+        try{
+            if(activity!=null && !activity.isFinishing) {
+                val dialog = dialogCreator.createGratifDialog(activity,
+                        gratifNotification,
+                        couponDetail,
+                        notificationEntryType,
+                        gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
+                dialogVisibilityContract?.onDialogShown(activity)
 
-        val dialog = dialogCreator.createGratifDialog(activity,
-                gratifNotification,
-                couponDetail,
-                notificationEntryType,
-                gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
-        dialogVisibilityContract?.onDialogShown(activity)
+                dialog?.setOnDismissListener { dialogInterface ->
+                    dialogVisibilityContract?.onDialogDismiss(activity)
+                    gratifPopupCallback?.onDismiss(dialogInterface, notificationEntryType)
+                    val userId = UserSession(activity).userId
+                    GratificationAnalyticsHelper.handleDismiss(userId, notificationEntryType, gratifNotification, couponDetail, screenName)
+                }
+                dialog?.setOnCancelListener { dialogInterface ->
+                    dialogVisibilityContract?.onDialogDismiss(activity)
+                    gratifPopupCallback?.onDismiss(dialogInterface, notificationEntryType)
+                }
+            }
+        }catch (th:Throwable){
+            Timber.e(th)
+        }
 
-        dialog?.setOnDismissListener { dialogInterface ->
-            dialogVisibilityContract?.onDialogDismiss(activity)
-            gratifPopupCallback?.onDismiss(dialogInterface, notificationEntryType)
-            val userId = UserSession(activity).userId
-            GratificationAnalyticsHelper.handleDismiss(userId, notificationEntryType, gratifNotification, couponDetail, screenName)
-        }
-        dialog?.setOnCancelListener { dialogInterface ->
-            dialogVisibilityContract?.onDialogDismiss(activity)
-            gratifPopupCallback?.onDismiss(dialogInterface, notificationEntryType)
-        }
     }
 
     fun showGratificationInApp(weakActivity: WeakReference<Activity>?,

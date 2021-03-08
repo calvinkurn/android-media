@@ -2,8 +2,8 @@ package com.tokopedia.notification.common
 
 import android.content.Context
 import android.os.Bundle
-import com.tokopedia.notification.common.service.PushNotificationService
 import com.tokopedia.appaidl.AidlApi
+import com.tokopedia.notification.common.service.PushNotificationService
 
 open class PushNotificationApi(
         onAidlReceive: (tag: String, bundle: Bundle?) -> Unit,
@@ -11,10 +11,12 @@ open class PushNotificationApi(
 ) : AidlApi(onAidlReceive, onAidlError) {
 
     fun bindService(context: Context) {
-        bindService(
-                context = context,
-                serviceName = PushNotificationService::class.java.name
-        )
+        try {
+            bindService(
+                    context = context,
+                    serviceName = PushNotificationService::class.java.name
+            )
+        } catch (ignored: Exception) { }
     }
 
     companion object {
