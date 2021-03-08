@@ -11,7 +11,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
@@ -41,8 +40,7 @@ class BroadcastViewHolder constructor(
         private val searchListener: SearchListener,
         private val commonListener: CommonViewHolderListener,
         private val adapterListener: AdapterListener,
-        private val chatMessageListener: ChatLinkHandlerListener,
-        private val hideBanner: Boolean
+        private val chatMessageListener: ChatLinkHandlerListener
 ) : AbstractViewHolder<BroadCastUiModel>(itemView) {
 
     private val broadcastContainer: LinearLayout? = itemView?.findViewById(R.id.bubble_broadcast_container)
@@ -96,16 +94,13 @@ class BroadcastViewHolder constructor(
 
     private fun bindBanner(element: BroadCastUiModel) {
         val banner = element.banner ?: return
-        if (hideBanner) {
-            bannerView?.hide()
-            setPaddingTop(paddingWithoutBanner)
-        } else {
-            bannerView?.show()
-            setPaddingTop(paddingWithBanner)
-            ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
-            ImageAnnouncementViewHolderBinder.bindBannerClick(banner, bannerView, imageAnnouncementListener)
-            bindBannerMargin(element)
-        }
+        bannerView?.show()
+        setPaddingTop(paddingWithBanner)
+        ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
+        ImageAnnouncementViewHolderBinder.bindBannerClick(
+                banner, bannerView, imageAnnouncementListener
+        )
+        bindBannerMargin(element)
     }
 
     private fun setPaddingTop(topPadding: Float) {
@@ -193,9 +188,6 @@ class BroadcastViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.item_broadcast_message_bubble
-        const val AB_TEST_KEY = "broadcast banner"
-        const val VARIANT_CONTROL = "control_variant"
-        const val VARIANT_NO_BANNER = "no_banner"
 
         private val paddingWithBanner = 1f.toPx()
         private val paddingWithoutBanner = 6f.toPx()
