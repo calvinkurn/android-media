@@ -49,6 +49,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
+import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -89,8 +90,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isCircuitBreaker: Boolean = false
     private var isGpsEnable: Boolean = true
 
-    private var _binding: FragmentPinpointMapBinding? = null
-    private val binding get() = _binding!!
+    private var binding by autoCleared<FragmentPinpointMapBinding>()
 
     private var composite = CompositeSubscription()
 
@@ -167,7 +167,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        _binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
+        binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -384,7 +384,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onDestroyView() {
         binding.mapView.onDestroy()
-        _binding = null
         super.onDestroyView()
     }
 
