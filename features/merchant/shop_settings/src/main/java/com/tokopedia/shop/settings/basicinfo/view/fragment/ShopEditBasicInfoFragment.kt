@@ -41,6 +41,7 @@ import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopSettingsErrorHandler
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
 import com.tokopedia.shop.settings.common.util.setNavigationResult
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -69,6 +70,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var loader: LoaderUnify? = null
     private var shopDomainTextWatcher: TextWatcher? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var snackbar: Snackbar? = null
@@ -96,6 +98,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loader = view.findViewById(R.id.loader)
 
         setupTextField()
         setupDomainSuggestion()
@@ -556,12 +559,12 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showLoading() {
-        loader.show()
+        loader?.show()
         container.hide()
     }
 
     private fun hideLoading() {
-        loader.hide()
+        loader?.hide()
         container.show()
     }
 
