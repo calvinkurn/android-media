@@ -54,7 +54,7 @@ class LabelUtils {
             if (context != null) {
                 paint.color = androidx.core.content.ContextCompat.getColor(context!!, com.tokopedia.unifyprinciples.R.color.Unify_N0)
             } else {
-                paint.color = Color.WHITE
+                paint.color = androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)
             }
             canvas.drawText(text, start, end, x, y.toFloat(), paint)
         }
@@ -87,7 +87,7 @@ class LabelUtils {
         if (context != null) {
             wordToSpan.setSpan(ForegroundColorSpan(androidx.core.content.ContextCompat.getColor(context!!, com.tokopedia.unifyprinciples.R.color.Unify_N0)), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         } else {
-            wordToSpan.setSpan(ForegroundColorSpan(Color.WHITE), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            wordToSpan.setSpan(ForegroundColorSpan(androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         reboldText(checkTextTypeFace(), wordToSpan, role.length, user.length)
         wordToSpan.setSpan(RoundedBackgroundSpan(userRole), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -107,10 +107,10 @@ class LabelUtils {
         val ctx = context ?: return -1
 
         return ContextCompat.getColor(ctx, when (role) {
-            "Penjual" -> R.color.tkpd_status_red
-            "Pembeli" -> R.color.label_buyer
-            "Pengguna" -> R.color.label_user
-            else -> R.color.tkpd_dark_orange
+            "Penjual" -> com.tokopedia.unifyprinciples.R.color.Unify_Y600
+            "Pembeli" -> com.tokopedia.unifyprinciples.R.color.Unify_B400
+            "Pengguna" -> com.tokopedia.unifyprinciples.R.color.Unify_G400
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_Y400
         })
     }
 

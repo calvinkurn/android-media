@@ -83,7 +83,7 @@ public class RectangleOverlayView extends LinearLayout {
         if(colorId != -1){
             paint.setColor(getResources().getColor(colorId));
         }else {
-            paint.setColor(getResources().getColor(R.color.colorPrimary));
+            paint.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500));
         }
 
         paint.setAlpha(255);

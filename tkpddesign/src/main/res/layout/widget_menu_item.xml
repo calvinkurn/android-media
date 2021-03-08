@@ -36,7 +36,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         app:layout_goneMarginLeft="@dimen/dp_16"
         app:layout_goneMarginStart="@dimen/dp_16"
-        android:textColor="@color/grey_750"
+        android:textColor="@color/Unify_N600"
         android:textSize="@dimen/sp_14"
         android:singleLine="true"
         tools:text="Bakar bakar Bakar bakar Bakar bakar Bakar bakar"
@@ -69,7 +69,7 @@
         android:layout_height="1dp"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

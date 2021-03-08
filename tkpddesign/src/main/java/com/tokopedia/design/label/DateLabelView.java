@@ -52,7 +52,7 @@ public class DateLabelView extends BaseCustomView {
         comparedDateTextView = (TextView) view.findViewById(R.id.text_view_compared_date);
         defaultTextColor = dateTextView.getTextColors();
         defaultCompareTextColor = comparedDateTextView.getTextColors();
-        grayColor = ContextCompat.getColor(getContext(), R.color.grey_400);
+        grayColor = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N150);
     }
 
     @Override

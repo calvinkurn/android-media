@@ -38,7 +38,7 @@ public class Chips extends AppCompatTextView {
         setBackgroundResource(R.drawable.chips_background);
         setPadding(marginDefault, paddingTopBottom, marginDefault, paddingTopBottom);
         setEllipsize(TextUtils.TruncateAt.MARQUEE);
-        setTextColor(getResources().getColor(R.color.black_56));
+        setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         setLayoutParams(params);
     }
 }

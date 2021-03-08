@@ -17,22 +17,22 @@
     </style>
 
     <style name="Toolbar.White" parent="Base.Toolbar.Theme">
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/green_600</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/Unify_G500</item>
         <item name="android:background">@color/Unify_N0</item>
         <item name="actionModeBackground">@color/Unify_N0</item>
         <item name="android:actionModeBackground">@color/Unify_N0</item>
-        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
-        <item name="android:actionMenuTextColor">@color/font_black_primary_70</item>
-        <item name="android:textColorSecondary">@color/font_black_primary_70</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_68</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_68</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_68</item>
     </style>
 
     <style name="TabBar.White" parent="BaseTabBar">
         <item name="android:textSize">@dimen/sp_14</item>
         <item name="android:background">@color/Unify_N0</item>
-        <item name="tabTextColor">@color/grey_title</item>
+        <item name="tabTextColor">@color/Unify_N700_32</item>
         <item name="tabTextAppearance">@style/TitlePageWhiteIndicator</item>
-        <item name="tabIndicatorColor">@color/tkpd_main_green</item>
-        <item name="tabSelectedTextColor">@color/tkpd_main_green</item>
+        <item name="tabIndicatorColor">@color/Unify_G400</item>
+        <item name="tabSelectedTextColor">@color/Unify_G400</item>
     </style>
 
     <style name="TitlePageWhiteIndicator">
@@ -41,6 +41,6 @@
     </style>
 
     <style name="TitleTextAppearance.White">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 </resources>

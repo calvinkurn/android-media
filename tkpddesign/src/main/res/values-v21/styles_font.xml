@@ -15,7 +15,7 @@
     </style>
     <style name="TextView.Title.BlackSecondary.Bold">
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
     <style name="TextView.Small.Bold">
         <item name="android:fontFamily">sans-serif-medium</item>
