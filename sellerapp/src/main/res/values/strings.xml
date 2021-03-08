@@ -111,6 +111,7 @@
     <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
     <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
     <string name="title_activity_shop_transaction_new">Penjualan</string>
+    <string name="set_date">Atur Tanggal</string>
 
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
