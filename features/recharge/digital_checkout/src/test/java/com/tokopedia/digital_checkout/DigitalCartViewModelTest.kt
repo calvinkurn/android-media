@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
@@ -20,6 +23,7 @@ import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyCartDat
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.usecase.*
 import com.tokopedia.digital_checkout.utils.DeviceUtil
+import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
@@ -34,6 +38,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertNull
 import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
@@ -658,11 +663,112 @@ class DigitalCartViewModelTest {
         addToCart_onSuccess()
         digitalCartViewModel.setPromoData(promoData)
         digitalCartViewModel.applyPromoData(promoData)
-        digitalCartViewModel.resetAdditionalInfoAndTotalPrice()
+        digitalCartViewModel.resetCheckoutSummaryPromoAndTotalPrice()
 
         // then
         assert(digitalCartViewModel.totalPrice.value == getDummyCartData().attributes?.pricePlain)
         assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 1)
+    }
+
+    @Test
+    fun onApplyDiscountPromoCode_updateCheckoutSummary() {
+        // given
+        val promoData = PromoData()
+        promoData.amount = 12000
+        promoData.promoCode = "dummyPromoCode"
+        promoData.state = TickerCheckoutView.State.ACTIVE
+
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.setPromoData(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
+
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO}
+        assert(summary?.priceAmount == String.format("-%s", getStringIdrFormat(promoData.amount.toDouble())))
+    }
+
+    @Test
+    fun onApplyNonDiscountPromoCode_notUpdateCheckoutSummary() {
+        // given
+        val promoData = PromoData()
+        promoData.state = TickerCheckoutView.State.ACTIVE
+
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.setPromoData(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
+
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO}
+        assertNull(summary)
+    }
+
+    @Test
+    fun onDiscardPromoCode_updateCheckoutSummary() {
+        // given
+        val promoData1 = PromoData()
+        promoData1.amount = 12000
+        promoData1.promoCode = "dummyPromoCode"
+        promoData1.state = TickerCheckoutView.State.ACTIVE
+
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.setPromoData(promoData1)
+        digitalCartViewModel.applyPromoData(promoData1)
+        digitalCartViewModel.resetCheckoutSummaryPromoAndTotalPrice()
+
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO}
+        assertNull(summary)
+    }
+
+    @Test
+    fun onCheckedFintechProduct_updateCheckoutSummary() {
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.updateCheckoutSummaryWithFintechProduct(true)
+
+        // then
+        val fintechPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0.0
+        val fintechName = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.info?.title
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == fintechName }
+
+        assert(summary?.priceAmount == getStringIdrFormat(fintechPrice))
+    }
+
+    @Test
+    fun onUncheckedFintechProduct_updateCheckoutSummary() {
+        // given
+
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.updateCheckoutSummaryWithFintechProduct(true)
+        digitalCartViewModel.updateCheckoutSummaryWithFintechProduct(false)
+
+        // then
+        val fintechName = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.info?.title
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == fintechName }
+
+        assertNull(summary)
+    }
+
+    @Test
+    fun onInputPrice_UpdateCheckoutSummary() {
+        // given
+        val userInputPrice = 30000.0
+
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.setSubtotalPaymentSummaryOnUserInput(userInputPrice)
+
+        // then
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_SUBTOTAL_TAGIHAN }
+
+        assert(summary?.priceAmount == getStringIdrFormat(userInputPrice))
     }
 
     @Test
@@ -735,6 +841,21 @@ class DigitalCartViewModelTest {
 
         // then
         assert(digitalCartViewModel.totalPrice.value == userInput)
+    }
+
+    @Test
+    fun setSubtotalPayment_afterUserInputNumber() {
+        // given
+        val userInput = 100000.0
+
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.setSubtotalPaymentSummaryOnUserInput(userInput)
+
+        // then
+        val summary = digitalCartViewModel.payment.value!!.summaries.first {
+            it.title == DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN }
+        assert(summary.priceAmount == getStringIdrFormat(userInput))
     }
 
     @Test

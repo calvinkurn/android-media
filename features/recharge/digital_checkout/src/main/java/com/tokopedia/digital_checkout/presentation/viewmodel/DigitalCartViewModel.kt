@@ -13,7 +13,6 @@ import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
-import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
@@ -23,7 +22,6 @@ import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
-import com.tokopedia.digital_checkout.presentation.adapter.DigitalCheckoutSummaryAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCheckoutSummaryAdapter.Payment
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCheckoutSummaryAdapter.PaymentSummary
 import com.tokopedia.digital_checkout.usecase.*
@@ -50,7 +48,6 @@ import java.lang.reflect.Type
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -284,7 +281,7 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     private fun onReceivedPromoCode() {
-        resetAdditionalInfoAndTotalPrice()
+        resetCheckoutSummaryPromoAndTotalPrice()
         val promoDataValue = promoData.value?.amount ?: 0
         if (promoDataValue > 0) {
             paymentSummary.addToSummary(Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
@@ -296,8 +293,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    // TODO: change function name
-    fun resetAdditionalInfoAndTotalPrice() {
+    fun resetCheckoutSummaryPromoAndTotalPrice() {
         paymentSummary.removeFromSummary(STRING_KODE_PROMO)
         _payment.postValue(paymentSummary)
         _totalPrice.forceRefresh()
@@ -408,7 +404,7 @@ class DigitalCartViewModel @Inject constructor(
         when (promoData.state) {
             TickerCheckoutView.State.FAILED,
             TickerCheckoutView.State.EMPTY -> {
-                resetAdditionalInfoAndTotalPrice()
+                resetCheckoutSummaryPromoAndTotalPrice()
             }
             TickerCheckoutView.State.ACTIVE -> {
                 onReceivedPromoCode()
