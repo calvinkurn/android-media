@@ -37,10 +37,6 @@ import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
@@ -1505,29 +1501,57 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getBalanceWidgetData() {
+        newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
+        newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
+
         launchCatchError(coroutineContext, block = {
             val tokopointContentDefered = async { getTokopointBalanceContent() }
             val walletContentDefered = async { getWalletBalanceContent() }
 
-            val walletContent = walletContentDefered.await()
-            if (walletContent?.isLinked == false) {
-                val pendingCashback = getPendingTokoCashContent()
-                homeBalanceModel.mapBalanceData(
-                        tokopointDrawerListHomeData = tokopointContentDefered.await(),
-                        homeHeaderWalletAction = walletContent.copy(cashBalance = pendingCashback.amountText),
-                        pendingCashBackData = PendingCashbackModel(
-                                pendingCashback = pendingCashback,
-                                labelActionButton = walletContent.labelActionButton,
-                                labelTitle = walletContent.labelTitle,
-                                walletType = walletContent.walletType
-                        )
-                )
-            } else {
-                homeBalanceModel.mapBalanceData(
-                        tokopointDrawerListHomeData = tokopointContentDefered.await(),
-                        homeHeaderWalletAction = walletContentDefered.await()
-                )
+            var walletContent: HomeHeaderWalletAction? = null
+            var tokopointContent: TokopointsDrawerListHomeData? = null
+            var pendingCashback: PendingCashback? = null
+
+            try {
+                walletContent = walletContentDefered.await()
+            } catch (e: Exception) {
+                newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
             }
+
+            try {
+                tokopointContent = tokopointContentDefered.await()
+            } catch (e: Exception) {
+                newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
+            }
+
+            walletContent?.let {
+                if (!walletContent.isLinked) {
+                    try {
+                        pendingCashback = getPendingTokoCashContent()
+                        pendingCashback?.let { pendingData ->
+                            homeBalanceModel.mapBalanceData(
+                                    tokopointDrawerListHomeData = tokopointContent,
+                                    homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
+                                    pendingCashBackData = PendingCashbackModel(
+                                            pendingCashback = pendingData,
+                                            labelActionButton = walletContent.labelActionButton,
+                                            labelTitle = walletContent.labelTitle,
+                                            walletType = walletContent.walletType
+                                    )
+                            )
+                        }
+                    } catch (e: Exception) {
+                        newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                    }
+                } else {
+                    homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
+                }
+            }
+
+            tokopointContent?.let {
+                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContentDefered.await(), )
+            }
+
             newUpdateHeaderViewModel(homeBalanceModel)
         }) {
 
@@ -1536,25 +1560,21 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTokopointDrawerListData() {
         //set loading to wallet item
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setBalanceState(type = TYPE_TOKOPOINT, state = STATE_LOADING))
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setBalanceState(type = TYPE_COUPON, state = STATE_LOADING))
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setBalanceState(type = TYPE_FREE_ONGKIR, state = STATE_LOADING))
+        newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
             val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
             homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointsDrawerListHome)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }) {
-            homeBalanceModel.setBalanceState(type = TYPE_TOKOPOINT, state = STATE_ERROR)
-            homeBalanceModel.setBalanceState(type = TYPE_COUPON, state = STATE_ERROR)
-            homeBalanceModel.setBalanceState(type = TYPE_FREE_ONGKIR, state = STATE_ERROR)
+            homeBalanceModel.setTokopointBalanceState(state = STATE_ERROR)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }
     }
 
     private fun getWalletBalanceData() {
         //set loading to wallet item
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setBalanceState(type = TYPE_WALLET, state = STATE_LOADING))
+        newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
             val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
@@ -1564,7 +1584,7 @@ open class HomeRevampViewModel @Inject constructor(
                 _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
             }
         }){
-            homeBalanceModel.setBalanceState(type = TYPE_WALLET, state = STATE_ERROR)
+            homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }
     }
@@ -1581,11 +1601,6 @@ open class HomeRevampViewModel @Inject constructor(
     private suspend fun getPendingTokoCashContent(): PendingCashback {
         return getPendingCashbackUseCase.get().executeOnBackground()
     }
-
-//    //TODO 1 : delete getTokoCashBalance
-//    private fun getTokocashBalance() {
-//
-//    }
 
     fun getTokocashPendingBalance(){
         if(getPendingCashBalanceJob?.isActive != true){
