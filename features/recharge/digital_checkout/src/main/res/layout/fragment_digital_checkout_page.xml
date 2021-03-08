@@ -131,17 +131,12 @@
                     tools:visibility="visible" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layoutCheckoutSummary"
+            <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSummaryWidget
+                android:id="@+id/checkoutSummaryWidget"
+                android:background="@color/Unify_N0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0">
-
-                <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSummaryWidget
-                    android:id="@+id/checkoutSummaryWidget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                android:layout_marginBottom="@dimen/spacing_lvl3"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
