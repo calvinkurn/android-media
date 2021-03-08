@@ -7,7 +7,7 @@
     <color name="play_dms_loading_overlay_background">#B331353B</color>
 
     <!--Background-->
-    <color name="play_background">#26292E</color>
+    <color name="play_dms_background">#26292E</color>
     <color name="play_dms_video_background">#B8BFCA</color>
     <color name="play_dms_error_background">#26292E</color>
     <color name="play_dms_error_text_color">#AEFFFFFF</color>
