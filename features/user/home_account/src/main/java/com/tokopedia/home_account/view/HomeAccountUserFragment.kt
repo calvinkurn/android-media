@@ -493,13 +493,16 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun getProfileData() {
-        isShowHomeAccountTokopoints = true
-        if (isShowHomeAccountTokopoints) {
+        if (showHomeAccountTokopoints()) {
             viewModel.getUserPageAssetConfig()
         } else {
             viewModel.getSaldoBalance()
         }
         viewModel.getShortcutData()
+    }
+
+    private fun showHomeAccountTokopoints() : Boolean {
+        return isShowHomeAccountTokopoints
     }
 
     private fun getData() {
