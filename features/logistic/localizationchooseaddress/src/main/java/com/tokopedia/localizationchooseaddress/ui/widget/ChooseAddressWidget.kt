@@ -17,6 +17,7 @@ import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -126,6 +127,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = data.label
+            if (ChooseAddressUtils.isRollOutUser(context)) {
+                chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
+                chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it) }
+            }
         } else {
             val label = context.getString(R.string.txt_send_to, data?.label)
             textChosenAddress?.text = HtmlLinkHelper(context, label).spannedString
@@ -141,9 +146,6 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-        if (localData?.city_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
-            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it) }
-        }
     }
 
     fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
