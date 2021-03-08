@@ -72,6 +72,7 @@ dependencies {
     implementation project(rootProject.ext.features.profileCommon)
     implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.seamlessLoginCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.playServicesDependencies.location
 
     implementation rootProject.ext.unifyDependencies.icon
