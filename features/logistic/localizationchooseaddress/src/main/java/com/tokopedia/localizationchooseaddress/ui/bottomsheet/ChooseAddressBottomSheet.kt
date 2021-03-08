@@ -1,6 +1,7 @@
 package com.tokopedia.localizationchooseaddress.ui.bottomsheet
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
@@ -200,9 +201,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {
-                isLoginFlow = true
-                setInitialViewState()
-                viewModel.getDefaultChosenAddress("", source)
+                if (resultCode == Activity.RESULT_OK) {
+                    isLoginFlow = true
+                    setInitialViewState()
+                    viewModel.getDefaultChosenAddress("", source)
+                }
             }
         }
     }
@@ -313,6 +316,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                         showToaster(getString(R.string.toaster_failed_chosen_address), Toaster.TYPE_ERROR)
                         if (isLoginFlow) {
                             initData()
+                        } else {
+                            setViewState(false)
                         }
                     } else {
                         val data = it.data.addressData
@@ -322,16 +327,15 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = "${data.districtName}, ${data.cityName}",
-//                                label = "${data.addressName} ${data.receiverName}",
+                                label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         if (isLoginFlow) {
                             listener?.onLocalizingAddressLoginSuccessBottomSheet()
+                            listener?.onAddressDataChanged()
                             dismissBottomSheet()
                         } else {
-                            showToaster("success use location", Toaster.TYPE_NORMAL)
                             listener?.onAddressDataChanged()
                             dismissBottomSheet()
                         }
@@ -347,7 +351,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun showToaster(message: String, type: Int) {
-        println("++ already showToaster!")
         val toaster = Toaster
         view?.rootView?.let { v ->
             toaster.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
@@ -496,6 +499,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     private fun setStateWithLocation(location: Location) {
         isLoginFlow = false
+        setInitialViewState()
         viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", source)
     }
 
