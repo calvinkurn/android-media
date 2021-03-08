@@ -480,8 +480,9 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     Handler().postDelayed({
+                        assignUserLocationData()
                         onSwipeRefresh()
-                    }, 500L)
+                    }, 300L)
                 }
                 updateActionButtonShadow()
 
