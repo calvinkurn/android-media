@@ -19,7 +19,9 @@ import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
-import com.tokopedia.webview.KEY_NEED_LOGIN
+
+
+const val KEY_NEED_LOGIN = "need_login"
 
 class GyroView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
@@ -46,13 +48,13 @@ class GyroView @JvmOverloads constructor(
                 analytics: GyroRecommendationAnalytics) {
         this.analytics = analytics
         this.thanksPageData = thanksPageData
-        if(!gyroRecommendation.gyroVisitable.isNullOrEmpty()){
+        if (!gyroRecommendation.gyroVisitable.isNullOrEmpty()) {
             findViewById<TextView>(R.id.tvFeatureTitle).text = if (gyroRecommendation.title.isNotEmpty())
                 gyroRecommendation.title else context.getString(R.string.thank_special_feature_for_you)
             findViewById<TextView>(R.id.tvFeatureDescription).text = if (gyroRecommendation.description.isNotEmpty())
                 gyroRecommendation.description else context.getString(R.string.thank_lets_try_feature)
             addTORecyclerView(gyroRecommendation.gyroVisitable)
-        } else{
+        } else {
             gone()
         }
     }

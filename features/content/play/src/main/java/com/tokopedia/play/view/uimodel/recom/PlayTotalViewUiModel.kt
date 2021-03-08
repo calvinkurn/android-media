@@ -10,4 +10,4 @@ sealed class PlayTotalViewUiModel {
 }
 
 val PlayTotalViewUiModel.totalViewFmt: String
-    get() = if (this is PlayTotalViewUiModel.Complete) this.totalView else ""
+    get() = if (this is PlayTotalViewUiModel.Complete) this.totalView else "0"

@@ -42,7 +42,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
 
@@ -53,3 +53,5 @@ project.ext {
     artifactName ="common_tradein-release"
 }
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

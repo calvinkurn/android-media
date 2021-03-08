@@ -1,10 +1,10 @@
 package com.tokopedia.review.feature.reputationhistory.view.helper;
 
-import androidx.annotation.NonNull;
-
 import android.view.View;
 
-import com.tokopedia.review.R;
+import androidx.annotation.NonNull;
+
+import com.tokopedia.kotlin.extensions.view.ImageViewExtKt;
 
 import java.util.Calendar;
 
@@ -27,7 +27,7 @@ public class ReputationHeaderViewHelper extends GMStatHeaderViewHelper {
 
     @Override
     protected void setImageIcon() {
-        calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
+        ImageViewExtKt.loadImage(calendarIcon, CALENDAR_IMAGE_URL, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
     }
 
     @NonNull
