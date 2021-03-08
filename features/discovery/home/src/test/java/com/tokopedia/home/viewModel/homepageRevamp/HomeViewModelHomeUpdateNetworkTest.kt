@@ -60,8 +60,7 @@ class HomeViewModelHomeUpdateNetworkTest {
                 userSessionInterface = userSessionInterface,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase)
         homeViewModel.setNewBalanceWidget(false)
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
-            assert((homeDataModel.list.find { it::class.java == HomeHeaderOvoDataModel::class.java} as? HomeHeaderOvoDataModel)?.headerDataModel?.homeHeaderWalletActionData?.balance == "12000")
-        }
+        homeViewModel.onRefreshTokoCash()
+        assert((homeViewModel.homeLiveData.value!!.list.find { it::class.java == HomeHeaderOvoDataModel::class.java} as? HomeHeaderOvoDataModel)?.headerDataModel?.homeHeaderWalletActionData?.balance == "12000")
     }
 }
