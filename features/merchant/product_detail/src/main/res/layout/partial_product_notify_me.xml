@@ -14,7 +14,15 @@
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <com.tokopedia.product.detail.view.widget.CampaignRibbon
+        android:id="@+id/upcoming_campaign_ribbon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <com.tokopedia.unifyprinciples.Typography
+        android:visibility="gone"
         android:id="@+id/product_notify_title"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
@@ -30,6 +38,7 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:visibility="gone"
         android:id="@+id/product_notify_subtitle"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
@@ -46,6 +55,7 @@
         app:typographyWeight="reguler" />
 
     <com.tokopedia.design.countdown.CountDownView
+        android:visibility="gone"
         android:id="@+id/notify_count_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,6 +72,7 @@
         app:layout_constraintTop_toTopOf="@+id/product_notify_subtitle" />
 
     <androidx.constraintlayout.widget.Barrier
+        android:visibility="gone"
         android:id="@+id/barrier_notify_me"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,6 +80,7 @@
         app:constraint_referenced_ids="notify_count_down,product_notify_subtitle, product_notify_title"/>
 
     <ImageView
+        android:visibility="gone"
         android:layout_width="@dimen/dp_110"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintBottom_toTopOf="@id/bottom_separator_desc"
@@ -79,6 +91,7 @@
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:visibility="gone"
         android:id="@+id/btn_notify_me"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
