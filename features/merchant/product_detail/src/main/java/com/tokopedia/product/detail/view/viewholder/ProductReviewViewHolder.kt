@@ -49,7 +49,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             reviewData?.let { review ->
                 setReviewStars(review)
                 setReviewAuthor(reviewData)
-                setReviewVariant(review)
                 setReviewDescription(review)
                 return
             }
@@ -120,17 +119,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         view.txt_date_user_pdp.apply {
             text = HtmlLinkHelper(context, context.getString(R.string.review_author, reviewData.user.fullName)).spannedString
             show()
-        }
-    }
-
-    private fun setReviewVariant(review: Review) {
-        if (review.productVariantReview.variantTitle.isNotEmpty()) {
-            view.txt_variant_review_pdp.apply {
-                show()
-                text = review.productVariantReview.variantTitle
-            }
-        } else {
-            view.txt_variant_review_pdp.hide()
         }
     }
 

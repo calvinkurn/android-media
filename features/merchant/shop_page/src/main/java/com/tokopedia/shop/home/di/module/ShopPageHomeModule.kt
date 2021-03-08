@@ -25,6 +25,7 @@ import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_OCC_MUTATION
 import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -92,6 +93,13 @@ class ShopPageHomeModule {
                       totalReview
                       isPO
                       cashback
+                      recommendationType
+                      labelGroups {
+                          position
+                          type
+                          title
+                          url
+                      }
                     }
                     ... on CampaignWidget {
                       campaignID
@@ -270,6 +278,13 @@ class ShopPageHomeModule {
     @Named(GQL_ATC_MUTATION)
     fun provideAddToCartMutation(@ShopPageContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_ATC_OCC_MUTATION)
+    fun provideAddToCartOCCMutation(@ShopPageContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout);
     }
 
     @ShopPageHomeScope

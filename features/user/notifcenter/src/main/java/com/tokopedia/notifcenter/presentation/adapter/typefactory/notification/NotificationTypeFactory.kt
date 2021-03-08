@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.data.uimodel.*
 
 interface NotificationTypeFactory : AdapterTypeFactory {
@@ -16,6 +17,7 @@ interface NotificationTypeFactory : AdapterTypeFactory {
     fun type(notificationTopAdsBannerUiModel: NotificationTopAdsBannerUiModel): Int
     fun type(recommendationUiModel: RecommendationUiModel): Int
     fun type(emptyNotificationUiModel: EmptyNotificationUiModel): Int
+    fun type(notifOrderListUiModel: NotifOrderListUiModel): Int
 
     /**
      * to support 1 uiModel has several type of view

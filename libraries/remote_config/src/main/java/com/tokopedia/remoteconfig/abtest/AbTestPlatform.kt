@@ -106,6 +106,18 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         fetch(listener)
     }
 
+    fun getRevisionValue() = sharedPreferences.getInt(REVISION, 0)
+
+    fun getFilteredKeyByKeyName(keyName: String): MutableSet<String> {
+        return mutableSetOf<String>().apply {
+            for ((key, value) in sharedPreferences.all){
+                val valueClassType = value?.let { it::class.java }
+                if ((key.equals(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
+                    add(key)
+            }
+        }
+    }
+
     override fun fetch(listener: RemoteConfig.Listener?) {
         // Get existing revision for next Gql request
         val revision = sharedPreferences.getInt(REVISION, 0)

@@ -127,7 +127,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     private fun observeUserInfo() = mPresenter.userInfo.observe(viewLifecycleOwner, Observer {
         it.let {
-            phoneVerificationState = it.verifiedMsisdn
+            phoneVerificationState = it.mfGetUserInfo?.verifiedMsisdn
         }
     })
 
