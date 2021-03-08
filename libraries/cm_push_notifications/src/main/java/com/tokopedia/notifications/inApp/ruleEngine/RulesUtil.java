@@ -17,6 +17,7 @@ public class RulesUtil {
             String NOTIFICATION_TYPE = "notificationType";
             String CUSTOM_VALUES = "customValues";
             String CAMPAIGN_ID = "campaignId";
+            String CAMPAIGN_CODE = "campaignCode";
             String CAMPAIGN_USER_TOKEN = "campaignUserToken";
             String PARENT_ID = "parentId";
             String START_TIME = "st";
