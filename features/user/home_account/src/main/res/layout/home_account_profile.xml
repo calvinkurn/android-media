@@ -19,7 +19,7 @@
         android:id="@+id/account_user_item_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/home_account_dp_20"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         app:layout_constraintStart_toEndOf="@+id/account_user_item_profile_avatar"
         app:layout_constraintTop_toTopOf="@+id/account_user_item_profile_avatar"
         app:typographyWeight="bold"
@@ -41,16 +41,20 @@
         tools:text="082242454504" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl2"
         android:id="@+id/account_user_item_profile_email"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_account_dp_2"
         android:lineHeight="18dp"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/fontSize_lvl2"
+        app:layout_constraintEnd_toStartOf="@+id/account_user_item_profile_edit"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_phone"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_phone"
+        app:typographyType="body_3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:lines="1"
         tools:text="yoris.prayogo@tokopedia.com" />
 
     <com.tokopedia.iconunify.IconUnify

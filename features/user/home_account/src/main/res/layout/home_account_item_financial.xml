@@ -20,18 +20,19 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/home_account_dp_5"
-            android:layout_marginEnd="@dimen/home_account_dp_5">
+            android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/account_user_item_financial_icon"
-                android:layout_width="@dimen/home_account_dp_38"
-                android:layout_height="@dimen/home_account_dp_38"
+                android:layout_width="@dimen/layout_lvl4"
+                android:layout_height="@dimen/layout_lvl4"
                 android:scaleType="center"
                 app:layout_constraintBottom_toBottomOf="@+id/account_user_item_financial_body"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/account_user_item_financial_title" />
+                app:layout_constraintTop_toTopOf="@+id/account_user_item_financial_title"
+                android:layout_marginStart="@dimen/home_account_dp_14"
+                android:layout_marginTop="@dimen/home_account_dp_10"
+                android:layout_marginBottom="@dimen/home_account_dp_10"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/account_user_item_financial_title"
