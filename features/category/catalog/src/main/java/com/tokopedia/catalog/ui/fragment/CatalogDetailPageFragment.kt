@@ -232,7 +232,7 @@ class CatalogDetailPageFragment : Fragment(),
             setHasFixedSize(true)
             setNestedCanScroll(true)
             itemAnimator = null
-            ContextCompat.getDrawable(context, R.drawable.divider)?.let {
+            ContextCompat.getDrawable(context, R.drawable.catalog_divider)?.let {
                 addItemDecoration(DividerItemDecorator(it))
             }
             adapter = catalogDetailAdapter
