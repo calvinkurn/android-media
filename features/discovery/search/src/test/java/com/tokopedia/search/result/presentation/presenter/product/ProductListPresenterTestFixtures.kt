@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -43,7 +43,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val remoteConfig = mockk<RemoteConfig>()
-    protected val searchOnBoardingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
+    protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -60,7 +60,7 @@ internal open class ProductListPresenterTestFixtures {
                 searchProductLoadMoreUseCase,
                 recommendationUseCase,
                 userSession,
-                searchOnBoardingLocalCache,
+                searchCoachMarkLocalCache,
                 dagger.Lazy { getDynamicFilterUseCase },
                 dagger.Lazy { getProductCountUseCase },
                 dagger.Lazy { getLocalSearchRecommendationUseCase },
@@ -72,6 +72,7 @@ internal open class ProductListPresenterTestFixtures {
 
         verify {
             productListView.abTestRemoteConfig
+            productListView.isChooseAddressWidgetEnabled
         }
     }
 

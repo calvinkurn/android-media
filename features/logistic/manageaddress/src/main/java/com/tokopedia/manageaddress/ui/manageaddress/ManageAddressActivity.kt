@@ -32,7 +32,11 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
     }
 
     private fun initViews() {
-        supportFragmentManager.beginTransaction().replace(R.id.container, ManageAddressFragment.newInstance()).commit()
+        val bundle = Bundle()
+        if (intent != null && intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.container, ManageAddressFragment.newInstance(bundle)).commit()
         btn_back.setOnClickListener {
             onBackPressed()
         }

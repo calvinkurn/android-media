@@ -4,7 +4,7 @@ object ManageAddressConstant {
     const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
     const val DEFAULT_LOCAL_ERROR_MESSAGE = "Terjadi kesalahan. Ulangi beberapa saat lagi"
 
-    const val LABEL_LAINNYA = "Lainnya"
+    const val LABEL_LAINNYA = "Pilihan Lainnya"
 
     const val SUCCESS = "success"
 
@@ -18,4 +18,5 @@ object ManageAddressConstant {
     const val EXTRA_REF = "EXTRA_REF"
 
     const val SCREEN_NAME_USER_NEW = "/user/address/create"
+    const val EXTRA_IS_LOCALIZATION = "EXTRA_IS_LOCALIZATION"
 }

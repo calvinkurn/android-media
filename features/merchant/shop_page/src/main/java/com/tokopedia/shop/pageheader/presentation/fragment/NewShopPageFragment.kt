@@ -2,7 +2,9 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.app.Activity
 import android.content.ClipData
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -75,6 +77,7 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
@@ -167,6 +170,7 @@ class NewShopPageFragment :
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
+        private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
@@ -261,6 +265,7 @@ class NewShopPageFragment :
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
+    private var sharedPreferences: SharedPreferences? = null
     var selectedPosition = -1
     val isMyShop: Boolean
         get() =shopViewModel?.isMyShop(shopId) == true
@@ -543,6 +548,7 @@ class NewShopPageFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+        sharedPreferences = activity?.getSharedPreferences(ShopPageFragment.SHOP_PAGE_PREFERENCE, Context.MODE_PRIVATE)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(NewShopPageViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
@@ -1375,31 +1381,31 @@ class NewShopPageFragment :
         }
     }
 
-    override fun toggleFavorite(isFavourite: Boolean) {
-        shopPageTracking?.clickFollowUnfollowShop(
-                isFavourite,
-                CustomDimensionShopPage.create(
-                        shopId,
-                        shopPageHeaderDataModel?.isOfficial ?: false,
-                        shopPageHeaderDataModel?.isGoldMerchant ?: false
-                )
-        )
-
-        shopPageTracking?.sendMoEngageFavoriteEvent(
-                shopPageHeaderDataModel?.shopName.orEmpty(),
-                shopId,
-                shopPageHeaderDataModel?.domain.orEmpty(),
-                shopPageHeaderDataModel?.location.orEmpty(),
-                shopPageHeaderDataModel?.isOfficial ?: false,
-                isFavourite
-        )
-
-        shopViewModel?.toggleFavorite(
-                shopId,
-                this::onSuccessToggleFavourite,
-                this::onErrorToggleFavourite
-        )
-    }
+//    override fun toggleFavorite(isFavourite: Boolean) {
+//        shopPageTracking?.clickFollowUnfollowShop(
+//                isFavourite,
+//                CustomDimensionShopPage.create(
+//                        shopId,
+//                        shopPageHeaderDataModel?.isOfficial ?: false,
+//                        shopPageHeaderDataModel?.isGoldMerchant ?: false
+//                )
+//        )
+//
+//        shopPageTracking?.sendMoEngageFavoriteEvent(
+//                shopPageHeaderDataModel?.shopName.orEmpty(),
+//                shopId,
+//                shopPageHeaderDataModel?.domain.orEmpty(),
+//                shopPageHeaderDataModel?.location.orEmpty(),
+//                shopPageHeaderDataModel?.isOfficial ?: false,
+//                isFavourite
+//        )
+//
+//        shopViewModel?.toggleFavorite(
+//                shopId,
+//                this::onSuccessToggleFavourite,
+//                this::onErrorToggleFavourite
+//        )
+//    }
 
     override fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence) {
         context?.let {
@@ -1696,6 +1702,49 @@ class NewShopPageFragment :
 
     override fun onButtonChatClicked() {
         goToChatSeller()
+    }
+
+    override fun setFollowStatus(isFollowing: Boolean) {
+//        shopPageTracking?.clickFollowUnfollowShopWithoutShopFollower(
+//                !isFollowing,
+//                CustomDimensionShopPage.create(
+//                        shopId,
+//                        shopPageHeaderDataModel?.isOfficial ?: false,
+//                        shopPageHeaderDataModel?.isGoldMerchant ?: false
+//                )
+//        )
+//
+//        shopPageTracking?.clickFollowUnfollowShop(
+//                !isFollowing,
+//                shopId,
+//                shopViewModel?.userId
+//        )
+//
+//        shopPageTracking?.sendMoEngageFavoriteEvent(
+//                shopPageHeaderDataModel?.shopName.orEmpty(),
+//                shopId,
+//                shopPageHeaderDataModel?.domain.orEmpty(),
+//                shopPageHeaderDataModel?.location.orEmpty(),
+//                shopPageHeaderDataModel?.isOfficial ?: false,
+//                isFollowing
+//        )
+//
+//        val action = if (isFollowing) {
+//            UpdateFollowStatusUseCase.ACTION_UNFOLLOW
+//        } else {
+//            UpdateFollowStatusUseCase.ACTION_FOLLOW
+//        }
+//        shopViewModel?.updateFollowStatus(shopId, action)
+    }
+
+    override fun isFirstTimeVisit(): Boolean? {
+        return sharedPreferences?.getBoolean(NewShopPageFragment.IS_FIRST_TIME_VISIT, false)
+    }
+
+    override fun saveFirstTimeVisit() {
+        sharedPreferences?.edit()?.run {
+            putBoolean(NewShopPageFragment.IS_FIRST_TIME_VISIT, true)
+        }?.apply()
     }
 
 }

@@ -113,6 +113,12 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
                     couponAppLink = couponItem.couponAppLink
+                    currencyDetailStr = couponItem.currencyDetailStr
+                    coachMark = PromoListItemUiModel.UiCoachmarkData(
+                            isShown = couponItem.coachMark.isShown,
+                            title = couponItem.coachMark.title,
+                            content = couponItem.coachMark.content
+                    )
                     val clashingInfoMap = HashMap<String, String>()
                     if (couponItem.clashingInfos.isNotEmpty()) {
                         couponItem.clashingInfos.forEach {

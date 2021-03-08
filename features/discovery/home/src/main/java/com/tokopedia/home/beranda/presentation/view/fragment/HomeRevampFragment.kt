@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -59,6 +60,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.*
+import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -81,6 +83,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
@@ -105,6 +108,10 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -160,6 +167,8 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
+import kotlinx.android.synthetic.main.fragment_home_revamp.*
+import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -320,6 +329,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private val bannerCarouselCallback = BannerComponentCallback(context, this)
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private var chooseAddressWidgetInitialized: Boolean = false
 
     private fun isNavRevamp(): Boolean {
         return try {
@@ -338,11 +348,26 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun isChooseAddressRollenceActive(): Boolean {
+        return ChooseAddressUtils.isRollOutUser(requireContext())
+    }
+
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
         if (isNavRevamp()) {
             ifNavRevamp.invoke()
         } else if (isNavOld()) {
             ifNavOld.invoke()
+        }
+    }
+
+    private fun chooseAddressAbTestCondition(
+            ifChooseAddressActive: ()-> Unit = {},
+            ifChooseAddressNotActive: ()-> Unit = {}) {
+        val isActive = isChooseAddressRollenceActive()
+        if (isActive) {
+            ifChooseAddressActive.invoke()
+        } else {
+            ifChooseAddressNotActive.invoke()
         }
     }
 
@@ -566,6 +591,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
         )
 
+        chooseAddressAbTestCondition(
+                ifChooseAddressActive = {
+                    onChooseAddressUpdated()
+                },
+                ifChooseAddressNotActive = {
+                    viewModel.get().getAddressData().isActive = false
+                }
+        )
+
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         floatingTextButton = view.findViewById(R.id.recom_action_button)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -613,27 +647,76 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun ArrayList<CoachMark2Item>.buildHomeCoachmark() {
+        //add navigation
+        val globalNavIcon = navToolbar?.getGlobalNavIconView()
+        globalNavIcon?.let {
+            if (it.isVisible) {
+                this.add(
+                        CoachMark2Item(
+                                globalNavIcon,
+                                getString(R.string.onboarding_coachmark_title),
+                                getString(R.string.onboarding_coachmark_description)
+                        )
+                )
+            }
+        }
+
+        //inbox
+        val inboxIcon = navToolbar?.getInboxIconView()
+        inboxIcon?.let {
+            if (it.isVisible) {
+                this.add(
+                        CoachMark2Item(
+                                inboxIcon,
+                                getString(R.string.onboarding_coachmark_inbox_title),
+                                getString(R.string.onboarding_coachmark_inbox_description)
+                        )
+                )
+            }
+        }
+
+        //add location
+        val needShowLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext()) ?: false
+        if (needShowLocalization) {
+            val chooseLocationWidget = getLocationWidgetView()
+            chooseLocationWidget?.let {
+                if (it.isVisible) {
+                    this.add(
+                            ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
+                    )
+                }
+            }
+        }
+        //add balance widget
+        //uncomment this to activate balance widget coachmark
+//        val balanceWidget = getBalanceWidgetView()
+//        balanceWidget?.let {
+//            if (it.isVisible) {
+//                this.add(
+//                        CoachMark2Item(
+//                                balanceWidget,
+//                                getString(R.string.onboarding_coachmark_wallet_title),
+//                                getString(R.string.onboarding_coachmark_wallet_description)
+//                        )
+//                )
+//            }
+//        }
+    }
+
     private fun showCoachMark() {
         coachMarkIsShowing = true
         val coachMarkItem = ArrayList<CoachMark2Item>()
         val coachMark = CoachMark2(requireContext())
 
-        val globalNavIcon = navToolbar?.getGlobalNavIconView()
-        globalNavIcon?.let {
-            coachMarkItem.add(
-                    CoachMark2Item(
-                            globalNavIcon,
-                            getString(R.string.onboarding_coachmark_title),
-                            getString(R.string.onboarding_coachmark_description)
-                    )
-            )
-        }
-        coachMark.container?.setOnClickListener {
-            val navigationBundle = Bundle()
-            navigationBundle.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, ApplinkConsInternalNavigation.SOURCE_HOME)
-            RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
-            coachMark.dismissCoachMark()
-        }
+        coachMarkItem.buildHomeCoachmark()
+        coachMark.setStepListener(object: CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (coachMarkItem.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true)) {
+                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(requireContext())
+                }
+            }
+        })
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
@@ -643,6 +726,25 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun getLocationWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            val locationView = it.itemView.widget_choose_address
+            if (locationView.isVisible)
+                return locationView.findViewById(R.id.text_chosen_address)
+        }
+        return null
+    }
+
+    private fun getBalanceWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            if (it.itemView.view_ovo.isVisible)
+                return it.itemView.view_ovo
+        }
+        return null
     }
 
     private fun isValidToShowCoachMark(): Boolean {
@@ -833,8 +935,34 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun conditionalViewModelRefresh(){
         if(!fragmentCreatedForFirstTime) {
-            getHomeViewModel().refresh(isFirstInstall())
+            chooseAddressAbTestCondition(
+                    ifChooseAddressActive = {
+                        if (!validateChooseAddressWidget()) {
+                            getHomeViewModel().refresh(isFirstInstall())
+                        }
+                    },
+                    ifChooseAddressNotActive = {
+                        getHomeViewModel().refresh(isFirstInstall())
+                    }
+            )
+
         }
+    }
+
+    private fun validateChooseAddressWidget(): Boolean {
+        var isAddressChanged = false
+        getHomeViewModel().getAddressData().toLocalCacheModel().let {
+            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+
+        if (isAddressChanged) {
+            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+            val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
+                    .setLocalCacheModel(localChooseAddressData)
+            viewModel.get().updateChooseAddressData(updatedChooseAddressData)
+        }
+
+        return isAddressChanged
     }
 
     private fun adjustStatusBarColor() {
@@ -973,8 +1101,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observeHomeData() {
         getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
-            if (data != null) {
-                if (data.list.size > 0) {
+            data?.let {
+                if (data.list.isNotEmpty()) {
                     configureHomeFlag(data.homeFlag)
                     setData(data.list, data.isCache, data.isProcessingAtf)
                 }
@@ -1519,6 +1647,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
+    }
+
+    override fun onChooseAddressUpdated() {
+        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        getHomeViewModel().updateChooseAddressData(
+                HomeChooseAddressData(isActive = true)
+                        .setLocalCacheModel(localCacheModel)
+        )
+        chooseAddressWidgetInitialized = false
+    }
+
+    override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
+        if (!chooseAddressWidgetInitialized) {
+            chooseAddressWidget.bindChooseAddress(ChooseAddressWidgetCallback(context, this, this))
+            chooseAddressWidget.run {
+                visibility = if (needToShowChooseAddress) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+            chooseAddressWidgetInitialized = true
+        }
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce

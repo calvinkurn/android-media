@@ -135,6 +135,11 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
+    fun getInboxIconPosition(): Int? {
+        val model = iconConfig.iconList.find { it.id == IconList.ID_MESSAGE }
+        model?.let { return iconConfig.iconList.indexOf(model) }
+        return null
+    }
 }
 
 internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -171,7 +176,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 val drawable = getIconUnifyDrawable(
                         context = context,
                         iconId = iconToolbar.id,
-                        assetColor = ContextCompat.getColor(context, com.tokopedia.iconunify.R.color.icon_enable_default_color)
+                        assetColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
                 )
                 iconImage.imageDrawable = drawable
             }
@@ -276,7 +281,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             val drawable = getIconUnifyDrawable(
                     context = context,
                     iconId = iconToolbar.id,
-                    assetColor = ContextCompat.getColor(context, R.color.icon_enable_default_color)
+                    assetColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
             )
             iconImage.imageDrawable = drawable
         }

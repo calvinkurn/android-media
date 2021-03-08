@@ -39,6 +39,9 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -167,6 +170,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         get() = if (::viewModel.isInitialized) {
             viewModel.userId
         } else "0"
+    var localCacheModel: LocalCacheModel? = null
 
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         return ShopProductAdapterTypeFactory(
@@ -176,7 +180,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 null,
                 this,
                 this,
-                null,
                 null,
                 null,
                 this,
@@ -261,6 +264,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         observeLiveData()
     }
 
+    private fun updateCurrentPageLocalCacheModelData() {
+        localCacheModel = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
+    }
+
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return staggeredGridLayoutManager
     }
@@ -273,6 +280,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     public override fun loadInitialData() {
+        updateCurrentPageLocalCacheModelData()
         isLoadingInitialData = true
         shopProductAdapter.clearProductList()
         shopProductAdapter.clearAllNonDataElement()
@@ -322,22 +330,24 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                         )
                     )
                 }
-                viewModel.getShopRestrictionInfo(restrictionParam)
+                viewModel.getShopRestrictionInfo(restrictionParam, shopId.toString())
             }
         }
     }
 
     private fun loadProductData(shopInfo: ShopInfo, page: Int) {
-        viewModel.getShopProduct(
-                shopInfo.shopCore.shopID,
-                page,
-                ShopPageConstant.DEFAULT_PER_PAGE,
-                selectedEtalaseId,
-                keyword,
-                isNeedToReloadData,
-                selectedEtalaseType,
-                shopProductFilterParameter ?: ShopProductFilterParameter()
-        )
+        context?.let{
+            viewModel.getShopProduct(
+                    shopInfo.shopCore.shopID,
+                    page,
+                    ShopPageConstant.DEFAULT_PER_PAGE,
+                    selectedEtalaseId,
+                    keyword,
+                    selectedEtalaseType,
+                    shopProductFilterParameter ?: ShopProductFilterParameter(),
+                    localCacheModel ?: LocalCacheModel()
+            )
+        }
     }
 
     private fun toggleFavoriteShop(shopId: String) {
@@ -373,15 +383,17 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun loadProductDataEmptyState(shopInfo: ShopInfo, page: Int) {
         selectedEtalaseId = ""
         sortId = SORT_NEWEST
-
-        viewModel.getShopProductEmptyState(
-                shopInfo.shopCore.shopID,
-                page,
-                ShopPageConstant.SHOP_PRODUCT_EMPTY_STATE_LIMIT,
-                sortId.toIntOrZero(),
-                selectedEtalaseId,
-                keywordEmptyState
-        )
+        context?.let {
+            viewModel.getShopProductEmptyState(
+                    shopInfo.shopCore.shopID,
+                    page,
+                    ShopPageConstant.SHOP_PRODUCT_EMPTY_STATE_LIMIT,
+                    sortId.toIntOrZero(),
+                    selectedEtalaseId,
+                    keywordEmptyState,
+                    localCacheModel ?: LocalCacheModel()
+            )
+        }
     }
 
     private fun initRecyclerView(view: View) {
@@ -476,13 +488,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.restrictionEngineData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val shopRestrictionData = it.data.dataResponse[0]
+                    val shopRestrictionData = it.data
                     // handle view to follow shop for campaign type showcase
                     val isFollowShop = shopRestrictionData.status != PRODUCT_INELIGIBLE
                     if(isLogin && !isMyShop && !isFollowShop) {
                         val title = shopRestrictionData.actions[0].title
                         val description = shopRestrictionData.actions[0].description
-                        showShopFollowersView(title, description, isFollowShop)
+                        val buttonLabel = shopRestrictionData.buttonLabel
+                        val voucherIconUrl = shopRestrictionData.voucherIconUrl
+                        showShopFollowersView(title, description, isFollowShop, buttonLabel, voucherIconUrl)
                     }
                 }
                 is Fail -> { }
@@ -562,7 +576,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-    private fun showShopFollowersView(title: String, desc: String, isFollowShop: Boolean) {
+    private fun showShopFollowersView(title: String, desc: String, isFollowShop: Boolean, buttonLabel: String?, voucherIconUrl: String?) {
         prepareShopFollowersView()
         partialShopNplFollowersViewLayout?.let {
             partialShopNplFollowersView = PartialButtonShopFollowersView.build(it, object: PartialButtonShopFollowersListener {
@@ -575,7 +589,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId?.let { shopId -> toggleFavoriteShop(shopId) }
                 }
             })
-            partialShopNplFollowersView?.renderView(title, desc, isFollowShop)
+            partialShopNplFollowersView?.renderView(title, desc, isFollowShop, buttonLabel, voucherIconUrl)
         }
     }
 
@@ -827,16 +841,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 )
         )
         if (!isEmptyState) {
-            viewModel.getShopProduct(
-                    shopId ?: "",
-                    defaultInitialPage,
-                    ShopPageConstant.DEFAULT_PER_PAGE,
-                    selectedEtalaseId,
-                    keyword,
-                    isNeedToReloadData,
-                    selectedEtalaseType,
-                    shopProductFilterParameter ?: ShopProductFilterParameter()
-            )
+            context?.let{
+                viewModel.getShopProduct(
+                        shopId ?: "",
+                        defaultInitialPage,
+                        ShopPageConstant.DEFAULT_PER_PAGE,
+                        selectedEtalaseId,
+                        keyword,
+                        selectedEtalaseType,
+                        shopProductFilterParameter ?: ShopProductFilterParameter(),
+                        localCacheModel ?: LocalCacheModel()
+                )
+            }
         } else {
             hideLoading()
             endlessRecyclerViewScrollListener.resetState()
@@ -979,6 +995,20 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             // check RE for showcase type campaign eligibility
             isAlreadyCheckRestrictionInfo = true
             loadShopRestrictionInfo()
+        }
+        checkIfChooseAddressWidgetDataUpdated()
+    }
+
+    private fun checkIfChooseAddressWidgetDataUpdated() {
+        context?.let{context ->
+            localCacheModel?.let{
+                val isUpdated = ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                        context,
+                        it
+                )
+                if(isUpdated)
+                    onSwipeRefresh()
+            }
         }
     }
 
@@ -1186,7 +1216,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 shopId.orEmpty(),
                 keyword,
                 selectedEtalaseId,
-                tempShopProductFilterParameter
+                tempShopProductFilterParameter,
+                localCacheModel ?: LocalCacheModel()
         )
     }
 

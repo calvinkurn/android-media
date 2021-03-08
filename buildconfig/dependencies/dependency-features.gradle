@@ -116,6 +116,7 @@ ext {
             manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
+            localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
@@ -184,6 +185,7 @@ ext {
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
             promoUiCommon                   : ":features:promo:promo_ui_common",
+            promoMvcWidget                  : ":features:promo:mvc_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",

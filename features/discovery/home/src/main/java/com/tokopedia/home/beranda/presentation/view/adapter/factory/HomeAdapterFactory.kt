@@ -26,6 +26,7 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory

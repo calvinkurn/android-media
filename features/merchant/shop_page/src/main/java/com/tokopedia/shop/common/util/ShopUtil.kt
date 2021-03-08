@@ -1,6 +1,9 @@
 package com.tokopedia.shop.common.util
 
+import android.content.Context
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
@@ -33,6 +36,12 @@ object ShopUtil {
                 AbTestPlatform.NAVIGATION_VARIANT_OLD
         )
         return (navType == AbTestPlatform.NAVIGATION_VARIANT_REVAMP && !GlobalConfig.isSellerApp())
+    }
+
+    fun getShopPageWidgetUserAddressLocalData(context: Context?): LocalCacheModel? {
+        return context?.let{
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     fun isUsingNewShopPageHeader(): Boolean {

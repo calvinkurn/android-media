@@ -4,7 +4,6 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.common.data.model.pdplayout.IsFreeOngkir
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -17,6 +16,7 @@ data class ProductContentDataModel(
         val name: String = "",
         var data: ProductContentMainData? = null,
         var isWishlisted: Boolean = false,
+        var freeOngkirImgUrl: String = "",
 
         //Ribbon Data
         var shouldShowTradein: Boolean = false,
@@ -49,6 +49,7 @@ data class ProductContentDataModel(
                     && shouldShowTradein == newData.shouldShowTradein
                     && upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
                     && isWishlisted == newData.isWishlisted
+                    && freeOngkirImgUrl == newData.freeOngkirImgUrl
         } else {
             false
         }
@@ -67,8 +68,8 @@ data class ProductContentDataModel(
                 return null
             }
 
-            if (shouldShowTradein != newData.shouldShowTradein) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN)
+            if (shouldShowTradein != newData.shouldShowTradein || freeOngkirImgUrl != newData.freeOngkirImgUrl) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE)
                 return bundle
             }
 
@@ -85,7 +86,6 @@ data class ProductContentDataModel(
 
 data class ProductContentMainData(
         var campaign: CampaignModular = CampaignModular(),
-        var freeOngkir: IsFreeOngkir = IsFreeOngkir(),
         var cashbackPercentage: Int = 0,
         var price: Price = Price(),
         var stockWording: String = "",

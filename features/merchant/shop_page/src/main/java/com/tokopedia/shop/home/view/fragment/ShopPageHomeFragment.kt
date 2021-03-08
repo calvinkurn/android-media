@@ -42,6 +42,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -66,6 +67,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
@@ -154,8 +156,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
-        const val NUM_VOUCHER_DISPLAY = 10
-
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
 
         fun createInstance(
@@ -433,7 +433,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getShopPageHomeData(
                 shopId,
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
-                initialProductListData
+                initialProductListData,
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
     }
 
@@ -457,7 +458,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
-                    viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
+                    viewModel?.getMerchantVoucherCoupon(shopId)
+
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
@@ -831,7 +833,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     fun getProductList(page: Int) {
         if (shopId.isNotEmpty()) {
-            viewModel?.getNewProductList(shopId, page, shopProductFilterParameter ?: ShopProductFilterParameter())
+            viewModel?.getNewProductList(
+                    shopId,
+                    page,
+                    shopProductFilterParameter ?: ShopProductFilterParameter(),
+                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            )
         }
     }
 
@@ -968,60 +975,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getVideoYoutube(videoUrl, widgetId)
     }
 
-    override fun onVoucherClicked(parentPosition: Int, position: Int, merchantVoucherViewModel: MerchantVoucherViewModel) {
-        shopPageHomeTracking.clickDetailMerchantVoucher(
-                isOwner,
-                shopId,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                parentPosition + 1,
-                position + 1,
-                merchantVoucherViewModel,
-                customDimensionShopPage
-        )
-        context?.let {
-            val intentMerchantVoucherDetail = MerchantVoucherDetailActivity.createIntent(
-                    it,
-                    merchantVoucherViewModel.voucherId,
-                    merchantVoucherViewModel, shopId
-            )
-            startActivity(intentMerchantVoucherDetail)
-        }
-    }
-
     override fun onVoucherReloaded() {
-        viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
+        viewModel?.getMerchantVoucherCoupon(shopId)
     }
 
-    override fun onVoucherSeeAllClicked() {
-        shopPageHomeTracking.clickSeeAllMerchantVoucher(
-                isOwner,
-                shopId,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                customDimensionShopPage)
-        context?.let {
-            val intentMerchantVoucherList = MerchantVoucherListActivity.createIntent(
-                    it,
-                    shopId,
-                    shopName
-            )
-            startActivity(intentMerchantVoucherList)
-        }
-    }
-
-    override fun onVoucherItemImpressed(
-            parentPosition: Int,
-            itemPosition: Int,
-            voucher: MerchantVoucherViewModel
-    ) {
-        shopPageHomeTracking.onImpressionVoucherItem(
-                isOwner,
-                shopId,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                parentPosition + 1,
-                itemPosition + 1,
-                voucher,
-                customDimensionShopPage
-        )
+    override fun onVoucherImpression() {
+        shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCoupon(shopId, viewModel?.userId)
     }
 
     override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductUiModel?) {
@@ -1046,7 +1005,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             isGoldMerchant,
                             shopHomeProductViewModel.id,
                             shopAttribution,
-                            shopRef
+                            shopRef,
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT},
+                            shopHomeProductViewModel.isShowFreeOngkir
                     )
             )
             goToPDP(it.id ?: "")
@@ -1075,7 +1036,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             isGoldMerchant,
                             shopHomeProductViewModel.id,
                             shopAttribution,
-                            shopRef
+                            shopRef,
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductViewModel.isShowFreeOngkir
                     )
             )
         }
@@ -1115,7 +1078,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             isGoldMerchant,
                             shopHomeProductViewModel.id,
                             shopAttribution,
-                            shopRef
+                            shopRef,
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductViewModel.isShowFreeOngkir
                     )
             )
             goToPDP(it.id ?: "")
@@ -1128,28 +1093,32 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
-        shopPageHomeTracking.impressionProduct(
-                isOwner,
-                isLogin,
-                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                shopHomeProductViewModel?.name ?: "",
-                shopHomeProductViewModel?.id ?: "",
-                shopHomeProductViewModel?.displayedPrice ?: "",
-                shopName,
-                parentPosition + 1,
-                itemPosition + 1,
-                shopHomeCarousellProductUiModel?.widgetId ?: "",
-                shopHomeCarousellProductUiModel?.header?.title ?: "",
-                shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
-                CustomDimensionShopPageAttribution.create(
-                        shopId,
-                        isOfficialStore,
-                        isGoldMerchant,
-                        shopHomeProductViewModel?.id.orEmpty(),
-                        shopAttribution,
-                        shopRef
-                )
-        )
+        shopHomeProductViewModel?.let {
+            shopPageHomeTracking.impressionProduct(
+                    isOwner,
+                    isLogin,
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopName,
+                    parentPosition + 1,
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.widgetId ?: "",
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductViewModel.id.orEmpty(),
+                            shopAttribution,
+                            shopRef,
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductViewModel.isShowFreeOngkir
+                    )
+            )
+        }
     }
 
     override fun onThreeDotsCarouselProductItemClicked(
@@ -1579,7 +1548,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getShopPageHomeData(
                 shopId,
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
-                initialProductListData
+                initialProductListData,
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
     }
 
@@ -1641,7 +1611,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel?.getFilterResultCount(
                 shopId,
-                tempShopProductFilterParameter
+                tempShopProductFilterParameter,
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
     }
 
