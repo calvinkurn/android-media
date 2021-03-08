@@ -23,7 +23,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         Subscriber<GraphqlResponse>() {
 
     companion object {
-        private const val GET_ADMIN_TYPE_SOURCE = "kevin_user-profile"
+        private const val GET_ADMIN_TYPE_SOURCE = "kevin_user-loginregister"
     }
 
     override fun onNext(response: GraphqlResponse) {
