@@ -111,7 +111,6 @@
                 android:id="@+id/layoutMyBills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/inputPriceContainer"
                 android:orientation="vertical">
 
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
