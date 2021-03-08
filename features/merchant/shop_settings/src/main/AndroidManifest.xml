@@ -7,7 +7,6 @@
             android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
             android:label="@string/shop_settings_info"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
