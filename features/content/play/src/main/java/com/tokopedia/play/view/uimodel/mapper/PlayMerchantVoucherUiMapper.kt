@@ -12,6 +12,7 @@ class PlayMerchantVoucherUiMapper @Inject constructor() {
 
     fun mapMerchantVoucher(input: Voucher): MerchantVoucherUiModel {
         return MerchantVoucherUiModel(
+                id = input.id,
                 title = input.title,
                 description = input.subtitle,
                 type = when(input.voucherType) {

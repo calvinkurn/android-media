@@ -380,10 +380,12 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
+        analytic.clickFeaturedProduct(product, position)
     }
 
     override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
         openProductSheet()
+        analytic.clickFeaturedProductSeeMore()
     }
 
     /**
@@ -394,6 +396,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         copyToClipboard(content = voucher.code)
         doShowToaster(message = getString(R.string.play_voucher_code_copied))
+        analytic.clickHighlightedVoucher(voucher)
     }
     //endregion
 
@@ -1053,6 +1056,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 type = toasterType).show()
     }
 
+    private fun sendTrackerImpression(productTags: PlayProductTagsUiModel.Complete) {
+        val highlightedVouchers = productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
+        val featuredProducts = productTags.productList.filterIsInstance<PlayProductUiModel.Product>()
+        analytic.impressionHighlightedVoucher(highlightedVouchers)
+        analytic.impressionFeaturedProduct(featuredProducts)
+    }
+
     //region OnStateChanged
     private fun playButtonViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
@@ -1142,6 +1152,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
                     pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
                     productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
+                    sendTrackerImpression(pinnedModel.productTags)
                 }
 
                 if (!bottomInsets.isAnyShown) {
