@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.data.websocket.PlaySocket.Companion.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper

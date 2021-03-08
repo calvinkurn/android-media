@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -576,5 +575,7 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        private const val ERR_STATE_SOCKET = "Socket Connection"
     }
 }

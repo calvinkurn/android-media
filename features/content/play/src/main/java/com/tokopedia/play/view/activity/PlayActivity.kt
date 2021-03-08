@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
- * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL]
+ * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL], [com.tokopedia.play.PLAY_APP_LINK]
  * Query parameters:
  * - source_type: String
  * - source_id: String

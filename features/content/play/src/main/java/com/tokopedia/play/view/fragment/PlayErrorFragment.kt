@@ -14,7 +14,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -163,5 +162,9 @@ class PlayErrorFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val ERR_STATE_GLOBAL = "Global Error"
     }
 }
