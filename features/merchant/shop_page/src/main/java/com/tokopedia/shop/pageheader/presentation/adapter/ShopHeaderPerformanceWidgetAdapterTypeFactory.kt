@@ -12,14 +12,19 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageOnlyComponentUiModel
 
-class ShopHeaderPerformanceWidgetAdapterTypeFactory :
+class ShopHeaderPerformanceWidgetAdapterTypeFactory(
+        private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener
+) :
         BaseAdapterTypeFactory(),
         ShopHeaderImageOnlyComponentTypeFactory,
         ShopHeaderBadgeTextValueComponentTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ShopPerformanceWidgetBadgeTextValueComponentViewHolder.LAYOUT -> ShopPerformanceWidgetBadgeTextValueComponentViewHolder(parent)
+            ShopPerformanceWidgetBadgeTextValueComponentViewHolder.LAYOUT -> ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
+                    parent,
+                    shopPerformanceWidgetBadgeTextValueListener
+            )
             ShopPerformanceWidgetImageOnlyComponentViewHolder.LAYOUT -> ShopPerformanceWidgetImageOnlyComponentViewHolder(parent)
             -1 -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)

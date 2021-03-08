@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ClipData
 import android.content.Intent
 import android.graphics.drawable.LayerDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -94,6 +95,9 @@ import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
@@ -127,7 +131,11 @@ class NewShopPageFragment :
         HasComponent<ShopPageComponent>,
         ShopPageFragmentViewHolderListener,
         ShopShareBottomsheetListener,
-        InterfaceShopPageHeader{
+        InterfaceShopPageHeader,
+        ShopHeaderBasicInfoWidgetViewHolder.Listener,
+        ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+        ShopActionButtonWidgetChatButtonComponentViewHolder.Listener
+{
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -300,7 +308,16 @@ class NewShopPageFragment :
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         setupBottomSheetSellerMigration(view)
-        shopPageFragmentHeaderViewHolder = NewShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
+        shopPageFragmentHeaderViewHolder = NewShopPageFragmentHeaderViewHolder(
+                view,
+                this,
+                shopPageTracking,
+                shopPageTrackingSGCPlay,
+                view.context,
+                this,
+                this,
+                this
+        )
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -1628,12 +1645,57 @@ class NewShopPageFragment :
         ).show()
     }
 
+    private fun isShopInfoAppLink(appLink: String): Boolean {
+        val appLinkUri = Uri.parse(appLink)
+        return appLinkUri.lastPathSegment.orEmpty() == ShopPageActivity.PATH_INFO
+    }
+
+    private fun isShopReviewAppLink(appLink: String): Boolean {
+        val appLinkUri = Uri.parse(appLink)
+        return appLinkUri.lastPathSegment.orEmpty() == PATH_REVIEW
+    }
+
     override fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
         return if (viewPagerAdapter?.isFragmentObjectExists(tabFragmentClass) == true) {
             viewPagerAdapter?.getFragmentPosition(tabFragmentClass) == selectedPosition
         } else {
             false
         }
+    }
+
+    override fun onShopNameClicked(appLink: String) {
+        if (isShopInfoAppLink(appLink))
+            redirectToShopInfoPage()
+        else
+            RouteManager.route(context, appLink)
+    }
+
+    override fun onShopBadgeClicked(appLink: String) {
+        if (isShopInfoAppLink(appLink))
+            redirectToShopInfoPage()
+        else
+            RouteManager.route(context, appLink)
+    }
+
+    override fun onShopChevronClicked(appLink: String) {
+        if (isShopInfoAppLink(appLink))
+            redirectToShopInfoPage()
+        else
+            RouteManager.route(context, appLink)
+    }
+
+    override fun onShopPerformanceWidgetBadgeTextValueItemClicked(appLink: String) {
+        if (isShopReviewAppLink(appLink)) {
+            val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
+            viewPager.setCurrentItem(reviewTabPosition, false)
+            tabLayout?.getTabAt(reviewTabPosition)?.select()
+        }
+        else
+            RouteManager.route(context, appLink)
+    }
+
+    override fun onButtonChatClicked() {
+        goToChatSeller()
     }
 
 }

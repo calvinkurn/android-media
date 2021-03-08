@@ -16,25 +16,32 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 
 
-
-
 class ShopActionButtonWidgetChatButtonComponentViewHolder(
-        itemView: View
+        itemView: View,
+        private val shopActionButtonWidgetChatButtonComponentListener: Listener
 ) : AbstractViewHolder<ShopHeaderButtonComponentUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_chat_button_component
     }
 
+    interface Listener {
+        fun onButtonChatClicked()
+    }
+
     private val buttonChat: UnifyButton? = itemView.findViewById(R.id.button_shop_chat)
 
     override fun bind(model: ShopHeaderButtonComponentUiModel) {
         val lp = itemView.layoutParams
-        if(lp is FlexboxLayoutManager.LayoutParams){
-            val flexboxLp = lp as FlexboxLayoutManager.LayoutParams
-            flexboxLp.flexGrow = 1.0f;
+        if (lp is FlexboxLayoutManager.LayoutParams) {
+            lp.flexGrow = 1.0f;
         }
-//        buttonChat?.text = model.label
+        buttonChat?.apply {
+            text = model.label
+            setOnClickListener {
+                shopActionButtonWidgetChatButtonComponentListener.onButtonChatClicked()
+            }
+        }
     }
 
 }

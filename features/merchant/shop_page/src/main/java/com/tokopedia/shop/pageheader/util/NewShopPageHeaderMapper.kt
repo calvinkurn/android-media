@@ -136,6 +136,7 @@ object NewShopPageHeaderMapper {
             component.type,
             component.data.ctaText,
             component.data.ctaLink,
+            component.data.ctaIcon,
             mutableListOf<ShopHeaderBadgeTextValueComponentUiModel.Text>().apply {
                 component.data.listText.forEach {
                     add(ShopHeaderBadgeTextValueComponentUiModel.Text(

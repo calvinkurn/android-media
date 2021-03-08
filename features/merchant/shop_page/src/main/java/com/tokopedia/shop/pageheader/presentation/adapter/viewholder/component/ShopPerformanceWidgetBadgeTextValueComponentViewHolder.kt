@@ -12,11 +12,16 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBa
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: Listener
 ): AbstractViewHolder<ShopHeaderBadgeTextValueComponentUiModel>(itemView) {
 
     companion object{
         val LAYOUT = R.layout.layout_shop_performance_widget_badge_text_value_component
+    }
+
+    interface Listener{
+        fun onShopPerformanceWidgetBadgeTextValueItemClicked(appLink: String)
     }
 
     private val textViewFirstLine: Typography? = itemView.findViewById(R.id.text_first_line)
@@ -26,6 +31,7 @@ class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
     override fun bind(model: ShopHeaderBadgeTextValueComponentUiModel) {
         val textFirstLine = model.text.getOrNull(0)?.textHtml.orEmpty()
         val imageUrlFirstLine = model.text.getOrNull(0)?.icon.orEmpty()
+        val appLink = model.text.getOrNull(0)?.textLink.orEmpty()
         val textSecondLine = model.text.getOrNull(1)?.textHtml.orEmpty()
         textViewFirstLine?.text = MethodChecker.fromHtml(textFirstLine)
         imageViewFirstLine?.apply {
@@ -37,6 +43,9 @@ class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
             }
         }
         textViewSecondLine?.text = MethodChecker.fromHtml(textSecondLine)
+        itemView.setOnClickListener {
+            listener.onShopPerformanceWidgetBadgeTextValueItemClicked(appLink)
+        }
     }
 
 }

@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
                 app:layout_scrollFlags="scroll"
+                android:layout_marginBottom="@dimen/dp_12"
                 tools:visibility="gone" />
 
             <com.google.android.material.tabs.TabLayout

@@ -9,10 +9,12 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.MarginItemDecorationShopPage
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopActionButtonWidgetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderActionButtonWidgetAdapterTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 class ShopHeaderActionButtonWidgetViewHolder(
-        itemView: View
+        itemView: View,
+        private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -22,7 +24,9 @@ class ShopHeaderActionButtonWidgetViewHolder(
     private val recyclerViewButtonComponent: RecyclerView? = itemView.findViewById(R.id.rv_button_component)
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
-        val shopActionButtonWidgetAdapter = ShopActionButtonWidgetAdapter(ShopHeaderActionButtonWidgetAdapterTypeFactory())
+        val shopActionButtonWidgetAdapter = ShopActionButtonWidgetAdapter(ShopHeaderActionButtonWidgetAdapterTypeFactory(
+                shopActionButtonWidgetChatButtonComponentListener
+        ))
         recyclerViewButtonComponent?.apply {
             adapter = shopActionButtonWidgetAdapter
             val manager= FlexboxLayoutManager(itemView.context)

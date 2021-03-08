@@ -21,19 +21,22 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShopHeaderBasicInfoWidgetViewHolder(
         itemView: View,
-        listener: ShopHeaderBasicInfoWidgetListener? = null
+        private val shopHeaderBasicInfoWidgetListener: Listener
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_header_basic_info_widget
     }
 
-    interface ShopHeaderBasicInfoWidgetListener{
-        fun onShopNameClicked()
+    interface Listener{
+        fun onShopNameClicked(appLink: String)
+        fun onShopBadgeClicked(appLink: String)
+        fun onShopChevronClicked(appLink: String)
     }
 
     private val shopLogoImageView: ImageView? = itemView.findViewById(R.id.image_shop_logo)
     private val shopBadgeImageView: ImageView? = itemView.findViewById(R.id.image_shop_badge)
+    private val shopChevronImageView: ImageView? = itemView.findViewById(R.id.shop_page_chevron_shop_info)
     private val shopNameTextView: Typography? = itemView.findViewById(R.id.text_shop_name)
     private val shopBasicInfoAdditionalInfoTextView: Typography? = itemView.findViewById(R.id.text_shop_basic_info_additional_info)
 
@@ -62,20 +65,33 @@ class ShopHeaderBasicInfoWidgetViewHolder(
 
     private fun setShopNameAndInfoSection(component: ShopHeaderBadgeTextValueComponentUiModel?) {
         val badgeImageUrl = component?.text?.getOrNull(0)?.icon.orEmpty()
+        val appLink = component?.text?.getOrNull(0)?.textLink.orEmpty()
         val shopName = component?.text?.getOrNull(0)?.textHtml.orEmpty()
+        val shopChevronImageUrl = component?.ctaIcon.orEmpty()
         val shopAdditionalInfo = component?.text?.getOrNull(1)?.textHtml.orEmpty()
-//                "<font color=\"#31353b\">Online <strong>4 menit lalu</strong> </font> <big >•</big> <font color=#31353B>Jakarta Selatan</font>"
-//            component?.text?.getOrNull(1)?.textHtml.orEmpty()
         shopBadgeImageView?.apply {
             if (badgeImageUrl.isNotEmpty()) {
                 show()
                 loadImage(badgeImageUrl)
+                setOnClickListener { shopHeaderBasicInfoWidgetListener.onShopBadgeClicked(appLink) }
             } else {
                 hide()
             }
         }
-        shopNameTextView?.text = MethodChecker.fromHtml(shopName)
+        shopNameTextView?.apply {
+            text = MethodChecker.fromHtml(shopName)
+            setOnClickListener { shopHeaderBasicInfoWidgetListener.onShopNameClicked(appLink) }
+        }
         shopBasicInfoAdditionalInfoTextView?.text = MethodChecker.fromHtml(shopAdditionalInfo)
+        shopChevronImageView?.apply {
+            if (shopChevronImageUrl.isNotEmpty()) {
+                show()
+                loadImage(shopChevronImageUrl)
+                setOnClickListener { shopHeaderBasicInfoWidgetListener.onShopChevronClicked(appLink) }
+            } else {
+                hide()
+            }
+        }
     }
 
     private fun isMatchWidgetIdentifier(

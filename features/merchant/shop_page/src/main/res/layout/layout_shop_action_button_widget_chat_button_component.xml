@@ -10,7 +10,6 @@
     app:layout_flexGrow="1"
     app:unifyButtonSize="small"
     android:background="@color/yellow_1"
-    android:text="Chat"
     app:unifyButtonType="alternate"
     app:unifyButtonVariant="ghost"
     tools:visibility="visible" />

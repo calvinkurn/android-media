@@ -211,6 +211,7 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
                       ... on BadgeTextValue {
                         ctaText
                         ctaLink
+                        ctaIcon
                         text {
                           icon
                           textLink

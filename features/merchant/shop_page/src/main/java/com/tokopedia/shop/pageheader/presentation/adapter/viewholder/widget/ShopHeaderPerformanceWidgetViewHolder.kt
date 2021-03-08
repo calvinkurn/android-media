@@ -9,10 +9,12 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration.HORIZONT
 import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderPerformanceWidgetAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPerformanceWidgetAdapter
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 class ShopHeaderPerformanceWidgetViewHolder(
-        itemView: View
+        itemView: View,
+        private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -23,7 +25,9 @@ class ShopHeaderPerformanceWidgetViewHolder(
     private var rvShopPerformanceWidget: RecyclerView? = itemView.findViewById(R.id.rv_shop_performance_widget)
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
-        shopPerformanceWidgetAdapter = ShopPerformanceWidgetAdapter(ShopHeaderPerformanceWidgetAdapterTypeFactory())
+        shopPerformanceWidgetAdapter = ShopPerformanceWidgetAdapter(ShopHeaderPerformanceWidgetAdapterTypeFactory(
+                shopPerformanceWidgetBadgeTextValueListener
+        ))
         rvShopPerformanceWidget?.apply {
             adapter = shopPerformanceWidgetAdapter
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)

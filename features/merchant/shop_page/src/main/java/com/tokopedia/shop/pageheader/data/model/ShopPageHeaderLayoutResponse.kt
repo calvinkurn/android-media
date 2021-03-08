@@ -36,6 +36,8 @@ data class ShopPageHeaderLayoutResponse(
                         val ctaLink: String = "",
                         @SerializedName("ctaText")
                         val ctaText: String = "",
+                        @SerializedName("ctaIcon")
+                        val ctaIcon: String = "",
                         @SerializedName("icon")
                         val icon: String = "",
                         @SerializedName("image")

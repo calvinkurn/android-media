@@ -7,13 +7,20 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.*
 
 class NewShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                           private val shopPageTracking: ShopPageTrackingBuyer?,
                                           private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
-                                          private val context: Context) {
+                                          private val context: Context,
+                                          private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
+                                          private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+                                          private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener
+) {
 //    private var isShopFavorite = false
 //    private val shopPageProfileBadgeView: AppCompatImageView
 //        get() = view.shop_page_main_profile_badge.takeIf {
@@ -39,7 +46,11 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
     private var shopPageHeaderAdapter: ShopPageHeaderAdapter? = null
 
     fun setShopHeaderWidgetData(listWidget: List<ShopHeaderWidgetUiModel>) {
-        shopPageHeaderAdapter = ShopPageHeaderAdapter(ShopPageHeaderAdapterTypeFactory())
+        shopPageHeaderAdapter = ShopPageHeaderAdapter(ShopPageHeaderAdapterTypeFactory(
+                shopHeaderBasicInfoWidgetListener,
+                shopPerformanceWidgetBadgeTextValueListener,
+                shopActionButtonWidgetChatButtonComponentListener
+        ))
         view.rv_shop_page_header_widget?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         view.rv_shop_page_header_widget?.adapter = shopPageHeaderAdapter
         shopPageHeaderAdapter?.setData(listWidget)

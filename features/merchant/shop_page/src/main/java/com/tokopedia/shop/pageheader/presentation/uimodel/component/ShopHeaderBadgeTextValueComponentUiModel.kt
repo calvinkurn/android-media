@@ -9,6 +9,7 @@ data class ShopHeaderBadgeTextValueComponentUiModel(
         override val type: String = "",
         val ctaText: String = "",
         val ctaLink: String = "",
+        val ctaIcon: String = "",
         val text: List<Text> = listOf()
 ) : BaseShopHeaderComponentUiModel {
 
