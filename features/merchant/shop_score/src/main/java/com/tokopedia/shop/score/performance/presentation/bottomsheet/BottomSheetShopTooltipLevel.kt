@@ -40,7 +40,9 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
 
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
-            show(it, SHOP_TOOLTIP_LEVEL_BOTTOM_SHEET_TAG)
+            if (!isVisible) {
+                show(it, SHOP_TOOLTIP_LEVEL_BOTTOM_SHEET_TAG)
+            }
         }
     }
 
@@ -93,10 +95,6 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
         cardTooltipLevelAdapter.setCardToolTipLevelList(data.cardTooltipLevelList)
     }
 
-    //temporary data
-    private fun initialDummy() {
-
-    }
 
     companion object {
         const val SHOP_TOOLTIP_LEVEL_BOTTOM_SHEET_TAG = "ShopTooltipLevelBottomSheetTag"

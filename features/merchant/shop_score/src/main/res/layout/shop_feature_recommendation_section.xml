@@ -33,6 +33,7 @@
             app:layout_constraintStart_toStartOf="@id/tvTitleShopCreation"
             app:layout_constraintEnd_toEndOf="@id/tvTitleShopCreation"
             android:clipToPadding="false"
+            android:clipChildren="false"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_promo_creation_shop_performance"

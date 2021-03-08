@@ -12,3 +12,11 @@ interface ItemShopPerformanceListener {
 interface ItemCurrentStatusPowerMerchantListener {
     fun onItemClickedCurrentStatus()
 }
+
+interface ItemPotentialPowerMerchantListener {
+    fun onItemClickedBenefitPotentialPM()
+}
+
+interface ItemRecommendationFeatureListener {
+    fun onItemClickedRecommendationFeature(appLink: String)
+}

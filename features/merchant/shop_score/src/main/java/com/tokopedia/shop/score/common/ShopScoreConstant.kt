@@ -32,8 +32,23 @@ object ShopScoreConstant {
     const val SET_OPERATIONAL_HOUR_SHOP_URL = "https://seller.tokopedia.com/edu/atur-jadwal-toko/"
     const val SPEED_SENDING_ORDERS_URL = "https://www.tokopedia.com/help/article/batas-waktu-respon-pesanan-dan-konfirmasi-pengiriman"
 
+    const val IC_PM_VISITED_URL = "https://images.tokopedia.net/img/android/shop_score/ic_visited_pm@3x.png"
+    const val IC_ORDER_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_order_pm@3x.png"
+    const val IC_INCOME_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_income_pm@3x.png"
 
-    const val REGULAR_MERCHANT_TYPE = "regular_merchant_type"
-    const val POWER_MERCHANT_TYPE = "power_merchant_type"
-    const val OFFICIAL_STORE_TYPE = "official_store_type"
+    const val IC_VOUCHER_EXCLUSIVE_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_voucher_exclusive_feature@3x.png"
+    const val IC_FREE_SHIPPING_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_free_shipping_feature@3x.png"
+    const val IC_SPECIAL_DISCOUNT_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_special_discount_feature@3x.png"
+    const val IC_SPECIAL_RELEASE_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_special_release_feature@3x.png"
+    const val IC_TOP_ADS_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_topads_feature@3x.png"
+    const val IC_WIB_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_wib_feature@3x.png"
+    const val IC_BROADCAST_CHAT_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_broadcast_chat_feature@3x.png"
+    const val IC_ADMIN_FEATURE = "https://images.tokopedia.net/img/android/shop_score/ic_admin_feature@3x.png"
+
+    const val IC_SELLER_ANNOUNCE = "https://images.tokopedia.net/img/android/shop_score/ic_seller_announce@3x.png"
+    const val BG_HAS_PENALTY = "https://images.tokopedia.net/img/android/shop_score/bg_has_penalty@3x.png "
+    const val BG_NO_PENALTY = "https://images.tokopedia.net/img/android/shop_score/bg_no_penalty@3x.png"
+    const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
+    const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
+
 }

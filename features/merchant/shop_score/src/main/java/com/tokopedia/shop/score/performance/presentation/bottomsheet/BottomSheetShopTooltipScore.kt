@@ -13,7 +13,9 @@ class BottomSheetShopTooltipScore: BaseBottomSheetShopScore() {
 
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
-            show(it, SHOP_TOOLTIP_SCORE_BOTTOM_SHEET_TAG)
+            if (!isVisible) {
+                show(it, SHOP_TOOLTIP_SCORE_BOTTOM_SHEET_TAG)
+            }
         }
     }
 

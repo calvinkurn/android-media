@@ -8,8 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerTimerNewSeller"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:background="@drawable/bg_green_timer">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
             android:id="@+id/timerNewSeller"

@@ -18,6 +18,7 @@ class ItemPotentialPMBenefitAdapter : RecyclerView.Adapter<ItemPotentialPMBenefi
         if (potentialPMBenefitList.isNullOrEmpty()) return
         this.potentialPMBenefitList.clear()
         this.potentialPMBenefitList.addAll(potentialPMBenefitList)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPotentialPMBenefitViewHolder {

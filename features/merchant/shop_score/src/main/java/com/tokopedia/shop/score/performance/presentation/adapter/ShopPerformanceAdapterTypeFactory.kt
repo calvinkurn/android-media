@@ -8,8 +8,10 @@ import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 
 class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: ShopPerformanceListener,
-                                        private val itemShopPerformanceListener: ItemShopPerformanceListener)
-    : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
+                                        private val itemShopPerformanceListener: ItemShopPerformanceListener,
+                                        private val itemPotentialPowerMerchantListener: ItemPotentialPowerMerchantListener,
+                                        private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener
+) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
     override fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int {
         return ItemHeaderShopPerformanceViewHolder.LAYOUT
@@ -35,6 +37,18 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return CardPotentialPMBenefitViewHolder.LAYOUT
     }
 
+    override fun type(itemPotentialStatusPMUiModel: ItemPotentialStatusPMUiModel): Int {
+        return ItemPotentialStatusPMViewHolder.LAYOUT
+    }
+
+    override fun type(sectionShopRecommendationUiModel: SectionShopRecommendationUiModel): Int {
+        return SectionShopFeatureRecommendationViewHolder.LAYOUT
+    }
+
+    override fun type(timerNewSellerUiModel: ItemTimerNewSellerUiModel): Int {
+        return ItemTimerNewSellerViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: LoadingModel?): Int {
         return ShopPerformanceShimmerViewHolder.LAYOUT
     }
@@ -48,6 +62,9 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             TransitionPeriodReliefViewHolder.LAYOUT -> TransitionPeriodReliefViewHolder(parent)
             ItemCurrentStatusPMViewHolder.LAYOUT -> ItemCurrentStatusPMViewHolder(parent)
             CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(parent)
+            ItemPotentialStatusPMViewHolder.LAYOUT -> ItemPotentialStatusPMViewHolder(parent, itemPotentialPowerMerchantListener)
+            SectionShopFeatureRecommendationViewHolder.LAYOUT -> SectionShopFeatureRecommendationViewHolder(parent, itemRecommendationFeatureListener)
+            ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }

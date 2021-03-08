@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel
@@ -35,7 +36,9 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
 
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
-            show(it, PERFORMANCE_DETAIL_BOTTOM_SHEET_TAG)
+            if (!isVisible) {
+                show(it, PERFORMANCE_DETAIL_BOTTOM_SHEET_TAG)
+            }
         }
     }
 
@@ -62,6 +65,7 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
         with(data) {
             tvDescCalculationDetail?.text = MethodChecker.fromHtml(getString(descCalculation))
             tvDescTipsDetail?.text = MethodChecker.fromHtml(getString(descTips))
+            tvMoreInfoPerformanceDetail?.showWithCondition(getString(moreInformation).isNotBlank())
             tvMoreInfoPerformanceDetail?.setClickableUrlHtml(getString(moreInformation)) {
                 RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, urlLink)
             }

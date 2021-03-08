@@ -80,8 +80,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:adjustViewBounds="true"
             android:background="@drawable/ic_squircle"
-            android:padding="@dimen/dp_12"
-            app:srcCompat="@drawable/ic_topads_color" />
+            android:padding="@dimen/dp_12" />
 
     </FrameLayout>
 

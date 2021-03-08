@@ -9,4 +9,7 @@ interface ShopPerformanceTypeFactory {
     fun type(transitionPeriodReliefUiModel: TransitionPeriodReliefUiModel): Int
     fun type(itemCurrentStatusPMUiModel: ItemCurrentStatusPMUiModel): Int
     fun type(itemPotentialPMBenefitUIModel: SectionPotentialPMBenefitUiModel): Int
+    fun type(itemPotentialStatusPMUiModel: ItemPotentialStatusPMUiModel): Int
+    fun type(sectionShopRecommendationUiModel: SectionShopRecommendationUiModel): Int
+    fun type(timerNewSellerUiModel: ItemTimerNewSellerUiModel): Int
 }

@@ -3,6 +3,17 @@ package com.tokopedia.shop.score.common.domain.mapper
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_ADMIN_FEATURE
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_BROADCAST_CHAT_FEATURE_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_FREE_SHIPPING_FEATURE_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_INCOME_PM_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_ORDER_PM_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_PM_VISITED_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_SELLER_ANNOUNCE
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_SPECIAL_DISCOUNT_FEATURE_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_SPECIAL_RELEASE_FEATURE_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_TOP_ADS_FEATURE_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.IC_VOUCHER_EXCLUSIVE_FEATURE_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS
@@ -32,7 +43,7 @@ import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ShopScoreMapper @Inject constructor(val userSession: UserSessionInterface) {
+class ShopScoreMapper @Inject constructor(private val userSession: UserSessionInterface) {
 
     fun mapToShopPerformanceDetail(titlePerformanceDetail: String): ShopPerformanceDetailUiModel {
         val shopPerformanceDetailUiModel = ShopPerformanceDetailUiModel()
@@ -89,7 +100,21 @@ class ShopScoreMapper @Inject constructor(val userSession: UserSessionInterface)
         return shopPerformanceDetailUiModel
     }
 
-    fun mapToHeaderShopPerformance(shopLevel: Int, shopScore: Int): HeaderShopPerformanceUiModel {
+    fun mapToShopPerformanceVisitableDummy(): List<BaseShopPerformance> {
+        return mutableListOf<BaseShopPerformance>().apply {
+            add(mapToHeaderShopPerformance())
+            add(mapToSectionPeriodDetailPerformanceUiModel())
+            add(mapToSectionPeriodDetailPerformanceUiModel())
+            addAll(mapToItemDetailPerformanceUiModel())
+            add(mapToItemRecommendationPMUiModel())
+            if (userSession.isGoldMerchant) {
+                add(mapToTransitionPeriodReliefUiModel())
+            }
+            add(mapToCardPotentialBenefit())
+        }
+    }
+
+    fun mapToHeaderShopPerformance(shopLevel: Int = 3, shopScore: Int = 65): HeaderShopPerformanceUiModel {
         val headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
         with(headerShopPerformanceUiModel) {
             when (shopScore) {
@@ -104,6 +129,9 @@ class ShopScoreMapper @Inject constructor(val userSession: UserSessionInterface)
                             descHeaderShopService = R.string.desc_keep_up_level_2
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
+                            this.shopLevel = shopLevel
+                            this.shopScore = shopScore
+                            this.scorePenalty = -3
                             titleHeaderShopService = R.string.title_keep_up_level_3
                             descHeaderShopService = R.string.desc_keep_up_level_3
                         }
@@ -192,33 +220,352 @@ class ShopScoreMapper @Inject constructor(val userSession: UserSessionInterface)
 
     fun mapToShoInfoLevelUiModel(level: Int): ShopInfoLevelUiModel {
         val shopInfoLevelUiModel = ShopInfoLevelUiModel()
+        //temporary dummy
+        shopInfoLevelUiModel.shopIncome = "Rp4.000.000"
+        shopInfoLevelUiModel.productSold = "5 produk"
+        shopInfoLevelUiModel.periodDate = "1 APR - 1 OKT 2021"
+        shopInfoLevelUiModel.nextUpdate = "15 Nov 2021"
+
         shopInfoLevelUiModel.cardTooltipLevelList = mapToCardTooltipLevel(level)
         return shopInfoLevelUiModel
     }
 
-    fun mapToItemDetailPerformanceUiModel(): ItemDetailPerformanceUiModel {
-        return ItemDetailPerformanceUiModel()
+    fun mapToItemDetailPerformanceUiModel(): List<ItemDetailPerformanceUiModel> {
+        return mutableListOf<ItemDetailPerformanceUiModel>().apply {
+            add(ItemDetailPerformanceUiModel(
+                    titleDetailPerformance = "Tingkat kesuksesan pesanan",
+                    valueDetailPerformance = "85%",
+                    colorValueDetailPerformance = "#D6001C",
+                    targetDetailPerformance = "90%"
+            ))
+            add(ItemDetailPerformanceUiModel(
+                    titleDetailPerformance = "Kecepatan membalas chat dan diskusi",
+                    valueDetailPerformance = "300 menit",
+                    colorValueDetailPerformance = "#D6001C",
+                    targetDetailPerformance = "30 menit"
+            ))
+            add(ItemDetailPerformanceUiModel(
+                    titleDetailPerformance = "Kecepatan mengirim pesanan",
+                    valueDetailPerformance = "65 menit",
+                    colorValueDetailPerformance = "#FA591D",
+                    targetDetailPerformance = "30 menit"
+            ))
+            add(ItemDetailPerformanceUiModel(
+                    titleDetailPerformance = "Tingkat membalas chat dan diskusi",
+                    valueDetailPerformance = "100%",
+                    colorValueDetailPerformance = "#31353B",
+                    targetDetailPerformance = "100%"
+            ))
+            add(ItemDetailPerformanceUiModel(
+                    titleDetailPerformance = "Ulasan produk dengan bintang 4+",
+                    valueDetailPerformance = "100%",
+                    colorValueDetailPerformance = "#31353B",
+                    targetDetailPerformance = "90%"
+            ))
+            add(ItemDetailPerformanceUiModel(
+                    titleDetailPerformance = "Jumlah pembeli",
+                    valueDetailPerformance = "100%",
+                    colorValueDetailPerformance = "#31353B",
+                    targetDetailPerformance = "100%"
+            ))
+            add(ItemDetailPerformanceUiModel(
+                    titleDetailPerformance = "Membuka Tokopedia Seller dalam 90 hari terakhir ",
+                    valueDetailPerformance = "100%",
+                    colorValueDetailPerformance = "#31353B",
+                    targetDetailPerformance = "100%"
+            ))
+        }
     }
 
     fun mapToCardPotentialBenefit(): SectionPotentialPMBenefitUiModel {
         return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit())
     }
 
+    fun mapToSectionPeriodDetailPerformanceUiModel(): PeriodDetailPerformanceUiModel {
+        return PeriodDetailPerformanceUiModel(period = "1 Jan - 31 Maret 2021", "7 Juni 2021")
+    }
+
+    fun mapToTransitionPeriodReliefUiModel(): TransitionPeriodReliefUiModel {
+        return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = "5 Mei 201", iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
+    }
+
+    fun mapToItemRecommendationPMUiModel(level: Int = 3): SectionShopRecommendationUiModel {
+        return SectionShopRecommendationUiModel(
+                recommendationShopList = mutableListOf<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>().apply {
+                    when {
+                        userSession.isShopOfficialStore -> {
+                            when (level) {
+                                SHOP_SCORE_LEVEL_ONE -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_voucher_exclusive,
+                                            descRecommendation = R.string.desc_recommendation_voucher_exclusive,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_free_shipping,
+                                            descRecommendation = R.string.desc_recommendation_free_shipping,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_top_ads,
+                                            descRecommendation = R.string.desc_recommendation_top_ads,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_TWO -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_top_ads,
+                                            descRecommendation = R.string.desc_recommendation_top_ads,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_free_shipping,
+                                            descRecommendation = R.string.desc_recommendation_free_shipping,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_broadcast_chat,
+                                            descRecommendation = R.string.desc_recommendation_broadcast_chat,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_THREE -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_free_shipping,
+                                            descRecommendation = R.string.desc_recommendation_free_shipping,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_SPECIAL_DISCOUNT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_special_discount,
+                                            descRecommendation = R.string.desc_recommendation_special_discount,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_SPECIAL_RELEASE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_special_release,
+                                            descRecommendation = R.string.desc_recommendation_special_release,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_FOUR -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_free_shipping,
+                                            descRecommendation = R.string.desc_recommendation_free_shipping,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_SPECIAL_RELEASE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_special_release,
+                                            descRecommendation = R.string.desc_recommendation_special_release,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_SPECIAL_DISCOUNT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_special_discount,
+                                            descRecommendation = R.string.desc_recommendation_special_discount,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                            }
+
+                        }
+                        userSession.isGoldMerchant -> {
+                            when (level) {
+                                SHOP_SCORE_LEVEL_ONE -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_voucher_exclusive,
+                                            descRecommendation = R.string.desc_recommendation_voucher_exclusive,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_free_shipping,
+                                            descRecommendation = R.string.desc_recommendation_free_shipping,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_top_ads,
+                                            descRecommendation = R.string.desc_recommendation_top_ads,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_TWO -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_free_shipping,
+                                            descRecommendation = R.string.desc_recommendation_free_shipping,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_top_ads,
+                                            descRecommendation = R.string.desc_recommendation_top_ads,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_broadcast_chat,
+                                            descRecommendation = R.string.desc_recommendation_broadcast_chat,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_THREE -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_free_shipping,
+                                            descRecommendation = R.string.desc_recommendation_free_shipping,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_SPECIAL_RELEASE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_special_release,
+                                            descRecommendation = R.string.desc_recommendation_special_release,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_ADMIN_FEATURE,
+                                            titleRecommendation = R.string.title_recommendation_admin,
+                                            descRecommendation = R.string.desc_recommendation_admin,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_FOUR -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_free_shipping,
+                                            descRecommendation = R.string.desc_recommendation_free_shipping,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_SPECIAL_RELEASE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_special_release,
+                                            descRecommendation = R.string.desc_recommendation_special_release,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_broadcast_chat,
+                                            descRecommendation = R.string.desc_recommendation_broadcast_chat,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                            }
+
+                        }
+                        !userSession.isGoldMerchant -> {
+                            when (level) {
+                                SHOP_SCORE_LEVEL_ONE -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_voucher_exclusive,
+                                            descRecommendation = R.string.desc_recommendation_voucher_exclusive,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_top_ads,
+                                            descRecommendation = R.string.desc_recommendation_top_ads,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_broadcast_chat,
+                                            descRecommendation = R.string.desc_recommendation_broadcast_chat,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_TWO -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_voucher_exclusive,
+                                            descRecommendation = R.string.desc_recommendation_voucher_exclusive,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_top_ads,
+                                            descRecommendation = R.string.desc_recommendation_top_ads,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_broadcast_chat,
+                                            descRecommendation = R.string.desc_recommendation_broadcast_chat,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_THREE -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_voucher_exclusive,
+                                            descRecommendation = R.string.desc_recommendation_voucher_exclusive,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_top_ads,
+                                            descRecommendation = R.string.desc_recommendation_top_ads,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_broadcast_chat,
+                                            descRecommendation = R.string.desc_recommendation_broadcast_chat,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                                SHOP_SCORE_LEVEL_FOUR -> {
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_top_ads,
+                                            descRecommendation = R.string.desc_recommendation_top_ads,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
+                                            titleRecommendation = R.string.title_recommendation_broadcast_chat,
+                                            descRecommendation = R.string.desc_recommendation_broadcast_chat,
+                                            appLinkRecommendation = ""
+                                    ))
+                                    add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                                            iconRecommendationUrl = IC_ADMIN_FEATURE,
+                                            titleRecommendation = R.string.title_recommendation_admin,
+                                            descRecommendation = R.string.desc_recommendation_admin,
+                                            appLinkRecommendation = ""
+                                    ))
+                                }
+                            }
+                        }
+                    }
+                })
+    }
+
     private fun mapToItemPotentialBenefit(): List<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
         val itemPotentialPMBenefitList = mutableListOf<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>()
         itemPotentialPMBenefitList.apply {
             add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = "",
+                    iconPotentialPMUrl = IC_ORDER_PM_URL,
                     titlePotentialPMU = R.string.text_item_potential_pm_benefit_1
             ))
 
             add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = "",
+                    iconPotentialPMUrl = IC_INCOME_PM_URL,
                     titlePotentialPMU = R.string.text_item_potential_pm_benefit_2
             ))
 
             add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = "",
+                    iconPotentialPMUrl = IC_PM_VISITED_URL,
                     titlePotentialPMU = R.string.text_item_potential_pm_benefit_3
             ))
         }
