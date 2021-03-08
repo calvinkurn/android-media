@@ -43,8 +43,8 @@ class ManagePasswordUseCaseModule {
 
     @ManagePasswordScope
     @Provides
-    fun provideChangePasswordV2UseCase(@ManagePasswordContext context: Context,useCase: GraphqlUseCase<ChangePasswordV2ResponseModel>): ChangePasswordV2UseCase {
-        return ChangePasswordV2UseCase(context, useCase)
+    fun provideChangePasswordV2UseCase(useCase: GraphqlUseCase<ChangePasswordV2ResponseModel>): ChangePasswordV2UseCase {
+        return ChangePasswordV2UseCase(useCase)
     }
 
     @ManagePasswordScope

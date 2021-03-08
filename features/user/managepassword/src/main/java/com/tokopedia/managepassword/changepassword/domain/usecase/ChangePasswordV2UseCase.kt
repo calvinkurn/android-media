@@ -1,14 +1,11 @@
 package com.tokopedia.managepassword.changepassword.domain.usecase
 
-import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordV2ResponseModel
 import com.tokopedia.managepassword.changepassword.domain.queries.ChangePasswordQueries
-import com.tokopedia.managepassword.di.ManagePasswordContext
 import javax.inject.Inject
 
 class ChangePasswordV2UseCase @Inject constructor(
-        @ManagePasswordContext private val context: Context,
         private val graphqlUseCase: GraphqlUseCase<ChangePasswordV2ResponseModel>
 ) {
     lateinit var params: Map<String, Any>
