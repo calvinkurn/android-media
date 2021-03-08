@@ -1,686 +1,547 @@
-package com.tokopedia.loginregister.registerinitial.view.fragment;
+package com.tokopedia.loginregister.registerinitial.view.fragment
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.util.Patterns;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.loginregister.R;
-import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
-import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.login.view.activity.LoginActivity;
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent;
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData;
-import com.tokopedia.loginregister.registerinitial.view.util.RegisterUtil;
-import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel;
-import com.tokopedia.network.exception.MessageErrorException;
-import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.sessioncommon.di.SessionModule;
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
-import com.tokopedia.unifycomponents.LoaderUnify;
-import com.tokopedia.unifycomponents.TextFieldUnify;
-import com.tokopedia.unifycomponents.UnifyButton;
-import com.tokopedia.unifyprinciples.Typography;
-import com.tokopedia.usecase.coroutines.Fail;
-import com.tokopedia.usecase.coroutines.Success;
-import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY;
-import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION;
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Typeface
+import android.os.Bundle
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.util.Patterns
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
+import com.tokopedia.loginregister.registerinitial.view.util.RegisterUtil
+import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.sessioncommon.constants.SessionConstants
+import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * @author by nisie on 10/25/18.
  */
-public class RegisterEmailFragment extends BaseDaggerFragment {
+class RegisterEmailFragment : BaseDaggerFragment() {
+    var PASSWORD_MINIMUM_LENGTH = 8
+    var NAME = "NAME"
+    var PASSWORD = "PASSWORD"
+    var EMAIL = "EMAIL"
+    var isEnableEncryption = false
+    var redirectView: View? = null
+    var registerButton: UnifyButton? = null
+    var wrapperName: TextFieldUnify? = null
+    var wrapperEmail: TextFieldUnify? = null
+    var wrapperPassword: TextFieldUnify? = null
+    var registerNextTAndC: Typography? = null
+    var progressBar: LoaderUnify? = null
+    var source = ""
+    var token = ""
 
-    private static final int REQUEST_AUTO_LOGIN = 101;
-    private static final int REQUEST_ACTIVATE_ACCOUNT = 102;
-
-    int PASSWORD_MINIMUM_LENGTH = 8;
-
-    String NAME = "NAME";
-    String PASSWORD = "PASSWORD";
-    String EMAIL = "EMAIL";
-
-    String TERM_CONDITION = "Syarat dan Ketentuan";
-    String PRIVACY_POLICY = "Kebijakan Privasi";
-
-    String TERM_CONDITION_URL = "launch.TermPrivacy://parent?param=0";
-    String PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1";
-
-    private static final String ALREADY_REGISTERED = "sudah terdaftar";
-
-    View redirectView;
-    UnifyButton registerButton;
-    TextFieldUnify wrapperName;
-    TextFieldUnify wrapperEmail;
-    TextFieldUnify wrapperPassword;
-    Typography registerNextTAndC;
-    LoaderUnify progressBar;
-
-    String source = "";
-    String token = "";
-
+    @JvmField
     @Inject
-    LoginRegisterAnalytics analytics;
+    var analytics: LoginRegisterAnalytics? = null
 
+    @JvmField
     @Inject
-    RegisterAnalytics registerAnalytics;
+    var registerAnalytics: RegisterAnalytics? = null
 
+    @JvmField
     @Named(SessionModule.SESSION_MODULE)
     @Inject
-    UserSessionInterface userSession;
+    var userSession: UserSessionInterface? = null
 
+    @JvmField
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
-
-
-    ViewModelProvider viewModelProvider;
-    RegisterInitialViewModel registerInitialViewModel;
+    var viewModelFactory: ViewModelProvider.Factory? = null
+    var viewModelProvider: ViewModelProvider? = null
+    var registerInitialViewModel: RegisterInitialViewModel? = null
 
     //** see fragment_register_email
-    private int REGISTER_BUTTON_IME = 123321;
+    private val REGISTER_BUTTON_IME = 123321
 
-    public static RegisterEmailFragment createInstance(Bundle bundle) {
-        RegisterEmailFragment fragment = new RegisterEmailFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        analytics.trackScreen(getActivity(), getScreenName());
-    }
-
-    @Override
-    protected void initInjector() {
-        DaggerRegisterInitialComponent daggerLoginComponent =
-                (DaggerRegisterInitialComponent) DaggerRegisterInitialComponent
-                        .builder()
-                        .loginRegisterComponent(getComponent(LoginRegisterComponent.class))
-                        .build();
-
-        daggerLoginComponent.inject(this);
-    }
-
-    @Override
-    protected String getScreenName() {
-        return LoginRegisterAnalytics.Companion.getSCREEN_REGISTER_EMAIL();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        viewModelProvider = ViewModelProviders.of(this, viewModelFactory);
-        registerInitialViewModel =  viewModelProvider.get(RegisterInitialViewModel.class);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
-            savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_register_with_email, parent, false);
-        redirectView = view.findViewById(R.id.redirect_reset_password);
-        registerButton = view.findViewById(R.id.register_button);
-        wrapperName = view.findViewById(R.id.wrapper_name);
-        wrapperEmail = view.findViewById(R.id.wrapper_email);
-        wrapperPassword = view.findViewById(R.id.wrapper_password);
-        progressBar = view.findViewById(R.id.progress_bar);
-        registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
-        prepareView();
-        setViewListener();
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) { }
-
-
-    private void prepareView() {
-        if (getArguments() != null) {
-            wrapperEmail.getTextFieldInput().setText(getArguments().getString(ApplinkConstInternalGlobal.PARAM_EMAIL, ""));
-            wrapperEmail.getTextFieldInput().setEnabled(false);
-            token = getArguments().getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "");
-            source = getArguments().getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "");
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            analytics?.trackScreen(this, screenName)
         }
-
-        initObserver();
-        initTermPrivacyView();
-        showPasswordHint();
-        showNameHint();
     }
 
-    private void initObserver(){
-        registerInitialViewModel.getRegisterRequestResponse().observe(getViewLifecycleOwner(), registerRequestDataResult -> {
-            if(registerRequestDataResult instanceof Success){
-                RegisterRequestData data = ((Success<RegisterRequestData>) registerRequestDataResult).getData();
-                userSession.clearToken();
-                userSession.setToken(data.getAccessToken(), data.getTokenType(), data.getRefreshToken());
-                onSuccessRegister();
-                if(getActivity() != null){
-                    Intent intent = new Intent();
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_ACTION, data.getAction());
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source);
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                    getActivity().finish();
+    override fun initInjector() {
+        val daggerLoginComponent = DaggerRegisterInitialComponent
+                .builder()
+                .loginRegisterComponent(getComponent(LoginRegisterComponent::class.java))
+                .build() as DaggerRegisterInitialComponent
+        daggerLoginComponent.inject(this)
+    }
+
+    override fun getScreenName(): String {
+        return SCREEN_REGISTER_EMAIL
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        registerInitialViewModel = viewModelProvider?.get(RegisterInitialViewModel::class.java)
+        fetchRemoteConfig()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_register_with_email, parent, false)
+        redirectView = view.findViewById(R.id.redirect_reset_password)
+        registerButton = view.findViewById(R.id.register_button)
+        wrapperName = view.findViewById(R.id.wrapper_name)
+        wrapperEmail = view.findViewById(R.id.wrapper_email)
+        wrapperPassword = view.findViewById(R.id.wrapper_password)
+        progressBar = view.findViewById(R.id.progress_bar)
+        registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p)
+        prepareView()
+        setViewListener()
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {}
+    private fun prepareView() {
+        arguments?.run {
+            wrapperEmail?.textFieldInput?.setText(arguments?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, ""))
+            wrapperEmail?.textFieldInput?.isEnabled = false
+            token = getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "")
+            source = getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "")
+        }
+        initObserver()
+        initTermPrivacyView()
+        showPasswordHint()
+        showNameHint()
+    }
+
+    private fun initObserver() {
+        registerInitialViewModel?.registerRequestResponse?.observe(viewLifecycleOwner, Observer { registerRequestDataResult: Result<RegisterRequestData>? ->
+            if (registerRequestDataResult is Success<*>) {
+                val data = (registerRequestDataResult as Success<RegisterRequestData>).data
+                userSession?.clearToken()
+                userSession?.setToken(data.accessToken, data.tokenType, data.refreshToken)
+                onSuccessRegister()
+                if (activity != null) {
+                    val intent = Intent()
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_ACTION, data.action)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+                    activity?.setResult(Activity.RESULT_OK, intent)
+                    activity?.finish()
                 }
-            }else if(registerRequestDataResult instanceof Fail){
-                Throwable throwable = ((Fail) registerRequestDataResult).getThrowable();
-                dismissLoadingProgress();
-                if (throwable instanceof MessageErrorException
-                        && throwable.getMessage() != null
-                        && throwable.getMessage().contains(ALREADY_REGISTERED)) {
-                    showInfo();
-                } else  if (throwable instanceof MessageErrorException
-                        && throwable.getMessage() != null) {
-                    onErrorRegister(throwable.getMessage());
-                }else {
-                    if(getContext() != null)
-                    {
-                        String forbiddenMessage = getContext().getString(
-                                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth);
-                        String errorMessage = ErrorHandler.getErrorMessage(getContext(), throwable);
-                        if (errorMessage.equals(forbiddenMessage)){
-                            onForbidden();
+            } else if (registerRequestDataResult is Fail) {
+                val throwable = registerRequestDataResult.throwable
+                dismissLoadingProgress()
+                if (throwable is MessageErrorException
+                        && throwable.message != null && throwable.message?.contains(ALREADY_REGISTERED) == true) {
+                    showInfo()
+                } else if (throwable is MessageErrorException
+                        && throwable.message != null) {
+                    onErrorRegister(throwable.message)
+                } else {
+                    if (context != null) {
+                        val forbiddenMessage = context?.getString(
+                                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                        if (errorMessage == forbiddenMessage) {
+                            onForbidden()
                         } else {
-                            onErrorRegister(errorMessage);
+                            onErrorRegister(errorMessage)
                         }
                     }
-
                 }
             }
-        });
+        })
     }
 
-    private void initTermPrivacyView() {
-        if (getContext() != null) {
-            SpannableString termPrivacy = new SpannableString(getString(R.string.detail_term_and_privacy));
-            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0);
-            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0);
-            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0);
-            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0);
-
-            registerNextTAndC.setText(termPrivacy, TextView.BufferType.SPANNABLE);
-            registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
-            registerNextTAndC.setSelected(false);
+    private fun fetchRemoteConfig() {
+        if (context != null) {
+            val firebaseRemoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
+            isEnableEncryption = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_REGISTER_ENCRYPTION, false)
         }
     }
 
-    private ClickableSpan termConditionClickAction() {
-        return new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_TERM_AND_CONDITION));
+    private fun initTermPrivacyView() {
+        context?.run {
+            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
+            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
+            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
+            registerNextTAndC?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+            registerNextTAndC?.movementMethod = LinkMovementMethod.getInstance()
+            registerNextTAndC?.isSelected = false
+        }
+    }
+
+    private fun termConditionClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION))
             }
-        };
+        }
     }
 
-    private ClickableSpan privacyClickAction() {
-        return new ClickableSpan () {
-            @Override
-            public void onClick(@NonNull View widget) {
-                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_PRIVACY_POLICY));
+    private fun privacyClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY))
             }
-        };
+        }
     }
 
-    private Spannable getSpannable(String sourceString, String hyperlinkString) {
-        Spannable spannable = new SpannableString(sourceString);
-
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
-
-                              }
-
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
-                              }
-                          }
-                , sourceString.indexOf(hyperlinkString)
-                , sourceString.length()
-                , 0);
-
-
-        return spannable;
+    private fun getSpannable(sourceString: String, hyperlinkString: String): Spannable {
+        val spannable: Spannable = SpannableString(sourceString)
+        spannable.setSpan(object : ClickableSpan() {
+            override fun onClick(view: View) {}
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            }
+        }, sourceString.indexOf(hyperlinkString), sourceString.length, 0)
+        return spannable
     }
 
-
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
-            wrapperName.getTextFieldInput().setText(savedInstanceState.getString(NAME, ""));
-            wrapperEmail.getTextFieldInput().setText(savedInstanceState.getString(EMAIL, ""));
-            wrapperEmail.getTextFieldInput().setEnabled(false);
-            wrapperPassword.getTextFieldInput().setText(savedInstanceState.getString(PASSWORD, ""));
+            wrapperName?.textFieldInput?.setText(savedInstanceState.getString(NAME, ""))
+            wrapperEmail?.textFieldInput?.setText(savedInstanceState.getString(EMAIL, ""))
+            wrapperEmail?.textFieldInput?.isEnabled = false
+            wrapperPassword?.textFieldInput?.setText(savedInstanceState.getString(PASSWORD, ""))
         }
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        wrapperEmail.getTextFieldInput().addTextChangedListener(emailWatcher(wrapperEmail));
-        wrapperPassword.getTextFieldInput().addTextChangedListener(passwordWatcher(wrapperPassword));
-        wrapperName.getTextFieldInput().addTextChangedListener(nameWatcher(wrapperName));
-
-        if (getActivity() != null && userSession.isLoggedIn()) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+    override fun onResume() {
+        super.onResume()
+        wrapperEmail?.textFieldInput?.addTextChangedListener(emailWatcher(wrapperEmail))
+        wrapperPassword?.textFieldInput?.addTextChangedListener(passwordWatcher(wrapperPassword))
+        wrapperName?.textFieldInput?.addTextChangedListener(nameWatcher(wrapperName))
+        if(userSession?.isLoggedIn == true) {
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
         }
     }
 
-
-    private TextWatcher nameWatcher(final TextFieldUnify wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperErrorNew(wrapper, null);
+    private fun nameWatcher(wrapper: TextFieldUnify?): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.length > 0) {
+                    setWrapperErrorNew(wrapper, null)
                 }
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                showNameHint();
-                if (s.length() == 0) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required));
-                } else if (s.length() < 3) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_minimal_name));
-                } else if (RegisterUtil.checkRegexNameLocal(wrapperName.getTextFieldInput().getText().toString())) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_illegal_character));
-                } else if (RegisterUtil.isExceedMaxCharacter(wrapperName.getTextFieldInput().getText().toString())) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_max_35_character));
+            override fun afterTextChanged(s: Editable) {
+                showNameHint()
+                when {
+                    s.isEmpty() -> { setWrapperErrorNew(wrapper, getString(R.string.error_field_required)) }
+                    s.length < 3 -> { setWrapperErrorNew(wrapper, getString(R.string.error_minimal_name)) }
+                    RegisterUtil.checkRegexNameLocal(wrapperName?.textFieldInput?.text.toString()) -> {
+                        setWrapperErrorNew(wrapper, getString(R.string.error_illegal_character))
+                    }
+                    RegisterUtil.isExceedMaxCharacter(wrapperName?.textFieldInput?.text.toString()) -> {
+                        setWrapperErrorNew(wrapper, getString(R.string.error_max_35_character))
+                    }
                 }
-
-                checkIsValidForm();
-            }
-        };
-    }
-
-    private TextWatcher passwordWatcher(final TextFieldUnify wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperErrorNew(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                showPasswordHint();
-                if (s.length() == 0) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required));
-                } else if (wrapperPassword.getTextFieldInput().getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_minimal_password));
-                }
-
-                checkIsValidForm();
-            }
-        };
-    }
-
-    private TextWatcher emailWatcher(final TextFieldUnify wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperErrorNew(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required));
-                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(wrapperEmail.getTextFieldInput().getText().toString()).matches()) {
-                    setWrapperErrorNew(wrapper, getString(R.string.wrong_email_format));
-                }
-
-                checkIsValidForm();
-            }
-        };
-    }
-
-    public List<String> getEmailListOfAccountsUserHasLoggedInto() {
-        Set<String> listOfAddresses = new LinkedHashSet<>();
-        Pattern emailPattern = Patterns.EMAIL_ADDRESS;
-        Account[] accounts = AccountManager.get(getActivity()).getAccountsByType("com.google");
-        for (Account account : accounts) {
-            if (emailPattern.matcher(account.name).matches()) {
-                listOfAddresses.add(account.name);
+                checkIsValidForm()
             }
         }
-        return new ArrayList<>(listOfAddresses);
     }
 
+    private fun passwordWatcher(wrapper: TextFieldUnify?): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperErrorNew(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                showPasswordHint()
+                if (s.isEmpty()) {
+                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
+                } else if (wrapperPassword?.textFieldInput?.text.toString().length < PASSWORD_MINIMUM_LENGTH) {
+                    setWrapperErrorNew(wrapper, getString(R.string.error_minimal_password))
+                }
+                checkIsValidForm()
+            }
+        }
+    }
+
+    private fun emailWatcher(wrapper: TextFieldUnify?): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperErrorNew(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                if (s.isEmpty()) {
+                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(wrapperEmail?.textFieldInput?.text.toString()).matches()) {
+                    setWrapperErrorNew(wrapper, getString(R.string.wrong_email_format))
+                }
+                checkIsValidForm()
+            }
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setViewListener() {
-        wrapperPassword.getTextFieldInput().setOnEditorActionListener((v, id, event) -> {
+    private fun setViewListener() {
+        wrapperPassword?.textFieldInput?.setOnEditorActionListener { v: TextView?, id: Int, event: KeyEvent? ->
             if (id == REGISTER_BUTTON_IME || id == EditorInfo.IME_NULL) {
-                registerEmail();
-                return true;
+                registerEmail()
+                return@setOnEditorActionListener true
             }
-            return false;
-        });
-
-        registerButton.setOnClickListener(v -> registerEmail());
+            false
+        }
+        registerButton?.setOnClickListener { v: View? -> registerEmail() }
     }
 
-    private void registerEmail(){
-        showLoadingProgress();
-        registerAnalytics.trackClickSignUpButtonEmail();
-        registerInitialViewModel.registerRequest(
-                wrapperEmail.getTextFieldInput().getText().toString(),
-                wrapperPassword.getTextFieldInput().getText().toString(),
-                wrapperName.getTextFieldInput().getText().toString(),
-                token
-        );
+    private fun registerEmail() {
+        showLoadingProgress()
+        registerAnalytics?.trackClickSignUpButtonEmail()
+        if(isUseEncryption()){
+            registerInitialViewModel?.registerRequestV2(
+                    wrapperEmail?.textFieldInput?.text.toString(),
+                    wrapperPassword?.textFieldInput?.text.toString(),
+                    wrapperName?.textFieldInput?.text.toString(),
+                    token
+            )
+        } else {
+            registerInitialViewModel?.registerRequest(
+                    wrapperEmail?.textFieldInput?.text.toString(),
+                    wrapperPassword?.textFieldInput?.text.toString(),
+                    wrapperName?.textFieldInput?.text.toString(),
+                    token
+            )
+        }
     }
 
-    boolean isCanRegister(String name, String email, String password) {
-        boolean isValid = true;
-
+    fun isCanRegister(name: String?, email: String?, password: String): Boolean {
+        var isValid = true
         if (TextUtils.isEmpty(password)) {
-            isValid = false;
-        } else if (password.length() < PASSWORD_MINIMUM_LENGTH) {
-            isValid = false;
+            isValid = false
+        } else if (password.length < PASSWORD_MINIMUM_LENGTH) {
+            isValid = false
         }
-
         if (TextUtils.isEmpty(name)) {
-            isValid = false;
+            isValid = false
         } else if (RegisterUtil.checkRegexNameLocal(name)) {
-            isValid = false;
+            isValid = false
         } else if (RegisterUtil.isBelowMinChar(name)) {
-            isValid = false;
+            isValid = false
         } else if (RegisterUtil.isExceedMaxCharacter(name)) {
-            isValid = false;
+            isValid = false
         }
-
         if (TextUtils.isEmpty(email)) {
-            isValid = false;
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            isValid = false;
+            isValid = false
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            isValid = false
         }
-
-        return isValid;
+        return isValid
     }
 
-    private void checkIsValidForm() {
-        if (isCanRegister(wrapperName.getTextFieldInput().getText().toString(), wrapperEmail.getTextFieldInput().getText().toString(), wrapperPassword.getTextFieldInput().getText().toString())) {
-            setRegisterButtonEnabled();
+    private fun checkIsValidForm() {
+        if (isCanRegister(wrapperName?.textFieldInput?.text.toString(), wrapperEmail?.textFieldInput?.text.toString(), wrapperPassword?.textFieldInput?.text.toString())) {
+            setRegisterButtonEnabled()
         } else {
-            setRegisterButtonDisabled();
+            setRegisterButtonDisabled()
         }
     }
 
-    private void setRegisterButtonEnabled() {
-        if (getActivity() != null) {
-            registerButton.setEnabled(true);
+    private fun setRegisterButtonEnabled() {
+        if (activity != null) {
+            registerButton?.isEnabled = true
         }
     }
 
-
-    private void setRegisterButtonDisabled() {
-        if (getActivity() != null) {
-            registerButton.setEnabled(false);
+    private fun setRegisterButtonDisabled() {
+        if (activity != null) {
+            registerButton?.isEnabled = false
         }
     }
 
-
-    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
-        wrapper.setHelperEnabled(false);
-        wrapper.setHelper(null);
+    private fun setWrapperErrorNew(wrapper: TextFieldUnify?, s: String?) {
         if (s == null) {
-            wrapper.setError(null);
-            wrapper.setErrorEnabled(false);
+            wrapper?.setMessage("")
+            wrapper?.setError(false)
         } else {
-            wrapper.setErrorEnabled(true);
-            wrapper.setError(s);
+            wrapper?.setError(true)
+            wrapper?.setMessage(s)
         }
     }
 
-    private void setWrapperErrorNew(TextFieldUnify wrapper, String s) {
-        if (s == null) {
-            wrapper.setMessage("");
-            wrapper.setError(false);
-        } else {
-            wrapper.setError(true);
-            wrapper.setMessage(s);
+    private fun setWrapperHint(wrapper: TextFieldUnify?, s: String) {
+        wrapper?.setError(false)
+        wrapper?.setMessage(s)
+    }
+
+    fun showPasswordHint() {
+        wrapperPassword?.setError(false)
+        wrapperPassword?.setMessage(resources.getString(R.string.minimal_8_character))
+    }
+
+    fun showNameHint() {
+        setWrapperHint(wrapperName, "  ")
+    }
+
+    fun setActionsEnabled(isEnabled: Boolean) {
+        wrapperEmail?.textFieldInput?.isEnabled = isEnabled
+        wrapperName?.textFieldInput?.isEnabled = isEnabled
+        wrapperPassword?.textFieldInput?.isEnabled = isEnabled
+        registerButton?.isEnabled = isEnabled
+    }
+
+    fun showLoadingProgress() {
+        setActionsEnabled(false)
+        progressBar?.visibility = View.VISIBLE
+    }
+
+    fun dismissLoadingProgress() {
+        setActionsEnabled(true)
+        progressBar?.visibility = View.GONE
+    }
+
+    fun onErrorRegister(errorMessage: String?) {
+        dismissLoadingProgress()
+        onFailedRegisterEmail(errorMessage)
+        setActionsEnabled(true)
+        if (errorMessage == "") NetworkErrorHelper.showSnackbar(activity) else NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    fun onSuccessRegister() {
+        if (activity != null) {
+            dismissLoadingProgress()
+            setActionsEnabled(true)
+            lostViewFocus()
+            registerAnalytics?.trackSuccessClickSignUpButtonEmail()
         }
     }
 
-    private void setWrapperHint(TextFieldUnify wrapper, String s) {
-        wrapper.setError(false);
-        wrapper.setMessage(s);
+    fun lostViewFocus() {
+        wrapperEmail?.textFieldInput?.clearFocus()
+        wrapperName?.textFieldInput?.clearFocus()
+        wrapperPassword?.textFieldInput?.clearFocus()
+        registerButton?.clearFocus()
     }
 
-    public void resetError() {
-        setWrapperErrorNew(wrapperName, null);
-        setWrapperErrorNew(wrapperEmail, null);
-        showPasswordHint();
-        showNameHint();
-    }
-
-    public void showPasswordHint() {
-        wrapperPassword.setError(false);
-        wrapperPassword.setMessage(getResources().getString(R.string.minimal_8_character));
-    }
-
-    public void showNameHint() {
-        setWrapperHint(wrapperName, "  ");
-    }
-
-    public void setActionsEnabled(boolean isEnabled) {
-
-        wrapperEmail.getTextFieldInput().setEnabled(isEnabled);
-        wrapperName.getTextFieldInput().setEnabled(isEnabled);
-        wrapperPassword.getTextFieldInput().setEnabled(isEnabled);
-        registerButton.setEnabled(isEnabled);
-    }
-
-    public void showLoadingProgress() {
-        setActionsEnabled(false);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    public void dismissLoadingProgress() {
-        setActionsEnabled(true);
-        progressBar.setVisibility(View.GONE);
-    }
-
-    public void goToAutomaticLogin() {
-        Intent intentLogin = LoginActivity.DeepLinkIntents.getAutomaticLogin(
-                getActivity(),
-                wrapperEmail.getTextFieldInput().getText().toString(),
-                wrapperPassword.getTextFieldInput().getText().toString(),
-                source
-        );
-        startActivityForResult(intentLogin, REQUEST_AUTO_LOGIN);
-    }
-
-    public void dropKeyboard() {
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
-    }
-
-    public void onErrorRegister(String errorMessage) {
-        dismissLoadingProgress();
-        onFailedRegisterEmail(errorMessage);
-        setActionsEnabled(true);
-        if (errorMessage.equals(""))
-            NetworkErrorHelper.showSnackbar(getActivity());
-        else
-            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-    }
-
-    public void onSuccessRegister() {
-        if (getActivity() != null) {
-            dismissLoadingProgress();
-            setActionsEnabled(true);
-            lostViewFocus();
-            registerAnalytics.trackSuccessClickSignUpButtonEmail();
-        }
-    }
-
-    public void lostViewFocus() {
-        wrapperEmail.getTextFieldInput().clearFocus();
-        wrapperName.getTextFieldInput().clearFocus();
-        wrapperPassword.getTextFieldInput().clearFocus();
-        registerButton.clearFocus();
-    }
-
-    private boolean isEmailAddressFromDevice() {
-        List<String> list = getEmailListOfAccountsUserHasLoggedInto();
-        boolean result = false;
-        if (list.size() > 0) {
-            for (String e : list) {
-                if (e.equals(wrapperEmail.getTextFieldInput().getText().toString())) {
-                    result = true;
-                    break;
-                }
+    fun showInfo() {
+        dismissLoadingProgress()
+        val view: Typography? = redirectView?.findViewById(R.id.body)
+        val emailString = wrapperEmail?.textFieldInput?.text.toString()
+        val text = getString(R.string.account_registered_body, emailString)
+        val part = getString(R.string.account_registered_body_part)
+        val spannable = getSpannable(text, part)
+        spannable.setSpan(StyleSpan(Typeface.BOLD), text.indexOf(emailString), text.indexOf(emailString) + emailString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        view?.setText(spannable, TextView.BufferType.SPANNABLE)
+        view?.setOnClickListener {
+            if (activity != null) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailString)
+                startActivity(intent)
             }
         }
-        return result;
+        redirectView?.visibility = View.VISIBLE
     }
 
-    public void showInfo() {
-        dismissLoadingProgress();
-        Typography view = redirectView.findViewById(R.id.body);
-        final String emailString = wrapperEmail.getTextFieldInput().getText().toString();
-        String text = getString(R.string.account_registered_body, emailString);
-        String part = getString(R.string.account_registered_body_part);
-        Spannable spannable = getSpannable(text, part);
-        spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
-                , text.indexOf(emailString) + emailString.length()
-                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        view.setText(spannable, TextView.BufferType.SPANNABLE);
-        view.setOnClickListener(view1 -> {
-            if (getActivity() != null) {
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.FORGOT_PASSWORD);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailString);
-                startActivity(intent);
+    fun onForbidden() {
+        ForbiddenActivity.startActivity(activity)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(NAME, wrapperName?.textFieldInput?.text.toString())
+        outState.putString(EMAIL, wrapperEmail?.textFieldInput?.text.toString())
+        outState.putString(PASSWORD, wrapperPassword?.textFieldInput?.text.toString())
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_AUTO_LOGIN -> if (activity != null && resultCode == Activity.RESULT_OK) {
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            } else {
+                dismissLoadingProgress()
             }
-        });
-        redirectView.setVisibility(View.VISIBLE);
-    }
-
-    public void onForbidden() {
-        ForbiddenActivity.startActivity(getActivity());
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(NAME, wrapperName.getTextFieldInput().getText().toString());
-        outState.putString(EMAIL, wrapperEmail.getTextFieldInput().getText().toString());
-        outState.putString(PASSWORD, wrapperPassword.getTextFieldInput().getText().toString());
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_AUTO_LOGIN:
-                if (getActivity() != null && resultCode == Activity.RESULT_OK) {
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
-                } else {
-                    dismissLoadingProgress();
-                }
-                break;
-
-            case REQUEST_ACTIVATE_ACCOUNT:
-                if (resultCode == Activity.RESULT_OK && getActivity() != null) {
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
-                } else {
-                    dismissLoadingProgress();
-                }
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-                break;
+            REQUEST_ACTIVATE_ACCOUNT -> if (resultCode == Activity.RESULT_OK && activity != null) {
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            } else {
+                dismissLoadingProgress()
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
-    public int getIsAutoVerify() {
-        return isEmailAddressFromDevice() ? 1 : 0;
+    private val abTestingRemoteConfig: RemoteConfig
+        get() = RemoteConfigInstance.getInstance().abTestPlatform
+
+    private fun isUseEncryption(): Boolean {
+        val variant = abTestingRemoteConfig.getString(SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION)
+        return variant == SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION && isEnableEncryption
     }
 
-    private void onFailedRegisterEmail(String errorMessage){
-        registerAnalytics.trackFailedClickEmailSignUpButton(errorMessage);
-        registerAnalytics.trackFailedClickSignUpButtonEmail(errorMessage);
+    private fun onFailedRegisterEmail(errorMessage: String?) {
+        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage ?: "")
+        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage ?: "")
     }
 
-    public void onBackPressed() {
-        registerAnalytics.trackClickOnBackButtonRegisterEmail();
+    fun onBackPressed() {
+        registerAnalytics?.trackClickOnBackButtonRegisterEmail()
+    }
+
+    companion object {
+        private const val REQUEST_AUTO_LOGIN = 101
+        private const val REQUEST_ACTIVATE_ACCOUNT = 102
+
+        private const val ALREADY_REGISTERED = "sudah terdaftar"
+        @JvmStatic
+        fun createInstance(bundle: Bundle?): RegisterEmailFragment {
+            val fragment = RegisterEmailFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
