@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
@@ -91,16 +92,23 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         if (stepperModel?.selectedTopAdsProducts?.isNotEmpty() == true) {
             onProductsSelectionChange()
         }
-        promotionalMessageInputText.textFieldInput.setText(stepperModel?.slogan
-                ?: getString(R.string.topads_headline_promotional_dummy_message))
+        setPromotionalText()
         showTopAdsBannerPreview()
+    }
+
+    private fun setPromotionalText() {
+        val promotionalMessage = if (stepperModel?.slogan.isNullOrEmpty()) {
+            getString(R.string.topads_headline_promotional_dummy_message)
+        } else {
+            MethodChecker.fromHtml(stepperModel?.slogan)
+        }
+        promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
     }
 
     override fun populateView() {
         setUpSelectedText()
         productImagePreviewWidget.setTopAdsImagePreviewClick(this)
-        promotionalMessageInputText.textFieldInput.setText(stepperModel?.slogan
-                ?: getString(R.string.topads_headline_promotional_dummy_message))
+        setPromotionalText()
         promotionalMessageInputText.textFieldInput.isFocusable = false
         promotionalMessageInputText.textFieldInput.setOnClickListener {
             openPromotionalMessageBottomSheet()

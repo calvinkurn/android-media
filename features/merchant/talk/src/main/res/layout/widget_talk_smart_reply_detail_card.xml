@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/layout_lvl2">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/talkSmartReplyDetailBuyerImage"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talk_smart_reply_detail_dummy_buyer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:text="@string/smart_reply_dummy_buyer_text"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="@id/talkSmartReplyDetailBuyerImage"
+            app:layout_constraintStart_toEndOf="@id/talkSmartReplyDetailBuyerImage"
+            app:layout_constraintTop_toTopOf="@id/talkSmartReplyDetailBuyerImage"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talk_smart_reply_detail_dummy_buyer_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:text="@string/smart_reply_dummy_question_text"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toStartOf="@id/talkSmartReplyDetailBuyerImage"
+            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailBuyerImage"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/talkSmartReplyDetailSellerThumbnail"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="@id/talk_smart_reply_detail_dummy_buyer_question"
+            app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_detail_dummy_buyer_question" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talkSmartReplyDetailSellerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="@id/talkSmartReplyDetailSellerThumbnail"
+            app:layout_constraintStart_toEndOf="@id/talkSmartReplyDetailSellerThumbnail"
+            tools:text="Signworks"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/talk_smart_reply_detail_dummy_seller_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintStart_toEndOf="@id/talkSmartReplyDetailSellerName"
+            app:layout_constraintTop_toTopOf="@id/talkSmartReplyDetailSellerName"
+            app:layout_constraintBottom_toBottomOf="@id/talkSmartReplyDetailSellerName"
+            app:labelType="general_light_green"
+            app:labelTitle="@string/reading_seller_label"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talk_smart_reply_detail_dummy_seller_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toEndOf="@id/talk_smart_reply_detail_dummy_seller_label"
+            app:layout_constraintTop_toTopOf="@id/talk_smart_reply_detail_dummy_seller_label"
+            app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_detail_dummy_seller_label"
+            android:text="@string/smart_reply_dummy_seller_reply_time"
+            app:typographyType="small"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/talk_smart_reply_detail_dummy_smart_reply_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_constraintStart_toStartOf="@id/talkSmartReplyDetailSellerName"
+            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailSellerName"
+            app:labelType="general_light_grey"
+            app:labelTitle="@string/smart_reply_label"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talkSmartReplyDetailPreview"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_N700_96"
+            android:ellipsize="end"
+            android:layout_marginEnd="@dimen/dp_12"
+            app:layout_constraintStart_toEndOf="@id/talk_smart_reply_detail_dummy_smart_reply_label"
+            app:layout_constraintTop_toTopOf="@id/talk_smart_reply_detail_dummy_smart_reply_label"
+            app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_detail_dummy_smart_reply_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="small"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
