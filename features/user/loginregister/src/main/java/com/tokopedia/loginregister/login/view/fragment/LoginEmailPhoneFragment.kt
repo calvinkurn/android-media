@@ -709,26 +709,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo) {
         setSmartLock()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-        if (ScanFingerprintDialog.isFingerprintAvailable(activity)) {
-            presenter.getUserInfoFingerprint()
-            getDefaultChosenAddress()
-        }
-        else {
-            presenter.getUserInfo()
-            getDefaultChosenAddress()
-        }
+        if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
+        else presenter.getUserInfo()
+        getDefaultChosenAddress()
     }
 
     override fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo) {
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-        if (ScanFingerprintDialog.isFingerprintAvailable(activity)) {
-            presenter.getUserInfoFingerprint()
-            getDefaultChosenAddress()
-        }
-        else {
-            presenter.getUserInfo()
-            getDefaultChosenAddress()
-        }
+        if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
+        else presenter.getUserInfo()
+        getDefaultChosenAddress()
     }
 
     override fun onSuccessLogin() {
