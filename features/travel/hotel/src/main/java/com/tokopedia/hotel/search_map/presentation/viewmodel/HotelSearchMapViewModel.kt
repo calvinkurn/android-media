@@ -203,9 +203,11 @@ class HotelSearchMapViewModel @Inject constructor(
                 permissionCheckerHelper,
                 fusedLocationProviderClient,
                 activity.applicationContext)
-        locationDetectorHelper.getLocation(onGetLocation(), activity,
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                activity.getString(R.string.hotel_destination_need_permission))
+        launch(dispatcher.ui()) {
+            locationDetectorHelper.getLocation(onGetLocation(), activity,
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    activity.getString(R.string.hotel_destination_need_permission))
+        }
     }
 
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
@@ -221,23 +223,25 @@ class HotelSearchMapViewModel @Inject constructor(
     }
 
     fun getVisibleRadius(googleMap: GoogleMap){
-        try {
-            val visibleRegion: VisibleRegion = googleMap.projection.visibleRegion
-            val diagonalDistance = FloatArray(1)
+        launch (dispatcher.io()){
+            try {
+                val visibleRegion: VisibleRegion = googleMap.projection.visibleRegion
+                val diagonalDistance = FloatArray(1)
 
-            val farLeft = visibleRegion.farLeft
-            val nearRight = visibleRegion.nearRight
+                val farLeft = visibleRegion.farLeft
+                val nearRight = visibleRegion.nearRight
 
-            Location.distanceBetween(
-                    farLeft.latitude,
-                    farLeft.longitude,
-                    nearRight.latitude,
-                    nearRight.longitude,
-                    diagonalDistance
-            )
-            mutableRadius.postValue(Success((diagonalDistance[0] / 2).toDouble()))
-        }catch (error: Throwable){
-            mutableRadius.postValue(Fail(error))
+                Location.distanceBetween(
+                        farLeft.latitude,
+                        farLeft.longitude,
+                        nearRight.latitude,
+                        nearRight.longitude,
+                        diagonalDistance
+                )
+                mutableRadius.postValue(Success((diagonalDistance[0] / 2).toDouble()))
+            } catch (error: Throwable) {
+                mutableRadius.postValue(Fail(error))
+            }
         }
     }
 
