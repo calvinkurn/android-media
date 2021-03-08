@@ -22,8 +22,9 @@ import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.activity.InactivePhoneImagePickerActivity
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.request
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding_id_card.*
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
@@ -31,6 +32,7 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
     lateinit var tracker: InactivePhoneTracker
 
     private lateinit var fragmentTransactionInterface: FragmentTransactionInterface
+    private val permissionCheckerHelper = PermissionCheckerHelper()
 
     override fun getScreenName(): String = ""
     override fun initInjector() {
@@ -47,6 +49,8 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
         fragmentTransactionInterface = activity as FragmentTransactionInterface
         tracker = InactivePhoneTracker()
 
+        checkPermission()
+
         btnNext?.setOnClickListener {
             tracker.clickOnNextButtonIdCardOnboarding()
 
@@ -60,6 +64,29 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
         addTextWithBullet(getString(R.string.text_onboarding_id_card_description_1))
         addTextWithBullet(getString(R.string.text_onboarding_id_card_description_2))
         addTextWithBullet(getString(R.string.text_onboarding_id_card_description_3))
+    }
+
+    private fun checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity?.let {
+                permissionCheckerHelper.request(it, arrayOf(
+                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+                ), granted = {
+                }, denied = {
+                    it.finish()
+                })
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
