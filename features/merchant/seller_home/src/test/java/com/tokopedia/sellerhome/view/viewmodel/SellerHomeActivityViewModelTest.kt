@@ -119,7 +119,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications but chat admin role is ineligible, should make the chat notif count 0`() = runBlocking {
+    fun `get notifications but chat admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runBlockingTest {
         val notifications = NotificationUiModel(5, 5,
                 NotificationSellerOrderStatusUiModel(5, 5))
 
@@ -140,11 +140,11 @@ class SellerHomeActivityViewModelTest {
         verifyCheckAdminOrderPermissionIsCalled()
 
         val expectedNotification = notifications.copy(chat = 0)
-        assertNotificationDataEquals(Success(expectedNotification))
+        assertNotificationDataEquals(Success(expectedNotification), viewModel)
     }
 
     @Test
-    fun `get notifications but order admin role is ineligible, should make the chat notif count 0`() = runBlocking {
+    fun `get notifications but order admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runBlockingTest {
         val notifications = NotificationUiModel(5, 5,
                 NotificationSellerOrderStatusUiModel(5, 5))
 
@@ -165,16 +165,13 @@ class SellerHomeActivityViewModelTest {
         verifyCheckAdminOrderPermissionIsCalled()
 
         val expectedNotification = notifications.copy(
-                sellerOrderStatus = notifications.sellerOrderStatus.copy(
-                        newOrder = 0,
-                        readyToShip = 0
-                )
+                chat = 0
         )
-        assertNotificationDataEquals(Success(expectedNotification))
+        assertNotificationDataEquals(Success(expectedNotification), viewModel)
     }
 
     @Test
-    fun `get notifications and both chat and order admin role is eligible, should not change the notif counts`() = runBlocking {
+    fun `get notifications and both chat and order admin role is eligible, should not change the notif counts`() = coroutineTestRule.runBlockingTest {
         val notifications = NotificationUiModel(5, 5,
                 NotificationSellerOrderStatusUiModel(5, 5))
 
@@ -192,12 +189,13 @@ class SellerHomeActivityViewModelTest {
         coVerify {
             getNotificationUseCase.executeOnBackground()
         }
+
         verifyCheckAdminOrderPermissionIsCalled()
-        assertNotificationDataEquals(Success(notifications))
+        assertNotificationDataEquals(Success(notifications), viewModel)
     }
 
     @Test
-    fun `get notifications success but check role is fail, should make the notifications result also fail`() = runBlocking {
+    fun `get notifications success but check role is fail, should still make the notifications result success`() = coroutineTestRule.runBlockingTest {
         val notifications = NotificationUiModel(5, 5,
                 NotificationSellerOrderStatusUiModel(5, 5))
         val throwable = MessageErrorException()
@@ -216,7 +214,7 @@ class SellerHomeActivityViewModelTest {
             getNotificationUseCase.executeOnBackground()
         }
         verifyCheckAdminOrderPermissionIsCalled()
-        assertNotificationDataEquals(Fail(throwable))
+        assert(viewModel.notifications.value is Success)
     }
 
     @Test
@@ -603,7 +601,7 @@ class SellerHomeActivityViewModelTest {
         }
     }
 
-    private fun assertNotificationDataEquals(expectedNotification: Result<NotificationUiModel>) {
-        assertEquals(expectedNotification, mViewModel.notifications.value)
+    private fun assertNotificationDataEquals(expectedNotification: Result<NotificationUiModel>, viewModel: SellerHomeActivityViewModel) {
+        assertEquals(expectedNotification, viewModel.notifications.value)
     }
 }
