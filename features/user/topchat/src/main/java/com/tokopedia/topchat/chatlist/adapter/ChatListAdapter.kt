@@ -222,7 +222,8 @@ class ChatListAdapter constructor(
             if (this is ItemChatListPojo) {
                 if (
                         attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                        readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                        readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD &&
+                        shouldUpdateReadStatus
                 ) {
                     listener.increaseNotificationCounter()
                 }
