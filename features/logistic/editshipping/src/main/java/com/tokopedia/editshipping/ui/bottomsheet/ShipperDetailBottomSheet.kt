@@ -15,7 +15,7 @@ class ShipperDetailBottomSheet {
     fun show(fragment: ShippingEditorFragment, adapter: ShippingEditorDetailsAdapter) {
         fragment.fragmentManager?.let {
             bottomSheet = BottomSheetUnify().apply {
-                setTitle("Detail Kurir Pengiriman")
+                setTitle(getString(R.string.shipper_detail_bottomsheet_title))
 
                 val child = View.inflate(fragment.context, R.layout.bottomsheet_shipper_detail, null)
                 setupChild(child, adapter)

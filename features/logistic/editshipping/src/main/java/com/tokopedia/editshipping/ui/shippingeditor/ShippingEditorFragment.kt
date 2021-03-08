@@ -362,11 +362,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun validateSaveData(data: ValidateShippingEditorModel) {
-        if (data.state == 5) {
+        if (data.state == VALIDATE_MULTIPLE_LOC_STATE) {
             setDataCourierNotCovered(data)
-        } else if (data.state == 6) {
+        } else if (data.state == VALIDATE_BO_MULTIPLE_LOC_STATE) {
             setDataBoAndCourierNotCovered(data)
-        } else if (data.state == 4) {
+        } else if (data.state == VALIDATE_BEBAS_ONGKIR_STATE) {
             openBottomSheetValidateBOData(data)
         } else {
             viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
@@ -461,12 +461,13 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 }
             })
         }
-        context?.let {
-            textPointOne?.text = HtmlLinkHelper(it, uiContentModel.body[0]).spannedString
-            textPointTwo?.text = HtmlLinkHelper(it, uiContentModel.body[1]).spannedString
-            textPointThree?.text = HtmlLinkHelper(it, uiContentModel.body[2]).spannedString
+        if (uiContentModel.body.isNotEmpty()) {
+            context?.let {
+                textPointOne?.text = HtmlLinkHelper(it, uiContentModel.body[0]).spannedString
+                textPointTwo?.text = HtmlLinkHelper(it, uiContentModel.body[1]).spannedString
+                textPointThree?.text = HtmlLinkHelper(it, uiContentModel.body[2]).spannedString
+            }
         }
-
         btnNonaktifkanValidationBO?.setOnClickListener {
             viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
             bottomSheetBOValidation?.dismiss()
@@ -495,73 +496,89 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
         when (bottomSheetCourierInactiveState) {
             BOTTOMSHEET_SHIPPER_WAREHOUSE_INACTIVE_STATE -> {
-                tvCourierInactive?.text = getString(R.string.text_header_courier_not_covered, header, courierCount)
-                btnPrimaryVertical?.text = getString(R.string.button_understand)
-                btnPrimaryVertical?.setOnClickListener {
-                    bottomSheetCourierInactive?.dismiss()
-                }
-                btnVerticalLayout?.visible()
-                btnSecondaryVertical?.gone()
-                btnHorizontalLayout?.gone()
-                tickerChargeBoCourierInactive?.gone()
+                showBottomSheetShipperWarehouseInactive(header, courierCount)
             }
             BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE -> {
-                tvCourierInactive?.text = getString(R.string.text_header_courier_not_covered_all)
-                btnPrimaryVertical?.text = getString(R.string.button_understand)
-                btnPrimaryVertical?.setOnClickListener {
-                    bottomSheetCourierInactive?.dismiss()
-                }
-                btnVerticalLayout?.visible()
-                btnSecondaryVertical?.gone()
-                btnHorizontalLayout?.gone()
-                tickerChargeBoCourierInactive?.gone()
+                showBottomSheetHeaderWarehouseInactive()
             }
             BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE -> {
-                tvCourierInactive?.text = data?.uiContent?.headerLocation
-                btnPrimaryVertical?.text = getString(R.string.button_cancel_reset)
-                btnPrimaryVertical?.setOnClickListener {
-                    bottomSheetCourierInactive?.dismiss()
-                }
-                btnSecondaryVertical?.text = getString(R.string.button_save)
-                btnSecondaryVertical?.setOnClickListener {
-                    viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
-                    bottomSheetCourierInactive?.dismiss()
-                }
-                btnVerticalLayout?.visible()
-                btnSecondaryVertical?.visible()
-                btnHorizontalLayout?.gone()
-                tickerChargeBoCourierInactive?.gone()
+                showBottomSheetValidateWarehouseInactive(data)
             }
             BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE -> {
-                tvCourierInactive?.text = getString(R.string.text_header_validate_courier_not_covered, courierCount)
-                btnPrimaryHorizontal?.text = getString(R.string.button_deactivate)
-                btnPrimaryHorizontal?.setOnClickListener {
-                    bottomSheetCourierInactive?.dismiss()
-                }
-                btnSecondaryHorizontal?.text = getString(R.string.button_activate)
-                btnSecondaryHorizontal?.setOnClickListener {
-                    viewModel.saveShippingData(userSession.shopId.toInt(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
-                    bottomSheetCourierInactive?.dismiss()
-                }
-                tickerChargeBoCourierInactive?.apply {
-                    tickerTitle = data?.uiContent?.ticker?.header
-                    setHtmlDescription(data?.uiContent?.ticker?.body + data?.uiContent?.ticker?.textLink)
-                    setDescriptionClickEvent(object: TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            goToWebView(data?.uiContent?.ticker?.urlLink)
-                        }
-
-                        override fun onDismiss() {
-                            //no-op
-                        }
-
-                    })
-                }
-                btnVerticalLayout?.gone()
-                btnHorizontalLayout?.visible()
-                tickerChargeBoCourierInactive?.visible()
+                showBottomSheetValidateWarehouseInactiveBO(courierCount, data)
             }
         }
+    }
+
+    private fun showBottomSheetShipperWarehouseInactive(header: String, courierCount: Int?) {
+        tvCourierInactive?.text = getString(R.string.text_header_courier_not_covered, header, courierCount)
+        btnPrimaryVertical?.text = getString(R.string.button_understand)
+        btnPrimaryVertical?.setOnClickListener {
+            bottomSheetCourierInactive?.dismiss()
+        }
+        btnVerticalLayout?.visible()
+        btnSecondaryVertical?.gone()
+        btnHorizontalLayout?.gone()
+        tickerChargeBoCourierInactive?.gone()
+    }
+
+    private fun showBottomSheetHeaderWarehouseInactive() {
+        tvCourierInactive?.text = getString(R.string.text_header_courier_not_covered_all)
+        btnPrimaryVertical?.text = getString(R.string.button_understand)
+        btnPrimaryVertical?.setOnClickListener {
+            bottomSheetCourierInactive?.dismiss()
+        }
+        btnVerticalLayout?.visible()
+        btnSecondaryVertical?.gone()
+        btnHorizontalLayout?.gone()
+        tickerChargeBoCourierInactive?.gone()
+    }
+
+    private fun showBottomSheetValidateWarehouseInactive(data: ValidateShippingEditorModel?) {
+        tvCourierInactive?.text = data?.uiContent?.headerLocation
+        btnPrimaryVertical?.text = getString(R.string.button_cancel_reset)
+        btnPrimaryVertical?.setOnClickListener {
+            bottomSheetCourierInactive?.dismiss()
+        }
+        btnSecondaryVertical?.text = getString(R.string.button_save)
+        btnSecondaryVertical?.setOnClickListener {
+            viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
+            bottomSheetCourierInactive?.dismiss()
+        }
+        btnVerticalLayout?.visible()
+        btnSecondaryVertical?.visible()
+        btnHorizontalLayout?.gone()
+        tickerChargeBoCourierInactive?.gone()
+    }
+
+    private fun showBottomSheetValidateWarehouseInactiveBO(courierCount: Int?, data: ValidateShippingEditorModel?) {
+        tvCourierInactive?.text = getString(R.string.text_header_validate_courier_not_covered, courierCount)
+        btnPrimaryHorizontal?.text = getString(R.string.button_deactivate)
+        btnPrimaryHorizontal?.setOnClickListener {
+            bottomSheetCourierInactive?.dismiss()
+        }
+        btnSecondaryHorizontal?.text = getString(R.string.button_activate)
+        btnSecondaryHorizontal?.setOnClickListener {
+            viewModel.saveShippingData(userSession.shopId.toInt(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
+            bottomSheetCourierInactive?.dismiss()
+        }
+        tickerChargeBoCourierInactive?.apply {
+            tickerTitle = data?.uiContent?.ticker?.header
+            setHtmlDescription(data?.uiContent?.ticker?.body + data?.uiContent?.ticker?.textLink)
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    goToWebView(data?.uiContent?.ticker?.urlLink)
+                }
+
+                override fun onDismiss() {
+                    //no-op
+                }
+
+            })
+        }
+        btnVerticalLayout?.gone()
+        btnHorizontalLayout?.visible()
+        tickerChargeBoCourierInactive?.visible()
     }
 
     private fun goToWebView(url: String?) {
@@ -617,7 +634,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         bottomSheetInfoCourierDetail = child.findViewById(R.id.tv_info_courier_detail)
         btnShipperBottomSheet = child.findViewById(R.id.btn_close)
 
-        if(bottomSheetShipperInfoType == 1) {
+        if(bottomSheetShipperInfoType == BOTTOMSHEET_AWB_OTOMATIS_INFO) {
             bottomSheetImageInfo?.setImageDrawable(ContextCompat.getDrawable(child.context, R.drawable.ic_awb_otomatis))
             bottomSheetInfoCourier?.text = getString(R.string.awb_otomatis_title)
             bottomSheetInfoCourierDetail?.text = getString(R.string.awb_otomatis_detail)
@@ -716,6 +733,12 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         private const val BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE = 2
         private const val BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE = 3
         private const val BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE = 4
+
+        private const val VALIDATE_BEBAS_ONGKIR_STATE = 4
+        private const val VALIDATE_MULTIPLE_LOC_STATE = 5
+        private const val VALIDATE_BO_MULTIPLE_LOC_STATE = 6
+
+        private const val BOTTOMSHEET_AWB_OTOMATIS_INFO = 1
 
         private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"
