@@ -6,8 +6,8 @@ import android.view.View
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
-import com.tokopedia.settingbank.domain.BankAccount
-import com.tokopedia.settingbank.domain.KYCInfo
+import com.tokopedia.settingbank.domain.model.BankAccount
+import com.tokopedia.settingbank.domain.model.KYCInfo
 import com.tokopedia.settingbank.util.AccountConfirmationType
 import com.tokopedia.settingbank.view.activity.AccountDocumentActivity
 import com.tokopedia.settingbank.view.activity.SettingBankActivity
