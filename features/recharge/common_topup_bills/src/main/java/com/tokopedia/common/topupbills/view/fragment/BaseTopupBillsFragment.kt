@@ -30,6 +30,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
@@ -61,6 +62,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     lateinit var topupBillsViewModel: TopupBillsViewModel
 
     lateinit var addToCartViewModel: DigitalAddToCartViewModel
+
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
 
     @Inject
     lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
@@ -420,6 +424,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         onLoadingMenuDetail(false)
         isExpressCheckout = data.isExpressCheckout
         categoryName = data.catalog.label
+        rechargeAnalytics.eventViewPdpPage(categoryName, userSession.userId)
     }
 
     open fun onMenuDetailError(error: Throwable) {

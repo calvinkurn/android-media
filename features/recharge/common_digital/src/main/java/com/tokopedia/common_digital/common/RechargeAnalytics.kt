@@ -77,6 +77,19 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         return rechargeLinkerData
     }
 
+    fun eventViewPdpPage(categoryName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(TrackAppUtils.EVENT, DigitalTrackingConst.Event.VIEW_DIGITAL_IRIS,
+                        TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
+                        TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.VIEW_PDP_PAGE,
+                        TrackAppUtils.EVENT_LABEL, categoryName,
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.USER_ID, userId,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
+                )
+        )
+    }
+
     fun eventAddToCart(digitalAtcTrackingModel: DigitalAtcTrackingModel) {
         val productName: String = "${digitalAtcTrackingModel.operatorName.toLowerCase()} " +
                 "${digitalAtcTrackingModel.priceText.toLowerCase()}"
@@ -104,7 +117,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                         DigitalTrackingConst.CurrencyCode.KEY, DigitalTrackingConst.CurrencyCode.IDR,
                         DigitalTrackingConst.Label.ADD,
                         DataLayer.mapOf(DigitalTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))),
-                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.SITE
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
                 )
         )
     }

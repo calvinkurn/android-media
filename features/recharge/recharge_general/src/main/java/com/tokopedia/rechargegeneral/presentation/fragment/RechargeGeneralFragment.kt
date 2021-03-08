@@ -35,7 +35,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
-import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -82,9 +81,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     lateinit var viewModel: RechargeGeneralViewModel
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
-
-    @Inject
-    lateinit var rechargeAnalytics: RechargeAnalytics
 
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics

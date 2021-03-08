@@ -8,15 +8,18 @@ object DigitalTrackingConst {
 
     object Event {
         const val ADD_TO_CART = "addToCart"
+        const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
     }
 
     object Category {
         const val DIGITAL_NATIVE = "digital - native"
+        const val DIGITAL_HOMEPAGE = "digital - homepage"
         const val HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget"
     }
 
     object Action {
         const val CLICK_BELI = "click beli"
+        const val VIEW_PDP_PAGE = "view pdp page"
     }
 
     object Label {
@@ -44,7 +47,7 @@ object DigitalTrackingConst {
 
     object Value {
         const val NONE = "none"
-        const val SITE = "tokopediadigitalRecharge"
+        const val RECHARGE_SITE = "tokopediadigitalRecharge"
         const val RECHARGE_BU = "recharge"
     }
 

@@ -475,6 +475,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     categoryData.name,
                     categoryData.categoryId
             );
+            rechargeAnalytics.eventViewPdpPage(categoryData.name, userSession.getUserId());
         }
     }
 

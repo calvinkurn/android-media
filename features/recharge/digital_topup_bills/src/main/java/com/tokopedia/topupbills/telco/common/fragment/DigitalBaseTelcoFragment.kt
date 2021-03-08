@@ -22,7 +22,6 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
@@ -71,8 +70,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var rechargeAnalytics: RechargeAnalytics
+
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
