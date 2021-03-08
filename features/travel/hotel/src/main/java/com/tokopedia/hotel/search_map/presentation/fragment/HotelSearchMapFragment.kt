@@ -166,6 +166,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onItemClicked(t: Property) {}
 
+    override fun showLoading() {
+        tvHotelSearchListTitleLoader.visible()
+        tvHotelSearchListTitle.gone()
+        super.showLoading()
+    }
+
+    override fun hideLoading() {
+        tvHotelSearchListTitleLoader.gone()
+        tvHotelSearchListTitle.visible()
+        super.hideLoading()
+    }
+
     private fun setUpTitleAndSubtitle() {
         context?.let {
             val hotelSearchModel = hotelSearchMapViewModel.hotelSearchModel
