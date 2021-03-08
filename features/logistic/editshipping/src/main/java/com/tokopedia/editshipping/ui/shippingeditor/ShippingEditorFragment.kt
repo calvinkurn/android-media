@@ -122,7 +122,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun checkWhitelistedUser() {
-        viewModel.getWhitelistData(userSession.shopId.toInt())
+        viewModel.getWhitelistData(userSession.shopId.toLong())
     }
 
     private fun initViews() {

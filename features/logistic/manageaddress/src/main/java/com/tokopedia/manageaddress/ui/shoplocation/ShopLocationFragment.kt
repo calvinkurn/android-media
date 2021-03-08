@@ -98,7 +98,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun checkWhitelistedUser() {
-        viewModel.getWhitelistData(userSession?.shopId.toInt())
+        viewModel.getWhitelistData(userSession?.shopId.toLong())
     }
 
     private fun initViews() {

@@ -49,7 +49,7 @@ class ShopLocationRepository @Inject constructor(private val gql: GraphqlReposit
         return gql.getResponse(request)
     }
 
-    suspend fun getShopLocationWhitelist(shopId: Int): ShopLocationWhitelistResponse {
+    suspend fun getShopLocationWhitelist(shopId: Long): ShopLocationWhitelistResponse {
         val param = mapOf("shop_id" to shopId)
         val request = GraphqlRequest(ShopLocationQuery.shopLocationWhitelist,
                 ShopLocationWhitelistResponse::class.java, param)

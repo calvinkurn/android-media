@@ -51,7 +51,7 @@ class ShopLocationViewModel @Inject constructor(
     }
 
 
-    fun getWhitelistData(shopId: Int) {
+    fun getWhitelistData(shopId: Long) {
         _shopWhitelist.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorGetWhitelistData) {
             val getWhitelistShop = repo.getShopLocationWhitelist(shopId)

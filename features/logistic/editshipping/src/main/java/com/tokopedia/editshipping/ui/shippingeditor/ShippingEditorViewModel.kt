@@ -50,7 +50,7 @@ class ShippingEditorViewModel @Inject constructor(
     var conventionalModel = ConventionalModel()
     var onDemandModel = OnDemandModel()
 
-    fun getWhitelistData(shopId: Int) {
+    fun getWhitelistData(shopId: Long) {
         _shopWhitelist.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorGetWhitelistData) {
             val getWhitelistShop = repo.getShopLocationWhitelist(shopId)
