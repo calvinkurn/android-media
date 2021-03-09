@@ -101,7 +101,6 @@ class CatalogDetailProductListingViewModel
         return mDynamicFilterModel
     }
 
-
     fun onDetach(){
         dynamicFilterUseCase.unsubscribe()
         quickFilterUseCase.unsubscribe()

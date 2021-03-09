@@ -13,7 +13,7 @@
         android:id="@+id/img_no_data"
         android:layout_width="@dimen/dp_140"
         android:layout_height="@dimen/dp_110"
-        android:src="@drawable/ic_no_product_found"
+        android:src="@drawable/empty_state_products"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />

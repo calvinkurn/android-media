@@ -387,23 +387,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             putAllString(getSelectedFilter())
         }
         param.putString(CatalogConstant.PRODUCT_PARAMS, createParametersForQuery(searchProductRequestParams.parameters))
-
-
-        val topAdsRequestParam = RequestParams.create()
-        topAdsRequestParam.apply {
-            putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
-            putString(CategoryNavConstants.KEY_SRC, "directory")
-            putString(CategoryNavConstants.KEY_PAGE, start.toString())
-            putString(CategoryNavConstants.KEY_EP, "product")
-            putString(CategoryNavConstants.KEY_ITEM, "2")
-            putString(CategoryNavConstants.KEY_F_SHOP, "1")
-            putString(CategoryNavConstants.KEY_DEPT_ID, departmentId)
-            putString(CategoryNavConstants.CTG_ID, catalogId)
-        }
-        topAdsRequestParam.putAllString(getSelectedSort())
-
-        param.putString(CatalogConstant.TOP_ADS_PARAMS, createParametersForQuery(topAdsRequestParam.parameters))
         return param
     }
 

@@ -10,24 +10,16 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 
-class CatalogGetProductListUseCase @Inject constructor(private val categoryProductUseCase: CatalogCategoryProductUseCase,
-                                                       private val topAdsProductsUseCase: CatalogTopAdsProductsUseCase) : UseCase<ProductListResponse>() {
+class CatalogGetProductListUseCase @Inject constructor(private val categoryProductUseCase: CatalogCategoryProductUseCase) : UseCase<ProductListResponse>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<ProductListResponse> {
 
         val paramProductListing = RequestParams.create()
-        val paramTopAd = RequestParams.create()
         paramProductListing.putString("params", requestParams?.getString(CatalogConstant.PRODUCT_PARAMS, ""))
 
-        paramTopAd.putString("params", requestParams?.getString(CatalogConstant.TOP_ADS_PARAMS, ""))
-
-        return Observable.zip(
-                categoryProductUseCase.createObservable(paramProductListing).subscribeOn(Schedulers.io()),
-                topAdsProductsUseCase.createObservable(paramTopAd).subscribeOn(Schedulers.io())
-        ) { aceSearchProductResponse, topAdsResponse ->
+        return categoryProductUseCase.createObservable(paramProductListing).flatMap { aceSearchProductResponse ->
             aceSearchProductResponse?.searchProduct?.data?.totalData = aceSearchProductResponse?.searchProduct?.header?.totalData ?: 0
-            CatalogProductListMapper().transform(ProductListResponse(aceSearchProductResponse.searchProduct), topAdsResponse)
+            Observable.just(CatalogProductListMapper().transform(aceSearchProductResponse))
         }
-
     }
 }

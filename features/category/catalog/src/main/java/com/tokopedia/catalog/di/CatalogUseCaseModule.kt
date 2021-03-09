@@ -47,13 +47,6 @@ class CatalogUseCaseModule {
     }
 
     @CatalogScope
-    @Named("catalogTopAdsProductListing")
-    @Provides
-    fun provideCatalogTopAdsUseCase(): CatalogTopAdsProductsUseCase {
-        return CatalogTopAdsProductsUseCase()
-    }
-
-    @CatalogScope
     @Provides
     fun provideCatalogCategoryProductUseCase(graphqlUseCase: GraphqlUseCase): CatalogCategoryProductUseCase {
         return CatalogCategoryProductUseCase(graphqlUseCase)
@@ -61,11 +54,9 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun providesCatalogGetProductListUseCase(catalogCategoryProductUseCase: CatalogCategoryProductUseCase
-                              , @Named("catalogTopAdsProductListing") catalogTopAdsProductsUseCase
-                              : CatalogTopAdsProductsUseCase)
+    fun providesCatalogGetProductListUseCase(catalogCategoryProductUseCase: CatalogCategoryProductUseCase)
             : CatalogGetProductListUseCase {
-        return CatalogGetProductListUseCase(catalogCategoryProductUseCase, catalogTopAdsProductsUseCase)
+        return CatalogGetProductListUseCase(catalogCategoryProductUseCase)
     }
 
     @CatalogScope

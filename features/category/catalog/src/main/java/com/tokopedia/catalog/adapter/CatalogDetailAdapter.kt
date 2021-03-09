@@ -45,9 +45,17 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
         if(holder is CatalogProductsContainerViewHolder){
+            //attachFragment(catalogId)
             catalogDetailListener.hideFloatingLayout()
         }
         super.onViewAttachedToWindow(holder)
+    }
+
+    private fun attachFragment(catalogId: String) {
+        CatalogDetailProductListingFragment.newInstance(catalogId).apply{
+            catalogDetailListener.childsFragmentManager?.beginTransaction()?.replace(R.id.products_container_frame,
+                    this)?.commit()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
