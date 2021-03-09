@@ -648,6 +648,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             postalCode = "postalcode1"
             latitude = "lat1"
             longitude = "lon1"
+            addressName = "addressname1"
+            recipientName = "recipientname1"
         }
         coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressModel.id }) } returns null
 
