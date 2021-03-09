@@ -4,6 +4,5 @@ data class BalanceTextAttribute(
         val colour: String = "",
         val colourRef: Int? = null,
         val text: String = "",
-        val isBold: Boolean = false,
-        val applink: String = ""
+        val isBold: Boolean = false
 )
