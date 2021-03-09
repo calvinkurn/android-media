@@ -436,7 +436,7 @@
             android:lines="1"
             android:gravity="center_vertical"
             android:inputType="text"
-            android:hint="Pno,TAG,message (Format message: abc=123,edf=4) (required Server Logging ON)"
+            android:hint="Pno##TAG##message (message: abc=123,edf=4) (required Server Logging ON)"
             app:backgroundTint="@color/Green_G500" />
 
         <androidx.appcompat.widget.AppCompatTextView

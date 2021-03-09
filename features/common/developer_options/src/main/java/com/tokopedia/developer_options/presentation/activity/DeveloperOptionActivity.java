@@ -55,7 +55,6 @@ import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.logger.common.LoggerException;
-import com.tokopedia.logger.common.Priority;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -67,6 +66,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -160,7 +160,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             boolean isChangeUrlApplink = false;
             if (intent != null) {
                 uri = intent.getData();
-                if (uri!= null) {
+                if (uri != null) {
                     isChangeUrlApplink = (uri.getPathSegments().size() == 3) &&
                             uri.getPathSegments().get(1).equals(CHANGEURL);
                 }
@@ -343,12 +343,12 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        btnApplyRollence.setOnClickListener(new View.OnClickListener(){
+        btnApplyRollence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (inputRollenceKey.getText().length() < 1) {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Key", Toast.LENGTH_SHORT).show();
-                } else if (inputRollenceVariant.getText().length() <1) {
+                } else if (inputRollenceVariant.getText().length() < 1) {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Variant", Toast.LENGTH_SHORT).show();
                 } else {
                     RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getText().toString().trim(), inputRollenceVariant.getText().toString().trim());
@@ -421,12 +421,14 @@ public class DeveloperOptionActivity extends BaseActivity {
                             tag = splitMessage[tagIndex];
                         } else {
                             String message = splitMessage[i];
-                            if(message != null & !message.isEmpty()) {
+                            if (!TextUtils.isEmpty(message)) {
                                 String[] keyValue = message.split(regexEqualSign);
-                                if (keyValue != null && keyValue.length > 0) {
-                                    if (!keyValue[0].isEmpty() && !keyValue[1].isEmpty()){
-                                        messageMap.put(keyValue[0], keyValue[1]);
-                                    }
+                                if (getOrNull(keyValue, 0) != null && getOrNull(keyValue, 1) != null) {
+                                    messageMap.put(keyValue[0], keyValue[1]);
+                                } else {
+                                    Toast.makeText(DeveloperOptionActivity.this,
+                                            "Invalid timber message format", Toast.LENGTH_LONG).show();
+                                    return;
                                 }
                             }
                         }
@@ -627,6 +629,14 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     }
 
+    public Object getOrNull(String[] list, int index) {
+        if (index >= 0 && index <= list.length - 1)  {
+            return list[index];
+        } else {
+            return null;
+        }
+    }
+
     private int toInt(String str) {
         try {
             return Integer.parseInt(str);
@@ -699,7 +709,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
     }
 
-    private class DeveloperOptionException extends RuntimeException{
+    private class DeveloperOptionException extends RuntimeException {
         public DeveloperOptionException(String message) {
             super(message);
         }
