@@ -197,8 +197,6 @@ object ProductDetailConstant {
     //shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503
 
-    const val REFRESH_TIME_AFTER_LOGIN = 400L
-
     const val ELIGIBLE_TRADE_IN = 1
 
     const val BS_SHIPMENT_ERROR_TAG = "BS_SHIPMENT_ERROR_TAG"

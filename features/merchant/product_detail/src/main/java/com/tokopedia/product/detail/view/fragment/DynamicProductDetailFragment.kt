@@ -479,10 +479,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
                 hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
-                    Handler().postDelayed({
-                        assignUserLocationData()
-                        onSwipeRefresh()
-                    }, ProductDetailConstant.REFRESH_TIME_AFTER_LOGIN)
+                    assignUserLocationData()
+                    onSwipeRefresh()
                 }
                 updateActionButtonShadow()
 

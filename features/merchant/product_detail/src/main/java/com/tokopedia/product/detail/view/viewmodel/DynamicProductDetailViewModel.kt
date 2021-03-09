@@ -357,10 +357,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
-            isNewShipment = ChooseAddressUtils.isRollOutUser(null)
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
+
+                isNewShipment = ChooseAddressUtils.isRollOutUser(null)
 
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
