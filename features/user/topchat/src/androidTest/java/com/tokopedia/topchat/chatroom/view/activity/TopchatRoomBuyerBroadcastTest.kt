@@ -68,6 +68,22 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
         assertBroadcastSpamHandlerIsHidden()
     }
 
+    @Test
+    fun hide_broadcast_spam_handler_when_block_is_true_and_following_is_false() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatBroadcastAsBuyer.blockPromo(true)
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(false)
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+        inflateTestFragment()
+
+        // Then
+        assertBroadcastSpamHandlerIsHidden()
+    }
+
     private fun assertBroadcastSpamHandlerIsVisible() {
         onView(withId(R.id.recycler_view)).check(
                 atPositionIsInstanceOf(0, BroadcastSpamHandlerUiModel::class.java)
