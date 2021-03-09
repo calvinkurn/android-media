@@ -187,7 +187,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun showListView(otpModeListData: OtpModeListData) {
         adapter.setList(otpModeListData.modeList)
         loadTickerTrouble(otpModeListData)
-        setAbTestFooter(otpModeListData.linkType)
+        setFooter(otpModeListData.linkType)
     }
 
     private fun skipView(modeListData: ModeListData) {
@@ -212,23 +212,20 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun setFooter(linkType: Int) {
         when (linkType) {
-            TYPE_CHANGE_PHONE_UPLOAD_KTP -> onInactivePhoneNumber(getString(R.string.my_phone_number_is_inactive))
+            TYPE_CHANGE_PHONE_UPLOAD_KTP -> setAbTestFooter()
             TYPE_PROFILE_SETTING -> onProfileSettingType()
             else -> onTypeHideLink()
         }
 
     }
 
-    private fun setAbTestFooter(linkType: Int) {
-        val abTestKeyInactivePhone1 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_1, false)
-        val abTestKeyInactivePhone2 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_2, false)
-        val abTestKeyInactivePhone3 = abTestPlatform.getBoolean(AB_TEST_KEY_INACTIVE_PHONE_3, false)
+    private fun setAbTestFooter() {
+        val abTestKeyInactivePhone1 = abTestPlatform.getString(AB_TEST_KEY_INACTIVE_PHONE_1, "")
 
-        when {
-            abTestKeyInactivePhone3 -> { onVariant3InactivePhone() }
-            abTestKeyInactivePhone2 -> { onVariant2InactivePhone() }
-            abTestKeyInactivePhone1 -> { onVariant1InactivePhone() }
-            else -> setFooter(linkType)
+        if (abTestKeyInactivePhone1 == AB_TEST_KEY_INACTIVE_PHONE_1) {
+            onVariant1InactivePhone()
+        } else {
+            onInactivePhoneNumber(getString(R.string.my_phone_number_is_inactive))
         }
     }
 
@@ -352,9 +349,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     companion object {
 
         private const val TITLE = "Verifikasi"
-        private const val AB_TEST_KEY_INACTIVE_PHONE_1 = "inactive_pn_1"
-        private const val AB_TEST_KEY_INACTIVE_PHONE_2 = "inactive_pn_2"
-        private const val AB_TEST_KEY_INACTIVE_PHONE_3 = "inactive_pn_3"
+        private const val AB_TEST_KEY_INACTIVE_PHONE_1 = "inactive_pn_11"
 
         private const val TYPE_HIDE_LINK = 0
         private const val TYPE_CHANGE_PHONE_UPLOAD_KTP = 1
