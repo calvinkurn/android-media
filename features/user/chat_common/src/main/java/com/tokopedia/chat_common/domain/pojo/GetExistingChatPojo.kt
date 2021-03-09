@@ -217,7 +217,7 @@ data class Fallback(
 data class Block(
         @Expose
         @SerializedName("isPromoBlocked")
-        val isPromoBlocked: Boolean = false,
+        var isPromoBlocked: Boolean = false,
         @Expose
         @SerializedName("isBlocked")
         val isBlocked: Boolean = false,
