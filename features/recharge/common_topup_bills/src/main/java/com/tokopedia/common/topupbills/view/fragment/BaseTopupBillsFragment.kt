@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -22,10 +20,13 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.config.GlobalConfig
@@ -342,26 +343,26 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getEnquiry(operatorId: String, productId: String, inputData: Map<String, String>) {
-        topupBillsViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_inquiry),
+        topupBillsViewModel.getEnquiry(CommonTopupBillsGqlQuery.rechargeInquiry,
                 topupBillsViewModel.createEnquiryParams(operatorId, productId, inputData))
     }
 
     fun getMenuDetail(menuId: Int) {
         onLoadingMenuDetail(true)
-        topupBillsViewModel.getMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
+        topupBillsViewModel.getMenuDetail(CommonTopupBillsGqlQuery.catalogMenuDetail,
                 topupBillsViewModel.createMenuDetailParams(menuId))
     }
 
     fun getCatalogPluginData(operatorId: Int, categoryId: Int) {
         if (operatorId > 0 && categoryId > 0) {
-            topupBillsViewModel.getCatalogPluginData(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_catalog_plugin),
+            topupBillsViewModel.getCatalogPluginData(CommonTopupBillsGqlQuery.rechargeCatalogPlugin,
                     topupBillsViewModel.createCatalogPluginParams(operatorId, categoryId))
         }
     }
 
     fun getFavoriteNumbers(categoryId: Int) {
         topupBillsViewModel.getFavoriteNumbers(
-                GraphqlHelper.loadRawString(resources, R.raw.query_fav_number_digital),
+                CommonTopupBillsGqlMutation.favoriteNumber,
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
     }
 
@@ -379,7 +380,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         } ?: ""
         if (productId > 0) {
             topupBillsViewModel.processExpressCheckout(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_express_checkout),
+                    CommonTopupBillsGqlMutation.rechargeExpressCheckout,
                     topupBillsViewModel.createExpressCheckoutParams(
                             productId,
                             inputFields,
@@ -432,12 +433,14 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun navigateToCart() {
-        if (::checkoutPassData.isInitialized) {
-            checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
-            checkoutPassData.voucherCodeCopied = promoCode
-            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CART_DIGITAL)
-            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
-            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        context?.let { context ->
+            if (::checkoutPassData.isInitialized) {
+                checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+                checkoutPassData.voucherCodeCopied = promoCode
+                val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+                intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
+                startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+            }
         }
     }
 

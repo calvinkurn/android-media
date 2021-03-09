@@ -20,7 +20,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gridHolder"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="#E5E7E9"
+        android:background="@color/Unify_N75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_component_header_view"
         app:layout_constraintEnd_toEndOf="parent"

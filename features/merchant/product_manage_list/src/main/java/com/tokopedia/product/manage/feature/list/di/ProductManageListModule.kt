@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
 import com.tokopedia.gm.common.data.source.GMCommonDataSource
@@ -35,11 +36,6 @@ class ProductManageListModule(private val context: Context) {
 
     @Provides
     @ProductManageListScope
-    @ProductManageListContext
-    fun provideContext() = context
-
-    @Provides
-    @ProductManageListScope
     fun provideGraphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
     }
@@ -59,7 +55,7 @@ class ProductManageListModule(private val context: Context) {
 
     @Provides
     @ProductManageListScope
-    fun provideTopAdsSourceTracking(@ProductManageListContext context: Context?): TopAdsSourceTaggingLocal {
+    fun provideTopAdsSourceTracking(@ApplicationContext context: Context?): TopAdsSourceTaggingLocal {
         return TopAdsSourceTaggingLocal(context)
     }
 
@@ -145,13 +141,13 @@ class ProductManageListModule(private val context: Context) {
 
     @ProductManageListScope
     @Provides
-    fun provideRemoteConfig(@ProductManageListContext context: Context): FirebaseRemoteConfigImpl {
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl {
         return FirebaseRemoteConfigImpl(context)
     }
 
     @ProductManageListScope
     @Provides
-    fun provideProductDraftDb(@ProductManageListContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
+    fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
 
     @ProductManageListScope
     @Provides

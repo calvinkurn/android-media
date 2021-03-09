@@ -12,17 +12,11 @@
     android:layout_height="match_parent"
     android:keepScreenOn="true"
     android:adjustViewBounds="true"
-    app:cameraGestureLongTap="none"
-    app:cameraGesturePinch="zoom"
-    app:cameraGestureScrollHorizontal="none"
-    app:cameraGestureScrollVertical="none"
-    app:cameraGestureTap="autoFocus"
     app:cameraGrid="off"
     app:cameraFlash="off"
     app:cameraPlaySounds="true"
     app:cameraAudio="off"
     app:cameraMode="picture"
-    app:cameraFacing="back"
     app:cameraPreview="glSurface"
     app:cameraUseDeviceOrientation="false"
     app:layout_constraintTop_toTopOf="parent"
@@ -37,6 +31,7 @@
     android:adjustViewBounds="true"
     android:scaleType="centerCrop"
     android:visibility="gone"
+    android:contentDescription="@string/image_preview"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
@@ -57,6 +52,7 @@
     android:layout_width="@dimen/layout_lvl7"
     android:layout_height="@dimen/layout_lvl7"
     android:background="@android:color/transparent"
+    android:contentDescription="@string/button_back"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/ic_arrow_back_inactive_phone" />
@@ -123,6 +119,7 @@
     android:layout_marginStart="@dimen/layout_lvl6"
     android:padding="@dimen/spacing_lvl3"
     android:visibility="visible"
+    android:contentDescription="@string/button_flip_camera"
     app:srcCompat="@drawable/ic_flip_camera_inactive_phone"
     app:layout_constraintBottom_toBottomOf="@+id/btnShutter"
     app:layout_constraintLeft_toRightOf="@+id/btnShutter"
@@ -143,12 +140,14 @@
     <ImageView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:contentDescription="@string/image_shutter_1"
       android:src="@drawable/ic_shutter_background_inactive_phone" />
     
     <ImageView
       android:layout_width="@dimen/layout_lvl5"
       android:layout_height="@dimen/layout_lvl5"
       android:layout_gravity="center"
+      android:contentDescription="@string/image_shutter_2"
       android:src="@drawable/ic_shutter_inactive_phone" />
   
   </FrameLayout>

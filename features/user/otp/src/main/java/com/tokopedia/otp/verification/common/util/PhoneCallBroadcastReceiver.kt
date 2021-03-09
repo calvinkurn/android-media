@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ import javax.inject.Inject
 
 class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
+    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
     private lateinit var listener: OnCallStateChange
 
     private var lastState = TelephonyManager.CALL_STATE_IDLE
@@ -30,6 +32,8 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             this.listener = listener
             context?.registerReceiver(this, getIntentFilter())
             isRegistered = true
+        } else {
+            sendLogTracker("PhoneCallBroadcastReceiver already registered")
         }
     }
 
@@ -47,10 +51,13 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
                 override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                     if (::listener.isInitialized) {
                         onStateChanged(state, phoneNumber ?: "")
+                    } else {
+                        sendLogTracker("PhoneCallBroadcastReceiver listener not initialized")
                     }
                 }
             }, PhoneStateListener.LISTEN_CALL_STATE)
         } catch (e: Exception) {
+            sendLogTracker("error [PhoneCallBroadcastReceiver#onReceive(); msg=$e]")
             e.printStackTrace()
         }
     }
@@ -73,6 +80,14 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         }
 
         lastState = state
+    }
+
+    private fun sendLogTracker(message: String) {
+        try {
+            crashlytics.recordException(Throwable(message))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     interface OnCallStateChange {

@@ -29,6 +29,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
 
     init {
         listAdapter = BaseListAdapter(TooltipTypeFactory())
+        isKeyboardOverlap = false
         setCloseClickListener {
             dismiss()
         }
@@ -118,4 +119,5 @@ class TooltipBottomSheet : BottomSheetUnify() {
     fun setBannerImage(url: String) {
         urlImage = url
     }
+
 }
