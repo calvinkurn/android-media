@@ -90,7 +90,7 @@ data class HomeBalanceModel (
     ) {
         mapTokopoint(tokopointDrawerListHomeData)
         mapWallet(homeHeaderWalletAction)
-        mapPendingCashback(pendingCashBackData)
+        mapPendingCashback(homeHeaderWalletAction, pendingCashBackData)
     }
 
     fun setWalletBalanceState(state: Int): HomeBalanceModel {
@@ -117,7 +117,7 @@ data class HomeBalanceModel (
         return this
     }
 
-    private fun mapPendingCashback(pendingCashBackData: PendingCashbackModel?) {
+    private fun mapPendingCashback(homeHeaderWalletAction: HomeHeaderWalletAction?, pendingCashBackData: PendingCashbackModel?) {
         pendingCashBackData?.let { pendingCashBackData ->
             val type = TYPE_WALLET_PENDING_CASHBACK
             flagStateCondition(
@@ -126,7 +126,7 @@ data class HomeBalanceModel (
                         if (pendingCashBackData.walletType == OVO_WALLET_TYPE) {
                             balanceDrawerItemModels[it] =
                                     BalanceDrawerItemModel(
-                                            applinkActionText = "",
+                                            applinkActionText = homeHeaderWalletAction?.appLinkActionButton?:"",
                                             iconImageUrl = "",
                                             defaultIconRes = R.drawable.wallet_ic_ovo_home,
                                             balanceTitleTextAttribute = BalanceTextAttribute(

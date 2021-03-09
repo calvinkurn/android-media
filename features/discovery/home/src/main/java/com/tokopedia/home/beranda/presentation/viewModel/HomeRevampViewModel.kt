@@ -1502,8 +1502,10 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getBalanceWidgetData() {
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
+        if (homeBalanceModel.balanceDrawerItemModels.isEmpty()) {
+            newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
+            newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
+        }
 
         launchCatchError(coroutineContext, block = {
             val tokopointContentDefered = async { getTokopointBalanceContent() }

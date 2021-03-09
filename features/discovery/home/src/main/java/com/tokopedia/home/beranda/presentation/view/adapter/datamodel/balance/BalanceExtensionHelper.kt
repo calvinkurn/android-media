@@ -51,8 +51,7 @@ fun HomeHeaderWalletAction.buildWalletTitleTextAttribute(): BalanceTextAttribute
             colour = colour,
             colourRef = colourRef,
             text = text,
-            isBold = isBold,
-            applink = applink
+            isBold = isBold
     )
 }
 
