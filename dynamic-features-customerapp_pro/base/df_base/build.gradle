@@ -147,4 +147,7 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.features.buyerorder)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
 }

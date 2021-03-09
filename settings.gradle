@@ -1,4 +1,3 @@
-include ':orderhistory'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
