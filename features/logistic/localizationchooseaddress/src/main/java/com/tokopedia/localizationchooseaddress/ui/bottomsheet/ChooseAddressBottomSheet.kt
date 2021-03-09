@@ -193,9 +193,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             postalCode = recipientAddress.postalCode
                     )
                     isSnippetAddressFlow = false
-                } else {
-                    listener?.onAddressDataChanged()
-                    dismissBottomSheet()
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {
