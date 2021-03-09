@@ -33,13 +33,19 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     override fun bind(element: HomeHeaderOvoDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
-        resetView()
         renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
         element.headerDataModel?.let {
-            if (it.homeBalanceModel.balanceType == HomeBalanceModel.TYPE_STATE_1) {
-                renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
-            } else {
-                renderBalanceLayout(it.homeBalanceModel)
+            when(it.homeBalanceModel.balanceType) {
+                HomeBalanceModel.TYPE_STATE_1 -> {
+                    renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
+                }
+                HomeBalanceModel.TYPE_STATE_2, HomeBalanceModel.TYPE_STATE_3 -> {
+                    renderBalanceLayout(
+                            it.homeBalanceModel,
+                            element.headerDataModel?.isUserLogin?: false,
+                            element.needToShowUserWallet)
+                }
+                else -> resetView()
             }
         }
 
@@ -108,11 +114,15 @@ class HomeHeaderOvoViewHolder(itemView: View,
         }
     }
 
-    private fun renderBalanceLayout(data: HomeBalanceModel?) {
+    private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean, needToShowUserWallet: Boolean) {
         val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
         data?.let {
-            balanceWidgetView.visible()
-            balanceWidgetView.bind(it, listener)
+            if (isUserLogin && needToShowUserWallet) {
+                balanceWidgetView.visible()
+                balanceWidgetView.bind(it, listener)
+            } else {
+                balanceWidgetView.gone()
+            }
         }
     }
 }
