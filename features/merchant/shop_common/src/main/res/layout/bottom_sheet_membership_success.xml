@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_14"
         android:layout_marginLeft="@dimen/dp_14"
+        android:contentDescription="@string/membership_success"
         android:src="@drawable/img_frame"
         />
 
