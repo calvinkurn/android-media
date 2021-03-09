@@ -11,19 +11,19 @@ object CatalogDetailMapper {
         val listOfComponents : MutableList<BaseCatalogDataModel> = mutableListOf()
 
         catalogGetDetailModular.basicInfo.run {
-            listOfComponents.add(CatalogInfoDataModel(name = CatalogConstant.CATALOG_INFO_NAME,type= CatalogConstant.CATALOG_INFO,
+            listOfComponents.add(CatalogInfoDataModel(name = CatalogConstant.CATALOG_INFO_NAME, type= CatalogConstant.CATALOG_INFO,
                     productName = name, productBrand = brand, tag = tag,
-                    priceRange = "${marketPrice.firstOrNull()?.minFmt} - ${marketPrice.firstOrNull()?.maxFmt}" ,
+                    priceRange = "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}" ,
                     description = description, shortDescription = shortDescription,
                     images = catalogGetDetailModular.basicInfo.catalogImage))
         }
 
-        catalogGetDetailModular.components.forEachIndexed { _, component ->
+        catalogGetDetailModular.components?.forEachIndexed { _, component ->
             when(component.type){
                 CatalogConstant.TOP_SPECIFICATIONS -> {
                     val crudeTopSpecificationsData = component.data
                     val topSpecsArray = arrayListOf<TopSpecificationsComponentData>()
-                    crudeTopSpecificationsData.forEachIndexed { _, componentData ->
+                    crudeTopSpecificationsData?.forEachIndexed { _, componentData ->
                         topSpecsArray.add(TopSpecificationsComponentData(componentData.key,
                                 componentData.value, componentData.icon))
                     }
@@ -41,12 +41,12 @@ object CatalogDetailMapper {
 
     fun getFullSpecificationsModel(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular) : CatalogFullSpecificationDataModel{
         var catalogFullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
-        catalogGetDetailModular.components.forEachIndexed { _, component ->
+        catalogGetDetailModular.components?.forEachIndexed { _, component ->
             when (component.type) {
                 CatalogConstant.FULL_CATALOG_SPECIFICATION -> {
                     val crudeSpecificationsData = component.data
                     val specifications = arrayListOf<FullSpecificationsComponentData>()
-                    crudeSpecificationsData.forEachIndexed { _, componentData ->
+                    crudeSpecificationsData?.forEachIndexed { _, componentData ->
                         specifications.add(FullSpecificationsComponentData(componentData.name,
                                 componentData.icon, componentData.specificationsRow
                                 ?: arrayListOf()))

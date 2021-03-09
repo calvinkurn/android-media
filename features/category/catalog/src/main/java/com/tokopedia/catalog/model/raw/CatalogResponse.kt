@@ -12,7 +12,7 @@ data class CatalogResponseData (
             @SerializedName( "basicInfo")
             val basicInfo: BasicInfo,
             @SerializedName( "components")
-            val components: List<BasicInfo.Component>
+            val components: List<BasicInfo.Component>?
     )
     {
         data class BasicInfo (
@@ -20,30 +20,30 @@ data class CatalogResponseData (
                 val id: String,
 
                 @SerializedName( "departmentId")
-                val departmentID: String,
+                val departmentID: String?,
 
                 @SerializedName( "name")
-                val name: String,
+                val name: String?,
                 @SerializedName( "brand")
-                val brand: String,
+                val brand: String?,
                 @SerializedName( "tag")
-                val tag: String,
+                val tag: String?,
                 @SerializedName( "description")
-                val description: String,
+                val description: String?,
                 @SerializedName( "shortDescription")
-                val shortDescription: String,
+                val shortDescription: String?,
                 @SerializedName( "url")
-                val url: String,
+                val url: String?,
 
                 @SerializedName( "mobileUrl")
-                val mobileURL: String,
+                val mobileURL: String?,
 
                 @SerializedName( "catalogImage")
-                val catalogImage: ArrayList<CatalogImage>,
+                val catalogImage: ArrayList<CatalogImage>?,
                 @SerializedName( "marketPrice")
-                val marketPrice: List<MarketPrice>,
+                val marketPrice: List<MarketPrice>?,
                 @SerializedName( "longDescription")
-                val longDescription: List<LongDescription>
+                val longDescription: List<LongDescription>?
         ){
 
             data class LongDescription (
@@ -56,20 +56,20 @@ data class CatalogResponseData (
 
             data class MarketPrice (
                     @SerializedName( "min")
-                    val min: Long,
+                    val min: Long?,
                     @SerializedName( "max")
-                    val max: Long,
+                    val max: Long?,
 
                     @SerializedName( "minFmt")
-                    val minFmt: String,
+                    val minFmt: String?,
 
                     @SerializedName( "maxFmt")
-                    val maxFmt: String,
+                    val maxFmt: String?,
 
                     @SerializedName( "date")
-                    val date: String,
+                    val date: String?,
                     @SerializedName( "name")
-                    val name: String
+                    val name: String?
             )
 
 
@@ -81,9 +81,9 @@ data class CatalogResponseData (
                     @SerializedName( "type")
                     val type: String,
                     @SerializedName( "sticky")
-                    val sticky: Boolean,
+                    val sticky: Boolean?,
                     @SerializedName( "data")
-                    val data: List<ComponentData>
+                    val data: List<ComponentData>?
             )
         }
     }
@@ -92,8 +92,8 @@ data class CatalogResponseData (
 @Parcelize
 data class CatalogImage (
         @SerializedName( "imageUrl")
-        val imageURL: String,
+        val imageURL: String?,
         @SerializedName( "isPrimary")
-        val isPrimary: Boolean
+        val isPrimary: Boolean?
 ): Parcelable
 

@@ -1,8 +1,8 @@
 package com.tokopedia.catalog.adapter.gallery
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -32,7 +32,9 @@ class CatalogBottomGalleyRecyclerViewAdapter(val list: ArrayList<CatalogImage>, 
             } else {
                 itemView.image.alpha = 0.5F
             }
-            itemView.image.loadImage(model.imageURL)
+            model.imageURL?.let {
+                itemView.image.loadImage(it)
+            }
             itemView.setOnClickListener {
                 onImageClick(adapterPosition)
             }

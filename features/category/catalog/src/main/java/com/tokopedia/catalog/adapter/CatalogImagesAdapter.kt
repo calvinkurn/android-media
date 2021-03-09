@@ -25,7 +25,9 @@ class CatalogImagesAdapter(val list: ArrayList<CatalogImage>,
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(model: CatalogImage, catalogDetailListener: CatalogDetailListener?) {
-            itemView.image.loadImage(model.imageURL)
+            model.imageURL?.let {
+                itemView.image.loadImage(it)
+            }
             itemView.setOnClickListener {
                 catalogDetailListener?.onProductImageClick(model,adapterPosition)
             }

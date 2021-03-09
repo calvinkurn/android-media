@@ -32,4 +32,7 @@ object CatalogConstant {
 
     const val CART_LOCAL_CACHE_NAME = "CART"
     const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
+
+    const val SHIMMER_ITEMS_INDEX_START = 0
+    const val SHIMMER_ITEMS_INDEX_END = 5
 }

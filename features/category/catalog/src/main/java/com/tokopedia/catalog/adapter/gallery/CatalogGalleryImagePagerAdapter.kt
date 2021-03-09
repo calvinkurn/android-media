@@ -37,7 +37,9 @@ class CatalogGalleryImagePagerAdapter(val list: List<CatalogImage>, val listener
     class CatalogImageViewHolder(private val itemView: View, val listener: Listener?) {
 
         fun bind(model: CatalogImage) {
-            itemView.image.loadImage(model.imageURL)
+            model.imageURL?.let {
+                itemView.image.loadImage(it)
+            }
             itemView.setOnClickListener {
                 listener?.onImageClick()
             }

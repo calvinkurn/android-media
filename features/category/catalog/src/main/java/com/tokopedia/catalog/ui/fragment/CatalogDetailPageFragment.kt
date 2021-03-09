@@ -72,9 +72,9 @@ class CatalogDetailPageFragment : Fragment(),
     private var shimmerLayout : ScrollView? = null
     private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
 
-    private val catalogAdapterFactory by lazy { CatalogDetailAdapterFactoryImpl(this) }
+    private val catalogAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { CatalogDetailAdapterFactoryImpl(this) }
 
-    private val catalogDetailAdapter by lazy {
+    private val catalogDetailAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(CatalogDetailDiffUtil())
                 .build()
         CatalogDetailAdapter(requireActivity(),this,catalogId,asyncDifferConfig, catalogAdapterFactory
@@ -280,7 +280,7 @@ class CatalogDetailPageFragment : Fragment(),
         catalogUiUpdater?.run {
             productInfoMap?.let {
                 if(catalogUiUpdater?.productInfoMap?.images?.isNotEmpty() == true){
-                    context?.startActivity(CatalogGalleryActivity.newIntent(context, currentItem, catalogUiUpdater!!.productInfoMap!!.images))
+                    context?.startActivity(CatalogGalleryActivity.newIntent(context, currentItem, catalogUiUpdater!!.productInfoMap!!.images!!))
                 }
             }
         }

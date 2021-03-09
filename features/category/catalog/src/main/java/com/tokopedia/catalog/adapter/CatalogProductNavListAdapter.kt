@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
 import com.tokopedia.catalog.model.raw.CatalogProductItem
+import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.viewholder.products.CatalogListProductViewHolder
 import com.tokopedia.catalog.viewholder.products.CatalogListShimmerModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
@@ -59,9 +60,9 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
     fun addShimmer() {
         isShimmer = true
         val item = getShimmerItem()
-        for (i in 0..5) {
+        for (i in CatalogConstant.SHIMMER_ITEMS_INDEX_START..CatalogConstant.SHIMMER_ITEMS_INDEX_END) {
             this.visitables.add(item as Visitable<CatalogTypeFactory>)
-            notifyItemInserted(i)
+            notifyItemRangeInserted(CatalogConstant.SHIMMER_ITEMS_INDEX_START,CatalogConstant.SHIMMER_ITEMS_INDEX_END + 1)
         }
 
     }
@@ -76,11 +77,11 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
 
     fun removeShimmer() {
         isShimmer = false
-        if (this.visitables.size > 5) {
-            for (i in 5 downTo 0) {
+        if (this.visitables.size > CatalogConstant.SHIMMER_ITEMS_INDEX_END) {
+            for (i in CatalogConstant.SHIMMER_ITEMS_INDEX_END downTo CatalogConstant.SHIMMER_ITEMS_INDEX_START) {
                 this.visitables.removeAt(i)
             }
-            notifyItemRangeRemoved(0, 6)
+            notifyItemRangeRemoved(CatalogConstant.SHIMMER_ITEMS_INDEX_START, CatalogConstant.SHIMMER_ITEMS_INDEX_END + 1)
         }
 
     }
@@ -108,7 +109,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         notifyItemRangeRemoved(0, itemSizeBeforeCleared)
     }
 
-    fun updateWishlistStatus(productId: Int, isWishlisted: Boolean) {
+    fun updateWishlistStatus(productId: Int?, isWishlisted: Boolean) {
         for (i in visitables.indices) {
             if (visitables[i] is CatalogProductItem) {
                 val model = visitables[i] as CatalogProductItem
@@ -121,7 +122,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         }
     }
 
-    fun setWishlistButtonEnabled(productId: Int, isEnabled: Boolean) {
+    fun setWishlistButtonEnabled(productId: Int?, isEnabled: Boolean) {
         for (i in visitables.indices) {
             if (visitables[i] is CatalogProductItem) {
                 val model = visitables[i] as CatalogProductItem
