@@ -2,6 +2,7 @@ package com.tokopedia.play.util.video.state
 
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.tokopedia.play.di.PlayScope
+import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
@@ -20,13 +21,15 @@ class PlayViewerVideoStateProcessor(
         private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser,
         private val channelTypeSource: () -> PlayChannelType,
         private val dispatcher: CoroutineDispatcherProvider,
-        private val scope: CoroutineScope
+        private val scope: CoroutineScope,
+        private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring
 ) {
 
     @PlayScope
     class Factory @Inject constructor(
             private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser,
-            private val dispatcher: CoroutineDispatcherProvider
+            private val dispatcher: CoroutineDispatcherProvider,
+            private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring
     ) {
         fun create(
                 playVideoPlayer: PlayVideoWrapper,
@@ -38,7 +41,8 @@ class PlayViewerVideoStateProcessor(
                     exoPlaybackExceptionParser = exoPlaybackExceptionParser,
                     channelTypeSource = channelTypeSource,
                     dispatcher = dispatcher,
-                    scope = scope
+                    scope = scope,
+                    videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring
             )
         }
     }
@@ -98,6 +102,7 @@ class PlayViewerVideoStateProcessor(
             is PlayVideoState.Error -> {
                 error = state.error
                 broadcastState(PlayViewerVideoState.Error(state.error))
+                videoLatencyPerformanceMonitoring.reset()
             }
             PlayVideoState.Buffering -> {
                 if (error == null) broadcastState(PlayViewerVideoState.Buffer(BufferSource.Unknown))
@@ -118,6 +123,7 @@ class PlayViewerVideoStateProcessor(
             PlayVideoState.Playing -> {
                 error = null
                 broadcastState(PlayViewerVideoState.Play)
+                if (videoLatencyPerformanceMonitoring.hasStarted) videoLatencyPerformanceMonitoring.stop()
             }
             PlayVideoState.Pause -> {
                 error = null

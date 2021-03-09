@@ -26,7 +26,6 @@ import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
-import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
@@ -60,8 +59,7 @@ class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         dispatchers: CoroutineDispatcherProvider,
         private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic,
-        private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring
+        private val analytic: PlayAnalytic
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -244,7 +242,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, videoLatencyPerformanceMonitoring)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
     }
 
     private fun initView(view: View) {

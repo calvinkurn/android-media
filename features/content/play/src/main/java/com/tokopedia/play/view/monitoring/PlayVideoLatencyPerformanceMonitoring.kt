@@ -22,6 +22,8 @@ class PlayVideoLatencyPerformanceMonitoring @Inject constructor() {
     private var mHasStarted = false
 
     fun start() {
+        reset()
+
         mTotalDuration = System.currentTimeMillis()
         mPerformanceMonitoring?.startTrace(PLAY_VIDEO_LATENCY_TRACE)
         mHasStarted = true

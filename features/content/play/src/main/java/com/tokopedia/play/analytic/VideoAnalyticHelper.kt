@@ -3,7 +3,6 @@ package com.tokopedia.play.analytic
 import android.content.Context
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
-import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import kotlin.math.abs
 
 /**
@@ -11,8 +10,7 @@ import kotlin.math.abs
  */
 class VideoAnalyticHelper(
         private val context: Context,
-        private val analytic: PlayAnalytic,
-        private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring
+        private val analytic: PlayAnalytic
 ) {
 
     @TrackingField
@@ -38,18 +36,8 @@ class VideoAnalyticHelper(
     }
 
     fun onNewVideoState(state: PlayViewerVideoState) {
-        handleVideoLatencyPerformanceMonitor(state)
         handleBufferAnalytics(state)
         handleDurationAnalytics(state)
-    }
-
-    private fun handleVideoLatencyPerformanceMonitor(state: PlayViewerVideoState) {
-        if (state is PlayViewerVideoState.Error) {
-            videoLatencyPerformanceMonitoring.reset()
-        } else if (state is PlayViewerVideoState.Play
-                    && videoLatencyPerformanceMonitoring.hasStarted) {
-            videoLatencyPerformanceMonitoring.stop()
-        }
     }
 
     private fun handleBufferAnalytics(state: PlayViewerVideoState) {

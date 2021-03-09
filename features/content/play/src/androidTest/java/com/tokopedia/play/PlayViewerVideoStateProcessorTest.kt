@@ -17,6 +17,7 @@ import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import io.mockk.mockk
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.*
@@ -52,7 +53,8 @@ class PlayViewerVideoStateProcessorTest {
 
     private val playVideoProcessor = PlayViewerVideoStateProcessor.Factory(
             exoPlaybackExceptionParser = playbackExceptionParser,
-            dispatcher = dispatcher
+            dispatcher = dispatcher,
+            videoLatencyPerformanceMonitoring = mockk(relaxed = true)
     ).create(
             scope = scope,
             channelTypeSource = { PlayChannelType.Live },
