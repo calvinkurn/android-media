@@ -49,7 +49,7 @@ class PartialContentView(private val view: View,
         }
 
         campaign_ribbon.setDynamicProductDetailListener(listener)
-        campaign_ribbon.renderOnGoingCampaignRibbon(data)
+        campaign_ribbon.renderOnGoingCampaign(data)
 
         when {
             isUpcomingNplType -> {
