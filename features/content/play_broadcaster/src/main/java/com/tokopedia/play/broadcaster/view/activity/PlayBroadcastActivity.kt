@@ -124,15 +124,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             requestPermission()
         }
 
-        initPushStream()
-        setupContent()
-        initView()
-        setupView()
-
         if (!DeviceInfoUtil.isDeviceSupported()) {
             showDialogWhenUnSupportedDevices()
             return
         }
+
+        initPushStream()
+        setupContent()
+        initView()
+        setupView()
 
         getConfiguration()
         observeConfiguration()
