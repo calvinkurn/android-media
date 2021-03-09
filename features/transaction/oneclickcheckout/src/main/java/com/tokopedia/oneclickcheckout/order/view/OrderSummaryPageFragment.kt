@@ -428,9 +428,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccGlobalEvent.PriceChangeError -> {
                     progressDialog?.dismiss()
-                    if (activity != null) {
+                    activity?.let { currentActivity ->
                         val messageData = it.message
-                        val priceValidationDialog = DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                        val priceValidationDialog = DialogUnify(currentActivity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
                         priceValidationDialog.setTitle(messageData.title)
                         priceValidationDialog.setDescription(messageData.desc)
                         priceValidationDialog.setPrimaryCTAText(messageData.action)
