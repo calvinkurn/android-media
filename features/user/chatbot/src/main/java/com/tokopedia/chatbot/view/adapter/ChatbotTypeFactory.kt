@@ -13,6 +13,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
 /**
  * @author by nisie on 27/11/18.
@@ -23,7 +24,8 @@ interface ChatbotTypeFactory : AdapterTypeFactory{
 
     fun createViewHolder(
             parent: ViewGroup,
-            type: Int): AbstractViewHolder<*>
+            type: Int,
+            chatbotAdapterListener: ChatbotAdapterListener): AbstractViewHolder<*>
 
     fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int
 

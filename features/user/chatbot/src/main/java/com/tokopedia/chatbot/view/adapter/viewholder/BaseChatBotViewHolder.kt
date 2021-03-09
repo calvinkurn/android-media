@@ -2,21 +2,33 @@ package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.domain.pojo.SenderInfoData
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
-open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View) : BaseChatViewHolder<T>(itemView) {
+open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
+                                                   private val chatbotAdapterListener: ChatbotAdapterListener? = null) : BaseChatViewHolder<T>(itemView) {
 
     protected val customChatLayout: CustomChatbotChatLayout? = itemView.findViewById(getCustomChatLayoutId())
+    private val senderAvatar = itemView.findViewById<ImageUnify>(getSenderAvatarId())
+    private val senderName = itemView.findViewById<Typography>(getSenderNameId())
 
-    open protected fun getCustomChatLayoutId():Int{ return com.tokopedia.chatbot.R.id.customChatLayout}
+    open protected fun getCustomChatLayoutId(): Int = com.tokopedia.chatbot.R.id.customChatLayout
+    open protected fun getSenderAvatarId(): Int = R.id.senderAvatar
+    open protected fun getSenderNameId(): Int = R.id.senderName
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
@@ -32,13 +44,39 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View) : BaseChatVie
     )
 
     override fun bind(viewModel: T) {
-        if (viewModel is BaseChatViewModel){
+        if (viewModel is BaseChatViewModel) {
             bindBackground()
             verifyReplyTime(viewModel)
             ChatbotMessageViewHolderBinder.bindHour(viewModel.replyTime, customChatLayout)
             setHeaderDate(viewModel)
+            hideSenderInfo()
+            val senderInfoData = convertToSenderInfo(viewModel.source)
+            if (chatbotAdapterListener?.isPreviousItemSender(adapterPosition) == true) {
+                senderInfoData?.let { bindSenderInfo(it) }
+            }
         }
 
+    }
+
+    private fun hideSenderInfo() {
+        senderAvatar?.hide()
+        senderName?.hide()
+    }
+
+    private fun convertToSenderInfo(source: String): SenderInfoData? {
+        if (source.isNotEmpty() && source.startsWith("chatbot")) {
+            val s = source.substring(8, source.length)
+            return GsonBuilder().create()
+                    .fromJson<SenderInfoData>(s,
+                            SenderInfoData::class.java)
+        } else return null
+    }
+
+    private fun bindSenderInfo(senderInfoData: SenderInfoData) {
+        senderAvatar?.show()
+        senderName?.show()
+        ImageHandler.loadImageCircle2(itemView.context, senderAvatar, senderInfoData.iconUrl)
+        senderName?.text = senderInfoData.name
     }
 
     private fun bindBackground() {

@@ -19,6 +19,33 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="13:16 wib" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/senderAvatar"
+        android:layout_width="@dimen/dp_19"
+        android:layout_height="@dimen/dp_19"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:visibility="gone"
+        tools:src="@drawable/chatbot_avatar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/senderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_6"
+        android:layout_marginLeft="8dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/senderAvatar"
+        app:layout_constraintLeft_toRightOf="@+id/senderAvatar"
+        app:layout_constraintTop_toTopOf="@+id/senderAvatar"
+        app:layout_constraintVertical_bias="1.0"
+        tools:text="Tanya"
+        tools:visibility="visible"/>
+
     <LinearLayout
         android:id="@+id/custom_chat_layout_container"
         android:layout_width="0dp"
@@ -26,11 +53,11 @@
         android:layout_gravity="right|center_vertical"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_6"
         android:gravity="left"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date"
+        app:layout_constraintTop_toBottomOf="@id/senderAvatar"
         tools:ignore="RtlHardcoded">
 
         <com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout

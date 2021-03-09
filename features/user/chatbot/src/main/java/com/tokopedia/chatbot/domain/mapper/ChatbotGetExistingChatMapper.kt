@@ -73,9 +73,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 reply.attachment?.id ?: "",
                 reply.attachment?.type.toString(),
                 reply.replyTime,
-                convertToQuickRepliesList(pojoAttribute.quickReplies)
-
-
+                convertToQuickRepliesList(pojoAttribute.quickReplies),
+                reply.source
         )
     }
 
@@ -200,7 +199,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
                 chatItemPojoByDateByTime.msg,
-                helpFullQuestionPojo.helpfulQuestion
+                helpFullQuestionPojo.helpfulQuestion,
+                chatItemPojoByDateByTime.source
         )
     }
 
@@ -219,7 +219,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
                 chatItemPojoByDateByTime.msg,
-                csatAttributesPojo.csat
+                csatAttributesPojo.csat,
+                chatItemPojoByDateByTime.source
         )
     }
 

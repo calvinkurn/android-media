@@ -15,6 +15,7 @@ import com.tokopedia.chatbot.util.OptionListRecyclerItemDecorator
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist.ChatOptionListAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist.OPTION_TYPE_CSAT
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,8 +23,9 @@ import com.tokopedia.unifycomponents.CardUnify
 
 class CsatOptionListViewHolder(itemView: View,
                                private val csatOptionListListener: CsatOptionListListener,
-                               chatLinkHandlerListener: ChatLinkHandlerListener
-) : BaseChatBotViewHolder<CsatOptionsViewModel>(itemView) {
+                               chatLinkHandlerListener: ChatLinkHandlerListener,
+                               chatbotAdapterListener: ChatbotAdapterListener
+) : BaseChatBotViewHolder<CsatOptionsViewModel>(itemView, chatbotAdapterListener) {
 
     private val adapter: ChatOptionListAdapter
     private var model: CsatOptionsViewModel? = null
@@ -79,6 +81,8 @@ class CsatOptionListViewHolder(itemView: View,
     }
 
     override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
+    override fun getSenderAvatarId(): Int = R.id.senderAvatar
+    override fun getSenderNameId(): Int = R.id.senderName
 
     companion object {
         @LayoutRes

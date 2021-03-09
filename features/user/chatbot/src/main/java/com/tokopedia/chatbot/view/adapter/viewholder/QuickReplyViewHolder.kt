@@ -6,15 +6,16 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
-import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
 
 /**
  * @author by nisie on 5/8/18.
  */
 class QuickReplyViewHolder(itemView: View,
-                           private val chatLinkHandlerListener: ChatLinkHandlerListener)
-    : BaseChatBotViewHolder<QuickReplyListViewModel>(itemView) {
+                           private val chatLinkHandlerListener: ChatLinkHandlerListener,
+                           chatbotAdapterListener: ChatbotAdapterListener)
+    : BaseChatBotViewHolder<QuickReplyListViewModel>(itemView,chatbotAdapterListener) {
 
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
@@ -24,6 +25,8 @@ class QuickReplyViewHolder(itemView: View,
     }
 
     override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
+    override fun getSenderAvatarId(): Int = R.id.senderAvatar
+    override fun getSenderNameId(): Int = R.id.senderName
 
     companion object {
         val LAYOUT = R.layout.quick_reply_chat_layout
