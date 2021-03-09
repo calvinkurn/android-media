@@ -35,10 +35,6 @@ include "features:category:age_restriction"
 include "features:category:explore_category"
 include "features:category:discovery2"
 include "features:category:category_navbottomsheet"
-
-
-        include "features:digital:digital_browse"
-
 include "features:recharge:common_digital"
 include "features:recharge:digitalproduct"
 include "features:recharge:common_topup_bills"

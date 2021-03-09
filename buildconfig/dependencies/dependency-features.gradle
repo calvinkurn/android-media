@@ -68,7 +68,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
