@@ -55,9 +55,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)
@@ -79,9 +79,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.rv_product_carousel)
         performClickAtcButton(R.id.rv_product_carousel)
         performClickBuyButton(R.id.rv_product_carousel)
@@ -105,9 +105,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)
