@@ -504,6 +504,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+
+       //todo
         RouteManager.getIntent(
                 requireContext(),
                 UriUtil.buildUriAppendParam(

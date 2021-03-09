@@ -62,6 +62,7 @@ public interface KolComment {
 
         void replyToUser(MentionableUserViewModel user);
 
+
         interface ViewHolder {
             void onGoToProfile(String url);
 
@@ -70,6 +71,8 @@ public interface KolComment {
             void replyToUser(MentionableUserViewModel user);
 
             boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
+
+            void reportAction(int adapterPosition, boolean canDeleteComment, String commentId);
         }
 
         interface SeeAll {

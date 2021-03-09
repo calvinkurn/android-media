@@ -379,6 +379,11 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void reportAction(int adapterposition, boolean canDeleteComment, String commentId) {
+
+    }
+
+    @Override
     public void enableSendComment() {
         sendButton.setClickable(true);
     }

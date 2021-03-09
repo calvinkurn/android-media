@@ -22,6 +22,8 @@ object ApplinkConstInternalContent {
     const val VIDEO_DETAIL = "$INTERNAL_CONTENT/video-detail/{id}"
     const val MEDIA_PREVIEW = "$INTERNAL_CONTENT/media-preview/{post_id}"
     const val COMMENT = "$INTERNAL_CONTENT/comment/{post_id}"
+    const val COMMENT_NEW = "$INTERNAL_CONTENT/comment-new/{post_id}"
+
     const val SHOP_POST_PICKER = "$INTERNAL_CONTENT/content-shop/picker"
 
     const val AFFILIATE_EXPLORE = "$INTERNAL_AFFILIATE/explore"

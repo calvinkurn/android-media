@@ -3,6 +3,8 @@ package com.tokopedia.kol.feature.comment.data.mapper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel;
 import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.kolcommon.util.GraphqlErrorException;
@@ -44,7 +46,20 @@ public class KolGetCommentMapper
         GetUserPostComment getUserPostComment = getDataOrError(getKolCommentData);
 
         PostKol postKol = getUserPostComment.getPostKol();
+        KolCommentHeaderNewModel kolCommentHeaderNewModel;
         KolCommentHeaderViewModel kolCommentHeaderViewModel = new KolCommentHeaderViewModel(
+                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
+                postKol.getUserName() == null ? "" : postKol.getUserName(),
+                postKol.getDescription() == null ? "" : postKol.getDescription(),
+                postKol.getCreateTime() == null ? "" :
+                        TimeConverter.generateTime(context, postKol.getCreateTime()),
+                String.valueOf(postKol.getUserId()),
+                postKol.getUserUrl(),
+                getTagsLink(postKol),
+                !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : "",
+                postKol.getSource().getType() == SourceType.SHOP.getTypeInt()
+        );
+        kolCommentHeaderNewModel = new KolCommentHeaderNewModel(
                 postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
                 postKol.getUserName() == null ? "" : postKol.getUserName(),
                 postKol.getDescription() == null ? "" : postKol.getDescription(),
@@ -62,7 +77,9 @@ public class KolGetCommentMapper
                         getUserPostComment.getLastCursor(),
                 !TextUtils.isEmpty(getUserPostComment.getLastCursor()),
                 convertCommentList(getUserPostComment),
-                kolCommentHeaderViewModel
+                convertCommentNewList(getUserPostComment),
+                kolCommentHeaderViewModel,
+                kolCommentHeaderNewModel
         );
     }
 
@@ -110,6 +127,32 @@ public class KolGetCommentMapper
 
         return viewModelList;
     }
+
+    private ArrayList<KolCommentNewModel> convertCommentNewList(
+            GetUserPostComment getUserPostComment) {
+        ArrayList<KolCommentNewModel> viewModelList = new ArrayList<>();
+
+        for (Comment comment : getUserPostComment.getComments()) {
+            KolCommentNewModel kolCommentViewModel = new KolCommentNewModel(
+                    String.valueOf(comment.getId()),
+                    String.valueOf(comment.getUserID()),
+                    null,
+                    comment.getUserPhoto() == null ? "" : comment.getUserPhoto(),
+                    comment.getUserName() == null ? "" : comment.getUserName(),
+                    comment.getComment() == null ? "" : comment.getComment(),
+                    comment.getCreateTime() == null ? "" :
+                            TimeConverter.generateTime(context, comment.getCreateTime()),
+                    comment.isKol(),
+                    comment.isCommentOwner(),
+                    comment.getUserBadges(),
+                    comment.isShop()
+            );
+            viewModelList.add(kolCommentViewModel);
+        }
+
+        return viewModelList;
+    }
+
 
     private String getTagsLink(PostKol postKol) {
         try {

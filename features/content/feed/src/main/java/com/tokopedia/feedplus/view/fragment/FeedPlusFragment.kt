@@ -49,6 +49,7 @@ import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
+import com.tokopedia.feedcomponent.util.util.ShareToAppsBS
 import com.tokopedia.feedcomponent.util.util.copy
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -171,7 +172,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
         PlayWidgetListener, TopAdsHeadlineViewHolder.TopAdsHeadlineListener,
-        ShareCallback {
+        ShareCallback,ShareToAppsBS.OnShareItemClickListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -938,10 +939,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
+      //TODO
         RouteManager.getIntent(
                 requireContext(),
                 UriUtil.buildUriAppendParam(
-                        ApplinkConstInternalContent.COMMENT,
+                        ApplinkConstInternalContent.COMMENT_NEW,
                         mapOf(
                                 COMMENT_ARGS_POSITION to rowNumber.toString()
                         )
@@ -2105,18 +2107,30 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-        ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
-            override fun onShareItemClicked(packageName: String) {
-
-            }
-        }, "", shareData.imgUri, linkerShareData?.url?:"", shareData.description, shareData.name).also {
-            fragmentManager?.run {
+        val bottomSheet = ShareToAppsBS.newInstance(
+                this@FeedPlusFragment,
+                "", shareData.imgUri, linkerShareData?.url?:"", shareData.description, shareData.name
+        ).also {
+            childFragmentManager?.run {
                 it.show(this)
             }
         }
+//        ShareToAppsBS.newInstance(object : ShareToAppsBS.OnShareItemClickListener {
+//            override fun onShareItemClicked(packageName: String) {
+//
+//            }
+//        }, "", shareData.imgUri, linkerShareData?.url?:"", shareData.description, shareData.name).also {
+//            childFragmentManager.run {
+//                it.show(this)
+//            }
+//        }
     }
 
     override fun onError(linkerError: LinkerError?) {
 
+    }
+
+    override fun onShareItemClicked(packageName: String) {
+        TODO("Not yet implemented")
     }
 }

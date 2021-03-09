@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentProductViewModel;
 
@@ -93,6 +94,11 @@ public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     }
 
     public void addHeader(KolCommentHeaderViewModel header) {
+        this.list.add(0, header);
+        notifyItemInserted(0);
+    }
+
+    public void addHeaderNew(KolCommentHeaderNewModel header) {
         this.list.add(0, header);
         notifyItemInserted(0);
     }

@@ -44,6 +44,10 @@
     <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
     <string name="error_occurred">terjadi kesalahan</string>
 
+    <!-- delete bottoms Sheet-->
+    <string name="feed_delete_comment">Hapus</string>
+    <string name="feed_report_comment">Laporkan</string>
+
     <!--Available Share Names-->
     <string name="share_whatsapp">WhatsApp</string>
     <string name="share_facebook">Facebook</string>

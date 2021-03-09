@@ -49,11 +49,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPo
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
-import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType;
@@ -66,6 +63,7 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
@@ -422,7 +420,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onGoToKolComment(int rowNumber, int id) {
         analytics.eventClickComment(userSession.getUserId());
         if (userSession != null && userSession.isLoggedIn()) {
-            Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
+            Intent intent = KolCommentNewActivity.getCallingIntent(getContext(), id, rowNumber);
             startActivityForResult(intent, OPEN_KOL_COMMENT);
         } else {
             RouteManager.route(getActivity(), ApplinkConst.LOGIN);
@@ -447,6 +445,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition) {
         return false;
+    }
+
+    @Override
+    public void reportAction(int adapterposition, boolean canDeleteComment, String commentId) {
+
     }
 
     @Override

@@ -31,7 +31,9 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentViewHolder;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostDetailViewHolder;
@@ -133,6 +135,17 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(KolCommentHeaderViewModel viewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + KolCommentHeaderViewModel.class.getSimpleName());
+    }
+
+    @Override
+    public int type(KolCommentNewModel viewModel) {
+        //todo
+        return 0;
+    }
+
+    @Override
+    public int type(KolCommentHeaderNewModel viewModel) {
+        return 0;
     }
 
     @Override
