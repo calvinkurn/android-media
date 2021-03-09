@@ -426,14 +426,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun View.showToasterError(errorMessage: String) {
-        Toaster.make(this,
+        Toaster.build(this,
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                resources.getString(R.string.setting_toaster_error_retry),
-                View.OnClickListener {
-                    retryFetchAfterError()
-                })
+                resources.getString(R.string.setting_toaster_error_retry)
+        ) {
+            retryFetchAfterError()
+        }.show()
     }
 
     private fun setupView(view: View) {

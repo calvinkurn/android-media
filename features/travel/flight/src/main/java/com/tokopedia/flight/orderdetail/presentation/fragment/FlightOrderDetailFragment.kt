@@ -115,7 +115,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         title = errorData.title
                         message = errorData.message
                     } catch (t: Throwable) {
-                        message = it.throwable.message ?: ""
+                        message = getString(R.string.flight_error_pick_journey)
                     }
                     renderErrorView(title, message)
                 }

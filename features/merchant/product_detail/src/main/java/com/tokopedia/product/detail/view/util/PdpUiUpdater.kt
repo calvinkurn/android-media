@@ -611,7 +611,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (!loadInitialData) {
             val data = mapOfData[key]
             data?.let {
-                mapOfData[key] = it.newInstance()
+                val newInstance = it.newInstance()
+                if (it.impressHolder.isInvoke) {
+                    newInstance.impressHolder.invoke()
+                }
+                mapOfData[key] = newInstance
             }
         }
         updateAction.invoke()
