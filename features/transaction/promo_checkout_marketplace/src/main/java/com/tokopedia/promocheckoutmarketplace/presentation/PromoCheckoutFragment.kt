@@ -916,7 +916,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
             }
 
-            recyclerView.smoothScrollToPosition(promoWithCoachMarkIndex)
+            val scrollPosition = if (adapter.list.size > promoWithCoachMarkIndex) promoWithCoachMarkIndex + 1 else promoWithCoachMarkIndex
+            recyclerView.smoothScrollToPosition(scrollPosition)
             Handler().postDelayed({
                 val holder = recyclerView.findViewHolderForAdapterPosition(promoWithCoachMarkIndex)
                 val coachMarkData = adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel
@@ -1012,6 +1013,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickPromoListItem(element: PromoListItemUiModel) {
         viewModel.updatePromoListAfterClickPromoItem(element)
         renderStickyPromoHeader(recyclerView)
+
+        // dismiss coachmark if user click promo with coachmark
+        if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] == element && promoCoachMark.isShowing) {
+            promoCoachMark.dismissCoachMark()
+        }
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
