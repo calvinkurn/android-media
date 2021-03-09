@@ -109,7 +109,7 @@ class DigitalAnalytics {
         } else DigitalCheckoutTrackingConst.Category.DIGITAL_NATIVE
 
         val eventLabel = cartDigitalInfoData.attributes.categoryName.toLowerCase() + " - " +
-                cartDigitalInfoData.attributes.operatorName
+                cartDigitalInfoData.attributes.operatorName.toLowerCase()
 
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName))
 
