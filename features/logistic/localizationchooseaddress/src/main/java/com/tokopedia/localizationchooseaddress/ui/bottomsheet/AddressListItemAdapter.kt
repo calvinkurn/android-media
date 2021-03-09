@@ -3,10 +3,7 @@ package com.tokopedia.localizationchooseaddress.ui.bottomsheet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.R
@@ -69,6 +66,10 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
         addressList.addAll(data)
         addressList.add(data.size, OtherAddressModel())
         notifyDataSetChanged()
+    }
+
+    internal fun containsChosenAddress(): Boolean {
+        return addressList.firstOrNull { it is ChosenAddressList } != null
     }
 
     inner class AddressListViewHolder(itemView: View, private val listener: AddressListItemAdapterListener): AddressListItemAdapter.BaseViewHolder<ChosenAddressListVisitable>(itemView){

@@ -24,7 +24,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.R
@@ -65,10 +64,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     private val adapter = AddressListItemAdapter(this)
     private var chooseAddressLayout: ConstraintLayout? = null
-    private var noAddressLayout: ConstraintLayout? = null
     private var buttonLogin: ConstraintLayout? = null
     private var buttonAddAddress: ConstraintLayout? = null
-    private var buttonSnippetLocation: IconUnify? = null
     private var addressList: RecyclerView? = null
     private var listener: ChooseAddressBottomSheetListener? = null
 
@@ -232,7 +229,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         chooseAddressLayout = child.findViewById(R.id.choose_address_layout)
         buttonAddAddress = child.findViewById(R.id.no_address_layout)
         buttonLogin = child.findViewById(R.id.login_layout)
-        buttonSnippetLocation = child.findViewById(R.id.btn_chevron_snippet)
         addressList = child.findViewById(R.id.rv_address_card)
 
         divider = child.findViewById(R.id.divider)
@@ -371,21 +367,21 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun setViewState(loginState: Boolean) {
         if (!loginState) {
             chooseAddressLayout?.gone()
-            noAddressLayout?.gone()
+            buttonAddAddress?.gone()
             buttonLogin?.visible()
             shouldShowGpsPopUp = true
             showGpsPopUp()
         } else {
-            if (adapter.addressList.isEmpty()) {
-                chooseAddressLayout?.gone()
-                noAddressLayout?.visible()
+            if (adapter.containsChosenAddress()) {
+                buttonLogin?.gone()
                 buttonAddAddress?.gone()
+                chooseAddressLayout?.visible()
+            } else {
+                chooseAddressLayout?.gone()
+                buttonLogin?.gone()
+                buttonAddAddress?.visible()
                 shouldShowGpsPopUp = true
                 showGpsPopUp()
-            } else {
-                chooseAddressLayout?.visible()
-                noAddressLayout?.gone()
-                buttonAddAddress?.gone()
             }
         }
         errorLayout?.gone()
@@ -541,7 +537,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
          * this listen if we get server down on widget/bottomshet.
          * Host mandatory to GONE LocalizingAddressWidget
          */
-        fun onLocalizingAddressServerDown();
+        fun onLocalizingAddressServerDown()
 
         /**
          * Only use by bottomsheet, to notify every changes in address data
