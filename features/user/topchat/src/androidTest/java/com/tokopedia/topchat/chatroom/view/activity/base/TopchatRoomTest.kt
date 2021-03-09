@@ -103,6 +103,11 @@ abstract class TopchatRoomTest {
             StickerResponse::class.java
     )
 
+    protected var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = AndroidFileUtil.parse(
+            "success_get_chat_broadcast.json",
+            GetExistingChatPojo::class.java
+    )
+
     protected lateinit var chatComponentStub: ChatComponentStub
 
     @ExperimentalCoroutinesApi
