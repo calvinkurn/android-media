@@ -249,7 +249,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun prepareView() {
 
-        emailPhoneEditText.setText("hefdy.elprama+h5@tokopedia.com")
+        emailPhoneEditText.setText("android.automation.seller.h5+frontendtest@tokopedia.com")
         passwordEditText.setText("tokopedia789")
 
         initTokopediaCareText()

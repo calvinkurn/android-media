@@ -2851,6 +2851,11 @@
                     "layout": "dg_bills"
                 },
                 {
+                    "id": 75166,
+                    "layout": "home_widget_2",
+                    "widgetParam": "?section=top_up_dan_tagihan"
+                },
+                {
                     "id": 29555,
                     "group_id": 169,
                     "galaxy_attribution": "PG",

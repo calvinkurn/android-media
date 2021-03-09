@@ -8,4 +8,7 @@
     <dimen name="digital_dimen_150">150dp</dimen>
     <dimen name="digital_dimen_350">350dp</dimen>
     <dimen name="digital_dimen_75">75dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
 </resources>

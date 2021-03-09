@@ -67,6 +67,11 @@ class HeaderItemDecoration(
         return headerHolder?.itemView
     }
 
+    internal fun rebindStickyHeader() {
+        currentHeader?.let {
+            parent.recyclerView?.adapter?.onBindViewHolder(it.second,it.first)
+        }
+    }
 
     private fun getHeaderPositionForItem(itemPosition: Int): Int {
         var headerPosition = RecyclerView.NO_POSITION

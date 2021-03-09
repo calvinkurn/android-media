@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.model.ScalyrConfig;
 import com.tokopedia.logger.utils.DataLogConfig;
@@ -22,6 +23,8 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.tokopedia.config.GlobalConfig.CONSUMER_PRO_APPLICATION;
+
 /**
  * Wrap for timber library
  * Initialize this in application level
@@ -30,23 +33,6 @@ import timber.log.Timber;
 public class TimberWrapper {
     private static final int PRIORITY_LENGTH = 2;
 
-    private static final String[] LOGENTRIES_TOKEN = new String[]{
-            new String(new char[]{
-                    48, 56, 102, 99, 100, 49, 52, 56, 45, 49, 52, 97, 97, 45, 52, 100, 56, 57, 45,
-                    97, 99, 54, 55, 45, 52, 102, 55, 48, 102, 101, 102, 100, 50, 102, 51, 55
-            }),
-            new String(new char[]{
-                    54, 48, 54, 54, 52, 101, 97, 55, 45, 52, 100, 54, 49, 45, 52, 100, 102, 49, 45,
-                    98, 51, 57, 99, 45, 51, 54, 53, 100, 99, 54, 52, 55, 97, 99, 101, 100
-            }),
-    };
-
-    private static final String SCALYR_TOKEN = new String(new char[]{
-            48, 73, 89, 118, 95, 77, 81, 105, 88, 74, 97, 65, 97, 89, 89, 75, 71, 101, 56,
-            48, 57, 117, 109, 49, 109, 77, 51, 75, 117, 106, 85, 69, 65, 89, 56, 65, 75,
-            101, 70, 75, 97, 72, 122, 56, 45
-    });
-
     private static final String REMOTE_CONFIG_KEY_LOG = "android_customer_app_log_config";
 
     private static final Object LOCK = new Object();
@@ -54,7 +40,6 @@ public class TimberWrapper {
     public static void init(Application application) {
         LogManager.init(application);
         if (LogManager.instance != null) {
-            LogManager.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
             LogManager.setScalyrConfigList(getScalyrConfigList(application));
         }
         initConfig(application);
@@ -114,6 +99,8 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
-        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(Keys.getAUTH_SCALYR_API_KEY(), session, serverHost, parser, context.getPackageName(),
+                String.valueOf(context.getPackageManager().getInstallerPackageName(context.getPackageName())),
+                GlobalConfig.DEBUG, priority);
     }
 }

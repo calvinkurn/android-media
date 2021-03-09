@@ -81,7 +81,6 @@ class BuyerAccountViewModel @Inject constructor (
 
     private fun saveLocallyAttributes(accountDataModel: AccountDataModel) {
         saveLocallyWallet(accountDataModel)
-        saveLocallyVccUserStatus(accountDataModel)
         savePhoneVerified(accountDataModel)
         saveIsAffiliateStatus(accountDataModel)
         saveDebitInstantData(accountDataModel)
@@ -152,15 +151,8 @@ class BuyerAccountViewModel @Inject constructor (
     }
 
     private fun saveLocallyWallet(accountDataModel: AccountDataModel) {
-        walletPref.saveWallet(accountDataModel.wallet)
-        if (accountDataModel.vccUserStatus != null) {
-            walletPref.tokoSwipeUrl = accountDataModel.vccUserStatus.redirectionUrl
-        }
-    }
-
-    private fun saveLocallyVccUserStatus(accountDataModel: AccountDataModel) {
-        if (accountDataModel.vccUserStatus != null) {
-            walletPref.saveVccUserStatus(accountDataModel.vccUserStatus)
+        if (accountDataModel.profile != null) {
+            walletPref.saveWallet(accountDataModel.wallet)
         }
     }
 

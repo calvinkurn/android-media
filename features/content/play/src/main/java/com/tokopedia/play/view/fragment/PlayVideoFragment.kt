@@ -16,27 +16,28 @@ import com.tokopedia.floatingwindow.exception.FloatingWindowException
 import com.tokopedia.floatingwindow.permission.FloatingWindowPermissionManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.PlayViewerPiPCoordinator
-import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
-import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.PiPState
+import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
-import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
+import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
@@ -57,15 +58,15 @@ import javax.inject.Inject
 class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         dispatchers: CoroutineDispatcherProvider,
-        private val pipAnalytic: PlayPiPAnalytic
-) : TkpdBaseV4Fragment(), PlayFragmentContract {
+        private val pipAnalytic: PlayPiPAnalytic,
+        private val analytic: PlayAnalytic
+) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.immediate + job)
 
-    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
+    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, this) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
-    private val oneTapView by viewComponent { OneTapViewComponent(it, R.id.iv_one_tap_finger) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
@@ -87,7 +88,7 @@ class PlayVideoFragment @Inject constructor(
     private val playViewerPiPCoordinatorListener = object : PlayViewerPiPCoordinator.Listener {
 
         override fun onShouldRequestPermission(requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
-            if (playViewModel.pipMode == PiPMode.WatchInPip) {
+            if (playViewModel.pipState.mode == PiPMode.WatchInPip) {
                 DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                         .apply {
                             setTitle(getString(R.string.play_pip_permission_rationale_title))
@@ -109,16 +110,17 @@ class PlayVideoFragment @Inject constructor(
         }
 
         override fun onFailedEnterPiPMode(error: FloatingWindowException) {
-
         }
 
         override fun onSucceededEnterPiPMode(view: PlayViewerPiPView) {
+            playViewModel.goPiP()
+
             isEnterPiPAfterPermission = true
 
-            val videoPlayer = playViewModel.videoPlayer as? General ?: return
+            val videoPlayer = playViewModel.videoPlayer as? PlayVideoPlayerUiModel.General.Complete ?: return
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
 
-            if (playViewModel.pipMode == PiPMode.WatchInPip) {
+            if (playViewModel.pipState.mode == PiPMode.WatchInPip) {
                 playPiPCoordinator.onEnterPiPMode()
                 pipAnalytic.enterPiP(
                         channelId = channelId,
@@ -129,10 +131,12 @@ class PlayVideoFragment @Inject constructor(
         }
     }
 
+    private lateinit var piPCoordinator: PlayViewerPiPCoordinator
+
     private val cornerRadius = 16f.dpToPx()
 
+    private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
-    private lateinit var viewModel: PlayVideoViewModel
 
     private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
@@ -152,7 +156,7 @@ class PlayVideoFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
+        playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -161,7 +165,12 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        if (!isEnterPiPAfterPermission) playViewModel.stopPiP()
+        if (!isEnterPiPAfterPermission) {
+            if (::piPCoordinator.isInitialized) {
+                piPCoordinator.view.setPauseOnDetached(false)
+            }
+            playViewModel.stopPiP()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -185,7 +194,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
+        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic()
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -203,26 +212,37 @@ class PlayVideoFragment @Inject constructor(
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onEnterPiPMode(pipMode: PiPMode) {
+    override fun onEnterPiPState(pipState: PiPState) {
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
-        if (videoMeta.videoPlayer !is General) return
+        if (videoMeta.videoPlayer !is PlayVideoPlayerUiModel.General) return
 
-        PlayViewerPiPCoordinator(
+        piPCoordinator = PlayViewerPiPCoordinator(
                 context = requireContext(),
+                videoPlayer = playViewModel.getVideoPlayer(),
                 videoOrientation = playViewModel.videoOrientation,
                 pipInfoUiModel = PiPInfoUiModel(
                         channelId = channelId,
+                        source = playParentViewModel.source,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
                         videoOrientation = playViewModel.videoOrientation,
+                        stopOnClose = pipState.mode == PiPMode.WatchInPip
                 ),
                 pipAdapter = pipAdapter,
                 listener = playViewerPiPCoordinatorListener
-        ).startPip()
+        )
+        piPCoordinator.startPip()
+    }
+
+    /**
+     * Video View Component DataSource
+     */
+    override fun isInPiPMode(): Boolean {
+        return playViewModel.pipState.isInPiP
     }
 
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
     }
 
     private fun initView(view: View) {
@@ -238,9 +258,8 @@ class PlayVideoFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
-        observeOneTapOnboarding()
         observeBottomInsetsState()
-        observeEventUserInfo()
+        observeStatusInfo()
         observePiPEvent()
     }
 
@@ -257,14 +276,13 @@ class PlayVideoFragment @Inject constructor(
 
     private fun removePiP() {
         pipAdapter.removeByKey(FLOATING_WINDOW_KEY)
+        videoViewOnStateChanged()
     }
 
     //region observe
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
-            meta.videoStream?.let {
-                videoView.setOrientation(orientation, it.orientation)
-            }
+            videoView.setOrientation(orientation, meta.videoStream.orientation)
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
         })
@@ -272,33 +290,11 @@ class PlayVideoFragment @Inject constructor(
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (!isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, it.state)
-            if (playViewModel.videoPlayer.isYouTube) videoView.hide()
-            else {
-                videoView.show()
-                handleVideoStateChanged(it.state)
-            }
+            videoAnalyticHelper.onNewVideoState(it.state)
 
-            when (it.state) {
-                PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
-                is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = it.state.bufferSource)
-                PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
-            }
-
-            if (!playViewModel.channelType.isVod) {
-                overlayVideoView.hide()
-                return@DistinctObserver
-            }
-            when (it.state) {
-                PlayViewerVideoState.End -> overlayVideoView.show()
-                else -> overlayVideoView.hide()
-            }
-        })
-    }
-
-    private fun observeOneTapOnboarding() {
-        viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape && !playViewModel.videoOrientation.isHorizontal) oneTapView.showAnimated()
+            videoLoadingViewOnStateChanged(state = it.state)
+            videoViewOnStateChanged(state = it.state)
+            overlayVideoViewOnStateChanged(state = it.state)
         })
     }
 
@@ -311,19 +307,18 @@ class PlayVideoFragment @Inject constructor(
         })
     }
 
-    private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.isFreeze || it.isBanned) {
-                oneTapView.hide()
-            }
+    private fun observeStatusInfo() {
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
+            val isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned
 
-            videoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+            videoViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
+            videoLoadingViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
         })
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiP.observe(viewLifecycleOwner, Observer {
-            if (it.peekContent() == PiPMode.StopPip) removePiP()
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+            if (it.peekContent() == PiPState.Stop) removePiP()
         })
     }
     //endregion
@@ -345,13 +340,60 @@ class PlayVideoFragment @Inject constructor(
 
     //region OnStateChanged
     private fun videoViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            pipState: PiPState = playViewModel.pipState,
+            state: PlayViewerVideoState = playViewModel.viewerVideoState,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {
             videoView.setPlayer(null)
             videoView.hide()
-        } else if (videoPlayer is General) videoView.setPlayer(videoPlayer.exoPlayer)
+            return
+        }
+
+        if (pipState is PiPState.InPiP) return
+
+        when (videoPlayer) {
+            is PlayVideoPlayerUiModel.YouTube, PlayVideoPlayerUiModel.Unknown -> videoView.hide()
+            is PlayVideoPlayerUiModel.General -> {
+                if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
+
+                videoAnalyticHelper.onNewVideoState(state)
+                videoView.show()
+                handleVideoStateChanged(state)
+            }
+        }
+    }
+
+    private fun videoLoadingViewOnStateChanged(
+            state: PlayViewerVideoState = playViewModel.viewerVideoState,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (isFreezeOrBanned) {
+            videoLoadingView.hide()
+            return
+        }
+
+        when (state) {
+            PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
+            is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)
+            PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
+        }
+    }
+
+    private fun overlayVideoViewOnStateChanged(
+            state: PlayViewerVideoState = playViewModel.viewerVideoState,
+            channelType: PlayChannelType = playViewModel.channelType,
+    ) {
+        if (!channelType.isVod) {
+            overlayVideoView.hide()
+            return
+        }
+
+        when (state) {
+            PlayViewerVideoState.End -> overlayVideoView.show()
+            else -> overlayVideoView.hide()
+        }
     }
     //endregion
 

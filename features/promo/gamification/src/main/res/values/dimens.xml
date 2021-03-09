@@ -97,4 +97,6 @@
     <dimen name="gami_direct_view_cta_top_margin">12dp</dimen>
     <dimen name="gami_direct_view_bottom_margin">16dp</dimen>
     <dimen name="gami_ll_reward_message_top_margin">0dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_112">112dp</dimen>
 </resources>

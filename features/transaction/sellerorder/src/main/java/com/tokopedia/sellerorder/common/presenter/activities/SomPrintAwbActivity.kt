@@ -6,7 +6,6 @@ import android.print.PrintAttributes
 import android.print.PrintManager
 import android.view.Menu
 import android.webkit.JavascriptInterface
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.tokopedia.sellerorder.R
 import com.tokopedia.unifycomponents.Toaster
@@ -20,7 +19,6 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
         private const val JAVASCRIPT_INTERFACE_NAME = "Android"
         private const val PRINT_JOB_NAME = "Shipping Label"
 
-        @RequiresApi(Build.VERSION_CODES.KITKAT)
         private val MEDIA_SIZES = mapOf<String, PrintAttributes.MediaSize>(
                 "ISO_A0" to PrintAttributes.MediaSize.ISO_A0,
                 "ISO_A1" to PrintAttributes.MediaSize.ISO_A1,
@@ -58,7 +56,7 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
 
     private fun configureWebView() {
         (fragment as? BaseWebViewFragment)?.webView?.let {
-            it.addJavascriptInterface(JavaScriptInterface(this), JAVASCRIPT_INTERFACE_NAME)
+            it.addJavascriptInterface(SomPrintAwbJavascriptInterface(), JAVASCRIPT_INTERFACE_NAME)
             it.settings.builtInZoomControls = true
             it.settings.loadWithOverviewMode = true
             webView = it
@@ -66,47 +64,44 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
     }
 
     private fun doPrint(mediaSizeId: String = "") {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        runOnUiThread {
             webView?.run {
-                runOnUiThread {
-                    val printManager = ContextCompat.getSystemService(context, PrintManager::class.java)
-                    val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        createPrintDocumentAdapter(PRINT_JOB_NAME)
-                    } else {
-                        createPrintDocumentAdapter()
-                    }
-                    val builder = PrintAttributes.Builder()
-                    if (mediaSizeId.isNotEmpty()) {
-                        builder.setMediaSize(mediaSizeId.toPrintAttributeMediaSize())
-                    } else {
-                        builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                    }
-                    if (!isFinishing) {
+                val printManager = ContextCompat.getSystemService(context, PrintManager::class.java)
+                val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    createPrintDocumentAdapter(PRINT_JOB_NAME)
+                } else {
+                    createPrintDocumentAdapter()
+                }
+                val builder = PrintAttributes.Builder()
+                if (mediaSizeId.isNotEmpty()) {
+                    builder.setMediaSize(mediaSizeId.toPrintAttributeMediaSize())
+                } else {
+                    builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                }
+                if (!isFinishing) {
+                    try {
                         printManager?.print(PRINT_JOB_NAME, printAdapter, builder.build())
+                    } catch (e: Throwable) {
+                        Toaster.build(this, getString(R.string.som_print_awb_error_message), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
                     }
                 }
-            }
-        } else {
-            webView?.run {
-                Toaster.build(this, getString(R.string.som_print_awb_minimum_os_error_message), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
             }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun String.toPrintAttributeMediaSize(): PrintAttributes.MediaSize {
         return MEDIA_SIZES[this] ?: PrintAttributes.MediaSize.UNKNOWN_PORTRAIT
     }
 
-    class JavaScriptInterface(val activity: SomPrintAwbActivity) {
+    private inner class SomPrintAwbJavascriptInterface {
         @JavascriptInterface
         fun printAwb() {
-            activity.doPrint()
+            doPrint()
         }
 
         @JavascriptInterface
         fun printAwb(mediaSizeId: String) {
-            activity.doPrint(mediaSizeId = mediaSizeId)
+            doPrint(mediaSizeId = mediaSizeId)
         }
     }
 }

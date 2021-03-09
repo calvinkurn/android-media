@@ -10,7 +10,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopchatProductAttachmentViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 
 open class TopchatProductAttachmentViewHolder constructor(
@@ -29,7 +28,6 @@ open class TopchatProductAttachmentViewHolder constructor(
         if (payloads.isEmpty()) return
         when (payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED -> bind(element)
-            is OccState -> TopchatProductAttachmentViewHolderBinder.bindNewOccState(element, productView)
         }
     }
 
@@ -48,15 +46,6 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.item_topchat_product_attachment
-
-        const val VARIANT_DEFAULT = "No OCC"
-        const val VARIANT_A = "ATC OCC"
-        const val VARIANT_B = "OCC Only"
-        const val AB_TEST_KEY = "OCC at TopChat"
     }
 
-    data class OccState(
-            val parentPosition: Int,
-            val childPosition: Int = -1 // for carousel
-    )
 }

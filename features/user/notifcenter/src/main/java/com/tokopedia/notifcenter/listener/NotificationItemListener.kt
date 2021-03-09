@@ -12,7 +12,6 @@ interface NotificationItemListener {
     fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int)
     fun getAnalytic(): NotificationUpdateAnalytics
     fun addProductToCart(product: ProductData, onSuccessAddToCart: (DataModel) -> Unit)
-    fun addProductToCheckout(userInfo: UserInfo, element: NotificationItemViewBean)
     fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean)
     fun trackNotificationImpression(element: NotificationItemViewBean)
     fun onSuccessAddToCart(message: String)

@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tv_anchor1="@+id/ticket_head"
+                app:tv_dashSize="@dimen/layout_lvl0"
                 app:tv_circleRadius="@dimen/layout_lvl1">
 
                 <LinearLayout

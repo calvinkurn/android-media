@@ -107,7 +107,8 @@
       "eventLabel": "{{.*}}",
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse"
     },
     {
       "businessUnit": "home & browse",
@@ -135,6 +136,7 @@
       }],
       "eventCategory": "homepage",
       "affinityLabel": "{{.*}}",
+      "currentSite": "{{.*}}",
       "attribution": "{{.*}}",
       "shopId" : "{{.*}}",
       "event": "select_content",
@@ -144,6 +146,7 @@
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",
       "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse",
       "userId": "{{.*}}"
     },
     {

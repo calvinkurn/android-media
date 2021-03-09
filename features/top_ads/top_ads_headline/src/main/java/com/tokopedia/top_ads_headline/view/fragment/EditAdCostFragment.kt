@@ -95,15 +95,14 @@ class EditAdCostFragment : BaseDaggerFragment() {
 
     private fun setUpObservers() {
         sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
-            if (it.adBidPrice != stepperModel?.adBidPrice) {
-                setAdvertisingCost(it.adBidPrice)
-            }
             stepperModel = it
+            setAdvertisingCost(it.adBidPrice)
         })
     }
 
-    private fun setAdvertisingCost(adBidPrice: Int) {
+    private fun setAdvertisingCost(adBidPrice: Double) {
         val cost = Utils.convertToCurrency(adBidPrice.toLong())
+        stepperModel?.currentBid = adBidPrice
         advertisingCost.textFieldInput.setText(cost)
         advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
     }
@@ -112,24 +111,24 @@ class EditAdCostFragment : BaseDaggerFragment() {
         return object : NumberTextWatcher(advertisingCost.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                val input = number.toInt()
                 when {
-                    input < stepperModel?.minBid ?: 0 -> {
+                    number < stepperModel?.minBid?.toDouble() ?: 0.0 -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(stepperModel?.minBid?.toLong()
                                 ?: 0)))
                         saveButtonState?.setButtonState(false)
                     }
-                    input > stepperModel?.maxBid ?: 0 -> {
+                    number > stepperModel?.maxBid?.toDouble() ?: 0.0 -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), Utils.convertToCurrency(stepperModel?.maxBid?.toLong()
                                 ?: 0)))
                         saveButtonState?.setButtonState(false)
                     }
                     else -> {
-                        stepperModel?.adBidPrice = input
-                        stepperModel?.dailyBudget = (input * MULTIPLIER).toFloat()
-                        onMinBidChange?.onMinBidChange(input)
+                        stepperModel?.adBidPrice = number
+                        stepperModel?.dailyBudget = (number * MULTIPLIER).toFloat()
+                        stepperModel?.currentBid = number
+                        onMinBidChange?.onMinBidChange(number)
                         advertisingCost.setMessage("")
                         advertisingCost.setError(false)
                         saveButtonState?.setButtonState(true)
@@ -191,7 +190,7 @@ class EditAdCostFragment : BaseDaggerFragment() {
     fun onClickSubmit() {
         val fragments = (view_pager.adapter as KeywordEditPagerAdapter).list
         stepperModel?.keywordOperations?.clear()
-        stepperModel?.minBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
+        stepperModel?.minBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString()
         for (fragment in fragments) {
             when (fragment) {
                 is HeadlineEditKeywordFragment -> {

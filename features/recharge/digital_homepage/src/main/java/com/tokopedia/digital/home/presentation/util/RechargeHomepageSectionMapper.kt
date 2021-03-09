@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.util
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
@@ -22,7 +23,7 @@ object RechargeHomepageSectionMapper {
         // Remove empty sections
         var sections = oldData.toMutableList()
         val updatedSections = newData.sections.filter { it.items.isNotEmpty() }
-        val requestIDs = newData.requestIDs
+        val requestIDs = newData.requestIDs.map { it.toString() }
         when (updatedSections.size) {
             0 -> {
                 // Remove sections
@@ -60,7 +61,7 @@ object RechargeHomepageSectionMapper {
 
     fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>> {
         return sections.mapNotNull {
-            val id = it.id.toString()
+            val id = it.id
             with(RechargeHomepageViewModel.Companion) {
                 when (it.template) {
                     SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
@@ -79,6 +80,10 @@ object RechargeHomepageSectionMapper {
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
                     SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
                     SECTION_COUNTDOWN_SINGLE_BANNER -> {
+                        /**
+                         * Count down widget is always from cloud because
+                         * its countdown time is based on server time
+                         */
                         if (!isExpired(it)) {
                             RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it), true)
                         } else null
@@ -94,6 +99,10 @@ object RechargeHomepageSectionMapper {
                     }
                     SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> {
+                        /**
+                         * Count down widget is always from cloud because
+                         * its countdown time is based on server time
+                         */
                         if (!isExpired(it)) {
                             RechargeHomepageProductBannerModel(it, mapSectionToChannel(it), true)
                         } else null
@@ -178,6 +187,22 @@ object RechargeHomepageSectionMapper {
             )
         }
         return null
+    }
+
+    fun mapItemsToSearchCategoryModels(sections: RechargeHomepageSections): List<DigitalHomePageSearchCategoryModel> {
+        val searchCategoryModels = mutableListOf<DigitalHomePageSearchCategoryModel>()
+        sections.sections.forEach {
+            searchCategoryModels.addAll(it.items.map{ item ->
+                DigitalHomePageSearchCategoryModel(
+                        item.id.toString(),
+                        item.title,
+                        item.title,
+                        item.applink,
+                        item.mediaUrl
+                )
+            })
+        }
+        return searchCategoryModels
     }
 
     private fun isExpired(section: RechargeHomepageSections.Section): Boolean {

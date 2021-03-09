@@ -42,6 +42,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
+import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
@@ -207,8 +208,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun createShowCase(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                .titleTextColorRes(com.tokopedia.design.R.color.white)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)

@@ -80,11 +80,15 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     override fun showProgressLoading() {
-        progressDialog.show()
+        activity?.let {
+            if (!it.isFinishing) progressDialog.show()
+        }
     }
 
     override fun hideProgressLoading() {
-        progressDialog.hide()
+        activity?.let {
+            if (!it.isFinishing) progressDialog.hide()
+        }
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -18,6 +19,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.common.presenter.activities.BaseSomActivity
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
@@ -74,6 +76,12 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        val result = Intent().putExtra(SomConsts.RESULT_REFRESH_ORDER, (fragment as? SomDetailFragment)?.isDetailChanged ?: false)
+        setResult(Activity.RESULT_OK, result)
+        finish()
     }
 
     private fun onChatClicked() {

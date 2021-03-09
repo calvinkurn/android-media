@@ -9,6 +9,7 @@ interface BannerComponentListener {
     fun onPromoScrolled(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int)
     fun onPageDragStateChanged(isDrag: Boolean)
     fun onPromoAllClick(applink: String)
+    fun isBannerImpressed(id: String): Boolean
 
     fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int)
 }

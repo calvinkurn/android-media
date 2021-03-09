@@ -36,6 +36,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
@@ -1317,6 +1319,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             it.finish()
 
             saveFirstInstallTime()
+
+            SubmitDeviceWorker.scheduleWorker(requireContext(), true)
+            DataVisorWorker.scheduleWorker(requireContext(), true)
         }
     }
 

@@ -199,6 +199,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
 
+    @JvmField
+    val TALK_SELLER_SETTINGS = "$INTERNAL_GLOBAL/talk-seller-settings/"
+
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField
@@ -463,9 +466,18 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 
-    // Topchat
+    /**
+     * Go to chat list
+     */
     @JvmField
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
+
 
 
     //ReferralPhoneNumberVerificationActivity

@@ -9,12 +9,12 @@
         android:supportsRtl="true">
         <activity
             android:name=".voucherlist.view.activity.VoucherListActivity"
-            android:label="@string/title_voucher_creation"
             android:exported="true"
+            android:label="@string/title_voucher_creation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan"
-            android:launchMode="singleTask">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -40,10 +40,10 @@
             android:name=".create.view.activity.CreateMerchantVoucherStepsActivity"
             android:exported="true"
             android:label="@string/title_voucher_creation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTask">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -60,9 +60,9 @@
         <activity
             android:name=".detail.view.activity.VoucherDetailActivity"
             android:label="@string/title_voucher_creation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:launchMode="singleTask">
+            android:theme="@style/Theme.White">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -76,5 +76,10 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".common.view.activity.BroadCastChatWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 </manifest>

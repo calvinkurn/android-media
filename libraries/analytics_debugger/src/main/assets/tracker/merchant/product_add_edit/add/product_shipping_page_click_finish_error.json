@@ -1,0 +1,13 @@
+{
+  "readme": "click finish on product shipping page - error",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAddProduct",
+      "eventCategory" : "add product page",
+      "eventAction" : "click finish error",
+      "eventLabel" : "{{.+}} - {{.+}}",
+      "shopId" : "{{.+}}"
+    }
+  ]
+}

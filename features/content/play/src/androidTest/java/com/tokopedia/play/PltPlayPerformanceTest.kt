@@ -32,6 +32,8 @@ class PltPlayPerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
+/**
+ *  [Tech Debt] Performance
     private val idlingResource: IdlingResource by lazy {
         object : IdlingResource {
             override fun getName(): String = "prepare"
@@ -50,6 +52,8 @@ class PltPlayPerformanceTest {
             }
         }
     }
+ *
+ */
 
     @Before
     fun setup() {
@@ -60,9 +64,14 @@ class PltPlayPerformanceTest {
     fun testPageLoadTimePerformance() {
         launchActivity()
 
+        Thread.sleep(10000)
+/**
+ *
         IdlingRegistry.getInstance().register(idlingResource)
 
         Espresso.onIdle()
+ *
+ */
         writePerformanceReport()
 
         clearTask()
@@ -90,7 +99,11 @@ class PltPlayPerformanceTest {
 
     @After
     fun tearDown() {
-        IdlingRegistry.getInstance().unregister(idlingResource)
+/**
+ *
+    IdlingRegistry.getInstance().unregister(idlingResource)
+ *
+ */
     }
 
     companion object {
@@ -98,6 +111,7 @@ class PltPlayPerformanceTest {
         const val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "play_test_case_page_load_time"
 
         const val CHANNEL_ID = "15774"
+        // const val CHANNEL_ID = "10759" // staging
 
     }
 }

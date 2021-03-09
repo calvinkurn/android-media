@@ -317,7 +317,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
     private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.transparent))
+                setStatusBarColor(Color.TRANSPARENT)
             } catch (ex: Resources.NotFoundException) {
                 Timber.e(ex)
             }

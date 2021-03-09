@@ -1,15 +1,17 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 
 data class OrderShipment(
         val serviceName: String? = null,
         val serviceId: Int? = null,
         val serviceDuration: String? = null,
+        val serviceEta: String? = null,
+        val shippingEta: String? = null,
         val serviceErrorMessage: String? = null,
         val isServicePickerEnable: Boolean = false,
         val needPinpoint: Boolean = false,
