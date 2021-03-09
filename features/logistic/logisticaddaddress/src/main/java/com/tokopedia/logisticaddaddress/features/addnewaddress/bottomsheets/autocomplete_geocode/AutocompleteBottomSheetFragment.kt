@@ -51,7 +51,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     private var token: Token? = null
     private var saveAddressDataModel = SaveAddressDataModel()
 
-    private val binding by autoCleared<BottomsheetAutocompleteBinding>()
+    private var binding by autoCleared<BottomsheetAutocompleteBinding>()
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
