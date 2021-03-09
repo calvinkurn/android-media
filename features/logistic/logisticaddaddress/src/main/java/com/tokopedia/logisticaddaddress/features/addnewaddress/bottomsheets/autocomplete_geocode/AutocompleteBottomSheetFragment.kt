@@ -27,6 +27,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoCleared
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -50,8 +51,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     private var token: Token? = null
     private var saveAddressDataModel = SaveAddressDataModel()
 
-    private var _binding: BottomsheetAutocompleteBinding? = null
-    private val binding get() = _binding!!
+    private val binding by autoCleared<BottomsheetAutocompleteBinding>()
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -93,7 +93,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     }
 
     override fun initView(view: View) {
-        _binding = BottomsheetAutocompleteBinding.bind(view)
+        binding = BottomsheetAutocompleteBinding.bind(view)
         adapter = AutocompleteBottomSheetAdapter(this)
         hideListLocation()
 
@@ -102,11 +102,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         binding.rvPoiList.layoutManager = linearLayoutManager
         binding.rvPoiList.adapter = adapter
         setViewListener()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onDestroy() {
