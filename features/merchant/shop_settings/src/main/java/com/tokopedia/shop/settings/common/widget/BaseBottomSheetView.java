@@ -2,7 +2,6 @@ package com.tokopedia.shop.settings.common.widget;
 
 import android.app.Service;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -27,29 +26,8 @@ public abstract class BaseBottomSheetView extends BottomSheetDialog {
         init(context);
     }
 
-    public BaseBottomSheetView(@NonNull Context context, int theme) {
-        super(context, theme);
-        init(context);
-    }
-
-    protected BaseBottomSheetView(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-        init(context);
-    }
-
     private void init(Context context) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
-
-        if (layoutInflater == null) {
-            Log.e(this.getClass().getSimpleName(), "LayoutInflater NULL");
-            return;
-        }
-
-        if (getLayoutId() == 0) {
-            Log.e(this.getClass().getSimpleName(), "Layout Id NULL");
-            return;
-        }
-
         View bottomSheetView = layoutInflater.inflate(getLayoutId(), null);
         initView(bottomSheetView);
         setContentView(bottomSheetView);
