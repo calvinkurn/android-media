@@ -24,7 +24,7 @@ open class QuickEditVariantViewModelTestFixture {
     val rule = InstantTaskExecutorRule()
 
     protected lateinit var viewModel: QuickEditVariantViewModel
-    protected lateinit var getProductVariantUseCase: GetProductVariantUseCase
+    private lateinit var getProductVariantUseCase: GetProductVariantUseCase
     private lateinit var getProductManageAccessUseCase: GetProductManageAccessUseCase
     private lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
     private lateinit var userSession: UserSessionInterface
