@@ -21,6 +21,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
+import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
+import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -72,6 +74,9 @@ abstract class TopchatRoomTest {
     protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCaseStub
 
     @Inject
+    protected lateinit var getShopFollowingUseCaseStub: GetShopFollowingUseCaseStub
+
+    @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
@@ -108,11 +113,17 @@ abstract class TopchatRoomTest {
             GetExistingChatPojo::class.java
     )
 
+    protected var getShopFollowingStatus: ShopFollowingPojo = AndroidFileUtil.parse(
+            "success_get_shop_following_status.json",
+            ShopFollowingPojo::class.java
+    )
+
     protected lateinit var chatComponentStub: ChatComponentStub
 
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
+        // TODO: move response initialization here
         Dispatchers.setMain(TestCoroutineDispatcher())
         val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
         chatComponentStub = DaggerChatComponentStub.builder()
@@ -218,4 +229,15 @@ abstract class TopchatRoomTest {
             this.templates = templates
         }
     }
+}
+
+fun GetExistingChatPojo.blockPromo(blockPromo: Boolean): GetExistingChatPojo {
+    chatReplies.block.isPromoBlocked = blockPromo
+    return this
+}
+
+fun ShopFollowingPojo.setFollowing(following: Boolean): ShopFollowingPojo {
+    val follow = if (following) IS_FOLLOW else 0
+    shopInfoById.result[0].favoriteData.alreadyFavorited = follow
+    return this
 }
