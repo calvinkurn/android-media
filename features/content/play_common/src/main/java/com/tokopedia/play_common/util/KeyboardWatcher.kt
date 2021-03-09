@@ -17,6 +17,8 @@ class KeyboardWatcher(private val threshold: Int = 100) {
     @Volatile
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
+    private var vto: ViewTreeObserver? = null
+
     fun listen(view: View, listener: Listener) {
         synchronized(this) {
             globalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -43,13 +45,18 @@ class KeyboardWatcher(private val threshold: Int = 100) {
                     }
                 }
             }
-            view.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+            vto?.removeOnGlobalLayoutListener(globalLayoutListener)
+            view.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
+
+            vto = view.viewTreeObserver
+            vto?.addOnGlobalLayoutListener(globalLayoutListener)
         }
     }
 
     fun unlisten(view: View) {
         synchronized(this) {
             if (::globalLayoutListener.isInitialized) {
+                vto?.removeOnGlobalLayoutListener(globalLayoutListener)
                 view.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
             }
         }
