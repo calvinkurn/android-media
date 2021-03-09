@@ -19,7 +19,7 @@ open class AidlApi(
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 // only receive the data in both of customerApp and sellerApp
-                if (intent?.action == CUSTOMER_APP || intent?.action == SELLER_APP) {
+                if (intent?.action == tagDefault()) {
                     intent.action?.let {
                         onAidlReceive(it, intent.extras)
 
