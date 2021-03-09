@@ -26,7 +26,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -478,6 +477,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
                 hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
+                    assignUserLocationData()
                     onSwipeRefresh()
                 }
                 updateActionButtonShadow()
@@ -1942,8 +1942,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             sharedViewModel?.setRequestData(RatesEstimateRequest(
                     productWeight = it.basic.weight.toFloat(),
                     shopDomain = viewModel.getShopInfo().shopCore.domain,
-                    origin = if (viewModel.getMultiOriginByProductId().isFulfillment)
-                        viewModel.getMultiOriginByProductId().getOrigin() else null,
+                    origin = viewModel.getMultiOriginByProductId().getOrigin(),
                     shopId = it.basic.shopID,
                     productId = it.basic.productID,
                     productWeightUnit = it.basic.weightUnit,
