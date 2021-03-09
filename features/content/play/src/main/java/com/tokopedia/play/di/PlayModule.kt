@@ -9,6 +9,9 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.data.websocket.revamp.PlayWebSocket
+import com.tokopedia.play.data.websocket.revamp.PlayWebSocketBody
+import com.tokopedia.play.data.websocket.revamp.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
@@ -28,6 +31,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.constant.VariantConstant
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import javax.inject.Named
 
 /**
@@ -131,5 +135,13 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun provideHtmlTextTransformer(): HtmlTextTransformer {
         return DefaultHtmlTextTransformer()
+    }
+
+    @Provides
+    fun provideWebSocket(userSession: UserSessionInterface): PlayWebSocket {
+        return PlayWebSocketImpl(
+                OkHttpClient.Builder().build(),
+                userSession
+        )
     }
 }

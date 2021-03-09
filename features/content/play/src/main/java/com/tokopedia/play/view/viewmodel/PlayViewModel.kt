@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
+import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
@@ -38,7 +39,10 @@ import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 /**
@@ -65,6 +69,7 @@ class PlayViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
         private val remoteConfig: RemoteConfig,
         private val playPreference: PlayPreference,
+        private val playChannelWebSocket: PlayChannelWebSocket,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -636,109 +641,29 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun connectWebSocket(channelId: String, socketCredential: SocketCredential) {
-        playSocket.channelId = channelId
-        playSocket.gcToken = socketCredential.gcToken
-        playSocket.settings = socketCredential.setting
-        playSocket.connect(onMessageReceived = { response ->
-            viewModelScope.launch {
-                val result = withContext(dispatchers.io) {
-                    val socketMapper = PlaySocketMapper(response)
-                    socketMapper.mapping()
-                }
-                when (result) {
-                    is TotalLike -> {
-                        val currentLikeInfo = _observableLikeInfo.value ?: return@launch
-                        val mappedResult = playSocketToModelMapper.mapTotalLike(result)
+        playChannelWebSocket.connectSocket(channelId, socketCredential.gcToken)
 
-                        _observableLikeInfo.value = if (currentLikeInfo is PlayLikeInfoUiModel.Complete) currentLikeInfo.copy(
-                                status = currentLikeInfo.status.copy(
-                                        totalLike = mappedResult.totalLike,
-                                        totalLikeFormatted = mappedResult.totalLikeFormatted,
-                                        source = mappedResult.source
-                                )
-                        ) else currentLikeInfo.param + mappedResult
+        viewModelScope.launch(dispatchers.immediate) {
+            playChannelWebSocket.listenAsFlow()
+                    .flowOn(dispatchers.io)
+                    .collect {
+                        handleWebSocketResponse(it, channelId)
                     }
-                    is TotalView -> {
-                        _observableTotalViews.value = PlayTotalViewUiModel.Complete(playSocketToModelMapper.mapTotalView(result))
-                    }
-                    is PlayChat -> {
-                        setNewChat(playUiModelMapper.mapChat(result))
-                    }
-                    is PinnedMessage -> {
-                        val currentPinnedMessage = _observablePinnedMessage.value ?: return@launch
-                        val mappedResult = playSocketToModelMapper.mapPinnedMessage(result)
-                        _observablePinnedMessage.value = currentPinnedMessage.copy(
-                                id = mappedResult.id,
-                                applink = mappedResult.applink,
-                                title = mappedResult.title,
-                        )
-                    }
-                    is QuickReply -> {
-                        _observableQuickReply.value = playSocketToModelMapper.mapQuickReplies(result)
-                    }
-                    is BannedFreeze -> {
-                        if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true) && !statusType.isFreeze) {
-                            _observableStatusInfo.value = _observableStatusInfo.value?.copy(
-                                    shouldAutoSwipeOnFreeze = true,
-                                    statusType = playSocketToModelMapper.mapStatus(
-                                            isBanned = result.isBanned && result.userId.isNotEmpty()
-                                                    && result.userId.equals(userSession.userId, true)))
+        }
 
-                            channelStateProcessor.setIsFreeze(result.isFreeze)
-                        }
-                    }
-                    is ProductTag -> {
-                        val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
-                        val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
-                        _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
-                            currentPinnedProduct.copy(
-                                    shouldShow = shouldShow,
-                                    productTags = currentPinnedProduct.productTags.copy(
-                                            productList = mappedProductTags
-                                    )
-                            )
-                        } else {
-                            currentPinnedProduct.copy(
-                                    shouldShow = shouldShow,
-                                    productTags = PlayProductTagsUiModel.Complete(
-                                            currentPinnedProduct.productTags.basicInfo,
-                                            mappedProductTags,
-                                            emptyList()
-                                    )
-                            )
-                        }
-                        trackProductTag(
-                                channelId = channelId,
-                                productList = mappedProductTags
-                        )
-                    }
-                    is MerchantVoucher -> {
-                        val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
-                        val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
-                        _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
-                            currentPinnedProduct.copy(
-                                    productTags = currentPinnedProduct.productTags.copy(
-                                            voucherList = mappedVouchers
-                                    )
-                            )
-                        } else {
-                            currentPinnedProduct.copy(
-                                    productTags = PlayProductTagsUiModel.Complete(
-                                            currentPinnedProduct.productTags.basicInfo,
-                                            emptyList(),
-                                            mappedVouchers
-                                    )
-                            )
-                        }
-                    }
-                }
-            }
-        }, onReconnect = {
-            _observableSocketInfo.value = PlaySocketInfo.Reconnect
-        }, onError = {
-            _observableSocketInfo.value = PlaySocketInfo.Error(it)
-            connectWebSocket(channelId, socketCredential)
-        })
+//        playSocket.channelId = channelId
+//        playSocket.gcToken = socketCredential.gcToken
+//        playSocket.settings = socketCredential.setting
+//        playSocket.connect(onMessageReceived = { response ->
+//            viewModelScope.launch {
+//                handleWebSocketResponse(response, channelId)
+//            }
+//        }, onReconnect = {
+//            _observableSocketInfo.value = PlaySocketInfo.Reconnect
+//        }, onError = {
+//            _observableSocketInfo.value = PlaySocketInfo.Error(it)
+//            connectWebSocket(channelId, socketCredential)
+//        })
     }
 
     private fun stopWebSocket() {
@@ -1027,6 +952,100 @@ class PlayViewModel @Inject constructor(
         else PlayPinnedUiModel.NoPinned
     }
     //endregion
+
+    private suspend fun handleWebSocketResponse(response: WebSocketResponse, channelId: String) {
+        val result = withContext(dispatchers.io) {
+            val socketMapper = PlaySocketMapper(response)
+            socketMapper.mapping()
+        }
+        when (result) {
+            is TotalLike -> {
+                val currentLikeInfo = _observableLikeInfo.value ?: return
+                val mappedResult = playSocketToModelMapper.mapTotalLike(result)
+
+                _observableLikeInfo.value = if (currentLikeInfo is PlayLikeInfoUiModel.Complete) currentLikeInfo.copy(
+                        status = currentLikeInfo.status.copy(
+                                totalLike = mappedResult.totalLike,
+                                totalLikeFormatted = mappedResult.totalLikeFormatted,
+                                source = mappedResult.source
+                        )
+                ) else currentLikeInfo.param + mappedResult
+            }
+            is TotalView -> {
+                _observableTotalViews.value = PlayTotalViewUiModel.Complete(playSocketToModelMapper.mapTotalView(result))
+            }
+            is PlayChat -> {
+                setNewChat(playUiModelMapper.mapChat(result))
+            }
+            is PinnedMessage -> {
+                val currentPinnedMessage = _observablePinnedMessage.value ?: return
+                val mappedResult = playSocketToModelMapper.mapPinnedMessage(result)
+                _observablePinnedMessage.value = currentPinnedMessage.copy(
+                        id = mappedResult.id,
+                        applink = mappedResult.applink,
+                        title = mappedResult.title,
+                )
+            }
+            is QuickReply -> {
+                _observableQuickReply.value = playSocketToModelMapper.mapQuickReplies(result)
+            }
+            is BannedFreeze -> {
+                if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true) && !statusType.isFreeze) {
+                    _observableStatusInfo.value = _observableStatusInfo.value?.copy(
+                            shouldAutoSwipeOnFreeze = true,
+                            statusType = playSocketToModelMapper.mapStatus(
+                                    isBanned = result.isBanned && result.userId.isNotEmpty()
+                                            && result.userId.equals(userSession.userId, true)))
+
+                    channelStateProcessor.setIsFreeze(result.isFreeze)
+                }
+            }
+            is ProductTag -> {
+                val currentPinnedProduct = _observablePinnedProduct.value ?: return
+                val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
+                _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                    currentPinnedProduct.copy(
+                            shouldShow = shouldShow,
+                            productTags = currentPinnedProduct.productTags.copy(
+                                    productList = mappedProductTags
+                            )
+                    )
+                } else {
+                    currentPinnedProduct.copy(
+                            shouldShow = shouldShow,
+                            productTags = PlayProductTagsUiModel.Complete(
+                                    currentPinnedProduct.productTags.basicInfo,
+                                    mappedProductTags,
+                                    emptyList()
+                            )
+                    )
+                }
+                trackProductTag(
+                        channelId = channelId,
+                        productList = mappedProductTags
+                )
+            }
+            is MerchantVoucher -> {
+                val currentPinnedProduct = _observablePinnedProduct.value ?: return
+                val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
+                _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                    currentPinnedProduct.copy(
+                            productTags = currentPinnedProduct.productTags.copy(
+                                    voucherList = mappedVouchers
+                            )
+                    )
+                } else {
+                    currentPinnedProduct.copy(
+                            productTags = PlayProductTagsUiModel.Complete(
+                                    currentPinnedProduct.productTags.basicInfo,
+                                    emptyList(),
+                                    mappedVouchers
+                            )
+                    )
+                }
+            }
+        }
+    }
 
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
