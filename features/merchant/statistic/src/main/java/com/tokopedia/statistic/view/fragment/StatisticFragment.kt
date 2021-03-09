@@ -480,7 +480,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun requestVisibleWidgetsData() {
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Unconfined) {
+        lifecycleScope.launch(Dispatchers.Unconfined) {
             val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
             adapter.data.forEachIndexed { index, widget ->
                 if (index in firstVisible..lastVisible && !widget.isLoaded) {
