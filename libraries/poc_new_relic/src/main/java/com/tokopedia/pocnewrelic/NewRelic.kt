@@ -13,8 +13,17 @@ class NewRelic private constructor(context: Context) {
         private var instance: NewRelic? = null
 
         @JvmStatic
-        @Synchronized
         fun getInstance(context: Context): NewRelic {
+            var instance = instance
+            if (instance == null) {
+                instance = createInstance(context)
+            }
+            return instance
+        }
+
+        @JvmStatic
+        @Synchronized
+        private fun createInstance(context: Context): NewRelic {
             var instance = instance
             if (instance == null) {
                 instance = NewRelic(context)
