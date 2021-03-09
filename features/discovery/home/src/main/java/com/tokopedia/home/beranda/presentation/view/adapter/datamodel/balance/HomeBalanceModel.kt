@@ -217,11 +217,11 @@ data class HomeBalanceModel (
             TYPE_STATE_2 -> {
                 itemTypeCondition(
                         itemType,
-                        typeTokopointCondition = { action.invoke(0) },
-                        typeWalletCondition = { action.invoke(1) },
-                        typeCouponCondition = { action.invoke(2) },
-                        typeRewardsCondition = { action.invoke(2) },
-                        typeFreeOngkirCondition = { action.invoke(3) }
+                        typeWalletCondition = { action.invoke(0) },
+                        typeFreeOngkirCondition = { action.invoke(1) },
+                        typeTokopointCondition = { action.invoke(2) },
+                        typeCouponCondition = { action.invoke(3) },
+                        typeRewardsCondition = { action.invoke(3) }
                 )
             }
             TYPE_STATE_3 -> {
