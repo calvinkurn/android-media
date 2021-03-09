@@ -6,26 +6,26 @@ import com.google.gson.annotations.SerializedName
  * Created by devara fikry on 16/04/19.
  * Credit errysuprayogi
  */
-class RecommendationEntity {
+data class RecommendationEntity (
+        @SerializedName("productRecommendationWidget")
+        val productRecommendationWidget: ProductRecommendationWidget = ProductRecommendationWidget()
+){
 
-    @SerializedName("productRecommendationWidget")
-    val productRecommendationWidget: ProductRecommendationWidget = ProductRecommendationWidget()
-
-    class ProductRecommendationWidget {
+    data class ProductRecommendationWidget (
         @SerializedName("data")
         val data: List<RecommendationData> = listOf()
-    }
+    )
 
-    class Pagination {
+    class Pagination(
         @SerializedName("currentPage")
-        val currentPage: Int = 0
+        val currentPage: Int = 0,
         @SerializedName("nextPage")
-        val nextPage: Int = 0
+        val nextPage: Int = 0,
         @SerializedName("prevPage")
-        val prevPage: Int = 0
+        val prevPage: Int = 0,
         @SerializedName("hasNext")
         val hasNext: Boolean = false
-    }
+    )
 
     class Recommendation {
         @SerializedName("id")
@@ -122,28 +122,26 @@ class RecommendationEntity {
         }
     }
 
-    class RecommendationData {
-
-        @SerializedName("tID")
-        val tid: String = ""
-        @SerializedName("source")
-        val source: String = ""
-        @SerializedName("title")
-        val title: String = ""
-        @SerializedName("foreignTitle")
-        val foreignTitle: String = ""
-        @SerializedName("widgetUrl")
-        val widgetUrl: String = ""
-        @SerializedName("pageName")
-        val pageName: String = ""
-        @SerializedName("layoutType")
-        val layoutType: String = ""
-        @SerializedName("seeMoreAppLink")
-        val seeMoreAppLink: String = ""
-        @SerializedName("pagination")
-        val pagination: Pagination = Pagination()
-        @SerializedName("recommendation")
-        val recommendation: List<Recommendation> = listOf()
-
-    }
+    data class RecommendationData(
+            @SerializedName("tID")
+            val tid: String = "",
+            @SerializedName("source")
+            val source: String = "",
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("foreignTitle")
+            val foreignTitle: String = "",
+            @SerializedName("widgetUrl")
+            val widgetUrl: String = "",
+            @SerializedName("pageName")
+            val pageName: String = "",
+            @SerializedName("layoutType")
+            val layoutType: String = "",
+            @SerializedName("seeMoreAppLink")
+            val seeMoreAppLink: String = "",
+            @SerializedName("pagination")
+            val pagination: Pagination = Pagination(),
+            @SerializedName("recommendation")
+            val recommendation: List<Recommendation> = listOf()
+    )
 }

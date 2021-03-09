@@ -27,8 +27,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.async
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import rx.Subscriber
 import java.io.IOException
 import java.util.concurrent.TimeoutException
@@ -54,43 +52,40 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     val filterSortChip: LiveData<Response<FilterSortChip>> get() = _filterSortChip
 
     fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String, pageName: String){
-        launch(dispatcher.getIODispatcher()){
-            try{
-                if(page == 1 && _recommendationItem.value != null) _recommendationItem.postValue(null)
-                if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
-                else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
-                val userId: Int = userSessionInterface.userId.toIntOrZero()
-                val filterAndSort: FilterSortChip?
-                if(page == 1){
-                    getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = QUICK_FILTER, pageName = pageName)
-                    val quickFilter = getRecommendationFilterChips.executeOnBackground()
+        launchCatchError(dispatcher.getIODispatcher(), block = {
+            if(page == 1 && _recommendationItem.value != null) _recommendationItem.postValue(null)
+            if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
+            else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
+            val userId: Int = userSessionInterface.userId.toIntOrZero()
+            val filterAndSort: FilterSortChip?
+            if(page == 1){
+                getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = QUICK_FILTER, pageName = pageName)
+                val quickFilter = getRecommendationFilterChips.executeOnBackground()
 
-                    getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = FULL_FILTER, pageName = pageName)
-                    val fullFilter = getRecommendationFilterChips.executeOnBackground()
-                    filterAndSort = FilterSortChip(fullFilter, quickFilter.filterChip)
-                    _filterSortChip.postValue(Response.success(filterAndSort))
-                }
-                val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
+                getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = FULL_FILTER, pageName = pageName)
+                val fullFilter = getRecommendationFilterChips.executeOnBackground()
+                filterAndSort = FilterSortChip(fullFilter, quickFilter.filterChip)
+                _filterSortChip.postValue(Response.success(filterAndSort))
+            }
+            val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
 
-                val recommendationWidget = singleRecommendationUseCase.createObservable(params).toBlocking().first()
-                val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
-                if(recommendationItems.isEmpty() && page == 1){
-                    _filterSortChip.postValue(Response.error(Exception()))
-                    _recommendationItem.postValue(Response.error(Exception()))
-                } else {
-                    _recommendationItem.postValue(Response.success(Pair(recommendationItems.map {
-                        it.copy(position = it.position + (page - 1) * COUNT_PRODUCT)
-                    }, recommendationWidget.pagination.hasNext)))
-                }
+            val recommendationWidget = singleRecommendationUseCase.createObservable(params).toBlocking().first()
+            val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
+            if(recommendationItems.isEmpty() && page == 1){
+                _filterSortChip.postValue(Response.error(Exception()))
+                _recommendationItem.postValue(Response.error(Exception()))
+            } else {
+                _recommendationItem.postValue(Response.success(Pair(recommendationItems.map {
+                    it.copy(position = it.position + (page - 1) * COUNT_PRODUCT)
+                }, recommendationWidget.pagination.hasNext)))
+            }
+        }){ throwable ->
+            if(page == 1) _filterSortChip.postValue(Response.error(throwable))
 
-            } catch (e: Exception){
-                if(page == 1) _filterSortChip.postValue(Response.error(e))
-
-                if(e is IOException || e is TimeoutException){
-                    _recommendationItem.postValue(Response.error(TimeoutException(), _recommendationItem.value?.data))
-                } else {
-                    _recommendationItem.postValue(Response.error(e, _recommendationItem.value?.data))
-                }
+            if(throwable is IOException || throwable is TimeoutException){
+                _recommendationItem.postValue(Response.error(TimeoutException(), _recommendationItem.value?.data))
+            } else {
+                _recommendationItem.postValue(Response.error(throwable, _recommendationItem.value?.data))
             }
         }
     }
