@@ -10,6 +10,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.analytic.InboxAnalyticCommon
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.entity.orderlist.Card
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.track.TrackApp
@@ -51,6 +52,7 @@ class NotificationAnalytic @Inject constructor(
             const val CLICK_FILTER_REQUEST = "click on filter request"
             const val CLICK_WIDGET_CTA = "click cta on notif"
             const val CLICK_EXPAND_NOTIF = "click expand notif"
+            const val CLICK_ORDER_LIST_ITEM = "click on going transaction entry point"
         }
     }
 
@@ -355,6 +357,27 @@ class NotificationAnalytic @Inject constructor(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 Event.ADD_TO_CART, eventDataLayer
         )
+    }
+
+    fun trackClickOrderListItem(role: Int?, order: Card) {
+        if (role == null) return
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                InboxAnalyticCommon.createGeneralEvent(
+                        event = Event.CLICK_NOTIF_CENTER,
+                        eventCategory = EventCategory.NOTIFCENTER,
+                        eventAction = EventAction.CLICK_ORDER_LIST_ITEM,
+                        eventLabel = getEventLabelNotifOrderListItem(role, order),
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId,
+                        userRole = getRoleString(role)
+                )
+        )
+    }
+
+    private fun getEventLabelNotifOrderListItem(role: Int, order: Card): String {
+        val roleStr = getRoleString(role)
+        return "$roleStr - ${order.text} - ${order.counter}"
     }
 
     private fun setValueOrDefault(value: String): String? {

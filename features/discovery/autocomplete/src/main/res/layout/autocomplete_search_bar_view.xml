@@ -13,6 +13,7 @@
 
         <ImageView
             android:id="@+id/actionUpBtn"
+            android:contentDescription="@string/content_desc_actionUpButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
@@ -41,9 +42,8 @@
             app:barrierDirection="right"
             app:constraint_referenced_ids="actionUpBtn, autocompleteActionUpButton" />
 
-        <com.tokopedia.design.component.EditTextCompat
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/searchTextView"
-            android:contentDescription="@string/content_desc_searchTextView"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -70,6 +70,7 @@
 
         <ImageView
             android:id="@+id/autocompleteIconSearch"
+            android:contentDescription="@string/content_desc_autocompleteIconSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -130,6 +131,7 @@
 
         <ImageView
             android:id="@+id/actionVoiceButton"
+            android:contentDescription="@string/content_desc_actionVoiceButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_16"

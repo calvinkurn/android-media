@@ -246,7 +246,8 @@
           </intent-filter>
         </activity>
 
-        <service android:name=".seamlesslogin.RemoteService">
+        <service android:name=".seamlesslogin.RemoteService"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.loginregister.seamlesslogin.RemoteService" />
             </intent-filter>

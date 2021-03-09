@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/talk_seller_settings_navigation"
+    app:startDestination="@id/sellerSettingsFragment">
+
+    <fragment
+        android:id="@+id/sellerSettingsFragment"
+        android:name="com.tokopedia.talk.feature.sellersettings.settings.presentation.fragment.TalkSettingsFragment"
+        tools:layout="@layout/fragment_talk_settings">
+
+        <argument
+            android:name="navigation"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <action
+            android:id="@+id/action_talkSettingsFragment_to_talkSmartReplySettingsFragment"
+            app:destination="@id/talkSmartReplySettingsFragment" />
+        <action
+            android:id="@+id/action_talkSettingsFragment_to_talkTemplateListFragment"
+            app:destination="@id/talkTemplateListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/talkSmartReplySettingsFragment"
+        android:name="com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.fragment.TalkSmartReplySettingsFragment"
+        tools:layout="@layout/fragment_talk_smart_reply_settings">
+
+        <action
+            android:id="@+id/action_talkSmartReplySettingsFragment_to_talkSmartReplyDetailFragment"
+            app:destination="@id/talkSmartReplyDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/talkSmartReplyDetailFragment"
+        android:name="com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.fragment.TalkSmartReplyDetailFragment"
+        tools:layout="@layout/fragment_talk_smart_reply_detail">
+
+        <argument
+            android:name="cacheManagerId"
+            app:argType="string"
+            android:defaultValue='"0"' />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/talkTemplateListFragment"
+        android:name="com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateListFragment">
+
+        <argument
+            android:name="isSeller"
+            app:argType="boolean"
+            android:defaultValue='false' />
+
+    </fragment>
+
+</navigation>
