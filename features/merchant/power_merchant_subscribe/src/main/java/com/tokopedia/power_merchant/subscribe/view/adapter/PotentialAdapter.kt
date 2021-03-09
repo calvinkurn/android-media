@@ -35,7 +35,7 @@ class PotentialAdapter(
 
         fun bind(item: PotentialItemUiModel) {
             with(itemView) {
-                imgPmPotentialItem.loadImageWithoutPlaceholder(item.imgUrl)
+                imgPmPotentialItem.loadImageWithoutPlaceholder(item.resDrawableIcon)
                 tvPmPotentialItemDescription.text = item.description.parseAsHtml()
             }
         }

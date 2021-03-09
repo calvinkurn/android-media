@@ -18,7 +18,7 @@ data class GoldGetPMShopInfoModel(
 
 data class GoldGetPMShopInfoDataModel(
         @SerializedName("shop_id")
-        val shopId: String? = "",
+        val shopId: Long? = 0,
         @SerializedName("is_new_seller")
         val isNewSeller: Boolean? = true,
         @SerializedName("shop_age")

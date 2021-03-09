@@ -35,12 +35,8 @@ class RegistrationTermAdapter(
         fun bind(term: RegistrationTermUiModel) {
             with(itemView) {
                 tvPmTermItemTitle.text = term.title.parseAsHtml()
-                tvPmTermItemDesc.text = term.description.parseAsHtml()
-                if (term.isChecked) {
-                    icPmHeaderTermItem.loadImageDrawable(R.drawable.ic_pm_checked)
-                } else {
-                    icPmHeaderTermItem.loadImageDrawable(R.drawable.ic_pm_not_checked)
-                }
+                tvPmTermItemDesc.text = term.descriptionHtml.parseAsHtml()
+                icPmHeaderTermItem.loadImageDrawable(term.resDrawableIcon)
             }
         }
     }

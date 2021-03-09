@@ -94,6 +94,24 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmHeaderNewSellerLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:background="@drawable/bg_pm_new_seller_status"
+                android:paddingStart="@dimen/spacing_lvl2"
+                android:paddingTop="@dimen/spacing_lvl1"
+                android:paddingEnd="@dimen/spacing_lvl2"
+                android:paddingBottom="@dimen/spacing_lvl1"
+                android:text="@string/pm_new_seller"
+                android:textColor="@color/Unify_G500"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tvPmHeaderTerms"
+                app:layout_constraintStart_toEndOf="@+id/tvPmHeaderTerms"
+                app:layout_constraintTop_toTopOf="@+id/tvPmHeaderTerms"
+                app:typographyType="body_3" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmRegistrationTerm"
                 android:layout_width="@dimen/layout_lvl0"

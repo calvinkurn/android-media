@@ -6,6 +6,8 @@ package com.tokopedia.power_merchant.subscribe.view.model
 
 data class RegistrationTermUiModel(
         val title: String,
-        val description: String,
-        val isChecked: Boolean
+        val descriptionHtml: String,
+        val resDrawableIcon: Int,
+        val clickableText: String? = null,
+        val appLinkOrUrl: String? = null
 )

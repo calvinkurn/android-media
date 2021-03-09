@@ -1,5 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.activity
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -13,13 +15,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
+import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -45,6 +47,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         super.onCreate(savedInstanceState)
         initInjector()
         setContentView(R.layout.activity_pm_subsription)
+        window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
         observePmSettingInfo()
         setupView()
@@ -71,6 +74,14 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     private fun setupView() {
         setSupportActionBar(toolbarPmSubscription)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setWhiteStatusBar()
+    }
+
+    private fun setWhiteStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBarColor(Color.WHITE)
+            setLightStatusBar(true)
+        }
     }
 
     private fun observePmSettingInfo() {
@@ -105,7 +116,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun getFragmentByPeriod(periodeType: String): Fragment {
         return when (periodeType) {
-            PeriodType.FINAL_PERIOD, PeriodType.TRANSITION_PERIOD -> PowerMerchantSubscribeFragment.createInstance()//RegistrationFragment.createInstance()
+            PeriodType.FINAL_PERIOD, PeriodType.TRANSITION_PERIOD -> PowerMerchantSubscriptionFragment.createInstance()
             else -> PowerMerchantSubscribeFragment.createInstance()
         }
     }

@@ -159,4 +159,12 @@
     <string name="pm_later">Nanti Saja</string>
     <string name="pm_label_rating_power_merchant_experience">Bagaimana Anda menilai pengalaman menggunakan Power Merchant</string>
     <string name="pm_label_deactivation_questionnaire_intro_desc"><![CDATA[Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada <b>%s</b>]]></string>
+    <string name="pm_new_seller">New Seller</string>
+    <string name="pm_potential_benefit_01"><![CDATA[Lebih sering dikunjungi pembeli hingga <br><b>4,3 kali lipat</b>]]></string>
+    <string name="pm_potential_benefit_02"><![CDATA[Menerima pesanan lebih banyak hingga <br><b>5 kali lipat</b>]]></string>
+    <string name="pm_potential_benefit_03"><![CDATA[Meningkatkan penghasilan hingga <br><b>5,5 kali lipat</b>]]></string>
+    <string name="pm_already_have_one_active_product">Memiliki 1 Produk Aktif</string>
+    <string name="pm_have_not_one_active_product_yet">Belum Memiliki 1 Produk Aktif</string>
+    <string name="pm_label_already_have_one_active_product">Kamu sudah memiliki minimal 1 produk aktif.</string>
+    <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. <strong><font color=\"#03AC0E\">Tambah Produk</font></strong>]]></string>
 </resources>
