@@ -1,0 +1,11 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation project(rootProject.ext.libraries.keys)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.gson
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+}

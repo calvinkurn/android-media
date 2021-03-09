@@ -16,6 +16,9 @@ object Keys {
     val AUTH_TRADE_IN_API_KEY_MA = decodeKey(TRADE_IN_API_KEY_MA)
 
     @JvmStatic
+    val AUTH_NEW_RELIC_API_KEY = decodeKey(NEW_RELIC_API_KEY)
+
+    @JvmStatic
     val AUTH_SCALYR_API_KEY
         get() =
             when (GlobalConfig.APPLICATION_TYPE) {

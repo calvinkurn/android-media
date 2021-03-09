@@ -77,6 +77,7 @@ ext {
             moengageWrapper         : ":libraries:moengage_wrapper",
             mpAndroidChart          : "com.github.PhilJay:MPAndroidChart:v3.1.0",
             oms                     : ":libraries:oms",
+            pocNewRelic             : ":libraries:poc_new_relic",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
