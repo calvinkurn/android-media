@@ -72,6 +72,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
@@ -162,16 +163,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.latLong.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    hotelSearchModel.apply {
-                        long = it.data.first.toFloat()
-                        lat = it.data.second.toFloat()
-                    }
                     addMyLocation(LatLng(it.data.first, it.data.second))
                 }
             }
         })
 
-        /**Will add radius as search param*/
         hotelSearchMapViewModel.radius.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
@@ -179,6 +175,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     hotelSearchModel.apply {
                         searchType = HotelTypeEnum.COORDINATE.value
                         searchId = ""
+                        radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
                     loadInitialData()
@@ -192,12 +189,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.screenMidPoint.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    /** Should have trigger the LatLng here
                     hotelSearchModel.apply {
-                        long = it.data.longitude.toFloat()
-                        lat = it.data.latitude.toFloat()
+                        long = it.data.longitude
+                        lat = it.data.latitude
                     }
-                    */
                 }
             }
         })
