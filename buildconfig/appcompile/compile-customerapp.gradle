@@ -28,6 +28,7 @@ include "features:content:play_common"
 include "features:content:play_widget"
 include "features:content:interest_pick"
 include "features:content:interest_pick_common"
+include "features:im:moengage_wrapper"
 
 include "features:category:basemvvm"
 include "features:category:tradein"
