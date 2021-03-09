@@ -7,6 +7,8 @@ import javax.inject.Inject
 
 class GetDefaultChosenAddressUseCase @Inject constructor(private val chooseAddressRepo: ChooseAddressRepository) : com.tokopedia.usecase.coroutines.UseCase<GetDefaultChosenAddressGqlResponse>() {
 
+    private val SOURCE_LOGIN = "login"
+
     fun getDefaultChosenAddress(success : (DefaultChosenAddressData)-> Unit, onFail:(Throwable)-> Unit){
         execute({
             success(it.response.data)
@@ -16,7 +18,7 @@ class GetDefaultChosenAddressUseCase @Inject constructor(private val chooseAddre
     }
 
     override suspend fun executeOnBackground(): GetDefaultChosenAddressGqlResponse {
-        return chooseAddressRepo.getDefaultChosenAddress(null, "addr")
+        return chooseAddressRepo.getDefaultChosenAddress(null, SOURCE_LOGIN)
     }
 
 
