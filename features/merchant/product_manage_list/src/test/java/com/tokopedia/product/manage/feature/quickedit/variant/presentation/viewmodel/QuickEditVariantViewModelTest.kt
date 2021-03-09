@@ -5,12 +5,10 @@ import com.tokopedia.product.manage.data.createOptionResponse
 import com.tokopedia.product.manage.data.createProductVariant
 import com.tokopedia.product.manage.data.createProductVariantResponse
 import com.tokopedia.product.manage.data.createSelectionResponse
-import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import io.mockk.coEvery
 import org.junit.Test
 
 class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
@@ -219,24 +217,6 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         viewModel.setVariantStock(productId, 1)
 
         viewModel.showStockInfo
-            .verifyValueEquals(true)
-    }
-
-    private fun onGetProductVariant_thenReturn(response: GetProductVariantResponse) {
-        coEvery { getProductVariantUseCase.execute(any()) } returns response
-    }
-
-    private fun onGetProductVariant_thenError(error: Throwable) {
-        coEvery { getProductVariantUseCase.execute(any()) } throws error
-    }
-
-    private fun verifyHideProgressBar() {
-        viewModel.showProgressBar
-            .verifyValueEquals(false)
-    }
-
-    private fun verifyShowErrorView() {
-        viewModel.showErrorView
             .verifyValueEquals(true)
     }
 }
