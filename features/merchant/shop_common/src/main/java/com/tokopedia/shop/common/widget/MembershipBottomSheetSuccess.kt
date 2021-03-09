@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class MembershipBottomSheetSuccess : BottomSheetUnify() {
 
@@ -22,7 +22,7 @@ class MembershipBottomSheetSuccess : BottomSheetUnify() {
 
     lateinit var txtTitle: TextView
     lateinit var txtDesc: TextView
-    lateinit var btnClaim: Button
+    lateinit var btnClaim: UnifyButton
     lateinit var imgBsMembership: ImageView
 
     private var listener: MembershipStampAdapter.MembershipStampAdapterListener? = null
