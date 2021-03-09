@@ -11,25 +11,34 @@ import javax.inject.Inject
 @PlayScope
 class PlayVideoLatencyPerformanceMonitoring @Inject constructor() {
 
-    private val totalDuration: Long
+    val totalDuration: Long
         get() = mTotalDuration
+
+    val hasStarted: Boolean
+        get() = mHasStarted
 
     private var mPerformanceMonitoring: PerformanceMonitoring? = null
     private var mTotalDuration = 0L
+    private var mHasStarted = false
 
     fun start() {
         mTotalDuration = System.currentTimeMillis()
         mPerformanceMonitoring?.startTrace(PLAY_VIDEO_LATENCY_TRACE)
+        mHasStarted = true
     }
 
     fun stop() {
-        mTotalDuration = System.currentTimeMillis() - mTotalDuration
+        if (!mHasStarted) throw Throwable("Please call start() first")
+
         mPerformanceMonitoring?.stopTrace()
+        mTotalDuration = System.currentTimeMillis() - mTotalDuration
+        mHasStarted = false
     }
 
     fun reset() {
         mPerformanceMonitoring = null
         mTotalDuration = 0L
+        mHasStarted = false
     }
 
     companion object {

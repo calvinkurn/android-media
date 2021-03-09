@@ -20,6 +20,7 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.util.video.state.hasNoData
+import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -65,6 +66,7 @@ class PlayViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
         private val remoteConfig: RemoteConfig,
         private val playPreference: PlayPreference,
+        private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -487,6 +489,7 @@ class PlayViewModel @Inject constructor(
 
     private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl, lastPosition: Long?) {
         try {
+            videoLatencyPerformanceMonitoring.start()
             playVideoPlayer.playUri(uri = Uri.parse(urlString), bufferControl = bufferControl, startPosition = lastPosition)
         } catch (e: Exception) {}
     }
