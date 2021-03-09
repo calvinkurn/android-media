@@ -62,8 +62,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_CONTENT_DESCRIPTION
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_CONTENT_TITLES
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SPECIFICATION
@@ -1617,8 +1615,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val tooltipBottomSheet = TooltipBottomSheet()
         val tips: ArrayList<NumericWithDescriptionTooltipModel> = ArrayList()
         val tooltipTitle = getString(R.string.title_price_recommendation_bottom_sheet)
-        PRICE_RECOMMENDATION_CONTENT_TITLES.forEachIndexed { index, title ->
-            val description = PRICE_RECOMMENDATION_CONTENT_DESCRIPTION.getOrNull(index).orEmpty()
+        val contentTitles = resources.getStringArray(R.array.array_price_recommendation_content_titles)
+        val contentDescriptions = resources.getStringArray(R.array.array_price_recommendation_content_descriptions)
+
+        contentTitles.forEachIndexed { index, title ->
+            val description = contentDescriptions.getOrNull(index).orEmpty()
             tips.add(NumericWithDescriptionTooltipModel(title, description))
         }
 
