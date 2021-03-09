@@ -13,4 +13,5 @@
     <color name="black_68">#31353b</color>
     <color name="notifcenter_shadow_cta">#296c727c</color>
     <color name="notifcenter_dms_unread_notification">@color/Unify_G100</color>
+    <color name="notifcenter_dms_order_list_card_shadow">#1F31353B</color>
 </resources>
