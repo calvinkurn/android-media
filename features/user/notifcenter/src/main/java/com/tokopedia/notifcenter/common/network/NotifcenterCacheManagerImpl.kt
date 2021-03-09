@@ -16,7 +16,7 @@ class NotifcenterCacheManagerImpl @Inject constructor(
                 .apply()
     }
 
-    override fun <T> loadCache(key: String, type: Type): T {
+    override fun <T> loadCache(key: String, type: Type): T? {
         val cacheString = sharedPreferences.getString(key, "")
         return CommonUtil.fromJson(cacheString, type)
     }

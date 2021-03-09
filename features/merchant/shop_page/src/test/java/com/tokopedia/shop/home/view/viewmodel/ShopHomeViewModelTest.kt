@@ -4,19 +4,17 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
-import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheMode
 import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
@@ -37,18 +35,16 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
-import com.tokopedia.shop.home.util.Event
-import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.*
@@ -81,6 +77,8 @@ class ShopHomeViewModelTest {
     lateinit var getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
+    @RelaxedMockK
+    lateinit var addToCartOccUseCase: AddToCartOccUseCase
     @RelaxedMockK
     lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
     @RelaxedMockK
@@ -145,6 +143,7 @@ class ShopHomeViewModelTest {
                 getShopProductUseCase,
                 testCoroutineDispatcherProvider,
                 addToCartUseCase,
+                addToCartOccUseCase,
                 gqlCheckWishlistUseCaseProvider,
                 getYoutubeVideoUseCase,
                 getCampaignNotifyMeUseCase,
@@ -493,31 +492,31 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether playWidgetToggleReminderObservable success value is true`() {
         val mockChannelId = "123"
-        val mockPlayWidgetReminder = PlayWidgetReminder(PlayWidgetHeaderReminder())
-        coEvery {
-            playWidgetTools.setToggleReminder(any(), any(), any())
-        } returns mockPlayWidgetReminder
-        coEvery {
-            playWidgetTools.mapWidgetToggleReminder(mockPlayWidgetReminder)
-        } returns PlayWidgetReminderUiModel(success = true)
-        viewModel.setToggleReminderPlayWidget(mockChannelId, true, 1)
-        coVerify { playWidgetTools.setToggleReminder(any(), any(), any()) }
-        assert(viewModel.playWidgetToggleReminderObservable.value?.success == true)
+        val mockPlayWidgetReminder = PlayWidgetReminder()
+
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } returns mockPlayWidgetReminder
+        coEvery { playWidgetTools.mapWidgetToggleReminder(mockPlayWidgetReminder) } returns true
+
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+
+        coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
+
+        assert(viewModel.playWidgetReminderObservable.value is Success)
     }
 
     @Test
     fun `check whether playWidgetToggleReminderObservable success value is false`() {
         val mockChannelId = "123"
-        val mockPlayWidgetReminder = PlayWidgetReminder(PlayWidgetHeaderReminder())
-        coEvery {
-            playWidgetTools.setToggleReminder(any(), any(), any())
-        } returns mockPlayWidgetReminder
-        coEvery {
-            playWidgetTools.mapWidgetToggleReminder(mockPlayWidgetReminder)
-        } returns PlayWidgetReminderUiModel(success = false)
-        viewModel.setToggleReminderPlayWidget(mockChannelId, true, 1)
-        coVerify { playWidgetTools.setToggleReminder(any(), any(), any()) }
-        assert(viewModel.playWidgetToggleReminderObservable.value?.success == false)
+
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } throws Throwable()
+
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+
+        coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
+
+        assert(viewModel.playWidgetReminderObservable.value is Fail)
     }
 
     @Test

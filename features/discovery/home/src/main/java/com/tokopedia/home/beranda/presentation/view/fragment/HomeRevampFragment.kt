@@ -16,7 +16,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
@@ -121,8 +120,8 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -219,6 +218,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val DEFAULT_UTM_SOURCE = "home_notif"
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
         private const val REQUEST_CODE_PLAY_ROOM = 256
+        private const val REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET = 258
+        private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 257
         private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
 
         var HIDE_TICKER = false
@@ -1062,7 +1063,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeRechargeRecommendation()
         observeIsNeedRefresh()
         observeSearchHint()
-        observePlayWidgetToggleReminder()
+        observePlayWidgetReminder()
+        observePlayWidgetReminderEvent()
         observeRechargeBUWidget()
     }
 
@@ -1628,12 +1630,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-            REQUEST_CODE_PLAY_ROOM -> {
-                if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)
-                        && data.hasExtra(EXTRA_CHANNEL_ID))
-                            viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
+            REQUEST_CODE_PLAY_ROOM -> if (data != null) {
+                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
+                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+                getHomeViewModel().updateBannerTotalView(channelId, totalView)
             }
-            PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE -> if (data != null) notifyPlayWidgetTotalView(data)
+            REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET -> if (data != null) notifyPlayWidgetTotalView(data)
+            REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
+                val lastEvent = getHomeViewModel().playWidgetReminderEvent?.value
+                if (lastEvent != null) getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(lastEvent.first, lastEvent.second)
+            }
         }
     }
 
@@ -2607,48 +2613,43 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onWidgetOpenAppLink(view: View, appLink: String) {
+        startActivityForResult(RouteManager.getIntent(requireContext(), appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+    }
+
+    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+        getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(channelId, reminderType)
+    }
+
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
         getHomeViewModel().getPlayWidget()
     }
 
-    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, remind: Boolean, position: Int) {
-        if(getHomeViewModel().getUserId().isNotEmpty()) {
-            getHomeViewModel().setToggleReminderPlayWidget(channelId, remind, position)
-        } else {
-            adapter?.updatePlayWidgetReminder(PlayWidgetReminderUiModel(
-                    remind = remind,
-                    success = false,
-                    position = position
-            ))
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
-    override fun onWidgetOpenAppLink(view: View, appLink: String) {
-        val intent = RouteManager.getIntent(requireContext(), appLink)
-        startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
-    }
-
-    private fun observePlayWidgetToggleReminder() {
-        getHomeViewModel().playWidgetToggleReminderObservable.observe(viewLifecycleOwner, Observer {
-            if (it.success) {
-                showToaster(
-                        if(it.remind) {
-                            getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                        } else {
-                            getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
-                        }, TYPE_NORMAL)
-            } else {
-                adapter?.updatePlayWidgetReminder(it)
-                showToaster(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), TYPE_ERROR)
+    private fun observePlayWidgetReminder() {
+        getHomeViewModel().playWidgetReminderObservable.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Result.Status.SUCCESS -> if (it.data != null) showToaster(
+                        if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                        else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                        , TYPE_NORMAL)
+                Result.Status.ERROR -> showToaster(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), TYPE_ERROR)
+                else -> {}
             }
         })
     }
 
+    private fun observePlayWidgetReminderEvent() {
+        getHomeViewModel().playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
+        })
+    }
+
     private fun notifyPlayWidgetTotalView(data: Intent) {
-        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
-        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-        adapter?.updatePlayWidgetTotalView(PlayWidgetTotalViewUiModel(channelId, totalView))
+        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
+        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+
+        if (channelId == null || totalView == null) return
+        getHomeViewModel().updatePlayWidgetTotalView(channelId, totalView)
     }
 
     private fun playWidgetOnVisibilityChanged(

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQueryResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
@@ -12,6 +13,7 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
+import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.restrictioninfo.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
@@ -117,7 +119,15 @@ data class ProductInfoP2Data(
 
         @SerializedName("uniqueSellingPoint")
         @Expose
-        var uspTokoCabangData: UniqueSellingPointTokoCabang = UniqueSellingPointTokoCabang()
+        var uspTokoCabangData: UniqueSellingPointTokoCabang = UniqueSellingPointTokoCabang(),
+
+        @SerializedName("mostHelpFulReviewData")
+        @Expose
+        var mostHelpFulReviewData: MostHelpfulReviewData = MostHelpfulReviewData(),
+
+        @SerializedName("reviewImage")
+        @Expose
+        var reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery = ImageReviewGqlResponse.ProductReviewImageListQuery()
 ) {
     data class Response(
             @SerializedName("pdpGetData")

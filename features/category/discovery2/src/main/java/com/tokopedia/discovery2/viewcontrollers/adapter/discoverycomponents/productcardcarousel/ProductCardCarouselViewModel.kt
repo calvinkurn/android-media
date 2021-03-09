@@ -103,6 +103,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         val productCardModelArray = ArrayList<ProductCardModel>()
         list.forEach {
             it.data?.firstOrNull()?.let { dataItem ->
+                dataItem.hasNotifyMe = (dataItem.notifyMe != null)
                 productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
             }
         }

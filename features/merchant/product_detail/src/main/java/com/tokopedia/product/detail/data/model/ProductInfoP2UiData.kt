@@ -9,6 +9,8 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
+import com.tokopedia.product.detail.data.model.review.ImageReview
+import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
@@ -40,5 +42,7 @@ data class ProductInfoP2UiData(
         var ratesEstimate: List<P2RatesEstimate> = listOf(),
         var bebasOngkir: BebasOngkir = BebasOngkir(),
         var uspImageUrl: String = "",
-        var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary()
+        var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
+        var imageReviews: ImageReview? = null,
+        var helpfulReviews: List<Review>? = null,
 )

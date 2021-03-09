@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
+import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.variant_common.model.*
@@ -275,21 +276,21 @@ object DynamicProductDetailMapper {
         }
     }
 
-    fun generateImageReviewUiData(data: ImageReviewGqlResponse): List<ImageReviewItem> {
+    fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
         val images = SparseArray<ImageReviewGqlResponse.Image>()
         val reviews = SparseArray<ImageReviewGqlResponse.Review>()
-        val hasNext = data.productReviewImageListQuery?.isHasNext ?: false
+        val hasNext = data.isHasNext ?: false
 
-        data.productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
-        data.productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
+        data.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
+        data.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
 
-        return data.productReviewImageListQuery?.list?.map {
+        return ImageReview(data.list?.map {
             val image = images[it.imageID]
             val review = reviews[it.reviewID]
             ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                     review.reviewer?.fullName, image.uriThumbnail,
-                    image.uriLarge, review.rating, hasNext, data.productReviewImageListQuery?.detail?.imageCount)
-        } ?: listOf()
+                    image.uriLarge, review.rating, hasNext, data.detail?.imageCountFmt)
+        } ?: listOf(), data.detail?.imageCount ?: "")
     }
 
     fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {
