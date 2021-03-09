@@ -301,7 +301,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         setupViews()
         setInitialOrderListParams()
         observeLoadingStatus()
-        observeUserRoles()
         observeTopAdsCategory()
         observeTickers()
         observeFilters()
