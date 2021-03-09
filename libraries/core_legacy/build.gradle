@@ -39,7 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.moengageWrapper)
+    implementation project(rootProject.ext.features.moengageWrapper)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {

@@ -15,6 +15,7 @@ import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 
 /**
  * @author by alvarisi on 1/5/17.
@@ -37,6 +38,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
 
     @Override
     public Observable<FCMTokenUpdateEntity> updateTokenServer(FCMTokenUpdate data) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'updateTokenServer'");
         return mPushNotificationDataStoreFactory
                 .createCloudPushNotificationDataStore()
                 .updateTokenServer(data);
@@ -44,6 +46,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
 
     @Override
     public Observable<DeviceRegistrationDataResponse> deviceRegistration() {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'deviceRegistration'");
         return Observable
                 .concat(
                         mPushNotificationDataStoreFactory
@@ -58,6 +61,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
 
     @Override
     public Observable<Boolean> saveRegistrationDevice(String registration) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'saveRegistrationDevice'");
         return mPushNotificationDataStoreFactory
                 .createDiskPushNotificationDataStore()
                 .saveRegistrationDevice(registration);
@@ -65,6 +69,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
 
     @Override
     public Observable<List<MessagePushNotification>> getSavedMessagePushNotification() {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'getSavedMessagePushNotification'");
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE, true)
                 .map(mPushNotificationMapper::transformMessage);
@@ -72,6 +77,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
 
     @Override
     public Observable<String> storePushNotification(String category, String response, String customIndex, String serverId) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'storePushNotification'");
         return mPushNotificationDataStoreFactory
                 .createDiskPushNotificationDataStore()
                 .savePushNotification(category, response, customIndex, serverId);
@@ -79,6 +85,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
 
     @Override
     public Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification() {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'getSavedDiscussionPushNotification'");
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION, true)
                 .map(mPushNotificationMapper::transformDiscussion);
