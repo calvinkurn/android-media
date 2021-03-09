@@ -31,6 +31,7 @@ import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
@@ -323,7 +324,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = "${data.addressName} ${data.receiverName}",
+                                label = ChooseAddressUtils.setLabel(ChosenAddressModel(
+                                        addressName = data.addressName,
+                                        receiverName = data.receiverName,
+                                        districtName = data.districtName,
+                                        cityName = data.cityName
+                                )),
                                 postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)

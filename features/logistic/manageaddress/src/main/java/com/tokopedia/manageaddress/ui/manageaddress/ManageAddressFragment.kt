@@ -575,7 +575,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         context?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
                     addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
-                    addressDataModel.latitude, addressDataModel.longitude, addressDataModel.addressName, addressDataModel.postalCode)
+                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}", addressDataModel.postalCode)
         }
 
         if (isLocalization == true) {

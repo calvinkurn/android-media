@@ -187,7 +187,7 @@ object ChooseAddressUtils {
         return if (data.addressName.isEmpty() || data.receiverName.isEmpty()) {
             "${data.districtName}, ${data.cityName}"
         } else {
-            "${data.addressName}, ${data.receiverName}"
+            "${data.addressName} ${data.receiverName}"
         }
     }
 }
