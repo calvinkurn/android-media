@@ -147,9 +147,6 @@ class DigitalCartViewModel @Inject constructor(
 
     private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
         return {
-            _showContentCheckout.postValue(true)
-            _showLoading.postValue(false)
-
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
             mapDataSuccessCart(mappedCartData)
         }
@@ -169,8 +166,6 @@ class DigitalCartViewModel @Inject constructor(
         if (mappedCartData.isNeedOtp) {
             _isNeedOtp.postValue(userSession.phoneNumber)
         } else {
-            _showContentCheckout.postValue(true)
-            _showLoading.postValue(false)
             _cartDigitalInfoData.postValue(mappedCartData)
             _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
 
@@ -182,11 +177,12 @@ class DigitalCartViewModel @Inject constructor(
             promoData?.let {
                 _promoData.postValue(it)
             }
+            _showContentCheckout.postValue(true)
+            _showLoading.postValue(false)
         }
     }
 
     fun handleError(e: Throwable) {
-        _showLoading.postValue(false)
         if (e is UnknownHostException) {
             _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
         } else if (e is SocketTimeoutException || e is ConnectException) {
@@ -200,6 +196,7 @@ class DigitalCartViewModel @Inject constructor(
         } else {
             _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
         }
+        _showLoading.postValue(false)
     }
 
     fun cancelVoucherCart() {
