@@ -76,6 +76,7 @@ import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.router.LoginRouter
+import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
@@ -1033,6 +1034,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             } else {
                 onSuccessLogin()
             }
+            getDefaultChosenAddress()
         }
     }
 
@@ -1592,6 +1594,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             activity?.let {
                 RegisterPushNotifService.startService(it.applicationContext)
             }
+        }
+    }
+
+    private fun getDefaultChosenAddress() {
+        activity?.let {
+            GetDefaultChosenAddressService.startService(it.applicationContext)
         }
     }
 
