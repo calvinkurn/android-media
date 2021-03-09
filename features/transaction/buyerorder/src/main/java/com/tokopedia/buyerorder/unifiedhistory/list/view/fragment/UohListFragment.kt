@@ -797,7 +797,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter3?.let { chips.add(it) }
 
         // date
-        val typeDate = if (isReset || isFirstLoad) {
+        val typeDate = if (isReset || isFirstLoad || filterStatus.equals(PARAM_UOH_ONGOING, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
