@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:text="@string/smart_bills_tooltip_desc_1"
         android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:typographyType="body_2"
         />
@@ -70,6 +71,7 @@
         android:layout_height="wrap_content"
         android:text="@string/smart_bills_tooltip_desc_2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:typographyType="body_2"
         />
