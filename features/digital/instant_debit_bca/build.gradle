@@ -41,6 +41,10 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.safetyNet
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 project.ext {
