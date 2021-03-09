@@ -55,6 +55,7 @@
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
     <string name="new_shop_info_title_tab_product">Product</string>
+    <string name="shop_info_title_tab_showcase">Showcase</string>
     <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Review</string>
