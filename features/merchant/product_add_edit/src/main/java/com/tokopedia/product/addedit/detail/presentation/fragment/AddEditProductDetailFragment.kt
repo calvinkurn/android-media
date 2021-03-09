@@ -1458,7 +1458,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun subscribeToProductPriceRecommendation() {
         //observe only if (1) product has product id, (2) if seller app, (3) has no variant
         if (viewModel.productInputModel.productId == 0L || !GlobalConfig.isSellerApp()
-                || !viewModel.hasVariants) return
+                || viewModel.hasVariants) return
 
         viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
             if (it.suggestedPrice > 0.0) {
