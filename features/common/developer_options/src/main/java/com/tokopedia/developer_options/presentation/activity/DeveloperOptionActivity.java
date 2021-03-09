@@ -277,6 +277,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         Button alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
         Button alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
 
+        TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
+        TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
+        Button btnApplyRollence = findViewById(R.id.btn_apply_rollence);
+
         String KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION";
         String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING";
         String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1";
@@ -334,6 +338,20 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void onClick(View view) {
                 RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_REVAMP);
                 Toast.makeText(DeveloperOptionActivity.this, "Home: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnApplyRollence.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (inputRollenceKey.getText().length() < 1) {
+                    Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Key", Toast.LENGTH_SHORT).show();
+                } else if (inputRollenceVariant.getText().length() <1) {
+                    Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Variant", Toast.LENGTH_SHORT).show();
+                } else {
+                    RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getText().toString().trim(), inputRollenceVariant.getText().toString().trim());
+                    Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
