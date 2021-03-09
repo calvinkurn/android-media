@@ -37,7 +37,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
     }
 
     @Test
-    fun show_broadcast_spam_handler_when_block_is_false_and_following_is_true() {
+    fun hide_broadcast_spam_handler_when_block_is_false_and_following_is_true() {
         // Given
         setupChatRoomActivity()
         getChatUseCase.response = firstPageChatBroadcastAsBuyer.blockPromo(false)
