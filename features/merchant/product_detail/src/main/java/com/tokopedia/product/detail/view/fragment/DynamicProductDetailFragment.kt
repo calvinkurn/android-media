@@ -9,7 +9,6 @@ import android.content.Intent
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
@@ -27,7 +26,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -1944,8 +1942,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             sharedViewModel?.setRequestData(RatesEstimateRequest(
                     productWeight = it.basic.weight.toFloat(),
                     shopDomain = viewModel.getShopInfo().shopCore.domain,
-                    origin = if (viewModel.getMultiOriginByProductId().isFulfillment)
-                        viewModel.getMultiOriginByProductId().getOrigin() else null,
+                    origin = viewModel.getMultiOriginByProductId().getOrigin(),
                     shopId = it.basic.shopID,
                     productId = it.basic.productID,
                     productWeightUnit = it.basic.weightUnit,
