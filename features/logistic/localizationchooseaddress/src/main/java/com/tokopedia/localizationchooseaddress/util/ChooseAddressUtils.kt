@@ -13,6 +13,7 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.localizationchooseaddress.R
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -180,5 +181,13 @@ object ChooseAddressUtils {
                 "&user_cityId=" + city_id +
                 "&user_districtId=" + district_id +
                 "&user_postCode=" + postal_code
+    }
+
+    fun setLabel(data: ChosenAddressModel) : String {
+        return if (data.addressName.isEmpty() || data.receiverName.isEmpty()) {
+            "${data.districtName}, ${data.cityName}"
+        } else {
+            "${data.addressName}, ${data.receiverName}"
+        }
     }
 }
