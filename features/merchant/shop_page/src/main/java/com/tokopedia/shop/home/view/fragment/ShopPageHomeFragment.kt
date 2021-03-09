@@ -690,12 +690,26 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             dataModelAtc: DataModel,
             shopHomeProductViewModel: ShopHomeProductUiModel?,
             parentPosition: Int,
-            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            isPersonalizationWidget: Boolean = false,
+            isOcc: Boolean = false
     ) {
-        view?.let { view ->
-            NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
+
+        if(isPersonalizationWidget) {
+            trackClickAddToCartPersonalization(dataModelAtc, shopHomeProductViewModel, shopHomeCarousellProductUiModel)
+        } else {
+            trackClickAddToCart(dataModelAtc, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
         }
-        trackClickAddToCart(dataModelAtc, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
+
+        if (isOcc) {
+            context?.let {
+                RouteManager.route(it, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        } else {
+            view?.let { view ->
+                NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
+            }
+        }
     }
 
     private fun trackClickAddToCart(
@@ -719,6 +733,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
+                customDimensionShopPage
+        )
+    }
+
+    private fun trackClickAddToCartPersonalization(
+            dataModelAtc: DataModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+    ) {
+        shopPageHomeTracking.addToCartPersonalizationProduct(
+                isOwner,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                dataModelAtc?.quantity ?: 1,
+                shopName,
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                shopHomeCarousellProductUiModel?.name ?: "",
                 customDimensionShopPage
         )
     }
@@ -1042,6 +1075,94 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         isWishlisted = shopHomeProductViewModel.isWishList,
                         productId = shopHomeProductViewModel.id ?: ""
                 )
+        )
+    }
+
+    override fun onPersonalizationCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
+        shopHomeProductViewModel?.let {
+            shopPageHomeTracking.clickProductPersonalization(
+                    isOwner,
+                    isLogin,
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopHomeProductViewModel.recommendationType ?: "",
+                    shopName,
+                    viewModel?.userId.orEmpty(),
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    shopHomeCarousellProductUiModel?.name ?: "",
+                    customDimensionShopPage
+            )
+            goToPDP(it.id ?: "")
+        }
+    }
+
+    override fun onCarouselPersonalizationProductItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
+            isOcc: Boolean
+    ) {
+        if (isLogin) {
+            shopHomeProductViewModel?.let { product ->
+                if (isOcc) {
+                    viewModel?.addProductToCartOcc(
+                            product,
+                            shopId,
+                            {
+                                onSuccessAddToCart(
+                                        it,
+                                        shopHomeProductViewModel,
+                                        parentPosition,
+                                        shopHomeCarousellProductUiModel,
+                                        isPersonalizationWidget = true,
+                                        isOcc = isOcc
+                                )
+                            },
+                            {
+                                onErrorAddToCart(it)
+                            }
+                    )
+                } else {
+                    viewModel?.addProductToCart(
+                        product,
+                        shopId,
+                        {
+                            onSuccessAddToCart(
+                                    it,
+                                    shopHomeProductViewModel,
+                                    parentPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    isPersonalizationWidget = true
+                            )
+                        },
+                        {
+                            onErrorAddToCart(it)
+                        }
+                    )
+                }
+            }
+        } else {
+            redirectToLoginPage()
+        }
+    }
+
+    override fun onCarouselProductPersonalizationItemImpression(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
+        shopPageHomeTracking.impressionProductPersonalization(
+                isOwner,
+                isLogin,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopHomeProductViewModel?.recommendationType ?: "",
+                viewModel?.userId.orEmpty(),
+                shopName,
+                itemPosition + 1,
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                shopHomeCarousellProductUiModel?.name ?: "",
+                customDimensionShopPage
         )
     }
 

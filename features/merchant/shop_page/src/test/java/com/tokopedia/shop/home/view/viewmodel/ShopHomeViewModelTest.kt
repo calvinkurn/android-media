@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -77,6 +78,8 @@ class ShopHomeViewModelTest {
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
     @RelaxedMockK
+    lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    @RelaxedMockK
     lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
     @RelaxedMockK
     lateinit var getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase
@@ -140,6 +143,7 @@ class ShopHomeViewModelTest {
                 getShopProductUseCase,
                 testCoroutineDispatcherProvider,
                 addToCartUseCase,
+                addToCartOccUseCase,
                 gqlCheckWishlistUseCaseProvider,
                 getYoutubeVideoUseCase,
                 getCampaignNotifyMeUseCase,

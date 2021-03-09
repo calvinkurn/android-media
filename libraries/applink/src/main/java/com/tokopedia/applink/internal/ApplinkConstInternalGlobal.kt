@@ -199,6 +199,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
 
+    @JvmField
+    val TALK_SELLER_SETTINGS = "$INTERNAL_GLOBAL/talk-seller-settings/"
+
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField
