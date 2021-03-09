@@ -497,8 +497,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     strings,
                     null, 0))
         }
-
-
     }
 
     override fun onImageUploadCancelClicked(image : ImageUploadViewModel) {
