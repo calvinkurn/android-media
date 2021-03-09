@@ -1,10 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.detail
 
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +17,6 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics.Compa
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterApplicationStatusMapper
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.mapper.UsageStepsPartnerType
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
@@ -127,7 +122,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         tvSubTitlePaylaterPartner.visible()
         if (!detail?.payLaterStatusContent?.verificationContentSubHeader.isNullOrEmpty()) {
             tvSubTitlePaylaterPartner.text = detail?.payLaterStatusContent?.verificationContentSubHeader?.parseAsHtml()
-        } else if(!productDetailSubHeader.isNullOrEmpty()) {
+        } else if (!productDetailSubHeader.isNullOrEmpty()) {
             tvSubTitlePaylaterPartner.text = productDetailSubHeader
         } else tvSubTitlePaylaterPartner.gone()
     }

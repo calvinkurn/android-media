@@ -101,15 +101,15 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
         return applicationStatusType
     }
 
+    // pre-compute sub header text according to expiration date logic
     private fun computeSubHeaderText(payLaterApplicationDetail: PayLaterApplicationDetail): PayLaterStatusContent? {
         val subHeader: String
         payLaterApplicationDetail.let {
-            subHeader = if (isExpirationDateHidden(it)) {
-                it.payLaterStatusContent?.verificationContentSubHeader ?: ""
-            } else {
-                // expiration date is never empty --> check isExpirationDateHidden
+            subHeader = if (isExpirationDateAvailable(it)) {
                 (it.payLaterStatusContent?.verificationContentSubHeader ?: "") +
                         "<b>${it.payLaterExpirationDate ?: ""}</b>"
+            } else {
+                it.payLaterStatusContent?.verificationContentSubHeader ?: ""
             }
             return PayLaterStatusContent(
                     it.payLaterStatusContent?.verificationContentEmail,
@@ -122,16 +122,16 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
     }
 
     /*
-    *  do not show expiration date if the following conditions pass
+    *  application expiration date will appear on application status Waiting and Rejected
     * */
-    private fun isExpirationDateHidden(applicationDetail: PayLaterApplicationDetail): Boolean {
+    private fun isExpirationDateAvailable(applicationDetail: PayLaterApplicationDetail): Boolean {
         val status = PayLaterApplicationStatusMapper.getApplicationStatusType(applicationDetail)
-        return (status is PayLaterStatusActive ||
-                status is PayLaterStatusApproved ||
-                status is PayLaterStatusSuspended ||
-                status is PayLaterStatusExpired ||
-                status is PayLaterStatusEmpty ||
-                applicationDetail.payLaterExpirationDate.isNullOrEmpty())
+        return when {
+            applicationDetail.payLaterExpirationDate.isNullOrEmpty() -> false
+            status is PayLaterStatusWaiting -> true
+            status is PayLaterStatusRejected -> true
+            else -> false
+        }
     }
 }
 
