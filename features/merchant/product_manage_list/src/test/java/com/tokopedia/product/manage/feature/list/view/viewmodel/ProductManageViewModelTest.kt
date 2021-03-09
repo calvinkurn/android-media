@@ -131,7 +131,12 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val status = ProductStatus.ACTIVE
             val productUpdateV3Response = ProductUpdateV3Response(
                 productUpdateV3Data = ProductUpdateV3Data(isSuccess = true))
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
 
+            onGetWarehouseId_thenReturn(locationList)
             onEditStock_thenReturn(ProductStockWarehouse(status = STATUS_ACTIVE))
             onEditStatus_thenReturn(productUpdateV3Response)
 
@@ -152,7 +157,12 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val stock = 0
             val productName = "Amazing Product"
             val status = ProductStatus.INACTIVE
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
 
+            onGetWarehouseId_thenReturn(locationList)
             onEditStock_thenReturn(ProductStockWarehouse(status = STATUS_INACTIVE))
 
             viewModel.editStock(productId, productName, stock)
@@ -391,8 +401,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
@@ -426,8 +436,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
@@ -452,7 +462,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
@@ -488,8 +498,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
@@ -515,8 +525,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
@@ -542,8 +552,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
@@ -569,8 +579,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
@@ -596,8 +606,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
 
             onGetWarehouseId_thenReturn(locationList)
@@ -628,8 +638,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val exception = NullPointerException()
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenError(exception)
@@ -866,8 +876,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
-                ShopLocationResponse(1, MAIN_LOCATION),
-                ShopLocationResponse(2, OTHER_LOCATION)
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
@@ -954,7 +964,12 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         runBlocking {
             val editStock = true
             val result = createEditVariantResult(editStock = editStock)
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
 
+            onGetWarehouseId_thenReturn(locationList)
             onEditStock_thenReturn(ProductStockWarehouse())
 
             viewModel.editVariantsStock(result)
@@ -995,7 +1010,12 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val data = ProductUpdateV3Data(isSuccess = true)
             val response = ProductUpdateV3Response(data)
             val result = createEditVariantResult(editStock = true, editStatus = true)
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
 
+            onGetWarehouseId_thenReturn(locationList)
             onEditProductVariant_thenReturn(response)
             onEditStock_thenReturn(ProductStockWarehouse())
 
@@ -1034,7 +1054,12 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         runBlocking {
             val error = NullPointerException()
             val result = createEditVariantResult(editStock = true)
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
 
+            onGetWarehouseId_thenReturn(locationList)
             onEditStock_thenReturn(error)
 
             viewModel.editVariantsStock(result)
@@ -1116,7 +1141,12 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             )
 
             val productId = "1400068494"
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
 
+            onGetWarehouseId_thenReturn(locationList)
             onGetVariants_thenReturn(response)
 
             viewModel.getProductVariants(productId)

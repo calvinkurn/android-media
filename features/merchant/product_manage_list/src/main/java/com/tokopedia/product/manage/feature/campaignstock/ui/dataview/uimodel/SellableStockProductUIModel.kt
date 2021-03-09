@@ -15,7 +15,7 @@ data class SellableStockProductUIModel(
         var isAllStockEmpty: Boolean,
         val access: ProductManageAccess,
         val isCampaign: Boolean
-        ): Parcelable, Visitable<CampaignStockTypeFactory> {
+): Parcelable, Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =
             typeFactory.type(this)
