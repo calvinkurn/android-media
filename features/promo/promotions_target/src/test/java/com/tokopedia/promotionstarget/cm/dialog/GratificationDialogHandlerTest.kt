@@ -11,13 +11,25 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import io.mockk.*
 import kotlinx.coroutines.Job
 import org.json.JSONObject
-import org.spekframework.spek2.Spek
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
-class GratificationDialogHandlerTest : Spek({
+class GratificationDialogHandlerTest {
 
-    fun getDialogHandler(): GratificationDialogHandler {
+    private var entityHashCode = 1
+    private val inAppId = 10L
+    var screenName = javaClass.name
+    private val gratificationId = "10"
+
+    @Before
+    fun setup(){
+        MockKAnnotations.init(this)
+    }
+
+    private fun getDialogHandler(): GratificationDialogHandler {
         val gratificationPresenter: GratificationPresenter = mockk()
         val mapOfGratificationJobs: ConcurrentHashMap<Int, Job> = ConcurrentHashMap()
         val mapOfPendingInApp: ConcurrentHashMap<Int, PendingData> = ConcurrentHashMap()
@@ -29,109 +41,178 @@ class GratificationDialogHandlerTest : Spek({
 
     //===============showPushDialog========================
 
-    test("show push dialog") {
+    @Test
+    fun `show push dialog`() {
         val dialogHandler = getDialogHandler()
-        val gratificationId = "1"
-        val screenName = javaClass.name
         val activity: Activity = mockk()
         every {
-            dialogHandler.gratificationPresenter.showGratificationInApp(any(), gratificationId, NotificationEntryType.PUSH,
-                    any(), screenName)
+            dialogHandler.gratificationPresenter.showGratificationInApp(weakActivity = any(), gratificationId = gratificationId, notificationEntryType = NotificationEntryType.PUSH,
+                    gratifPopupCallback = any(), screenName = screenName)
         } returns mockk()
 
         dialogHandler.showPushDialog(activity, gratificationId, screenName)
-        verifyOrder {
-            dialogHandler.gratificationPresenter.showGratificationInApp(any(), gratificationId, NotificationEntryType.PUSH,
-                    any(), screenName)
+        verify(exactly = 1) {
+            dialogHandler.gratificationPresenter.showGratificationInApp(weakActivity = any(), gratificationId = gratificationId, notificationEntryType = NotificationEntryType.PUSH,
+                    gratifPopupCallback = any(), screenName = screenName)
         }
     }
 
     //===============showOrganicDialog=========================
-
-    group("show organic dialog") {
+    @Test
+    fun `show organic dialog when gratification id is present`(){
         val dialogHandler = getDialogHandler()
-        val screenName = javaClass.name
         val weakActivity: WeakReference<Activity> = mockk()
 
-        val gratificationId = "1"
-        val inAppId = 10L
         val gratificationPopupCallback: GratificationPresenter.GratifPopupCallback = mockk()
-        every { gratificationPopupCallback.onExeption(any()) } just runs
 
         every {
-            dialogHandler.gratificationPresenter.showGratificationInApp(weakActivity, gratificationId, NotificationEntryType.ORGANIC, gratificationPopupCallback, screenName)
+            dialogHandler.gratificationPresenter.showGratificationInApp(weakActivity = weakActivity, gratificationId = gratificationId, notificationEntryType = NotificationEntryType.ORGANIC, gratifPopupCallback = gratificationPopupCallback, screenName = screenName, inAppId = inAppId)
         } returns mockk()
 
-        test("gratification id is present") {
-            val customValues: JSONObject = JSONObject()
-            customValues.put("gratificationId", gratificationId)
-            dialogHandler.showOrganicDialog(weakActivity, customValues.toString(), gratificationPopupCallback, screenName, inAppId)
-            verifyOrder {
-                dialogHandler.gratificationPresenter.showGratificationInApp(weakActivity, gratificationId, NotificationEntryType.ORGANIC, gratificationPopupCallback, screenName)
-            }
-
+        val customValues: JSONObject = JSONObject()
+        customValues.put("gratificationId", gratificationId)
+        dialogHandler.showOrganicDialog(currentActivity = weakActivity, customValues = customValues.toString(), gratifPopupCallback = gratificationPopupCallback, screenName = screenName, inAppId = inAppId)
+        verify(exactly = 1) {
+            dialogHandler.gratificationPresenter.showGratificationInApp(weakActivity = weakActivity, gratificationId = gratificationId, notificationEntryType = NotificationEntryType.ORGANIC, gratifPopupCallback = gratificationPopupCallback, screenName = screenName, inAppId = inAppId)
         }
-        test("when gratification id is not present then handle exception") {
-            val customValues: JSONObject = JSONObject()
-            dialogHandler.showOrganicDialog(weakActivity, customValues.toString(), gratificationPopupCallback, screenName, inAppId)
-            verifyOrder {
-                gratificationPopupCallback.onExeption(any())
-            }
-            verify(exactly = 0) {
-                dialogHandler.gratificationPresenter.showGratificationInApp(weakActivity, gratificationId, NotificationEntryType.ORGANIC, gratificationPopupCallback, screenName)
-            }
+    }
+
+    @Test
+    fun `do not show organic dialog when gratification id is not present`() {
+        val dialogHandler = getDialogHandler()
+        val weakActivity: WeakReference<Activity> = mockk()
+        val gratificationPopupCallback: GratificationPresenter.GratifPopupCallback = mockk()
+
+        every { gratificationPopupCallback.onExeption(any()) } just runs
+        val customValues: JSONObject = JSONObject()
+        dialogHandler.showOrganicDialog(currentActivity = weakActivity, customValues = customValues.toString(), gratifPopupCallback = gratificationPopupCallback, screenName = screenName, inAppId = inAppId)
+        verify(exactly = 1) {
+            gratificationPopupCallback.onExeption(any())
+        }
+
+        verify(exactly = 0) {
+            dialogHandler.gratificationPresenter.showGratificationInApp(weakActivity = weakActivity, gratificationId = gratificationId, notificationEntryType = NotificationEntryType.ORGANIC, gratifPopupCallback = gratificationPopupCallback, screenName = screenName, inAppId = inAppId)
         }
     }
 
     //=============handleInAppPopup==============================
-
-    group("handle in app pop up") {
+    @Test
+    fun `handle in app pop up when gratification is disabled`() {
         val dialogHandler = getDialogHandler()
         val cmData: CMInApp = mockk()
-        val entityHashCode = 1
-        val screenName = javaClass.name
 
         mockkStatic(CMInAppManager::class)
         every { CMInAppManager.getInstance().onCMInAppInflateException(cmData) } just runs
+        every { dialogHandler.remoteConfigImpl?.getBoolean(IS_GRATIF_DISABLED, false) ?: false } returns true
 
-
-        test("when gratification is disabled") {
-            every { dialogHandler.remoteConfigImpl?.getBoolean(IS_GRATIF_DISABLED, false) ?: false } returns true
-            verify { dialogHandler.cmInflateException(cmData) }
-
-            dialogHandler.handleInAppPopup(cmData, entityHashCode, screenName)
-        }
-
-        group("when gratification is active") {
-
-            val currentActivity: Activity = mockk()
-            every { dialogHandler.activityProvider.getActivity()?.get() } returns currentActivity
-//            every { dialogHandler.handleShowOrganic(currentActivity, cmData, entityHashCode, screenName) } just runs
-
-            group("when broadcastScreen has currentScreen name and their hashcode are also same") {
-                dialogHandler.broadcastScreenNames.add(javaClass.name)
-                every { currentActivity.hashCode() } returns entityHashCode
-
-                test("has pending data") {
-                    dialogHandler.mapOfPendingInApp[entityHashCode] = PendingData(true, cmData)
-
-                    verifyOrder {
-                        dialogHandler.mapOfPendingInApp.remove(entityHashCode)
-                        dialogHandler.handleShowOrganic(currentActivity, cmData, entityHashCode, screenName)
-                    }
-                }
-
-                test("does not have any pending data") {
-                    verifyOrder {
-                        dialogHandler.mapOfPendingInApp.contains(entityHashCode)
-                    }
-                }
-            }
-
-            test("when broadcastScreen does not have currentScreen name or hashcode are different") {
-                verify { dialogHandler.handleShowOrganic(currentActivity, cmData, entityHashCode, screenName) }
-            }
-            dialogHandler.handleInAppPopup(cmData, entityHashCode, screenName)
-        }
+        dialogHandler.handleInAppPopup(cmData, entityHashCode, screenName)
+        verify { dialogHandler.cmInflateException(cmData) }
     }
-})
+
+    //==========handle in app pop up when gratification is active====================
+    @Test
+    fun `when broadcastScreen has currentScreen name and their hashcode are also same has pending data`() {
+        val dialogHandler = getDialogHandler()
+        val currentActivity: Activity = mockk()
+        val weakActivity:WeakReference<Activity?> = WeakReference(currentActivity)
+        val cmData: CMInApp = CMInApp()
+
+        val customValues: JSONObject = JSONObject()
+        customValues.put("gratificationId", gratificationId)
+        cmData.customValues = customValues.toString()
+        cmData.id = inAppId
+
+        screenName = currentActivity.javaClass.name
+        entityHashCode = currentActivity.hashCode()
+
+        every { dialogHandler.activityProvider.getActivity() } returns weakActivity
+
+        dialogHandler.broadcastScreenNames.add(screenName)
+
+        every { dialogHandler.gratificationPresenter.showGratificationInApp(
+                weakActivity = any(),
+                gratificationId = gratificationId,
+                notificationEntryType = NotificationEntryType.ORGANIC,
+                gratifPopupCallback = any(),
+                screenName = screenName, inAppId = cmData.id) } returns mockk()
+
+        dialogHandler.mapOfPendingInApp[entityHashCode] = PendingData(true, cmData)
+
+        dialogHandler.handleInAppPopup(cmData, entityHashCode, screenName)
+
+        Assert.assertEquals(dialogHandler.mapOfPendingInApp.size == 0, true)
+
+        verify(exactly = 1) {
+             dialogHandler.gratificationPresenter.showGratificationInApp(
+                    weakActivity = any(),
+                    gratificationId = gratificationId,
+                    notificationEntryType = NotificationEntryType.ORGANIC,
+                    gratifPopupCallback = any(),
+                    screenName = screenName, inAppId = cmData.id) }
+    }
+
+    @Test
+    fun `when broadcastScreen has currentScreen name and their hashcode are also same and does not have any pending data`() {
+        val dialogHandler = getDialogHandler()
+        val cmData: CMInApp = CMInApp()
+        val customValues: JSONObject = JSONObject()
+        customValues.put("gratificationId", gratificationId)
+        cmData.customValues = customValues.toString()
+        cmData.id = inAppId
+
+        //setup
+        val currentActivity: Activity = spyk()
+        val weakActivity:WeakReference<Activity?> = WeakReference(currentActivity)
+        every { dialogHandler.activityProvider.getActivity() } returns weakActivity
+
+        screenName = currentActivity.javaClass.name
+
+        entityHashCode = currentActivity.hashCode()
+        dialogHandler.broadcastScreenNames.add(screenName)
+
+        //call
+        dialogHandler.handleInAppPopup(cmData, entityHashCode, screenName)
+
+        Assert.assertEquals(dialogHandler.mapOfPendingInApp[entityHashCode]!=null, true)
+
+        verify(exactly = 0) {
+            dialogHandler.gratificationPresenter.showGratificationInApp(
+                    weakActivity = any(),
+                    gratificationId = any(),
+                    notificationEntryType = any(),
+                    gratifPopupCallback = any(),
+                    screenName = any(), inAppId = any()) }
+    }
+
+    @Test
+    fun `when broadcastScreen does not have currentScreen name or hashcode are different`() {
+        val dialogHandler = getDialogHandler()
+        val currentActivity: Activity = mockk()
+        val weakActivity:WeakReference<Activity?> = WeakReference(currentActivity)
+        val cmData: CMInApp = CMInApp()
+
+        val customValues: JSONObject = JSONObject()
+        customValues.put("gratificationId", gratificationId)
+        cmData.customValues = customValues.toString()
+        cmData.id = inAppId
+
+        every { dialogHandler.activityProvider.getActivity() } returns weakActivity
+
+        every { dialogHandler.gratificationPresenter.showGratificationInApp(
+                weakActivity = any(),
+                gratificationId = gratificationId,
+                notificationEntryType = NotificationEntryType.ORGANIC,
+                gratifPopupCallback = any(),
+                screenName = screenName, inAppId = cmData.id) } returns mockk()
+
+        dialogHandler.handleInAppPopup(cmData, entityHashCode, screenName)
+
+        verify(exactly = 1) {
+            dialogHandler.gratificationPresenter.showGratificationInApp(
+                    weakActivity = any(),
+                    gratificationId = gratificationId,
+                    notificationEntryType = NotificationEntryType.ORGANIC,
+                    gratifPopupCallback = any(),
+                    screenName = screenName, inAppId = cmData.id) }
+    }
+}
