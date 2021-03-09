@@ -74,6 +74,10 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

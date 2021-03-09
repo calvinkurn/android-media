@@ -14,13 +14,9 @@ import java.util.*
 class OrderHistoryRepository(private val service: OrderDetailService, private val mapper: OrderDetailMapper) : IOrderHistoryRepository {
 
     override fun requestOrderHistoryData(params: HashMap<String?, Any?>?): OrderHistoryData {
-        val response = service.api.getOrderHistory(params)
-        if (response.isSuccessful) {
-            response.body()?.let { responseBody ->
-                if (!responseBody.isNullOrEmpty()) {
-                    mapper.getOrderHistoryData(Gson().fromJson(responseBody, OrderHistoryResponse::class.java))
-                }
-            } ?: throw MessageErrorException("")
+        val response = service.api.getOrderHistory(params).execute().body()
+        if (!response.isNullOrEmpty()) {
+            return mapper.getOrderHistoryData(Gson().fromJson(response, OrderHistoryResponse::class.java))
         }
         throw MessageErrorException("")
     }
