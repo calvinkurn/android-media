@@ -32,6 +32,7 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryI
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -130,7 +131,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     }
 
     private fun showError(it: Throwable) {
-        val errorType = if (it is SocketTimeoutException) {
+        val errorType = if (it is SocketTimeoutException || it is UnknownHostException) {
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
