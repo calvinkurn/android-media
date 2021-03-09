@@ -1,4 +1,4 @@
-package com.tokopedia.promotionstarget
+package com.tokopedia.promotionstarget.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.promotionstarget.data.AutoApplyParams
@@ -10,11 +10,16 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.*
 import org.junit.rules.TestRule
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
+@ExperimentalCoroutinesApi
 class AutoApplyUseCaseTest {
 
     lateinit var autoApplyUseCase: AutoApplyUseCase
