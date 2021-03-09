@@ -12,10 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -64,6 +61,8 @@ import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivi
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setHeadingText
 import com.tokopedia.unifyprinciples.Typography
@@ -108,6 +107,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isInAnimation: Boolean = false
     private var cardListPosition: Int = SELECTED_POSITION_INIT
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
+
+    private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -233,6 +234,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
         }, ANIMATION_DETAIL_TIMES)
         initGetMyLocation()
+
+        quick_filter_sort_filter.addItem(
+                arrayListOf(
+                        SortFilterItem(
+                                "Testing ",
+                                ChipsUnify.TYPE_NORMAL
+                        )
+                )
+        )
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -338,6 +348,17 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             headerHotelSearchMap.setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
+
+            globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+                containerFilterHotelSearchMap.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
+
+                val headerParams = headerHotelSearchMap.layoutParams as CollapsingToolbarLayout.LayoutParams
+                headerParams.setMargins(headerParams.leftMargin, headerParams.topMargin,
+                        headerParams.rightMargin, containerFilterHotelSearchMap.measuredHeight)
+
+                headerHotelSearchMap.layoutParams = headerParams
+            }
+            containerFilterHotelSearchMap.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
         }
     }
 
