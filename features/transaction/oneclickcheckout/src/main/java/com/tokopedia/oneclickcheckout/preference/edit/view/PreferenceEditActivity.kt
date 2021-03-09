@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.DaggerPreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
@@ -36,6 +37,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     private var _preferenceIndex = ""
     private var _profileId = 0
     private var _addressId = 0
+    private var _addressModel: AddressModel? = null
     private var _shippingId = 0
     private var _gatewayCode = ""
     private var _paymentQuery = ""
@@ -47,6 +49,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     private var _fromFlow = FROM_FLOW_PREF
     private var _directPaymentStep = false
     private var _isNewFlow = false
+    private var _isSelectedPreference = false
 
     private var tvTitle: Typography? = null
     private var tvSubtitle: Typography? = null
@@ -101,6 +104,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         _fromFlow = intent.getIntExtra(EXTRA_FROM_FLOW, FROM_FLOW_PREF)
         _directPaymentStep = intent.getBooleanExtra(EXTRA_DIRECT_PAYMENT_STEP, false)
         _isNewFlow = intent.getBooleanExtra(EXTRA_IS_NEW_FLOW, false)
+        _isSelectedPreference = intent.getBooleanExtra(EXTRA_SELECTED_PREFERENCE, false)
 
         val ft = supportFragmentManager.beginTransaction()
         val fragments = supportFragmentManager.fragments
@@ -166,6 +170,18 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
 
     override fun getAddressId(): Int {
         return _addressId
+    }
+
+    override fun setNewlySelectedAddressModel(addressModel: AddressModel) {
+        _addressModel = addressModel
+    }
+
+    override fun getNewlySelectedAddressModel(): AddressModel? {
+        return _addressModel
+    }
+
+    override fun isSelectedPreference(): Boolean {
+        return _isSelectedPreference
     }
 
     override fun setShippingId(shippingId: Int) {
@@ -324,6 +340,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         const val EXTRA_IS_EXTRA_PROFILE = "is_extra_profile"
         const val EXTRA_AUTO_SELECT_ADDRESS = "is_auto_select_address"
         const val EXTRA_ADDRESS_STATE = "address_state"
+        const val EXTRA_SELECTED_PREFERENCE = "selected_preference"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"
         const val EXTRA_LIST_SHOP_SHIPMENT = "list_shop_shipment"

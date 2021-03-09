@@ -32,7 +32,9 @@ class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: Gr
     }
 
     private fun generateParam(param: UpdateCartOccRequest): Map<String, Any?> {
-        param.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
+        if (param.chosenAddress == null) {
+            param.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
+        }
         return mapOf(PARAM_KEY to param)
     }
 

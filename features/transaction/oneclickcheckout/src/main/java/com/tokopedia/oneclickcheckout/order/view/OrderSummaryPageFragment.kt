@@ -37,7 +37,9 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -47,6 +49,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
@@ -66,6 +69,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopU
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -520,6 +524,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccGlobalEvent.ForceOnboarding -> {
                     forceShowOnboarding(it.onboarding)
                 }
+                is OccGlobalEvent.UpdateLocalCacheAddress -> {
+                    updateLocalCacheAddressData(it.addressModel)
+                }
             }
         })
 
@@ -532,6 +539,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             } else {
                 atcOcc(productId)
             }
+        }
+    }
+
+    private fun updateLocalCacheAddressData(addressModel: AddressModel) {
+        activity?.let {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = it,
+                    addressId = addressModel.addressId.toString(),
+                    cityId = addressModel.cityId.toString(),
+                    districtId = addressModel.districtId.toString(),
+                    lat = addressModel.latitude,
+                    long = addressModel.longitude,
+                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
+                    postalCode = addressModel.postalCode)
         }
     }
 
@@ -934,9 +955,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }, REQUEST_CODE_ADD_ADDRESS)
         }
 
-        override fun onAddressChange(addressId: String) {
-            orderSummaryAnalytics.eventClickSelectedAddressOption(addressId, userSession.get().userId)
-            viewModel.chooseAddress(addressId)
+        override fun onAddressChange(addressModel: RecipientAddressModel) {
+            orderSummaryAnalytics.eventClickSelectedAddressOption(addressModel.id, userSession.get().userId)
+            viewModel.chooseAddress(addressModel)
         }
 
         override fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
@@ -1213,6 +1234,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                                 val addressState = viewModel.addressState.value.state
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
+                                putExtra(PreferenceEditActivity.EXTRA_SELECTED_PREFERENCE, preference.enable && preference.profileId == profileId)
                             }
                             startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
                         }
