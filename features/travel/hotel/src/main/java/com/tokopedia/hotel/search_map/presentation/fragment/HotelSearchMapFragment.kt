@@ -47,12 +47,15 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
@@ -85,6 +88,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var hotelSearchMapViewModel: HotelSearchMapViewModel
+
+    @Inject
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -194,10 +200,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Success -> {
                     /** Should have trigger the LatLng here
                     hotelSearchModel.apply {
-                        long = it.data.longitude.toFloat()
-                        lat = it.data.latitude.toFloat()
+                    long = it.data.longitude.toFloat()
+                    lat = it.data.latitude.toFloat()
                     }
-                    */
+                     */
                 }
             }
         })
@@ -220,6 +226,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         initRecyclerViewMap()
         initFloatingButton()
         initLocationMap()
+        setupToolbarAction()
         setUpTitleAndSubtitle()
         setupCollapsingToolbar()
         Handler().postDelayed({
@@ -289,6 +296,51 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         super.hideLoading()
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        context?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheckerHelper.onRequestPermissionsResult(it,
+                        requestCode, permissions,
+                        grantResults)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        googleMap.clear()
+        super.onDestroyView()
+    }
+
+    private fun setupToolbarAction() {
+        context?.let {
+            val wrapper = LinearLayout(it).apply {
+                val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                layoutParams = param
+            }
+
+            val textView = Typography(it)
+            val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            textView.layoutParams = param
+            textView.text = resources.getString(R.string.hotel_search_result_change)
+            textView.fontType = Typography.BODY_2
+            textView.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+
+            wrapper.addView(textView)
+            wrapper.setOnClickListener {
+                changeSearchParameter()
+            }
+
+            headerHotelSearchMap.addCustomRightContent(wrapper)
+            headerHotelSearchMap.isShowBackButton = true
+            headerHotelSearchMap.setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+        }
+    }
+
     private fun setUpTitleAndSubtitle() {
         context?.let {
             val hotelSearchModel = hotelSearchMapViewModel.hotelSearchModel
@@ -302,6 +354,29 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     hotelSearchModel.room,
                     hotelSearchModel.adult)
             headerHotelSearchMap.subheaderView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        }
+    }
+
+    private fun changeSearchParameter() {
+        context?.let {
+            val type = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
+            trackingHotelUtil.hotelClickChangeSearch(it, type,
+                    hotelSearchModel.name, hotelSearchModel.room, hotelSearchModel.adult,
+                    hotelSearchModel.checkIn, hotelSearchModel.checkOut, SEARCH_SCREEN_NAME)
+            startActivityForResult(HotelChangeSearchActivity.getIntent(it,
+                    hotelSearchModel.id,
+                    hotelSearchModel.name,
+                    hotelSearchModel.type,
+                    hotelSearchModel.lat.toDouble(),
+                    hotelSearchModel.long.toDouble(),
+                    hotelSearchModel.checkIn,
+                    hotelSearchModel.checkOut,
+                    hotelSearchModel.adult,
+                    hotelSearchModel.room,
+                    hotelSearchModel.searchId,
+                    hotelSearchModel.searchType,
+                    getString(R.string.hotel_search_result_change_toolbar_title)),
+                    HotelSearchResultActivity.CHANGE_SEARCH_REQ_CODE)
         }
     }
 
@@ -682,12 +757,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
-    private fun showCollapsingHeader(){
+    private fun showCollapsingHeader() {
         tvHotelSearchListTitle.visible()
         topHotelSearchMapListKnob.visible()
     }
 
-    private fun hideCollapsingHeader(){
+    private fun hideCollapsingHeader() {
         tvHotelSearchListTitle.gone()
         topHotelSearchMapListKnob.gone()
     }
@@ -718,23 +793,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun getCurrentLocation() {
         hotelSearchMapViewModel.getCurrentLocation(fusedLocationClient, requireActivity())
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        context?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                permissionCheckerHelper.onRequestPermissionsResult(it,
-                        requestCode, permissions,
-                        grantResults)
-            }
-        }
-    }
-
-    override fun onDestroyView() {
-        googleMap.clear()
-        super.onDestroyView()
     }
 
     companion object {
