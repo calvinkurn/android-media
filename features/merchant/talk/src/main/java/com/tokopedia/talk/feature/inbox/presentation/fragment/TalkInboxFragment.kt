@@ -540,7 +540,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setupSettingsIcon() {
-        talkInboxSettingsIcon.apply {
+        talkInboxSettingsIcon?.apply {
             setOnClickListener {
                 goToSellerSettings()
             }
@@ -549,7 +549,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun updateSettingsIconVisibility() {
-        talkInboxSettingsIcon.apply {
+        talkInboxSettingsIcon?.apply {
             if(isSellerView()) {
                 show()
                 return
@@ -689,7 +689,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                     }
                 }
                 show()
-                talkInboxSettingsIcon.hide()
+                talkInboxSettingsIcon?.hide()
             }
         }
     }
