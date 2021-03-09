@@ -149,6 +149,9 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalViewFmt
 
+    val videoLatency: Long
+        get() = videoLatencyPerformanceMonitoring.totalDuration
+
     private var mChannelData: PlayChannelData? = null
 
     val latestCompleteChannelData: PlayChannelData

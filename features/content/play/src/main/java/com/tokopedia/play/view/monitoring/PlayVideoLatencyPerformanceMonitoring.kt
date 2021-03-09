@@ -1,14 +1,12 @@
 package com.tokopedia.play.view.monitoring
 
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.play.di.PlayScope
 import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 08/03/21.
  */
-@PlayScope
 class PlayVideoLatencyPerformanceMonitoring @Inject constructor() {
 
     val totalDuration: Long

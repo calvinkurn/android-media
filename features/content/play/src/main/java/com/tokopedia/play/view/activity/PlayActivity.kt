@@ -24,7 +24,6 @@ import com.tokopedia.play.view.contract.*
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
-import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
@@ -59,9 +58,6 @@ class PlayActivity : BaseActivity(),
 
     @Inject
     lateinit var pageMonitoring: PlayPltPerformanceCallback
-
-    @Inject
-    lateinit var videoLatencyMonitoring: PlayVideoLatencyPerformanceMonitoring
 
     @Inject
     lateinit var playParentViewModelFactory: PlayParentViewModel.Factory
@@ -107,7 +103,7 @@ class PlayActivity : BaseActivity(),
     private val startChannelId: String
         get() = intent?.data?.lastPathSegment.orEmpty()
 
-    private val activeFragment: PlayFragment?
+    val activeFragment: PlayFragment?
         get() = try { swipeContainerView.getActiveFragment() as? PlayFragment } catch (e: Throwable) { null }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -295,8 +291,6 @@ class PlayActivity : BaseActivity(),
     }
 
     fun getPerformanceMonitoring(): PlayPltPerformanceCallback = pageMonitoring
-
-    fun getVideoLatencyPerformanceMonitoring(): PlayVideoLatencyPerformanceMonitoring = videoLatencyMonitoring
 
     private fun startPageMonitoring() {
         pageMonitoring.startPlayMonitoring()

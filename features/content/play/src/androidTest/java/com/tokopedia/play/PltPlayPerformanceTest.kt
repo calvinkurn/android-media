@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.data.PlayMockModelConfig
 import com.tokopedia.play.performance.PlayPerformanceDataFileUtils
 import com.tokopedia.play.view.activity.PlayActivity
@@ -82,12 +83,12 @@ class PltPlayPerformanceTest {
 
     private fun writePerformanceReport() {
         val pageMonitoring = activityTestRule.activity.getPerformanceMonitoring()
-        val videoLatencyMonitoring = activityTestRule.activity.getVideoLatencyPerformanceMonitoring()
+        val videoLatency = activityTestRule.activity.activeFragment?.getVideoLatency().orZero()
         PlayPerformanceDataFileUtils(
                 activity = activityTestRule.activity,
                 testCaseName = TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE,
                 performanceData = pageMonitoring.getPltPerformanceData(),
-                videoLatencyDuration = videoLatencyMonitoring.totalDuration
+                videoLatencyDuration = videoLatency
         ).writeReportToFile()
     }
 

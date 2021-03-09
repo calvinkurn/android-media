@@ -464,6 +464,8 @@ class PlayFragment @Inject constructor(
         stopPageMonitoring()
     }
 
+    fun getVideoLatency() = playViewModel.videoLatency
+
     private fun stopPageMonitoring() {
         pageMonitoring.stopMonitoring()
     }
