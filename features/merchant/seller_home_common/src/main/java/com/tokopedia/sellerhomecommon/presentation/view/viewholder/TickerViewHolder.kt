@@ -13,6 +13,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import kotlinx.android.synthetic.main.shc_ticker_widget.view.*
+import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 10/08/20
@@ -30,30 +31,32 @@ class TickerViewHolder(
 
     override fun bind(element: TickerWidgetUiModel) {
         val tickerData = element.data
+        val renderTime = measureTimeMillis {
+            with(itemView.tickerViewShc) {
+                val tickers = tickerData?.tickers.orEmpty().map {
+                    TickerData(it.title, it.message, Ticker.TYPE_ANNOUNCEMENT, true, it)
+                }
+                val tickerAdapter = TickerPagerAdapter(context, tickers)
+                addPagerView(tickerAdapter, tickers)
 
-        with(itemView.tickerViewShc) {
-            val tickers = tickerData?.tickers.orEmpty().map {
-                TickerData(it.title, it.message, Ticker.TYPE_ANNOUNCEMENT, true, it)
-            }
-            val tickerAdapter = TickerPagerAdapter(context, tickers)
-            addPagerView(tickerAdapter, tickers)
+                tickerAdapter.onDismissListener = {
+                    listener.removeWidget(adapterPosition, element)
+                }
 
-            tickerAdapter.onDismissListener = {
-                listener.removeWidget(adapterPosition, element)
-            }
+                tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
 
-            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-
-                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    if (!RouteManager.route(context, linkUrl.toString())) {
-                        val item = itemData as? TickerItemUiModel
-                        item?.let {
-                            RouteManager.route(context, it.redirectUrl)
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                        if (!RouteManager.route(context, linkUrl.toString())) {
+                            val item = itemData as? TickerItemUiModel
+                            item?.let {
+                                RouteManager.route(context, it.redirectUrl)
+                            }
                         }
                     }
-                }
-            })
+                })
+            }
         }
+        if (element.renderDuration == 0L && tickerData != null) element.renderDuration = renderTime
 
         hideTickerIfEmpty(element)
     }

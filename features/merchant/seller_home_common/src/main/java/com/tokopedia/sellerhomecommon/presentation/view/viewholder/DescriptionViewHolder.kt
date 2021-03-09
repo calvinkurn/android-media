@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import kotlinx.android.synthetic.main.shc_description_widget.view.*
+import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -24,11 +25,14 @@ class DescriptionViewHolder(
     }
 
     override fun bind(element: DescriptionWidgetUiModel) {
-        with(itemView) {
-            tvDescriptionTitle.text = element.title
-            tvDescriptionDesc.text = element.subtitle
-            setupDetails(element)
+        val renderTime = measureTimeMillis {
+            with(itemView) {
+                tvDescriptionTitle.text = element.title
+                tvDescriptionDesc.text = element.subtitle
+                setupDetails(element)
+            }
         }
+        if (element.renderDuration == 0L) element.renderDuration = renderTime
     }
 
     private fun setupDetails(element: DescriptionWidgetUiModel) {

@@ -23,7 +23,8 @@ data class MultiLineGraphWidgetUiModel(
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
         override var emptyState: WidgetEmptyStateUiModel,
-        val isComparePeriodeOnly: Boolean
+        val isComparePeriodeOnly: Boolean,
+        override var renderDuration: Long = 0
 ) : BaseWidgetUiModel<MultiLineGraphDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

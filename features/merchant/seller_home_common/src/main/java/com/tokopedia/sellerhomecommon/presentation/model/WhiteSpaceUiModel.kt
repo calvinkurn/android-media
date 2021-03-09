@@ -22,7 +22,8 @@ class WhiteSpaceUiModel(
         override var isLoaded: Boolean = true,
         override var isLoading: Boolean = false,
         override var isFromCache: Boolean = false,
-        override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
+        override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel(),
+        override var renderDuration: Long = 0
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

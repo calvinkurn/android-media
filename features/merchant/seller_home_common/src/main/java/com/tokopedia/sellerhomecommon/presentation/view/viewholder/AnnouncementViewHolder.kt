@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import kotlinx.android.synthetic.main.shc_announcement_widget.view.*
+import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 09/11/20
@@ -36,7 +37,12 @@ class AnnouncementViewHolder(
                 //remove widget if state is error
                 listener.removeWidget(adapterPosition, element)
             }
-            else -> showSuccessState(element)
+            else -> {
+                val renderDuration = measureTimeMillis {
+                    showSuccessState(element)
+                }
+                if (element.renderDuration == 0L) element.renderDuration = renderDuration
+            }
         }
     }
 

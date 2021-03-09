@@ -24,6 +24,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     var isLoading: Boolean
     var isFromCache: Boolean
     var emptyState: WidgetEmptyStateUiModel
+    var renderDuration: Long
     fun copy(): BaseWidgetUiModel<T>
 }
 

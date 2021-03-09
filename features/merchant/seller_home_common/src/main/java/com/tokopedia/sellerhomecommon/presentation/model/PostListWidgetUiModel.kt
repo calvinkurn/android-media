@@ -23,7 +23,8 @@ class PostListWidgetUiModel(
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
         override var emptyState: WidgetEmptyStateUiModel,
-        val postFilter: List<PostFilterUiModel>
+        val postFilter: List<PostFilterUiModel>,
+        override var renderDuration: Long = 0
 ) : BaseWidgetUiModel<PostListDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

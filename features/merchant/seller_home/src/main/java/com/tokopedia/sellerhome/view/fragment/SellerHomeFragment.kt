@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -16,11 +17,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.pocnewrelic.*
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
@@ -93,6 +94,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
+        private const val WIDGET_NAME_ANNOUNCEMENT = "Announcement"
+        private const val WIDGET_NAME_BAR_CHART = "BarChart"
+        private const val WIDGET_NAME_CARD = "Card"
+        private const val WIDGET_NAME_CAROUSEL = "Carousel"
+        private const val WIDGET_NAME_DESCRIPTION = "Description"
+        private const val WIDGET_NAME_LINE_GRAPH = "LineGraph"
+        private const val WIDGET_NAME_MULTI_LINE_GRAPH = "MultiLineGraph"
+        private const val WIDGET_NAME_PIE_CHART = "PieChart"
+        private const val WIDGET_NAME_POST_LIST = "PostList"
+        private const val WIDGET_NAME_PROGRESS = "Progress"
+        private const val WIDGET_NAME_SECTION = "Section"
+        private const val WIDGET_NAME_TABLE = "Table"
+        private const val WIDGET_NAME_TICKER = "Ticker"
     }
 
     @Inject
@@ -611,6 +625,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
         (activity as? LoadTimeMonitoringActivity)?.loadTimeMonitoringListener?.onStopPltMonitoring()
+        sendNewRelicData()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -743,13 +758,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun observeTickerLiveData() {
         sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessGetTickers(it.data)
+                is Success -> {
+                    stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE, it.data.firstOrNull()?.isFromCache
+                            ?: false)
+                    onSuccessGetTickers(it.data)
+                }
                 is Fail -> {
+                    stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE, false)
                     logToCrashlytics(it.throwable, ERROR_TICKER)
                     view?.relTicker?.gone()
                 }
             }
         })
+        startCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE)
         sellerHomeViewModel.getTicker()
     }
 
@@ -959,6 +980,85 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
+    }
+
+    private fun sendNewRelicData() {
+        context?.let { context ->
+            val data = mutableMapOf<String, Any>(
+                    KEY_EVENT_TYPE to ANDROID,
+                    KEY_APP_VERSION to GlobalConfig.VERSION_NAME,
+                    KEY_BROWSER to "",
+                    KEY_DEVICE_ID to GlobalConfig.DEVICE_ID,
+                    KEY_DEVICE_NAME to Build.MODEL,
+                    KEY_DEVICE_TYPE to ANDROID,
+                    KEY_NETWORK_TYPE to DeviceConnectionInfo.getConnectionType(context).orEmpty(),
+                    KEY_OS to ANDROID,
+                    KEY_OS_VERSION to Build.VERSION.RELEASE,
+                    KEY_PAGE_NAME to screenName,
+                    KEY_REFERRER to "",
+                    KEY_TENANT_ID to ANDROID,
+                    KEY_USER_AGENT to ANDROID,
+                    KEY_PACKAGE_NAME to GlobalConfig.PACKAGE_SELLER_APP,
+                    KEY_USER_ID to userSession.userId,
+                    KEY_VERSION_CODE to GlobalConfig.VERSION_CODE,
+                    KEY_PLT to performanceMonitoringSellerHomePlt?.getOverallDuration().orZero(),
+                    PLT_NETWORK to performanceMonitoringSellerHomePlt?.getNetworkDuration().orZero(),
+                    PLT_RENDER to performanceMonitoringSellerHomePlt?.getRenderDuration().orZero()
+            )
+            getAverageWidgetRenderDuration<AnnouncementWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_ANNOUNCEMENT, performanceMonitoringSellerHomePlt?.getAnnouncementWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<BarChartWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_BAR_CHART, performanceMonitoringSellerHomePlt?.getBarChartWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<CardWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_CARD, performanceMonitoringSellerHomePlt?.getCardWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<CarouselWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_CAROUSEL, performanceMonitoringSellerHomePlt?.getCarouselWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<DescriptionWidgetUiModel>().takeIf { it != 0L }?.let {
+                data[String.format(PLT_COMPONENT_RENDER, WIDGET_NAME_DESCRIPTION)] = it
+            }
+            getAverageWidgetRenderDuration<LineGraphWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_LINE_GRAPH, performanceMonitoringSellerHomePlt?.getLineGraphWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<MultiLineGraphWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_MULTI_LINE_GRAPH, performanceMonitoringSellerHomePlt?.getMultiLineGraphWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<PieChartWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_PIE_CHART, performanceMonitoringSellerHomePlt?.getPieChartWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<PostListWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_POST_LIST, performanceMonitoringSellerHomePlt?.getPostListWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<ProgressWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_PROGRESS, performanceMonitoringSellerHomePlt?.getProgressWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<SectionWidgetUiModel>().takeIf { it != 0L }?.let {
+                data[String.format(PLT_COMPONENT_RENDER, WIDGET_NAME_SECTION)] = it
+            }
+            getAverageWidgetRenderDuration<TableWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_TABLE, performanceMonitoringSellerHomePlt?.getTableWidgetNetworkDuration().orZero(), it)
+            }
+            getAverageWidgetRenderDuration<TickerWidgetUiModel>().takeIf { it != 0L }?.let {
+                data.putWidgetPLTDuration(WIDGET_NAME_TICKER, performanceMonitoringSellerHomePlt?.getTickerWidgetNetworkDuration().orZero(), it)
+            }
+            sellerHomeViewModel.sendNewRelicData(data)
+        }
+    }
+
+    private inline fun <reified T : BaseWidgetUiModel<*>> getAverageWidgetRenderDuration(): Long {
+        return adapter.data.filterIsInstance<T>()
+                .filter { it.renderDuration != 0L }
+                .map { it.renderDuration.toDouble() }
+                .average()
+                .toLong()
+    }
+
+    private fun MutableMap<String, Any>.putWidgetPLTDuration(widgetName: String, networkDuration: Long, renderDuration: Long) {
+        put(String.format(PLT_COMPONENT_NETWORK, widgetName), networkDuration)
+        put(String.format(PLT_COMPONENT_RENDER, widgetName), renderDuration)
     }
 
     interface Listener {

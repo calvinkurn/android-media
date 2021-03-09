@@ -22,7 +22,8 @@ class ProgressWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
-        override var emptyState: WidgetEmptyStateUiModel
+        override var emptyState: WidgetEmptyStateUiModel,
+        override var renderDuration: Long = 0
 ) : BaseWidgetUiModel<ProgressDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
