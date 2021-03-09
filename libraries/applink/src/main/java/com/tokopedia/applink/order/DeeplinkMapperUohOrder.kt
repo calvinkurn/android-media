@@ -113,6 +113,9 @@ object DeeplinkMapperUohOrder {
         } else if (deeplink.equals(TRAVEL_AND_ENTERTAINMENT_ORDER, true)) {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_TRAVEL_ENTERTAINMENT
             else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_ONGOING, true)) {
+            returnedDeeplink = getInternalDeeplink(context, deeplink)
         }
 
         return returnedDeeplink
