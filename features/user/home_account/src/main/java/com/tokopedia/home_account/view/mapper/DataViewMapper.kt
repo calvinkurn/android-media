@@ -108,9 +108,10 @@ class DataViewMapper @Inject constructor(
     }
 
     fun mapSaldo(context: Context?, balance: Balance): CommonDataView {
+        val totalBalance = balance.buyerAll + balance.sellerAll
         return CommonDataView(
                 id = AccountConstants.SettingCode.SETTING_SALDO,
-                title = CurrencyFormatUtil.convertPriceValueToIdrFormat(balance.buyerAll.toLong(), false),
+                title = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance.toLong() , false),
                 body = getString(context, R.string.account_title_saldo_item),
                 type = FinancialItemViewHolder.TYPE_SALDO,
                 urlIcon = AccountConstants.Url.SALDO_ICON,
