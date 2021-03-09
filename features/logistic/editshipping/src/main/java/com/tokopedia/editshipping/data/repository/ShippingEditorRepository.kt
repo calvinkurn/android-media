@@ -9,14 +9,14 @@ import javax.inject.Inject
 
 class ShippingEditorRepository @Inject constructor(private val gql: GraphqlRepository) {
 
-    suspend fun getShippingEditor(shopId: Int): GetShipperListResponse {
+    suspend fun getShippingEditor(shopId: Long): GetShipperListResponse {
         val param = mapOf("input" to mapOf("shop_id" to shopId))
         val request = GraphqlRequest(ShippingEditorQuery.ongkirShippingEditor,
                 GetShipperListResponse::class.java, param)
         return gql.getResponse(request)
     }
 
-    suspend fun getShippingEditorShipperTicker(shopId: Int): GetShipperTickerResponse {
+    suspend fun getShippingEditorShipperTicker(shopId: Long): GetShipperTickerResponse {
         val param = mapOf("input" to mapOf("shop_id" to shopId))
         val request = GraphqlRequest(ShippingEditorQuery.ongkirShippingEditorTicker,
                 GetShipperTickerResponse::class.java, param)
@@ -28,7 +28,7 @@ class ShippingEditorRepository @Inject constructor(private val gql: GraphqlRepos
         return gql.getResponse(request)
     }
 
-    suspend fun validateShippingEditor(shopId: Int, activatedSpId: String): ValidateShippingEditorResponse {
+    suspend fun validateShippingEditor(shopId: Long, activatedSpId: String): ValidateShippingEditorResponse {
         val param = mapOf("input" to mapOf(
                 "shop_id" to shopId,
                 "activated_sp_id" to activatedSpId))
@@ -37,7 +37,7 @@ class ShippingEditorRepository @Inject constructor(private val gql: GraphqlRepos
         return gql.getResponse(request)
     }
 
-    suspend fun saveShippingEditor(shopId: Int, activatedSpId: String, featureId: String?): SaveShippingEditorResponse {
+    suspend fun saveShippingEditor(shopId: Long, activatedSpId: String, featureId: String?): SaveShippingEditorResponse {
         val param  = mapOf("input" to mapOf(
                 "shop_id" to shopId,
                 "activated_sp_id" to activatedSpId,

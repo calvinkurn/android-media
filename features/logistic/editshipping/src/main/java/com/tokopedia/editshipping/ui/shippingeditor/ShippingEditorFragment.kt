@@ -37,6 +37,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -213,7 +215,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         viewModel.shipperList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShippingEditorState.Success -> {
-                    viewModel.getShipperTickerList(userSession.shopId.toInt())
+                    viewModel.getShipperTickerList(userSession.shopId.toLong())
                     updateData(it.data.shippers)
                     renderTicker(it.data.ticker)
                 }
@@ -281,7 +283,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun fetchData() {
-        viewModel.getShipperList(userSession.shopId.toInt())
+        viewModel.getShipperList(userSession.shopId.toLong())
     }
 
     private fun updateData(data: ShippersModel) {
@@ -369,7 +371,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         } else if (data.state == VALIDATE_BEBAS_ONGKIR_STATE) {
             openBottomSheetValidateBOData(data)
         } else {
-            viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
+            viewModel.saveShippingData(userSession.shopId.toLong(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
         }
     }
 
@@ -469,7 +471,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             }
         }
         btnNonaktifkanValidationBO?.setOnClickListener {
-            viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
+            viewModel.saveShippingData(userSession.shopId.toLong(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
             bottomSheetBOValidation?.dismiss()
         }
         btnAktifkanValidateBO?.setOnClickListener {
@@ -542,7 +544,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
         btnSecondaryVertical?.text = getString(R.string.button_save)
         btnSecondaryVertical?.setOnClickListener {
-            viewModel.saveShippingData(userSession.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
+            viewModel.saveShippingData(userSession.shopId.toLong(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
             bottomSheetCourierInactive?.dismiss()
         }
         btnVerticalLayout?.visible()
@@ -559,7 +561,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
         btnSecondaryHorizontal?.text = getString(R.string.button_activate)
         btnSecondaryHorizontal?.setOnClickListener {
-            viewModel.saveShippingData(userSession.shopId.toInt(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
+            viewModel.saveShippingData(userSession.shopId.toLong(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
             bottomSheetCourierInactive?.dismiss()
         }
         tickerChargeBoCourierInactive?.apply {
@@ -651,7 +653,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         val activatedSpIds = getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds())
         if (activatedSpIds.isEmpty()) {
             view?.let { Toaster.build(it, EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
-        } else viewModel.validateShippingEditor(userSession.shopId.toInt(), activatedSpIds)
+        } else viewModel.validateShippingEditor(userSession.shopId.toLong(), activatedSpIds)
     }
 
     private fun getListActivatedSpIds(onDemandList: List<String>, conventionalList: List<String>): String {

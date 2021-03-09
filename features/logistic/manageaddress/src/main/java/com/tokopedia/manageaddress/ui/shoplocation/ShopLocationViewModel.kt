@@ -33,7 +33,7 @@ class ShopLocationViewModel @Inject constructor(
         get() = _shopWhitelist
 
 
-    fun getShopLocationList(shopId: Int?) {
+    fun getShopLocationList(shopId: Long?) {
         _shopLocation.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorGetShopLocation) {
             val getShopLocation = repo.getShopLocation(shopId)

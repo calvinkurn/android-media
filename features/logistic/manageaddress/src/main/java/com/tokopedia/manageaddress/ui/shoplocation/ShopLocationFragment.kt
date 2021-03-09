@@ -93,7 +93,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_WAREHOUSE_REQUEST_CODE ) {
-            viewModel.getShopLocationList(userSession?.shopId.toInt())
+            viewModel.getShopLocationList(userSession?.shopId.toLong())
         }
     }
 
@@ -169,7 +169,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                     } else {
                         view?.let { view -> Toaster.build(view, getString(R.string.text_activate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     }
-                    viewModel.getShopLocationList(userSession.shopId.toIntOrNull())
+                    viewModel.getShopLocationList(userSession.shopId.toLong())
                 }
 
                 is ShopLocationState.Fail -> {
@@ -185,7 +185,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun fetchData() {
-        viewModel.getShopLocationList(userSession.shopId.toInt())
+        viewModel.getShopLocationList(userSession.shopId.toLong())
     }
 
     private fun updateData(data: List<Warehouse>) {
@@ -319,7 +319,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private fun showGlobalError(type: Int) {
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
-            viewModel.getShopLocationList(userSession.shopId.toInt())
+            viewModel.getShopLocationList(userSession.shopId.toLong())
         }
         addressList?.gone()
         globalErrorLayout?.visible()

@@ -314,7 +314,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         if (isCoverage) {
             val latLong = "$currentLat,$currentLong"
             warehouseModel?.let {
-                viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
+                viewModel.saveEditShopLocation(userSession.shopId.toLong(), it.warehouseId, etShopLocation?.text.toString(),
                         it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
                         etZipCode?.text.toString(), userSession.phoneNumber)
             }
@@ -334,7 +334,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 uncoveredCourierFlag = true
                 val latLong = "$currentLat,$currentLong"
                 warehouseModel?.let {
-                    viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
+                    viewModel.saveEditShopLocation(userSession.shopId.toLong(), it.warehouseId, etShopLocation?.text.toString(),
                             it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
                             etZipCode?.text.toString(), userSession.phoneNumber)
                 }
@@ -376,7 +376,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->
                 if(validate) {
-                    viewModel.checkCouriersAvailability(userSession.shopId.toInt(), it.districtId)
+                    viewModel.checkCouriersAvailability(userSession.shopId.toLong(), it.districtId)
                 }
             }
         }

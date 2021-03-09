@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class ShopLocationRepository @Inject constructor(private val gql: GraphqlRepository) {
 
-    suspend fun getShopLocation(shopId: Int?): GetShopLocationResponse {
+    suspend fun getShopLocation(shopId: Long?): GetShopLocationResponse {
         val param = mapOf("shop_id" to shopId)
         val request = GraphqlRequest(ShopLocationQuery.getShopLocation,
                 GetShopLocationResponse::class.java, param)
@@ -28,7 +28,7 @@ class ShopLocationRepository @Inject constructor(private val gql: GraphqlReposit
         return gql.getResponse(request)
     }
 
-    suspend fun saveEditShopLocation(shopId: Int, warehouseId: Int, warehouseName: String,
+    suspend fun saveEditShopLocation(shopId: Long, warehouseId: Int, warehouseName: String,
                                      districtId: Int, latLon: String, email: String,
                                      addressDetail: String, postalCode: String, phone: String): ShopLocationUpdateWarehouseResponse {
         val param = mapOf(
@@ -56,7 +56,7 @@ class ShopLocationRepository @Inject constructor(private val gql: GraphqlReposit
         return gql.getResponse(request)
     }
 
-    suspend fun shopCheckCouriersNewLoc(shopId: Int, districtId: Int): ShopLocCheckCouriersNewLocResponse {
+    suspend fun shopCheckCouriersNewLoc(shopId: Long, districtId: Int): ShopLocCheckCouriersNewLocResponse {
         val param = mapOf("shop_id" to shopId, "district_id" to districtId)
         val request = GraphqlRequest(ShopLocationQuery.shopLocCheckCouriers,
                 ShopLocCheckCouriersNewLocResponse::class.java, param)
