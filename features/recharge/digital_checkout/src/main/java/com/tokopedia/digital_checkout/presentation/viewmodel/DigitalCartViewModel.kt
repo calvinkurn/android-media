@@ -10,8 +10,11 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
+import com.tokopedia.digital_checkout.data.PaymentSummary
+import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
-import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
@@ -45,7 +48,6 @@ import java.lang.reflect.Type
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -103,7 +105,13 @@ class DigitalCartViewModel @Inject constructor(
     val promoData: LiveData<PromoData>
         get() = _promoData
 
+    private val _payment = MutableLiveData<PaymentSummary>()
+    val payment: LiveData<PaymentSummary>
+        get() = _payment
+
     var requestCheckoutParam = DigitalCheckoutDataParameter()
+
+    private val paymentSummary = PaymentSummary(mutableListOf())
 
     fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                 errorNotLoginMessage: String = "") {
@@ -223,6 +231,9 @@ class DigitalCartViewModel @Inject constructor(
 
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
+            paymentSummary.addToSummary(Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
+            _payment.postValue(paymentSummary)
+
             requestCheckoutParam.transactionAmount = pricePlain
 
             val promoData = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
@@ -270,34 +281,21 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     private fun onReceivedPromoCode() {
-        resetAdditionalInfoAndTotalPrice()
+        resetCheckoutSummaryPromoAndTotalPrice()
         val promoDataValue = promoData.value?.amount ?: 0
         if (promoDataValue > 0) {
-            val additionals: MutableList<CartItemDigitalWithTitle> = ArrayList(_cartAdditionalInfoList.value
-                    ?: listOf())
-            val items: MutableList<CartItemDigital> = ArrayList()
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PRICE, cartDigitalInfoData.value?.attributes?.price
-                    ?: ""))
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
-            val totalPayment = (cartDigitalInfoData.value?.attributes?.pricePlain
-                    ?: 0.0) - promoDataValue.toDouble()
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_TOTAL_PAYMENT, getStringIdrFormat(totalPayment)))
-            val cartAdditionalInfo = CartItemDigitalWithTitle(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT, items)
-            additionals.add(cartAdditionalInfo)
-            _cartAdditionalInfoList.postValue(additionals)
+            paymentSummary.addToSummary(Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
+            _payment.postValue(paymentSummary)
             _totalPrice.forceRefresh()
+        } else {
+            paymentSummary.removeFromSummary(STRING_KODE_PROMO)
+            _payment.postValue(paymentSummary)
         }
     }
 
-    fun resetAdditionalInfoAndTotalPrice() {
-        val additionalInfos = cartAdditionalInfoList.value?.toMutableList() ?: mutableListOf()
-        for ((i, additionalInfo) in additionalInfos.withIndex()) {
-            if (additionalInfo.title.contains(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT)) {
-                additionalInfos.removeAt(i)
-                break
-            }
-        }
-        _cartAdditionalInfoList.postValue(additionalInfos)
+    fun resetCheckoutSummaryPromoAndTotalPrice() {
+        paymentSummary.removeFromSummary(STRING_KODE_PROMO)
+        _payment.postValue(paymentSummary)
         _totalPrice.forceRefresh()
     }
 
@@ -319,9 +317,29 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
+    fun updateCheckoutSummaryWithFintechProduct(isChecked: Boolean) {
+        cartDigitalInfoData.value?.attributes?.let { attributes ->
+            val fintechProductName = attributes.fintechProduct.getOrNull(0)?.info?.title
+                    ?: ""
+            val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
+                    ?: 0.0
+            if (isChecked) {
+                paymentSummary.addToSummary(Payment(fintechProductName, getStringIdrFormat(fintechProductPrice)))
+            } else {
+                paymentSummary.removeFromSummary(fintechProductName)
+            }
+            _payment.postValue(paymentSummary)
+        }
+    }
+
     fun setTotalPriceBasedOnUserInput(totalPrice: Double, isFintechProductChecked: Boolean) {
         requestCheckoutParam.transactionAmount = totalPrice
         updateTotalPriceWithFintechProduct(isFintechProductChecked, totalPrice)
+    }
+
+    fun setSubtotalPaymentSummaryOnUserInput(totalPrice: Double) {
+        paymentSummary.changeSummaryValue(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(totalPrice))
+        _payment.postValue(paymentSummary)
     }
 
     fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
@@ -386,7 +404,7 @@ class DigitalCartViewModel @Inject constructor(
         when (promoData.state) {
             TickerCheckoutView.State.FAILED,
             TickerCheckoutView.State.EMPTY -> {
-                resetAdditionalInfoAndTotalPrice()
+                resetCheckoutSummaryPromoAndTotalPrice()
             }
             TickerCheckoutView.State.ACTIVE -> {
                 onReceivedPromoCode()

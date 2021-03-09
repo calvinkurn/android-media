@@ -111,8 +111,8 @@
                 android:id="@+id/layoutMyBills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing_lvl3">
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
                     android:id="@+id/subscriptionWidget"
                     android:layout_width="match_parent"
@@ -128,16 +128,17 @@
                     android:visibility="gone"
                     tools:visibility="visible" />
             </LinearLayout>
-            <LinearLayout
-                android:id="@+id/layoutCheckoutBottomView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutBottomViewWidget
-                    android:id="@+id/checkoutBottomViewWidget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+            <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSummaryWidget
+                android:id="@+id/checkoutSummaryWidget"
+                android:background="@color/Unify_N0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutBottomViewWidget
+                android:id="@+id/checkoutBottomViewWidget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

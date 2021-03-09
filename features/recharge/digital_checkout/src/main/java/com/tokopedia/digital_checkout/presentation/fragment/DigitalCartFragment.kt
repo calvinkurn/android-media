@@ -3,6 +3,7 @@ package com.tokopedia.digital_checkout.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -187,6 +188,10 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         viewModel.paymentPassData.observe(viewLifecycleOwner, Observer {
             redirectToTopPayActivity(it)
+        })
+
+        viewModel.payment.observe(viewLifecycleOwner, Observer { payment ->
+            checkoutSummaryWidget.setSummaries(payment)
         })
 
         observePromoData()
@@ -460,6 +465,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
                     }
 
                     viewModel.updateTotalPriceWithFintechProduct(fintechProductWidget.isChecked(), getPriceInput())
+                    viewModel.updateCheckoutSummaryWithFintechProduct(fintechProductWidget.isChecked())
                 }
 
                 fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
@@ -474,6 +480,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
                             digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
                         }
                         viewModel.updateTotalPriceWithFintechProduct(isChecked, getPriceInput())
+                        viewModel.updateCheckoutSummaryWithFintechProduct(isChecked)
                     }
                 }
             }
@@ -510,6 +517,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
                     override fun onInputPriceByUserFilled(paymentAmount: Long?) {
                         viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0,
                                 fintechProductWidget.isChecked())
+                        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble() ?: 0.0)
                     }
 
                     override fun enableCheckoutButton() {

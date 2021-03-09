@@ -8,6 +8,7 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:layout_marginTop="@dimen/spacing_lvl3"
 android:focusableInTouchMode="true"
+android:background="@color/Unify_N0"
 app:layout_constraintBottom_toBottomOf="parent">
 
 <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
