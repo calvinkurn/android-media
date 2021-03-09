@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.adapter
+package com.tokopedia.catalog.adapter.decorators
 
 import android.graphics.Rect
 import android.view.View

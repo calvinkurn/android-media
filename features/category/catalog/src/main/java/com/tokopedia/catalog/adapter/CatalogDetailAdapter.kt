@@ -55,6 +55,5 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
             catalogDetailListener.showFloatingLayout()
         }
         super.onViewDetachedFromWindow(holder)
-
     }
 }

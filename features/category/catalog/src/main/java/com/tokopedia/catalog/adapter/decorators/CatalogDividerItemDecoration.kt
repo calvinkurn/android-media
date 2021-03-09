@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.adapter
+package com.tokopedia.catalog.adapter.decorators
 
 import android.graphics.drawable.Drawable
 import androidx.recyclerview.widget.RecyclerView

@@ -31,17 +31,17 @@ import androidx.annotation.Nullable;
  *
  * With this class, we can "customize" recyclerview behavior
  */
-public class MyCustomRecyclerView extends RecyclerView {
+public class CatalogCustomRecyclerView extends RecyclerView {
 
-    public MyCustomRecyclerView(@NonNull Context context) {
+    public CatalogCustomRecyclerView(@NonNull Context context) {
         super(context);
     }
 
-    public MyCustomRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public CatalogCustomRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MyCustomRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public CatalogCustomRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
