@@ -171,9 +171,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             var drawable: TextDrawable? = null
             activity?.let {
                 drawable = TextDrawable(it)
-                drawable.text = resources.getString(R.string.login)
-                drawable.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                drawable.textSize = 14f
+                drawable?.text = resources.getString(R.string.login)
+                drawable?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                drawable?.textSize = 14f
             }
             return drawable
         }
@@ -940,7 +940,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
-                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 goToAddName(uuid)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity
                             .RESULT_CANCELED) {
@@ -954,8 +954,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
-                val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
+                val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToChooseAccountPage(accessToken, phoneNumber)
 
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {

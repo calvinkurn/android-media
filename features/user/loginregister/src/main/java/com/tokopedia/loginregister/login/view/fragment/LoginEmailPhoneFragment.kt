@@ -227,8 +227,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         var drawable: TextDrawable? = null
         activity?.let {
             drawable = TextDrawable(it)
-            drawable.text = resources.getString(R.string.register)
-            drawable.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            drawable?.text = resources.getString(R.string.register)
+            drawable?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
         return drawable
     }
@@ -286,17 +286,22 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         fetchRemoteConfig()
         clearData()
         prepareView()
-        if (arguments != null && arguments?.getBoolean(IS_AUTO_FILL, false)) {
-            emailPhoneEditText.setText(arguments?.getString(AUTO_FILL_EMAIL, ""))
-        } else if (isAutoLogin) {
-            when (arguments?.getInt(AUTO_LOGIN_METHOD, -1)) {
-                LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
-                LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
-                LoginActivity.METHOD_EMAIL -> onLoginEmailClick()
-                else -> showSmartLock()
+        val isAutoFill = arguments?.getBoolean(IS_AUTO_FILL, false) ?: false
+        when {
+            isAutoFill -> {
+                emailPhoneEditText.setText(arguments?.getString(AUTO_FILL_EMAIL, ""))
             }
-        } else {
-            showSmartLock()
+            isAutoLogin -> {
+                when (arguments?.getInt(AUTO_LOGIN_METHOD, -1)) {
+                    LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
+                    LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
+                    LoginActivity.METHOD_EMAIL -> onLoginEmailClick()
+                    else -> showSmartLock()
+                }
+            }
+            else -> {
+                showSmartLock()
+            }
         }
 
         if (!GlobalConfig.isSellerApp()) {
@@ -329,8 +334,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginEmailClick() {
-        val email = arguments?.getString(AUTO_LOGIN_EMAIL, "")
-        val pw = arguments?.getString(AUTO_LOGIN_PASS, "")
+        val email = arguments?.getString(AUTO_LOGIN_EMAIL, "") ?: ""
+        val pw = arguments?.getString(AUTO_LOGIN_PASS, "") ?: ""
         partialRegisterInputView.showLoginEmailView(email)
         emailPhoneEditText.setText(email)
         wrapper_password?.textFieldInput?.setText(pw)
@@ -513,7 +518,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailPhoneEditText.text.toString().trim())
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
-        analytics.eventClickForgotPasswordFromLogin(activity?.applicationContext)
+        activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
 
     }
 
@@ -576,7 +581,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun onLoginGoogleClick() {
         if (activity != null) {
             onDismissBottomSheet()
-            analytics.eventClickLoginGoogle(activity?.applicationContext)
+            activity?.applicationContext?.let { analytics.eventClickLoginGoogle(it) }
 
             openGoogleLoginIntent()
         }
@@ -591,7 +596,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         if (activity != null) {
             onDismissBottomSheet()
-            analytics.eventClickLoginFacebook(activity?.applicationContext)
+            activity?.applicationContext?.let { analytics.eventClickLoginFacebook(it) }
             presenter.getFacebookCredential(this, callbackManager)
         }
     }
@@ -851,9 +856,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun isFromRegister(): Boolean {
-        return (activity != null
-                && activity?.intent != null
-                && activity?.intent.getBooleanExtra(IS_FROM_REGISTER, false))
+        return (activity?.intent?.getBooleanExtra(IS_FROM_REGISTER, false) ?: false)
     }
 
     override fun trackSuccessValidate() {
@@ -1192,8 +1195,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     && data.extras?.getString(SmartLockActivity.PASSWORD) != null) run {
                 emailPhoneEditText.setText(data.extras?.getString(SmartLockActivity.USERNAME))
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
-                presenter.loginEmail(data.extras?.getString(SmartLockActivity.USERNAME, ""),
-                        data.extras?.getString(SmartLockActivity.PASSWORD, ""))
+                presenter.loginEmail(data.extras?.getString(SmartLockActivity.USERNAME, "") ?: "",
+                        data.extras?.getString(SmartLockActivity.PASSWORD, "") ?: "")
                 activity?.let {
                     analytics.eventClickSmartLock(it.applicationContext)
                 }
@@ -1233,8 +1236,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             } else if (requestCode == REQUEST_REGISTER_PHONE
                     && resultCode == Activity.RESULT_OK && data != null
                     && data.extras != null) {
-                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                val msisdn = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
+                val msisdn = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME) {
                 onSuccessLogin()
