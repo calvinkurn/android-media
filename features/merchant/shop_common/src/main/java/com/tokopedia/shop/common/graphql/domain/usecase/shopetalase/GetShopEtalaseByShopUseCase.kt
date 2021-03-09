@@ -38,7 +38,6 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
               rules {
                 name
               }
-              imageURL
             }
             error {
               message

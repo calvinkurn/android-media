@@ -104,6 +104,7 @@ import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
+import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -207,6 +208,10 @@ class NewShopPageFragment :
         get() = R.drawable.ic_shop_tab_product_active.takeIf {
             isUsingNewNavigation()
         } ?: -1
+    private val iconTabShowcaseInactive: Int
+        get() = R.drawable.ic_shop_tab_showcase_inactive
+    private val iconTabShowcaseActive: Int
+        get() = R.drawable.ic_shop_tab_showcase_active
     private val iconTabFeedInactive: Int
         get() = R.drawable.ic_shop_tab_feed_inactive.takeIf {
             isUsingNewNavigation()
@@ -1166,6 +1171,13 @@ class NewShopPageFragment :
                     iconTabProductInactive,
                     iconTabProductActive,
                     shopPageProductFragment
+            ))
+            val shopPageShowcaseFragment = ShopPageShowcaseFragment.createInstance()
+            add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_showcase),
+                    iconTabShowcaseInactive,
+                    iconTabShowcaseActive,
+                    shopPageShowcaseFragment
             ))
             if (isShowFeed) {
                 val feedFragment = FeedShopFragment.createInstance(
