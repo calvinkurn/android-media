@@ -163,7 +163,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.latLong.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    addMyLocation(LatLng(it.data.first, it.data.second))
+                    addMyLocation(LatLng(it.data.second, it.data.first))
                 }
             }
         })
