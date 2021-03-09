@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
@@ -60,6 +61,9 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_CONTENT_DESCRIPTION
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_CONTENT_TITLES
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SPECIFICATION
@@ -88,6 +92,8 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
+import com.tokopedia.product.addedit.tooltip.model.NumericWithDescriptionTooltipModel
+import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipCardViewSelectable
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
@@ -1452,8 +1458,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToProductPriceRecommendation() {
-        //observe only if product has product id
-        if (viewModel.productInputModel.productId == 0L) return
+        //observe only if product has product id and if seller app
+        if (viewModel.productInputModel.productId == 0L || !GlobalConfig.isSellerApp()) return
         viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
             if (it.suggestedPrice > 0.0) {
                 val minText = it.suggestedPriceMin.getCurrencyFormatted()
@@ -1531,7 +1537,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun setupProductPriceRecommendationField() {
         productPriceRecommendation?.setButtonToBlack()
         productPriceRecommendation?.setOnButtonNextClicked {
-            Toaster.build(requireView(), "sa1", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            showProductPriceRecommendationTips()
         }
         productPriceRecommendation?.setOnSuggestedPriceSelected { suggestedPrice ->
             productPriceField.setText(suggestedPrice)
@@ -1608,6 +1614,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         }
         dialog.show()
+    }
+
+    private fun showProductPriceRecommendationTips() {
+        val tooltipBottomSheet = TooltipBottomSheet()
+        val tips: ArrayList<NumericWithDescriptionTooltipModel> = ArrayList()
+        val tooltipTitle = getString(R.string.title_price_recommendation_bottom_sheet)
+        PRICE_RECOMMENDATION_CONTENT_TITLES.forEachIndexed { index, title ->
+            val description = PRICE_RECOMMENDATION_CONTENT_DESCRIPTION.getOrNull(index).orEmpty()
+            tips.add(NumericWithDescriptionTooltipModel(title, description))
+        }
+
+        tooltipBottomSheet.apply {
+            setTitle(tooltipTitle)
+            setItemMenuList(tips)
+            setDividerVisible(false)
+            setBannerImage(PRICE_RECOMMENDATION_BANNER_URL)
+        }
+        tooltipBottomSheet.show(childFragmentManager, null)
     }
 
     private fun enableWholesale() {
