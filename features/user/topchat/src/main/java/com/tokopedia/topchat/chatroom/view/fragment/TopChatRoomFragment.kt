@@ -451,7 +451,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+    private fun onSuccessGetExistingChatFirstTime(
+            chatRoom: ChatroomViewModel, chat: ChatReplies
+    ) {
         setupFirstTimeOnly(chatRoom, chat)
         setupFirstPage(chatRoom, chat)
         fpm.stopTrace()
@@ -460,9 +462,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
-        presenter.getShopFollowingStatus(shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus)
+        presenter.getShopFollowingStatus(
+                shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus
+        )
         orderProgress?.renderIfExist()
-        getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog)
+        getViewState().onSuccessLoadFirstTime(
+                chatRoom, onToolbarClicked(), this, alertDialog
+        )
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
