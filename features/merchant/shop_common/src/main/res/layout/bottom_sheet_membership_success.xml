@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_14"
         android:layout_marginLeft="@dimen/dp_14"
-        android:src="@drawable/img_frame"
+        android:src="@drawable/img_frame_id"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -37,11 +37,12 @@
         app:typographyType="body_3"
         android:layout_marginBottom="@dimen/dp_40"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
+    <Button
         android:id="@+id/btn_check_my_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        style="@style/Button.Submit.Green"
         android:text="@string/bs_button_txt"
         android:layout_marginBottom="@dimen/dp_16"/>
 
