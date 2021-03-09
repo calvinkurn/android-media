@@ -123,4 +123,7 @@
     <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
 
+    <!-- Order Management History   -->
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+
 </resources>
