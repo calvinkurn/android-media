@@ -2,9 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <corners
-        android:bottomLeftRadius="@dimen/spacing_lvl3"
-        android:bottomRightRadius="@dimen/spacing_lvl3"
-        android:topLeftRadius="@dimen/layout_lvl0"
-        android:topRightRadius="@dimen/layout_lvl0" />
+        android:bottomLeftRadius="8dp"
+        android:bottomRightRadius="8dp"
+        android:topLeftRadius="0dp"
+        android:topRightRadius="0dp" />
 
 </shape>

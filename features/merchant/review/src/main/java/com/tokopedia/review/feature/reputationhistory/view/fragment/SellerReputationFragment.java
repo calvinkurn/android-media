@@ -52,7 +52,6 @@ import com.tokopedia.review.feature.reputationhistory.view.helper.GMStatHeaderVi
 import com.tokopedia.review.feature.reputationhistory.view.helper.RefreshHandler;
 import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationViewHelper;
 import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
-import com.tokopedia.review.feature.reputationhistory.view.model.ShopScoreReputationUiModel;
 import com.tokopedia.review.feature.reputationhistory.view.presenter.SellerReputationFragmentPresenter;
 import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifyprinciples.Typography;
@@ -112,7 +111,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
     private CoordinatorLayout.LayoutParams orignalLp;
 
     private ArrayList<Parcelable> tempParcelables;
-    private ShopScoreReputationUiModel shopScoreReputationUiModel = new ShopScoreReputationUiModel();
 
     private IconUnify iconChevronRightReputationDetail;
     private Typography tvInfoMigrateReputation;
@@ -209,22 +207,18 @@ public class SellerReputationFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
-        initTickerShopScore();
+        initCardShopScore();
         initialVar();
         setViewListener();
         setActionVar();
     }
 
-    private void initTickerShopScore() {
+    private void initCardShopScore() {
         String date = ReviewUtil.INSTANCE.getShopScoreDate(requireContext());
         tvInfoMigrateReputation.setText(MethodChecker.fromHtml(getString(R.string.desc_info_reputation_migrate_shop_score)));
-        iconChevronRightReputationDetail.setOnClickListener(view -> {
-            showBottomSheetMoveShopScore();
-        });
+        iconChevronRightReputationDetail.setOnClickListener(view -> showBottomSheetMoveShopScore());
 
-        cardReputationShopScore.setOnClickListener(view -> {
-            showBottomSheetMoveShopScore();
-        });
+        cardReputationShopScore.setOnClickListener(view -> showBottomSheetMoveShopScore());
     }
 
     private void showBottomSheetMoveShopScore() {
@@ -511,7 +505,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
                 }
                 break;
         }
-        adapter.addAllWithoutNotify(datas, shopScoreReputationUiModel);
+        adapter.addAllWithoutNotify(datas);
         boolean isEmpty = adapter.getDataSize() <= 0;
         if (isEmpty) {
             if (!isEndOfFile) {

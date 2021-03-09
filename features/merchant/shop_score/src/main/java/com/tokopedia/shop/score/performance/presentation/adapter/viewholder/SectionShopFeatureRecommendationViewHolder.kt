@@ -30,7 +30,7 @@ class SectionShopFeatureRecommendationViewHolder(view: View,
                     addItemDecoration(ShopScoreItemDecoration())
                 }
                 adapter = itemFeatureRecommendationAdapter
-                layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }
         }
         element?.recommendationShopList?.let { itemFeatureRecommendationAdapter?.setItemRecommendationList(it) }

@@ -23,25 +23,26 @@
                 android:id="@+id/tv_title_reputation_join_shop_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl5">
+                android:layout_marginEnd="@dimen/spacing_lvl4">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/spacing_lvl5">
+                    android:paddingBottom="@dimen/spacing_lvl4">
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_title_move_reputation"
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_lvl4"
                         android:layout_marginTop="@dimen/spacing_lvl4"
+                        android:layout_marginStart="@dimen/spacing_lvl4"
                         android:layout_marginEnd="@dimen/spacing_lvl4"
                         android:text="@string/title_reputation_join_shop_score"
                         android:textColor="@color/Unify_N700_96"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_2" />
 
@@ -50,8 +51,8 @@
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl4"
-                        android:layout_marginTop="@dimen/spacing_lvl1"
                         android:layout_marginEnd="@dimen/spacing_lvl4"
+                        android:layout_marginTop="@dimen/spacing_lvl1"
                         android:text="@string/title_shop_performance"
                         android:textColor="@color/Unify_N700_96"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -68,15 +69,18 @@
                         android:layout_marginStart="@dimen/spacing_lvl4"
                         android:layout_marginTop="@dimen/dp_12"
                         app:layout_constraintTop_toBottomOf="@id/tv_title_performance_page"
-                        app:layout_constraintStart_toStartOf="parent"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_date_performance_page"
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl3"
+                        android:layout_marginEnd="@dimen/spacing_lvl4"
                         app:layout_constraintBottom_toBottomOf="@id/icon_speaker_reputation"
                         app:layout_constraintStart_toEndOf="@id/icon_speaker_reputation"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/icon_speaker_reputation"
                         app:typographyType="body_2"
                         tools:text="Mulai dari 21 - 03 - 2020" />
@@ -92,9 +96,9 @@
             android:id="@+id/card_content_move_reputation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl5"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
             android:paddingBottom="@dimen/spacing_lvl5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -168,7 +172,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_desc_get_benefit_performance"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
@@ -188,12 +192,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_content_move_reputation"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="@dimen/dp_12"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/dp_12"
             android:text="@string/btn_shop_performance" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

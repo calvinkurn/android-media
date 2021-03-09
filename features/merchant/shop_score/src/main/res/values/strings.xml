@@ -79,7 +79,7 @@
     <string name="on_going_date_result_detail_penalty">Aktif hingga: <![CDATA[<b>%1s</b>]]></string>
     <string name="over_penalty_date_result_detail_penalty">Selesai sejak: <![CDATA[<b>%1s</b>]]></string>
     <string name="desc_pm_status">Dari Performamu saat ini, tokomu berpotensi <![CDATA[<b>%1s</b>]]> di grade <![CDATA[<b>%2s</b>]]>.</string>
-    <string name="ticker_deduction_point_penalty">Ada potongan poin penalti -5. Lihat detail &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+    <string name="ticker_deduction_point_penalty">Ada potongan poin penalti %s. Lihat detail &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
     <string name="content_penalty_label">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="title_eligible_status_power_merchant">Selamat! Karena Performamu, kamu bisa jadi Power Merchant %s</string>
     <string name="desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga <![CDATA[<b>%1s kali lipat</b>]]></string>
@@ -104,13 +104,13 @@
 
     <string name="desc_tips_success_order">Pastikan informasi produk dan jumlah stok produkmu sesuai untuk menghindari pembatalan pesanan.</string>
     <string name="desc_tips_speed_reply_chat">Berlaku untuk chat (60%) dan diskusi (40%) yang dibalas di jam operasional toko.
-        <br /><br />Setting awal jam operasional Tokopedia adalah 09.00 – 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan akan mengikuti jam operasional toko.</string>
+        &lt;br /&gt;&lt;br /&gt;Setting awal jam operasional Tokopedia adalah 09.00 – 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan akan mengikuti jam operasional toko.</string>
     <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas.</string>
     <string name="desc_tips_speed_process_order">Jam operasional berdasarkan pengiriman:
-        <br />Konvensional: 09.00 - 18.00
-        <br />Instan: 09.00 - 17.00
-        <br />
-        <br />(tidak termasuk weekend)</string>
+        &lt;br /&gt;Konvensional: 09.00 - 18.00
+        &lt;br /&gt;Instan: 09.00 - 17.00
+        &lt;br /&gt;
+        &lt;br /&gt;(tidak termasuk weekend)</string>
     <string name="desc_tips_review_product">Pastikan pembeli memberikan ulasan produk setelah transaksi selesai, ya.</string>
     <string name="desc_tips_total_buyer">Gunakan fitur TopAds dan Broadcast Chat untuk menarik pembeli berbelanja.</string>
     <string name="desc_tips_open_seller_app">Dihitung per hari setiap Seller membuka Tokopedia Seller melalui Seller App (Android), Tokopedia App (iOS dan Android) atau website Tokopedia Seller. </string>

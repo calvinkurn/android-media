@@ -32,8 +32,7 @@
                 android:layout_height="wrap_content"
                 app:tickerType="information"
                 app:tickerShapeType="full"
-                app:closeButtonVisibility="gone"
-                app:titleText="@string/ticker_info_shop_score" />
+                app:closeButtonVisibility="gone" />
 
             <TextView
                 android:id="@+id/text_view_shop_score_summary_detail_tittle"

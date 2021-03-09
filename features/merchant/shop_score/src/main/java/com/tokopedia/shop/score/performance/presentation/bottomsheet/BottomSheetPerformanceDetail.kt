@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -70,9 +71,11 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
         with(data) {
             tvDescCalculationDetail?.text = MethodChecker.fromHtml(getString(descCalculation))
             tvDescTipsDetail?.text = MethodChecker.fromHtml(getString(descTips))
-            tvMoreInfoPerformanceDetail?.showWithCondition(getString(moreInformation).isNotBlank())
-            tvMoreInfoPerformanceDetail?.setClickableUrlHtml(getString(moreInformation)) {
-                RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, urlLink)
+            tvMoreInfoPerformanceDetail?.showWithCondition(!moreInformation.isZero())
+            if (!moreInformation.isZero()) {
+                tvMoreInfoPerformanceDetail?.setClickableUrlHtml(getString(moreInformation)) {
+                    RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, urlLink)
+                }
             }
         }
     }

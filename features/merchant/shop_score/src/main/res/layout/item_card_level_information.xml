@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/spacing_lvl3"
+    app:cardElevation="@dimen/layout_lvl0"
     android:id="@+id/cardLevelInformation"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -46,9 +47,10 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@id/tv_title_level_card"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_68"
-            tools:text="Rp350.000 atau\n0-2 produk terjual"/>
+            android:textColor="@color/Unify_N700"
+            tools:text="Rp350.000 atau 0-2 produk terjual"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

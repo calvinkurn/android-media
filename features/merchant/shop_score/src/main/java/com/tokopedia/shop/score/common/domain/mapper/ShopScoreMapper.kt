@@ -232,43 +232,43 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     fun mapToItemDetailPerformanceUiModel(): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
             add(ItemDetailPerformanceUiModel(
-                    titleDetailPerformance = "Tingkat kesuksesan pesanan",
+                    titleDetailPerformance = ORDER_SUCCESS_RATE,
                     valueDetailPerformance = "85%",
                     colorValueDetailPerformance = "#D6001C",
                     targetDetailPerformance = "90%"
             ))
             add(ItemDetailPerformanceUiModel(
-                    titleDetailPerformance = "Kecepatan membalas chat dan diskusi",
+                    titleDetailPerformance = CHAT_DISCUSSION_REPLY_SPEED,
                     valueDetailPerformance = "300 menit",
                     colorValueDetailPerformance = "#D6001C",
                     targetDetailPerformance = "30 menit"
             ))
             add(ItemDetailPerformanceUiModel(
-                    titleDetailPerformance = "Kecepatan mengirim pesanan",
+                    titleDetailPerformance = SPEED_SENDING_ORDERS,
                     valueDetailPerformance = "65 menit",
                     colorValueDetailPerformance = "#FA591D",
                     targetDetailPerformance = "30 menit"
             ))
             add(ItemDetailPerformanceUiModel(
-                    titleDetailPerformance = "Tingkat membalas chat dan diskusi",
+                    titleDetailPerformance = CHAT_DISCUSSION_SPEED,
                     valueDetailPerformance = "100%",
                     colorValueDetailPerformance = "#31353B",
                     targetDetailPerformance = "100%"
             ))
             add(ItemDetailPerformanceUiModel(
-                    titleDetailPerformance = "Ulasan produk dengan bintang 4+",
+                    titleDetailPerformance = PRODUCT_REVIEW_WITH_FOUR_STARS,
                     valueDetailPerformance = "100%",
                     colorValueDetailPerformance = "#31353B",
                     targetDetailPerformance = "90%"
             ))
             add(ItemDetailPerformanceUiModel(
-                    titleDetailPerformance = "Jumlah pembeli",
+                    titleDetailPerformance = TOTAL_BUYER,
                     valueDetailPerformance = "100%",
                     colorValueDetailPerformance = "#31353B",
                     targetDetailPerformance = "100%"
             ))
             add(ItemDetailPerformanceUiModel(
-                    titleDetailPerformance = "Membuka Tokopedia Seller dalam 90 hari terakhir ",
+                    titleDetailPerformance = OPEN_TOKOPEDIA_SELLER,
                     valueDetailPerformance = "100%",
                     colorValueDetailPerformance = "#31353B",
                     targetDetailPerformance = "100%"

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
@@ -15,6 +16,7 @@ class PeriodDetailPerformanceViewHolder(view: View):
 
     override fun bind(element: PeriodDetailPerformanceUiModel?) {
         with(itemView) {
+            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             tvPerformanceDetailDate.text = String.format(
                     getString(R.string.title_period_performance_detail),
                     element?.period.orEmpty(),

@@ -28,7 +28,6 @@ import com.tokopedia.review.feature.reputationhistory.view.model.EmptySeparatorM
 import com.tokopedia.review.feature.reputationhistory.view.model.ReputationReviewModel;
 import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
 import com.tokopedia.review.R;
-import com.tokopedia.review.feature.reputationhistory.view.model.ShopScoreReputationUiModel;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -182,8 +181,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         notifyItemInserted(0);
     }
 
-    public void addAllWithoutNotify(List<ItemType> datas, ShopScoreReputationUiModel shopScoreReputationUiModel) {
-        list.add(shopScoreReputationUiModel);
+    public void addAllWithoutNotify(List<ItemType> datas) {
         list.addAll(datas);
     }
 

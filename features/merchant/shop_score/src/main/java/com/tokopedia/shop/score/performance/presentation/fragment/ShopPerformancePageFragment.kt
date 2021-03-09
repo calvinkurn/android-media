@@ -67,6 +67,10 @@ class ShopPerformancePageFragment: BaseDaggerFragment(),
         bottomSheetShopTooltipScore.show(childFragmentManager)
     }
 
+    override fun onTickerClickedToPenaltyPage() {
+
+    }
+
     override fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String) {
         val bottomSheetDetail = BottomSheetPerformanceDetail.createInstance(titlePerformanceDetail)
         bottomSheetDetail.show(childFragmentManager)
@@ -81,7 +85,7 @@ class ShopPerformancePageFragment: BaseDaggerFragment(),
     }
 
     override fun onItemClickedRecommendationFeature(appLink: String) {
-        TODO("Not yet implemented")
+        //TODO
     }
 
     private fun setupAdapter() {

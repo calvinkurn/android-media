@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.presentation.adapter.CardTooltipLevelAdapter
@@ -38,7 +40,7 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_tooltip_information_level
 
-    override fun getTitleBottomSheet(): String = getString(R.string.title_income_information_level)
+    override fun getTitleBottomSheet(): String = getString(R.string.title_shop_information_level)
 
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
@@ -75,7 +77,10 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
 
     private fun setRecyclerView() {
         rvLevelCard?.apply {
-            layoutManager = GridLayoutManager(requireContext(), 2, LinearLayoutManager.HORIZONTAL, false)
+            if(itemDecorationCount.isZero()) {
+                addItemDecoration(TooltipLevelItemDecoration())
+            }
+            layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
             adapter = cardTooltipLevelAdapter
         }
     }
@@ -96,8 +101,10 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
     }
 
     private fun initData(data: ShopInfoLevelUiModel) {
+        tvPeriodInformationLevel?.text = data.periodDate
         tvValueIncomeTooltip?.text = data.shopIncome
         tvValueProductSoldTooltip?.text = data.productSold
+        tvValueNextUpdate?.text = getString(R.string.title_update_date, data.nextUpdate)
         cardTooltipLevelAdapter.setCardToolTipLevelList(data.cardTooltipLevelList)
     }
 

@@ -38,8 +38,8 @@ class ItemFeatureRecommendationAdapter(private val itemRecommendationFeatureList
         fun bind(data: SectionShopRecommendationUiModel.ItemShopRecommendationUiModel) {
             with(itemView) {
 
-                tvRecommendedPromoTitle.text = context.getString(data.titleRecommendation)
-                tvRecommendedPromoDescription.text = context.getString(data.descRecommendation)
+                tvItemRecommendedTitle.text = context.getString(data.titleRecommendation)
+                tvItemRecommendedDescription.text = context.getString(data.descRecommendation)
                 ivRecommendedPromo.loadImage(data.iconRecommendationUrl)
 
                 setOnClickListener {
