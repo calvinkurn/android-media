@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,7 +20,6 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
-import com.tokopedia.power_merchant.subscribe.view.fragment.RegistrationFragment
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -57,12 +57,20 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
                 .build()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun initInjector() {
         component.inject(this)
     }
 
     private fun setupView() {
-
+        setSupportActionBar(toolbarPmSubscription)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun observePmSettingInfo() {
@@ -97,7 +105,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun getFragmentByPeriod(periodeType: String): Fragment {
         return when (periodeType) {
-            PeriodType.FINAL_PERIOD, PeriodType.TRANSITION_PERIOD -> RegistrationFragment.createInstance()
+            PeriodType.FINAL_PERIOD, PeriodType.TRANSITION_PERIOD -> PowerMerchantSubscribeFragment.createInstance()//RegistrationFragment.createInstance()
             else -> PowerMerchantSubscribeFragment.createInstance()
         }
     }

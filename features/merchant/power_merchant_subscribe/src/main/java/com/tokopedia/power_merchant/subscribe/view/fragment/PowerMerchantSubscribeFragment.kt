@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -15,15 +17,18 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
+import com.tokopedia.gm.common.data.source.local.model.TickerUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.DeactivationBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view_old.bottomsheets.PowerMerchantCancelBottomSheet
@@ -35,14 +40,23 @@ import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState.HideLoadi
 import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState.ShowLoading
 import com.tokopedia.power_merchant.subscribe.view_old.viewmodel.PmSubscribeViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
+import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.view.*
 import javax.inject.Inject
 
 class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     @Inject
     lateinit var viewModel: PmSubscribeViewModel
 
@@ -52,18 +66,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
+    private val sharedViewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory).get(SubscriptionActivityViewModel::class.java)
+    }
+
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
     override fun initInjector() {
-        activity?.let {
-            val appComponent = (it.application as BaseMainApplication).baseAppComponent
-            DaggerPowerMerchantSubscribeComponent.builder()
-                    .baseAppComponent(appComponent)
-                    .build()
-                    .inject(this)
-        }
+        getComponent(PowerMerchantSubscribeComponent::class.java).inject(this)
     }
 
     companion object {
@@ -380,6 +392,39 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
 
         showCTAButton(powerMerchantStatus)
+
+        showTicker()
+    }
+
+    private fun showTicker() {
+        sharedViewModel.powerMerchantSettingInfo.observe(viewLifecycleOwner, Observer {
+            if (it is Success) {
+                view?.tickerPmCommunicationPeriod?.run {
+
+                    val tickersData = it.data.tickers.map { ticker ->
+                        val tickerType: Int = when (ticker.type) {
+                            TickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
+                            TickerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
+                            else -> Ticker.TYPE_ANNOUNCEMENT
+                        }
+                        return@map TickerData(ticker.title, ticker.text, tickerType, true, it)
+                    }
+
+                    if (tickersData.isEmpty()) {
+                        gone()
+                        return@run
+                    }
+
+                    val adapter = TickerPagerAdapter(context, tickersData)
+                    addPagerView(adapter, tickersData)
+                    adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                            RouteManager.route(context, linkUrl.toString())
+                        }
+                    })
+                }
+            }
+        })
     }
 
     private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {

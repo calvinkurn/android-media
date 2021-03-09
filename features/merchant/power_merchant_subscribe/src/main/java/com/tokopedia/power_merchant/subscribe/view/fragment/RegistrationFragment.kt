@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import kotlinx.android.synthetic.main.fragment_pm_registration.view.*
@@ -33,13 +32,7 @@ class RegistrationFragment : BaseListFragment<BaseWidgetUiModel, WidgetAdapterFa
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
     override fun initInjector() {
-        activity?.let {
-            val appComponent = (it.application as BaseMainApplication).baseAppComponent
-            DaggerPowerMerchantSubscribeComponent.builder()
-                    .baseAppComponent(appComponent)
-                    .build()
-                    .inject(this)
-        }
+        getComponent(PowerMerchantSubscribeComponent::class.java).inject(this)
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvPmRegistration
