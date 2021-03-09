@@ -281,6 +281,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
+                viewModel.selectedAddressModel?.let {
+                    parent.setNewlySelectedAddressModel(it)
+                }
                 setShippingParam()
                 parent.goBack()
             }

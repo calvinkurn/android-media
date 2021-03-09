@@ -1234,6 +1234,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                                 val addressState = viewModel.addressState.value.state
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
+                                putExtra(PreferenceEditActivity.EXTRA_SELECTED_PREFERENCE, preference.enable && preference.profileId == profileId)
                             }
                             startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
                         }

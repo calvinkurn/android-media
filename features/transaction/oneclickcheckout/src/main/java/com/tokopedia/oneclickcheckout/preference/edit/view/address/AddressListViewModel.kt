@@ -12,6 +12,7 @@ import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
@@ -21,6 +22,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     var savedQuery: String = ""
     var selectedId = "-1"
+    var selectedAddressModel: AddressModel? = null
     var destinationLatitude: String = ""
     var destinationLongitude: String = ""
     var destinationDistrict: String = ""
@@ -129,6 +131,15 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         val addressModel = addressListModel
         if (addressModel != null && (_addressList.value is OccState.Success || _addressList.value is OccState.FirstLoad)) {
             selectedId = address.id
+            selectedAddressModel = AddressModel(
+                    addressId = address.id?.toIntOrZero() ?: 0,
+                    cityId = address.cityId?.toIntOrZero() ?: 0,
+                    districtId = address.destinationDistrictId?.toIntOrZero() ?: 0,
+                    latitude = address.latitude,
+                    longitude = address.longitude,
+                    addressName = address.addressName,
+                    receiverName = address.recipientName,
+                    postalCode = address.postalCode)
             logicSelection(addressModel, isChangeSelection = true)
         }
     }
