@@ -97,6 +97,7 @@ class HotelSearchMapViewModel @Inject constructor(
             if (hotelSearchModel.searchType == HotelTypeEnum.COORDINATE.value) {
                 location.latitude = hotelSearchModel.lat
                 location.longitude = hotelSearchModel.long
+                location.radius = hotelSearchModel.radius
             }
 
             checkIn = hotelSearchModel.checkIn
