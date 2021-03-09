@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
@@ -18,10 +15,11 @@ import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheet
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipScore
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_shop_performance.*
 import javax.inject.Inject
 
 
-class ShopPerformancePageFragment: BaseListFragment<Visitable<*>, ShopPerformanceAdapterTypeFactory>(),
+class ShopPerformancePageFragment: BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener, ItemCurrentStatusPowerMerchantListener,
         ItemPotentialPowerMerchantListener, ItemRecommendationFeatureListener {
 
@@ -41,6 +39,8 @@ class ShopPerformancePageFragment: BaseListFragment<Visitable<*>, ShopPerformanc
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAdapter()
+        onSwipeRefreshShopPerformance()
         observeShopPerformancePage()
     }
 
@@ -55,33 +55,6 @@ class ShopPerformancePageFragment: BaseListFragment<Visitable<*>, ShopPerformanc
 
     override fun initInjector() {
         getComponent(ShopPerformanceComponent::class.java).inject(this)
-    }
-
-    override fun onItemClicked(t: Visitable<*>?) {}
-
-    override fun loadData(page: Int) {}
-
-    override fun loadInitialData() {
-        isLoadingInitialData = true
-        shopPerformanceAdapter.clearAllElements()
-        shopPerformanceAdapter.showLoading()
-        viewModel.getShopPerformancePageDummy()
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ShopPerformanceAdapterTypeFactory> {
-        return shopPerformanceAdapter
-    }
-
-    override fun getAdapterTypeFactory(): ShopPerformanceAdapterTypeFactory {
-        return shopPerformanceAdapterTypeFactory
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById(R.id.rvShopPerformance)
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout {
-        return view.findViewById(R.id.shopPerformanceSwipeRefresh)
     }
 
     override fun onTooltipLevelClicked(level: Int) {
@@ -111,15 +84,44 @@ class ShopPerformancePageFragment: BaseListFragment<Visitable<*>, ShopPerformanc
         TODO("Not yet implemented")
     }
 
+    private fun setupAdapter() {
+        rvShopPerformance?.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = shopPerformanceAdapter
+        }
+    }
+
     private fun observeShopPerformancePage() {
         observe(viewModel.shopPerformancePage) {
-            shopPerformanceAdapter.hideLoading()
+            hideLoading()
             when(it) {
                 is Success -> {
                     shopPerformanceAdapter.setShopPerformanceData(it.data)
                 }
             }
         }
+        loadData()
+    }
+
+    private fun onSwipeRefreshShopPerformance() {
+        shopPerformanceSwipeRefresh?.setOnRefreshListener {
+            loadData()
+        }
+    }
+
+    private fun loadData() {
+        showLoading()
+        viewModel.getShopPerformancePageDummy()
+    }
+
+    private fun showLoading() {
+        shopPerformanceAdapter.showLoading()
+        shopPerformanceSwipeRefresh?.isRefreshing = true
+    }
+
+    private fun hideLoading() {
+        shopPerformanceAdapter.hideLoading()
+        shopPerformanceSwipeRefresh?.isRefreshing = false
     }
 
     companion object {

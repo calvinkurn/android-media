@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners
+        android:bottomLeftRadius="@dimen/spacing_lvl3"
+        android:bottomRightRadius="@dimen/spacing_lvl3"
+        android:topLeftRadius="@dimen/layout_lvl0"
+        android:topRightRadius="@dimen/layout_lvl0" />
+
+</shape>

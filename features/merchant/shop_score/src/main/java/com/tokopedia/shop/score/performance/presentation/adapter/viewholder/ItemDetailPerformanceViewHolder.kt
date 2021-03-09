@@ -19,7 +19,7 @@ class ItemDetailPerformanceViewHolder(view: View,
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
             tvTitlePerformanceProgress.text = element?.titleDetailPerformance.orEmpty()
-            tvPerformanceValue.text = element?.valueDetailPerformance.orEmpty()
+            tvPerformanceValue.text = element?.valueDetailPerformance ?: "-"
             if (element?.colorValueDetailPerformance?.isNotBlank() == true) {
                 tvPerformanceValue.setTextColor(Color.parseColor(element.colorValueDetailPerformance))
             }

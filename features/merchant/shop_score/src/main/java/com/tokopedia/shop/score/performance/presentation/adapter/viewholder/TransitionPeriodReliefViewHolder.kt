@@ -17,7 +17,7 @@ class TransitionPeriodReliefViewHolder(view: View):
     override fun bind(element: TransitionPeriodReliefUiModel?) {
         with(itemView) {
             icSellerTransitionPeriod?.loadImage(element?.iconTransitionPeriodRelief.orEmpty())
-            tvDescSellerTransitionPeriod?.text = getString(R.string.title_transition_period_relief, element?.dateTransitionPeriodRelief)
+            tvDescSellerTransitionPeriod?.text = getString(R.string.desc_transition_period_relief, element?.dateTransitionPeriodRelief)
         }
     }
 }

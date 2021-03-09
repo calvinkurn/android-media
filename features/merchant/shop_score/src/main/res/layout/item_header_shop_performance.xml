@@ -17,9 +17,9 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPerformanceLevel"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl5"
+                android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl6"
                 android:textColor="@color/Unify_N0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +54,7 @@
                 android:id="@+id/tvTitleShopPerformance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl5"
+                android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl6"
                 android:text="@string/title_shopscore"
                 android:textColor="@color/Unify_N0"
@@ -105,7 +105,6 @@
                 android:textColor="@color/Unify_N0"
                 app:layout_constraintBottom_toBottomOf="@id/tvShopScoreValue"
                 app:layout_constraintStart_toEndOf="@id/tvShopScoreValue"
-                app:layout_constraintTop_toTopOf="@id/tvShopScoreValue"
                 app:typographyType="heading_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -118,7 +117,7 @@
                 android:textColor="@color/Unify_N0"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvShopScoreValue"
+                app:layout_constraintTop_toBottomOf="@id/tvShopScoreMaximum"
                 app:typographyType="heading_2"
                 tools:text="@string/title_shop_score_service" />
 
@@ -146,6 +145,7 @@
                 android:visibility="gone"
                 app:closeButtonVisibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvDescShopService"
                 app:tickerShapeType="loose"
                 app:tickerType="warning"

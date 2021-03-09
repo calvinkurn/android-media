@@ -67,7 +67,7 @@ class ShopScoreDetailFragment : Fragment() {
         setDescriptionText()
         setupClickListeners()
 
-        observeShopScorePeriod()
+//        observeShopScorePeriod()
         observeShopScoreDetail()
     }
 
@@ -224,17 +224,17 @@ class ShopScoreDetailFragment : Fragment() {
         viewModel.getShopScoreDetail()
     }
 
-    private fun observeShopScorePeriod() {
-        observe(viewModel.tickerShopInfoPeriod) {
-            when (it) {
-                is Success -> {
-                    ticker_info_shop_score.showWithCondition(it.data)
-                }
-                is Fail -> ticker_info_shop_score.hide()
-            }
-        }
-        viewModel.getShopInfoPeriod(viewModel.userSession.shopId.toIntOrZero())
-    }
+//    private fun observeShopScorePeriod() {
+//        observe(viewModel.tickerShopInfoPeriod) {
+//            when (it) {
+//                is Success -> {
+//                    ticker_info_shop_score.showWithCondition(it.data)
+//                }
+//                is Fail -> ticker_info_shop_score.hide()
+//            }
+//        }
+//        viewModel.getShopInfoPeriod(viewModel.userSession.shopId.toIntOrZero())
+//    }
 
     private fun goToSellerCenter() {
         openUrlWebView(SELLER_CENTER_LINK)

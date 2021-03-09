@@ -104,7 +104,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return mutableListOf<BaseShopPerformance>().apply {
             add(mapToHeaderShopPerformance())
             add(mapToSectionPeriodDetailPerformanceUiModel())
-            add(mapToSectionPeriodDetailPerformanceUiModel())
             addAll(mapToItemDetailPerformanceUiModel())
             add(mapToItemRecommendationPMUiModel())
             if (userSession.isGoldMerchant) {

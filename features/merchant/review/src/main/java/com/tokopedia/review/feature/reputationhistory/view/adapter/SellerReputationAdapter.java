@@ -17,12 +17,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
-import com.tokopedia.iconunify.IconUnify;
-import com.tokopedia.review.common.util.ReviewUtil;
 import com.tokopedia.review.feature.reputationhistory.util.DateHeaderFormatter;
 import com.tokopedia.review.feature.reputationhistory.view.helper.DateUtilHelper;
 import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationHeaderViewHelper;
@@ -32,7 +29,6 @@ import com.tokopedia.review.feature.reputationhistory.view.model.ReputationRevie
 import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.reputationhistory.view.model.ShopScoreReputationUiModel;
-import com.tokopedia.unifyprinciples.Typography;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -50,20 +46,18 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     private final Context context;
     private ArrayList<ItemType> list;
     private Fragment fragment;
-    private ShopScoreReputationListener scoreReputationListener;
 
-    public SellerReputationAdapter(Context context, ShopScoreReputationListener shopScoreReputationListener) {
+    public SellerReputationAdapter(Context context) {
         this.context = context;
         this.list = new ArrayList<>();
-        this.scoreReputationListener = shopScoreReputationListener;
     }
 
-    public static SellerReputationAdapter createInstance(Context context, ShopScoreReputationListener shopScoreReputationListener) {
-        return new SellerReputationAdapter(context, shopScoreReputationListener);
+    public static SellerReputationAdapter createInstance(Context context) {
+        return new SellerReputationAdapter(context);
     }
 
-    public static SellerReputationAdapter createInstance(Activity activity, ArrayList<Parcelable> tempParcelables, ShopScoreReputationListener shopScoreReputationListener) {
-        SellerReputationAdapter sellerReputationAdapter = new SellerReputationAdapter(activity, shopScoreReputationListener);
+    public static SellerReputationAdapter createInstance(Activity activity, ArrayList<Parcelable> tempParcelables) {
+        SellerReputationAdapter sellerReputationAdapter = new SellerReputationAdapter(activity);
         sellerReputationAdapter.restoreParcelable(tempParcelables);
         return sellerReputationAdapter;
     }
@@ -75,10 +69,6 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
-            case ShopScoreReputationUiModel.TYPE:
-                View itemView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(ShopScoreReputationUiModel.Companion.getLAYOUT(), viewGroup, false);
-                return new ShopScoreReputationViewHolder(itemView);
             case ReputationReviewModel.VIEW_DEPOSIT:
                 View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.item_seller_reputation, viewGroup, false);
@@ -108,9 +98,6 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case ShopScoreReputationUiModel.TYPE:
-                ((ShopScoreReputationViewHolder) holder).bind((ShopScoreReputationUiModel) list.get(position));
-                break;
             case ReputationReviewModel.VIEW_DEPOSIT:
                 bindDeposit((ViewHolder) holder, position);
                 break;
@@ -270,26 +257,6 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             penaltyScore = (TextView) itemView.findViewById(R.id.tv_score);
             tvInvoice = (TextView) itemView.findViewById(R.id.tv_invoice);
 
-        }
-    }
-
-    class ShopScoreReputationViewHolder extends RecyclerView.ViewHolder {
-
-        private IconUnify iconChevronRightReputationDetail;
-        private Typography tvInfoMigrateReputation;
-
-        public ShopScoreReputationViewHolder(View itemView) {
-            super(itemView);
-            tvInfoMigrateReputation = itemView.findViewById(R.id.tv_info_migrate_reputation);
-            iconChevronRightReputationDetail = itemView.findViewById(R.id.icon_chevron_reputation_detail);
-        }
-
-        public void bind(ShopScoreReputationUiModel shopScoreReputationUiModel) {
-            String date = ReviewUtil.INSTANCE.getShopScoreDate(itemView.getContext());
-            tvInfoMigrateReputation.setText(MethodChecker.fromHtml(itemView.getContext().getString(R.string.desc_info_reputation_migrate_shop_score)));
-            iconChevronRightReputationDetail.setOnClickListener(view -> {
-                scoreReputationListener.onClickShowBottomSheetShopScore();
-            });
         }
     }
 

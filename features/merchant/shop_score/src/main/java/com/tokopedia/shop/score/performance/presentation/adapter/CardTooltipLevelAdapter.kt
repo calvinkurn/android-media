@@ -42,10 +42,10 @@ class CardTooltipLevelAdapter: RecyclerView.Adapter<CardTooltipLevelAdapter.Card
                 tv_title_level_card?.text = context.getString(data.title)
                 tv_description_level_card?.text = MethodChecker.fromHtml(context.getString(data.desc))
                 if (data.isMyShop) {
-                    cardLevelInformation?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+                    cardLevelInformation?.setCardBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200))
                     levelLabel?.show()
                 } else {
-                    cardLevelInformation?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+                    cardLevelInformation?.setCardBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
                     levelLabel?.hide()
                 }
             }

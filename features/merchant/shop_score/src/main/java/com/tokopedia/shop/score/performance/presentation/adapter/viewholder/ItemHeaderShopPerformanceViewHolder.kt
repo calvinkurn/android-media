@@ -20,7 +20,12 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
             containerHeaderShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.bg_performance_headline)
+            tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel.orZero().toString())
+
+            tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore.toString() else "-"
+
             progressBarScorePerformance?.setValue(element?.shopScore.orZero())
+
             ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
                     ShopScoreUtils.getLevelBarWhite(element?.shopLevel.orZero()))
 
