@@ -363,9 +363,9 @@ class PlayFragment @Inject constructor(
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
             when(it) {
                 is PlaySocketInfo.Reconnect ->
-                    analytic.errorState("$ERR_STATE_SOCKET: ${getString(R.string.play_message_socket_reconnect)}")
+                    analytic.trackSocketError(getString(R.string.play_message_socket_reconnect))
                 is PlaySocketInfo.Error ->
-                    analytic.errorState("$ERR_STATE_SOCKET: ${it.throwable.localizedMessage}")
+                    analytic.trackSocketError(it.throwable.localizedMessage.orEmpty())
             }
         })
     }
@@ -575,7 +575,5 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-
-        private const val ERR_STATE_SOCKET = "Socket Connection"
     }
 }

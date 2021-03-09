@@ -107,10 +107,6 @@ class VideoAnalyticHelper(
     }
 
     private fun sendErrorStateVideoAnalytic(errorMessage: String) {
-        analytic.errorState("$ERR_STATE_VIDEO: $errorMessage")
-    }
-
-    companion object {
-        private const val ERR_STATE_VIDEO = "Video Player"
+        analytic.trackVideoError(errorMessage)
     }
 }

@@ -122,7 +122,7 @@ class PlayErrorFragment @Inject constructor(
         if (throwable is MessageErrorException) handleKnownServerError(throwable)
         else handleUnknownError(throwable)
 
-        analytic.errorState("$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}")
+        analytic.trackGlobalError(globalError.errorDescription.text.toString())
         container.show()
     }
 
@@ -162,9 +162,5 @@ class PlayErrorFragment @Inject constructor(
                 }
             }
         }
-    }
-
-    companion object {
-        private const val ERR_STATE_GLOBAL = "Global Error"
     }
 }
