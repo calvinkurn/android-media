@@ -308,6 +308,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             if (getCartJob?.isCompleted == false) {
                 getCartJob?.join()
+                if (orderPreference.value !is OccState.FirstLoad) {
+                    return@launch
+                }
             }
             val op = _orderPreference
             if (!op.isValid) {
@@ -584,6 +587,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             if (getCartJob?.isCompleted == false) {
                 getCartJob?.join()
+                if (orderPreference.value !is OccState.FirstLoad) {
+                    return@launch
+                }
             }
             var param = generateUpdateCartParam()
             if (param == null) {
