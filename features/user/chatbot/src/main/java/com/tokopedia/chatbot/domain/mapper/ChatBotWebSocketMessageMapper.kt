@@ -174,7 +174,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             pojo: ChatActionBalloonSelectionAttachmentAttributes): List<ChatActionBubbleViewModel> {
         val result = ArrayList<ChatActionBubbleViewModel>()
         for (item in pojo.chatActions) {
-            result.add(ChatActionBubbleViewModel(item.text, item.value, item.action))
+            result.add(ChatActionBubbleViewModel(item.text, item.value, item.action, hexColor = item.hexColor, iconUrl = item.iconUrl))
         }
         return result
     }

@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/chat_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
         android:visibility="gone"
         android:layout_marginLeft="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="@id/helpfull_question_option"
