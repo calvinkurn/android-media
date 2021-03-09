@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
+import android.app.Activity
+import android.content.ContextWrapper
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
@@ -123,7 +125,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             },
                             couponsAction = {
                                 //handle click for type coupon
-                                OvoWidgetTracking.eventUserProfileTokopoints()
+//                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -136,7 +138,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             },
                             bboAction = {
                                 //handle click for type bbo
-                                OvoWidgetTracking.eventUserProfileTokopoints()
+//                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -187,7 +189,14 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             },
                             walletPendingAction ={
                                 //handle click for type wallet pending
-
+                                if (itemView.context !is Activity && itemView.context is ContextWrapper) {
+                                    val context = (itemView.context as ContextWrapper).baseContext
+                                    val activity = context as Activity
+                                    activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
+                                }
+                                walletAnalytics.eventClickActivationOvoHomepage()
+                                val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkActionText)
+                                itemView.context.startActivity(intentBalanceWallet)
                             })
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
@@ -205,7 +214,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
             }
         }
 
-        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_12) {
+        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_10) {
             textView.background = null
             textView.text = null
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(textSize))
