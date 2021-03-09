@@ -108,6 +108,7 @@ object RechargeHomepageSectionMapper {
                         } else null
                     }
                     SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
+                    SECTION_MINI_CAROUSELL -> RechargeHomepageCarousellModel(it)
                     else -> null
                 }
             }
