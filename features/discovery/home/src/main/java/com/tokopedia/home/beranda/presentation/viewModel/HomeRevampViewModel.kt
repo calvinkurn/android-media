@@ -40,6 +40,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -478,7 +479,8 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             homeHeaderOvoDataModel.headerDataModel = HeaderDataModel(
-                    homeBalanceModel = homeBalanceModel
+                    homeBalanceModel = homeBalanceModel,
+                    isUserLogin = userSession.get().isLoggedIn
             )
             this.homeBalanceModel = homeBalanceModel
             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
@@ -1617,14 +1619,19 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    private fun List<TokopointsDrawer>.getDrawerListByType(type: String) : TokopointsDrawer? {
+        return this.find { it.type == type }
+    }
+
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
         getTokopointJob = if (navRollanceType.equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)) {
             launchCatchError(coroutineContext, block = {
                 val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
                 updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
-                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
+                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
+                                ?: data.tokopointsDrawerList.drawerList.getDrawerListByType("Coupon"),
+                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("BBO"),
                         isTokoPointDataError = false
                 )
             }){

@@ -5,7 +5,9 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 //description : check tag description, then check text description
 
 data class BalanceDrawerItemModel(
-        val applink: String = "",
+        val applinkContainer: String = "",
+        val applinkActionText: String = "",
+        val redirectUrl: String = "",
         val iconImageUrl: String = "",
         val defaultIconRes: Int? = null,
         var balanceTitleTextAttribute: BalanceTextAttribute? = null,
@@ -13,6 +15,7 @@ data class BalanceDrawerItemModel(
         var balanceTitleTagAttribute: BalanceTagAttribute? = null,
         var balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
         val drawerItemType: Int = TYPE_TOKOPOINT,
+        val mainPageTitle: String = "",
         var state: Int = STATE_LOADING
 ) {
     companion object {

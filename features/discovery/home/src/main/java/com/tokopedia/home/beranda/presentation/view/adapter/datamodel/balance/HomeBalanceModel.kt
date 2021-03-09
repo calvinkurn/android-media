@@ -126,7 +126,7 @@ data class HomeBalanceModel (
                         if (pendingCashBackData.walletType == OVO_WALLET_TYPE) {
                             balanceDrawerItemModels[it] =
                                     BalanceDrawerItemModel(
-                                            applink = "",
+                                            applinkActionText = "",
                                             iconImageUrl = "",
                                             defaultIconRes = R.drawable.wallet_ic_ovo_home,
                                             balanceTitleTextAttribute = BalanceTextAttribute(

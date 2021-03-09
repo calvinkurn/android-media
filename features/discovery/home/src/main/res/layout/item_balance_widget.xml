@@ -43,6 +43,7 @@
         tools:visibility="visible"
         android:baselineAligned="false"
         android:gravity="center|left"
+        android:layout_marginLeft="@dimen/dp_8"
         app:layout_constraintLeft_toRightOf="@+id/home_iv_logo_balance"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">

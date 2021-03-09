@@ -11,9 +11,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceTagAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceTextAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
@@ -29,17 +40,6 @@ import kotlinx.android.synthetic.main.item_balance_widget.view.*
  */
 
 class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<BalanceAdapter.Holder>() {
-
-    companion object {
-        private const val TITLE_HEADER_WEBSITE = "Tokopedia"
-        private const val TITLE = "OVO"
-        private const val WALLET_TYPE = "OVO"
-        private const val BEBAS_ONGKIR_TYPE = "bebas ongkir"
-        private const val KUPON_SAYA_URL_PATH = "kupon-saya"
-        private const val CDN_URL = "https://ecs7.tokopedia.net/img/android/"
-        private const val BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/" +
-                "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png"
-    }
 
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
@@ -58,14 +58,21 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(itemMap.balanceDrawerItemModels[position], listener)
+        holder.bind(
+                itemMap.balanceDrawerItemModels[position],
+                listener,
+                itemMap.balanceType != HomeBalanceModel.TYPE_STATE_3)
     }
 
     class Holder(v: View): RecyclerView.ViewHolder(v) {
+
+        private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
         private var listener: HomeCategoryListener? = null
-        fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?) {
+        private var isOvoAvailable: Boolean = false
+        fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?, isOvoAvailable: Boolean) {
             this.listener = listener
             renderTokoPoint(drawerItem)
+            this.isOvoAvailable = isOvoAvailable
         }
 
         private fun renderTokoPoint(element: BalanceDrawerItemModel?) {
@@ -77,8 +84,119 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                     itemView.home_container_action_balance.show()
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
+                    itemView.home_container_action_balance.handleItemCLickType(
+                            element = element,
+                            tokopointsAction = {
+                                //handle click for type tokopoints
+//                                OvoWidgetTracking.eventUserProfileTokopoints()
+                                listener?.actionTokoPointClicked(
+                                        element.applinkContainer,
+                                        element.redirectUrl,
+                                        if (element.mainPageTitle.isEmpty())
+                                            TITLE_HEADER_WEBSITE
+                                        else
+                                            element.mainPageTitle
+                                )
+                                OvoWidgetTracking.sendClickOnTokopointsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+
+                            },
+                            ovoWalletAction = {
+                                //handle click for type ovo
+                                if (RouteManager.isSupportApplink(itemView.context, element.applinkContainer)) {
+                                    OvoWidgetTracking.sendClickOnOVONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                    val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkContainer)
+                                    itemView.context.startActivity(intentBalanceWallet)
+                                }
+                            },
+                            rewardsAction = {
+                                //handle click for type rewards
+//                                OvoWidgetTracking.eventUserProfileTokopoints()
+                                listener?.actionTokoPointClicked(
+                                        element.applinkContainer,
+                                        element.redirectUrl,
+                                        if (element.mainPageTitle.isEmpty())
+                                            TITLE_HEADER_WEBSITE
+                                        else
+                                            element.mainPageTitle
+                                )
+                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                            },
+                            couponsAction = {
+                                //handle click for type coupon
+                                OvoWidgetTracking.eventUserProfileTokopoints()
+                                listener?.actionTokoPointClicked(
+                                        element.applinkContainer,
+                                        element.redirectUrl,
+                                        if (element.mainPageTitle.isEmpty())
+                                            TITLE_HEADER_WEBSITE
+                                        else
+                                            element.mainPageTitle
+                                )
+                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                            },
+                            bboAction = {
+                                //handle click for type bbo
+                                OvoWidgetTracking.eventUserProfileTokopoints()
+                                listener?.actionTokoPointClicked(
+                                        element.applinkContainer,
+                                        element.redirectUrl,
+                                        if (element.mainPageTitle.isEmpty())
+                                            TITLE_HEADER_WEBSITE
+                                        else
+                                            element.mainPageTitle
+                                )
+                                OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                            },
+                            walletTopupAction = {
+                                //handle click for type wallet topup
+                                if (RouteManager.isSupportApplink(itemView.context, element.applinkContainer)) {
+                                    OvoWidgetTracking.sendClickOnOVONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                    OvoWidgetTracking.eventTopUpOvo(listener?.userId)
+                                    val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkContainer)
+                                    itemView.context.startActivity(intentBalanceWallet)
+                                }
+                            },
+                            walletOtherAction = {
+                                //handle click for type wallet other
+
+                            },
+                            walletPendingAction ={
+                                //handle click for type wallet pending
+
+                            })
+
+                    itemView.home_tv_btn_action_balance.handleItemCLickType(
+                            element = element,
+                            tokopointsAction = {},
+                            ovoWalletAction = {
+                                if (RouteManager.isSupportApplink(itemView.context, element.applinkActionText)) {
+                                    OvoWidgetTracking.eventOvo()
+                                    OvoWidgetTracking.sendClickOnOVONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                    val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkActionText)
+                                    itemView.context.startActivity(intentBalanceWallet)
+                                }
+                            },
+                            rewardsAction = {},
+                            couponsAction = {},
+                            bboAction = {},
+                            walletTopupAction = {},
+                            walletOtherAction = {
+                                //handle click for type wallet other
+                                //handle click for type wallet other
+
+                            },
+                            walletPendingAction ={
+                                //handle click for type wallet pending
+
+                            })
+                }
+                BalanceDrawerItemModel.STATE_ERROR -> {
+                    itemView.home_container_action_balance.show()
+                    renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, itemView.home_tv_balance)
+                    renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
                 }
             }
+
             element?.defaultIconRes?.let {
                 itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
             }
@@ -134,6 +252,34 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
             if (textAttr.text.isNotEmpty()) {
                 textView.text = textAttr.text
             }
+        }
+
+        private fun View.handleItemCLickType(element: BalanceDrawerItemModel,
+                                             tokopointsAction: () -> Unit,
+                                             ovoWalletAction: () -> Unit,
+                                             rewardsAction: () -> Unit,
+                                             couponsAction: () -> Unit,
+                                             bboAction: () -> Unit,
+                                             walletTopupAction: () -> Unit,
+                                             walletOtherAction: () -> Unit,
+                                             walletPendingAction: () -> Unit) {
+            setOnClickListener {
+                when (element.drawerItemType) {
+                    TYPE_TOKOPOINT -> tokopointsAction.invoke()
+                    TYPE_FREE_ONGKIR -> bboAction.invoke()
+                    TYPE_COUPON -> couponsAction.invoke()
+                    TYPE_REWARDS -> rewardsAction.invoke()
+                    TYPE_WALLET_OVO -> ovoWalletAction.invoke()
+                    TYPE_WALLET_WITH_TOPUP -> walletTopupAction.invoke()
+                    TYPE_WALLET_OTHER -> walletOtherAction.invoke()
+                    TYPE_WALLET_PENDING_CASHBACK -> walletPendingAction.invoke()
+                }
+            }
+        }
+
+        companion object {
+
+            private const val TITLE_HEADER_WEBSITE = "Tokopedia"
         }
     }
 }
