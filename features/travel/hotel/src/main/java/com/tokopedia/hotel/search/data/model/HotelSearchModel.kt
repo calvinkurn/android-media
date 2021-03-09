@@ -16,8 +16,9 @@ data class HotelSearchModel(
         var type: String = "",
         var room: Int = 1,
         var adult: Int = 1,
-        var lat: Float = 0f,
-        var long: Float = 0f,
+        var lat: Double = 0.0,
+        var long: Double = 0.0,
+        var radius: Double = 0.0,
         var searchType: String = "",
         var searchId: String = ""
 ) : Parcelable

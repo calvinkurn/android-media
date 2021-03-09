@@ -74,6 +74,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
@@ -169,11 +170,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.latLong.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    hotelSearchModel.apply {
-                        long = it.data.first.toFloat()
-                        lat = it.data.second.toFloat()
-                    }
-                    addMyLocation(LatLng(it.data.first, it.data.second))
+                    addMyLocation(LatLng(it.data.second, it.data.first))
                 }
             }
         })
@@ -186,6 +183,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     hotelSearchModel.apply {
                         searchType = HotelTypeEnum.COORDINATE.value
                         searchId = ""
+                        radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
                     loadInitialData()
@@ -199,12 +197,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.screenMidPoint.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    /** Should have trigger the LatLng here
                     hotelSearchModel.apply {
-                    long = it.data.longitude.toFloat()
-                    lat = it.data.latitude.toFloat()
+                        long = it.data.longitude
+                        lat = it.data.latitude
                     }
-                     */
                 }
             }
         })
