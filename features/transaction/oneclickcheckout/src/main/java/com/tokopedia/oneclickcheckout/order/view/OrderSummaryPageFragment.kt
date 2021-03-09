@@ -49,6 +49,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
@@ -541,16 +542,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun updateLocalCacheAddressData(addressModel: RecipientAddressModel) {
+    private fun updateLocalCacheAddressData(addressModel: AddressModel) {
         activity?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = it,
-                    addressId = addressModel.id,
-                    cityId = addressModel.cityId,
-                    districtId = addressModel.destinationDistrictId,
+                    addressId = addressModel.addressId.toString(),
+                    cityId = addressModel.cityId.toString(),
+                    districtId = addressModel.districtId.toString(),
                     lat = addressModel.latitude,
                     long = addressModel.longitude,
-                    label = String.format("%s %s", addressModel.addressName, addressModel.recipientName),
+                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
                     postalCode = addressModel.postalCode)
         }
     }

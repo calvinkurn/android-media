@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
@@ -17,6 +18,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
@@ -367,7 +369,16 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(addressModel)
+                globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(AddressModel(
+                        addressId = addressModel.id?.toIntOrZero() ?: 0,
+                        cityId = addressModel.cityId?.toIntOrZero() ?: 0,
+                        districtId = addressModel.destinationDistrictId?.toIntOrZero() ?: 0,
+                        latitude = addressModel.latitude,
+                        longitude = addressModel.longitude,
+                        addressName = addressModel.addressName,
+                        receiverName = addressModel.recipientName,
+                        postalCode = addressModel.postalCode)
+                )
                 clearBboIfExist()
             }
             globalEvent.value = newGlobalEvent
@@ -403,9 +414,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             gatewayCode = preference.paymentModel.gatewayCode,
                             metadata = preference.paymentModel.metadata
                     ))
+            val chosenAddress = ChosenAddress(
+                    addressId = preference.addressModel.addressId.toString(),
+                    districtId = preference.addressModel.districtId.toString(),
+                    postalCode = preference.addressModel.postalCode,
+                    geolocation = if (preference.addressModel.latitude.isNotBlank() && preference.addressModel.longitude.isNotBlank()) {
+                        preference.addressModel.latitude + "," + preference.addressModel.longitude
+                    } else "",
+                    mode = ChosenAddress.MODE_ADDRESS
+            )
+            param.chosenAddress = chosenAddress
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
+                globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(preference.addressModel)
                 clearBboIfExist()
             }
             globalEvent.value = newGlobalEvent
