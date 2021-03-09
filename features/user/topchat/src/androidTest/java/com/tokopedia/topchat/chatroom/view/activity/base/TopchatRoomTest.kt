@@ -87,50 +87,57 @@ abstract class TopchatRoomTest {
     protected val KEYBOARD_DELAY = TimeUnit.SECONDS.toMillis(1)
     protected val RV_DELAY = TimeUnit.SECONDS.toMillis(2)
 
-    protected var firstPageChatAsBuyer: GetExistingChatPojo = AndroidFileUtil.parse(
-            "success_get_chat_first_page_as_buyer.json",
-            GetExistingChatPojo::class.java
-    )
-    protected var firstPageChatAsSeller: GetExistingChatPojo = AndroidFileUtil.parse(
-            "success_get_chat_first_page_as_seller.json",
-            GetExistingChatPojo::class.java
-    )
-    protected var chatAttachmentResponse: ChatAttachmentResponse = AndroidFileUtil.parse(
-            "success_get_chat_attachments.json",
-            ChatAttachmentResponse::class.java
-    )
-    protected var stickerGroupAsBuyer: ChatListGroupStickerResponse = AndroidFileUtil.parse(
-            "success_chat_group_sticker.json",
-            ChatListGroupStickerResponse::class.java
-    )
-    protected var stickerListAsBuyer: StickerResponse = AndroidFileUtil.parse(
-            "success_chat_bundle_sticker.json",
-            StickerResponse::class.java
-    )
-
-    protected var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = AndroidFileUtil.parse(
-            "success_get_chat_broadcast.json",
-            GetExistingChatPojo::class.java
-    )
-
-    protected var getShopFollowingStatus: ShopFollowingPojo = AndroidFileUtil.parse(
-            "success_get_shop_following_status.json",
-            ShopFollowingPojo::class.java
-    )
-
+    protected lateinit var firstPageChatAsBuyer: GetExistingChatPojo
+    protected lateinit var firstPageChatAsSeller: GetExistingChatPojo
+    protected lateinit var chatAttachmentResponse: ChatAttachmentResponse
+    protected lateinit var stickerGroupAsBuyer: ChatListGroupStickerResponse
+    protected lateinit var stickerListAsBuyer: StickerResponse
+    protected lateinit var firstPageChatBroadcastAsBuyer: GetExistingChatPojo
+    protected lateinit var getShopFollowingStatus: ShopFollowingPojo
     protected lateinit var chatComponentStub: ChatComponentStub
 
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-        // TODO: move response initialization here
         Dispatchers.setMain(TestCoroutineDispatcher())
+        setupResponse()
         val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
         chatComponentStub = DaggerChatComponentStub.builder()
                 .baseAppComponent(baseComponent)
                 .chatRoomContextModule(ChatRoomContextModule(context))
                 .build()
         chatComponentStub.inject(this)
+    }
+
+    private fun setupResponse() {
+        firstPageChatAsBuyer = AndroidFileUtil.parse(
+                "success_get_chat_first_page_as_buyer.json",
+                GetExistingChatPojo::class.java
+        )
+        firstPageChatAsSeller = AndroidFileUtil.parse(
+                "success_get_chat_first_page_as_seller.json",
+                GetExistingChatPojo::class.java
+        )
+        chatAttachmentResponse = AndroidFileUtil.parse(
+                "success_get_chat_attachments.json",
+                ChatAttachmentResponse::class.java
+        )
+        stickerGroupAsBuyer = AndroidFileUtil.parse(
+                "success_chat_group_sticker.json",
+                ChatListGroupStickerResponse::class.java
+        )
+        stickerListAsBuyer = AndroidFileUtil.parse(
+                "success_chat_bundle_sticker.json",
+                StickerResponse::class.java
+        )
+        firstPageChatBroadcastAsBuyer = AndroidFileUtil.parse(
+                "success_get_chat_broadcast.json",
+                GetExistingChatPojo::class.java
+        )
+        getShopFollowingStatus = AndroidFileUtil.parse(
+                "success_get_shop_following_status.json",
+                ShopFollowingPojo::class.java
+        )
     }
 
     protected fun setupChatRoomActivity(
