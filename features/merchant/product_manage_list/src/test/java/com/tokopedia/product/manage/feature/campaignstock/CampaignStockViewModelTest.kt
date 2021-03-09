@@ -20,6 +20,8 @@ import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModel
 import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModelTest.AccessId.EDIT_STOCK
 import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModelTest.ProductStatusConstant.STATUS_CODE_ACTIVE
 import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModelTest.ProductStatusConstant.STATUS_CODE_INACTIVE
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetail
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailSellable
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
@@ -99,7 +101,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         val shopId = "1"
         val productId = "1"
         val locationList = listOf(
-            ShopLocationResponse(2, LocationType.OTHER_LOCATION)
+            ShopLocationResponse("2", LocationType.OTHER_LOCATION)
         )
         val error = NullPointerException()
 
@@ -392,6 +394,12 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
                 productName = productName,
                 isVariant = true,
                 reserveStock = "1"
+            ),
+            detail = GetStockAllocationDetail(
+                sellable = listOf(
+                    GetStockAllocationDetailSellable(productId = "1", stock = "1"),
+                    GetStockAllocationDetailSellable(productId = "2", stock = "2")
+                )
             )
         )
         val productUpdateV3Data = ProductUpdateV3Data(isSuccess = true)
@@ -399,12 +407,17 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         val getProductVariantResponse = createGetVariantResponse(
             productName = productName,
             products = listOf(
-                createProductVariantResponse(productID = "1", stock = 1, status = ProductStatus.ACTIVE),
-                createProductVariantResponse(productID = "2", stock = 2, status = ProductStatus.INACTIVE)
+                createProductVariantResponse(productID = "1", stock = 3, status = ProductStatus.ACTIVE),
+                createProductVariantResponse(productID = "2", stock = 5, status = ProductStatus.INACTIVE)
             )
         )
         val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.ACTIVE)
+        val locationList = listOf(
+            ShopLocationResponse("1", MAIN_LOCATION),
+            ShopLocationResponse("2", OTHER_LOCATION)
+        )
 
+        onGetWarehouseId_thenReturn(locationList)
         onGetCampaignStock_thenReturn(getStockAllocationData)
         onEditVariant_thenReturn(editVariantResponse)
         onGetProductVariant_thenReturn(getProductVariantResponse)
@@ -417,6 +430,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         verifyGetCampaignStockAllocationCalled()
         verifyGetProductVariantCalled()
+        verifyGetWarehouseIdCalled()
 
         viewModel.run {
             updateVariantStockCount("1", 1)

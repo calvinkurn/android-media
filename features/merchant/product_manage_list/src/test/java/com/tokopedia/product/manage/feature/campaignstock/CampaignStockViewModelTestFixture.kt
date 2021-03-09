@@ -80,8 +80,8 @@ open class CampaignStockViewModelTestFixture {
         }
 
         val locationList = listOf(
-            ShopLocationResponse(1, MAIN_LOCATION),
-            ShopLocationResponse(2, OTHER_LOCATION)
+            ShopLocationResponse("1", MAIN_LOCATION),
+            ShopLocationResponse("2", OTHER_LOCATION)
         )
         onGetWarehouseId_thenReturn(locationList)
         onGetIsShopOwner_thenReturn(true)
