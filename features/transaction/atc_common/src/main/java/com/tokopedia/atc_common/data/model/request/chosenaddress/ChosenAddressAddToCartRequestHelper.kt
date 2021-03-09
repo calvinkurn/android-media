@@ -3,6 +3,7 @@ package com.tokopedia.atc_common.data.model.request.chosenaddress
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -24,12 +25,8 @@ class ChosenAddressAddToCartRequestHelper @Inject constructor(@ApplicationContex
 
     fun getChosenAddress(): ChosenAddressAddToCart? {
         ChooseAddressUtils.getLocalizingAddressData(getContext())?.let {
-            if (it.address_id.isBlank()) {
-                it.address_id = "0"
-            }
-            if (it.district_id.isBlank()) {
-                it.district_id = "0"
-            }
+            it.address_id = it.address_id.toZeroStringIfNullOrBlank()
+            it.district_id = it.district_id.toZeroStringIfNullOrBlank()
             return ChosenAddressAddToCart(
                     mode = if (it.address_id.toLongOrZero() != 0L) ChosenAddressAddToCart.MODE_ADDRESS else if (it.district_id.toLongOrZero() != 0L) ChosenAddressAddToCart.MODE_SNIPPET else ChosenAddressAddToCart.MODE_EMPTY,
                     addressId = it.address_id,

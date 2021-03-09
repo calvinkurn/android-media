@@ -352,7 +352,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     override fun loadData(forceRefresh: Boolean) {
         if (productId != null || (productKey != null && shopDomain != null)) {
             (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld(), isNewShipment())
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld())
         }
     }
 
@@ -1452,7 +1452,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             if (view != null) {
                 val showLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it)
                         ?: false
-                val showBoe = coachMarkBoePref.shouldShowBoeCoachmark() && isBoeType
+                val showBoe = if (!isBoeType) false else coachMarkBoePref.shouldShowBoeCoachmark()
 
                 if (showLocalization || showBoe) {
                     val coachMarkList = arrayListOf<CoachMark2Item>()
@@ -3363,11 +3363,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             e.printStackTrace()
             true
         }
-    }
-
-    override fun isNewShipment(): Boolean {
-        if (context == null) return false
-        return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {

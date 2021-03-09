@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -20,6 +21,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.KEY_PRODUCT_
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingErrorDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
@@ -29,6 +31,7 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDI
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 
@@ -120,9 +123,19 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         viewModel?.ratesVisitableResult?.observe(this) {
             it.doSuccessOrFail({
                 adapter?.submitList(it.data)
-            }) {
+            }) { throwable ->
+                showError(throwable)
             }
         }
+    }
+
+    private fun showError(it: Throwable) {
+        val errorType = if (it is SocketTimeoutException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+        adapter?.submitList(listOf(ProductShippingErrorDataModel(errorType = errorType)))
     }
 
     private fun setupRecyclerView(view: View) {
@@ -151,8 +164,16 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     override fun openUspBottomSheet(freeOngkirUrl: String, uspTokoCabangImgUrl: String) {
         context?.let {
-            ProductDetailShippingTracking.onPelajariTokoCabangClicked(sharedViewModel.rateEstimateRequest.value?.userId ?: "")
+            ProductDetailShippingTracking.onPelajariTokoCabangClicked(sharedViewModel.rateEstimateRequest.value?.userId
+                    ?: "")
             ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl).show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
+        }
+    }
+
+    override fun refreshPage(height: Int) {
+        sharedViewModel.rateEstimateRequest.value?.let {
+            showShimmerPage(height)
+            viewModel?.setRatesRequest(it.copy(forceRefresh = true))
         }
     }
 
