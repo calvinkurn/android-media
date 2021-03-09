@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.matchers
+package com.tokopedia.topchat.assertion
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.ViewAssertion

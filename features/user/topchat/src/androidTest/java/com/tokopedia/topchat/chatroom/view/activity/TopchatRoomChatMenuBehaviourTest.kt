@@ -6,7 +6,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.matchers.hasTotalItemOf
+import com.tokopedia.topchat.assertion.hasTotalItemOf
 import com.tokopedia.topchat.matchers.isKeyboardShown
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.`is`
