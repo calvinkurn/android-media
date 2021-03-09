@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         tools:text="Yaah, Fitur [Fitur] hanya dapat diakses Power Merchant aktif"
         android:textColor="@color/Unify_N700"
-        app:fontSize="subHeadline"
-        android:textStyle="bold"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
         android:gravity="center"
         android:layout_marginBottom="@dimen/dp_16" />
 
@@ -34,7 +34,8 @@
         android:layout_height="wrap_content"
         tools:text="Skor performa tokomu kurang dari 65 poin. Segera tingkatkan performa toko untuk menggunakan [Fitur] dan fitur eksklusif Power Merchant lainnya kembali."
         android:gravity="center"
-        app:fontSize="micro"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         android:layout_marginBottom="@dimen/dp_20"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
