@@ -189,7 +189,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         })
 
-        hotelSearchMapViewModel.screenMidPoint.observe(viewLifecycleOwner, {
+        hotelSearchMapViewModel.screenMidPoint.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     /** Should have trigger the LatLng here
@@ -209,15 +209,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         adapterCardList.clearAllElements()
         showLoading()
         loadData(defaultInitialPage)
-    }
-
-    override fun showLoading() {
-        adapter.removeErrorNetwork()
-        adapter.setLoadingModel(loadingModel)
-        adapter.showLoading()
-        adapterCardList.setLoadingModel(loadingModel)
-        adapterCardList.showLoading()
-        hideSnackBarRetry()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -287,6 +278,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun showLoading() {
         tvHotelSearchListTitleLoader.visible()
         tvHotelSearchListTitle.gone()
+        adapterCardList.setLoadingModel(loadingModel)
+        adapterCardList.showLoading()
         super.showLoading()
     }
 
