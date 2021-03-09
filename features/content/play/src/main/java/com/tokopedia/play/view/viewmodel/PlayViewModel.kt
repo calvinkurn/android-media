@@ -16,10 +16,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
-import com.tokopedia.play.util.video.state.PlayViewerVideoState
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
-import com.tokopedia.play.util.video.state.hasNoData
+import com.tokopedia.play.util.video.state.*
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
@@ -295,6 +292,16 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private val videoPerformanceListener = object : PlayViewerVideoPerformanceListener {
+        override fun onPlaying() {
+            if (videoLatencyPerformanceMonitoring.hasStarted) videoLatencyPerformanceMonitoring.stop()
+        }
+
+        override fun onError() {
+            videoLatencyPerformanceMonitoring.reset()
+        }
+    }
+
     private val playVideoPlayer = playVideoBuilder.build()
 
     /**
@@ -310,6 +317,7 @@ class PlayViewModel @Inject constructor(
 
     init {
         videoStateProcessor.addStateListener(videoStateListener)
+        videoStateProcessor.addStateListener(videoPerformanceListener)
         channelStateProcessor.addStateListener(channelStateListener)
         videoBufferGovernor.startBufferGovernance()
 
@@ -339,6 +347,7 @@ class PlayViewModel @Inject constructor(
         if (!pipState.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
+        videoStateProcessor.removeStateListener(videoPerformanceListener)
         channelStateProcessor.removeStateListener(channelStateListener)
     }
     //endregion
