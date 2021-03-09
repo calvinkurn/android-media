@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
-import com.tokopedia.sellerhome.domain.usecase.SendNewRelicDataUseCase
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
@@ -41,7 +40,6 @@ class SellerHomeViewModel @Inject constructor(
         private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
         private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
         private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
-        private val sendNewRelicDataUseCase: Lazy<SendNewRelicDataUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
         private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
@@ -248,11 +246,5 @@ class SellerHomeViewModel @Inject constructor(
         }, onError = {
             _shopLocation.value = Fail(it)
         })
-    }
-
-    fun sendNewRelicData(data: Map<String, Any>) {
-        launchCatchError(context = dispatcher.io, block = {
-            sendNewRelicDataUseCase.get().executeOnBackground(data)
-        }, onError = {})
     }
 }

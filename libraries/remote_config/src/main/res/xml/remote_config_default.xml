@@ -517,4 +517,8 @@
         <key>is_go_to_pdp_for_old_normal_checkout</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_sellerapp_poc_new_relic_dashboard</key>
+        <value>0.0</value>
+    </entry>
 </defaultsMap>

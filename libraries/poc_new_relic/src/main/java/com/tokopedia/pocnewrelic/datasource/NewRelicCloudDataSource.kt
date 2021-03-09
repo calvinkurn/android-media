@@ -4,38 +4,46 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.keys.Keys
 import com.tokopedia.pocnewrelic.*
+import com.tokopedia.pocnewrelic.remoteconfig.NewRelicRemoteConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
-import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPOutputStream
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.random.Random
 
-class NewRelicCloudDataSource @Inject constructor(
-        private val dispatchers: CoroutineDispatchers
-): CoroutineScope {
+class NewRelicCloudDataSource constructor(
+        private val dispatchers: CoroutineDispatchers,
+        private val newRelicRemoteConfig: NewRelicRemoteConfig
+) : CoroutineScope {
 
     private val gson: Gson = Gson()
     override val coroutineContext: CoroutineContext = dispatchers.io
 
     fun sendData(data: Map<String, Any>) {
         launch(context = dispatchers.io, block = {
-            var urlConnection: HttpURLConnection? = null
-            try {
-                val requestBody = compressRequestBody(data)
-                urlConnection = openConnection(requestBody.size)
-                urlConnection.writeData(requestBody)
-                urlConnection.responseCode
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                urlConnection?.disconnect()
+            if (shouldSendDataToNewRelic()) {
+                var urlConnection: HttpURLConnection? = null
+                try {
+                    val requestBody = compressRequestBody(data)
+                    urlConnection = openConnection(requestBody.size)
+                    urlConnection.writeData(requestBody)
+                    urlConnection.responseCode
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    urlConnection?.disconnect()
+                }
             }
         })
+    }
+
+    private fun shouldSendDataToNewRelic(): Boolean {
+        val pocNewRelicRemoteConfigValue = newRelicRemoteConfig.getPocNewRelicRemoteConfigValue()
+        return pocNewRelicRemoteConfigValue != 0.0 && Random.nextDouble(0.0, 100.0) <= pocNewRelicRemoteConfigValue
     }
 
     private fun compressRequestBody(requestBody: Map<String, Any>): ByteArray {
