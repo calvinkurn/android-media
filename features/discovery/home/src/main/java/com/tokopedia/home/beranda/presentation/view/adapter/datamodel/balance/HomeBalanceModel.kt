@@ -131,10 +131,13 @@ data class HomeBalanceModel (
                                             defaultIconRes = R.drawable.wallet_ic_ovo_home,
                                             balanceTitleTextAttribute = BalanceTextAttribute(
                                                     text = "(+ ${pendingCashBackData.pendingCashback.amountText} )",
-                                                    isBold = true
+                                                    isBold = true,
+                                                    colourRef = R.color.Unify_N700
                                             ),
                                             balanceSubTitleTextAttribute = BalanceTextAttribute(
-                                                    text = pendingCashBackData.labelActionButton
+                                                    text = pendingCashBackData.labelActionButton,
+                                                    isBold = true,
+                                                    colourRef = R.color.Unify_G500
                                             ),
                                             balanceTitleTagAttribute = null,
                                             balanceSubTitleTagAttribute = null,

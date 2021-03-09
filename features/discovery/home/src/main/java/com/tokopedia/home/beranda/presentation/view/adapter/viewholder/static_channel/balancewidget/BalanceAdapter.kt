@@ -201,7 +201,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
             }
             element?.iconImageUrl?.let {
-                itemView.home_iv_logo_balance.loadImage(it)
+                if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
             }
         }
 
