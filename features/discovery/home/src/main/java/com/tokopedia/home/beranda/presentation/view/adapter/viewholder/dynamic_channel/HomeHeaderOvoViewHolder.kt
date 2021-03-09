@@ -35,6 +35,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
         element.headerDataModel?.let {
+            resetView()
             when(it.homeBalanceModel.balanceType) {
                 HomeBalanceModel.TYPE_STATE_1 -> {
                     renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
