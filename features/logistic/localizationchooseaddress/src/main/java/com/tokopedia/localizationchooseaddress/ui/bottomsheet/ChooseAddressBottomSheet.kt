@@ -314,7 +314,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                         if (isLoginFlow) {
                             initData()
                         } else {
-                            setViewState(false)
+                            setViewState(userSession.isLoggedIn)
                         }
                     } else {
                         val data = it.data.addressData
