@@ -225,7 +225,8 @@ class PlayVideoFragment @Inject constructor(
                         source = playParentViewModel.source,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
-                        videoOrientation = playViewModel.videoOrientation,
+                        videoPlayer = videoMeta.videoPlayer,
+                        videoStream = videoMeta.videoStream,
                         stopOnClose = pipState.mode == PiPMode.WatchInPip
                 ),
                 pipAdapter = pipAdapter,
