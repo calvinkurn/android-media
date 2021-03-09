@@ -12,7 +12,8 @@ import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -74,9 +75,10 @@ class GetProfileDataUseCase @Inject constructor(
 
 
             // check if tokopoint = 0 or null then follow old flow (fetch saldo)
-            if(!tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.isMoreThanZero()){
+            if(tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.toZeroIfNull().isZero() && tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.externalCurrencyAmount.toZeroIfNull().isZero()){
                 ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
                 saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+                tokopoint = null
             }
 
             shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
