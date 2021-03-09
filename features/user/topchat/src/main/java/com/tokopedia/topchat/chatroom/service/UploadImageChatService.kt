@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -14,16 +15,24 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
+import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
+import com.tokopedia.topchat.common.dispatcher.DispatcherProvider
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class UploadImageChatService: JobIntentService() {
+class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     @Inject
     lateinit var uploadImageUseCase: TopchatUploadImageUseCase
@@ -33,6 +42,11 @@ class UploadImageChatService: JobIntentService() {
     private var messageId = ""
 
     private var notificationManager: UploadImageNotificationManager? = null
+
+    @Inject
+    lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
+    @Inject
+    lateinit var dispatcher: DispatcherProvider
 
     companion object {
         private const val JOB_ID_UPLOAD_IMAGE = 813
@@ -91,13 +105,47 @@ class UploadImageChatService: JobIntentService() {
         notificationManager?.onStartUpload()
     }
 
-    private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
-        sendImageByApi(uploadId, image)
+    private fun onSuccessUploadImage(uploadId: String, dummyMessage: ImageUploadViewModel) {
+        var sendByGQL = true
+        if(sendByGQL) {
+            sendImageByGQL(messageId, "Uploaded Image", uploadId, dummyMessage)
+        } else {
+            sendImageByApi(uploadId, dummyMessage)
+        }
     }
 
-    private fun sendImageByApi(uploadId: String, image: ImageUploadViewModel) {
+    private fun sendImageByGQL(msgId: String, msg: String, filePath: String, dummyMessage: ImageUploadViewModel) {
+        launchCatchError(block = {
+            withContext(dispatcher.io()) {
+                replyChatGQLUseCase.replyMessage(msgId, msg, filePath, dummyMessage.source,
+                        {
+                            if(it.data.attachment.attributes.isNotEmpty()) {
+                                notificationManager?.onSuccessUpload()
+                                removeDummyOnList(dummyMessage)
+                                image?.let {img ->
+                                    sendSuccessBroadcast(img)
+                                }
+                            }
+                        },
+                        onFailedReplyMessage())
+            }
+        },
+        onError = {
+            onErrorUploadImage(it, dummyMessage)
+        })
+    }
+
+    private fun onFailedReplyMessage(): (Throwable) -> Unit {
+        return {
+            image?.let { img ->
+                onErrorUploadImage(it, img)
+            }
+        }
+    }
+
+    private fun sendImageByApi(uploadId: String, dummyMessage: ImageUploadViewModel) {
         val requestParams = ReplyChatUseCase.generateParamAttachImage(messageId, uploadId)
-        sendByApi(requestParams, image)
+        sendByApi(requestParams, dummyMessage)
     }
 
     private fun sendByApi(requestParams: RequestParams, dummyMessage: Visitable<*>) {
@@ -175,4 +223,7 @@ class UploadImageChatService: JobIntentService() {
         super.onDestroy()
         replyChatUseCase.unsubscribe()
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatcher.io() + SupervisorJob()
 }

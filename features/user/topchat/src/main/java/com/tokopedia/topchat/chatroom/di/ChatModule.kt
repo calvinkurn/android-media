@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -33,6 +34,8 @@ import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.common.dispatcher.AppDispatcherProvider
+import com.tokopedia.topchat.common.dispatcher.DispatcherProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
@@ -264,5 +267,18 @@ class ChatModule {
     @Named(AtcConstant.MUTATION_ATC_OCC)
     fun provideAtcOccMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideMainDispatcher(): DispatcherProvider {
+        return AppDispatcherProvider()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideChatReplyUseCase(graphqlRepository: GraphqlRepository)
+            : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatReplyPojo> {
+        return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
     }
 }
