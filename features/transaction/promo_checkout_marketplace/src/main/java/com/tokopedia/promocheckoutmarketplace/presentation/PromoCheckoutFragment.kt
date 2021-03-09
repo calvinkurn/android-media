@@ -892,13 +892,16 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
 
         if (promoWithCoachMarkIndex != -1 && PersistentCacheManager.instance.get(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, Boolean::class.java, false) != true) {
-
             // initiate the scroll listener to dismiss coachmark if scrolled
             if (!::coachMarkRecyclerListener.isInitialized) {
                 coachMarkRecyclerListener = object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         if (promoWithCoachMarkIndex != -1 && layoutManager.findFirstVisibleItemPosition() == promoWithCoachMarkIndex &&
+                                promoCoachMark.isShowing) {
+                            promoCoachMark.dismissCoachMark()
+                            recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
+                        } else if (promoWithCoachMarkIndex != -1 && layoutManager.findLastVisibleItemPosition() == promoWithCoachMarkIndex &&
                                 promoCoachMark.isShowing) {
                             promoCoachMark.dismissCoachMark()
                             recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
@@ -914,7 +917,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 holder?.let {
                     val coachMarkItem = arrayListOf(
                             CoachMark2Item(
-                                    holder.itemView,
+                                    holder.itemView.findViewById(R.id.container_constraint_promo_checkout),
                                     coachMarkData.uiData.coachMark.title,
                                     coachMarkData.uiData.coachMark.content,
                                     CoachMark2.POSITION_BOTTOM

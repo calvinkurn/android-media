@@ -41,10 +41,11 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_weight="1"
         android:gravity="end"
+        android:maxWidth="@dimen/max_cashback_desc_width"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintRight_toRightOf="@id/tv_total_cashback_value"
         app:layout_constraintTop_toBottomOf="@id/tv_total_cashback_value"
         app:typographyType="small"
         app:typographyWeight="reguler"
-        tools:text="(20.000 TokoPoints)" />
+        tools:text="(20.000 TokoPoints + 1.000.000 OvoPoints)" />
 </androidx.constraintlayout.widget.ConstraintLayout>
