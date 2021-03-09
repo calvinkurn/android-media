@@ -39,11 +39,6 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import com.tokopedia.shop.common.util.ShopPageExceptionHandler
-import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
-import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
