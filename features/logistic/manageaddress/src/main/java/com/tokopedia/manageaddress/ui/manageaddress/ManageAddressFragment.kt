@@ -121,16 +121,16 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         initHeader()
         initView()
         initViewModel()
-        initSearch()
         address_list.adapter = adapter
         address_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        initSearchView()
         isFromCheckoutChangeAddress = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
         isFromCheckoutSnippet = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET)
         isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
         localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
+        initSearch()
+        initSearchView()
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -151,6 +151,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
             viewModel.getStateChosenAddress("address")
+            setButtonEnabled(true)
         }
     }
 
