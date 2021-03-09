@@ -94,6 +94,7 @@ abstract class TopchatRoomTest {
     protected lateinit var stickerListAsBuyer: StickerResponse
     protected lateinit var firstPageChatBroadcastAsBuyer: GetExistingChatPojo
     protected lateinit var getShopFollowingStatus: ShopFollowingPojo
+
     protected lateinit var chatComponentStub: ChatComponentStub
 
     @ExperimentalCoroutinesApi
