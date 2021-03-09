@@ -248,6 +248,7 @@ public interface ApplinkConst {
     String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
     String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
     String PURCHASE_HISTORY = "tokopedia://buyer/history";
+    String PURCHASE_ONGOING = "tokopedia://buyer/ongoing-order";
 
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";

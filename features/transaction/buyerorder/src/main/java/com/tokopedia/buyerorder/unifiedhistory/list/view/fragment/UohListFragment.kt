@@ -44,6 +44,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRAN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAIN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_DELIVERED
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_ONGOING
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCESSED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
@@ -381,6 +382,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         status = ""
                         statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
+                    }
+                    PARAM_UOH_ONGOING -> {
+                        status = DALAM_PROSES
+                        statusLabel = TRANSAKSI_BERLANGSUNG
+                        paramUohOrder.verticalCategory = ""
                     }
                 }
                 paramUohOrder.status = status
@@ -752,7 +758,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 filterStatus.equals(PARAM_MODALTOKO, true) ||
                 filterStatus.equals(PARAM_TRAIN, true) ||
                 filterStatus.equals(PARAM_HOTEL, true) ||
-                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
+                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true) ||
+                filterStatus.equals(PARAM_UOH_ONGOING, true)) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
@@ -762,7 +769,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter3?.listener = {
             onClickFilterCategory()
         }
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
+                || filterStatus.equals(PARAM_UOH_ONGOING, true) && !isReset) {
             filter3?.title = ALL_PRODUCTS
 
         } else if ((filterStatus.equals(PARAM_MARKETPLACE, true)
