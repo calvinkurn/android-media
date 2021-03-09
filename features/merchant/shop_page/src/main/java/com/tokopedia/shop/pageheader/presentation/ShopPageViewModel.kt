@@ -35,19 +35,24 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_SHOP_SNIPPET
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_STATUS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -61,7 +66,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import rx.Subscriber
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -74,13 +78,14 @@ class ShopPageViewModel @Inject constructor(
         @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val getShopReputationUseCase: Lazy<GetShopReputationUseCase>,
-        private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
         private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
         private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
         private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
+        private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
+        private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
         private val firebaseRemoteConfig: RemoteConfig,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
@@ -100,6 +105,9 @@ class ShopPageViewModel @Inject constructor(
     val userShopId: String
         get() = userSessionInterface.shopId
 
+    val userId: String
+        get() = userSessionInterface.userId
+
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
     val shopShareTracker : LiveData<Result<ShopQuestGeneralTracker>>
         get() = _shopShareTracker
@@ -107,6 +115,15 @@ class ShopPageViewModel @Inject constructor(
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
+
+    private val _followStatusData = MutableLiveData<Result<FollowStatusResponse>>()
+    val followStatusData: LiveData<Result<FollowStatusResponse>>
+        get() = _followStatusData
+
+    private val _followShopData = MutableLiveData<Result<FollowShopResponse>>()
+    val followShopData: LiveData<Result<FollowShopResponse>>
+        get() = _followShopData
+
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
 
@@ -311,29 +328,27 @@ class ShopPageViewModel @Inject constructor(
         return broadcasterConfig
     }
 
-    fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
+    fun getFollowStatus(shopId: String) {
+        launchCatchError(dispatcherProvider.io, block = {
+            getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId)
+            _followStatusData.postValue(Success(getFollowStatusUseCase.get().executeOnBackground()))
+        }, onError = {
+            _followStatusData.postValue(Fail(it))
+        })
+    }
+
+    fun updateFollowStatus(shopId: String, action: String) {
         if (!userSessionInterface.isLoggedIn) {
-            onError(UserNotLoginException())
+            _followShopData.value = Fail(UserNotLoginException())
             return
         }
 
-        toggleFavouriteShopUseCase.get().execute(ToggleFavouriteShopUseCase.createRequestParam(shopID),
-                object : Subscriber<Boolean>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        onError(e)
-                    }
-
-                    override fun onNext(success: Boolean) {
-                        onSuccess(success)
-                    }
-                })
-    }
-
-    override fun flush() {
-        super.flush()
-        toggleFavouriteShopUseCase.get().unsubscribe()
+        launchCatchError(dispatcherProvider.io, block = {
+            updateFollowStatusUseCase.get().params = UpdateFollowStatusUseCase.createParams(shopId, action)
+            _followShopData.postValue(Success(updateFollowStatusUseCase.get().executeOnBackground()))
+        }, onError = {
+            _followShopData.postValue(Fail(it))
+        })
     }
 
     fun getShopPageHeaderContentData(shopId: String, shopDomain: String, isRefresh: Boolean) {

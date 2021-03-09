@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelMediumView
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 
 /**
@@ -23,8 +24,8 @@ class PlayWidgetCardMediumChannelViewHolder(
             listener.onChannelClicked(view, item, adapterPosition)
         }
 
-        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, remind: Boolean) {
-            listener.onToggleReminderChannelClicked(item, remind, adapterPosition)
+        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, reminderType: PlayWidgetReminderType) {
+            listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
         }
 
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel) {
@@ -43,19 +44,8 @@ class PlayWidgetCardMediumChannelViewHolder(
         playWidgetCardChannelMediumView.setModel(item)
     }
 
-    fun revertToOriginalReminderState() {
-        playWidgetCardChannelMediumView.revertToOriginalReminderState()
-    }
-
-    fun setTotalView(totalView: String) {
-        playWidgetCardChannelMediumView.setTotalView(totalView)
-    }
-
     companion object {
         @LayoutRes val layoutRes = R.layout.item_play_widget_card_channel_medium
-
-        const val KEY_CHANNEL_REMINDER = "channel_reminder"
-        const val KEY_CHANNEL_TOTAL_VIEW = "channel_total_view"
 
         const val KEY_EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         const val KEY_EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
@@ -79,7 +69,7 @@ class PlayWidgetCardMediumChannelViewHolder(
 
         fun onToggleReminderChannelClicked(
                 item: PlayWidgetMediumChannelUiModel,
-                remind: Boolean,
+                reminderType: PlayWidgetReminderType,
                 position: Int
         )
 

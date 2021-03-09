@@ -10,14 +10,15 @@ object GqlQueryConstant {
     const val GQL_GET_CAMPAIGN_NOTIFY_ME = "gql_get_campaign_notify_me"
     const val GQL_CHECK_CAMPAIGN_NOTIFY_ME = "gql_check_campaign_notify_me"
     const val GQL_ATC_MUTATION = "atcMutation"
+    const val GQL_ATC_OCC_MUTATION = "atcOccMutation"
 }
 
 object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
-    const val VOUCHER = "promo"
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
+    const val PERSONALIZATION = "perso"
 }
 
 object WidgetName {
@@ -29,6 +30,8 @@ object WidgetName {
     const val PLAY_CAROUSEL_WIDGET = "play"
     const val VIDEO = "video"
     const val PRODUCT = "product"
-    const val VOUCHER = "voucher"
+    const val RECENT_ACTIVITY = "recent_activity"
+    const val BUY_AGAIN = "buy_again"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
+    const val VOUCHER_STATIC = "voucher_static"
 }

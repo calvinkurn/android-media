@@ -16,13 +16,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import java.lang.reflect.Field
 
-class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
+class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @RelaxedMockK
     lateinit var getUserRoleUseCase: SomGetUserRoleUseCase
 
@@ -474,47 +476,82 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFilters_shouldSuccess() {
-        val tickerData = SomListFilterUiModel()
+    fun getFiltersFromCacheAndCloud_shouldSuccess() {
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground()
-        } returns tickerData
-
-        viewModel.getFilters(true)
-
-        coVerify {
-            somListGetFilterListUseCase.executeOnBackground()
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } answers {
+            SomListFilterUiModel(emptyList(), fromCache = args.first() as Boolean)
         }
-        val filterResult = viewModel.filterResult.observeAwaitValue()
-        assert(filterResult is Success && filterResult.data == tickerData)
-    }
-
-    @Test
-    fun getFilters_shouldSuccessAndCancelActiveJob() {
-        val somGetFiltersJob = mockk<Job>(relaxed = true)
-        somGetFiltersJobField.set(viewModel, somGetFiltersJob)
 
         every {
-            somGetFiltersJob.cancel()
-        } just runs
+            somListGetFilterListUseCase.isFirstLoad
+        } returns true
 
-        getFilters_shouldSuccess()
+        viewModel.getFilters(true)
 
-        verify(exactly = 1) {
-            somGetFiltersJob.cancel()
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
         }
     }
 
     @Test
-    fun getFilters_shouldFailed() {
+    fun getFiltersFromCloud_shouldSuccess() {
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground()
-        } throws Throwable()
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } answers {
+            SomListFilterUiModel(emptyList(), fromCache = args.first() as Boolean)
+        }
+
+        every {
+            somListGetFilterListUseCase.isFirstLoad
+        } returns false
 
         viewModel.getFilters(true)
 
-        coVerify {
-            somListGetFilterListUseCase.executeOnBackground()
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && !result.data.fromCache)
+    }
+
+    @Test
+    fun getFiltersFromCacheAndCloud_shouldFailed() {
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } throws Throwable()
+
+        every {
+            somListGetFilterListUseCase.isFirstLoad
+        } returns true
+
+        viewModel.getFilters(true)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        assert(viewModel.filterResult.observeAwaitValue() is Fail)
+    }
+
+    @Test
+    fun getFiltersFromCloud_shouldFailed() {
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } throws Throwable()
+
+        every {
+            somListGetFilterListUseCase.isFirstLoad
+        } returns false
+
+        viewModel.getFilters(true)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(false)
         }
 
         assert(viewModel.filterResult.observeAwaitValue() is Fail)
@@ -577,6 +614,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && !viewModel.containsFailedRefreshOrder)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -605,6 +643,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage() && viewModel.containsFailedRefreshOrder)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -638,6 +677,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         }
 
         assert(viewModel.orderListResult.observeAwaitValue() is Fail)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -658,6 +698,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
 
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
         assert(refreshOrderResult is Success && refreshOrderResult.data.orderId == orderId && refreshOrderResult.data.order == order)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -677,6 +718,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
         assert(refreshOrderResult is Fail)
         assert(viewModel.containsFailedRefreshOrder)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
     }
 
     @Test
@@ -699,6 +741,7 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         }
         val refreshOrderResult = viewModel.refreshOrderResult.observeAwaitValue()
         assert(refreshOrderResult == null)
+        assert(viewModel.isLoadingOrder.observeAwaitValue() == null)
     }
 
     @Test
@@ -1033,5 +1076,19 @@ class SomListViewModelTest: SomOrderBaseViewModelTest<SomListViewModel>() {
         isRefreshingAllOrder_shouldReturnTrueWhenJobIsNotYetComplete()
         isRefreshingSelectedOrder_shouldReturnTrueWhenThereIsAnyRunningJob()
         assert(viewModel.isRefreshingOrder())
+    }
+
+    @Test
+    fun isOrderStatusIdsChanged_shouldReturnFalse() {
+        viewModel.setStatusOrderFilter(listOf(1, 2, 3, 4, 5))
+        val isChanged = viewModel.isOrderStatusIdsChanged(listOf(1, 2, 3, 4, 5))
+        assertFalse(isChanged)
+    }
+
+    @Test
+    fun isOrderStatusIdsChanged_shouldReturnTrue() {
+        viewModel.setStatusOrderFilter(listOf())
+        val isChanged = viewModel.isOrderStatusIdsChanged(listOf(1, 2, 3, 4, 5))
+        assertTrue(isChanged)
     }
 }

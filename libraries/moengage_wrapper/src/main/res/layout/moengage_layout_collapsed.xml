@@ -42,6 +42,7 @@
         android:layout_width="@dimen/mw_dp_38"
         android:layout_height="@dimen/mw_dp_38"
         android:layout_gravity="end"
-        android:src="@drawable/ic_big_notif_customerapp" />
+        android:src="@drawable/ic_big_notif_customerapp"
+        android:contentDescription="@null" />
 
 </FrameLayout>

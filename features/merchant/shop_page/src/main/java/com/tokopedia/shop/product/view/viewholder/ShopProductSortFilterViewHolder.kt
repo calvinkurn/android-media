@@ -46,13 +46,25 @@ class ShopProductSortFilterViewHolder(
     override fun bind(data: ShopProductSortFilterUiModel) {
         removeOnScrollChangedListener()
         this.shopProductSortFilterUiModel = data
-        itemView.sort_filter?.sortFilterItems?.removeAllViews()
         itemView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 addScrollListener()
                 itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
+        itemView.sort_filter?.sortFilterItems?.removeAllViews()
+        if(data.isShowSortFilter){
+            itemView.sort_filter?.filterType = SortFilter.TYPE_ADVANCED
+            itemView.sort_filter?.filterRelationship = SortFilter.RELATIONSHIP_AND
+            itemView.sort_filter?.parentListener = {
+                shopProductSortFilterViewHolderListener?.onFilterClicked()
+            }
+            itemView.sort_filter?.textView?.text = itemView.context.getString(R.string.shop_sort_filter_chips_name)
+            itemView.sort_filter?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
+        }else{
+            itemView.sort_filter?.filterType = SortFilter.TYPE_QUICK
+            itemView.sort_filter?.filterRelationship = SortFilter.RELATIONSHIP_OR
+        }
         val filterData = ArrayList<SortFilterItem>()
         var sortFilter: SortFilterItem? = null
         if (data.isShowSortFilter) {
@@ -99,15 +111,7 @@ class ShopProductSortFilterViewHolder(
         etalaseFilter.refChipUnify.setChevronClickListener {
             shopProductSortFilterViewHolderListener?.onEtalaseFilterClicked()
         }
-        itemView.sort_filter?.filterType = SortFilter.TYPE_ADVANCED
-        itemView.sort_filter?.filterRelationship = SortFilter.RELATIONSHIP_AND
-        itemView.sort_filter?.parentListener = {
-            shopProductSortFilterViewHolderListener?.onFilterClicked()
-        }
         itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-        itemView.sort_filter?.textView?.text = itemView.context.getString(R.string.shop_sort_filter_chips_name)
-
-        itemView.sort_filter?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
         shopProductSortFilterViewHolderListener?.setSortFilterMeasureHeight(itemView.measuredHeight)
     }
 

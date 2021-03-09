@@ -5,7 +5,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
-import com.tokopedia.config.GlobalConfig
 import io.mockk.every
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -347,7 +346,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check digital cart appLink then should return tokopedia internal digital cart in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/cart"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://digital/checkout"
         assertEqualsDeepLinkMapper(ApplinkConst.DIGITAL_CART, expectedDeepLink)
     }
 
@@ -1495,5 +1494,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check moneyin appLink then should return tokopedia internal moneyin in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://money_in/device_validation"
         assertEqualsDeepLinkMapper(ApplinkConst.MONEYIN, expectedDeepLink)
+    }
+
+    @Test
+    fun `check snapshot order appLink then should return tokopedia internal snapshot order in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://snapshot/order?order_id=1234&order_detail_id=7890"
+        val appLink = UriUtil.buildUri(ApplinkConst.SNAPSHOT_ORDER+"/1234/7890")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }

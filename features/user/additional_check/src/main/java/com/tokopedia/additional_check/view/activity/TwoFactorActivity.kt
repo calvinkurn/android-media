@@ -35,8 +35,16 @@ class TwoFactorActivity: BaseSimpleActivity(), ActivePageListener {
         toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
     }
 
+    fun onFragmentCreated(){
+        fragment?.run {
+            if(this is TwoFactorFragment){
+                this.setActiveListener(this@TwoFactorActivity)
+            }
+        }
+    }
+
     override fun getNewFragment(): Fragment? {
-        return TwoFactorFragment.newInstance(intent?.extras, this)
+        return TwoFactorFragment.newInstance(intent?.extras)
     }
 
     override fun onBackPressed() {

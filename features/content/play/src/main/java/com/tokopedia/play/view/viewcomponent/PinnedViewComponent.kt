@@ -12,8 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
-import com.tokopedia.play.view.uimodel.PinnedProductUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -31,7 +30,7 @@ class PinnedViewComponent(
     private val animationProduct: LottieAnimationView = findViewById(R.id.animation_product)
     private val tvPinnedAction: TextView = findViewById(R.id.tv_pinned_action)
 
-    fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
+    fun setPinnedMessage(pinnedMessage: PlayPinnedUiModel.PinnedMessage) {
         llPinnedProduct.hide()
 
         val partnerName = pinnedMessage.partnerName
@@ -60,7 +59,7 @@ class PinnedViewComponent(
         } else tvPinnedAction.hide()
     }
 
-    fun setPinnedProduct(pinnedProduct: PinnedProductUiModel) {
+    fun setPinnedProduct(pinnedProduct: PlayPinnedUiModel.PinnedProduct) {
         llPinnedProduct.show()
         tvPinnedAction.show()
 

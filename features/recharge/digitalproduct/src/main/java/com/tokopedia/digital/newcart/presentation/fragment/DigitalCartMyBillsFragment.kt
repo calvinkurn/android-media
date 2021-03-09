@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatTextView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital.R
 import com.tokopedia.digital.newcart.di.DigitalCartComponent
@@ -22,21 +21,16 @@ import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderV
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams
 import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData
-import com.tokopedia.digital.newcart.presentation.model.cart.FintechProduct
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartMyBillsPresenter
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsContract.Presenter>(),
-        DigitalCartMyBillsContract.View,
-        DigitalCartMyBillsView.OnMoreInfoClickListener {
+class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsContract.Presenter>(),
+        DigitalCartMyBillsContract.View {
 
     private lateinit var progressBar: ProgressBar
     private lateinit var containerLayout: RelativeLayout
     private lateinit var categoryTextView: AppCompatTextView
     private lateinit var mybillSubscription: DigitalCartMyBillsView
-    private lateinit var mybillEgold: DigitalCartMyBillsView
 
     interface InteractionListener {
         fun updateToolbarTitle(title: String?)
@@ -126,9 +120,12 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
 
     override fun isSubscriptionChecked(): Boolean = mybillSubscription.isChecked()
 
-    override fun isEgoldChecked(): Boolean = mybillEgold.isChecked()
-
     override fun renderMyBillsSusbcriptionView(headerTitle: String?, description: String?, checked: Boolean, isSubscribed: Boolean) {
+        if (headerTitle.isNullOrEmpty() && description.isNullOrEmpty()) {
+            mybillSubscription.visibility = View.GONE
+            return
+        }
+
         mybillSubscription.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
             run {
                 presenter.onSubcriptionCheckedListener(isChecked)
@@ -150,61 +147,12 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
         if (headerTitle != null) {
             mybillSubscription.setHeaderTitle(headerTitle)
         }
+
         mybillSubscription.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
             run {
                 presenter.onSubcriptionCheckedListener(isChecked)
             }
         })
-    }
-
-    override fun renderMyBillsEgoldView(data: FintechProduct?) {
-        if (data != null) {
-            with(data) {
-                mybillEgold.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
-                    run {
-                        presenter.onEgoldCheckedListener(isChecked)
-                    }
-                })
-
-                if (checkBoxDisabled) {
-                    mybillEgold.getSubscriptionCheckbox().visibility = View.GONE
-                } else {
-                    mybillEgold.getSubscriptionCheckbox().visibility = View.VISIBLE
-                    mybillEgold.setChecked(data.optIn)
-                }
-
-                mybillEgold.hasMoreInfo(true)
-                info?.title?.let { title -> mybillEgold.setHeaderTitle(title) }
-                info?.subtitle?.let { desc -> mybillEgold.setDescription(desc) }
-            }
-            mybillEgold.visibility = View.VISIBLE
-        } else {
-            mybillEgold.visibility = View.GONE
-        }
-    }
-
-    override fun onMoreInfoClicked() {
-        presenter.onEgoldMoreInfoClicked()
-    }
-
-    override fun renderEgoldMoreInfo(title: String?, tooltip: String?, linkUrl: String?) {
-        if (!linkUrl.isNullOrEmpty()) {
-            RouteManager.route(context, linkUrl)
-        } else if (!tooltip.isNullOrEmpty()) {
-            val moreInfoView = View.inflate(context, R.layout.view_digital_egold_info_bottom_sheet, null)
-            val moreInfoText: Typography = moreInfoView.findViewById(R.id.egold_tooltip)
-            moreInfoText.text = tooltip
-
-            val moreInfoBottomSheet = BottomSheetUnify()
-            moreInfoBottomSheet.setTitle(title ?: "")
-            moreInfoBottomSheet.setFullPage(false)
-            moreInfoBottomSheet.setChild(moreInfoView)
-            moreInfoBottomSheet.clearAction()
-            moreInfoBottomSheet.setCloseClickListener {
-                moreInfoBottomSheet.dismiss()
-            }
-            fragmentManager?.run { moreInfoBottomSheet.show(this,"E-gold more info bottom sheet") }
-        }
     }
 
     override fun updateCheckoutButtonText(buttonTitle: String?) {
@@ -226,11 +174,5 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
 
     override fun updateToolbarTitle(headerTitle: String?) {
         interactionListener?.updateToolbarTitle(headerTitle)
-    }
-
-    override fun updateTotalPriceWithFintechAmount() {
-        if (mybillEgold.visibility == View.VISIBLE) {
-            presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked())
-        }
     }
 }

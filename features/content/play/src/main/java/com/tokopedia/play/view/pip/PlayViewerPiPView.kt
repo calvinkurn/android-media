@@ -12,12 +12,16 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
+import com.tokopedia.play.PLAY_KEY_SOURCE_ID
+import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.view.fragment.PlayVideoFragment
+import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
-import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
@@ -31,11 +35,10 @@ class PlayViewerPiPView : ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+//    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+//    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val playVideoManager: PlayVideoManager
-        get() = PlayVideoManager.getInstance(context)
+    private var mVideoPlayer: PlayVideoWrapper = PlayVideoWrapper.Builder(context).build()
 
     private val userSession: UserSessionInterface = UserSession(context.applicationContext)
     private val pipAnalytic: PlayPiPAnalytic = PlayPiPAnalytic(userSession)
@@ -44,7 +47,7 @@ class PlayViewerPiPView : ConstraintLayout {
 
     private val pipAdapter = FloatingWindowAdapter(context)
 
-    private val videoListener = object : PlayVideoManager.Listener {
+    private val videoListener = object : PlayVideoWrapper.Listener {
         override fun onVideoPlayerChanged(player: ExoPlayer) {
             pvVideo.player = player
         }
@@ -65,7 +68,7 @@ class PlayViewerPiPView : ConstraintLayout {
     private val ivLoading: LoaderUnify
     private val flCloseArea: FrameLayout
 
-    private var isRoutingToRoom: Boolean = false
+    private var mPauseOnDetached: Boolean = true
 
     init {
         val view = View.inflate(context, R.layout.view_play_viewer_pip, this)
@@ -81,21 +84,28 @@ class PlayViewerPiPView : ConstraintLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        playVideoManager.resumeOrPlayPreviousVideo(true)
-        playVideoManager.mute(false)
+        mVideoPlayer.resume()
+        mVideoPlayer.mute(false)
 
         timePipAttached = System.currentTimeMillis()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        playVideoManager.removeListener(videoListener)
-        if (!isRoutingToRoom) {
-            if (playVideoManager.isVideoLive()) playVideoManager.release()
-            else playVideoManager.stop()
+        mVideoPlayer.removeListener(videoListener)
+
+        if (mPiPInfo?.stopOnClose == true) {
+            if (mVideoPlayer.isVideoLive()) mVideoPlayer.release()
+            else mVideoPlayer.stop()
+        } else if (mPauseOnDetached) {
+            mVideoPlayer.pause(false)
         }
 
         pipRemovedAnalytic()
+    }
+
+    fun setPlayer(playVideoPlayer: PlayVideoWrapper) {
+        mVideoPlayer = playVideoPlayer
     }
 
     fun setPiPInfo(pipInfo: PiPInfoUiModel) {
@@ -107,7 +117,7 @@ class PlayViewerPiPView : ConstraintLayout {
 
         setBackgroundColor(
                 MethodChecker.getColor(rootView.context,
-                        if (pipInfo.videoOrientation.isHorizontal) R.color.play_solid_black
+                        if (pipInfo.videoOrientation.isHorizontal) com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
                         else R.color.transparent
                 )
         )
@@ -115,17 +125,29 @@ class PlayViewerPiPView : ConstraintLayout {
 
     fun getPlayerView(): PlayerView = pvVideo
 
+    fun setPauseOnDetached(shouldPause: Boolean) {
+        mPauseOnDetached = shouldPause
+    }
+
     private fun setupView() {
-        playVideoManager.addListener(videoListener)
+        mVideoPlayer.addListener(videoListener)
         flCloseArea.setOnClickListener {
-            pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
+            removePiP()
         }
 
         setOnClickListener {
             mPiPInfo?.let { pipInfo ->
-                isRoutingToRoom = true
-                val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, pipInfo.channelId)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                removePiP()
+                val intent = RouteManager.getIntent(
+                        context,
+                        UriUtil.buildUriAppendParams(
+                                ApplinkConst.PLAY_DETAIL,
+                                getApplinkQueryParams(pipInfo)
+                        ),
+                        pipInfo.channelId
+                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .putExtra(EXTRA_PLAY_START_VOD_MILLIS, mVideoPlayer.getCurrentPosition())
+
                 context.startActivity(intent)
             }
         }
@@ -145,6 +167,10 @@ class PlayViewerPiPView : ConstraintLayout {
         ivLoading.visibility = View.GONE
     }
 
+    private fun removePiP() {
+        pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
+    }
+
     private fun pipRemovedAnalytic() {
         val pipInfo = mPiPInfo ?: return
 
@@ -158,5 +184,23 @@ class PlayViewerPiPView : ConstraintLayout {
                 channelType = pipInfo.channelType,
                 durationInSecond = durationPiPAttachedInSeconds
         )
+    }
+
+    private fun getApplinkQueryParams(pipInfo: PiPInfoUiModel): Map<String, Any> {
+        return when (pipInfo.source) {
+            PlaySource.Unknown -> emptyMap()
+            is PlaySource.Shop -> mapOf(
+                    PLAY_KEY_SOURCE_TYPE to pipInfo.source.key,
+                    PLAY_KEY_SOURCE_ID to pipInfo.source.sourceId
+            )
+            else -> mapOf(
+                    PLAY_KEY_SOURCE_TYPE to pipInfo.source.key,
+            )
+        }
+    }
+
+    companion object {
+
+        private const val EXTRA_PLAY_START_VOD_MILLIS = "start_vod_millis"
     }
 }

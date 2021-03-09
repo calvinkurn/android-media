@@ -2,7 +2,7 @@ package com.tokopedia.settingbank.view.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.settingbank.domain.UploadDocumentPojo
+import com.tokopedia.settingbank.domain.model.UploadDocumentPojo
 import com.tokopedia.settingbank.domain.usecase.UploadDocumentUseCase
 import com.tokopedia.settingbank.view.viewState.*
 import rx.Subscriber

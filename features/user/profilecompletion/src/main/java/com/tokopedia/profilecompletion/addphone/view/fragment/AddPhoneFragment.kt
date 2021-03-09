@@ -46,6 +46,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     private val phoneNumberTracker = AddPhoneNumberTracker()
     private var isOnclickEventTriggered = false
+    private var validateToken: String = ""
 
     override fun getScreenName(): String {
         return ""
@@ -205,6 +206,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             val bundle = Bundle()
             bundle.putInt(EXTRA_PROFILE_SCORE, result.addPhonePojo.data.completionScore)
             bundle.putString(EXTRA_PHONE, result.phoneNumber)
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
             intent.putExtras(bundle)
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -234,6 +236,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
+            validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
             onSuccessVerifyPhone(data)
         } else {
             dismissLoading()
