@@ -20,6 +20,7 @@ import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressShareP
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -177,6 +178,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     override fun onAddressDataChanged() {
+        buttonChooseAddress?.let {
+            Toaster.build(it, context.getString(R.string.toaster_success_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromWidget()
     }
 

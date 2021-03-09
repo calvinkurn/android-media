@@ -64,7 +64,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     private val adapter = AddressListItemAdapter(this)
     private var chooseAddressLayout: ConstraintLayout? = null
-    private var noAddressLayout: ConstraintLayout? = null
     private var buttonLogin: ConstraintLayout? = null
     private var buttonAddAddress: ConstraintLayout? = null
     private var buttonSnippetLocation: IconUnify? = null
@@ -363,20 +362,20 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun setViewState(loginState: Boolean) {
         if (!loginState) {
             chooseAddressLayout?.gone()
-            noAddressLayout?.gone()
+            buttonAddAddress?.gone()
             buttonLogin?.visible()
             shouldShowGpsPopUp = true
             showGpsPopUp()
         } else {
             if (adapter.addressList.isEmpty()) {
                 chooseAddressLayout?.gone()
-                noAddressLayout?.visible()
+                buttonAddAddress?.visible()
                 buttonAddAddress?.gone()
                 shouldShowGpsPopUp = true
                 showGpsPopUp()
             } else {
                 chooseAddressLayout?.visible()
-                noAddressLayout?.gone()
+                buttonAddAddress?.gone()
                 buttonAddAddress?.gone()
             }
         }
