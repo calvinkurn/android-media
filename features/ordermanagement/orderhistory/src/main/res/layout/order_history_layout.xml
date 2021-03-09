@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.tokopedia.ordermanagement.orderhistory.purchase.detail.customview.OrderHistoryStepperLayout
+                <com.tokopedia.ordermanagement.orderhistory.purchase.detail.presentation.customview.OrderHistoryStepperLayout
                     android:id="@+id/order_history_stepper_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

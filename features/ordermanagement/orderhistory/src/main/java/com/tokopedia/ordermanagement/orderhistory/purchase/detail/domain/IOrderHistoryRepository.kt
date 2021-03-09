@@ -8,5 +8,5 @@ import java.util.*
  * Created by kris on 11/17/17. Tokopedia
  */
 interface IOrderHistoryRepository {
-    fun requestOrderHistoryData(params: HashMap<String?, Any?>?): Observable<OrderHistoryData?>
+    fun requestOrderHistoryData(params: HashMap<String?, Any?>?): OrderHistoryData
 }

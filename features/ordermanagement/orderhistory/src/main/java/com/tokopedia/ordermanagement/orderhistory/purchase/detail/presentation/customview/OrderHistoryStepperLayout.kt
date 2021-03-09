@@ -1,4 +1,4 @@
-package com.tokopedia.ordermanagement.orderhistory.purchase.detail.customview
+package com.tokopedia.ordermanagement.orderhistory.purchase.detail.presentation.customview
 
 import android.content.Context
 import android.graphics.Color

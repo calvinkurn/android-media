@@ -1,24 +1,22 @@
 package com.tokopedia.ordermanagement.orderhistory.purchase.detail.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.domain.OrderHistoryRepository
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.domain.mapper.OrderDetailMapper
-import com.tokopedia.ordermanagement.orderhistory.purchase.detail.interactor.OrderHistoryInteractorImpl
-import com.tokopedia.ordermanagement.orderhistory.purchase.detail.presenter.OrderHistoryPresenterImpl
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by kris on 11/17/17. Tokopedia
  */
 @Module
 class OrderHistoryModule {
-    @Provides
-    @OrderHistoryScope
-    fun provideCompositeSubscription(): CompositeSubscription {
-        return CompositeSubscription()
-    }
 
     @Provides
     @OrderHistoryScope
@@ -42,14 +40,11 @@ class OrderHistoryModule {
 
     @Provides
     @OrderHistoryScope
-    fun provideOrderHistoryInteractor(): OrderHistoryInteractorImpl {
-        return OrderHistoryInteractorImpl(provideOrderHistoryRepository(),
-                provideCompositeSubscription())
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 
     @Provides
     @OrderHistoryScope
-    fun provideOrderHistoryPresenter(): OrderHistoryPresenterImpl {
-        return OrderHistoryPresenterImpl(provideOrderHistoryInteractor())
-    }
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

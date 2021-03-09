@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:label="@string/app_name">
         <activity
-            android:name="com.tokopedia.ordermanagement.orderhistory.purchase.detail.activity.OrderHistoryActivity"
+            android:name="com.tokopedia.ordermanagement.orderhistory.purchase.detail.presentation.activity.OrderHistoryActivity"
             android:label="@string/transaction_title_activity_order_history"
             android:theme="@style/Theme.White">
 
