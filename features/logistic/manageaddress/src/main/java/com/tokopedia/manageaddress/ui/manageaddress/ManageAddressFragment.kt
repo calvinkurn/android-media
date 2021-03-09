@@ -205,9 +205,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
                     if (viewModel.isClearData) clearData()
-                    if (context?.let { it1 -> ChooseAddressUtils.isRollOutUser(it1) } == true) {
-                        updateTicker(it.data.pageInfo?.ticker)
-                        updateButton(it.data.pageInfo?.buttonLabel)
+                    if (it.data.listAddress.isNotEmpty()) {
+                        if (context?.let { it1 -> ChooseAddressUtils.isRollOutUser(it1) } == true) {
+                            updateTicker(it.data.pageInfo?.ticker)
+                            updateButton(it.data.pageInfo?.buttonLabel)
+                        }
                     }
                     updateData(it.data.listAddress)
                     setEmptyState()
