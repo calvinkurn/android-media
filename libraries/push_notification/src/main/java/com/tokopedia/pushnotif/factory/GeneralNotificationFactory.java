@@ -37,7 +37,7 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
         builder.setAutoCancel(true);
 
         if (isAllowBell()) {
-            builder.setSound(getRingtoneUri(context));
+            builder.setSound(getRingtoneUri());
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 

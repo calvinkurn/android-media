@@ -70,6 +70,9 @@
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_buyerorder">Daftar Transaksi</string>
 
+    <!--Snapshot-->
+    <string name="title_snapshot">Riwayat Detail Produk</string>
+
     <!--Official Store -->
     <string name="title_brandlist">Brand List</string>
 

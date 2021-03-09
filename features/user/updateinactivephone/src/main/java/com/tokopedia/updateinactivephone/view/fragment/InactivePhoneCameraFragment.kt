@@ -18,18 +18,14 @@ import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.utils.convertBitmapToImageFile
 import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.utils.image.ImageUtils
-import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.request
 import kotlinx.android.synthetic.main.fragment_inactive_phone_camera_view.*
 import java.io.File
-import javax.inject.Inject
 
 class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
     lateinit var tracker: InactivePhoneTracker
 
     private var mode = 0
-    private val permissionCheckerHelper = PermissionCheckerHelper()
 
     private var isPictureTaken = false
 
@@ -51,18 +47,6 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
             mode = it.getInt(KEY_MODE, 0)
             if (mode == 0) {
                 activity?.finish()
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper.request(it, arrayOf(
-                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
-                ), granted = {
-                }, denied = {
-                    it.finish()
-                })
             }
         }
     }
@@ -123,15 +107,6 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
                     }
             )
             activity?.onBackPressed()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context?.let {
-                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
-            }
         }
     }
 

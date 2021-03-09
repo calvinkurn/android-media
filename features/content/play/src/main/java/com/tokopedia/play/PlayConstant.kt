@@ -5,6 +5,8 @@ package com.tokopedia.play
  */
 
 const val PLAY_KEY_CHANNEL_ID = "channelId"
+const val PLAY_KEY_SOURCE_TYPE = "source_type"
+const val PLAY_KEY_SOURCE_ID = "source_id"
 
 const val PLAY_GET_CHANNEL_INFO_V5 = "/gcn/api/v5/channel/{$PLAY_KEY_CHANNEL_ID}"
 

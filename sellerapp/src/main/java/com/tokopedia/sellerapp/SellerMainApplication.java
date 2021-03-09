@@ -147,6 +147,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
         MoengageInteractor.INSTANCE.setInAppListener(this);
         initCacheApi();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
+        GraphqlClient.setContextData(this);
         GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
         NetworkClient.init(this);
         initializeAbTestVariant();

@@ -7,5 +7,4 @@ enum class PiPMode {
 
     WatchInPip,
     BrowsingOtherPage,
-    StopPip,
 }

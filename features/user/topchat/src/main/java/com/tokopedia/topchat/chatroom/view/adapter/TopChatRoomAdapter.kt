@@ -88,14 +88,18 @@ class TopChatRoomAdapter constructor(
 
     override fun changeToFallbackUiModel(element: ReviewUiModel, lastKnownPosition: Int) {
         handler.post {
-            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
-            val position = itemPair.first
-            if (position == RecyclerView.NO_POSITION) return@post
-            itemPair.second ?: return@post
-            val message = FallbackAttachmentViewModel(element.reply)
-            visitables[position] = message
-            notifyItemChanged(position)
+            postChangeToFallbackUiModel(lastKnownPosition, element)
         }
+    }
+
+    private fun postChangeToFallbackUiModel(lastKnownPosition: Int, element: ReviewUiModel) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        itemPair.second ?: return
+        val message = FallbackAttachmentViewModel(element.reply)
+        visitables[position] = message
+        notifyItemChanged(position)
     }
 
     fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
@@ -302,34 +306,45 @@ class TopChatRoomAdapter constructor(
             state: Int
     ) {
         handler.post {
-            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
-            val position = itemPair.first
-            if (position == RecyclerView.NO_POSITION) return@post
-            val item = itemPair.second ?: return@post
-            when (state) {
-                ReputationCommonConstants.REVIEWED -> {
-                    item.reviewCard.apply {
-                        isReviewed = true
-                        rating = reviewClickAt.toFloat()
-                        reviewUrl = UriUtil.buildUri(ApplinkConst.REVIEW_DETAIL, feedBackId)
-                    }
-                    notifyItemChanged(position, ReviewViewHolder.PAYLOAD_REVIEWED)
+            postUpdateReviewState(lastKnownPosition, review, state, reviewClickAt)
+        }
+    }
+
+    private fun postUpdateReviewState(
+            lastKnownPosition: Int, review: ReviewUiModel,
+            state: Int, reviewClickAt: Int
+    ) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        val item = itemPair.second ?: return
+        when (state) {
+            ReputationCommonConstants.REVIEWED -> {
+                item.reviewCard.apply {
+                    isReviewed = true
+                    rating = reviewClickAt.toFloat()
+                    reviewUrl = UriUtil.buildUri(ApplinkConst.REVIEW_DETAIL, feedBackId)
                 }
-                else -> {
-                    notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
-                }
+                notifyItemChanged(position, ReviewViewHolder.PAYLOAD_REVIEWED)
+            }
+            else -> {
+                notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
             }
         }
     }
 
     fun resetReviewState(review: ReviewUiModel, lastKnownPosition: Int) {
         handler.post {
-            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
-            val position = itemPair.first
-            if (position == RecyclerView.NO_POSITION) return@post
-            val item = itemPair.second ?: return@post
-            notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
+            postResetReviewState(lastKnownPosition, review)
         }
+    }
+
+    private fun postResetReviewState(lastKnownPosition: Int, review: ReviewUiModel) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        itemPair.second ?: return
+        notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
     }
 
     private fun removeBroadcastHandler(index: Int) {
@@ -362,8 +377,7 @@ class TopChatRoomAdapter constructor(
         return visitables.isNotEmpty() && visitables.size >= 2
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <T : Visitable<TopChatTypeFactory>> getUpToDateUiModelPosition(
+    private inline fun <reified T : Visitable<TopChatTypeFactory>> getUpToDateUiModelPosition(
             lastKnownPosition: Int, element: T
     ): Pair<Int, T?> {
         val item = visitables.getOrNull(lastKnownPosition)
@@ -371,6 +385,6 @@ class TopChatRoomAdapter constructor(
             return Pair(lastKnownPosition, item as? T)
         }
         val updatePosition = visitables.indexOf(element)
-        return Pair(updatePosition, item as? T)
+        return Pair(updatePosition, visitables.getOrNull(updatePosition) as? T)
     }
 }

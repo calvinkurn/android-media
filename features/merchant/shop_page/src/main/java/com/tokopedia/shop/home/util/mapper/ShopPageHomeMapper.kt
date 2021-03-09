@@ -1,23 +1,21 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.VOUCHER
+import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -78,6 +76,49 @@ object ShopPageHomeMapper {
         )
     }
 
+    fun mapToProductCardPersonalizationModel(
+            shopHomeProductViewModel: ShopHomeProductUiModel,
+            isHasATC: Boolean,
+            isHasOCCButton: Boolean,
+            occButtonText: String = "",
+    ) : ProductCardModel {
+        val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
+                ?: ""
+        val discountPercentage = if (discountWithoutPercentageString == "0") {
+            ""
+        } else {
+            "$discountWithoutPercentageString%"
+        }
+
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
+                ?: "")
+        return if(isHasOCCButton) {
+            ProductCardModel(
+                    productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
+                    productName = shopHomeProductViewModel.name ?: "",
+                    discountPercentage = discountPercentage,
+                    slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
+                    formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+                    hasAddToCartButton = isHasATC,
+                    addToCartButtonType = UnifyButton.Type.MAIN,
+                    addToCardText = occButtonText
+            )
+        } else {
+            ProductCardModel(
+                    productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
+                    productName = shopHomeProductViewModel.name ?: "",
+                    discountPercentage = discountPercentage,
+                    slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
+                    formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+                    countSoldRating = shopHomeProductViewModel.rating.toString(),
+                    freeOngkir = freeOngkirObject,
+                    labelGroupList = shopHomeProductViewModel.labelGroupList.map {
+                        mapToProductCardLabelGroup(it)
+                    },
+                    hasAddToCartButton = isHasATC
+            )
+        }
+    }
 
     fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
         val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
@@ -158,7 +199,7 @@ object ShopPageHomeMapper {
             isLoggedIn: Boolean
     ): List<BaseShopHomeWidgetUiModel> {
         return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() || it.type.toLowerCase() == DYNAMIC.toLowerCase() }.onEach {
+            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() || it.type.toLowerCase() == DYNAMIC.toLowerCase() || it.name == VOUCHER_STATIC}.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct, isLoggedIn)
                 widgetUiModel?.let { model ->
                     add(model)
@@ -172,6 +213,9 @@ object ShopPageHomeMapper {
             isMyOwnProduct: Boolean,
             isLoggedIn: Boolean
     ): BaseShopHomeWidgetUiModel? {
+        if (widgetResponse.name == VOUCHER_STATIC) {
+            return mapToVoucherUiModel(widgetResponse)
+        }
         return when (widgetResponse.type.toLowerCase()) {
             DISPLAY.toLowerCase() -> {
                 mapToDisplayWidget(widgetResponse)
@@ -179,18 +223,28 @@ object ShopPageHomeMapper {
             PRODUCT.toLowerCase() -> {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
             }
-            VOUCHER.toLowerCase() -> {
-                mapToVoucherUiModel(widgetResponse)
-            }
             CAMPAIGN.toLowerCase() -> {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
+            PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(widgetResponse, isMyOwnProduct)
             else -> {
                 null
             }
         }
     }
+
+    private fun mapToProductPersonalizationUiModel(
+            widgetResponse: ShopLayoutWidget.Widget,
+            isMyProduct: Boolean
+    ) = ShopHomeCarousellProductUiModel(
+            widgetId = widgetResponse.widgetID,
+            layoutOrder = widgetResponse.layoutOrder,
+            name = widgetResponse.name,
+            type = widgetResponse.type,
+            header = mapToHeaderModel(widgetResponse.header),
+            productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct)
+    )
 
     private fun mapToNewProductLaunchCampaignUiModel(
             widgetResponse: ShopLayoutWidget.Widget,
@@ -288,33 +342,6 @@ object ShopPageHomeMapper {
         )
     }
 
-    fun mapToListVoucher(
-            data: List<MerchantVoucherModel>
-    ): List<MerchantVoucherViewModel>? {
-        return mutableListOf<MerchantVoucherViewModel>().apply {
-            data.onEach {
-                add(mapToVoucherItem(it))
-            }
-        }
-    }
-
-    private fun mapToVoucherItem(data: MerchantVoucherModel): MerchantVoucherViewModel {
-        return MerchantVoucherViewModel().apply {
-            voucherId = data.voucherId
-            voucherName = data.voucherName
-            voucherCode = data.voucherCode ?: ""
-            merchantVoucherType = data.merchantVoucherType?.type.takeIf { it != -1 }
-                    ?: MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
-            merchantVoucherAmountType = data.merchantVoucherAmount?.type.takeIf { it != -1 }
-                    ?: MerchantVoucherAmountTypeDef.TYPE_FIXED
-            merchantVoucherAmount = data.merchantVoucherAmount?.amount
-            minimumSpend = data.minimumSpend
-            ownerId = data.merchantVoucherOwner.ownerId
-            validThru = data.validThru.toLong()
-            tnc = data.tnc
-        }
-    }
-
     private fun mapToDisplayWidget(widgetResponse: ShopLayoutWidget.Widget): ShopHomeDisplayWidgetUiModel {
         return ShopHomeDisplayWidgetUiModel(
                 widgetResponse.widgetID,
@@ -368,6 +395,33 @@ object ShopPageHomeMapper {
                 header.ratio,
                 header.isAtc
         )
+    }
+
+    private fun mapToWidgetProductListPersonalization(
+            data: List<ShopLayoutWidget.Widget.Data>,
+            isMyOwnProduct: Boolean
+    ) : List<ShopHomeProductUiModel> {
+        return data.map {
+            ShopHomeProductUiModel().apply {
+                id = it.productID
+                name = it.name
+                displayedPrice = it.displayPrice
+                originalPrice = it.originalPrice
+                discountPercentage = it.discountPercentage
+                imageUrl = it.imageUrl
+                rating = it.rating
+                isPo = it.isPO
+                isWishList = false
+                productUrl = it.productUrl
+                isSoldOut = it.isSoldOut
+                isShowWishList = !isMyOwnProduct
+                isShowFreeOngkir = it.isShowFreeOngkir
+                freeOngkirPromoIcon = it.freeOngkirPromoIcon
+                recommendationType = it.recommendationType
+                labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
+                minimumOrder = it.minimumOrder ?: 1
+            }
+        }
     }
 
     private fun mapToWidgetProductListItemViewModel(

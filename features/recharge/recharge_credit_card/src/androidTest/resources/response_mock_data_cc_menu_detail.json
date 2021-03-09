@@ -1,0 +1,22 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "menu_name": "credit_card",
+        "menu_label": "Tagihan Kartu Kredit",
+        "category_ids": [
+          26
+        ],
+        "catalog": {
+          "id": 169,
+          "name": "credit_card",
+          "label": "Tagihan Kartu Kredit",
+          "icon": "attachment/2020/7/3/47197032/47197032_8a27103e-6809-4961-8ad2-61531b87af57.png",
+          "sub_menu": []
+        },
+        "tickers": [],
+        "onboarding_descriptions": []
+      }
+    }
+  }
+]

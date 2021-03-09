@@ -41,14 +41,10 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                 val content = (adsId + androidId + uuid + encd + appContext.packageName + GlobalConfig.VERSION_CODE)
                 val contentSha = content.sha256()
                 appAuthUseCase.setParams(contentSha)
-                appAuthUseCase.execute({
-                    // success
-                    if (it.mutationSignDvc.isSuccess) {
-                        setAlreadySuccessSend(appContext, 1)
-                    }
-                }, {
-                    Timber.w(it.toString())
-                })
+                val objResult = appAuthUseCase.executeOnBackground()
+                if (objResult.mutationSignDvc.isSuccess) {
+                    setAlreadySuccessSend(appContext, 1)
+                }
             } catch (e: Exception) {
                 Timber.w(e.toString())
             }
