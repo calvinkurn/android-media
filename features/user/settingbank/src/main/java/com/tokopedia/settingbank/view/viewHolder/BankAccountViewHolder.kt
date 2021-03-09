@@ -8,7 +8,7 @@ import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.domain.BankAccount
+import com.tokopedia.settingbank.domain.model.BankAccount
 import com.tokopedia.settingbank.view.adapter.BankAccountClickListener
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerType
