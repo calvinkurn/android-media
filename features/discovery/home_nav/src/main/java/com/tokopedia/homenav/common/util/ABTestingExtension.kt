@@ -9,7 +9,8 @@ private const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
 fun isABNewTokopoint(): Boolean{
     return try{
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME_TOKOPOINT) == EXPERIMENT_NAME_TOKOPOINT
+        true
+//        RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME_TOKOPOINT) == EXPERIMENT_NAME_TOKOPOINT
     }catch (ex: Exception){
         false
     }
