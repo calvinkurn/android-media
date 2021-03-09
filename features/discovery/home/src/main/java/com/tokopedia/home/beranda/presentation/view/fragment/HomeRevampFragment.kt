@@ -593,7 +593,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     onChooseAddressUpdated()
                 },
                 ifChooseAddressNotActive = {
-                    viewModel.get().getAddressData().isActive = false
+                    getHomeViewModel().getAddressData().isActive = false
                 }
         )
 
