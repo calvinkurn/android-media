@@ -11,7 +11,6 @@ import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
@@ -25,6 +24,7 @@ import com.tokopedia.play.view.contract.*
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
+import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
@@ -59,6 +59,9 @@ class PlayActivity : BaseActivity(),
 
     @Inject
     lateinit var pageMonitoring: PlayPltPerformanceCallback
+
+    @Inject
+    lateinit var videoLatencyMonitoring: PlayVideoLatencyPerformanceMonitoring
 
     @Inject
     lateinit var playParentViewModelFactory: PlayParentViewModel.Factory
@@ -291,9 +294,9 @@ class PlayActivity : BaseActivity(),
         swipeContainerView.scrollTo(SwipeContainerViewComponent.ScrollDirection.Next, isSmoothScroll = true)
     }
 
-    fun getPltPerformanceResultData(): PltPerformanceData? {
-        return pageMonitoring.getPltPerformanceData()
-    }
+    fun getPerformanceMonitoring(): PlayPltPerformanceCallback = pageMonitoring
+
+    fun getVideoLatencyPerformanceMonitoring(): PlayVideoLatencyPerformanceMonitoring = videoLatencyMonitoring
 
     private fun startPageMonitoring() {
         pageMonitoring.startPlayMonitoring()
