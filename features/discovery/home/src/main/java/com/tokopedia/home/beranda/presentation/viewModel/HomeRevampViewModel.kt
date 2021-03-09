@@ -524,7 +524,10 @@ open class HomeRevampViewModel @Inject constructor(
                 isTokoPointDataError?.let {
                     headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
                 }
-                headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
+                headerDataModel = headerDataModel?.copy(
+                        isUserLogin = userSession.get().isLoggedIn,
+                        homeBalanceModel = homeBalanceModel
+                )
                 homeHeaderOvoDataModel.headerDataModel = headerDataModel
                 homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
             }
@@ -566,13 +569,29 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun evaluateHomeFlagData(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
+            var isNeedToGetData = homeBalanceModel.balanceType == null
             homeBalanceModel.balanceType = when(it.homeFlag.getFlagValue(HomeFlag.TYPE.HAS_TOKOPOINTS)) {
-                1 -> HomeBalanceModel.TYPE_STATE_1
-                2 -> HomeBalanceModel.TYPE_STATE_2
-                3 -> HomeBalanceModel.TYPE_STATE_3
-                else -> HomeBalanceModel.TYPE_STATE_4
+                1 -> {
+                    setNewBalanceWidget(false)
+                    HomeBalanceModel.TYPE_STATE_1
+                }
+                2 -> {
+                    setNewBalanceWidget(true)
+                    HomeBalanceModel.TYPE_STATE_2
+                }
+                3 -> {
+                    setNewBalanceWidget(true)
+                    HomeBalanceModel.TYPE_STATE_3
+                }
+                else -> {
+                    setNewBalanceWidget(true)
+                    HomeBalanceModel.TYPE_STATE_4
+                }
             }
             homeBalanceModel.initBalanceModelByType()
+            if (isNeedToGetData) {
+                getHeaderData()
+            }
         }
         return homeDataModel
     }
