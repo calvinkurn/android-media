@@ -109,8 +109,7 @@ class DigitalAnalytics {
         } else DigitalCheckoutTrackingConst.Category.DIGITAL_NATIVE
 
         val eventLabel = cartDigitalInfoData.attributes.categoryName.toLowerCase() + " - " +
-                if (cartDigitalInfoData.isInstantCheckout) DigitalCheckoutTrackingConst.Value.INSTANT
-                else DigitalCheckoutTrackingConst.Value.NON_INSTANT
+                cartDigitalInfoData.attributes.operatorName.toLowerCase()
 
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName))
 
@@ -125,7 +124,7 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.CurrencyCode.KEY, DigitalCheckoutTrackingConst.CurrencyCode.IDR,
                         DigitalCheckoutTrackingConst.Label.ADD,
                         DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))),
-                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE
                 )
         )
     }
@@ -155,7 +154,7 @@ class DigitalAnalytics {
                                 DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.STEP, "1",
                                         DigitalCheckoutTrackingConst.Label.OPTION, DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP1),
                                 DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))),
-                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE)
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE)
         )
     }
 
@@ -191,7 +190,7 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.Label.OPTION, DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(
                         *products.toTypedArray()))),
-                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE
                 )
         )
     }
