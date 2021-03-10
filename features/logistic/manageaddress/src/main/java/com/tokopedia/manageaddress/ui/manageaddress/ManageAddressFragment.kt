@@ -576,7 +576,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             activity?.setResult(Activity.RESULT_OK, resultIntent)
             activity?.finish()
         } else {
-            ChooseAddressUtils.getLocalizingAddressData(context)
             viewModel.setStateChosenAddress(
                     status = _selectedAddressItem?.addressStatus,
                     addressId = _selectedAddressItem?.id,
