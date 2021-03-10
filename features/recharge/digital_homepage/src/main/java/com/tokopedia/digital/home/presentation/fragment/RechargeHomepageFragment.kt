@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -24,6 +25,7 @@ import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecoration
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapter
@@ -71,6 +73,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private var sliceOpenApp: Boolean = false
 
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
+    var tickerList: RechargeTickerHomepageModel = RechargeTickerHomepageModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.view_recharge_home, container, false)
@@ -222,12 +225,19 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         viewModel.rechargeHomepageSections.observe(viewLifecycleOwner, Observer {
             hideLoading()
 
-            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it)
+            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it, tickerList)
             val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
                 homeComponent.visitableId()?.toInt()
             }
             homeComponentsData = it.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
             adapter.renderList(mappedData)
+        })
+
+        viewModel.rechargeTickerHomepageModel.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> tickerList = it.data
+                is Fail -> tickerList =  RechargeTickerHomepageModel()
+            }
         })
     }
 
@@ -237,6 +247,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         viewModel.getRechargeHomepageSectionSkeleton(
                 viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
                 swipe_refresh_layout.isRefreshing
+        )
+
+        viewModel.getTickerHomepageSection(
+                viewModel.createRechargeHomepageTickerParams(listOf(5), 5)
         )
     }
 

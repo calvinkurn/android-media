@@ -13,6 +13,9 @@ import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerType
 import java.util.*
 
 object RechargeHomepageSectionMapper {
@@ -56,10 +59,17 @@ object RechargeHomepageSectionMapper {
     }
 
     fun mapInitialHomepageSections(sections: List<RechargeHomepageSectionSkeleton.Item>): List<RechargeHomepageSections.Section> {
-        return sections.map { RechargeHomepageSections.Section(it.id, template = it.template) }
+        val sectionsList = mutableListOf<RechargeHomepageSections.Section>()
+        for (i in 0..sections.size-1){
+            sectionsList.add(RechargeHomepageSections.Section(sections.get(i).id, template = sections.get(i).template))
+            if(sections.get(i).template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER)){
+                sectionsList.add(RechargeHomepageSections.Section(RechargeHomepageViewModel.ID_TICKER, template = RechargeHomepageViewModel.SECTION_TICKER))
+            }
+        }
+        return sectionsList
     }
 
-    fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>> {
+    fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>, tickerList: RechargeTickerHomepageModel): List<Visitable<*>> {
         return sections.mapNotNull {
             val id = it.id
             with(RechargeHomepageViewModel.Companion) {
@@ -109,6 +119,11 @@ object RechargeHomepageSectionMapper {
                     }
                     SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
                     SECTION_MINI_CAROUSELL -> RechargeHomepageCarousellModel(it)
+                    SECTION_TICKER -> {
+                        if(!tickerList.rechargeTickers.isEmpty()){
+                            tickerList
+                        } else null
+                    }
                     else -> null
                 }
             }
@@ -204,6 +219,23 @@ object RechargeHomepageSectionMapper {
             })
         }
         return searchCategoryModels
+    }
+
+    fun mapRechargeTickertoTickerData(list: List<RechargeTicker>): List<TickerData>{
+        return list.map {
+            TickerData(
+                    it.name,
+                    it.content,
+                    when(it.type){
+                        "info" -> Ticker.TYPE_INFORMATION
+                        "announcement" -> Ticker.TYPE_ANNOUNCEMENT
+                        "error" -> Ticker.TYPE_ERROR
+                        "warning" -> Ticker.TYPE_WARNING
+                        else -> Ticker.TYPE_INFORMATION
+                    },
+                    true
+            )
+        }
     }
 
     private fun isExpired(section: RechargeHomepageSections.Section): Boolean {
