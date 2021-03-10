@@ -270,16 +270,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     context?.let {
                         context ->
                         if (isFromEditAddress == true) {
-                            _selectedAddressItem?.apply {
-                                id = data.addressId.toString()
-                                addressStatus = data.status
-                                recipientName = data.receiverName
-                                addressName = data.addressName
-                                latitude = data.latitude
-                                longitude = data.longitude
-                                destinationDistrictId = data.districtId.toString()
-                                postalCode = data.postalCode
-                            }
+                            _selectedAddressItem?.id = data.addressId.toString()
+                            _selectedAddressItem?.addressStatus = data.status
+                            _selectedAddressItem?.recipientName = data.receiverName
+                            _selectedAddressItem?.addressName = data.addressName
+                            _selectedAddressItem?.latitude = data.latitude
+                            _selectedAddressItem?.longitude = data.longitude
+                            _selectedAddressItem?.destinationDistrictId = data.districtId.toString()
+                            _selectedAddressItem?.postalCode = data.postalCode
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
