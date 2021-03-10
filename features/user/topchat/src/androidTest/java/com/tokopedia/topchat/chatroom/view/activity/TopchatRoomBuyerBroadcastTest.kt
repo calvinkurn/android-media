@@ -17,6 +17,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.hideBanner
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
@@ -101,6 +102,24 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
 
         // Then
         onView(withId(R.id.iv_banner)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun hide_broadcast_banner() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatBroadcastAsBuyer
+                .blockPromo(false)
+                .hideBanner(true)
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+        inflateTestFragment()
+
+        // Then
+        onView(withId(R.id.iv_banner)).check(matches(not(isDisplayed())))
     }
 
     private fun assertBroadcastSpamHandlerIsVisible() {
