@@ -325,4 +325,7 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
+
+    @JvmField
+    val INTERNAL_ORDER_MANAGEMENT_HISTORY = "$INTERNAL_MARKETPLACE://user-order-history/"
 }

@@ -102,6 +102,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.INBOX
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.INTERNAL_ORDER_MANAGEMENT_HISTORY
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
@@ -121,6 +122,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.HOTEL_INTERNAL_O
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INSURANCE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_MANAGEMENT_HISTORY
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
@@ -490,6 +492,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // snapshot
             add(DFP({ it.startsWith(INTERNAL_ORDER_SNAPSHOT)}, DF_BASE, R.string.title_snapshot))
+
+            // Order History
+            add(DFP({ it.startsWith(INTERNAL_ORDER_MANAGEMENT_HISTORY)}, DF_BASE, R.string.title_order_management_history))
         }
     }
 
@@ -570,6 +575,9 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE_SELLER_APP, R.string.title_product_detail))
             // User
             add(DFP({ it.startsWithPattern(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
+
+            // Order History
+            add(DFP({ it.startsWith(INTERNAL_ORDER_MANAGEMENT_HISTORY)}, DF_BASE_SELLER_APP, R.string.title_order_management_history))
         }
     }
 
