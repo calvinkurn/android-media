@@ -14,7 +14,7 @@ buildscript {
 project.ext {
     artifactId = 'global_config'
     groupId = 'com.tokopedia.config'
-    versionName = "1.0.11"
+    versionName = "1.0.13"
     artifactName = "global_config"
 }
 

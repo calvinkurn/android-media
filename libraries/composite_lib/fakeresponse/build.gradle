@@ -40,7 +40,7 @@ dependencies {
 project.ext {
     artifactId = 'fakeresponse'
     groupId = 'com.tokopedia.fakeresponse'
-    versionName = "0.0.7"
+    versionName = "0.0.9"
     artifactName = "fakeresponse-release"
 }
 
