@@ -2,11 +2,13 @@ package com.tokopedia.topchat.chatlist.adapter.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatListLoadingViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.EmptyChatViewHolder
+import com.tokopedia.topchat.chatlist.adapter.viewholder.TopchatErrorViewHolder
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
@@ -32,8 +34,13 @@ class ChatListTypeFactoryImpl(
         return ChatListLoadingViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: ErrorNetworkModel): Int {
+        return TopchatErrorViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatErrorViewHolder.LAYOUT -> TopchatErrorViewHolder(parent)
             ChatListLoadingViewHolder.LAYOUT -> ChatListLoadingViewHolder(parent)
             ChatItemListViewHolder.LAYOUT -> ChatItemListViewHolder(parent, listener)
             EmptyChatViewHolder.LAYOUT -> EmptyChatViewHolder(parent, chatListAnalytics)
