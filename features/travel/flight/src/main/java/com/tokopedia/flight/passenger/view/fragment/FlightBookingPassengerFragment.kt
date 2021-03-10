@@ -5,17 +5,13 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.os.Parcelable
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -62,7 +58,6 @@ import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
-import kotlinx.coroutines.delay
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -157,22 +152,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-        this.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(editable: Editable?) {
-                Handler().postDelayed({
-                    afterTextChanged.invoke(editable.toString())
-                }, 500)
-            }
-        })
-    }
-
     private fun initView() {
         context?.let {
 
@@ -186,14 +165,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 onSubmitData()
             }
 
-            button_submit.isEnabled = false
-
             til_birth_date.textFieldInput.isFocusable = false
             til_birth_date.textFieldInput.isClickable = true
             til_birth_date.textFieldInput.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
             til_birth_date.textFieldInput.setOnClickListener { onBirthdateClicked() }
-            til_birth_date.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_passport_expiration_date.textFieldInput.isFocusable = false
             til_passport_expiration_date.textFieldInput.isClickable = true
@@ -209,8 +185,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY)
             }
-            til_nationality.textFieldInput.afterTextChanged { validateAllFields() }
-            til_passport_no.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_passport_issuer_country.textFieldInput.isFocusable = false
             til_passport_issuer_country.textFieldInput.isClickable = true
@@ -220,11 +194,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }
-            til_passport_issuer_country.textFieldInput.afterTextChanged { validateAllFields() }
 
             til_first_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
-            et_first_name.afterTextChanged { validateAllFields() }
-            til_last_name.textFieldInput.afterTextChanged { validateAllFields() }
 
             fragment_layout.setOnTouchListener { _, _ ->
                 clearAllKeyboardFocus()
@@ -656,7 +627,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            validateAllFields()
         }
     }
 
@@ -728,8 +698,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         if (!validatePassportExpiredDate(isNeedPassport)) isValid = false
         if (!validatePassportNationality(isNeedPassport)) isValid = false
         if (!validatePassportIssuerCountry(isNeedPassport)) isValid = false
-
-        button_submit.isEnabled = isValid
 
         return isValid
     }
