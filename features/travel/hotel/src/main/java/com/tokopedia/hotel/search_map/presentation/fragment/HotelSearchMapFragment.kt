@@ -528,9 +528,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         val txtPrice = marker.findViewById<View>(R.id.txtPriceHotelMarker) as Typography
         with(txtPrice){
             text = price
-            background = resources.getDrawable(getPin(markerType))
+            background = ContextCompat.getDrawable(context, getPin(markerType))
             if(markerType == HOTEL_PRICE_ACTIVE_PIN) {
-                setTextColor(color = ContextCompat.getColor(context, R.color.Unify_N0))
+                setTextColor(color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 setWeight(Typography.BOLD)
             }
         }
