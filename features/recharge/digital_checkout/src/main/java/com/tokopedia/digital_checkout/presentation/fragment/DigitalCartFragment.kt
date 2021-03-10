@@ -219,7 +219,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun showContent() {
-        contentCheckout.requestFocus()
         contentCheckout.visibility = View.VISIBLE
         layout_digital_checkout_bottom_view.visibility = View.VISIBLE
     }
