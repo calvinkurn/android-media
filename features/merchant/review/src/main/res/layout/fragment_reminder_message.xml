@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintBottom_toTopOf="@id/footer_reminder_message"
@@ -214,6 +215,7 @@
                     app:typographyWeight="reguler" />
 
                 <com.tokopedia.unifycomponents.CardUnify
+                    android:id="@+id/card_products"
                     android:layout_width="match_parent"
                     android:maxHeight="@dimen/dp_290"
                     android:layout_height="wrap_content"

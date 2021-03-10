@@ -290,5 +290,8 @@
     <string name="review_reminder_how_to_description_1">1. Klik <b>Pengingat Ulasan</b> di halaman depan Tokopedia Seller, atau\n\n2. Klik tab <b>Inbox Ulasan</b> di halaman Ulasan, lalu klik tombol <b>Kirim Pengingat Ulasan</b>.</string>
     <string name="review_reminder_how_to_title_2">2 langkah pakai fitur Pengingat Ulasan</string>
     <string name="review_reminder_how_to_description_2">1. Buat pesan Pengingat Ulasan versimu agar terlihat lebih personal. Pesan akan tersimpan sebagai template.\n\n2. Klik kirim dan pembeli akan terima chat darimu.</string>
+    <string name="review_reminder_performance_title">Performa Bulanan Pengingat Ulasan</string>
+    <string name="review_reminder_performance_description">Total pengingat berhasil terkirim</string>
+    <string name="review_reminder_performance_incoming_review">Total ulasan masuk</string>
 
 </resources>

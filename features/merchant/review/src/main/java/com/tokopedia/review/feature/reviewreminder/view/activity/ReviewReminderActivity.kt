@@ -7,9 +7,11 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.inbox.buyerreview.view.listener.GlobalMainTabSelectedListener
 import com.tokopedia.review.feature.reviewreminder.view.adapter.ReviewReminderPagerAdapter
 import com.tokopedia.unifycomponents.TabsUnify
 
@@ -63,6 +65,12 @@ class ReviewReminderActivity : BaseActivity() {
     private fun setupTabsPager() {
         tabs?.addNewTab(getString(R.string.review_reminder_tab_title_1))
         tabs?.addNewTab(getString(R.string.review_reminder_tab_title_2))
-        pager?.adapter = ReviewReminderPagerAdapter(supportFragmentManager, tabs?.getUnifyTabLayout())
+
+        tabs?.getUnifyTabLayout()?.addOnTabSelectedListener(GlobalMainTabSelectedListener(pager, this))
+        pager?.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs?.getUnifyTabLayout()))
+
+        val reviewReminderPagerAdapter = ReviewReminderPagerAdapter(supportFragmentManager, tabs?.getUnifyTabLayout())
+        pager?.offscreenPageLimit = reviewReminderPagerAdapter.count
+        pager?.adapter = reviewReminderPagerAdapter
     }
 }

@@ -15,6 +15,23 @@
         android:background="@color/transparent"
         app:elevation="@dimen/spacing_lvl2">
 
+<!--        TODO Vindo-->
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/tickerInboxReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:closeButtonVisibility="visible"
+            app:descriptionText="@string/review_reminder_ticker_description"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            app:titleText="@string/review_reminder_ticker_title" />
+
         <include
             android:id="@+id/search_bar_layout"
             layout="@layout/item_search_rating_product"

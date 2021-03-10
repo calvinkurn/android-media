@@ -22,6 +22,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -52,6 +55,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -181,6 +185,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        initTickerReviewProduct()
         initSearchBar()
         initViewBottomSheet()
         initChipsSort(view)
@@ -761,6 +766,28 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun initTickerReviewProduct() {
+        // TODO vindo : please set the correct way
+        prefs?.let {
+            if (!it.getBoolean(ReviewConstants.HAS_TICKER_INBOX_REVIEW, false)) {
+                tickerInboxReview?.apply {
+                    show()
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                        override fun onDismiss() {
+                            RouteManager.route(context,ApplinkConstInternalMarketplace.REVIEW_SELLER_REMINDER)
+//                            hide()
+//                            it.edit().putBoolean(ReviewConstants.HAS_TICKER_INBOX_REVIEW, true).apply()
+                        }
+                    })
+                }
+            } else {
+                tickerInboxReview.hide()
+            }
         }
     }
 }
