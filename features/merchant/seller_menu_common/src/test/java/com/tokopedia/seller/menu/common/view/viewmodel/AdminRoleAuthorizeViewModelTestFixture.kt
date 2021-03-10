@@ -3,7 +3,7 @@ package com.tokopedia.seller.menu.common.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.seller.menu.common.domain.usecase.AdminPermissionUseCase
-import com.tokopedia.seller.menu.common.view.mapper.AdminPermissionMapper
+import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
@@ -30,17 +30,17 @@ open class AdminRoleAuthorizeViewModelTestFixture {
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var mapper: AdminPermissionMapper
+    lateinit var mapper: com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 
     @RelaxedMockK
     lateinit var isRoleAuthorizedObserver: Observer<in Result<Boolean>>
 
-    protected lateinit var viewModel: AdminRoleAuthorizeViewModel
+    protected lateinit var viewModel: com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = AdminRoleAuthorizeViewModel(
+        viewModel = com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel(
                 adminPermissionUseCase,
                 authorizeAccessUseCase,
                 userSession,

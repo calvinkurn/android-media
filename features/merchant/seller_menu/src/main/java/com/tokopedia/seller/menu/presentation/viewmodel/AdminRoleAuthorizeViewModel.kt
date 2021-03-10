@@ -1,13 +1,11 @@
-package com.tokopedia.seller.menu.common.view.viewmodel
+package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.domain.usecase.AdminPermissionUseCase
-import com.tokopedia.seller.menu.common.view.mapper.AdminPermissionMapper
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,7 +19,7 @@ class AdminRoleAuthorizeViewModel @Inject constructor(
         private val adminPermissionUseCase: AdminPermissionUseCase,
         private val authorizeAccessUseCase: AuthorizeAccessUseCase,
         private val userSession: UserSessionInterface,
-        private val mapper: AdminPermissionMapper,
+        private val mapper: com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper,
         private val dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
 
     private val permissionIdsLiveData = MutableLiveData<List<String>>()
