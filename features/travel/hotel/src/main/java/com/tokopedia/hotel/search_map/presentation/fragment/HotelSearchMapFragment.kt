@@ -336,6 +336,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         tvHotelSearchListTitle.gone()
         adapterCardList.setLoadingModel(loadingModel)
         adapterCardList.showLoading()
+        removeAllMarker()
         super.showLoading()
     }
 
@@ -573,9 +574,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
             googleMap.setOnMarkerClickListener(this)
-
             googleMap.setOnCameraIdleListener(this)
-
             googleMap.setOnMapClickListener {
                 // do nothing
             }
