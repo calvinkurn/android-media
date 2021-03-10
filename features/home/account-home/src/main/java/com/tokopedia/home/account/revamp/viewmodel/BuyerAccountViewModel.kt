@@ -103,7 +103,7 @@ class BuyerAccountViewModel @Inject constructor (
                     userSession.refreshUserSessionAdminData(it)
                 }
                 (adminDataResponse?.data?.detail?.roleType?.isLocationAdmin?.not() ?: true).let { canGoToSellerAccount ->
-                    _canGoToSellerAccount.postValue(canGoToSellerAccount)
+                    _canGoToSellerAccount.value = canGoToSellerAccount
                 }
                 shopData?.let {
                     val shopId =
