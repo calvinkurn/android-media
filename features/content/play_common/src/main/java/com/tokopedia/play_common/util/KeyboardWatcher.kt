@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import java.lang.ref.WeakReference
 
 /**
  * Created by jegul on 30/06/20
@@ -20,15 +21,19 @@ class KeyboardWatcher(private val threshold: Int = 100) {
     private var vto: ViewTreeObserver? = null
 
     fun listen(view: View, listener: Listener) {
+        val weakView = WeakReference(view)
+
         synchronized(this) {
             globalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
+                    val theView = weakView.get() ?: return
+
                     val screenHeight = getScreenHeight()
                     val windowRect = Rect().apply {
-                        view.rootView.getWindowVisibleDisplayFrame(this)
+                        theView.rootView.getWindowVisibleDisplayFrame(this)
                     }
                     val windowHeight = windowRect.bottom - windowRect.top
-                    val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(view.context)
+                    val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(theView.context)
 
                     val heightDifference = screenHeight - windowHeight - statusBarHeight
 
@@ -46,18 +51,19 @@ class KeyboardWatcher(private val threshold: Int = 100) {
                 }
             }
             vto?.removeOnGlobalLayoutListener(globalLayoutListener)
-            view.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
+            weakView.get()?.viewTreeObserver?.removeOnGlobalLayoutListener(globalLayoutListener)
 
-            vto = view.viewTreeObserver
+            vto = weakView.get()?.viewTreeObserver
             vto?.addOnGlobalLayoutListener(globalLayoutListener)
         }
     }
 
     fun unlisten(view: View) {
+        val weakView = WeakReference(view)
         synchronized(this) {
             if (::globalLayoutListener.isInitialized) {
                 vto?.removeOnGlobalLayoutListener(globalLayoutListener)
-                view.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
+                weakView.get()?.viewTreeObserver?.removeOnGlobalLayoutListener(globalLayoutListener)
             }
         }
     }
