@@ -1,5 +1,6 @@
 package com.tokopedia.logger.datasource.cloud
 
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.logger.model.scalyr.ScalyrBody
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
@@ -55,6 +56,7 @@ class LoggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEve
             e.printStackTrace()
         } finally {
             urlConnection?.disconnect()
+            Log.d("iniresponseapa", responseCode.toString())
             return responseCode
         }
     }
