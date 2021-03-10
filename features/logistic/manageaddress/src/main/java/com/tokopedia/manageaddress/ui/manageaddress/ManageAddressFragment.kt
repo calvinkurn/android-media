@@ -103,6 +103,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var typeRequest: Int? = -1
     private var prevState: Int = -1
     private var localChosenAddr: LocalCacheModel? = null
+    private var isFromEditAddress: Boolean? = false
 
     override fun getScreenName(): String = ""
 
@@ -121,20 +122,20 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         initHeader()
         initView()
         initViewModel()
-        initSearch()
         address_list.adapter = adapter
         address_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        initSearchView()
         isFromCheckoutChangeAddress = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
         isFromCheckoutSnippet = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET)
         isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
         localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
+        initSearch()
+        initSearchView()
     }
 
     override fun onSearchSubmitted(text: String) {
-        performSearch(text)
+        performSearch(text, null)
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -149,8 +150,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 setChosenAddressANA(addressDataModel)
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
-            performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+            isFromEditAddress = true
+            performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "", null)
             viewModel.getStateChosenAddress("address")
+            setButtonEnabled(true)
         }
     }
 
@@ -160,11 +163,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun performSearch(query: String) {
+    private fun performSearch(query: String, saveAddressDataModel: SaveAddressDataModel?) {
         clearData()
         maxItemPosition = 0
+        val addrId = saveAddressDataModel?.id ?: getChosenAddrId()
         context?.let {
-            viewModel.searchAddress(query, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+            viewModel.searchAddress(query, prevState, addrId, ChooseAddressUtils.isRollOutUser(it))
         }
     }
 
@@ -206,7 +210,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     globalErrorLayout?.gone()
                     if (viewModel.isClearData) clearData()
                     if (it.data.listAddress.isNotEmpty()) {
-                        if (context?.let { it1 -> ChooseAddressUtils.isRollOutUser(it1) } == true) {
+                        if (context?.let { context -> ChooseAddressUtils.isRollOutUser(context) } == true) {
                             updateTicker(it.data.pageInfo?.ticker)
                             updateButton(it.data.pageInfo?.buttonLabel)
                         }
@@ -265,6 +269,20 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     val data = it.data
                     context?.let {
                         context ->
+                        if (isFromEditAddress == true) {
+                            val newRecipientAddressModel = RecipientAddressModel()
+                            newRecipientAddressModel.apply {
+                                id = data.addressId.toString()
+                                addressStatus = data.status
+                                recipientName = data.receiverName
+                                addressName = data.addressName
+                                latitude = data.latitude
+                                longitude = data.longitude
+                                destinationDistrictId = data.districtId.toString()
+                                postalCode = data.postalCode
+                            }
+                            _selectedAddressItem = newRecipientAddressModel
+                        }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
                     }
@@ -356,7 +374,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun initSearch() {
         val searchKey = viewModel.savedQuery
         searchAddress?.searchBarTextField?.setText(searchKey)
-        performSearch(searchKey)
+        performSearch(searchKey, null)
         if (isLocalization == true) ChooseAddressTracking.impressAddressListPage(userSession.userId)
     }
 
@@ -369,14 +387,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchAddress?.clearFocus()
-                performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+                performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "", null)
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
 
         searchAddress?.clearListener = {
-           performSearch("")
+           performSearch("", null)
         }
 
         searchAddress?.searchBarPlaceholder = "Cari Alamat"
@@ -588,7 +606,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             activity?.setResult(Activity.RESULT_OK, resultIntent)
             activity?.finish()
         } else {
-            performSearch("")
+            performSearch("", addressDataModel)
         }
     }
 
