@@ -46,6 +46,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
+import com.tokopedia.vouchergame.common.util.VoucherGameGqlQuery
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
@@ -555,8 +556,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             getMenuDetail(it)
-            voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    R.raw.query_voucher_game_products),
+            voucherGameViewModel.getVoucherGameProducts(VoucherGameGqlQuery.voucherGameProducts,
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }

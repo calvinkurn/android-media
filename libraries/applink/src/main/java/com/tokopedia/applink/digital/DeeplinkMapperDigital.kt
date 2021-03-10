@@ -12,7 +12,6 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAI
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 
 object DeeplinkMapperDigital {
@@ -20,6 +19,7 @@ object DeeplinkMapperDigital {
     const val TEMPLATE_PARAM = "template"
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
+    const val REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_digital_checkout"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
@@ -65,7 +65,7 @@ object DeeplinkMapperDigital {
 
     private fun getDigitalCheckoutNavigation(context: Context, deeplink: String): String {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val getDigitalCart = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_CHECKOUT, true)
+        val getDigitalCart = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT, true)
         return if (getDigitalCart) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else ApplinkConsInternalDigital.CART_DIGITAL
     }

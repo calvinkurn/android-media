@@ -26,7 +26,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var tvSubTitle: Typography
     lateinit var imageChevron: AppCompatImageView
     lateinit var imageCoupon: AppCompatImageView
-    lateinit var mvcContainer: MvcShadowLayout
+    lateinit var mvcContainer: View
     var shopId: String = ""
     var isMainContainerSetFitsSystemWindows = false
     @MvcSource

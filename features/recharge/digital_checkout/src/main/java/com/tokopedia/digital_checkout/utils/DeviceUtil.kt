@@ -27,7 +27,6 @@ object DeviceUtil {
                     }
                 }
             } catch (ex: SocketException) {
-                ex.printStackTrace()
                 return "127.0.0.1"
             }
             return "127.0.0.1"

@@ -172,5 +172,16 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             override val authorType: String
                 get() = "shop"
         }
+
+        data class DiscoveryPage(val widgetID: String): WidgetType(){
+            override val typeKey: String
+                get() = "DISCO_PAGE"
+
+            override val authorId: String
+                get() = widgetID
+
+            override val authorType: String
+                get() = ""
+        }
     }
 }
