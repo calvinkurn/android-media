@@ -13,6 +13,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -35,6 +38,7 @@ class HotelSearchMapActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
+    private val uiDevice = UiDevice.getInstance(getInstrumentation())
 
     @get:Rule
     var activityRule: IntentsTestRule<HotelSearchMapActivity> = object : IntentsTestRule<HotelSearchMapActivity>(HotelSearchMapActivity::class.java) {
@@ -132,6 +136,23 @@ class HotelSearchMapActivityTest {
     private fun getHotelResultCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView
         return recyclerView.adapter?.itemCount ?: 0
+    }
+
+    /**When marker clicked, scrollTo hotel position*/
+    private fun onMarkerClick(){
+        val mMarker = uiDevice.findObject(UiSelector().descriptionContains("Rp 4.172.597"))
+        mMarker.click()
+        Espresso.onView(ViewMatchers.withId(R.id.rvHorizontalPropertiesHotelSearchMap)).perform(RecyclerViewActions.scrollToPosition<SearchPropertyViewHolder>(0))
+    }
+
+    /**Get user current position*/
+    private fun getCurrentPosition(){
+        Espresso.onView(ViewMatchers.withId(R.id.ivGetLocationHotelSearchMap)).perform(ViewActions.click())
+    }
+
+    /**Get user radius and screen mid point*/
+    private fun getRadiusAndMidScreenPoint(){
+        Espresso.onView(ViewMatchers.withId(R.id.btnGetRadiusHotelSearchMap)).perform(ViewActions.click())
     }
 
     @After
