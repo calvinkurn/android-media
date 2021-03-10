@@ -101,6 +101,7 @@ import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -352,7 +353,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
 
     override fun showLoadingDiscover() {
-        val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
+        val pb = LoaderUnify(requireContext())
         val lastPos = socmedButtonsContainer.childCount - 1
         if (socmedButtonsContainer.childCount >= 1 && socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
             socmedButtonsContainer.addView(pb, lastPos)
@@ -581,9 +582,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginGoogleClick() {
-        activity?.run{
+        if (activity != null) {
             onDismissBottomSheet()
-            analytics.eventClickLoginGoogle(applicationContext)
+            analytics.eventClickLoginGoogle(requireActivity().applicationContext)
 
             openGoogleLoginIntent()
         }
@@ -595,9 +596,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginFacebookClick() {
-        activity?.run {
+        if (activity != null) {
             onDismissBottomSheet()
-            analytics.eventClickLoginFacebook(applicationContext)
+            analytics.eventClickLoginFacebook(requireActivity().applicationContext)
             presenter.getFacebookCredential(this@LoginEmailPhoneFragment, callbackManager)
         }
     }
@@ -1152,9 +1153,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
-        activity?.run {
-            val intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+        if (activity != null){
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
