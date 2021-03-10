@@ -133,7 +133,9 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         setTitle("Ajukan kartu kredit apa?")
         isDragable = true
         isHideable = true
-        showCloseIcon = true
+        showCloseIcon = false
+        showHeader = true
+        showKnob = true
         showHeader = true
         customPeekHeight = getScreenHeight() / 2
     }

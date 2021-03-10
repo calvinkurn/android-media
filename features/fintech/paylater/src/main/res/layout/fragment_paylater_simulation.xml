@@ -155,8 +155,8 @@
             android:id="@+id/simulationGlobalError"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:gravity="center"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/payLaterTermsEmptyView" />
@@ -232,8 +232,8 @@
             layout="@layout/paylater_supervisor_widget"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginTop="@dimen/unify_space_24"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/registerShimmer" />

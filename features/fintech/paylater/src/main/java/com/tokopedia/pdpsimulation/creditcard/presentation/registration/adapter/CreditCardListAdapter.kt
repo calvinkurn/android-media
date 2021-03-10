@@ -34,7 +34,7 @@ class CreditCardListAdapter(
                 setHasFixedSize(true)
                 val model = creditCardList[position]
                 val mainBenefitList = model.mainBenefit?.split(";")?.toList()
-                if (mainBenefitList?.isNotEmpty() == true) {
+                if (!model.mainBenefit.isNullOrEmpty() && mainBenefitList?.isNotEmpty() == true) {
                     adapter = CreditCardBenefitsAdapter(mainBenefitList, model.isSpecialOffer)
                     layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                     setRecycledViewPool(viewPool)

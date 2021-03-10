@@ -92,8 +92,9 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
         setTitle("Kartu kredit ${bankName ?: ""}")
         isDragable = true
         isHideable = true
-        showCloseIcon = true
+        showCloseIcon = false
         showHeader = true
+        showKnob = true
         customPeekHeight = getScreenHeight() / 2
     }
 

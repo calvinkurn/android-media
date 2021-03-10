@@ -16,8 +16,8 @@
             android:id="@+id/ivPaylaterPartner"
             android:layout_width="@dimen/unify_space_48"
             android:layout_height="@dimen/unify_space_48"
-            android:scaleType="centerInside"
             android:layout_marginTop="@dimen/unify_space_12"
+            android:scaleType="centerInside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
@@ -28,49 +28,49 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
             android:layout_marginEnd="@dimen/unify_space_16"
-            tools:text="@string/kredivo"
             android:textSize="@dimen/unify_font_14"
-            app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
             app:layout_constraintBottom_toTopOf="@+id/tvSubTitlePaylaterPartner"
             app:layout_constraintEnd_toStartOf="@+id/tvPaylaterPartnerStatus"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
+            app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="body_2"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="@string/kredivo" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSubTitlePaylaterPartner"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_2"
-            tools:text="Yuk, daftar sekarang!"
-            android:visibility="gone"
             android:textSize="@dimen/unify_font_14"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/tvTitlePaymentPartner"
             app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
             app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:text="Yuk, daftar sekarang!" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/tvPaylaterPartnerStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:labelTitle="Aktif"
             android:textSize="@dimen/unify_font_10"
-            app:labelType="general_light_blue"
             android:visibility="gone"
+            app:labelTitle="Aktif"
+            app:labelType="general_light_blue"
             app:layout_constraintEnd_toEndOf="@+id/rvPaymentDesciption"
             app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
             tools:text="Aktif" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrierPayLater"
-            app:barrierDirection="bottom"
-            app:barrierAllowsGoneWidgets="false"
-            app:constraint_referenced_ids="ivPaylaterPartner, tvSubTitlePaylaterPartner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:barrierAllowsGoneWidgets="false"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="ivPaylaterPartner, tvSubTitlePaylaterPartner" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/borderGrey"

@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/unify_space_16"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/unify_space_16">
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/payLaterOffersGlobalError"
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_0"
-        android:visibility="gone"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitlePenawaran"
@@ -40,22 +40,22 @@
         android:id="@+id/llShimmerLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_0"
-        app:layout_goneMarginTop="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/unify_space_16"
+        android:orientation="horizontal"
         android:paddingStart="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleShimmer"
-        android:orientation="horizontal">
+        app:layout_goneMarginTop="@dimen/unify_space_12">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/productOfferFullShimmer"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="match_parent"
-            app:loader_type="rect"
-            android:layout_weight="0.9" />
+            android:layout_weight="0.9"
+            app:loader_type="rect" />
 
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -63,23 +63,23 @@
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/unify_space_16"
-            app:loader_type="rect"
-            android:layout_weight="0.1" />
+            android:layout_weight="0.1"
+            app:loader_type="rect" />
 
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/payLaterOffersShimmerGroup"
-        app:constraint_referenced_ids="titleShimmer, llShimmerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:constraint_referenced_ids="titleShimmer, llShimmerLayout" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/payLaterDataGroup"
-        android:visibility="gone"
-        app:constraint_referenced_ids="tvTitlePenawaran, paymentOptionViewPager"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tvTitlePenawaran, paymentOptionViewPager" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/paymentOptionViewPager"

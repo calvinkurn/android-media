@@ -33,7 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/unify_space_16"
-        tools:text="@string/kredivo"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/tvDescription"
         app:layout_constraintEnd_toStartOf="@+id/paymentOfferLabel"
@@ -43,7 +42,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="@string/kredivo" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/paymentOfferLabel"
@@ -54,7 +54,6 @@
         android:paddingTop="@dimen/unify_space_2"
         android:paddingEnd="@dimen/unify_space_4"
         android:paddingBottom="@dimen/unify_space_2"
-        tools:text="Aktif"
         android:visibility="gone"
         app:labelType="general_dark_blue"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaymentPartner"
@@ -62,7 +61,8 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/tvTitlePaymentPartner"
         app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
-        app:typographyType="small" />
+        app:typographyType="small"
+        tools:text="Aktif" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDescription"

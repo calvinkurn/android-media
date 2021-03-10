@@ -58,13 +58,14 @@
             android:layout_height="@dimen/unify_space_0"
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_8"
-            android:scaleType="centerInside"
-            app:layout_constraintDimensionRatio="H, 4:3"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            app:layout_constraintDimensionRatio="H, 120:78"
             app:layout_constraintEnd_toStartOf="@+id/imageGuideLine"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivRecommendationBadge"
-            tools:src="@tools:sample/avatars"
-            app:unify_image_corner_radius="8" />
+            app:unify_image_corner_radius="8"
+            tools:src="@tools:sample/avatars" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/imageGuideLine"
@@ -81,24 +82,24 @@
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginEnd="@dimen/unify_space_8"
-            tools:text="Kartu Kredit Citi PremierMiles"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageGuideLine"
             app:layout_constraintTop_toBottomOf="@+id/ivRecommendationBadge"
             app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="Kartu Kredit Citi PremierMiles" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvBankName"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
-            tools:text="Citibank"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="@+id/tvCreditCardName"
             app:layout_constraintStart_toStartOf="@+id/tvCreditCardName"
             app:layout_constraintTop_toBottomOf="@+id/tvCreditCardName"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:text="Citibank" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/benefitLabel1"
@@ -124,13 +125,13 @@
             android:id="@+id/tvBenefitsMore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="+2 Lainnya"
             android:layout_marginStart="@dimen/unify_space_4"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toBottomOf="@id/benefitLabel2"
             app:layout_constraintStart_toEndOf="@id/benefitLabel2"
             app:layout_constraintTop_toTopOf="@id/benefitLabel2"
-            app:typographyType="small" />
+            app:typographyType="small"
+            tools:text="+2 Lainnya" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvBenefitsDesc"

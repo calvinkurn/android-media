@@ -9,13 +9,13 @@
         android:id="@+id/tickerPaylaterRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
         app:descriptionText="Yuk, langsung gunakan untuk belanja!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tickerType="announcement"
         app:tickerShapeType="loose"
-        app:closeButtonVisibility="gone" />
+        app:tickerType="announcement" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPayLaterRegisterSteps"
@@ -29,13 +29,13 @@
         android:id="@+id/btnRegister"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:text="@string/pay_later_default_subtitle"
         android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/unify_space_16"
+        android:text="@string/pay_later_default_subtitle"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/tickerPaylaterRegister"
         app:layout_constraintStart_toStartOf="@id/tickerPaylaterRegister"
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterRegisterSteps"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:unifyButtonSize="small"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
