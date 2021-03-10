@@ -34,16 +34,19 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
             }
         } else if (shouldGoToActivationPage(pojo)) {
             onGoToActivationPage(MessageErrorException(pojo.loginToken.errors[0].message))
-        } else if (pojo.loginToken.popupError.header.isNotEmpty() &&
-                pojo.loginToken.popupError.body.isNotEmpty() &&
-                pojo.loginToken.popupError.action.isNotEmpty()) {
-            onShowPopupError(pojo)
-        } else if (pojo.loginToken.errors.isNotEmpty()) {
-            onErrorLoginToken(MessageErrorException(pojo.loginToken.errors[0].message))
-        } else if (errors.isNotEmpty()) {
-            onErrorLoginToken(MessageErrorException(errors[0].message))
         } else {
-            onErrorLoginToken(Throwable())
+            userSession.setToken(null, null, null)
+            if (pojo.loginToken.popupError.header.isNotEmpty() &&
+                    pojo.loginToken.popupError.body.isNotEmpty() &&
+                    pojo.loginToken.popupError.action.isNotEmpty()) {
+                onShowPopupError(pojo)
+            } else if (pojo.loginToken.errors.isNotEmpty()) {
+                onErrorLoginToken(MessageErrorException(pojo.loginToken.errors[0].message))
+            } else if (errors.isNotEmpty()) {
+                onErrorLoginToken(MessageErrorException(errors[0].message))
+            } else {
+                onErrorLoginToken(Throwable())
+            }
         }
     }
 
