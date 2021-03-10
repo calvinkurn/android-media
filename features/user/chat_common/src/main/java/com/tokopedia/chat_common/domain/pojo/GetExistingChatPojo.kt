@@ -192,7 +192,7 @@ data class Attachment(
         val type: Int = 0,
         @Expose
         @SerializedName("attributes")
-        val attributes: String = "",
+        var attributes: String = "",
         @Expose
         @SerializedName("fallback")
         val fallback: Fallback = Fallback()

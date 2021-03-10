@@ -15,8 +15,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
@@ -241,6 +245,19 @@ abstract class TopchatRoomTest {
 
 fun GetExistingChatPojo.blockPromo(blockPromo: Boolean): GetExistingChatPojo {
     chatReplies.block.isPromoBlocked = blockPromo
+    return this
+}
+
+fun GetExistingChatPojo.hideBanner(hide: Boolean): GetExistingChatPojo {
+    val banner: Reply? = chatReplies.list[0].chats[0].replies.find { reply ->
+        reply.attachment.type.toString() == TYPE_IMAGE_ANNOUNCEMENT
+    }
+    val newAttribute = ImageAnnouncementPojo().apply {
+        isHideBanner = hide
+        imageUrl = "https://images.tokopedia.net/img/cache/1190/wmEwCC/2021/3/" +
+                "8/d0389667-b822-43fa-bf3f-485b4518b286.jpg.webp?ect=4g"
+    }
+    banner?.attachment?.attributes = CommonUtil.toJson(newAttribute)
     return this
 }
 

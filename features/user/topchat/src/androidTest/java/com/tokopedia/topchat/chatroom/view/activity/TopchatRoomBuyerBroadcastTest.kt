@@ -13,6 +13,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
+import com.tokopedia.topchat.chatroom.view.activity.base.hideBanner
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
@@ -82,6 +83,24 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
 
         // Then
         assertBroadcastSpamHandlerIsHidden()
+    }
+
+    @Test
+    fun show_broadcast_banner() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatBroadcastAsBuyer
+                .blockPromo(false)
+                .hideBanner(false)
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+        inflateTestFragment()
+
+        // Then
+        onView(withId(R.id.iv_banner)).check(matches(isDisplayed()))
     }
 
     private fun assertBroadcastSpamHandlerIsVisible() {
