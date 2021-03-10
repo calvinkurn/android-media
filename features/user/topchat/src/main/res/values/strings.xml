@@ -119,7 +119,8 @@ yang ditemukan</string>
 
     <string name="seller_empty_chat_subtitle">Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.</string>
     <string name="buyer_empty_chat_subtitle">Coba ngobrol dengan teman penjual, yuk!</string>
-    <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
+    <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca!</string>
+    <string name="empty_chat_read_all_subtitle">Kalau ada chat baru buat kamu, bakal muncul disini.</string>
     <string name="empty_chat_smart_reply">Belum ada chat yang dibalas Smart Reply</string>
 
     <!--Delete Chat Popup-->

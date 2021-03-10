@@ -51,6 +51,7 @@ import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
@@ -689,13 +690,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
             }
 
-            if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_UNREAD)) {
+            if (viewModel.filter == PARAM_FILTER_UNREAD ||
+                    viewModel.filter == PARAM_FILTER_UNREPLIED) {
                 image = CHAT_BUYER_EMPTY
                 title = it.getString(R.string.empty_chat_read_all_title)
-                subtitle = ""
+                subtitle = it.getString(R.string.empty_chat_read_all_subtitle)
                 ctaText = ""
                 ctaApplink = ""
-            } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_TOPBOT)) {
+            } else if (viewModel.filter == PARAM_FILTER_TOPBOT) {
                 image = CHAT_SELLER_EMPTY_SMART_REPLY
                 title = it.getString(R.string.empty_chat_smart_reply)
                 subtitle = ""
