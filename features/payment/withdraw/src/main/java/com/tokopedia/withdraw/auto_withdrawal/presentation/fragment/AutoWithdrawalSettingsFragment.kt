@@ -110,28 +110,28 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
     private fun observeViewModel() {
-        autoWDSettingsViewModel.infoAutoWDResultLiveData.observe(this, Observer {
+        autoWDSettingsViewModel.infoAutoWDResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onWithdrawalInfoLoaded(it.data)
                 is Fail -> showGlobalError(it.throwable, autoWDSettingsViewModel::getAutoWDInfo)
             }
         })
 
-        autoWDSettingsViewModel.bankListResultLiveData.observe(this, Observer {
+        autoWDSettingsViewModel.bankListResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onBankAccountLoaded(it.data)
                 is Fail -> showGlobalError(it.throwable, autoWDSettingsViewModel::getBankAccount)
             }
         })
 
-        autoWDSettingsViewModel.autoWDStatusDataResultLiveData.observe(this, Observer {
+        autoWDSettingsViewModel.autoWDStatusDataResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onAutoWithdrawalStatusLoaded(it.data)
                 is Fail -> showGlobalError(it.throwable, autoWDSettingsViewModel::getAutoWDStatus)
             }
         })
 
-        autoWDSettingsViewModel.autoWDTNCResultLiveData.observe(this, Observer {
+        autoWDSettingsViewModel.autoWDTNCResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onTermsAndConditionLoaded(it.data)
                 is Fail -> {
@@ -140,7 +140,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             }
         })
 
-        autoWDSettingsViewModel.upsertResponseLiveData.observe(this, Observer {
+        autoWDSettingsViewModel.upsertResponseLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.code == 200) {
