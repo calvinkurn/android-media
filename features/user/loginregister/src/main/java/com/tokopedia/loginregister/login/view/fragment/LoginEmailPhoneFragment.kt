@@ -353,7 +353,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
 
     override fun showLoadingDiscover() {
-        val pb = LoaderUnify(requireContext())
+        val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
         val lastPos = socmedButtonsContainer.childCount - 1
         if (socmedButtonsContainer.childCount >= 1 && socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
             socmedButtonsContainer.addView(pb, lastPos)
