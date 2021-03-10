@@ -193,7 +193,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var parentProductId: String? = null
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
-    var userLocationCache: LocalCacheModel = LocalCacheModel()
+    private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
     private var isNewShipment: Boolean = false
@@ -245,6 +245,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartOcsUseCase.get().unsubscribe()
         toggleNotifyMeUseCase.get().cancelJobs()
         discussionMostHelpfulUseCase.get().cancelJobs()
+    }
+
+    fun getUserLocationCache() : LocalCacheModel {
+        return userLocationCache
     }
 
     fun updateVideoTrackerData(stopDuration: Long, videoDuration: Long) {
@@ -352,11 +356,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return listOf()
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "", isUseOldNav: Boolean = false) {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel) {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
+            userLocationCache = userLocationLocal
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
