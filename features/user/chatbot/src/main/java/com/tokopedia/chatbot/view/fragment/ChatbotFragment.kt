@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -228,7 +229,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         replyEditTextContainer = view.findViewById(R.id.new_comment_container)
         bindReplyTextBackground()
         ticker = view.findViewById(R.id.chatbot_ticker)
+        setChatBackground()
         return view
+    }
+
+    private fun setChatBackground() {
+        activity?.window?.setBackgroundDrawable(context?.let { ContextCompat.getDrawable(it,R.drawable.layered_chatbot_background) })
     }
 
     private fun getReplyBackground() = ViewUtil.generateBackgroundWithShadow(

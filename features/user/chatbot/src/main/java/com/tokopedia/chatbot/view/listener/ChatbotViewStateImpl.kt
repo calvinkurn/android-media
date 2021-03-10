@@ -190,10 +190,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(list: List<QuickReplyViewModel>) {
-            if (::quickReplyAdapter.isInitialized) {
+            if (::quickReplyAdapter.isInitialized && list.isNotEmpty()) {
                 quickReplyAdapter.setList(list)
+                rvQuickReply.visibility = View.VISIBLE
             }
-            rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
