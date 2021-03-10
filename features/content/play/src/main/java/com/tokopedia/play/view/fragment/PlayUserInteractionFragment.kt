@@ -415,15 +415,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 val initialBottomMargin = layoutParams.bottomMargin
                 val rootInsets = activity?.window?.decorView?.rootWindowInsets
                 if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
-                val insets = portraitInsets
+                val insets = if (orientation.isPortrait) portraitInsets else rootInsets
                 if (insets != null) {
                     layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
                     initialBottomMargin
                 } else error("Insets not supported")
             } catch (e: Throwable) { 0 }
         } else 0
-
-        spaceSize.rootView.invalidateInsets()
 
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             val skipTop = !isOpened && insets.systemWindowInsetTop == 0
