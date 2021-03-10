@@ -18,7 +18,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -47,8 +49,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private val tvTotalView: TextView
     private val llLoadingContainer: LinearLayout
     private val loaderLoading: LoaderUnify
-
-    private var originalReminderState = false
 
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
@@ -89,14 +89,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         mListener = listener
     }
 
-    fun revertToOriginalReminderState() {
-        setIconToggleReminder(originalReminderState)
-    }
-
-    fun setTotalView(totalView: String) {
-        tvTotalView.text = totalView
-    }
-
     fun setModel(model: PlayWidgetMediumChannelUiModel) {
         this.mModel = model
 
@@ -117,13 +109,9 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvStartTime.text = model.startTime
         tvTotalView.text = model.totalView
 
-        originalReminderState = model.activeReminder
-
-        setIconToggleReminder(model.activeReminder)
+        setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
-            model.activeReminder = !model.activeReminder
-            mListener?.onToggleReminderChannelClicked(model, model.activeReminder)
-            setIconToggleReminder(model.activeReminder)
+            mListener?.onToggleReminderChannelClicked(model, model.reminderType.switch())
         }
 
         setOnClickListener {
@@ -162,8 +150,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         llLoadingContainer.visibility = View.VISIBLE
     }
 
-    private fun setIconToggleReminder(active: Boolean) {
-        val drawableIconReminder = if (active) R.drawable.ic_play_reminder else R.drawable.ic_play_reminder_non_active
+    private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
+        val drawableIconReminder = when (reminderType) {
+            PlayWidgetReminderType.Remind -> R.drawable.ic_play_reminder
+            PlayWidgetReminderType.UnRemind ->  R.drawable.ic_play_reminder_non_active
+        }
         reminderBadge.setImageDrawable(
                 ContextCompat.getDrawable(context, drawableIconReminder)
         )
@@ -222,7 +213,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         fun onToggleReminderChannelClicked(
                 item: PlayWidgetMediumChannelUiModel,
-                remind: Boolean
+                reminderType: PlayWidgetReminderType
         )
 
         fun onMenuActionButtonClicked(

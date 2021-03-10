@@ -5,6 +5,7 @@
     android:layout_width="@dimen/topads_sdk_headline_ad_width"
     android:layout_height="match_parent"
     app:cardCornerRadius="@dimen/dp_8"
+    android:maxHeight="@dimen/topads_sdk_headline_ad_max_height"
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -24,6 +25,7 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
@@ -168,6 +170,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun setupObserve() {
         observeLoggedInInteractionEvent()
         observeProductSheetContent()
+        observePinned()
         observeVariantSheetContent()
         observeBottomInsetsState()
         observeBuyEvent()
@@ -311,17 +314,22 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Observe
      */
+    private fun observePinned() {
+        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
+            if (it is PlayPinnedUiModel.PinnedProduct && it.productTags is PlayProductTagsUiModel.Complete) {
+                if (it.productTags.productList.isNotEmpty()) {
+                    productSheetView.setProductSheet(it.productTags)
+                } else {
+                    productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
+                }
+            }
+        })
+    }
+
     private fun observeProductSheetContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is PlayResult.Loading -> if (it.showPlaceholder) productSheetView.showPlaceholder()
-                is PlayResult.Success -> {
-                    if (it.data.productList.isNotEmpty()) {
-                        productSheetView.setProductSheet(it.data)
-                    } else {
-                        productSheetView.showEmpty(it.data.basicInfo.partnerId)
-                    }
-                }
                 is PlayResult.Failure -> productSheetView.showError(
                         isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
                         onError = it.onRetry

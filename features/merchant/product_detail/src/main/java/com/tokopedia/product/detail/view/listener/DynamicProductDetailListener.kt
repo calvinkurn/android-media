@@ -155,6 +155,11 @@ interface DynamicProductDetailListener {
     fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
+     * ProductMiniSocialProofChipViewHolder
+     */
+    fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
      * ProductShippingViewHolder
      */
     fun openShipmentClickedBottomSheet(title:String, labelShipping:String, isCod:Boolean, componentTrackDataModel:ComponentTrackDataModel?)
