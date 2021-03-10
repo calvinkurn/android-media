@@ -7,18 +7,23 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductManage
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+/***
+ * See GQL documentation for more information about ProductListMeta.
+ * Docs: https://tokopedia.atlassian.net/wiki/spaces/MC/pages/669877876/GQL+ProductListMeta
+ */
 class GetProductManageAccessUseCase @Inject constructor(
     repository: GraphqlRepository
 ) : GraphqlUseCase<ProductManageAccessResponse>(repository) {
 
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
-        private const val shopID = "\$shopID"
-        private const val extraInfo = "[\"access\",\"rbac\"]"
+        private const val PARAM_EXTRA_INFO = "extraInfo"
+        private const val EXTRA_INFO_ACCESS = "access"
+        private const val EXTRA_INFO_RBAC = "rbac"
 
         private val QUERY = """
-            query ProductListMeta($shopID:String!){
-                ProductListMeta(shopID:$shopID, extraInfo:$extraInfo){
+            query ProductListMeta(${'$'}shopID:String!, ${'$'}extraInfo:[String]){
+                ProductListMeta(shopID:${'$'}shopID, extraInfo:${'$'}extraInfo){
                     header{
                         processTime
                         messages
@@ -42,7 +47,9 @@ class GetProductManageAccessUseCase @Inject constructor(
 
     suspend fun execute(shopId: String): Response {
         val requestParams = RequestParams.create()
+        val extraInfo = listOf(EXTRA_INFO_ACCESS, EXTRA_INFO_RBAC)
         requestParams.putString(PARAM_SHOP_ID, shopId)
+        requestParams.putObject(PARAM_EXTRA_INFO, extraInfo)
         setRequestParams(requestParams.parameters)
         return executeOnBackground().response
     }
