@@ -43,12 +43,13 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             val priority = loggerExceptionData?.priority.orEmpty()
             val tagKey = loggerExceptionData?.tag.orEmpty()
             val messageData = loggerExceptionData?.dataException
+            val tagMapKey = StringBuilder(priority).append(DELIMITER_TAG_MAPS).append(tagKey).toString()
 
             if (LogManager.instance == null) {
                 return@globalScopeLaunch
             }
 
-            tagMaps[tagKey]?.let {
+            tagMaps[tagMapKey]?.let {
                 val priorityTag = it.postPriority
                 val classLine = tag ?: ""
                 val messageJson = messageData?.convertMapToJsonString().orEmpty()
@@ -124,7 +125,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             return
         }
         for (tag in tags) {
-            val tagSplit = tag.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
+            val tagSplit = tag.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
             if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
                 continue
             }
@@ -133,7 +134,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
                 if (randomNumber <= it) {
                     val tagKey = StringBuilder()
                             .append(tagSplit[0])
-                            .append(DELIMITER)
+                            .append(DELIMITER_TAG_MAPS)
                             .append(tagSplit[1])
                             .toString()
                     tagMaps[tagKey] = Tag(getPriority(tagSplit[3]))
@@ -143,6 +144,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     companion object {
+        const val DELIMITER_TAG_MAPS = "#"
         const val DELIMITER = ","
         const val MAX_RANDOM_NUMBER = 100
 
