@@ -350,8 +350,12 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     override fun loadData(forceRefresh: Boolean) {
         if (productId != null || (productKey != null && shopDomain != null)) {
-            (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld())
+            context?.let {
+                (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
+                viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
+                        forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
+                        ?: LocalCacheModel())
+            }
         }
     }
 
@@ -379,7 +383,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         super.onCreate(savedInstanceState)
         setupRemoteConfig()
         assignDeviceId()
-        assignUserLocationData()
         loadData()
     }
 
@@ -477,7 +480,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
                 hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
-                    assignUserLocationData()
                     onSwipeRefresh()
                 }
                 updateActionButtonShadow()
@@ -566,9 +568,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun reloadUserLocationChanged() {
         if (viewModel.getDynamicProductInfoP1 == null || context == null || firstOpenPage == null || firstOpenPage == true) return
-        val isUserLocationChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), viewModel.userLocationCache)
+        val isUserLocationChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), viewModel.getUserLocationCache())
         if (isUserLocationChanged) {
-            assignUserLocationData()
             refreshPage()
         }
     }
@@ -1229,7 +1230,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun onSuccessUpdateAddress() {
         view?.showToasterSuccess(getString(R.string.pdp_shipping_success_change_address))
-        assignUserLocationData()
         onSwipeRefresh()
     }
 
@@ -1317,7 +1317,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 viewModel.getP2RatesEstimateByProductId(),
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                boeData
+                boeData,
+                viewModel.getUserLocationCache()
         )
 
         /*
@@ -1741,7 +1742,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 ratesData,
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                boeData
+                boeData,
+                viewModel.getUserLocationCache()
         )
 
         if (it.upcomingCampaigns.values.isEmpty()) {
@@ -1947,7 +1949,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     productId = it.basic.productID,
                     productWeightUnit = it.basic.weightUnit,
                     isFulfillment = viewModel.getMultiOriginByProductId().isFulfillment,
-                    destination = generateUserLocationRequestRates(viewModel.userLocationCache),
+                    destination = generateUserLocationRequestRates(viewModel.getUserLocationCache()),
                     boType = boData.boType,
                     freeOngkirUrl = boData.imageURL,
                     poTime = it.data.preOrder.preorderInDays,
@@ -3109,13 +3111,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun assignDeviceId() {
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
                 ?: viewModel.userSessionInterface.deviceId ?: ""
-    }
-
-    private fun assignUserLocationData() {
-        context?.let {
-            viewModel.userLocationCache = ChooseAddressUtils.getLocalizingAddressData(it)
-                    ?: LocalCacheModel()
-        }
     }
 
     private fun goToHargaFinal() {

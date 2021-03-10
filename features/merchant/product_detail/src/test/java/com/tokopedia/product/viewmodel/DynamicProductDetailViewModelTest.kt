@@ -13,6 +13,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
@@ -163,6 +164,14 @@ class DynamicProductDetailViewModelTest {
 
     //=========================================VARIABLE SECTION======================================//
     //==============================================================================================//
+    @Test
+    fun `on success get user location cache`() {
+        viewModel.getProductP1(ProductParams(),userLocationLocal = LocalCacheModel("123"))
+
+        val data = viewModel.getUserLocationCache()
+        Assert.assertTrue(data.address_id == "123")
+    }
+
 
     @Test
     fun `on success clear cache`() {
@@ -750,7 +759,7 @@ class DynamicProductDetailViewModelTest {
                 ?: "", productParams.shopDomain ?: "", productParams.productName
                 ?: "", productParams.warehouseId ?: "", "", userLocation)
 
-        viewModel.getProductP1(productParams, true, false, "")
+        viewModel.getProductP1(productParams, true, false, "", userLocationLocal = getUserLocationCache())
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "") == productId)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
@@ -774,7 +783,7 @@ class DynamicProductDetailViewModelTest {
                 ?: "", productParams.shopDomain ?: "", productParams.productName
                 ?: "", productParams.warehouseId ?: "", "", userLocation)
 
-        viewModel.getProductP1(productParams, true, false, " ")
+        viewModel.getProductP1(productParams, true, false, " ", userLocationLocal = getUserLocationCache())
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty())
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
@@ -803,7 +812,7 @@ class DynamicProductDetailViewModelTest {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, true, false, "", false)
+        viewModel.getProductP1(productParams, true, false, "", false, userLocationLocal = getUserLocationCache())
 
         `co verify p1 success`()
 
@@ -881,7 +890,7 @@ class DynamicProductDetailViewModelTest {
             getPdpLayoutUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.getProductP1(productParams)
+        viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
         //P1
         coVerify {
             getPdpLayoutUseCase.executeOnBackground()
@@ -925,7 +934,7 @@ class DynamicProductDetailViewModelTest {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams)
+        viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
 
         //P1
         coVerify {
@@ -980,7 +989,7 @@ class DynamicProductDetailViewModelTest {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true, isUseOldNav = true)
+        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true, isUseOldNav = true, userLocationLocal = getUserLocationCache())
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 0)
@@ -1447,6 +1456,10 @@ class DynamicProductDetailViewModelTest {
         verify {
             removeWishlistUseCase.unsubscribe()
         }
+    }
+
+    private fun getUserLocationCache(): LocalCacheModel {
+        return LocalCacheModel("123", "123", "123", "123")
     }
 
     companion object {
