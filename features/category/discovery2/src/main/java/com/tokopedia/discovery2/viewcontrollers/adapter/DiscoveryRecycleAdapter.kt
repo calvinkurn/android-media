@@ -41,7 +41,8 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
             return
         setViewSpanType(holder, componentList[position].properties?.template)
-        if(mCurrentHeader?.first == position && mCurrentHeader?.second?.itemViewType == getItemViewType(position) && (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel != null ){
+        if(mCurrentHeader?.first == position && mCurrentHeader?.second?.itemViewType == getItemViewType(position)
+                && (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel != null ){
             holder.bindView((mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel!!, parentComponent)
         }else{
             with(viewHolderListModel.getViewHolderModel(
