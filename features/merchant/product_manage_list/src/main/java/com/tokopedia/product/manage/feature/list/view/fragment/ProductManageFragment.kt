@@ -1361,7 +1361,7 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
-            val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
+            val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(it, product, this) }
             editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         }
         ProductManageTracking.eventEditStock(product.id)
