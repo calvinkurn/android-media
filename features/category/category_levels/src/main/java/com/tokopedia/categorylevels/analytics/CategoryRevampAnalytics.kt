@@ -229,9 +229,12 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     }
 
     private fun getProductDime83(dataItem: DataItem): String {
-        return if (dataItem.freeOngkir?.isActive == true && dataItem.labelsGroupList?.firstOrNull()?.type == Constant.LABEL_FULFILLMENT){
-            BEBAS_ONGKIR_EXTRA
-        }else if(dataItem.freeOngkir?.isActive == true){
+        return if (dataItem.freeOngkir?.isActive == true){
+            for(labelGroup in dataItem.labelsGroupList ?: arrayListOf()){
+                if(labelGroup.position == Constant.LABEL_FULFILLMENT){
+                    BEBAS_ONGKIR_EXTRA
+                }
+            }
             BEBAS_ONGKIR
         }else {
             NONE_OTHER
