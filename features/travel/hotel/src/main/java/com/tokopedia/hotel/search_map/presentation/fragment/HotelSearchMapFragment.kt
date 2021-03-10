@@ -530,7 +530,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             text = price
             background = resources.getDrawable(getPin(markerType))
             if(markerType == HOTEL_PRICE_ACTIVE_PIN) {
-                setTextColor(color = resources.getColor(R.color.Unify_N0))
+                setTextColor(color = ContextCompat.getColor(context, R.color.Unify_N0))
                 setWeight(Typography.BOLD)
             }
         }
