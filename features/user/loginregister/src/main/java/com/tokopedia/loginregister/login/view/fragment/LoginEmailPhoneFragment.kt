@@ -581,9 +581,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginGoogleClick() {
-        activity?.run{
+        if (activity != null) {
             onDismissBottomSheet()
-            analytics.eventClickLoginGoogle(applicationContext)
+            analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             openGoogleLoginIntent()
         }
@@ -595,9 +595,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginFacebookClick() {
-        activity?.run {
+        if (activity != null) {
             onDismissBottomSheet()
-            analytics.eventClickLoginFacebook(applicationContext)
+            analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this@LoginEmailPhoneFragment, callbackManager)
         }
     }
@@ -1152,9 +1152,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
-        activity?.run {
-            val intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+        if (activity != null){
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
