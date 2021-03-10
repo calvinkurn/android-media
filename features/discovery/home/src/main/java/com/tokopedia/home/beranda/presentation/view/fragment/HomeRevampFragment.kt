@@ -622,7 +622,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showNavigationOnboarding() {
         activity?.let {
-            if (bottomSheetIsShowing) {
+            if (!bottomSheetIsShowing) {
                 val bottomSheet = BottomSheetUnify()
                 val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
                 onboardingView.onboarding_button.setOnClickListener {
