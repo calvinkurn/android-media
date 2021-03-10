@@ -107,33 +107,18 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layoutMyBills"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMyBills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/spacing_lvl3">
-                <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
-                    android:id="@+id/subscriptionWidget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
-                    android:visibility="gone" />
-
-                <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
-                    android:id="@+id/fintechProductWidget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-            </LinearLayout>
+                android:paddingBottom="@dimen/spacing_lvl3" />
 
             <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSummaryWidget
                 android:id="@+id/checkoutSummaryWidget"
                 android:background="@color/Unify_N0"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutBottomViewWidget
                 android:id="@+id/checkoutBottomViewWidget"

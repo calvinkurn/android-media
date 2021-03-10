@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.item_digital_checkout_my_bills_section.view.*
+import kotlinx.android.synthetic.main.layout_digital_checkout_my_bills_section.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -18,7 +18,7 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.item_digital_checkout_my_bills_section, this, true)
+        LayoutInflater.from(context).inflate(R.layout.layout_digital_checkout_my_bills_section, this, true)
     }
 
     var actionListener: ActionListener? = null
@@ -26,7 +26,7 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
             field = value
             field?.let { listener ->
                 icCheckoutMyBillsInfo.setOnClickListener { listener.onMoreInfoClicked() }
-                checkBoxCheckoutMyBills.setOnCheckedChangeListener() { _, isChecked ->
+                checkBoxCheckoutMyBills.setOnCheckedChangeListener { _, isChecked ->
                     listener.onCheckChanged(isChecked)
                 }
             }

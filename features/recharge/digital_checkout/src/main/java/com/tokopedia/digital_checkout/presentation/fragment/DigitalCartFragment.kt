@@ -3,7 +3,6 @@ package com.tokopedia.digital_checkout.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,9 +36,10 @@ import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParam
 import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
+import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
+import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
-import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
@@ -68,7 +68,7 @@ import javax.inject.Inject
  * @author by jessica on 07/01/21
  */
 
-class DigitalCartFragment : BaseDaggerFragment() {
+class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -245,8 +245,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
             }
         }
 
-        if (cartInfo.showSubscriptionsView) renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
-        renderFintechProductWidget(cartInfo.attributes.fintechProduct.getOrNull(0))
+        checkoutBottomViewWidget.checkoutButtonText = cartInfo.crossSellingConfig.checkoutButtonText
+        renderMyBillsLayout(cartInfo)
 
         cartInfo.attributes.icon.let { iconCheckout.loadImage(it) }
         productTitle.text = cartInfo.attributes.categoryName
@@ -410,81 +410,35 @@ class DigitalCartFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig) {
-        if ((crossSellingConfig.bodyTitle).isNotEmpty()) {
-            subscriptionWidget.visibility = View.VISIBLE
+    private fun renderMyBillsLayout(cartInfo: CartDigitalInfoData) {
+        val adapter = DigitalMyBillsAdapter(cartInfo.crossSellingType, this)
 
-            checkoutBottomViewWidget.checkoutButtonText = crossSellingConfig.checkoutButtonText
+        rvMyBills.layoutManager = LinearLayoutManager(context)
+        rvMyBills.isNestedScrollingEnabled = false
+        rvMyBills.adapter = adapter
 
-            //if user has subscribe, hide subscriptionWidget's checkbox
-            if (digitalSubscriptionParams.isSubscribed) {
-                subscriptionWidget.disableCheckBox()
-            }
-            subscriptionWidget.setTitle(crossSellingConfig.bodyTitle)
-
-            if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter)
-            else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore)
-            subscriptionWidget.hasMoreInfo(false)
-
-            if (viewModel.requestCheckoutParam.isSubscriptionChecked) {
-                subscriptionWidget.setChecked(true)
-            } else if (!subscriptionWidget.isChecked()) {
-                subscriptionWidget.setChecked(crossSellingConfig.isChecked)
-            }
-
-            viewModel.onSubscriptionChecked(subscriptionWidget.isChecked())
-
-            subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                override fun onMoreInfoClicked() {}
-
-                override fun onCheckChanged(isChecked: Boolean) {
-                    digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-                    if (isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter)
-                    else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore)
-
-                    viewModel.onSubscriptionChecked(isChecked)
-                }
-            }
-        }
+        adapter.setItems(if (cartInfo.showSubscriptionsView) listOf(cartInfo.crossSellingConfig) else listOf(),
+                cartInfo.attributes.fintechProduct)
     }
 
-    private fun renderFintechProductWidget(fintechProduct: FintechProduct?) {
-        fintechProduct?.let {
-            if (fintechProduct.info.title.isNotEmpty()) {
-                fintechProductWidget.setTitle(fintechProduct.info.title)
-                fintechProductWidget.setDescription(fintechProduct.info.subtitle)
-                fintechProductWidget.hasMoreInfo(true)
-                fintechProductWidget.visibility = View.VISIBLE
+    override fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean) {
+        digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
 
-                if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
+        viewModel.onSubscriptionChecked(isChecked)
+    }
 
-                    if (viewModel.requestCheckoutParam.isFintechProductChecked) {
-                        fintechProductWidget.setChecked(true)
-                    } else if (!fintechProductWidget.isChecked()) {
-                        fintechProductWidget.setChecked(fintechProduct.optIn)
-                    }
-
-                    viewModel.updateTotalPriceWithFintechProduct(fintechProductWidget.isChecked(), getPriceInput())
-                    viewModel.updateCheckoutSummaryWithFintechProduct(fintechProductWidget.isChecked())
-                }
-
-                fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                    override fun onMoreInfoClicked() {
-                        renderFintechProductMoreInfo(fintechProduct.info)
-                    }
-
-                    override fun onCheckChanged(isChecked: Boolean) {
-                        if (fintechProduct.transactionType == TRANSACTION_TYPE_PROTECTION) {
-                            digitalAnalytics.eventClickProtection(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-                        } else {
-                            digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-                        }
-                        viewModel.updateTotalPriceWithFintechProduct(isChecked, getPriceInput())
-                        viewModel.updateCheckoutSummaryWithFintechProduct(isChecked)
-                    }
-                }
-            }
+    override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
+        if (fintechProduct.transactionType == TRANSACTION_TYPE_PROTECTION) {
+            digitalAnalytics.eventClickProtection(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
+        } else {
+            digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
         }
+        viewModel.updateTotalPriceWithFintechProduct(isChecked, getPriceInput())
+        viewModel.updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
+    }
+
+    override fun onFintechMoreInfoChecked(info: FintechProduct.FintechProductInfo) {
+        renderFintechProductMoreInfo(info)
     }
 
     private fun renderFintechProductMoreInfo(fintechProductInfo: FintechProduct.FintechProductInfo) {
@@ -515,9 +469,11 @@ class DigitalCartFragment : BaseDaggerFragment() {
             if (!userInputPriceDigital.minPayment.isNullOrEmpty())
                 inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
                     override fun onInputPriceByUserFilled(paymentAmount: Long?) {
-                        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0,
-                                fintechProductWidget.isChecked())
-                        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble() ?: 0.0)
+                        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble()
+                                ?: 0.0, false)
+//                                fintechProductWidget.isChecked())
+                        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble()
+                                ?: 0.0)
                     }
 
                     override fun enableCheckoutButton() {

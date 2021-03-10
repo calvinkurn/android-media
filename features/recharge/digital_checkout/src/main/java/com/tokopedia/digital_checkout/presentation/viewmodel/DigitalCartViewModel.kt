@@ -23,6 +23,7 @@ import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
+import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.usecase.*
 import com.tokopedia.digital_checkout.utils.DeviceUtil
@@ -317,19 +318,13 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun updateCheckoutSummaryWithFintechProduct(isChecked: Boolean) {
-        cartDigitalInfoData.value?.attributes?.let { attributes ->
-            val fintechProductName = attributes.fintechProduct.getOrNull(0)?.info?.title
-                    ?: ""
-            val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
-                    ?: 0.0
-            if (isChecked) {
-                paymentSummary.addToSummary(Payment(fintechProductName, getStringIdrFormat(fintechProductPrice)))
-            } else {
-                paymentSummary.removeFromSummary(fintechProductName)
-            }
-            _payment.postValue(paymentSummary)
+    fun updateCheckoutSummaryWithFintechProduct(fintechProduct: FintechProduct, isChecked: Boolean) {
+        if (isChecked) {
+            paymentSummary.addToSummary(Payment(fintechProduct.info.title, getStringIdrFormat(fintechProduct.fintechAmount)))
+        } else {
+            paymentSummary.removeFromSummary(fintechProduct.info.title)
         }
+        _payment.postValue(paymentSummary)
     }
 
     fun setTotalPriceBasedOnUserInput(totalPrice: Double, isFintechProductChecked: Boolean) {
@@ -409,7 +404,8 @@ class DigitalCartViewModel @Inject constructor(
             TickerCheckoutView.State.ACTIVE -> {
                 onReceivedPromoCode()
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 
