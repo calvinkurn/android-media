@@ -6,6 +6,7 @@ import com.tkpd.remoteresourcerequest.utils.Constants.AUDIO_ARRAY
 import com.tkpd.remoteresourcerequest.utils.Constants.MULTI_DPI_ARRAY
 import com.tkpd.remoteresourcerequest.utils.Constants.NO_DPI_ARRAY
 import com.tkpd.remoteresourcerequest.utils.Constants.SINGLE_DPI_ARRAY
+import com.tkpd.remoteresourcerequest.utils.Constants.URL_SEPARATOR
 import com.tkpd.remoteresourcerequest.utils.DensityFinder
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 
@@ -100,10 +101,10 @@ object ImageTypeMapper {
     fun getImageType(deferredImageView: DeferredImageView): RequestedResourceType {
         val fileName =
                 if (deferredImageView.completeUrl.isNotEmpty()) {
-                    val index = deferredImageView.completeUrl.lastIndexOf("/")
+                    val index = deferredImageView.completeUrl.lastIndexOf(URL_SEPARATOR)
                     if (index != -1)
                         deferredImageView.completeUrl.substring(
-                                deferredImageView.completeUrl.lastIndexOf("/") + 1)
+                                deferredImageView.completeUrl.lastIndexOf(URL_SEPARATOR) + 1)
                     else
                         deferredImageView.mRemoteFileName
                 } else
