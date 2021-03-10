@@ -935,7 +935,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         promoCoachMark = CoachMark2(it)
                         promoCoachMark.showCoachMark(coachMarkItem)
                         recyclerView.addOnScrollListener(coachMarkRecyclerListener)
-                        localCacheHandler.putBoolean(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true)
+                        localCacheHandler.apply{
+                            putBoolean(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true)
+                            applyEditor()
+                        }
                     }
                 }
             }, 300)
