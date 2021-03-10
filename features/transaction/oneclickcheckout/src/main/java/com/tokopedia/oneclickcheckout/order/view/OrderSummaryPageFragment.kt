@@ -789,6 +789,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             buttonAturPilihan?.text = getString(R.string.atur_pilihan)
         }
 
+        val addressState = viewModel.addressState.value
+        if (addressState.state == AddressState.STATE_ADDRESS_ID_NOT_MATCH_ANY_OCC ||
+                addressState.state == AddressState.STATE_DISTRICT_ID_NOT_MATCH_ANY_OCC) {
+            buttonAturPilihan?.text = getString(R.string.atur_pilihan)
+        }
+
         buttonAturPilihan?.setOnClickListener {
             if (viewModel.isNewFlow) {
                 orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnOrderSummary(userSession.get().userId)
@@ -803,9 +809,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
-                val addressState = viewModel.addressState.value.state
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
-                putExtra(PreferenceEditActivity.EXTRA_AUTO_SELECT_ADDRESS, addressState == AddressState.STATE_ADDRESS_ID_MATCH_NON_DEFAULT_OCC)
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState.state)
             }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
