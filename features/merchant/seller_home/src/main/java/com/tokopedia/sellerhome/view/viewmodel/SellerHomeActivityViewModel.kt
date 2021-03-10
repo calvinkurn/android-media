@@ -118,12 +118,10 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     private suspend fun getEligiblityOnlyWhenAdminShouldCheckRole(action: suspend () -> Boolean): Boolean {
-        return when {
-            userSession.isShopOwner -> true
-            userSession.isShopAdmin -> {
-                action.invoke()
-            }
-            else -> false
+        return if (userSession.isShopOwner) {
+            true
+        } else {
+            action.invoke()
         }
     }
 

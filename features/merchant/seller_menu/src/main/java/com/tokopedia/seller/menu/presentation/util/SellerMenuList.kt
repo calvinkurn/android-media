@@ -8,7 +8,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller.menu.common.view.activity.AdminRoleAuthorizeActivity
+import com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType

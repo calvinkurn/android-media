@@ -4,14 +4,13 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.constant.AdminFeature
-import com.tokopedia.seller.menu.common.view.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import kotlinx.android.synthetic.main.item_seller_menu_feature_section.view.*
@@ -68,7 +67,7 @@ class SellerFeatureViewHolder(
 
     private fun goToToAdminAuthorizationPage(@AdminFeature featureName: String) {
         itemView.context?.run {
-            startActivity(AdminRoleAuthorizeActivity.createIntent(this, featureName))
+            RouteManager.route(this, UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, featureName))
         }
     }
 }

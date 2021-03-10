@@ -45,8 +45,6 @@ abstract class SomOrderBaseViewModel(
     val rejectCancelOrderResult: LiveData<Result<SomRejectCancelOrderResponse.Data>>
         get() = _rejectCancelOrderResult
 
-    private var userRolesJob: Job? = null
-
     protected open suspend fun doAcceptOrder(orderId: String, invoice: String) {
         somAcceptOrderUseCase.setParams(orderId, userSession.shopId ?: "0")
         _acceptOrderResult.postValue(Success(somAcceptOrderUseCase.execute()))
@@ -95,31 +93,23 @@ abstract class SomOrderBaseViewModel(
         }, onError = { _rejectCancelOrderResult.postValue(Fail(it)) })
     }
 
-    fun setUserRolesJob(job: Job) {
-        userRolesJob = job
-    }
-
     protected suspend fun getAdminAccessEligibilityPair(@AccessId firstAccessId: Int,
                                                         @AccessId secondAccessId: Int): Result<Pair<Boolean, Boolean>> {
-        return when {
-            userSession.isShopOwner -> Success(true to true)
-            userSession.isShopAdmin -> {
-                userSession.shopId.toLongOrZero().let { shopId ->
-                    val firstEligibilityDeferred = async {
-                        AuthorizeAccessUseCase.createRequestParams(shopId, firstAccessId).let { requestParam ->
-                            firstAuthorizeAccessUseCase.execute(requestParam)
-                        }
+        return if (userSession.isShopOwner) {
+            Success(true to true)
+        } else {
+            userSession.shopId.toLongOrZero().let { shopId ->
+                val firstEligibilityDeferred = async {
+                    AuthorizeAccessUseCase.createRequestParams(shopId, firstAccessId).let { requestParam ->
+                        firstAuthorizeAccessUseCase.execute(requestParam)
                     }
-                    val secondEligibilityDeferred = async {
-                        AuthorizeAccessUseCase.createRequestParams(shopId, secondAccessId).let { requestParam ->
-                            secondAuthorizeAccessUseCase.execute(requestParam)
-                        }
-                    }
-                    Success(firstEligibilityDeferred.await() to secondEligibilityDeferred.await())
                 }
-            }
-            else -> {
-                Success(false to false)
+                val secondEligibilityDeferred = async {
+                    AuthorizeAccessUseCase.createRequestParams(shopId, secondAccessId).let { requestParam ->
+                        secondAuthorizeAccessUseCase.execute(requestParam)
+                    }
+                }
+                Success(firstEligibilityDeferred.await() to secondEligibilityDeferred.await())
             }
         }
     }

@@ -137,7 +137,7 @@ object Utils {
         }
     }
 
-    fun GlobalError.setUserNotAllowedToViewSom(onActionClick: () -> Unit) {
+    internal fun GlobalError.setUserNotAllowedToViewSom(onActionClick: () -> Unit) {
         val permissionGroup = SellerHomePermissionGroup.ORDER
         ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
         errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)

@@ -943,23 +943,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getAdminPermission_whenIsNotShopOwnerOrAdmin_shouldNotRunAndShouldNotEligible() {
-        coEvery {
-            userSessionInterface.isShopOwner
-        } returns false
-        coEvery {
-            userSessionInterface.isShopAdmin
-        } returns false
-
-        viewModel.getAdminPermission()
-
-        coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(any())
-        }
-        assert((viewModel.isOrderManageEligible.value as? Success)?.data?.first == false)
-    }
-
-    @Test
     fun isTopAdsActive_shouldReturnFalseWhenSuccess() {
         doGetTopAdsCategory_shouldSuccess()
 

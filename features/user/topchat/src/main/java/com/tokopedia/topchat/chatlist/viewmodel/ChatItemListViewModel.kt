@@ -188,10 +188,10 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private suspend fun getIsChatAdminAccessAuthorized(): Boolean {
-        return when {
-            userSession.isShopOwner -> true
-            userSession.isShopAdmin -> checkChatAdminEligiblity()
-            else -> false
+        return if (userSession.isShopOwner) {
+            true
+        } else {
+            checkChatAdminEligiblity()
         }
     }
 

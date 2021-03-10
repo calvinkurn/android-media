@@ -240,20 +240,6 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
         assert(viewModel.somDetailChatEligibility.value is Fail)
     }
 
-    @Test
-    fun checkAdminAccess_ifIsNotOwnerOrAdmin_shouldReturnFalsePair() {
-        coEvery {
-            userSessionInterface.isShopOwner
-        } returns false
-        coEvery {
-            userSessionInterface.isShopAdmin
-        } returns false
-
-        viewModel.getAdminPermission()
-
-        assertDetailChatEligibilityEquals(false to false)
-    }
-
     private fun onAuthorizeSomDetailAccessSuccess_thenReturn(isEligible: Boolean) {
         coEvery {
             authorizeSomDetailAccessUseCase.execute(any())

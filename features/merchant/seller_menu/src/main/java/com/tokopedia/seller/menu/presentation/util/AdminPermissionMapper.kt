@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.view.mapper
+package com.tokopedia.seller.menu.presentation.util
 
 import android.content.Context
 import android.content.Intent
@@ -18,8 +18,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
-class AdminPermissionMapper @Inject constructor(private val remoteConfig: RemoteConfig,
-                                                private val userSession: UserSessionInterface) {
+class AdminPermissionMapper @Inject constructor(private val userSession: UserSessionInterface) {
 
     companion object {
         private const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
