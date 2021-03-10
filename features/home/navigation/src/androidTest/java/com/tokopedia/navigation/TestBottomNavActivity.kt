@@ -22,7 +22,7 @@ class TestBottomNavActivity: AppCompatActivity() {
                 animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_home_to_enabled,
                 imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_active,
                 imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_enabled,
-                activeButtonColor =com.tokopedia.navigation.R.color.color_active_bottom_nav,
+                activeButtonColor =com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav,
                 useBadge = true,
                 animSpeed = 1f,
                 animToEnabledSpeed = 3f))
@@ -33,7 +33,7 @@ class TestBottomNavActivity: AppCompatActivity() {
                 animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_feed_to_enabled,
                 imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_active,
                 imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_enabled,
-                activeButtonColor = com.tokopedia.navigation.R.color.color_active_bottom_nav,
+                activeButtonColor = com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav,
                 useBadge = true,
                 animSpeed = 1f,
                 animToEnabledSpeed = 3f))
@@ -44,7 +44,7 @@ class TestBottomNavActivity: AppCompatActivity() {
                 animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_os_to_enabled,
                 imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_active,
                 imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_enabled,
-                activeButtonColor = com.tokopedia.navigation.R.color.color_active_bottom_nav_os,
+                activeButtonColor = com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav_os,
                 useBadge = true,
                 animSpeed = 1f,
                 animToEnabledSpeed = 3f))

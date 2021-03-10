@@ -41,3 +41,14 @@ const val VALID_QUERY_NO_README = """
   ]
 }
 """
+
+const val VALID_QUERY_NO_MODE = """
+{
+  "query": [
+    {
+      "discoveryName": "{{.*}}",
+      "currentSite": "tokopediamarketplace"
+    }
+  ]
+}
+"""

@@ -690,7 +690,7 @@ class PlayViewModel @Inject constructor(
                     is ProductTag -> {
                         val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
                         val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
-                        if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                        _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
                             currentPinnedProduct.copy(
                                     shouldShow = shouldShow,
                                     productTags = currentPinnedProduct.productTags.copy(
@@ -715,7 +715,7 @@ class PlayViewModel @Inject constructor(
                     is MerchantVoucher -> {
                         val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
                         val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
-                        if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                        _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
                             currentPinnedProduct.copy(
                                     productTags = currentPinnedProduct.productTags.copy(
                                             voucherList = mappedVouchers
@@ -852,7 +852,7 @@ class PlayViewModel @Inject constructor(
                     val report = deferredReportSummaries.await().data.first().channel.metrics
                     Triple(report.totalViewFmt, report.totalLike.toIntOrZero(), report.totalLikeFmt)
                 } catch (e: Throwable) {
-                    Triple("", 0 , "0")
+                    Triple("0", 0 , "0")
                 }
 
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
