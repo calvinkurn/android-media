@@ -4,7 +4,6 @@
     <item>
         <color android:color="#F3F5F8"/>
     </item>
-    <item android:drawable="@drawable/chatbot_background"
-        android:bottom="@dimen/dp_30"/>
+    <item android:drawable="@drawable/chatbot_background"/>
 
 </layer-list>

@@ -3,7 +3,6 @@ package com.tokopedia.chatbot.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -234,24 +233,28 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun setChatBackground() {
-        activity?.window?.setBackgroundDrawable(context?.let { ContextCompat.getDrawable(it,R.drawable.layered_chatbot_background) })
+        activity?.window?.setBackgroundDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.layered_chatbot_background) })
     }
 
-    private fun getReplyBackground() = ViewUtil.generateBackgroundWithShadow(
-            replyEditTextContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER
-    )
-
     private fun bindReplyTextBackground() {
-        replyEditTextContainer.setReplyEditTextBackground(getReplyBackground())
+        val replyEditTextBg = ViewUtil.generateBackgroundWithShadow(
+                replyEditTextContainer,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                R.dimen.dp_topchat_2,
+                R.dimen.dp_topchat_1,
+                Gravity.CENTER
+        )
+        val paddingStart = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt()
+        val paddingEnd = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
+        val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
+        val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
+        replyEditTextContainer.background = replyEditTextBg
+        replyEditTextContainer.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -920,11 +923,3 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 }
 
-private fun LinearLayout.setReplyEditTextBackground(replyBackground: Drawable?) {
-    val pl = paddingLeft
-    val pt = paddingTop
-    val pr = paddingRight
-    val pb = paddingBottom
-    setBackground(replyBackground)
-    setPadding(pl, pt, pr, pb)
-}
