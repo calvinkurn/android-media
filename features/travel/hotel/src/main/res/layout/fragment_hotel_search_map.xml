@@ -65,7 +65,7 @@
                     android:id="@+id/btnGetRadiusHotelSearchMap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_lvl9"
+                    android:layout_marginTop="@dimen/hotel_120dp"
                     android:visibility="gone"
                     app:fbType="group"
                     app:layout_constraintEnd_toEndOf="parent"
