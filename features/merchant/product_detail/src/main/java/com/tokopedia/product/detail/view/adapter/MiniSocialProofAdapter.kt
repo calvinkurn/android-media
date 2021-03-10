@@ -42,7 +42,7 @@ class MiniSocialProofAdapter(
     override fun onBindViewHolder(holder: ProductMiniSocialProofChipViewHolder, position: Int) {
         holder.itemView.apply {
             if (position == socialProof.lastIndex && getItemViewType(position) == TYPE_CHIP) {
-                setPadding(0.toPx(), 0.toPx(), 8.toPx(), 0.toPx())
+                setPadding(0, 0, 8.toPx(), 0)
             } else {
                 setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
             }

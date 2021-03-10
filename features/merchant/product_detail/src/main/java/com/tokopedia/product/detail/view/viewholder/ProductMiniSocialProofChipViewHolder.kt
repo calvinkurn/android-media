@@ -65,7 +65,7 @@ class ProductMiniSocialProofChipViewHolder(
                     val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
                     firstSocialProofTxt.apply {
                         text = generateSingleView(socialProof)
-                        setPadding(16.toPx(),0.toPx(),16.toPx(),0.toPx())
+                        setPadding(16.toPx(),0,16.toPx(),0)
                     }
                 }
             }
