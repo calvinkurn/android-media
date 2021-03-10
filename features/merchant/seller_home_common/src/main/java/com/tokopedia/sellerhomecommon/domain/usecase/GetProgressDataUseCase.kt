@@ -24,7 +24,7 @@ class GetProgressDataUseCase constructor(
         graphqlRepository, progressMapper, dispatchers, GetProgressDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
     }
 
     override suspend fun executeOnBackground(): List<ProgressDataUiModel> {

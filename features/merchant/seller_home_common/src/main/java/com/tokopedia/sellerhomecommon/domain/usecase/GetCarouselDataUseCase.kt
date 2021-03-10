@@ -26,7 +26,7 @@ class GetCarouselDataUseCase(
         gqlRepository, mapper, dispatchers, GetCarouselDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
     }
 
     override suspend fun executeOnBackground(): List<CarouselDataUiModel> {

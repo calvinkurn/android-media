@@ -26,7 +26,7 @@ class GetPostDataUseCase(
         gqlRepository, postMapper, dispatchers, GetPostDataResponse::class.java, QUERY, false) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        return super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
     }
 
     override suspend fun executeOnBackground(): List<PostListDataUiModel> {
