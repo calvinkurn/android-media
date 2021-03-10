@@ -1130,22 +1130,7 @@ class AddEditProductPreviewFragment :
                         if (isEligible) {
                             adminRevampErrorLayout?.hide()
                         } else {
-                            adminRevampGlobalError?.run {
-                                val permissionGroup = SellerHomePermissionGroup.PRODUCT
-                                ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
-                                errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
-                                errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
-                                errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
-                                setButtonFull(true)
-
-                                setActionClickListener {
-                                    activity?.finish()
-                                    if (GlobalConfig.isSellerApp()) {
-                                        RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
-                                    }
-                                }
-                            }
-                            adminRevampErrorLayout?.show()
+                            showAdminNotEligibleView()
                         }
                     }
                 }
@@ -1166,7 +1151,6 @@ class AddEditProductPreviewFragment :
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
         viewModel.validationResult.removeObservers(this)
-        viewModel.isProductManageAuthorized.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)
@@ -1584,5 +1568,24 @@ class AddEditProductPreviewFragment :
                 onFailedSetCashback()
             }
         }
+    }
+
+    private fun showAdminNotEligibleView() {
+        adminRevampGlobalError?.run {
+            val permissionGroup = SellerHomePermissionGroup.PRODUCT
+            ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+            errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
+            errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
+            errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
+            setButtonFull(true)
+
+            setActionClickListener {
+                activity?.finish()
+                if (GlobalConfig.isSellerApp()) {
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+                }
+            }
+        }
+        adminRevampErrorLayout?.show()
     }
 }
