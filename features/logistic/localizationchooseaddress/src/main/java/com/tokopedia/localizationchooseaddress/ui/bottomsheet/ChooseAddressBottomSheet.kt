@@ -33,12 +33,12 @@ import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.model.SaveAddressDataModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
