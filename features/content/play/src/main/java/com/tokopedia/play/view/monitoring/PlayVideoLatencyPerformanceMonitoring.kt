@@ -23,7 +23,7 @@ class PlayVideoLatencyPerformanceMonitoring @Inject constructor() {
         reset()
 
         mTotalDuration = System.currentTimeMillis()
-        mPerformanceMonitoring?.startTrace(PLAY_VIDEO_LATENCY_TRACE)
+        mPerformanceMonitoring = PerformanceMonitoring.start(PLAY_VIDEO_LATENCY_TRACE)
         mHasStarted = true
     }
 
