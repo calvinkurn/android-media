@@ -7,8 +7,7 @@
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingLeft="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingRight="@dimen/layout_lvl2"
-    android:background="@color/Unify_N0">
+    android:paddingRight="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_campaign_stock_amount"
