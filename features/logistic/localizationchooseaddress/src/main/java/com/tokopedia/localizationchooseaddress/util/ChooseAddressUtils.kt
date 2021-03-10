@@ -16,6 +16,7 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -106,13 +107,13 @@ object ChooseAddressUtils {
      * coachmark must implemented by own host page
      */
     fun isLocalizingAddressNeedShowCoachMark(context: Context): Boolean? {
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        return chooseAddressPref.getCoachMarkState()
+        val coachMarkStatePref = CoachMarkStateSharePref(context)
+        return coachMarkStatePref.getCoachMarkState()
     }
 
     fun coachMarkLocalizingAddressAlreadyShown(context: Context) {
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        chooseAddressPref.setCoachMarkState(false)
+        val coachMarkStatePref = CoachMarkStateSharePref(context)
+        coachMarkStatePref.setCoachMarkState(false)
     }
 
     fun coachMarkItem(context: Context, view: View) : CoachMarkItem {
