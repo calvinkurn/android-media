@@ -17,7 +17,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
@@ -25,7 +28,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -49,7 +51,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -90,7 +91,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isCircuitBreaker: Boolean = false
     private var isGpsEnable: Boolean = true
 
-    private var binding by autoCleared<FragmentPinpointMapBinding>()
+    private var _binding: FragmentPinpointMapBinding? = null
+    private val binding get() = _binding!!
 
     private var composite = CompositeSubscription()
 
@@ -167,7 +169,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
+        _binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -384,6 +386,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onDestroyView() {
         binding.mapView.onDestroy()
+        _binding = null
         super.onDestroyView()
     }
 
