@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofD
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemType
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductMiniSocialProofChipViewHolder(
@@ -64,7 +65,7 @@ class ProductMiniSocialProofChipViewHolder(
                     val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
                     firstSocialProofTxt.apply {
                         text = generateSingleView(socialProof)
-                        setPadding(16,0,16,0)
+                        setPadding(16.toPx(),0.toPx(),16.toPx(),0.toPx())
                     }
                 }
             }
