@@ -24,7 +24,6 @@ class RechargeHomepageCarousellViewHolder(itemView: View, val listener: Recharge
         val section = element.section
         with(itemView) {
             if (section.items.isNotEmpty()) {
-                val itemDummy = section.items.plus(section.items)
                 view_container_recharge_home_carousell.show()
                 view_recharge_home_carousell_shimmering.hide()
 
@@ -32,7 +31,7 @@ class RechargeHomepageCarousellViewHolder(itemView: View, val listener: Recharge
                 val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 rv_recharge_home_carousell.apply {
                     this.layoutManager = layoutManager
-                    adapter = RechargeItemCarousellAdapter(itemDummy, listener)
+                    adapter = RechargeItemCarousellAdapter(section.items, listener)
                 }
                 addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
