@@ -113,6 +113,7 @@ class DiscoveryFragment :
     private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var chooseAddressWidgetDivider: View? = null
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -184,6 +185,7 @@ class DiscoveryFragment :
 
     private fun initChooseAddressWidget(view: View) {
         chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
+        chooseAddressWidgetDivider = view.findViewById(R.id.divider_view)
         chooseAddressWidget?.bindChooseAddress(this)
         context?.let {
             if (ChooseAddressUtils.isRollOutUser(it)) {
@@ -351,13 +353,15 @@ class DiscoveryFragment :
             context?.let {
                 if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
                     chooseAddressWidget?.show()
+                    chooseAddressWidgetDivider?.show()
                     if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
                     }
                     fetchUserLatestAddressData()
                 }else{
-                    chooseAddressWidget?.hide()
+                    chooseAddressWidget?.gone()
+                    chooseAddressWidgetDivider?.gone()
                 }
             }
         })
@@ -813,13 +817,16 @@ class DiscoveryFragment :
 
     override fun onLocalizingAddressServerDown() {
         chooseAddressWidget?.gone()
+        chooseAddressWidgetDivider?.gone()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
         if(isRollOutUser && discoveryViewModel.getAddressVisibilityValue()){
             chooseAddressWidget?.show()
+            chooseAddressWidgetDivider?.show()
         }else{
             chooseAddressWidget?.gone()
+            chooseAddressWidgetDivider?.gone()
         }
     }
 
