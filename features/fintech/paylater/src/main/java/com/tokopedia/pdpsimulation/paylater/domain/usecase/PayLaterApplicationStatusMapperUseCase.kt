@@ -102,15 +102,12 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
     }
 
     // pre-compute sub header text according to expiration date logic
-    private fun computeSubHeaderText(payLaterApplicationDetail: PayLaterApplicationDetail): PayLaterStatusContent? {
+    private fun computeSubHeaderText(payLaterApplicationDetail: PayLaterApplicationDetail): PayLaterStatusContent {
         val subHeader: String
         payLaterApplicationDetail.let {
-            subHeader = if (isExpirationDateAvailable(it)) {
-                (it.payLaterStatusContent?.verificationContentSubHeader ?: "") +
-                        "<b>${it.payLaterExpirationDate ?: ""}</b>"
-            } else {
-                it.payLaterStatusContent?.verificationContentSubHeader ?: ""
-            }
+            subHeader = (it.payLaterStatusContent?.verificationContentSubHeader ?: "") +
+                    if (isExpirationDateAvailable(it)) "<b>${it.payLaterExpirationDate ?: ""}</b>"
+                    else ""
             return PayLaterStatusContent(
                     it.payLaterStatusContent?.verificationContentEmail,
                     subHeader,
@@ -125,13 +122,9 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
     *  application expiration date will appear on application status Waiting and Rejected
     * */
     private fun isExpirationDateAvailable(applicationDetail: PayLaterApplicationDetail): Boolean {
+        if (applicationDetail.payLaterExpirationDate.isNullOrEmpty()) return false
         val status = PayLaterApplicationStatusMapper.getApplicationStatusType(applicationDetail)
-        return when {
-            applicationDetail.payLaterExpirationDate.isNullOrEmpty() -> false
-            status is PayLaterStatusWaiting -> true
-            status is PayLaterStatusRejected -> true
-            else -> false
-        }
+        return status in listOf(PayLaterStatusWaiting, PayLaterStatusRejected)
     }
 }
 
