@@ -20,7 +20,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     private var catalogId: String = ""
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
-    private lateinit var catalogDetailFragment: CatalogDetailPageFragment
 
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
@@ -33,13 +32,8 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         }
     }
 
-    override fun getParentViewResourceID(): Int {
-        return R.id.catalog_detail_parent_view
-    }
-
     override fun getNewFragment(): Fragment? {
-        catalogDetailFragment =  getNewCatalogDetailFragment()
-        return catalogDetailFragment
+        return null
     }
 
     override fun getTagFragment(): String {
@@ -50,10 +44,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         return "${AppScreen.SCREEN_CATALOG} - $catalogId"
     }
 
-    private fun getNewCatalogDetailFragment(): CatalogDetailPageFragment {
-        return CatalogDetailPageFragment.newInstance(catalogId)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
@@ -62,16 +52,13 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         else {
             intent.data?.path?.replace("/", "") ?: ""
         }
-        initData()
         prepareView()
     }
 
-    private fun initData() {
-        catalogDetailFragment.setCatalogId(catalogId)
-    }
-
     private fun prepareView() {
-
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.catalog_detail_parent_view, CatalogDetailPageFragment.newInstance(catalogId))
+                .commit()
     }
 
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
