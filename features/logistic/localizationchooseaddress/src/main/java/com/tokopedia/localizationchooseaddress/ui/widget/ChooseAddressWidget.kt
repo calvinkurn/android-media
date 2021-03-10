@@ -147,6 +147,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         updateWidget()
         if (localData?.city_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
             chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it) }
+            initObservers()
         }
     }
 
@@ -158,7 +159,6 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         }
 
         initChooseAddressFlow()
-        initObservers()
 
         buttonChooseAddress?.setOnClickListener {
             if (hasClicked == false ) {
