@@ -306,4 +306,8 @@
     <string name="content_desc_tvSeeAll">text lihat semua</string>
     <string name="content_desc_button_chat">button chat</string>
 
+    <!-- shop page showcase tab -->
+    <string name="shop_page_showcase_featured_text">Etalase Unggulan</string>
+    <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
+
 </resources>
