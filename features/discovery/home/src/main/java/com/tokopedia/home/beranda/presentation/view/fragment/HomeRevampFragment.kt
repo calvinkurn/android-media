@@ -80,6 +80,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -322,6 +323,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
+    private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
     private var useNewInbox = false
     private val bannerCarouselCallback = BannerComponentCallback(context, this)
@@ -620,58 +622,64 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showNavigationOnboarding() {
         activity?.let {
-            val bottomSheet = BottomSheetUnify()
-            val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
-            onboardingView.onboarding_button.setOnClickListener {
-                bottomSheet.dismiss()
-                showCoachMark()
-            }
+            if (bottomSheetIsShowing) {
+                val bottomSheet = BottomSheetUnify()
+                val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
+                onboardingView.onboarding_button.setOnClickListener {
+                    bottomSheet.dismiss()
+                    if (!coachMarkIsShowing) showCoachMark()
+                }
 
-            bottomSheet.setOnDismissListener {
-                if (!coachMarkIsShowing) showCoachMark()
-            }
+                bottomSheet.setOnDismissListener {
+                    if (!coachMarkIsShowing) showCoachMark()
+                }
 
-            bottomSheet.setTitle("")
-            bottomSheet.setChild(onboardingView)
-            bottomSheet.clearAction()
-            bottomSheet.setCloseClickListener {
-                bottomSheet.dismiss()
+                bottomSheet.setTitle("")
+                bottomSheet.setChild(onboardingView)
+                bottomSheet.clearAction()
+                bottomSheet.setCloseClickListener {
+                    bottomSheet.dismiss()
+                }
+                childFragmentManager.run {
+                    bottomSheet.show(this, "onboarding navigation")
+                    bottomSheetIsShowing = true
+                }
+                saveFirstViewNavigationFalse()
             }
-            childFragmentManager.run {
-                bottomSheet.show(this, "onboarding navigation")
-            }
-            saveFirstViewNavigationFalse()
         }
     }
 
     private fun ArrayList<CoachMark2Item>.buildHomeCoachmark() {
         //add navigation
-        val globalNavIcon = navToolbar?.getGlobalNavIconView()
-        globalNavIcon?.let {
-            this.add(
-                    CoachMark2Item(
-                            globalNavIcon,
-                            getString(R.string.onboarding_coachmark_title),
-                            getString(R.string.onboarding_coachmark_description)
-                    )
-            )
+        if (!isNavigationCoachmarkShown(requireContext())) {
+            val globalNavIcon = navToolbar?.getGlobalNavIconView()
+            globalNavIcon?.let {
+                this.add(
+                        CoachMark2Item(
+                                globalNavIcon,
+                                getString(R.string.onboarding_coachmark_title),
+                                getString(R.string.onboarding_coachmark_description)
+                        )
+                )
+            }
         }
 
         //inbox
-        val inboxIcon = navToolbar?.getInboxIconView()
-        inboxIcon?.let {
-            this.add(
-                    CoachMark2Item(
-                            inboxIcon,
-                            getString(R.string.onboarding_coachmark_inbox_title),
-                            getString(R.string.onboarding_coachmark_inbox_description)
-                    )
-            )
-        }
+//        if (!isInboxCoachmarkShown(requireContext())) {
+//            val inboxIcon = navToolbar?.getInboxIconView()
+//            inboxIcon?.let {
+//                this.add(
+//                        CoachMark2Item(
+//                                inboxIcon,
+//                                getString(R.string.onboarding_coachmark_inbox_title),
+//                                getString(R.string.onboarding_coachmark_inbox_description)
+//                        )
+//                )
+//            }
+//        }
 
         //add location
-        val needShowLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext()) ?: false
-        if (needShowLocalization) {
+        if (isLocalizingAddressNeedShowCoachMark(requireContext())) {
             val chooseLocationWidget = getLocationWidgetView()
             chooseLocationWidget?.let {
                 this.add(
@@ -681,16 +689,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         //add balance widget
         //uncomment this to activate balance widget coachmark
-//        val balanceWidget = getBalanceWidgetView()
-//        balanceWidget?.let {
-//            this.add(
-//                    CoachMark2Item(
-//                            balanceWidget,
-//                            getString(R.string.onboarding_coachmark_wallet_title),
-//                            getString(R.string.onboarding_coachmark_wallet_description)
-//                    )
-//            )
-//        }
+
+        if (!isBalanceWidgetCoachmarkShown(requireContext())) {
+            val balanceWidget = getBalanceWidgetView()
+            balanceWidget?.let {
+                this.add(
+                        CoachMark2Item(
+                                balanceWidget,
+                                getString(R.string.onboarding_coachmark_wallet_title),
+                                getString(R.string.onboarding_coachmark_wallet_description)
+                        )
+                )
+            }
+        }
     }
 
     private fun showCoachMark() {
@@ -701,8 +712,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         coachMarkItem.buildHomeCoachmark()
         coachMark.setStepListener(object: CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (coachMarkItem.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true)) {
-                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(requireContext())
+                when {
+                    coachMarkItem.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
+                        setChooseAddressCoachmarkShown(requireContext())
+                    }
+                    coachMarkItem.title.toString().equals(getString(R.string.onboarding_coachmark_title), ignoreCase = true) -> {
+                        setNavigationCoachmarkShown(requireContext())
+                    }
+                    coachMarkItem.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
+                        setInboxCoachmarkShown(requireContext())
+                    }
+                    coachMarkItem.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
+                        setBalanceWidgetCoachmarkShown(requireContext())
+                    }
                 }
             }
         })
@@ -730,8 +752,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         if (view != null && view is HomeHeaderOvoViewHolder) {
-            if (view.itemView.view_ovo.isVisible)
-                return view.itemView.view_ovo
+            if (view.itemView.view_balance_widget.isVisible)
+                return view.itemView.view_balance_widget
         }
         return null
     }
@@ -1283,6 +1305,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
+            (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
+                Handler().postDelayed({
+                        val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() ?: false
+                        if (!coachMarkIsShowing && !bottomSheetIsShowing &&isBalanceWidgetNotEmpty)
+                            showCoachMark()
+                    }, 2000)
+            }
         }
     }
 
