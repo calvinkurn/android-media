@@ -1243,7 +1243,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
         SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
         completeLabelShop.append(labelShop);
-        completeLabelShop.append(shopName);
+        completeLabelShop.append(MethodChecker.fromHtml(shopName));
         completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         shopInformationTitle.setText(completeLabelShop);
 
