@@ -45,11 +45,8 @@ class HotelSearchMapViewModel @Inject constructor(
 
     lateinit var hotelSearchModel: HotelSearchModel
     val searchParam: SearchParam = SearchParam()
-
     var selectedSort: Sort = Sort()
-
     var defaultSort = ""
-
     var filter: Filter = Filter()
 
     lateinit var permissionCheckerHelper: PermissionCheckerHelper

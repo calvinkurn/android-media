@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorHotelSearchMap"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarHotelSearchMap"
@@ -64,7 +65,7 @@
                     android:id="@+id/btnGetRadiusHotelSearchMap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_lvl7"
+                    android:layout_marginTop="@dimen/layout_lvl9"
                     android:visibility="gone"
                     app:fbType="group"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -90,8 +91,13 @@
                 android:background="@color/Unify_N0"
                 app:layout_collapseMode="pin">
 
+                <include
+                    android:id="@+id/shimmeringQuickFilterHotelSearchMap"
+                    layout="@layout/layout_quick_filter_shimmering"
+                    android:paddingBottom="@dimen/spacing_lvl3" />
+
                 <com.tokopedia.sortfilter.SortFilter
-                    android:id="@+id/quick_filter_sort_filter"
+                    android:id="@+id/quickFilterSortHotelSearchMap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -100,7 +106,7 @@
                     android:paddingStart="@dimen/spacing_lvl4"
                     android:paddingTop="@dimen/spacing_lvl3"
                     android:paddingBottom="@dimen/spacing_lvl3"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:sort_filter_relationship="AND"
                     app:sort_filter_type="quick" />
 

@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Point
@@ -48,19 +49,23 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.data.model.Property
-import com.tokopedia.hotel.search.data.model.PropertySearch
+import com.tokopedia.hotel.search.data.model.*
+import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
+import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
+import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -74,7 +79,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
@@ -83,7 +87,9 @@ import kotlin.math.abs
  * @author by furqan on 01/03/2021
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
-        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener {
+        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener,
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnCameraIdleListener, SubmitFilterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,7 +114,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isInAnimation: Boolean = false
     private var cardListPosition: Int = SELECTED_POSITION_INIT
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
+    private var isFirstInitializeFilter = true
+    private var quickFilters: List<QuickFilter> = listOf()
 
+    private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
@@ -136,8 +145,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.setPermissionHelper(permissionCheckerHelper)
 
         arguments?.let {
+            val selectedParam = it.getParcelable(ARG_FILTER_PARAM) ?: ParamFilterV2()
+            if (selectedParam.name.isNotEmpty()) {
+                hotelSearchMapViewModel.addFilter(listOf(selectedParam), false)
+            }
+
             hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
             hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
+
             searchDestinationName = hotelSearchModel.name
             searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
         }
@@ -204,6 +219,43 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 }
             }
         })
+
+        hotelSearchMapViewModel.liveSelectedFilter.observe(viewLifecycleOwner, Observer { (data, notifyUi) ->
+            if (notifyUi) {
+                showQuickFilterShimmering(true)
+                setupQuickFilterBaseOnSelectedFilter(data)
+                loadInitialData()
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CHANGE_SEARCH_HOTEL) {
+            data?.let {
+                hotelSearchModel = HotelSearchModel(
+                        id = it.getLongExtra(HotelChangeSearchActivity.DESTINATION_ID, 0),
+                        name = it.getStringExtra(HotelChangeSearchActivity.DESTINATION_NAME) ?: "",
+                        type = it.getStringExtra(HotelChangeSearchActivity.DESTINATION_TYPE) ?: "",
+                        lat = it.getDoubleExtra(HotelChangeSearchActivity.DESTINATION_LAT, 0.0),
+                        long = it.getDoubleExtra(HotelChangeSearchActivity.DESTINATION_LONG, 0.0),
+                        checkIn = it.getStringExtra(HotelChangeSearchActivity.CHECK_IN_DATE) ?: "",
+                        checkOut = it.getStringExtra(HotelChangeSearchActivity.CHECK_OUT_DATE)
+                                ?: "",
+                        room = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_ROOMS, 1),
+                        adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0),
+                        searchType = it.getStringExtra(HotelChangeSearchActivity.SEARCH_TYPE) ?: "",
+                        searchId = it.getStringExtra(HotelChangeSearchActivity.SEARCH_ID) ?: "")
+
+                hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
+                searchDestinationName = hotelSearchModel.name
+                searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
+
+                setUpTitleAndSubtitle()
+                hotelSearchMapViewModel.addFilter(listOf())
+            }
+        }
     }
 
     override fun loadInitialData() {
@@ -230,15 +282,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
         }, ANIMATION_DETAIL_TIMES)
         initGetMyLocation()
-
-        quick_filter_sort_filter.addItem(
-                arrayListOf(
-                        SortFilterItem(
-                                "Testing ",
-                                ChipsUnify.TYPE_NORMAL
-                        )
-                )
-        )
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -317,6 +360,25 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onDestroyView() {
         googleMap.clear()
         super.onDestroyView()
+    }
+
+    override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
+        trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
+
+        var sortIndex: Int? = null
+        selectedFilter.forEachIndexed { index, it ->
+            if (it.name == FILTER_TYPE_SORT) {
+                sortIndex = index
+            }
+        }
+
+        sortIndex?.let { index ->
+            val sort = findSortValue(selectedFilter[index])
+            sort?.let { hotelSearchMapViewModel.addSort(it) }
+            selectedFilter.removeAt(index)
+        }
+
+        hotelSearchMapViewModel.addFilter(selectedFilter)
     }
 
     private fun setupToolbarAction() {
@@ -631,7 +693,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         with(txtPrice) {
             text = price
             background = ContextCompat.getDrawable(context, getPin(markerType))
-            if(markerType == HOTEL_PRICE_ACTIVE_PIN) {
+            if (markerType == HOTEL_PRICE_ACTIVE_PIN) {
                 setTextColor(color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 setWeight(Typography.BOLD)
             }
@@ -658,7 +720,21 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
+        context?.let {
+            val searchParam = hotelSearchMapViewModel.searchParam
+            trackingHotelUtil.hotelViewHotelListImpression(it,
+                    searchDestinationName,
+                    searchDestinationType,
+                    searchParam,
+                    data.properties,
+                    adapter.dataSize,
+                    SEARCH_SCREEN_NAME)
+        }
+
         val searchProperties = data.properties
+
+        showQuickFilterShimmering(false)
+
         renderCardListMap(searchProperties)
         renderList(searchProperties.map {
             it.isForHorizontalItem = false
@@ -669,7 +745,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
         }
 
-        showCoachMark()
+        if (isFirstInitializeFilter) {
+            isFirstInitializeFilter = false
+            initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
+
+            quickFilterSortHotelSearchMap.chipItems.filter {
+                it.type == ChipsUnify.TYPE_SELECTED
+            }.forEach {
+                quickFilterSortHotelSearchMap.indicatorCounter -= 1
+            }
+
+            showCoachMark()
+        }
     }
 
     private fun hideLoadingCardListMap() {
@@ -808,6 +895,123 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         btnGetRadiusHotelSearchMap.gone()
     }
 
+    //for setup quick filter after click submit in bottom sheet
+    private fun setupQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
+        quickFilterSortHotelSearchMap.chipItems.forEach { it.type = ChipsUnify.TYPE_NORMAL }
+        val selectedFiltersMap = selectedFilters.associateBy({ it.name }, { it })
+        quickFilters.forEachIndexed { index, quickFilter ->
+            if (selectedFiltersMap.containsKey(quickFilter.name)) {
+                val selectedFilter = selectedFiltersMap[quickFilter.name]
+                selectedFilter?.let { selectedFilterMap ->
+                    var contains = true
+                    for (quickFilterValue in quickFilter.values) {
+                        for ((i, selectedFilterValue) in selectedFilterMap.values.withIndex()) {
+                            if (quickFilterValue == selectedFilterValue) break
+                            else if (i == selectedFilterMap.values.lastIndex) contains = false
+                        }
+                        if (!contains) break
+                    }
+                    if (contains) quickFilterSortHotelSearchMap.chipItems[index].type = ChipsUnify.TYPE_SELECTED
+                }
+            }
+        }
+    }
+
+    private fun showQuickFilterShimmering(isShimmering: Boolean) {
+        if (isShimmering) {
+            shimmeringQuickFilterHotelSearchMap.show()
+            quickFilterSortHotelSearchMap.hide()
+        } else {
+            shimmeringQuickFilterHotelSearchMap.hide()
+            quickFilterSortHotelSearchMap.show()
+        }
+        quickFilterSortHotelSearchMap.indicatorCounter = hotelSearchMapViewModel.getFilterCount()
+    }
+
+    private fun initializeQuickFilter(quickFilters: List<QuickFilter>, filters: List<FilterV2>, sort: List<Sort>) {
+        this.quickFilters = quickFilters.map { itemQuickFilter ->
+            val item = filters.filter {
+                it.name.equals(itemQuickFilter.name, true)
+            }
+
+            if (item.isNotEmpty()) {
+                itemQuickFilter.type = (item.firstOrNull() ?: FilterV2()).type
+            }
+
+            itemQuickFilter
+        }
+
+        quickFilterSortHotelSearchMap.dismissListener = {
+            hotelSearchMapViewModel.addFilter(quickFilters, quickFilterSortHotelSearchMap.chipItems)
+        }
+
+        val sortFilterItem = quickFilters.map {
+            val item = SortFilterItem(
+                    title = it.displayName,
+                    type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+            )
+            item.listener = {
+                item.toggleSelected()
+            }
+            item
+        }
+        quickFilterSortHotelSearchMap.addItem(ArrayList(sortFilterItem))
+
+        for ((index, item) in quickFilterSortHotelSearchMap.chipItems.withIndex()) {
+            item.refChipUnify.setOnClickListener {
+                item.toggleSelected()
+                trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
+                hotelSearchMapViewModel.addFilter(quickFilters, quickFilterSortHotelSearchMap.chipItems)
+            }
+        }
+
+        quickFilterSortHotelSearchMap.filterType = SortFilter.TYPE_ADVANCED
+        quickFilterSortHotelSearchMap.parentListener = {
+            trackingHotelUtil.clickOnAdvancedFilter(context, SEARCH_SCREEN_NAME)
+            initiateAdvancedFilter(filters, sort)
+        }
+
+        quickFilterSortHotelSearchMap.show()
+    }
+
+    private fun initiateAdvancedFilter(filters: List<FilterV2>, sort: List<Sort>) {
+        val filterItems: MutableList<FilterV2> = arrayListOf()
+        filterItems.addAll(filters)
+        val sortInFilterBottomSheets = FilterV2(
+                type = FILTER_TYPE_SORT,
+                name = FILTER_TYPE_SORT,
+                displayName = getString(R.string.hotel_bottomsheet_sort_title)
+        )
+        if (hotelSearchMapViewModel.selectedSort.displayName.isEmpty()) {
+            val sortDisplayName = sort.firstOrNull {
+                it.name == hotelSearchMapViewModel.selectedSort.name
+            } ?: Sort()
+            hotelSearchMapViewModel.selectedSort.displayName = sortDisplayName.displayName
+            hotelSearchMapViewModel.defaultSort = sortDisplayName.displayName
+        }
+        sortInFilterBottomSheets.options = sort.map { it.displayName }
+        sortInFilterBottomSheets.optionSelected = listOf(hotelSearchMapViewModel.selectedSort.displayName)
+        sortInFilterBottomSheets.defaultOption = hotelSearchMapViewModel.defaultSort
+        filterItems.add(0, sortInFilterBottomSheets)
+
+        val selectedFilter: MutableList<ParamFilterV2> = mutableListOf()
+        selectedFilter.addAll(hotelSearchMapViewModel.getSelectedFilter())
+        selectedFilter.add(ParamFilterV2(FILTER_TYPE_SORT, mutableListOf(hotelSearchMapViewModel.selectedSort.displayName)))
+
+        filterBottomSheet = HotelFilterBottomSheets()
+                .setSubmitFilterListener(this)
+                .setSelected(selectedFilter)
+                .setFilter(filterItems)
+        filterBottomSheet.show(childFragmentManager, this.javaClass.simpleName)
+    }
+
+    private fun findSortValue(filter: ParamFilterV2): Sort? =
+            if (hotelSearchMapViewModel.liveSearchResult.value != null &&
+                    hotelSearchMapViewModel.liveSearchResult.value is Success) {
+                var sortOption = (hotelSearchMapViewModel.liveSearchResult.value as Success).data.displayInfo.sort
+                sortOption.firstOrNull { it.displayName == filter.values.firstOrNull() }
+            } else null
+
     private fun getCurrentLocation() {
         hotelSearchMapViewModel.getCurrentLocation(fusedLocationClient, requireActivity())
     }
@@ -821,11 +1025,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val ANIMATION_DETAIL_TIMES: Long = 500
 
         private const val COLLAPSING_HALF_OF_SCREEN = 1.0 / 2.0
-        private const val COLLAPSING_ONE_THREE_OF_SCREEN = 1.0 / 3.0
         private const val COLLAPSING_ONE_TENTH_OF_SCREEN = 1.0 / 10.0
         private const val COLLAPSING_FULL_SCREEN = 1.0
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
+        private const val REQUEST_CHANGE_SEARCH_HOTEL = 101
 
         private const val ANCHOR_MARKER_X: Float = 0.8f
         private const val ANCHOR_MARKER_Y: Float = 1f
