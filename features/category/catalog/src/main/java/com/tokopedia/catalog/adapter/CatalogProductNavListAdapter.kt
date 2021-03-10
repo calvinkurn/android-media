@@ -1,6 +1,5 @@
 package com.tokopedia.catalog.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -161,10 +160,5 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
         }
         viewedProductList.clear()
         viewedTopAdsList.clear()
-    }
-
-    override fun onViewRecycled(holder: AbstractViewHolder<Visitable<*>>) {
-        super.onViewRecycled(holder)
-        Log.d("TAG","RECYCLE WORKING")
     }
 }

@@ -25,11 +25,6 @@ class CatalogProductsContainerViewHolder(view: View,
         layoutParams.height = catalogDetailListener.windowHeight - context.resources.getDimensionPixelSize(R.dimen.dp_8)
         container.layoutParams = layoutParams
 
-//        CatalogDetailProductListingFragment.newInstance(element.catalogId).apply{
-//            catalogDetailListener.childsFragmentManager?.beginTransaction()?.replace(R.id.products_container_frame,
-//                    this)?.commit()
-//        }
-
         catalogPageAdapter = CatalogPagerAdapter(
                 element,catalogDetailListener.childsFragmentManager!!)
         viewPager.adapter = catalogPageAdapter

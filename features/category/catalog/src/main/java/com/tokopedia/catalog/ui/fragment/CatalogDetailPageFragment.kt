@@ -122,11 +122,6 @@ class CatalogDetailPageFragment : Fragment(),
         setUpBottomSheet()
     }
 
-    fun setCatalogId(catalogId: String){
-        this.catalogId = catalogId
-        requireArguments().putString(ARG_EXTRA_CATALOG_ID,catalogId)
-    }
-
     private fun initViews() {
         shimmerLayout = view?.findViewById(R.id.shimmer_layout)
         activity?.let {
@@ -146,13 +141,11 @@ class CatalogDetailPageFragment : Fragment(),
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState){
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        isBottomSheetOpen = false
-                    }
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        isBottomSheetOpen = true
-                    }
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    isBottomSheetOpen = false
+                }
+                else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    isBottomSheetOpen = true
                 }
             }
         })
