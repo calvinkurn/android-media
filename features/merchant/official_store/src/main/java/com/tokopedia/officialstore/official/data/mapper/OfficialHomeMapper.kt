@@ -199,7 +199,8 @@ class OfficialHomeMapper (
                         ProductCardModel.LabelGroup(
                                 position = label.position,
                                 title = label.title,
-                                type = label.type
+                                type = label.type,
+                                imageUrl = label.imageUrl
                         )
                     },
                     hasThreeDots = false

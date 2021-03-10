@@ -49,6 +49,7 @@ query dynamicHomeChannel($type: String) {
                     position
                     title
                     type
+                    url
                 }
             }
             banner {
