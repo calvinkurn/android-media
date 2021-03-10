@@ -22,7 +22,7 @@
             android:visibility="gone"/>
 
         <com.tokopedia.unifycomponents.SearchBarUnify
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_10"
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_marginRight="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ticker_info"
             app:search_bar_show_icon="false"/>
 
         <LinearLayout
