@@ -41,13 +41,13 @@ data class Warehouse(
 
 @Parcelize
 data class ShopId(
-        var int64: Int = 0,
+        var int64: Long = 0,
         var valid: Boolean = false
 ) : Parcelable
 
 @Parcelize
 data class PartnerId(
-        var int64: Int = 0,
+        var int64: Long = 0,
         var valid: Boolean = false
 ) : Parcelable
 

@@ -84,14 +84,14 @@ data class Warehouse(
 
 data class ShopId(
 		@SerializedName("int64")
-		var int64: Int = 0,
+		var int64: Long = 0,
 		@SerializedName("valid")
 		var valid: Boolean = false
 )
 
 data class PartnerId(
 		@SerializedName("int64")
-		var int64: Int = 0,
+		var int64: Long = 0,
 		@SerializedName("valid")
 		var valid: Boolean = false
 )

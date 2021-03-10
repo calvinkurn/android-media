@@ -26,11 +26,11 @@ data class WarehousesModel(
 )
 
 data class ShopIdModel(
-        var int64: Int = 0,
+        var int64: Long = 0,
         var valid: Boolean = false
 )
 
 data class PartnerIdModel(
-        var int64: Int = 0,
+        var int64: Long = 0,
         var valid: Boolean = false
 )
