@@ -1,25 +1,19 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -32,15 +26,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import timber.log.Timber;
 
 
 /**
