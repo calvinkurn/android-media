@@ -742,9 +742,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getLocationWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         if (view != null && view is HomeHeaderOvoViewHolder) {
-            val locationView = view.itemView.widget_choose_address.findViewById<View>(R.id.text_chosen_address)
+            val locationView = view.itemView.widget_choose_address
             if (locationView.isVisible)
-                return locationView
+                return locationView.findViewById<View>(R.id.text_chosen_address)
         }
         return null
     }
