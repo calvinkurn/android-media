@@ -34,7 +34,7 @@ class ShopActionButtonWidgetChatButtonComponentViewHolder(
     override fun bind(model: ShopHeaderButtonComponentUiModel) {
         val lp = itemView.layoutParams
         if (lp is FlexboxLayoutManager.LayoutParams) {
-            lp.flexGrow = 1.0f;
+            lp.flexGrow = 1.0f
         }
         buttonChat?.apply {
             text = model.label

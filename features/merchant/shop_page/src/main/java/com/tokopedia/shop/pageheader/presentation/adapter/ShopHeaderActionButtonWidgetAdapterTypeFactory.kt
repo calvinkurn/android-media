@@ -14,7 +14,8 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHead
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 
 class ShopHeaderActionButtonWidgetAdapterTypeFactory(
-        private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener
+        private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
+        private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener
 ) : BaseAdapterTypeFactory(), ShopHeaderButtonComponentTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -24,7 +25,10 @@ class ShopHeaderActionButtonWidgetAdapterTypeFactory(
                     parent,
                     shopActionButtonWidgetChatButtonComponentListener
             )
-            ShopActionButtonWidgetFollowButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetFollowButtonComponentViewHolder(parent)
+            ShopActionButtonWidgetFollowButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetFollowButtonComponentViewHolder(
+                    parent,
+                    shopActionButtonWidgetFollowButtonComponentListener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }

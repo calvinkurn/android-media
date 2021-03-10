@@ -5,7 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderActionButtonWidgetViewHolder
@@ -18,8 +20,15 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 class ShopPageHeaderAdapterTypeFactory(
         private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
         private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
-        private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener
+        private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
+        private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener
 ) : BaseAdapterTypeFactory() {
+
+    private var adapterShopHeader: ShopPageHeaderAdapter? = null
+
+    fun attachAdapter(adapter: ShopPageHeaderAdapter){
+        adapterShopHeader = adapter
+    }
 
     fun type(model: ShopHeaderWidgetUiModel): Int {
         return when (model.type.toLowerCase()) {
@@ -35,7 +44,12 @@ class ShopPageHeaderAdapterTypeFactory(
         return when (type) {
             ShopHeaderBasicInfoWidgetViewHolder.LAYOUT -> ShopHeaderBasicInfoWidgetViewHolder(parent, shopHeaderBasicInfoWidgetListener)
             ShopHeaderPerformanceWidgetViewHolder.LAYOUT -> ShopHeaderPerformanceWidgetViewHolder(parent, shopPerformanceWidgetBadgeTextValueListener)
-            ShopHeaderActionButtonWidgetViewHolder.LAYOUT -> ShopHeaderActionButtonWidgetViewHolder(parent, shopActionButtonWidgetChatButtonComponentListener)
+            ShopHeaderActionButtonWidgetViewHolder.LAYOUT -> ShopHeaderActionButtonWidgetViewHolder(
+                    parent,
+                    shopActionButtonWidgetChatButtonComponentListener,
+                    shopActionButtonWidgetFollowButtonComponentListener,
+                    adapterShopHeader
+            )
             else -> super.createViewHolder(parent, type)
         }
     }

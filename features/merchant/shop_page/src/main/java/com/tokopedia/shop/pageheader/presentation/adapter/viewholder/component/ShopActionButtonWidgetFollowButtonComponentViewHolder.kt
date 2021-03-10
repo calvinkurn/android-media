@@ -1,40 +1,73 @@
 package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component
 
-import android.R.attr.path
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.UnifyImageButton
 
 
 class ShopActionButtonWidgetFollowButtonComponentViewHolder(
-        itemView: View
+        itemView: View,
+        private val listener: Listener
 ) : AbstractViewHolder<ShopHeaderButtonComponentUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_follow_button_component
     }
 
+    interface Listener {
+        fun onImpressionVoucherFollowUnFollowShop()
+        fun onClickFollowUnFollowButton()
+    }
+
     private val buttonFollow: UnifyButton? = itemView.findViewById(R.id.button_shop_follow)
 
-    override fun bind(model: ShopHeaderButtonComponentUiModel) {
+    init {
         val lp = itemView.layoutParams
-        if(lp is FlexboxLayoutManager.LayoutParams){
+        if (lp is FlexboxLayoutManager.LayoutParams) {
             val flexboxLp = lp as FlexboxLayoutManager.LayoutParams
-            flexboxLp.flexGrow = 1.0f;
+            flexboxLp.flexGrow = 1.0f
         }
-//        buttonFollow?.text = model.label
+    }
+
+    override fun bind(model: ShopHeaderButtonComponentUiModel) {
+        buttonFollow?.apply {
+            val isShowLoading = model.isButtonLoading
+            isLoading = isShowLoading
+            if (!isShowLoading)
+                text = model.label
+            setDrawableLeft(this, model.leftDrawableUrl)
+            buttonVariant = UnifyButton.Variant.GHOST
+            val isFollowing = model.isFollowing
+            buttonType = UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
+            setOnClickListener {
+                if (!isLoading)
+                    listener.onClickFollowUnFollowButton()
+            }
+        }
+    }
+
+    private fun setDrawableLeft(button: UnifyButton, leftDrawableUrl: String) {
+        if (leftDrawableUrl.isNotBlank()) {
+            button.loadLeftDrawable(
+                    context = itemView.context,
+                    url = leftDrawableUrl,
+                    convertIntoSize = 50
+            )
+            listener.onImpressionVoucherFollowUnFollowShop()
+        } else {
+            removeCompoundDrawableFollowButton()
+        }
+    }
+
+    private fun removeCompoundDrawableFollowButton() {
+        if (!buttonFollow?.compoundDrawables.isNullOrEmpty()) {
+            buttonFollow?.removeDrawable()
+        }
     }
 
 }

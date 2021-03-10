@@ -10,7 +10,6 @@
     android:background="@color/blue_30"
     tools:text="Follow"
     app:unifyButtonSize="small"
-    android:text="Follow"
     app:unifyButtonType="main"
     app:unifyButtonVariant="ghost"
     tools:visibility="visible" />

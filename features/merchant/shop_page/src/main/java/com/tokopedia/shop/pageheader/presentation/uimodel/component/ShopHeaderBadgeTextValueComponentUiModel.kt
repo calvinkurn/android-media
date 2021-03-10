@@ -16,7 +16,7 @@ data class ShopHeaderBadgeTextValueComponentUiModel(
     data class Text(
             val icon: String = "",
             val textLink: String = "",
-            val textHtml: String = "",
+            var textHtml: String = "",
             val isBottomSheet: Boolean = false
     )
 
