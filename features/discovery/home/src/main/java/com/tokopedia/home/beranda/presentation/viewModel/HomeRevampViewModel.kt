@@ -568,9 +568,9 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun evaluateHomeFlagData(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let {
+        homeDataModel?.let {HomeDataModel ->
             var isNeedToGetData = homeBalanceModel.balanceType == null
-            homeBalanceModel.balanceType = when(it.homeFlag.getFlagValue(HomeFlag.TYPE.HAS_TOKOPOINTS)) {
+            homeBalanceModel.balanceType = when(HomeDataModel.homeFlag.getFlagValue(HomeFlag.TYPE.HAS_TOKOPOINTS)) {
                 1 -> {
                     setNewBalanceWidget(false)
                     HomeBalanceModel.TYPE_STATE_1
@@ -592,6 +592,18 @@ open class HomeRevampViewModel @Inject constructor(
             if (isNeedToGetData) {
                 getHeaderData()
             }
+
+            val list = homeDataModel.list.toMutableList()
+
+            val homeHeaderOvoDataModel = homeVisitableListData.find { visitable -> visitable is HomeHeaderOvoDataModel}
+            val headerIndex = homeDataModel.list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
+            (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
+                it.needToShowUserWallet = HomeDataModel.homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+                list[headerIndex] = homeHeaderOvoDataModel
+            }
+
+            return HomeDataModel.copy(list = list)
+
         }
         return homeDataModel
     }
