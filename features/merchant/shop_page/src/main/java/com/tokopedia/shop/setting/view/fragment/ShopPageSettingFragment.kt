@@ -56,6 +56,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         const val SHOP_DOMAIN = "domain"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
+        const val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/"
 
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
@@ -347,7 +348,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     // Pusat Seller
     override fun onGetTipsClicked() {
         shopPageSettingTracking?.clickPusatSeller(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConst.SELLER_CENTER)
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, SELLER_CENTER_URL))
     }
 
     // Tambah dan ubah lokasi toko
