@@ -7,9 +7,9 @@
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/swd_header"
-        app:unify_header_is_show_shadow="false"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_shadow="false" />
 
     <FrameLayout
         android:id="@+id/parent_view"

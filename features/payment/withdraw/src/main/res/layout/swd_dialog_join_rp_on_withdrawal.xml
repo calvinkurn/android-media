@@ -16,7 +16,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/swd_img_join_rekening" />
+            app:srcCompat="@drawable/swd_img_join_rekening"
+            app:unify_image_corner_radius="0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvJoinRekeningTitle"
@@ -33,14 +34,14 @@
             tools:text="Title" />
 
         <LinearLayout
-            android:orientation="vertical"
             android:id="@+id/descriptionBulletContainer"
             android:layout_width="@dimen/unify_space_0"
-            android:layout_marginTop="@dimen/unify_space_24"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvJoinRekeningTitle"/>
+            app:layout_constraintTop_toBottomOf="@+id/tvJoinRekeningTitle" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnJoinRPAndWithdrawal"
@@ -72,13 +73,13 @@
             android:id="@+id/tvJoinRekeningTNC"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_marginTop="@dimen/unify_space_24"
             android:layout_marginBottom="@dimen/unify_space_24"
+            android:gravity="center"
             android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnWithdrawalOnly"
             app:typographyType="body_3"
             tools:text="Description" />

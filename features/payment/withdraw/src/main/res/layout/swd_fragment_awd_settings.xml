@@ -10,10 +10,10 @@
         android:id="@+id/loaderView"
         android:layout_width="@dimen/unify_space_32"
         android:layout_height="@dimen/unify_space_32"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circular" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -48,7 +48,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tickerShapeType="full"
-        app:tickerType="warning"/>
+        app:tickerType="warning" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivAutoWDBannerBackground"
@@ -59,18 +59,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/swd_fg_awd_ticker" />
+        app:srcCompat="@drawable/swd_fg_awd_ticker"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivAWBannerClose"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/unify_space_16"
-        app:icon_name="CLOSE"
         app:icon_color_light_enable="@color/Unify_N700_96"
+        app:icon_name="CLOSE"
         app:layout_constraintEnd_toEndOf="@+id/right_guideline"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDBannerTitle"
@@ -170,7 +170,8 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWDAllBalanceAccording"
-                app:srcCompat="@drawable/swd_ic_time" />
+                app:srcCompat="@drawable/swd_ic_time"
+                app:unify_image_corner_radius="0" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAutoWDScheduleTitle"
@@ -235,7 +236,8 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvScheduleTiming"
-                app:srcCompat="@drawable/swd_ic_transaction" />
+                app:srcCompat="@drawable/swd_ic_transaction"
+                app:unify_image_corner_radius="0" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvDestinationAccountTitle"
@@ -303,18 +305,18 @@
                 android:id="@+id/btnAutoWDAddBankAccount"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginBottom="@dimen/layout_lvl1"
                 android:text="@string/swd_add_bank_account"
                 android:visibility="gone"
-                tools:visibility="visible"
-                android:layout_marginTop="@dimen/unify_space_8"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvDestinationAccountTitle"
                 app:layout_constraintTop_toBottomOf="@id/tvAutoWdBankNote"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="alternate"
-                app:unifyButtonVariant="ghost" />
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

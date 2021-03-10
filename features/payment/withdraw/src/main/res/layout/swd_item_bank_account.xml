@@ -9,19 +9,19 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSpecialOffer"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_B500"
-        app:typographyType="body_3"
-        android:visibility="visible"
-        android:paddingTop="@dimen/unify_space_2"
-        android:paddingBottom="@dimen/unify_space_2"
-        android:paddingStart="@dimen/unify_space_4"
-        android:paddingEnd="@dimen/unify_space_4"
         android:background="@drawable/swd_special_offer"
-        android:text="@string/swd_special_offer"/>
+        android:paddingStart="@dimen/unify_space_4"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingEnd="@dimen/unify_space_4"
+        android:paddingBottom="@dimen/unify_space_2"
+        android:text="@string/swd_special_offer"
+        android:textColor="@color/Unify_B500"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivBankSelector"
@@ -30,7 +30,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/swd_radio_button_default" />
+        app:srcCompat="@drawable/swd_radio_button_default"
+        app:unify_image_corner_radius="0" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -41,15 +42,15 @@
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
         app:layout_constrainedWidth="true"
-        app:layout_goneMarginRight="@dimen/unify_space_16"
-        app:layout_goneMarginEnd="@dimen/unify_space_16"
-        app:layout_goneMarginTop="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="@id/ivPremiumAccount"
         app:layout_constraintEnd_toStartOf="@+id/ivPremiumAccount"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/ivPremiumAccount"
+        app:layout_goneMarginEnd="@dimen/unify_space_16"
+        app:layout_goneMarginRight="@dimen/unify_space_16"
+        app:layout_goneMarginTop="@dimen/unify_space_16"
         app:typographyType="body_3"
         tools:text="PT Bank Bank Bank Bank BankBankBankBankBank BankBankBankBankBankBankBankBankBankBank" />
 
@@ -59,13 +60,14 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@id/ivBankSelector"
         app:layout_constraintStart_toEndOf="@+id/tvBankName"
         app:layout_constraintTop_toBottomOf="@id/tvSpecialOffer"
-        app:srcCompat="@drawable/swd_ic_power_merchant" />
+        app:srcCompat="@drawable/swd_ic_power_merchant"
+        app:unify_image_corner_radius="0" />
 
 
     <com.tokopedia.unifyprinciples.Typography

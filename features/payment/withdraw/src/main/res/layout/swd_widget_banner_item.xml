@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/Unify_N200"
-    android:paddingTop="@dimen/unify_space_8"
     android:paddingStart="@dimen/unify_space_4"
+    android:paddingTop="@dimen/unify_space_8"
     android:paddingEnd="@dimen/unify_space_4"
-    android:paddingBottom="@dimen/unify_space_8">
+    android:paddingBottom="@dimen/unify_space_8"
+    tools:background="@color/Unify_N200">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageUnifyBackground"
@@ -19,7 +19,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -74,6 +75,6 @@
         android:id="@+id/bannerTextGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="tvBannerTitle,tvBannerDescriptionOne,tvBannerDescriptionTwo"/>
+        app:constraint_referenced_ids="tvBannerTitle,tvBannerDescriptionOne,tvBannerDescriptionTwo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

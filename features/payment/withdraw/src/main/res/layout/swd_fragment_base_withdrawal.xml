@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -156,7 +155,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/withdrawalButton"
             app:layout_constraintStart_toStartOf="@+id/withdrawalButton"
             app:layout_constraintTop_toTopOf="@+id/withdrawalButton"
-            app:srcCompat="@drawable/ic_icon_lock" />
+            app:srcCompat="@drawable/ic_icon_lock"
+            app:unify_image_corner_radius="0" />
 
         <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/iv_emptySaldo"

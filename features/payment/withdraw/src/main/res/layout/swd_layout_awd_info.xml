@@ -39,11 +39,11 @@
         android:id="@+id/awdJoinRPTicker"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tickerShapeType="loose"
-        app:closeButtonVisibility="gone"
         app:tickerType="announcement" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
