@@ -12,16 +12,14 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller.menu.common.di.DaggerSellerMenuCommonComponent
+import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel
 import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -111,6 +109,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
+                    SellerMenuErrorHandler.logExceptionToCrashlytics(result.throwable, SellerMenuErrorHandler.ERROR_GET_ADMIN_ACCESS_ROLE)
                     adminErrorView?.show(false)
                 }
             }
