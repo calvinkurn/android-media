@@ -12,6 +12,11 @@ import androidx.annotation.ColorInt
 
 object PowerMerchantSpannableUtil {
 
+    /**
+     * this is mandatory if u want to use this method
+     * to make your text view clickable
+     * textView.setMovementMethod(LinkMovementMethod.getInstance())
+     * */
     fun createSpannableString(
         text: String,
         highlightText: String,
@@ -22,7 +27,7 @@ object PowerMerchantSpannableUtil {
     ): SpannableString {
         val spannableString = SpannableString(text)
         val startIndex = text.indexOf(highlightText)
-        val endIndex = text.length
+        val endIndex = startIndex + highlightText.length
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {

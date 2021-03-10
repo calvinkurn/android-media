@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
@@ -142,23 +143,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun getHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
-        val shopKycResIcon: Int = when (shopInfo.kycStatusId) {
-            KYCStatusId.VERIFIED, KYCStatusId.APPROVED -> R.drawable.ic_pm_checked
-            KYCStatusId.NOT_VERIFIED -> R.drawable.ic_pm_not_checked
-            KYCStatusId.PENDING -> R.drawable.ic_pm_waiting
-            else -> R.drawable.ic_pm_failed
-        }
-
         return WidgetRegistrationHeaderUiModel(
                 shopInfo = shopInfo,
-                terms = listOf(
-                        getFirstPmRegistrationTerm(shopInfo),
-                        RegistrationTermUiModel(
-                                title = "Data Diri Belum Terverifikasi",
-                                descriptionHtml = "Daftar langsung untuk bisa segera diverifikasi. yuk! Jika berhasil, tokomu akan jadi Power Merchant.",
-                                resDrawableIcon = shopKycResIcon
-                        )
-                )
+                terms = listOf(getFirstPmRegistrationTerm(shopInfo), getSecondPmRegistrationTerm(shopInfo))
         )
     }
 
@@ -171,6 +158,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         val title: String
         val description: String
+        var ctaText: String? = null
+        var ctaAppLink: String? = null
         if (shopInfo.isNewSeller) { //new seller
             if (shopInfo.hasActiveProduct) {
                 title = getString(R.string.pm_already_have_one_active_product)
@@ -178,21 +167,62 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             } else {
                 title = getString(R.string.pm_have_not_one_active_product_yet)
                 description = getString(R.string.pm_label_have_not_one_active_product_yet)
+                ctaText = getString(R.string.pm_add_product)
+                ctaAppLink = ApplinkConst.SellerApp.PRODUCT_ADD
             }
         } else { //existing seller
             if (shopInfo.isEligibleShopScore) {
-                title = "Skor Toko: <font color=\"#03AC0E\">85</font>"
-                description = "Skormu sudah mencapai batas <strong>min. skor 60</strong> untuk daftar Power Merchant. Skor akan diperbarui setiap Senin, ya."
+                val textColor = "#" + Integer.toHexString(requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                title = getString(R.string.pm_shop_score_eligible, textColor, shopInfo.shopScore)
+                description = getString(R.string.pm_shop_score_eligible_description, shopInfo.shopScoreThreshold)
             } else {
-                title = "Skor Toko: <font color=\"#D6001C\">85</font>"
-                description = "Tingkatkan skor tokomu <strong>min. skor 60</strong> untuk mendaftar jadi Power Merchant, ya. <br><strong><a style=\"color:#ddd;\" href=\"tokopedia://shop-score-detail\">Pelajari Performa Toko</a></strong>"
+                val textColor = "#" + Integer.toHexString(requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                title = getString(R.string.pm_shop_score_not_eligible, textColor, shopInfo.shopScore)
+                description = getString(R.string.pm_shop_score_not_eligible_description, shopInfo.shopScoreThreshold)
+                ctaText = getString(R.string.pm_learn_shop_performance)
+                ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
             }
         }
 
         return RegistrationTermUiModel(
                 title = title,
                 descriptionHtml = description,
-                resDrawableIcon = shopScoreResIcon
+                resDrawableIcon = shopScoreResIcon,
+                clickableText = ctaText,
+                appLinkOrUrl = ctaAppLink
+        )
+    }
+
+    private fun getSecondPmRegistrationTerm(shopInfo: PMShopInfoUiModel): RegistrationTermUiModel {
+        val shopKycResIcon: Int
+        val title: String
+        val description: String
+        when (shopInfo.kycStatusId) {
+            KYCStatusId.VERIFIED, KYCStatusId.APPROVED -> {
+                title = getString(R.string.pm_kyc_verified)
+                description = getString(R.string.pm_description_kyc_verified)
+                shopKycResIcon = R.drawable.ic_pm_checked
+            }
+            KYCStatusId.NOT_VERIFIED -> {
+                title = getString(R.string.pm_kyc_not_verified)
+                description = getString(R.string.pm_description_kyc_not_verified)
+                shopKycResIcon = R.drawable.ic_pm_not_checked
+            }
+            KYCStatusId.PENDING -> {
+                title = getString(R.string.pm_kyc_verification_waiting)
+                description = getString(R.string.pm_description_kyc_verification_waiting)
+                shopKycResIcon = R.drawable.ic_pm_waiting
+            }
+            else -> {
+                title = getString(R.string.pm_verification_failed)
+                description = getString(R.string.pm_description_kyc_verification_failed)
+                shopKycResIcon = R.drawable.ic_pm_failed
+            }
+        }
+        return RegistrationTermUiModel(
+                title = title,
+                descriptionHtml = description,
+                resDrawableIcon = shopKycResIcon
         )
     }
 

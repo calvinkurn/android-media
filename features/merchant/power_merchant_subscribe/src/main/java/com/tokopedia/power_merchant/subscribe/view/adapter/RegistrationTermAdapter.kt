@@ -1,12 +1,17 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter
 
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import kotlinx.android.synthetic.main.item_pm_registration_term.view.*
 
@@ -32,11 +37,30 @@ class RegistrationTermAdapter(
     override fun getItemCount(): Int = terms.size
 
     inner class RegistrationTermViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         fun bind(term: RegistrationTermUiModel) {
             with(itemView) {
                 tvPmTermItemTitle.text = term.title.parseAsHtml()
-                tvPmTermItemDesc.text = term.descriptionHtml.parseAsHtml()
                 icPmHeaderTermItem.loadImageDrawable(term.resDrawableIcon)
+                setupTermDescription(term)
+            }
+        }
+
+        private fun setupTermDescription(term: RegistrationTermUiModel) {
+            if (!term.clickableText.isNullOrBlank() && !term.appLinkOrUrl.isNullOrBlank()) {
+                val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
+                val termDescription = PowerMerchantSpannableUtil.createSpannableString(
+                        text = term.descriptionHtml,
+                        highlightText = term.clickableText,
+                        colorId = itemView.context.getResColor(ctaTextColor),
+                        isBold = true
+                ) {
+                    RouteManager.route(itemView.context, term.appLinkOrUrl)
+                }
+                itemView.tvPmTermItemDesc.movementMethod = LinkMovementMethod.getInstance()
+                itemView.tvPmTermItemDesc.text = termDescription
+            } else {
+                itemView.tvPmTermItemDesc.text = term.descriptionHtml.parseAsHtml()
             }
         }
     }
