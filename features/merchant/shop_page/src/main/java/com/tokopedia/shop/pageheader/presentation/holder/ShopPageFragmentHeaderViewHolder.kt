@@ -14,6 +14,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -165,18 +166,44 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             coachMark?.isOutsideTouchable = true
             coachMark?.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    when (coachMarkItem.anchorView.id) {
-                        chooseAddressWidget?.id -> {
-                            ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
-                        }
-                        followButton?.id -> {
-                            listener.saveFirstTimeVisit()
-                            shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
-                        }
-                    }
+                    checkCoachMarkImpression(
+                            onCoachMarkChooseAddressWidgetImpressed = {
+                                listener.saveFirstTimeVisit()
+                                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                            },
+                            onCoachMarkFollowButtonImpressed = {
+                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                            }
+                    )
                 }
             })
             coachMark?.showCoachMark(coachMarkList)
+            checkCoachMarkImpression(
+                    onCoachMarkChooseAddressWidgetImpressed = {
+                            listener.saveFirstTimeVisit()
+                            shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                    },
+                    onCoachMarkFollowButtonImpressed = {
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                    }
+            )
+        }
+    }
+
+    private fun checkCoachMarkImpression(
+            onCoachMarkFollowButtonImpressed: () -> Unit,
+            onCoachMarkChooseAddressWidgetImpressed: () -> Unit
+    ) {
+        coachMark?.coachMarkItem?.getOrNull(coachMark?.currentIndex.orZero())?.let {
+            when (it.anchorView.id) {
+                followButton.id -> {
+                    onCoachMarkFollowButtonImpressed.invoke()
+                }
+                chooseAddressWidget?.id -> {
+                    onCoachMarkChooseAddressWidgetImpressed.invoke()
+                }
+                else -> {}
+            }
         }
     }
 
