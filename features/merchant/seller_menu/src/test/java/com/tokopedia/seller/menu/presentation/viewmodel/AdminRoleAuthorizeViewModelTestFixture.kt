@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.view.viewmodel
+package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -21,27 +21,23 @@ open class AdminRoleAuthorizeViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var adminPermissionUseCase: AdminPermissionUseCase
-
-    @RelaxedMockK
     lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var mapper: com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
+    lateinit var mapper: AdminPermissionMapper
 
     @RelaxedMockK
     lateinit var isRoleAuthorizedObserver: Observer<in Result<Boolean>>
 
-    protected lateinit var viewModel: com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel
+    protected lateinit var viewModel: AdminRoleAuthorizeViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel(
-                adminPermissionUseCase,
+        viewModel = AdminRoleAuthorizeViewModel(
                 authorizeAccessUseCase,
                 userSession,
                 mapper,
@@ -70,18 +66,6 @@ open class AdminRoleAuthorizeViewModelTestFixture {
     protected fun onExecuteAuthorizeAccessUseCaseFail_thenThrow(throwable: Throwable) {
         coEvery {
             authorizeAccessUseCase.execute(any())
-        } throws throwable
-    }
-
-    protected fun onExecuteAdminPermissionUseCaseSuccess_thenReturn(result: Boolean) {
-        coEvery {
-            adminPermissionUseCase.execute()
-        } returns result
-    }
-
-    protected fun onExecuteAdminPermissionUseCaseFail_thenThrow(throwable: Throwable) {
-        coEvery {
-            adminPermissionUseCase.execute()
         } throws throwable
     }
 

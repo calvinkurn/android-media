@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.view.viewmodel
+package com.tokopedia.seller.menu.presentation.viewmodel
 
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.menu.common.constant.AdminFeature
