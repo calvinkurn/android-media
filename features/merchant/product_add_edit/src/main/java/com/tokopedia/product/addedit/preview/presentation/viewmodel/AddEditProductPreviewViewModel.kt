@@ -470,29 +470,27 @@ class AddEditProductPreviewViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     mIsProductManageAuthorized.value = Success(withContext(dispatcher.io) {
-                        when {
-                            userSession.isShopOwner -> true
-                            userSession.isShopAdmin -> {
-                                val accessId =
-                                        when {
-                                            isAdding -> AccessId.PRODUCT_ADD
-                                            isDuplicate -> AccessId.PRODUCT_DUPLICATE
-                                            isEditing.value == true -> AccessId.PRODUCT_EDIT
-                                            else -> AccessId.PRODUCT_ADD
-                                        }
-                                userSession.shopId.toLongOrZero().let { shopId ->
-                                    val canManageProduct = async {
-                                        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
-                                        authorizeAccessUseCase.execute(requestParams)
+                        if (userSession.isShopOwner) {
+                            true
+                        } else {
+                            val accessId =
+                                    when {
+                                        isAdding -> AccessId.PRODUCT_ADD
+                                        isDuplicate -> AccessId.PRODUCT_DUPLICATE
+                                        isEditing.value == true -> AccessId.PRODUCT_EDIT
+                                        else -> AccessId.PRODUCT_ADD
                                     }
-                                    val canEditStock = async {
-                                        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.EDIT_STOCK)
-                                        authorizeEditStockUseCase.execute(requestParams)
-                                    }
-                                    canManageProduct.await() && canEditStock.await()
+                            userSession.shopId.toLongOrZero().let { shopId ->
+                                val canManageProduct = async {
+                                    val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
+                                    authorizeAccessUseCase.execute(requestParams)
                                 }
+                                val canEditStock = async {
+                                    val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.EDIT_STOCK)
+                                    authorizeEditStockUseCase.execute(requestParams)
+                                }
+                                canManageProduct.await() && canEditStock.await()
                             }
-                            else -> false
                         }
                     })
                 },

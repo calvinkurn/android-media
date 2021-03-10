@@ -295,30 +295,6 @@ class ChatItemListViewModelTest {
         assert(viewModel.isChatAdminEligible.value is Fail)
     }
 
-    @Test fun `non-owner, non-admin seller should not eligible to get chat list message`() {
-        // given
-        val expectedResult = Success(false)
-        every {
-            userSession.isShopOwner
-        } answers {
-            false
-        }
-        every {
-            userSession.isShopAdmin
-        } answers {
-            false
-        }
-
-        // when
-        viewModel.getChatListMessage(0, SELLER)
-
-        // then
-        verify(exactly = 1) {
-            isChatAdminEligibleObserver.onChanged(expectedResult)
-        }
-        assertThat(viewModel.isChatAdminEligible.value, equalTo(expectedResult))
-    }
-
     companion object {
         private val getChatList: ChatListPojo = FileUtil.parse(
                 "/success_get_chat_list.json",
