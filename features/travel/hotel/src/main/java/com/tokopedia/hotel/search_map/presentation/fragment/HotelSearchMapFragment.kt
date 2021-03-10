@@ -60,6 +60,7 @@ import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivi
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -83,7 +84,7 @@ import kotlin.math.abs
  * @author by furqan on 01/03/2021
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
-        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener {
+        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -160,6 +161,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     changeMarkerState(cardListPosition)
                 }
                 is Fail -> {
+                    hideLoader()
                     hideCollapsingHeader()
                     animateCollapsingToolbar(COLLAPSING_FULL_SCREEN)
                     showGetListError(it.throwable)
@@ -208,6 +210,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun loadInitialData() {
         isLoadingInitialData = true
+        showLoader()
         adapter.clearAllElements()
         adapterCardList.clearAllElements()
         showLoading()
@@ -249,8 +252,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onCameraIdle() {
         GlobalScope.launch(Dispatchers.Main) {
             delay(DELAY_BUTTON_RADIUS)
-            showFindNearHereView()
+//            showFindNearHereView()
         }
+    }
+
+    override fun onCameraMove() {
+        hideFindNearHereView()
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -658,6 +665,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
+        hideLoader()
+
         val searchProperties = data.properties
         renderCardListMap(searchProperties)
         renderList(searchProperties.map {
@@ -800,12 +809,22 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         ivGetLocationHotelSearchMap.gone()
     }
 
+    private fun showLoader(){
+        hotel_loader.show()
+    }
+
+    private fun hideLoader(){
+        hotel_loader.gone()
+    }
+
     private fun showFindNearHereView() {
         btnGetRadiusHotelSearchMap.visible()
+        btnGetRadiusHotelSearchMap.show()
     }
 
     private fun hideFindNearHereView() {
         btnGetRadiusHotelSearchMap.gone()
+        btnGetRadiusHotelSearchMap.hide()
     }
 
     private fun getCurrentLocation() {
