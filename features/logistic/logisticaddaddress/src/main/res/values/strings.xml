@@ -159,4 +159,6 @@
         <item>Kos</item>
     </string-array>
 
+    <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
+
 </resources>

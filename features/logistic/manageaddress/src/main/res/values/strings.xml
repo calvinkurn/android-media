@@ -110,5 +110,9 @@
     <string name="shop_address_fax_placeholder">Tulis fax toko</string>
     <string name="title_action_add_address">Tambah Alamat</string>
     <string name="txt_error_no_access">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
+    <string name="ubah_detail_lokasi">Ubah Detail Lokasi</string>
+    <string name="btn_mengerti">Mengerti</string>
+    <string name="btn_kembali">Kembali</string>
+    <string name="btn_nonaktifkan">Nonaktifkan</string>
 
 </resources>

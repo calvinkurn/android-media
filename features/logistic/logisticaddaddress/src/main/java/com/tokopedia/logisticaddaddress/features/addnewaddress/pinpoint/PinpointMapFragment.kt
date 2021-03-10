@@ -651,7 +651,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private fun setResultPinpoint() {
         saveAddressDataModel?.editDetailAddress = et_detail_address?.text.toString()
         if (isEditWarehouse && saveAddressDataModel?.districtId != warehouseDataModel?.districtId) {
-            view?.let { Toaster.build(it, "Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.", Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+            view?.let { Toaster.build(it, getString(R.string.toaster_not_avail_shop_loc), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
         } else {
             activity?.run {
                 setResult(Activity.RESULT_OK, Intent().apply {

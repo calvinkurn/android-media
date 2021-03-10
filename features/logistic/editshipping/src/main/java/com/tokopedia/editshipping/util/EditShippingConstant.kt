@@ -18,4 +18,9 @@ object EditShippingConstant {
     const val EXTRA_IS_POLYGON = "EXTRA_IS_POLYGON"
     const val DEFAULT_LAT: Double = -6.175794
     const val DEFAULT_LONG: Double = 106.826457
+
+    const val TICKER_STATE_UNAVAILABLE = 1
+
+    const val TICKER_STATE_ERROR = 1
+    const val TICKER_STATE_WARNING = 2
 }

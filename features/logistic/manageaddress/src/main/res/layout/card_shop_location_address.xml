@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_address_zipcode"
             app:srcCompat="@drawable/ic_pinpoint_green"
-            tools:ignore="ContentDescription" />
+            android:contentDescription="null" />
 
         <ImageView
             android:id="@+id/img_mark_icon"
@@ -32,7 +32,8 @@
             app:srcCompat="@drawable/ic_mark_ico"
             app:layout_constraintTop_toTopOf="@id/tv_shop_label"
             app:layout_constraintBottom_toBottomOf="@id/tv_shop_label"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="null"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_label"
@@ -51,9 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:text="@string/address_label"
             android:visibility="visible"
             app:labelType="general_light_green"
@@ -70,7 +69,8 @@
             app:srcCompat="@drawable/ic_information_ico"
             app:layout_constraintTop_toTopOf="@id/lbl_main_shop"
             app:layout_constraintBottom_toBottomOf="@id/lbl_main_shop"
-            app:layout_constraintStart_toEndOf="@+id/lbl_main_shop"/>
+            app:layout_constraintStart_toEndOf="@+id/lbl_main_shop"
+            android:contentDescription="null"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_name"
@@ -187,7 +187,7 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_18"
-            android:text="Ubah Detail Lokasi"
+            android:text="@string/ubah_detail_lokasi"
             android:textAlignment="center"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toStartOf="parent"

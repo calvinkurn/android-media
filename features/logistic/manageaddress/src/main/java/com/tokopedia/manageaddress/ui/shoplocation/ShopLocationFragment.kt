@@ -115,7 +115,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         viewModel.shopWhitelist.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShopLocationState.Success -> {
-                    if (it.data.data.eligibilityState == 1) {
+                    if (it.data.data.eligibilityState == ELIGIBLE_USER_WHITELIST_STATE) {
                         swipeRefreshLayout?.isRefreshing = false
                         fetchData()
                     } else {
@@ -164,7 +164,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
             when (it) {
                 is ShopLocationState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    if (warehouseStatus == 1) {
+                    if (warehouseStatus == STATE_WAREHOUSE_ACTIVE) {
                         view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     } else {
                         view?.let { view -> Toaster.build(view, getString(R.string.text_activate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
@@ -234,14 +234,14 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun setupChild(data: Warehouse, child: View) {
         buttonSetLocationStatus = child.findViewById(R.id.btn_set_location_status)
-        if (data.status == 1) {
+        if (data.status == STATE_WAREHOUSE_ACTIVE) {
             buttonSetLocationStatus?.text = getString(R.string.deactivate_location)
-        } else if (data.status == 2)   {
+        } else if (data.status == STATE_WAREHOUSE_INACTIVE)   {
             buttonSetLocationStatus?.text = getString(R.string.activate_location)
         }
 
         buttonSetLocationStatus?.setOnClickListener {
-            if (data.status == 1) {
+            if (data.status == STATE_WAREHOUSE_ACTIVE) {
                 openBottomSheetAddressConfirmation(data)
             } else {
                 bottomSheetAddressType?.dismiss()
@@ -274,7 +274,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         tvDeactivateConfirmation?.text = getString(R.string.text_deactivate_confirmation, data.warehouseName)
         buttonBackAddressConfirm?.setOnClickListener { bottomSheetAddressConfirmation?.dismiss() }
         buttonDeactivateAddressConfirm?.setOnClickListener {
-            viewModel.setShopLocationState(data.warehouseId, 2)
+            viewModel.setShopLocationState(data.warehouseId, STATE_WAREHOUSE_INACTIVE)
             warehouseStatus = data.status
             warehouseName = data.warehouseName
             bottomSheetAddressConfirmation?.dismiss()
@@ -367,6 +367,13 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         }
         intent.putExtra(EXTRA_WAREHOUSE_DATA, data)
         startActivityForResult(intent, EDIT_WAREHOUSE_REQUEST_CODE)
+    }
+
+    companion object {
+        const val ELIGIBLE_USER_WHITELIST_STATE = 1
+
+        const val STATE_WAREHOUSE_ACTIVE = 1
+        const val STATE_WAREHOUSE_INACTIVE = 2
     }
 
 }

@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_5"
             android:layout_weight="1"
-            android:text="Kembali"
+            android:text="@string/btn_kembali"
             android:textStyle="bold"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_5"
             android:layout_weight="1"
-            android:text="Nonaktifkan"
+            android:text="@string/btn_nonaktifkan"
             android:textStyle="bold"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />

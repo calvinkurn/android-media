@@ -13,6 +13,7 @@ import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ConventionalModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
+import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -74,11 +75,6 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         return activatedListIds
     }
 
-    fun clearData() {
-        shipperConventionalModel.clear()
-        notifyDataSetChanged()
-    }
-
     inner class ShippingEditorConventionalViewHolder(itemView: View, private val listener: ShippingEditorConventionalListener) : RecyclerView.ViewHolder(itemView) {
         lateinit var conventionalModel: ConventionalModel
         private val productItemAdapter = ShipperProductItemAdapter()
@@ -126,12 +122,12 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
             }
 
              when (data.tickerState) {
-                1 -> {
+                EditShippingConstant.TICKER_STATE_ERROR -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_ERROR
                     tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_red))
                 }
-                2 -> {
+                EditShippingConstant.TICKER_STATE_WARNING -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_WARNING
                     tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseModel?.size))
@@ -180,7 +176,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         }
 
         private fun setItemChecked(data: ConventionalModel) {
-            if (data.tickerState == 1) {
+            if (data.tickerState == EditShippingConstant.TICKER_STATE_UNAVAILABLE) {
                 flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
                 data.isActive = false
                 productItemAdapter?.updateChecked(data.isActive)

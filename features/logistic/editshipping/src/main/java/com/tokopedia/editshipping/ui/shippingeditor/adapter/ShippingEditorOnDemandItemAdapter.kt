@@ -15,6 +15,7 @@ import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.OnDemandModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
+import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -76,11 +77,6 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         return activatedListIds
     }
 
-    fun clearData() {
-        shipperOnDemandModel.clear()
-        notifyDataSetChanged()
-    }
-
     inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView) {
         lateinit var onDemandModel: OnDemandModel
         private val productItemAdapter = ShipperProductItemAdapter()
@@ -127,12 +123,12 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
             }
 
             when (data.tickerState) {
-                1 -> {
+                EditShippingConstant.TICKER_STATE_ERROR -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_ERROR
                     tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_red))
                 }
-                2 -> {
+                EditShippingConstant.TICKER_STATE_WARNING -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_WARNING
                     tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseModel?.size))
@@ -183,7 +179,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         }
 
         private fun setItemChecked(data: OnDemandModel) {
-            if (data.tickerState == 1) {
+            if (data.tickerState == EditShippingConstant.TICKER_STATE_UNAVAILABLE) {
                 flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
                 data.isActive = false
                 productItemAdapter?.updateChecked(data.isActive)
