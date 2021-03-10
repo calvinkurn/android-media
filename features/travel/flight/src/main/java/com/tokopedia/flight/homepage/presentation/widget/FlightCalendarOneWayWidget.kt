@@ -3,7 +3,6 @@ package com.tokopedia.flight.homepage.presentation.widget
 import android.app.Application
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -22,6 +21,7 @@ import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.flight_calendar_single_pick.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,7 +58,7 @@ class FlightCalendarOneWayWidget : BottomSheetUnify() {
         showCloseIcon = true
         setCloseClickListener { this.dismissAllowingStateLoss() }
 
-        val childView = View.inflate(context, com.tokopedia.travelcalendar.R.layout.dialog_calendar_single_pick, null)
+        val childView = View.inflate(context, R.layout.flight_calendar_single_pick, null)
         setChild(childView)
 
         initInjector()
@@ -105,12 +105,11 @@ class FlightCalendarOneWayWidget : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val progressBar = view.findViewById<ProgressBar>(com.tokopedia.travelcalendar.R.id.loading_progress_bar)
-        progressBar.visibility = View.VISIBLE
+        loading_progress_bar.visibility = View.VISIBLE
 
         holidayCalendarViewModel.getCalendarHoliday()
         holidayCalendarViewModel.holidayCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            progressBar.visibility = View.GONE
+            loading_progress_bar.visibility = View.GONE
             it?.let {
                 if (isFirstTime) {
                     renderSinglePickCalendar(it)

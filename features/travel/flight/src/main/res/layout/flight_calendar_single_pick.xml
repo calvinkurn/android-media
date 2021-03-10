@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.calendar.UnifyCalendar
+        android:id="@+id/calendar_unify"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/loading_progress_bar"
+        android:layout_width="@dimen/flight_dp_32"
+        android:layout_height="@dimen/flight_dp_32"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/flight_dp_60"
+        android:visibility="gone" />
+</RelativeLayout>
