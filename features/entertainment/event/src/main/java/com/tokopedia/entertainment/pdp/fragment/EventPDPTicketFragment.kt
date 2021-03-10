@@ -16,9 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.*
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
@@ -366,28 +364,51 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
     }
 
-    override fun showCoachMark(view: View, height: Int) {
-        val coachMark = CoachMarkBuilder().build().apply {
-            enableSkip = true
+    override fun getLocalCacheRecom(): Boolean {
+        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY_RECOM, false)
+    }
+
+    override fun showCoachMark(view: View) {
+        context?.let {
+            val coachMark = CoachMark2(it)
+            coachMark.apply {
+                showCoachMark(getCoachMarkItems(view), null, 0)
+            }
         }
-        coachMark.setHighlightMargin(marginTop = height)
-        coachMark.show(
-                activity,
-                EventPDPTicketFragment::class.java.simpleName,
-                getCoachMarkItems(view)
-        )
         localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, true)
+            putBoolean(SHOW_COACH_MARK_KEY, false)
             applyEditor()
         }
     }
 
-    private fun getCoachMarkItems(view: View): ArrayList<CoachMarkItem> {
-        return arrayListOf(CoachMarkItem(
+    override fun showCoachMarkRecom(view: View) {
+        context?.let {
+            val coachMark = CoachMark2(it)
+            coachMark.apply {
+                showCoachMark(getCoachMarkItemsRecom(view), null, 0)
+            }
+        }
+        localCacheHandler.apply {
+            putBoolean(SHOW_COACH_MARK_KEY_RECOM, false)
+            applyEditor()
+        }
+    }
+
+    private fun getCoachMarkItems(view: View): ArrayList<CoachMark2Item> {
+        return arrayListOf(CoachMark2Item(
                 view,
                 getString(R.string.ent_home_coachmark_title),
                 getString(R.string.ent_home_coachmark_subtitle),
-                CoachMarkContentPosition.BOTTOM
+                CoachMark2.POSITION_BOTTOM
+        ))
+    }
+
+    private fun getCoachMarkItemsRecom(view: View): ArrayList<CoachMark2Item> {
+        return arrayListOf(CoachMark2Item(
+                view,
+                getString(R.string.ent_home_coachmark_title_recom),
+                getString(R.string.ent_home_coachmark_subtitle_recom),
+                CoachMark2.POSITION_BOTTOM
         ))
     }
 
@@ -458,6 +479,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         const val PREFERENCES_NAME = "event_ticket_preferences"
         const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
+        const val SHOW_COACH_MARK_KEY_RECOM = "show_coach_mark_key_event_ticket_recom"
         private const val COACH_MARK_START_DELAY = 1000L
     }
 
