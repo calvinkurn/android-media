@@ -406,6 +406,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Timber message should not empty", Toast.LENGTH_SHORT).show();
                 } else {
+                    //"Pno##TAG##message (message: abc=123##edf=456) (required Server Logging ON)"
                     int priorityIndex = 0;
                     int tagIndex = 1;
                     String priority = "";
