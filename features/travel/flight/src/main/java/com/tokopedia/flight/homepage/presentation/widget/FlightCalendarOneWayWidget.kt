@@ -2,10 +2,7 @@ package com.tokopedia.flight.homepage.presentation.widget
 
 import android.app.Application
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
@@ -17,25 +14,23 @@ import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.homepage.data.cache.FlightCalendarQuery
 import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightFareCalendarViewModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHolidayCalendarViewModel
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
-import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
+class FlightCalendarOneWayWidget : BottomSheetUnify() {
 
-    private lateinit var btnClose: ImageButton
-    private lateinit var loadingProgressBar: ProgressBar
-    private lateinit var calendarUnify: UnifyCalendar
+    private lateinit var calendar: CalendarPickerView
     private lateinit var listener: ActionListener
     private lateinit var holidayCalendarViewModel: FlightHolidayCalendarViewModel
     private lateinit var fareCalendarViewModel: FlightFareCalendarViewModel
@@ -57,6 +52,14 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setTitle(SelectionRangeCalendarWidget.CALENDAR_TITLE)
+        isFullpage = true
+        showCloseIcon = true
+        setCloseClickListener { this.dismissAllowingStateLoss() }
+
+        val childView = View.inflate(context, com.tokopedia.travelcalendar.R.layout.dialog_calendar_single_pick, null)
+        setChild(childView)
 
         initInjector()
 
@@ -99,24 +102,15 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
         component.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(com.tokopedia.travelcalendar.R.layout.dialog_calendar_single_pick, container, false)
-        btnClose = view.findViewById(com.tokopedia.travelcalendar.R.id.btn_close)
-        loadingProgressBar = view.findViewById(com.tokopedia.travelcalendar.R.id.loading_progress_bar)
-        calendarUnify = view.findViewById(com.tokopedia.travelcalendar.R.id.calendar_unify)
-        titlePage = view.findViewById(com.tokopedia.travelcalendar.R.id.tv_title)
-        return view
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        titlePage.text = "Pilih Tanggal"
+        val progressBar = view.findViewById<ProgressBar>(com.tokopedia.travelcalendar.R.id.loading_progress_bar)
+        progressBar.visibility = View.VISIBLE
 
-        loadingProgressBar.visibility = View.VISIBLE
         holidayCalendarViewModel.getCalendarHoliday()
         holidayCalendarViewModel.holidayCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            loadingProgressBar.visibility = View.GONE
+            progressBar.visibility = View.GONE
             it?.let {
                 if (isFirstTime) {
                     renderSinglePickCalendar(it)
@@ -124,12 +118,11 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
                 }
             }
         })
-
-        btnClose.setOnClickListener { dismissAllowingStateLoss() }
     }
 
     private fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {
-        val calendar = calendarUnify.calendarPickerView
+        val calendarUnify = requireView().findViewById<UnifyCalendar>(com.tokopedia.travelcalendar.R.id.calendar_unify)
+        calendar = calendarUnify.calendarPickerView!!
 
         val nextYear = Calendar.getInstance()
         nextYear.add(Calendar.YEAR, 1)
