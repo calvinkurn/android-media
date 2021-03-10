@@ -40,7 +40,6 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
     private val compositeSubscription = CompositeSubscription()
 
     fun searchAddress(query: String, addressState: Int, localCacheAddressId: String, isWhitelistChosenAddress: Boolean) {
-        // Todo : add addressState param to GetAddressCornerUseCase
         _addressList.value = OccState.Loading
         OccIdlingResource.increment()
         compositeSubscription.add(
@@ -99,7 +98,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
             withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
                 for (item in addressList) {
-                    item.isSelected = item.id == selectedId
+                    item.isSelected = item.id == selectedId || item.isStateChosenAddress
                     if (item.id == selectedId) {
                         destinationDistrict = item.destinationDistrictId
                         destinationLatitude = item.latitude
