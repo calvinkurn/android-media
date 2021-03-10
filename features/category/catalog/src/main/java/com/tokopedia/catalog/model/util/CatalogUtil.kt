@@ -1,7 +1,11 @@
 package com.tokopedia.catalog.model.util
 
+import android.content.Context
+import android.content.Intent
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerShareData
 
 object CatalogUtil {
 
@@ -88,4 +92,16 @@ object CatalogUtil {
         return sortValue == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
     }
 
+    fun linkerDataMapper(shareData: LinkerData): LinkerShareData {
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = shareData
+        return linkerShareData
+    }
+
+    fun shareData(context: Context?, shareTxt: String?, productUri: String?) {
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "text/plain"
+        share.putExtra(Intent.EXTRA_TEXT, shareTxt + "\n" + productUri)
+        context?.startActivity(Intent.createChooser(share, shareTxt))
+    }
 }

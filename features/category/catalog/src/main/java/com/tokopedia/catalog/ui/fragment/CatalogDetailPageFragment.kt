@@ -30,6 +30,7 @@ import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
+import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
@@ -39,8 +40,12 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.share.DefaultShare
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -257,16 +262,24 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun generateCatalogShareData(catalogId: String) {
-        val shareData =  LinkerData.Builder.getLinkerBuilder()
-                .setId(catalogId)
-                .setName(getString(R.string.catalog_message_share_catalog))
-                .setType(LinkerData.CATALOG_TYPE)
-                .setTextContent(getString(R.string.catalog_share_text_content))
-                .setUri(CatalogConstant.CATALOG_URL)
-                .build()
+        val linkerData = LinkerData()
+        linkerData.id = catalogId
+        linkerData.name = getString(R.string.catalog_message_share_catalog)
+        linkerData.uri = "${CatalogConstant.CATALOG_URL}$catalogId"
+        linkerData.description = getString(R.string.catalog_message_share_catalog)
+        linkerData.isThrowOnError = true
 
-        shareData.type = LinkerData.CATALOG_TYPE
-        DefaultShare(activity, shareData).show()
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                CatalogUtil.linkerDataMapper(linkerData), object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult) {
+                if(linkerShareData.url != null) {
+                    CatalogUtil.shareData(requireActivity(), linkerData.description, linkerShareData.url)
+                }
+            }
+            override fun onError(linkerError: LinkerError) {
+                CatalogUtil.shareData(requireActivity(), linkerData.description, linkerData.uri)
+            }
+        }))
     }
 
     private fun showImage(currentItem: Int) {
@@ -305,7 +318,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     fun onBackPressed(){
-        mBottomSheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     override val childsFragmentManager: FragmentManager?
