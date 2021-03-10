@@ -1172,7 +1172,9 @@ class NewShopPageFragment :
                     iconTabProductActive,
                     shopPageProductFragment
             ))
-            val shopPageShowcaseFragment = ShopPageShowcaseFragment.createInstance()
+            val shopPageShowcaseFragment = ShopPageShowcaseFragment.createInstance(
+                    shopId
+            )
             add(ShopPageTabModel(
                     getString(R.string.shop_info_title_tab_showcase),
                     iconTabShowcaseInactive,
