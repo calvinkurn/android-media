@@ -30,7 +30,7 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
         }
         itemView.product_image.loadImageRounded(catalogProductItem.imageUrl)
         itemView.product_name.displayTextOrHide(catalogProductItem.name)
-        itemView.product_price.displayTextOrHide(catalogProductItem.price)
+        itemView.product_price.displayTextOrHide(catalogProductItem.priceString)
         itemView.shop_name.displayTextOrHide(catalogProductItem.shop.name)
         itemView.imageThreeDots.setOnClickListener {
             catalogProductCardListener.onThreeDotsClicked(catalogProductItem, adapterPosition)

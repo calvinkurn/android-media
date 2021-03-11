@@ -114,7 +114,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
                 val model = visitables[i] as CatalogProductItem
                 if (productId.toString() == model.id) {
                     model.wishlist = isWishlisted
-                    notifyItemChanged(i)
+                    //notifyItemChanged(i)
                     break
                 }
             }
@@ -127,7 +127,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
                 val model = visitables[i] as CatalogProductItem
                 if (productId.toString() == model.id) {
                     model.isWishListEnabled = isEnabled
-                    notifyItemChanged(i)
+                    //notifyItemChanged(i)
                     break
                 }
             }

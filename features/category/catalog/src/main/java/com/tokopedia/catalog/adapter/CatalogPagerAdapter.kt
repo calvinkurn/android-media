@@ -9,13 +9,13 @@ import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
 class CatalogPagerAdapter(private val catalogProductsContainerDataModel: CatalogProductsContainerDataModel,
                           fragmentManager: FragmentManager  ) : FragmentStatePagerAdapter(fragmentManager) {
 
-    val PAGE_COUNT = 1
+    private val pageCount = 1
 
     override fun getItem(position: Int): Fragment {
         return CatalogDetailProductListingFragment.newInstance(catalogProductsContainerDataModel.catalogId)
     }
 
     override fun getCount(): Int {
-        return  PAGE_COUNT
+        return  pageCount
     }
 }

@@ -113,7 +113,7 @@ data class CatalogProductItem(
 
         @SerializedName("price")
         @Expose
-        val price: String = "",
+        val priceString: String = "",
 
         @SerializedName("categoryBreadcrumb")
         @Expose
