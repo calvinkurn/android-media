@@ -1,6 +1,5 @@
 <resources>
     <string name="catalog_host" translatable="false">catalog</string>
-    <string name="catalog_title_activity">Catalog</string>
     <string name="catalog_marketprice">Kisaran Harga</string>
     <string name="catalog_spesification">Spesifikasi</string>
     <string name="catalog_description">Deskripsi</string>

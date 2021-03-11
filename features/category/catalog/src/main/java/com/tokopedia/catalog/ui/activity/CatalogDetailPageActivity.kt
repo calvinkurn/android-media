@@ -10,10 +10,8 @@ import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.core.analytics.AppScreen
-import com.tokopedia.linker.model.LinkerData
 
 class CatalogDetailPageActivity :  BaseSimpleActivity(),
-        CatalogDetailPageFragment.Listener,
         CategoryNavigationListener,
         BaseCategorySectionFragment.SortAppliedListener{
 
@@ -74,10 +72,6 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     override fun onSortApplied(showTick: Boolean) {
-
-    }
-
-    override fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String, departmentId: String) {
 
     }
 

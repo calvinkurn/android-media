@@ -294,10 +294,6 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
 
-    interface Listener {
-        fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String, departmentId: String)
-    }
-
     override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
         showImage(position)
     }
