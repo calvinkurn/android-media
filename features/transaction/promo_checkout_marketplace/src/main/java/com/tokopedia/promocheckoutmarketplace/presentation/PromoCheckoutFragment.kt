@@ -904,11 +904,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         if (promoWithCoachMarkIndex != -1 && layoutManager.findFirstVisibleItemPosition() == promoWithCoachMarkIndex &&
-                                promoCoachMark.isShowing) {
+                                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
                             promoCoachMark.dismissCoachMark()
                             recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
                         } else if (promoWithCoachMarkIndex != -1 && layoutManager.findLastVisibleItemPosition() == promoWithCoachMarkIndex &&
-                                promoCoachMark.isShowing) {
+                                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
                             promoCoachMark.dismissCoachMark()
                             recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
                         }
@@ -935,7 +935,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         promoCoachMark = CoachMark2(it)
                         promoCoachMark.showCoachMark(coachMarkItem)
                         recyclerView.addOnScrollListener(coachMarkRecyclerListener)
-                        localCacheHandler.apply{
+                        localCacheHandler.apply {
                             putBoolean(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true)
                             applyEditor()
                         }
@@ -1018,7 +1018,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         renderStickyPromoHeader(recyclerView)
 
         // dismiss coachmark if user click promo with coachmark
-        if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] == element && promoCoachMark.isShowing) {
+        if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] == element &&
+                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
             promoCoachMark.dismissCoachMark()
         }
     }
