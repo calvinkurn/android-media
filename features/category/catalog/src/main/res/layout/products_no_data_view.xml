@@ -9,14 +9,16 @@
     android:paddingBottom="@dimen/unify_space_32"
     >
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/img_no_data"
         android:layout_width="@dimen/dp_140"
         android:layout_height="@dimen/dp_110"
-        android:src="@drawable/empty_state_products"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        app:imageDpiSupportType="singleDpi"
+        app:remoteFileName="filtered_product_empty_state.png"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_no_data_header"
@@ -31,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="heading_4"
-        android:text="@string/no_products_title"
+        android:text="@string/catalog_no_products_title"
          />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -46,7 +48,7 @@
         app:layout_constraintLeft_toRightOf="@+id/img_no_data"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_no_data_header"
-        android:text="@string/no_products_body"
+        android:text="@string/catalog_no_products_body"
         app:typographyType="body_3"
          />
 

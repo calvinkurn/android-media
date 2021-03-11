@@ -15,18 +15,18 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailsAndSpecsPagerAdapter
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
 import com.tokopedia.catalog.ui.fragment.CatalogSpecsAndDetailFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.TabsUnify
-import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_bottomsheet_catalog_specifications.*
 
 class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
 
     var list: ArrayList<Fragment> = ArrayList()
-    var openPage : String? = DESCRIPTION
+    private var openPage : String? = DESCRIPTION
+    var catalogId : String = ""
 
     init {
         isFullpage = true
@@ -37,15 +37,17 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        const val ARG_CATALOG_ID = "ARG_CATALOG_ID"
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
         const val OPEN_PAGE = "OPEN_PAGE"
         const val PAGE_DESCRIPTION = 0
         const val PAGE_SPECIFICATIONS = 1
-        fun newInstance(description: String, specifications: ArrayList<FullSpecificationsComponentData>,
+        fun newInstance(catalogId :String, description: String, specifications: ArrayList<FullSpecificationsComponentData>,
                         openPage : String): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putString(ARG_CATALOG_ID, catalogId)
                     putString(DESCRIPTION, description)
                     putParcelableArrayList(SPECIFICATION, specifications)
                     putString(OPEN_PAGE,openPage)
@@ -82,6 +84,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
             openPage = arguments?.getString(OPEN_PAGE)
+            catalogId = arguments?.getString(ARG_CATALOG_ID) ?: ""
         }
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
@@ -104,11 +107,26 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    tab?.position?.let { adapter.setUnSelectView(tabLayout,it) }
+                    tab?.position?.let { position -> adapter.setUnSelectView(tabLayout,position) }
                 }
 
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    tab?.position?.let { adapter.setOnSelectView(tabLayout,it) }
+                    tab?.position?.let { position ->
+                        adapter.setOnSelectView(tabLayout,position)
+                        if(position == PAGE_DESCRIPTION){
+                            CatalogDetailAnalytics.sendEvent(requireActivity(),
+                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                    CatalogDetailAnalytics.ActionKeys.CLICK_TAB_DESCRIPTION,
+                                    catalogId)
+                        } else if (position == PAGE_SPECIFICATIONS){
+                            CatalogDetailAnalytics.sendEvent(requireActivity(),
+                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                    CatalogDetailAnalytics.ActionKeys.CLICK_TAB_SPECIFICATIONS,
+                                    catalogId)
+                        }
+                    }
                 }
 
             })

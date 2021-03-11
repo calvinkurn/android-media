@@ -24,13 +24,6 @@ import android.widget.OverScroller;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/**
- * Created by Devara
- * There is many component that package-private in RecyclerView, and because that we can't modify recyclerview
- * further
- *
- * With this class, we can "customize" recyclerview behavior
- */
 public class CatalogCustomRecyclerView extends RecyclerView {
 
     public CatalogCustomRecyclerView(@NonNull Context context) {

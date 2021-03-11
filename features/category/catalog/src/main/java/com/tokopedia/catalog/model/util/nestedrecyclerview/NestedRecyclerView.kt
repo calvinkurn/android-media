@@ -7,10 +7,6 @@ import android.view.View
 import androidx.core.view.NestedScrollingParent3
 import androidx.recyclerview.widget.CatalogCustomRecyclerView
 
-/**
- * Created by devarafikry on 02/04/19.
- */
-
 open class NestedRecyclerView : CatalogCustomRecyclerView, NestedScrollingParent3 {
     private var nestedScrollTarget: View? = null
     private var nestedScrollTargetIsBeingDragged = false

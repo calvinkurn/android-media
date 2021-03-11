@@ -7,10 +7,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_catalog_preffered_product.view.*
 
 
@@ -48,6 +45,8 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
 
         showBadge(catalogProductItem)
         showTerjual(catalogProductItem)
+
+        catalogProductCardListener.onProductImpressed(catalogProductItem,adapterPosition)
     }
 
     private fun showTerjual(catalogProductItem: CatalogProductItem?){

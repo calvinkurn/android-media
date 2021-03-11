@@ -22,6 +22,7 @@ import com.tokopedia.catalog.adapter.CatalogDetailAdapter
 import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.catalog.adapter.decorators.DividerItemDecorator
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
@@ -65,7 +66,7 @@ class CatalogDetailPageFragment : Fragment(),
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
 
-    private var catalogUiUpdater: CatalogUiUpdater? = CatalogUiUpdater(mutableMapOf())
+    private var catalogUiUpdater: CatalogUiUpdater = CatalogUiUpdater(mutableMapOf())
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
 
     private var catalogId: String = ""
@@ -161,7 +162,7 @@ class CatalogDetailPageFragment : Fragment(),
             when (it) {
                 is Success -> {
                     it.data.listOfComponents.forEach { component ->
-                        catalogUiUpdater?.updateModel(component)
+                        catalogUiUpdater.updateModel(component)
                     }
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     updateUi()
@@ -217,12 +218,12 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun showShimmer(){
-        if(catalogUiUpdater?.mapOfData?.size ?: 0 == 0)
+        if(catalogUiUpdater.mapOfData.size ?: 0 == 0)
             shimmerLayout?.show()
     }
 
     private fun hideShimmer(){
-        if(catalogUiUpdater?.mapOfData?.size ?: 0 > 0)
+        if(catalogUiUpdater.mapOfData.size ?: 0 > 0)
             shimmerLayout?.hide()
     }
 
@@ -230,7 +231,7 @@ class CatalogDetailPageFragment : Fragment(),
         hideShimmer()
         catalogPageRecyclerView?.show()
         bottom_sheet_fragment_container.show()
-        val newData = catalogUiUpdater?.mapOfData?.values?.toList()
+        val newData = catalogUiUpdater.mapOfData.values.toList()
         submitList(newData ?: listOf())
     }
 
@@ -253,8 +254,8 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun viewMoreClicked(openPage : String) {
-        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(
-                catalogUiUpdater?.productInfoMap?.description ?: "",
+        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalogId,
+                catalogUiUpdater.productInfoMap?.description ?: "",
                 fullSpecificationDataModel.fullSpecificationsList
                 ,openPage
         )
@@ -283,10 +284,10 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun showImage(currentItem: Int) {
-        catalogUiUpdater?.run {
+        catalogUiUpdater.run {
             productInfoMap?.let {
-                if(catalogUiUpdater?.productInfoMap?.images?.isNotEmpty() == true){
-                    context?.startActivity(CatalogGalleryActivity.newIntent(context, currentItem, catalogUiUpdater!!.productInfoMap!!.images!!))
+                if(catalogUiUpdater.productInfoMap?.images?.isNotEmpty() == true){
+                    context?.startActivity(CatalogGalleryActivity.newIntent(context,catalogId , currentItem, catalogUiUpdater.productInfoMap!!.images!!))
                 }
             }
         }
@@ -302,6 +303,11 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onViewMoreSpecificationsClick() {
+        CatalogDetailAnalytics.sendEvent(requireActivity(),
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
+                catalogId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
     }
 

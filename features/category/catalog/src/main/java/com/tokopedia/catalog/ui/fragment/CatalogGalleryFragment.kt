@@ -10,16 +10,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.gallery.CatalogBottomGalleyRecyclerViewAdapter
 import com.tokopedia.catalog.adapter.gallery.CatalogGalleryImagePagerAdapter
-import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.model.raw.CatalogImage
 import kotlinx.android.synthetic.main.fragment_catalog_gallery.*
 
 class CatalogGalleryFragment : Fragment() {
     private var catalogImages: ArrayList<CatalogImage>? = null
     private var currentImage: Int = -1
+    private var catalogId : String = ""
     private lateinit var catalogBottomGalleyRecyclerViewAdapter: CatalogBottomGalleyRecyclerViewAdapter
 
     companion object {
+        private const val ARG_CATALOG_ID = "ARG_CATALOG_ID"
         private const val ARG_EXTRA_IMAGES = "ARG_EXTRA_IMAGES"
         private const val ARG_EXTRA_CURRENT_IMAGE = "ARG_EXTRA_CURRENT_IMAGE"
         private const val LEFT = "left"
@@ -27,10 +29,11 @@ class CatalogGalleryFragment : Fragment() {
 
         private const val SHOW_BOTTOM_GALLERY = false
 
-        fun newInstance(currentItem: Int, catalogImages: ArrayList<CatalogImage>): CatalogGalleryFragment {
+        fun newInstance(catalogId : String,currentItem: Int, catalogImages: ArrayList<CatalogImage>): CatalogGalleryFragment {
             val fragment = CatalogGalleryFragment()
             val bundle = Bundle()
             bundle.putParcelableArrayList(ARG_EXTRA_IMAGES, catalogImages)
+            bundle.putString(ARG_CATALOG_ID, catalogId)
             bundle.putInt(ARG_EXTRA_CURRENT_IMAGE, currentItem)
             fragment.arguments = bundle
             return fragment
@@ -48,6 +51,7 @@ class CatalogGalleryFragment : Fragment() {
         if (arguments != null) {
             catalogImages = requireArguments().getParcelableArrayList(ARG_EXTRA_IMAGES)
             currentImage = requireArguments().getInt(ARG_EXTRA_CURRENT_IMAGE)
+            catalogId = requireArguments().getString(ARG_CATALOG_ID) ?: ""
         }
 
         if (catalogImages != null) {
@@ -63,8 +67,16 @@ class CatalogGalleryFragment : Fragment() {
                 override fun onPageSelected(position: Int) {
                     when {
                         previousPosition >= 0 -> when {
-                            previousPosition > position -> CatalogDetailPageAnalytics.trackEventSwipeIndexPicture(LEFT)
-                            previousPosition < position -> CatalogDetailPageAnalytics.trackEventSwipeIndexPicture(RIGHT)
+                            previousPosition > position -> CatalogDetailAnalytics.sendEvent(requireActivity(),
+                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                    CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
+                                    catalogId)
+                            previousPosition < position -> CatalogDetailAnalytics.sendEvent(requireContext(),
+                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                    CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
+                                    catalogId)
                         }
                     }
                     previousPosition = position
@@ -88,7 +100,11 @@ class CatalogGalleryFragment : Fragment() {
     }
 
     private val onImageClick : (Int) -> Unit = {adapterPosition ->
-        //CatalogDetailPageAnalytics.trackEventClickIndexPicture(adapterPosition)
+        CatalogDetailAnalytics.sendEvent(requireActivity(),
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
+                catalogId)
         view_pager_intermediary.setCurrentItem(adapterPosition, true)
         catalogBottomGalleyRecyclerViewAdapter.changeSelectedPosition(adapterPosition)
         catalogBottomGalleyRecyclerViewAdapter.notifyDataSetChanged()
