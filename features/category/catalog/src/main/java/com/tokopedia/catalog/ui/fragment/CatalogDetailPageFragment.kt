@@ -299,7 +299,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onViewMoreSpecificationsClick() {
-        CatalogDetailAnalytics.sendEvent(requireActivity(),
+        CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,

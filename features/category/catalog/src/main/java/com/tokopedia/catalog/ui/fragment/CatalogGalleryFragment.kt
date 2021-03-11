@@ -67,12 +67,12 @@ class CatalogGalleryFragment : Fragment() {
                 override fun onPageSelected(position: Int) {
                     when {
                         previousPosition >= 0 -> when {
-                            previousPosition > position -> CatalogDetailAnalytics.sendEvent(requireActivity(),
+                            previousPosition > position -> CatalogDetailAnalytics.sendEvent(
                                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                     CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
                                     catalogId)
-                            previousPosition < position -> CatalogDetailAnalytics.sendEvent(requireContext(),
+                            previousPosition < position -> CatalogDetailAnalytics.sendEvent(
                                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                     CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
@@ -100,7 +100,7 @@ class CatalogGalleryFragment : Fragment() {
     }
 
     private val onImageClick : (Int) -> Unit = {adapterPosition ->
-        CatalogDetailAnalytics.sendEvent(requireActivity(),
+        CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,

@@ -114,13 +114,13 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                     tab?.position?.let { position ->
                         adapter.setOnSelectView(tabLayout,position)
                         if(position == PAGE_DESCRIPTION){
-                            CatalogDetailAnalytics.sendEvent(requireActivity(),
+                            CatalogDetailAnalytics.sendEvent(
                                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                     CatalogDetailAnalytics.ActionKeys.CLICK_TAB_DESCRIPTION,
                                     catalogId)
                         } else if (position == PAGE_SPECIFICATIONS){
-                            CatalogDetailAnalytics.sendEvent(requireActivity(),
+                            CatalogDetailAnalytics.sendEvent(
                                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                     CatalogDetailAnalytics.ActionKeys.CLICK_TAB_SPECIFICATIONS,

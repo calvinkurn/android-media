@@ -12,17 +12,13 @@ object CatalogDetailAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    fun sendScreenEvent(context: Activity?, screenName: String?) {
-        getTracker().sendScreenAuthenticated(screenName)
-    }
-
-    fun sendEvent(context: Context?, event: String?, category: String?,
+    fun sendEvent(event: String?, category: String?,
                   action: String?, label: String?) {
         getTracker().sendGeneralEvent(TrackAppUtils.gtmData(event, category, action, label))
     }
 
 
-    fun sendECommerceEvent(context: Context?, event: String, category: String,
+    fun sendECommerceEvent(event: String, category: String,
                            action: String, label: String,
                            ecommerce: HashMap<String, Map<String, List<Map<String, String?>>>>,
                            productId : String
@@ -38,7 +34,7 @@ object CatalogDetailAnalytics {
     }
 
     @JvmStatic
-    fun sendECommerceEvent(context: Context?, event: String, category: String,
+    fun sendECommerceEvent(event: String, category: String,
                            action: String, label: String,
                            ecommerce: Map<String, List<Map<String, String?>>>,
                            productId : String
@@ -59,8 +55,6 @@ object CatalogDetailAnalytics {
             const val KEY_EVENT_CATEGORY = "eventCategory"
             const val KEY_EVENT_ACTION = "eventAction"
             const val KEY_EVENT_LABEL = "eventLabel"
-            const val KEY_EVENT_BUSINESSUNIT = "businessUnit"
-            const val KEY_EVENT_CURRENTSITE = "currentSite"
             const val KEY_PRODUCT_ID = "productId"
             const val KEY_ECOMMERCE = "ecommerce"
 
@@ -90,15 +84,6 @@ object CatalogDetailAnalytics {
             const val CLICK_MORE_SPECIFICATIONS = "click lihat selengkapnya"
             const val CLICK_TAB_SPECIFICATIONS = "click tab spesifikasi lihat selengkapnya"
             const val CLICK_TAB_DESCRIPTION = "click tab deskripsi lihat selengkapnya"
-        }
-    }
-
-    interface ScreenNameKeys {
-        companion object {
-            const val CATALOG_PAGE = "Catalog page"
-            const val PRODUCT_LIST = "Catalog page - Product list"
-            const val DESCRIPTION = "Catalog page - Bottom sheet 'Deskripsi'"
-            const val SPECIFICATIONS = "Catalog page - Bottom sheet 'Spesifikasi'"
         }
     }
 }

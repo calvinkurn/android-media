@@ -441,7 +441,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 products["products"] = Arrays.asList<Map<String, String?>>(product)
                 val click = HashMap<String,Map<String, List<Map<String, String?>>>>()
                 click["click"] = products
-                CatalogDetailAnalytics.sendECommerceEvent(requireActivity(),
+                CatalogDetailAnalytics.sendECommerceEvent(
                         CatalogDetailAnalytics.EventKeys.EVENT_NAME_PRODUCT_CLICK,
                         CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                         CatalogDetailAnalytics.ActionKeys.CLICK_PRODUCT,
@@ -470,7 +470,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onThreeDotsClicked(productItem: CatalogProductItem, position: Int) {
-        CatalogDetailAnalytics.sendEvent(requireActivity(),
+        CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
@@ -514,7 +514,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             product["variant"]= ""
             val products = HashMap<String, List<Map<String, String?>>>()
             products["impressions"] = Arrays.asList<Map<String, String?>>(product)
-            CatalogDetailAnalytics.sendECommerceEvent(requireActivity(),
+            CatalogDetailAnalytics.sendECommerceEvent(
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_PRODUCT_VIEW,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.IMPRESSION_PRODUCT,
@@ -529,7 +529,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
-            CatalogDetailAnalytics.sendEvent(requireActivity(),
+            CatalogDetailAnalytics.sendEvent(
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
@@ -719,7 +719,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun openBottomSheetFilterRevamp(){
         activity?.supportFragmentManager?.let{
-            CatalogDetailAnalytics.sendEvent(requireActivity(),
+            CatalogDetailAnalytics.sendEvent(
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
