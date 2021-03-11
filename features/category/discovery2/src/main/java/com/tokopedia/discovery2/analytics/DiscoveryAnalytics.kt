@@ -64,6 +64,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                         EVENT_PROMO_VIEW to mapOf(
                                 KEY_PROMOTIONS to list))
+                map[KEY_CAMPAIGN_CODE] = "${if(banner.campaignCode.isNullOrEmpty()) campaignCode else banner.campaignCode}"
                 map[KEY_E_COMMERCE] = eCommerce
                 trackingQueue.putEETracking(map as HashMap<String, Any>)
             }
@@ -89,7 +90,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[KEY_AFFINITY_LABEL] = banner.name ?: EMPTY_STRING
         map[KEY_CATEGORY_ID] = banner.category ?: EMPTY_STRING
         map[KEY_SHOP_ID] = banner.shopId ?: EMPTY_STRING
-        map[KEY_CAMPAIGN_CODE] = campaignCode
+        map[KEY_CAMPAIGN_CODE] = "${if(banner.campaignCode.isNullOrEmpty()) campaignCode else banner.campaignCode}"
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
