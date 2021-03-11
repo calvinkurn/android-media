@@ -57,6 +57,7 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation project(rootProject.ext.libraries.pushNotification)
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 }
 
 project.ext {

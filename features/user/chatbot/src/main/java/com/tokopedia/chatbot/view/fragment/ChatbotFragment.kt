@@ -41,6 +41,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
+import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
@@ -80,6 +81,7 @@ import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -480,11 +482,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun showSearchInvoiceScreen() {
+//        activity?.let {
+//            val intent = ChatbotInternalRouter.Companion.getAttachInvoiceIntent(it,
+//                    session.userId,
+//                    messageId.toInt())
+//            startActivityForResult(intent, TOKOPEDIA_ATTACH_INVOICE_REQ_CODE)
+//        }
         activity?.let {
-            val intent = ChatbotInternalRouter.Companion.getAttachInvoiceIntent(it,
-                    session.userId,
-                    messageId.toInt())
-            startActivityForResult(intent, TOKOPEDIA_ATTACH_INVOICE_REQ_CODE)
+            val bottomSheetUnify =  TransactionInvoiceBottomSheet.newInstance(it, messageId.toIntOrZero())
+            bottomSheetUnify.show(childFragmentManager,"")
         }
     }
 
