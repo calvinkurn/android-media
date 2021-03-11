@@ -360,8 +360,8 @@ class DiscoveryFragment :
                     }
                     fetchUserLatestAddressData()
                 }else{
-                    chooseAddressWidget?.gone()
-                    chooseAddressWidgetDivider?.gone()
+                    chooseAddressWidget?.hide()
+                    chooseAddressWidgetDivider?.hide()
                 }
             }
         })
@@ -816,8 +816,8 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressServerDown() {
-        chooseAddressWidget?.gone()
-        chooseAddressWidgetDivider?.gone()
+        chooseAddressWidget?.hide()
+        chooseAddressWidgetDivider?.hide()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
@@ -825,8 +825,8 @@ class DiscoveryFragment :
             chooseAddressWidget?.show()
             chooseAddressWidgetDivider?.show()
         }else{
-            chooseAddressWidget?.gone()
-            chooseAddressWidgetDivider?.gone()
+            chooseAddressWidget?.hide()
+            chooseAddressWidgetDivider?.hide()
         }
     }
 
