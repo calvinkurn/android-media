@@ -24,10 +24,11 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = onCreateViewItem(parent, viewType)
         if(viewType == CatalogProductsContainerViewHolder.LAYOUT){
-            val container = view.findViewById<ConstraintLayout>(R.id.root_container)
-            val layoutParams = container.layoutParams
-            layoutParams.height = catalogDetailListener.windowHeight - context.resources.getDimensionPixelSize(R.dimen.dp_8)
-            container.layoutParams = layoutParams
+            view.findViewById<ConstraintLayout>(R.id.root_container)?.let { rootLayout ->
+                val layoutParams = rootLayout.layoutParams
+                layoutParams.height = catalogDetailListener.windowHeight - context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                rootLayout.layoutParams = layoutParams
+            }
         }
         return catalogAdapterTypeFactory.createViewHolder(view, viewType)
     }
