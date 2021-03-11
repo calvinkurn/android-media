@@ -310,13 +310,13 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     override fun showCoachMarkOnRPIcon(iconView: View) {
-        if (!isRekeningPremiumCoachMarkShown()) {
+        if (!isRekeningPremiumCoachMarkShown() && context != null) {
             updateRekeningPremiumCoachMarkShown()
             val coachMarks = ArrayList<CoachMarkItem>()
             coachMarks.add(CoachMarkItem(iconView,
                     getString(R.string.swd_join_premium_account_icon_title),
                     getString(R.string.swd_join_premium_account_icon_description),
-                    CoachMarkContentPosition.TOP, ContextCompat.getColor(context!!,
+                    CoachMarkContentPosition.TOP, ContextCompat.getColor(requireContext(),
                     com.tokopedia.unifyprinciples.R.color.Unify_N700_68)))
             val coachMark = CoachMarkBuilder()
                     .build()
