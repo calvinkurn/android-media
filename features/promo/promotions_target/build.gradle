@@ -14,20 +14,7 @@ buildscript {
         classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
-android {
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
-    }
-}
+
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -63,6 +50,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.json
+//    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.3.2" //to run junit test case + spek
 }
 
 project.ext {
