@@ -3,6 +3,7 @@ package com.tokopedia.catalog.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
@@ -22,6 +23,12 @@ class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailLis
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = onCreateViewItem(parent, viewType)
+        if(viewType == CatalogProductsContainerViewHolder.LAYOUT){
+            val container = view.findViewById<ConstraintLayout>(R.id.root_container)
+            val layoutParams = container.layoutParams
+            layoutParams.height = catalogDetailListener.windowHeight - context.resources.getDimensionPixelSize(R.dimen.dp_8)
+            container.layoutParams = layoutParams
+        }
         return catalogAdapterTypeFactory.createViewHolder(view, viewType)
     }
 

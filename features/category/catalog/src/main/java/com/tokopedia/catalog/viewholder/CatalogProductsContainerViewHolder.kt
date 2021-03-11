@@ -13,18 +13,12 @@ class CatalogProductsContainerViewHolder(view: View,
                                          private val catalogDetailListener: CatalogDetailListener) : AbstractViewHolder<CatalogProductsContainerDataModel>(view) {
 
     private val viewPager: ViewPager = itemView.findViewById(R.id.view_pager)
-    private val container: View = itemView.findViewById(R.id.root_container)
-    private val context: Context = itemView.context
     private var catalogPageAdapter : CatalogPagerAdapter? = null
     companion object {
         val LAYOUT = R.layout.item_catalog_products_container
     }
 
     override fun bind(element: CatalogProductsContainerDataModel) {
-        val layoutParams = container.layoutParams
-        layoutParams.height = catalogDetailListener.windowHeight - context.resources.getDimensionPixelSize(R.dimen.dp_8)
-        container.layoutParams = layoutParams
-
         catalogPageAdapter = CatalogPagerAdapter(
                 element,catalogDetailListener.childsFragmentManager!!)
         viewPager.adapter = catalogPageAdapter
