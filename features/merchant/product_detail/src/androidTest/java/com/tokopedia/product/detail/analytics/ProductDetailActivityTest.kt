@@ -214,8 +214,8 @@ class ProductDetailActivityTest {
     }
 
     private fun clickTabDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.chipSocialProofItem))), scrollTo()))
-        onView(allOf(withId(R.id.chipSocialProofItem), withParent(withId(R.id.root_socproof))))
+        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.mini_social_proof_recycler_view))), scrollTo()))
+        onView(allOf(withId(R.id.chipSocialProofItem)))
                 .check(matches(isDisplayed()))
                 .perform(click())
     }

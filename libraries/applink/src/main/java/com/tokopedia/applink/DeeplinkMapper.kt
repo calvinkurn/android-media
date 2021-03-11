@@ -47,7 +47,6 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMa
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbInvalid
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerComplaint
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerDelivered
-import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerHistory
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerRetur
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerWaitingAwb
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerWaitingPickup
@@ -482,6 +481,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.OVO_REGISTER_INIT, ApplinkConstInternalGlobal.OVO_REG_INIT),
             DLP.startWith(ApplinkConst.REGISTER_INIT, ApplinkConstInternalGlobal.INIT_REGISTER),
             DLP.exact(ApplinkConst.OVO_FINAL_PAGE, ApplinkConstInternalGlobal.OVO_FINAL_PAGE),
+            DLP.startWith(ApplinkConst.SELLER_CENTER) { _, _, _ -> DeeplinkMapperMerchant.getRegisteredSellerCenter() },
             DLP.startWith(ApplinkConst.SNAPSHOT_ORDER) { ctx, _, deeplink -> DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(ctx, deeplink) }
     ).toMutableList()
 
