@@ -47,20 +47,15 @@ class GratificationPresenterSpekTest : Spek({
     val gson = Gson()
     lateinit var context: Context
     lateinit var activity: Activity
-    lateinit var dispatcher: CoroutineDispatcher
+    lateinit var dispatcher: TestCoroutineDispatcher
     lateinit var notificationUseCase: NotificationUseCase
     lateinit var tpCouponDetailUseCase: TokopointsCouponDetailUseCase
     lateinit var notificationResponse: GratifNotificationResponse
     lateinit var couponResponse: TokopointsCouponDetailResponse
     lateinit var visibilityContract: CmDialogVisibilityContract
 
-    beforeEachTest {
+    beforeGroup {
         context = mockk()
-        activity = mockk()
-        dispatcher = TestCoroutineDispatcher()
-        notificationUseCase = mockk()
-        tpCouponDetailUseCase = mockk()
-        visibilityContract = mockk()
 
         val slotRunnable = slot<Runnable>()
         mockkConstructor(Handler::class)
@@ -73,6 +68,15 @@ class GratificationPresenterSpekTest : Spek({
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
         every { GraphqlHelper.loadRawString(context.resources, R.raw.t_promo_gratif_notification) } returns ""
         every { GraphqlHelper.loadRawString(context.resources, R.raw.t_promo_hachiko_coupon) } returns ""
+    }
+
+    beforeEachTest {
+
+        activity = mockk()
+        dispatcher = TestCoroutineDispatcher()
+        notificationUseCase = mockk()
+        tpCouponDetailUseCase = mockk()
+        visibilityContract = mockk()
     }
 
 
@@ -480,5 +484,9 @@ class GratificationPresenterSpekTest : Spek({
                 gratifCallback.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
             }
         }
+    }
+
+    afterEachTest {
+        dispatcher.cleanupTestCoroutines()
     }
 })
