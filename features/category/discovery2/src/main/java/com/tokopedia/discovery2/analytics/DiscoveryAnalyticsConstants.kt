@@ -143,4 +143,5 @@ const val CATEGORY_TREE_ARROW = "click arrow to category directory"
 const val CATEGORY_TREE_OPTION_SELECTED = "click category inside category tree"
 const val BOTTOM_NAV  = "bottom nav"
 const val DISCOVERY_DEFAULT_PAGE_TYPE  = "general"
+const val PAGE_SOURCE = "pageSource"
 
