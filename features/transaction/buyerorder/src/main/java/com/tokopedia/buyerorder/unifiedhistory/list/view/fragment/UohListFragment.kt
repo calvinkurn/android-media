@@ -758,8 +758,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 filterStatus.equals(PARAM_MODALTOKO, true) ||
                 filterStatus.equals(PARAM_TRAIN, true) ||
                 filterStatus.equals(PARAM_HOTEL, true) ||
-                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true) ||
-                filterStatus.equals(PARAM_UOH_ONGOING, true)) {
+                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
