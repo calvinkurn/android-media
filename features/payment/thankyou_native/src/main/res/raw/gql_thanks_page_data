@@ -123,7 +123,10 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     }
     config_flag
     config_list
-
+    gateway_additional_data{
+       key
+       value
+    }
   }
 }
 
