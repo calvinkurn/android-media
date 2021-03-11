@@ -14,22 +14,18 @@ import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.spekframework.spek2.Spek
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
-class GratificationDialogHandlerTest {
+class GratificationDialogHandlerSpekTest: Spek( {
 
-    private var entityHashCode = 1
-    private val inAppId = 10L
+    var entityHashCode = 1
+    val inAppId = 10L
     var screenName = javaClass.name
-    private val gratificationId = "10"
+    val gratificationId = "10"
 
-    @Before
-    fun setup(){
-        MockKAnnotations.init(this)
-    }
-
-    private fun getDialogHandler(): GratificationDialogHandler {
+    fun getDialogHandler(): GratificationDialogHandler {
         val gratificationPresenter: GratificationPresenter = mockk()
         val mapOfGratificationJobs: ConcurrentHashMap<Int, Job> = ConcurrentHashMap()
         val mapOfPendingInApp: ConcurrentHashMap<Int, PendingData> = ConcurrentHashMap()
@@ -41,8 +37,8 @@ class GratificationDialogHandlerTest {
 
     //===============showPushDialog========================
 
-    @Test
-    fun `show push dialog`() {
+
+    test("show push dialog") {
         val dialogHandler = getDialogHandler()
         val activity: Activity = mockk()
         every {
@@ -58,8 +54,7 @@ class GratificationDialogHandlerTest {
     }
 
     //===============showOrganicDialog=========================
-    @Test
-    fun `show organic dialog when gratification id is present`(){
+    test("show organic dialog when gratification id is present") {
         val dialogHandler = getDialogHandler()
         val weakActivity: WeakReference<Activity> = mockk()
 
@@ -77,8 +72,8 @@ class GratificationDialogHandlerTest {
         }
     }
 
-    @Test
-    fun `do not show organic dialog when gratification id is not present`() {
+
+    test("do not show organic dialog when gratification id is not present") {
         val dialogHandler = getDialogHandler()
         val weakActivity: WeakReference<Activity> = mockk()
         val gratificationPopupCallback: GratificationPresenter.GratifPopupCallback = mockk()
@@ -96,8 +91,8 @@ class GratificationDialogHandlerTest {
     }
 
     //=============handleInAppPopup==============================
-    @Test
-    fun `handle in app pop up when gratification is disabled`() {
+
+    test("handle in app pop up when gratification is disabled") {
         val dialogHandler = getDialogHandler()
         val cmData: CMInApp = mockk()
 
@@ -110,8 +105,8 @@ class GratificationDialogHandlerTest {
     }
 
     //==========handle in app pop up when gratification is active====================
-    @Test
-    fun `when broadcastScreen has currentScreen name and their hashcode are also same has pending data`() {
+
+    test("when broadcastScreen has currentScreen name and their hashcode are also same has pending data") {
         val dialogHandler = getDialogHandler()
         val currentActivity: Activity = mockk()
         val weakActivity:WeakReference<Activity?> = WeakReference(currentActivity)
@@ -151,8 +146,7 @@ class GratificationDialogHandlerTest {
                     screenName = screenName, inAppId = cmData.id) }
     }
 
-    @Test
-    fun `when broadcastScreen has currentScreen name and their hashcode are also same and does not have any pending data`() {
+    test("when broadcastScreen has currentScreen name and their hashcode are also same and does not have any pending data") {
         val dialogHandler = getDialogHandler()
         val cmData: CMInApp = CMInApp()
         val customValues: JSONObject = JSONObject()
@@ -184,8 +178,8 @@ class GratificationDialogHandlerTest {
                     screenName = any(), inAppId = any()) }
     }
 
-    @Test
-    fun `when broadcastScreen does not have currentScreen name or hashcode are different`() {
+
+    test("when broadcastScreen does not have currentScreen name or hashcode are different") {
         val dialogHandler = getDialogHandler()
         val currentActivity: Activity = mockk()
         val weakActivity:WeakReference<Activity?> = WeakReference(currentActivity)
@@ -215,4 +209,4 @@ class GratificationDialogHandlerTest {
                     gratifPopupCallback = any(),
                     screenName = screenName, inAppId = cmData.id) }
     }
-}
+})

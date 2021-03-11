@@ -24,14 +24,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
-class TargetPromotionsDialogVM @Inject constructor(@Named(MAIN)
+class TargetPromotionsDialogViewModel @Inject constructor(@Named(MAIN)
                                                    val uiDispatcher: CoroutineDispatcher,
-                                                   @Named(IO)
+                                                          @Named(IO)
                                                    val workerDispatcher: CoroutineDispatcher,
-                                                   val autoApplyUseCase: AutoApplyUseCase,
-                                                   val claimPopGratificationUseCase: ClaimPopGratificationUseCase,
-                                                   val couponDetailUseCase: GetCouponDetailUseCase,
-                                                   val app: Application
+                                                          val autoApplyUseCase: AutoApplyUseCase,
+                                                          val claimPopGratificationUseCase: ClaimPopGratificationUseCase,
+                                                          val couponDetailUseCase: GetCouponDetailUseCase,
+                                                          val app: Application
 ) : BaseAndroidViewModel(uiDispatcher, app) {
 
     val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
