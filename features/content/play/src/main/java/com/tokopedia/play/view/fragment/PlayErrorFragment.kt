@@ -14,7 +14,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -123,7 +122,7 @@ class PlayErrorFragment @Inject constructor(
         if (throwable is MessageErrorException) handleKnownServerError(throwable)
         else handleUnknownError(throwable)
 
-        analytic.errorState("$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}")
+        analytic.trackGlobalError(globalError.errorDescription.text.toString())
         container.show()
     }
 

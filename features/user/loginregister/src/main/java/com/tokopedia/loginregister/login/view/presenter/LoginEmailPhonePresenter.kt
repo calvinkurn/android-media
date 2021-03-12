@@ -33,6 +33,7 @@ import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
@@ -60,6 +61,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
+                                                   private val getAdminTypeUseCase: GetAdminTypeUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
@@ -259,7 +261,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             idlingResourceProvider?.increment()
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfo(),
-                    view.onErrorGetUserInfo()
+                    view.onErrorGetUserInfo(),
+                    getAdminTypeUseCase,
+                    view.showLocationAdminPopUp(),
+                    view.showGetAdminTypeError()
                     , onFinished = {
                 idlingResourceProvider?.decrement()
             }))
@@ -273,6 +278,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 getProfileUseCase.execute(GetProfileSubscriber(userSession,
                         { checkStatusFingerprint() },
                         view.onErrorGetUserInfo(),
+                        getAdminTypeUseCase,
+                        view.showLocationAdminPopUp(),
+                        view.showGetAdminTypeError(),
                         onFinished = { idlingResourceProvider?.decrement() })
                 )
             }
