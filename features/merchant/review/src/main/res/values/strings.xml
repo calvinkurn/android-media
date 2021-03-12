@@ -293,5 +293,15 @@
     <string name="review_reminder_performance_title">Performa Bulanan Pengingat Ulasan</string>
     <string name="review_reminder_performance_description">Total pengingat berhasil terkirim</string>
     <string name="review_reminder_performance_incoming_review">Total ulasan masuk</string>
+    <string name="review_reminder_postfix_chat">%1$d Chat</string>
+    <string name="review_reminder_dialog_send_title">Kirim Pengingat Ulasan ini?</string>
+    <string name="review_reminder_dialog_send_button_primary">Kirim</string>
+    <string name="review_reminder_dialog_send_button_secondary">Ubah Pesan</string>
+    <string name="review_reminder_coachmark_1_title">Ingatkan pembeli untuk kasih ulasan melalui chat</string>
+    <string name="review_reminder_coachmark_2_title">Ubah pesan chat di sini</string>
+    <string name="review_reminder_coachmark_3_title">Daftar produk yang belum diulas</string>
+    <string name="review_reminder_coachmark_1_description">Pesan hanya bisa dikirim min. 7 hari setelah transaksi selesai ke pembeli yang belum tulis ulasan dan pernah chat sebelumnya.</string>
+    <string name="review_reminder_coachmark_2_description">Kamu dapat mengubah isi pesan sesuai dengan keinginanmu.</string>
+    <string name="review_reminder_coachmark_3_description">Cek produk apa saja yang belum mendapat ulasan di sini.</string>
 
 </resources>

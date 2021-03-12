@@ -19,7 +19,7 @@ class ReminderPerformanceViewModel @Inject constructor(
     private val reminderStats = MutableLiveData<ProductrevGetReminderStats>()
     fun getReminderStats(): LiveData<ProductrevGetReminderStats> = reminderStats
 
-    fun testData() {
+    fun fetchReminderStats() {
         launchCatchError(block = {
             val responseWrapper = productrevGetReminderStatsUseCase.executeOnBackground()
             reminderStats.postValue(responseWrapper.productrevGetReminderStats)
