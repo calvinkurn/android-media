@@ -101,7 +101,7 @@ object DeeplinkMapper {
         val mappedDeepLink: String = when (scheme) {
             DeeplinkConstant.SCHEME_HTTP,
             DeeplinkConstant.SCHEME_HTTPS -> {
-                getRegisteredNavigationFromHttp(uri, deeplink)
+                getRegisteredNavigationFromHttp(context, uri, deeplink)
             }
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = uri.query
@@ -262,7 +262,7 @@ object DeeplinkMapper {
      * This function should be called after checking domain shop from server side
      * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
      */
-    fun getRegisteredNavigationFromHttp(uri: Uri, deeplink: String): String {
+    fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
 
         if (uri.pathSegments.joinToString("/") == TOKOPOINTS || uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
@@ -271,7 +271,7 @@ object DeeplinkMapper {
             return DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(deeplink)
         }
 
-        val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(deeplink)
+        val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
         }
@@ -322,11 +322,11 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.PURCHASE_HISTORY) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.exact(ApplinkConst.ORDER_HISTORY) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.startWith(ApplinkConst.OMS_ORDER_DETAIL) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
-            DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { _, _, deeplink -> getRegisteredNavigationDigital(deeplink) },
+            DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { ctx , _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.exact(ApplinkConst.TRAVEL_AND_ENTERTAINMENT_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.startWith(ApplinkConst.HOTEL) { _, _, deeplink -> deeplink },
-            DLP.startWith(ApplinkConst.DIGITAL) { _, _, deeplink -> getRegisteredNavigationDigital(deeplink) },
-            DLP.startWith(ApplinkConst.RECHARGE) { _, _, deeplink -> getRegisteredNavigationDigital(deeplink) },
+            DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_SEARCH) { _, _, deeplink -> getRegisteredNavigationSearch(deeplink) },
             DLP.startWith(ApplinkConst.CART) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
             DLP.startWith(ApplinkConst.CHECKOUT) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },

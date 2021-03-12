@@ -11,6 +11,7 @@ data class SomListOrderUiModel(
         val cancelRequestNote: String = "",
         val cancelRequestOriginNote: String = "",
         val cancelRequestTime: String = "",
+        val cancelRequestStatus: Int = 0,
         val deadlineColor: String = "",
         val deadlineText: String = "",
         val orderId: String = "",
