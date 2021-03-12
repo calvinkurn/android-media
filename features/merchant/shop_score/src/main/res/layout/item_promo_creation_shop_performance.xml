@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardContent"
         android:layout_width="@dimen/width_card_recommendation_feature"
-        android:layout_height="@dimen/height_card_recommendation_feature"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/promo_promo_creation_card_top_margin"
         app:card_type="shadow"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,22 +60,22 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/cardCircle"
+        android:layout_width="@dimen/shop_performance_promo_creation_icon_size"
+        android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
         app:layout_constraintBottom_toTopOf="@id/cardContent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="@id/cardContent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivRecommendedPromo"
             android:layout_width="@dimen/shop_performance_promo_creation_icon_size"
             android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:adjustViewBounds="true"
-            android:elevation="@dimen/spacing_lvl2"
+            android:padding="@dimen/spacing_lvl4"
             android:background="@drawable/ic_squircle_recommendation"
-            android:padding="@dimen/dp_12" />
+            android:adjustViewBounds="true" />
 
     </FrameLayout>
 

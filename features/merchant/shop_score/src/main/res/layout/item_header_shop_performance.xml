@@ -100,6 +100,7 @@
             android:layout_width="wrap_content"
             android:text="@string/maximum_score_performance"
             android:textColor="@color/Unify_N0"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintTop_toTopOf="@id/tvShopScoreValue"
             app:layout_constraintBottom_toBottomOf="@id/tvShopScoreValue"
             app:layout_constraintStart_toEndOf="@id/tvShopScoreValue"

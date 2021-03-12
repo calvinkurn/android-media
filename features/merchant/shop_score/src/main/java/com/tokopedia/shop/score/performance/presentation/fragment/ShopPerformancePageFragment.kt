@@ -1,9 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -36,6 +34,11 @@ class ShopPerformancePageFragment: BaseDaggerFragment(),
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_performance, container, false)
     }
@@ -52,6 +55,23 @@ class ShopPerformancePageFragment: BaseDaggerFragment(),
         viewModel.shopPerformanceDetail.removeObservers(this)
         viewModel.shopPerformancePage.removeObservers(this)
         super.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_shop_score, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_info_shop_performance -> {
+
+            }
+            R.id.menu_warning_shop_perfoemance -> {
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun getScreenName(): String = ""

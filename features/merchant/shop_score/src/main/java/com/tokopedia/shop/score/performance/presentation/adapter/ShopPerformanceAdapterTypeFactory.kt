@@ -31,7 +31,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
     }
 
     override fun type(itemStatusRMUiModel: ItemStatusRMUiModel): Int {
-        return ItemStatusPMViewHolder.LAYOUT
+        return ItemStatusRMViewHolder.LAYOUT
     }
 
     override fun type(itemPotentialPMBenefitUIModel: SectionPotentialPMBenefitUiModel): Int {
@@ -39,7 +39,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
     }
 
     override fun type(itemStatusPMUiModel: ItemStatusPMUiModel): Int {
-        return ItemStatusRMViewHolder.LAYOUT
+        return ItemStatusPMViewHolder.LAYOUT
     }
 
     override fun type(sectionShopRecommendationUiModel: SectionShopRecommendationUiModel): Int {

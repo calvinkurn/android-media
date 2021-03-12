@@ -21,11 +21,15 @@ class ItemStatusPMViewHolder(view: View,
         with(itemView) {
             iv_pm_badge_current_status?.loadImage(element?.badgePowerMerchant.orEmpty())
             potentialPowerMerchantWidget?.background = element?.bgPowerMerchant?.let { ContextCompat.getDrawable(context, it) }
-            tv_pm_reputation_value?.text = element?.statusPowerMerchant.orEmpty()
+            tv_pm_reputation_value?.text = getString(R.string.title_pm_value,
+                    element?.statusPowerMerchant.orEmpty())
             tv_update_date_potential_pm?.text = getString(R.string.next_update_date_pm_status).orEmpty()
             tv_desc_potential_pm?.text = MethodChecker.fromHtml(element?.descPotentialPM.orEmpty())
             ic_info_potential_pm?.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedNextUpdatePM()
+            }
+            ic_pm_reputation_right?.setOnClickListener {
+                itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
             }
         }
     }

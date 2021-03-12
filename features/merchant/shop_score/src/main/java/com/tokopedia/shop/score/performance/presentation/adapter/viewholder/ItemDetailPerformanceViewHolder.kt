@@ -25,7 +25,7 @@ class ItemDetailPerformanceViewHolder(view: View,
             if (element?.colorValueDetailPerformance?.isNotBlank() == true) {
                 tvPerformanceValue.setTextColor(Color.parseColor(element.colorValueDetailPerformance))
             }
-            tvPerformanceTarget.text = element?.targetDetailPerformance.orEmpty()
+            tvPerformanceTarget.text = getString(R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
             setOnClickListener {
                 itemShopPerformanceListener.onItemClickedToDetailBottomSheet(element?.titleDetailPerformance.orEmpty())
             }

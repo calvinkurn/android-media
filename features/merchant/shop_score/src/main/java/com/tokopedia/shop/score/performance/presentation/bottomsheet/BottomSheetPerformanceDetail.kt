@@ -73,8 +73,10 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
             tvDescTipsDetail?.text = MethodChecker.fromHtml(getString(descTips))
             tvMoreInfoPerformanceDetail?.showWithCondition(!moreInformation.isZero())
             if (!moreInformation.isZero()) {
-                tvMoreInfoPerformanceDetail?.setClickableUrlHtml(getString(moreInformation)) {
-                    RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, urlLink)
+                tvMoreInfoPerformanceDetail?.setClickableUrlHtml(getString(moreInformation, urlLink)) {
+                    if (urlLink.isNotBlank()) {
+                        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, it)
+                    }
                 }
             }
         }

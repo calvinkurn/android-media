@@ -23,7 +23,7 @@
     <string name="shop_score_max_value">100</string>
 
     <string name="title_shopscore">Skor Performa Toko</string>
-    <string name="title_shop_performance">Shop Perfomance</string>
+    <string name="title_shop_performance">Performa Toko</string>
     <string name="title_shop_information_level">Informasi Level Toko</string>
     <string name="title_score_performance">Skor Performa</string>
 
@@ -33,6 +33,8 @@
     <string name="title_target_progress">Target %s</string>
     <string name="title_level_performance">Level %s</string>
     <string name="maximum_score_performance">/100</string>
+    <string name="title_pm_value">Power Merchant %s</string>
+
 
     <string name="title_period_performance_detail">%1s | Update selanjutnya: %2s</string>
     <string name="desc_transition_period_relief">Hingga %s Power Merchant-mu akan tetap aktif walaupun skor di bawah 60. Setelah itu, pertahankan skor min. 60 agar tetap aktif, ya!</string>
@@ -85,7 +87,7 @@
     <string name="desc_inactive_pm_status">Dari Performamu saat ini, status Power Merchant <![CDATA[<b>berpotensi jadi %s</b>]]>. Karena saat ini masih masa transisi, kamu punya waktu untuk memperbaiki Performamu, ya!</string>
     <string name="ticker_deduction_point_penalty">Ada potongan poin penalti %s. Lihat detail &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
     <string name="content_penalty_label">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
-    <string name="title_eligible_status_power_merchant">Selamat! Karena Performamu, kamu bisa jadi Power Merchant %s</string>
+    <string name="title_eligible_status_power_merchant">Kamu sudah mencapai min. skor untuk bisa dapat keuntungan Power Merchant %s, lho!</string>
     <string name="desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga <![CDATA[<b>5 kali lipat</b>]]></string>
     <string name="title_shop_pm_potential">Toko dengan Power Merchant berpotensi:</string>
     <string name="text_item_potential_pm_benefit_1">Menerima pesanan lebih banyak <![CDATA[<b>5 kali lipat</b>]]></string>
@@ -262,7 +264,7 @@
     <string name="title_tv_watch">Tonton Video</string>
     <string name="desc_tooltip_information_next_update">Level toko akan dinilai dari 90 hari terakhir dan akan di-update setiap bulan di hari Senin pertama.</string>
     <string name="item_detail_performance_value">%1s %2s</string>
-    <string name="item_detail_performance_target">Target 30 Menit</string>
+    <string name="item_detail_performance_target">Target %s</string>
     <string name="desc_potential_eligible_power_merchant">Hingga %s, Power Merchant akan dapat grade dari reputasi dan akan tetap aktif walaupun skor di bawah 60, ya.</string>
 
     <string name="title_recommendation_top_ads">Buat tokomu dikunjungi pembeli dengan TopAds</string>
@@ -295,5 +297,7 @@
     <string name="desc_header_performance_new_seller_before_transition">Level &amp; skor Performa Tokomu akan ditampilkan jika sudah 90 hari bergabung. Kamu akan dapat proyeksi skor di hari ke-60, pada %s, ya.</string>
     <string name="desc_next_update_pm_section">Update kenaikan grade dilakukan setiap bulan dan penurunan grade setiap 3 bulan.</string>
     <string name="title_next_update_pm_section">Update Berikutnya</string>
+    <string name="menu_title_info_shop_performance">Menu Info Shop Performance</string>
+    <string name="menu_title_warning_shop_performance">Menu Warning Shop Performance</string>
 
 </resources>
