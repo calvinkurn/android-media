@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
@@ -38,8 +40,6 @@ import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
-import com.tokopedia.sessioncommon.extensions.decodeBase64
-import com.tokopedia.sessioncommon.util.RSAUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -204,7 +204,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             if(keyData.key.isNotEmpty()) {
                 var finalPassword = password
                 if(useHash) {
-                    finalPassword = RSAUtils().encrypt(password, keyData.key.decodeBase64(), useHash)
+                    finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
                 }
                 loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                 val tokenResult = loginTokenV2UseCase.executeOnBackground()
