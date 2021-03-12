@@ -19,8 +19,7 @@ object ChatbotMessageViewHolderBinder {
             movementMethod: ChatLinkHandlerMovementMethod,
             isSender: Boolean = false
     ) {
-        val htmlMessage = MethodChecker.fromHtml(chat)
-        fxChat?.setMessage(htmlMessage, isSender)
+        fxChat?.setMessage(chat, isSender)
         fxChat?.setMovementMethod(movementMethod)
     }
 

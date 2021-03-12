@@ -13,6 +13,7 @@
         android:lineSpacingMultiplier="1.1"
         android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
+        android:textColorLink="@color/read_more_color"
         app:typographyType="body_1"
         tools:ignore="RtlHardcoded"
         android:ellipsize="end"

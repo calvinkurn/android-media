@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chatbot.EllipsizeMaker
 import com.tokopedia.chatbot.R
@@ -177,10 +178,9 @@ class CustomChatbotChatLayout : FrameLayout {
         super.onMeasure(widthSpec, heightSpec)
     }
 
-    fun setMessage(msg: CharSequence, isSender:Boolean) {
-        val msg1 = msg.toString()
+    fun setMessage(msg: String, isSender:Boolean) {
         if (!isSender){
-            message?.removeUnderLineFromLinkAndSetText(msg1)
+            message?.removeUnderLineFromLinkAndSetText(msg)
             if (message!=null){
                 message!!.post {
                     if (message!!.lineCount >= EllipsizeMaker.MESSAGE_LINE_COUNT) {
@@ -188,7 +188,7 @@ class CustomChatbotChatLayout : FrameLayout {
                         message!!.text = EllipsizeMaker.getTruncatedMsg(message!!)
                         info?.visibility = View.VISIBLE
                         info?.setOnClickListener {
-                            showFullMessage(msg1)
+                            showFullMessage(msg)
                         }
 
                     } else {
@@ -197,7 +197,7 @@ class CustomChatbotChatLayout : FrameLayout {
                 }
             }
         }else{
-            message?.text = msg
+            message?.text = MethodChecker.fromHtml(msg)
         }
     }
 
