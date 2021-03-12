@@ -21,7 +21,7 @@ import javax.inject.Inject
 class AddressListViewModel @Inject constructor(private val useCase: GetAddressCornerUseCase, private val dispatcher: ExecutorDispatchers) : BaseViewModel(dispatcher.main) {
 
     var savedQuery: String = ""
-    var selectedId = "-1"
+    var selectedId: String = DEFAULT_SELECTED_ID
     var selectedAddressModel: AddressModel? = null
     var destinationLatitude: String = ""
     var destinationLongitude: String = ""
@@ -38,6 +38,10 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         get() = _addressList
 
     private val compositeSubscription = CompositeSubscription()
+
+    companion object {
+        private const val DEFAULT_SELECTED_ID = "-1"
+    }
 
     fun searchAddress(query: String, addressState: Int, localCacheAddressId: String, isWhitelistChosenAddress: Boolean) {
         _addressList.value = OccState.Loading
@@ -97,7 +101,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
             OccIdlingResource.increment()
             withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
-                if (selectedId == "-1" && !isLoadMore) {
+                if (selectedId == DEFAULT_SELECTED_ID && !isLoadMore) {
                     addressList.firstOrNull { it.isStateChosenAddress }?.run {
                         selectedId = id
                     }
