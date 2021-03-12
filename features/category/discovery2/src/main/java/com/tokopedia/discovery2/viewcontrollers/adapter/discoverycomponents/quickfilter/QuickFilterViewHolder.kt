@@ -39,12 +39,15 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
                     dynamicFilterModel = filterModel
                 }
             })
-            quickFilterViewModel.getSyncPageLiveData().observe(it, { item ->
-                if (item) {
-                    (fragment as DiscoveryFragment).reSync()
-                    quickFilterViewModel.fetchQuickFilters()
-                }
-            })
+            if(!quickFilterViewModel.getSyncPageLiveData().hasObservers()) {
+                quickFilterViewModel.getSyncPageLiveData().observe(it, { item ->
+                    if (item) {
+                        (fragment as DiscoveryFragment).reSync()
+                        quickFilterViewModel.fetchQuickFilters()
+                    }
+                })
+            }
+
             quickFilterViewModel.productCountLiveData.observe(it, { count ->
                 if (!count.isNullOrEmpty()) {
                     sortFilterBottomSheet.setResultCountText(count)

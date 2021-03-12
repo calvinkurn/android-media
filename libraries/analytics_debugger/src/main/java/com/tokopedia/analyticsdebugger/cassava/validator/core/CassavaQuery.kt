@@ -23,7 +23,7 @@ fun String.toCassavaQuery(): CassavaQuery {
     val jsonMap: Map<String, Any> = parser.fromJson(this, jsonType)
 
     return CassavaQuery(
-            mode = QueryMode.from(jsonMap["mode"] as String),
+            mode = QueryMode.from(jsonMap["mode"] as? String ?: "exact"),
             query = jsonMap["query"] as? List<Map<String, Any>>
                     ?: throw QueryTestParseException("Error while parsing the query"),
             readme = jsonMap["readme"] as? String
