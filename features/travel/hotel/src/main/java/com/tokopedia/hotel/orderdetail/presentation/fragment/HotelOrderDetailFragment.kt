@@ -45,6 +45,7 @@ import com.tokopedia.hotel.orderdetail.data.model.TitleContent
 import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
+import com.tokopedia.hotel.orderdetail.presentation.activity.SeeInvoiceActivity
 import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
 import com.tokopedia.hotel.orderdetail.presentation.adapter.TitleTextAdapter
 import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
@@ -244,7 +245,13 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
             if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
                 invoice_see_button.setOnClickListener {
-                    RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+                    startActivity(
+                            SeeInvoiceActivity.newInstance(
+                                    requireContext(),
+                                    orderDetail.invoice.invoiceUrl,
+                                    orderDetail.invoice.invoiceRefNum
+                            )
+                    )
                 }
             }
         }

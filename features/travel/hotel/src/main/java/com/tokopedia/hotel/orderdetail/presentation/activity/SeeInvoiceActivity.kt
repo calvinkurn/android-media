@@ -1,3 +1,5 @@
+package com.tokopedia.hotel.orderdetail.presentation.activity
+
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
@@ -11,7 +13,9 @@ import android.view.MenuItem
 import android.webkit.WebView
 import androidx.core.content.ContextCompat
 import com.tokopedia.hotel.R
-import io.hansel.pebbletracesdk.presets.UIPresets.findViewById
+import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_URL
+import com.tokopedia.webview.TkpdWebView
 
 class SeeInvoiceActivity: BaseSimpleWebViewActivity() {
 
@@ -97,4 +101,4 @@ class SeeInvoiceActivity: BaseSimpleWebViewActivity() {
                     putExtra(INVOICE_REF_NUM, invoiceRefNum)
                 }
     }
-} 
+}
