@@ -52,7 +52,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             tagMaps[tagMapKey]?.let {
                 val priorityTag = it.postPriority
                 val classLine = tag ?: ""
-                val messageJson = messageData?.convertMapToJsonString().orEmpty()
+                val messageJson = messageData ?: mapOf()
                 val processedMessage = getMessage(tagKey, timeStamp, classLine, messageJson)
                 LogManager.log(processedMessage, timeStamp, priorityTag, priority)
             }
@@ -72,7 +72,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         return SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US).format(Date(timeStamp))
     }
 
-    private fun getMessage(tag: String, timeStamp: Long, classLine: String, message: String): String {
+    private fun getMessage(tag: String, timeStamp: Long, classLine: String, message: Map<String, String>): String {
         val mapMessage = mutableMapOf<String, String>()
         with(mapMessage) {
             put("tag", tag)
@@ -85,10 +85,10 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             put("os", Build.VERSION.RELEASE)
             put("device", Build.MODEL)
             put("cls", classLine)
-            put("msg", message)
+            plus(message)
         }
 
-        return mapMessage.convertMapToJsonString().replace("\\", "")
+        return mapMessage.convertMapToJsonString()
     }
 
     private fun getPriority(tagPriority: String): Int {

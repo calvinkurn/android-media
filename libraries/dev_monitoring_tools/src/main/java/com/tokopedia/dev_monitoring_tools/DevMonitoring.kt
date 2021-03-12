@@ -13,6 +13,8 @@ import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsRemoteConfig
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolFormatter
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolLogger
+import com.tokopedia.logger.common.Priority
+import com.tokopedia.logger.common.ServerLogger
 import timber.log.Timber
 
 /**
@@ -28,7 +30,8 @@ class DevMonitoring(private var context: Context) {
     fun initCrashMonitoring() {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Timber.w("P1#DEV_CRASH#${UserJourney.getLastActivity()};journey='${UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize)}';error='${Log.getStackTraceString(throwable)}'")
+//            Timber.w("P1#DEV_CRASH#${UserJourney.getLastActivity()};journey='${UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize)}';error='${Log.getStackTraceString(throwable)}'")
+            ServerLogger.sendLog(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize), "error" to Log.getStackTraceString(throwable) ))
             exceptionHandler.uncaughtException(thread, throwable)
         }
     }
