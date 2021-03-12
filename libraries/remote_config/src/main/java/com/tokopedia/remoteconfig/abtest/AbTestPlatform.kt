@@ -85,6 +85,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
             when (key) {
                 NAVIGATION_EXP_TOP_NAV -> return NAVIGATION_VARIANT_REVAMP
+                EXPERIMENT_NAME_TOKOPOINT -> return EXPERIMENT_NAME_TOKOPOINT
             }
         }
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)?: defaultValue
@@ -225,6 +226,9 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val KEY_AB_INBOX_REVAMP = "Inbox Revamp"
         const val VARIANT_OLD_INBOX = ""
         const val VARIANT_NEW_INBOX = "Inbox Revamp"
+
+
+        const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
     }
 
 }

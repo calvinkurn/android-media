@@ -1,11 +1,11 @@
 package com.tokopedia.homenav.common.util
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.EXPERIMENT_NAME_TOKOPOINT
 
 /**
  * Created by Lukas on 3/2/21.
  */
-private const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
 fun isABNewTokopoint(): Boolean{
     return try{

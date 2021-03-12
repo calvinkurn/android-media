@@ -718,20 +718,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         coachMarkItem.buildHomeCoachmark()
         coachMark.setStepListener(object: CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                when {
-                    coachMarkItem.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
-                        setChooseAddressCoachmarkShown(requireContext())
-                    }
-                    coachMarkItem.title.toString().equals(getString(R.string.onboarding_coachmark_title), ignoreCase = true) -> {
-                        setNavigationCoachmarkShown(requireContext())
-                    }
-                    coachMarkItem.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
-                        setInboxCoachmarkShown(requireContext())
-                    }
-                    coachMarkItem.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
-                        setBalanceWidgetCoachmarkShown(requireContext())
-                    }
-                }
+                coachMarkItem.setCoachmarkShownPref()
             }
         })
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
@@ -739,9 +726,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         try {
             if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
                 coachMark.showCoachMark(step = coachMarkItem, index = 0)
+                coachMarkItem[0].setCoachmarkShownPref()
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun CoachMark2Item.setCoachmarkShownPref() {
+        when {
+            this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
+                setChooseAddressCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_title), ignoreCase = true) -> {
+                setNavigationCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
+                setInboxCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
+                setBalanceWidgetCoachmarkShown(requireContext())
+            }
         }
     }
 
