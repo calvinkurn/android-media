@@ -37,10 +37,6 @@ class FlightPromoChipsAdapter(val context: Context,
         notifyItemChanged(position)
     }
 
-    fun clearList(){
-        clearAllElements()
-    }
-
     companion object{
         const val SELECTED_POSITION_INIT = -1
     }

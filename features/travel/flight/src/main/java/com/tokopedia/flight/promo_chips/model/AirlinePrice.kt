@@ -1,25 +1,30 @@
 package com.tokopedia.flight.promo_chips.model
 
-
-import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapterTypeFactory
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class AirlinePrice(
         @SerializedName("airlineID")
-    val airlineID: String = "",
+        @Expose
+        val airlineID: String = "",
+        
         @SerializedName("logo")
-    val logo: String? = null,
-        @SerializedName("shortName")
-    val shortName: String = "",
-        @SerializedName("price")
-    val price: String = "",
-        @SerializedName("priceNumeric")
-    val priceNumeric: Int = 0
-): Visitable<FlightPromoChipsAdapterTypeFactory>, Parcelable {
+        @Expose
+        val logo: String = "",
 
+        @SerializedName("shortName")
+        @Expose
+        val shortName: String = "",
+
+        @SerializedName("price")
+        @Expose
+        val price: String = "",
+
+        @SerializedName("priceNumeric")
+        @Expose
+        val priceNumeric: Int = 0
+): Visitable<FlightPromoChipsAdapterTypeFactory>{
     override fun type(typeFactory: FlightPromoChipsAdapterTypeFactory): Int = typeFactory.type(this)
 }

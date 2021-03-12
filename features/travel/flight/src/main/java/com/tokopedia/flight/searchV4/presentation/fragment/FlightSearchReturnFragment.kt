@@ -20,8 +20,6 @@ import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnAct
 import com.tokopedia.flight.searchV4.presentation.model.*
 import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchReturnViewModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -274,13 +272,6 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         }
     }
 
-    private fun hidePromoChips(){
-        flight_promo_chips_view.hide()
-    }
-
-    private fun showPromoChips() {
-        flight_promo_chips_view.show()
-    }
     companion object {
         fun newInstance(passDataModel: FlightSearchPassDataModel,
                         selectedDepartureId: String,

@@ -1,13 +1,30 @@
 package com.tokopedia.flight.promo_chips.model
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-@Parcelize
-data class FlightLowestPriceArgs(val departureID: String = "",
-                                 val arrivalID: String = "",
-                                 val startDate: String = "",
-                                 val endDate: String = "",
-                                 val classID: Int = 1,
-                                 val airlineID: String = "")
-    :Parcelable
+data class FlightLowestPriceArgs(
+
+        @SerializedName("departureID")
+        @Expose
+        val departureID: String = "",
+
+        @SerializedName("arrivalID")
+        @Expose
+        val arrivalID: String = "",
+
+        @SerializedName("startDate")
+        @Expose
+        val startDate: String = "",
+
+        @SerializedName("endDate")
+        @Expose
+        val endDate: String = "",
+
+        @SerializedName("classID")
+        @Expose
+        val classID: Int = 0,
+
+        @SerializedName("airlineID")
+        @Expose
+        val airlineID: String = "")

@@ -3,30 +3,28 @@ package com.tokopedia.flight.promo_chips.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapter
 import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapterTypeFactory
 import com.tokopedia.flight.promo_chips.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.promo_chips.model.AirlinePrice
+import com.tokopedia.unifycomponents.BaseCustomView
 
 /**
- * Created by astidhiyaa on 16/02/21.
+ * author by astidhiyaa on 16/02/21.
  */
 
-class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
-    private lateinit var recyclerView: RecyclerView
+class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : BaseCustomView(context, attrs, defStyleAttr) {
+    private var recyclerView: RecyclerView
     private lateinit var adapter: FlightPromoChipsAdapter
     private lateinit var listener: PromoChipsListener
     private lateinit var listPromo: List<AirlinePrice>
 
-    fun init (){
+    init {
         val view = View.inflate(context, R.layout.include_flight_promo_chips, this)
-        view.setBackgroundResource(R.drawable.bg_flight_promo_chips_container)
         recyclerView = view.findViewById(R.id.recycler_view_promo_chips)
     }
 
@@ -35,7 +33,6 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun renderPromoList(airlineList: List<AirlinePrice>) {
-        hideLoading()
         listPromo = airlineList
         recyclerView.visibility = View.VISIBLE
         val dataCollection = mutableListOf<Visitable<*>>()
@@ -53,31 +50,12 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         adapter.renderList(dataCollection)
     }
 
-    fun hideLoading(){
-        adapter.hideLoading()
-    }
-
-    fun showLoading(){
-        adapter.removeErrorNetwork()
-        adapter.setLoadingModel(getLoadingModel())
-        adapter.showLoading()
-    }
-
-    fun hidePromoList(){
-        recyclerView.visibility = View.GONE
-        adapter.clearList()
-    }
-
     fun setItemActive(airlineID: String){
         listPromo.forEachIndexed { index, airlinePrice ->
             if (airlineID == airlinePrice.airlineID){
                 adapter.setSelectedProduct(index)
             }
         }
-    }
-
-    private fun getLoadingModel(): LoadingModel {
-        return LoadingModel()
     }
 
     interface PromoChipsListener{

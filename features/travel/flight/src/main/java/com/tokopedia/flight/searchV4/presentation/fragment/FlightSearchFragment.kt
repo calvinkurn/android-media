@@ -49,6 +49,8 @@ import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.presentation.util.select
 import com.tokopedia.flight.searchV4.presentation.util.unselect
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -58,7 +60,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_flight_search.*
+import kotlinx.android.synthetic.main.fragment_flight_search.flight_search_ticker
+import kotlinx.android.synthetic.main.fragment_flight_search.horizontal_progress_bar
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
 import javax.inject.Inject
 
@@ -82,6 +85,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
     private var isTraceStop = false
 
+    private lateinit var promoChipsWidget: FlightPromoChips
+
     private val filterItems = arrayListOf<SortFilterItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +101,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(getLayout(), container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  {
+        val viewRoot = inflater.inflate(getLayout(), container, false)
+        promoChipsWidget = viewRoot.findViewById(R.id.flight_promo_chips_view)
+        return viewRoot
+    }
 
     override fun onResume() {
         super.onResume()
@@ -107,8 +116,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        initPromoChips()
 
         flightSearchViewModel.journeyList.observe(viewLifecycleOwner, Observer {
             stopTrace()
@@ -159,6 +166,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 }
             }
         })
+
+        initPromoChips()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -167,7 +176,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         setupSwipeRefresh()
         setupQuickFilter()
         showLoading()
-        showPromoChipsLoading()
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -394,6 +402,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             flightSearchViewModel.generateSearchStatistics()
             flightSearchViewModel.initialize(true, isReturnTrip())
             flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
+            flightSearchViewModel.fetchPromoList(isReturnTrip())
         }
     }
 
@@ -745,33 +754,34 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
-    fun setItemPromoChipsActive(){
-        flight_promo_chips_view.setItemActive(flightSearchViewModel.filterModel.airlineList[0])
+    fun hidePromoChips(){
+        promoChipsWidget.hide()
     }
 
-    fun showPromoChipsLoading(){
-        flight_promo_chips_view.showLoading()
+    fun showPromoChips() {
+        promoChipsWidget.show()
     }
 
-    fun initPromoChips(){
-        flight_promo_chips_view.init()
-        /** temp buat load JSON aja <mock> */
-        flightSearchViewModel.getPromoTemp(requireContext())
+    private fun setItemPromoChipsActive(){
+        promoChipsWidget.setItemActive(flightSearchViewModel.filterModel.airlineList[0])
+    }
+
+    private fun initPromoChips(){
         flightSearchViewModel.promoData.observe(viewLifecycleOwner, {
             when(it){
                 is Success ->{
-                    if (it.data.isNotEmpty()) {
-                        flight_promo_chips_view.renderPromoList(it.data)
+                    if (!it.data.isNullOrEmpty()) {
+                        promoChipsWidget.renderPromoList(it.data)
                     }else{
-                        flight_promo_chips_view.hidePromoList()
+                        hidePromoChips()
                     }
                 }
                 is Fail ->{
-                    flight_promo_chips_view.hidePromoList()
+                    hidePromoChips()
                 }
             }
         })
-        flight_promo_chips_view.setListener(promoChipsListener)
+        promoChipsWidget.setListener(promoChipsListener)
     }
 
     private val promoChipsListener = object : FlightPromoChips.PromoChipsListener {
