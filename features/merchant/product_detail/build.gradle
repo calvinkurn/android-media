@@ -83,7 +83,6 @@ dependencies {
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.variantCommon)
-
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
 

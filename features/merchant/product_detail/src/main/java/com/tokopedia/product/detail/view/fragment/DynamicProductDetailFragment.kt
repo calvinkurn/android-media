@@ -485,8 +485,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
                         stickyLoginView?.hide()
@@ -1343,8 +1342,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     renderPageError(ProductDetailErrorHelper.getErrorType(ctx, it, isFromDeeplink, deeplinkUrl))
                 }
             })
-            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
-                    ?: false)
+            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant() ?: false)
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
         }
     }
@@ -1449,7 +1447,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
                 pdpUiUpdater?.updateRecommendationData(it.data)
-                updateUi()
+                    updateUi()
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
