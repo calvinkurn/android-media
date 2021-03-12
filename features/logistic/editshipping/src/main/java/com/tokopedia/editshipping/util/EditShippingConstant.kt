@@ -23,4 +23,6 @@ object EditShippingConstant {
 
     const val TICKER_STATE_ERROR = 1
     const val TICKER_STATE_WARNING = 2
+
+    const val BOTTOMSHEET_SHIPPER_DETAIL_TITLE = "Detail Kurir Pengiriman"
 }

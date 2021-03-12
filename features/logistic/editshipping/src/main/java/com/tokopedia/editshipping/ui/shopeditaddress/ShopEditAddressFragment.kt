@@ -18,12 +18,15 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.di.shopeditaddress.DaggerShopEditAddressComponent
 import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
 import com.tokopedia.editshipping.domain.model.shopeditaddress.ShopEditAddressState
 import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_ERROR_MESSAGE
@@ -91,7 +94,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(ShopEditAddressComponent::class.java).inject(this)
+        DaggerShopEditAddressComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,9 +188,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         super.onPause()
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         mapView?.onDestroy()
-        super.onDestroy()
+        mapView = null
+        super.onDestroyView()
     }
 
     override fun onLowMemory() {

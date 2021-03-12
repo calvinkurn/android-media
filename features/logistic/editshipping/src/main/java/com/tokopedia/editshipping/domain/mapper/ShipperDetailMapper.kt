@@ -15,53 +15,41 @@ class ShipperDetailMapper @Inject constructor() {
     }
 
     private fun mapShipperDetails(data: List<ShipperDetails>): List<ShipperDetailsModel> {
-        val shipperDetailsList = ArrayList<ShipperDetailsModel>()
-        data.forEach { data ->
-            val shipperDetailsUiModel = ShipperDetailsModel().apply {
-                name = data.name
-                description = data.description
-                image = data.image
-                shipperProduct = mapShipperProduct(data.shipperProduct)
-            }
-            shipperDetailsList.add(shipperDetailsUiModel)
+        return data.map {
+            ShipperDetailsModel(
+                    it.name,
+                    it.description,
+                    it.image,
+                    mapShipperProduct(it.shipperProduct)
+            )
         }
-        return shipperDetailsList
     }
 
     private fun mapShipperProduct(data: List<ShipperProductDetails>): List<ShipperProductDetailsModel> {
-        val shipperProductList = ArrayList<ShipperProductDetailsModel>()
-        data.forEach { data ->
-            val shopperProductUiModel = ShipperProductDetailsModel().apply {
-                name = data.name
-                description = data.description
-            }
-            shipperProductList.add(shopperProductUiModel)
+        return data.map {
+            ShipperProductDetailsModel(
+                    it.name,
+                    it.description
+            )
         }
-        return shipperProductList
     }
 
     private fun mapFeatureDetail(data: List<FeatureDetails>): List<FeatureDetailsModel> {
-        val featureDetailsList = ArrayList<FeatureDetailsModel>()
-        data.forEach { data ->
-            val featureDetailsUiModel = FeatureDetailsModel().apply {
-                 header = data.header
-                description = data.description
-            }
-            featureDetailsList.add(featureDetailsUiModel)
+        return data.map {
+            FeatureDetailsModel(
+                    it.header,
+                    it.description
+            )
         }
-        return featureDetailsList
     }
 
     private fun mapServiceDetail(data: List<ServiceDetails>): List<ServiceDetailsModel> {
-        val serviceDetailsList = ArrayList<ServiceDetailsModel>()
-        data.forEach { data ->
-            val serviceDetailsUiModel = ServiceDetailsModel().apply {
-                header = data.header
-                description = data.description
-            }
-            serviceDetailsList.add(serviceDetailsUiModel)
+        return data.map {
+            ServiceDetailsModel(
+                    it.header,
+                    it.description
+            )
         }
-        return serviceDetailsList
     }
 
 }

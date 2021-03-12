@@ -8,6 +8,5 @@ import dagger.Component
 @ShippingEditorScope
 @Component(modules = [ShippingEditorModule::class, ShippingEditorViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface ShippingEditorComponent {
-    fun inject(shippingEditorActivity: ShippingEditorActivity)
     fun inject(shippingEditorFragment: ShippingEditorFragment)
 }

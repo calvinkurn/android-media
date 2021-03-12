@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.editshipping.di.shopeditaddress.DaggerShopEditAddressComponent
 import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
 
-class ShopEditAddressActivity : BaseSimpleActivity(), HasComponent<ShopEditAddressComponent> {
+class ShopEditAddressActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): ShopEditAddressFragment? {
         var fragment: ShopEditAddressFragment? = null
@@ -17,11 +17,4 @@ class ShopEditAddressActivity : BaseSimpleActivity(), HasComponent<ShopEditAddre
         }
         return fragment
     }
-
-    override fun getComponent(): ShopEditAddressComponent {
-        return DaggerShopEditAddressComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-    }
-
 }

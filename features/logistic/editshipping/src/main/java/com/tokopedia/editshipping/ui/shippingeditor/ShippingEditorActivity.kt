@@ -7,16 +7,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.editshipping.di.shippingeditor.DaggerShippingEditorComponent
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
 
-class ShippingEditorActivity : BaseSimpleActivity(), HasComponent<ShippingEditorComponent> {
+class ShippingEditorActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return ShippingEditorFragment()
     }
-
-    override fun getComponent(): ShippingEditorComponent {
-        return DaggerShippingEditorComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-    }
-
 }

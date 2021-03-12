@@ -18,12 +18,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.di.shippingeditor.DaggerShippingEditorComponent
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
 import com.tokopedia.editshipping.ui.EditShippingActivity
@@ -108,7 +110,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(ShippingEditorComponent::class.java).inject(this)
+        DaggerShippingEditorComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
