@@ -19,5 +19,6 @@
         <item name="android:windowSharedElementExitTransition">@transition/anim_play_shared_return</item>
 
         <item name="android:forceDarkAllowed">false</item>
+        <item name="android:isLightTheme">false</item>
     </style>
 </resources>
