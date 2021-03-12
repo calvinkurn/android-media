@@ -37,16 +37,15 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     @Inject
     lateinit var quickFilterUseCase: QuickFilterUseCase
     private var selectedSort: HashMap<String, String> = HashMap()
+    private var sort: ArrayList<Sort> = ArrayList()
     private val quickFilterOptionList: ArrayList<Option> = ArrayList()
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
     private val quickFiltersLiveData: MutableLiveData<ArrayList<Option>> = MutableLiveData()
-    private val _filterCountLiveData: MutableLiveData<Int> = MutableLiveData()
-    private val sortKeySet: MutableSet<String> = HashSet()
+
     private val productCountMutableLiveData = MutableLiveData<String?>()
     val productCountLiveData: LiveData<String?>
         get() = productCountMutableLiveData
-    val filterCountLiveData: LiveData<Int>
-        get() = _filterCountLiveData
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -115,12 +114,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             val initializedFilterList = FilterHelper.initializeFilterList(components.filters)
             components.filterController.initFilterController(components.searchParameter.getSearchParameterHashMap(), initializedFilterList)
         }
-
-        getSelectedFilterCount()
     }
 
     private fun clearDataFilterSort() {
         components.filters.clear()
+        this.sort.clear()
     }
 
     private fun setFilterData(filters: List<Filter>?) {
@@ -129,11 +127,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     private fun setSortData(sort: List<Sort>?) {
-        sort?.map {
-            it.key
-        }?.let {
-            sortKeySet.addAll(it)
-        }
+        this.sort = ArrayList()
+        if (sort?.isNotEmpty() == true)
+            this.sort.addAll(sort)
     }
 
     fun isQuickFilterSelected(option: Option): Boolean {
@@ -167,10 +163,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     private fun setSelectedSort(mapParameter: Map<String, String>) {
-        sortKeySet.forEach {
-            if (mapParameter.containsKey(it))
-                selectedSort[it] = mapParameter[it] ?: error("")
-        }
+        if(mapParameter.containsKey(SORT_KEY))
+            selectedSort[SORT_KEY] = mapParameter[SORT_KEY] ?: error("")
     }
 
     private fun setSelectedFilter(selectedFilter: HashMap<String, String>) {
@@ -205,11 +199,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         return UserSession(application).userId
     }
 
-    fun getSelectedFilterCount() {
-        val list = sortKeySet.filter {
-            (components.searchParameter.contains(it) && components.searchParameter.get(it) != DEFAULT_SORT_ID)
-        }
-        _filterCountLiveData.value = if (list.isNullOrEmpty()) {
+    fun getSelectedFilterCount() : Int {
+        return if(!components.searchParameter.contains(SORT_KEY) || components.searchParameter.get(SORT_KEY) == DEFAULT_SORT_ID) {
             components.filterController.filterViewStateSet.size
         } else {
             components.filterController.filterViewStateSet.size + 1

@@ -58,10 +58,6 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, { filters ->
                 setQuickFilters(filters)
             })
-
-            quickFilterViewModel.filterCountLiveData.observe(fragment.viewLifecycleOwner,{ filterCount ->
-                quickSortFilter.indicatorCounter = filterCount
-            })
         }
     }
 
@@ -72,7 +68,6 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             quickFilterViewModel.getSyncPageLiveData().removeObservers(it)
             quickFilterViewModel.productCountLiveData.removeObservers(it)
             quickFilterViewModel.getQuickFilterLiveData().removeObservers(it)
-            quickFilterViewModel.filterCountLiveData.removeObservers(it)
         }
     }
 
@@ -127,7 +122,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             } else
                 setQuickFilterChipsNormal(i)
         }
-        quickFilterViewModel.getSelectedFilterCount()
+        quickSortFilter.indicatorCounter = quickFilterViewModel.getSelectedFilterCount()
     }
 
     private fun setQuickFilterChipsSelected(position: Int) {
@@ -159,7 +154,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         quickFilterViewModel.onApplySortFilter(applySortFilterModel)
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickApplyFilter(applySortFilterModel.mapParameter)
-        quickFilterViewModel.getSelectedFilterCount()
+        quickSortFilter.indicatorCounter = quickFilterViewModel.getSelectedFilterCount()
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
