@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.animation.DecelerateInterpolator
@@ -40,7 +39,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -48,6 +46,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.common.util.HotelSearchMapQuery
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
@@ -284,7 +283,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+        val searchQuery = HotelSearchMapQuery.propertySearchInput
         hotelSearchMapViewModel.searchProperty(page, searchQuery)
     }
 
