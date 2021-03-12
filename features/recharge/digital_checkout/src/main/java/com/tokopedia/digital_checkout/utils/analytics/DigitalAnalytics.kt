@@ -57,7 +57,7 @@ class DigitalAnalytics {
                 TrackAppUtils.EVENT_ACTION, actionValue,
                 TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
                 DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
     }
