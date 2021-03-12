@@ -846,6 +846,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun requestLocation() {
         activity?.let {
             permissionCheckerHelper?.checkPermissions(it, getPermissions(),
