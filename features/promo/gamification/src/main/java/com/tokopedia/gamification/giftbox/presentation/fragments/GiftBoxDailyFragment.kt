@@ -473,11 +473,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             if (canShowRecomPage(recommendation)) {
                 rewardContainer.postDelayed({
                     setupBottomSheet(true)
-                    var shopId = 0L
-                    if (!recommendation.shopId.isNullOrEmpty()) {
-                        shopId = recommendation.shopId.toLong()
+                    var shopId = ""
+                    if(!recommendation.shopId.isNullOrEmpty()){
+                        shopId = recommendation.shopId
                     }
-                    pdpGamificationView.getRecommendationParams(recommendation.pageName ?: "", shopId, recommendation.shopId.isNullOrEmpty())
+                    pdpGamificationView.getRecommendationParams(recommendation.pageName?:"", shopId, shopId.isEmpty())
                 }, 1000L)
 
             }
@@ -585,10 +585,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun renderOpenBoxError(message: String, actionText: String) {
-        if (context != null) {
+        context?.let {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::getRewards, requireContext())
+                showNoInterNetDialog(viewModel::getRewards, it)
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getRewards)
             }
@@ -596,10 +596,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun showRemindMeError(message: String, actionText: String) {
-        if (context != null) {
+        context?.let {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::setReminder, requireContext())
+                showNoInterNetDialog(viewModel::setReminder, it)
             } else {
                 showRedError(fmParent, message, actionText, viewModel::setReminder)
             }
@@ -809,10 +809,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun checkInternetOnButtonActionAndRedirect() {
-        if (context != null) {
+        context?.let {
             var internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(this::checkInternetOnButtonActionAndRedirect, requireContext())
+                showNoInterNetDialog(this::checkInternetOnButtonActionAndRedirect, it)
             } else {
                 handleButtonAction()
             }
@@ -820,10 +820,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun renderGiftBoxError(message: String, actionText: String) {
-        if (context != null) {
+        context?.let {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::getGiftBox, requireContext())
+                showNoInterNetDialog(viewModel::getGiftBox, it)
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBox)
             }

@@ -17,7 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -195,7 +195,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment = DynamicProductDetailFragmentDiffutil.newInstance(productId, warehouseId, shopDomain,
+    override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
                     productKey, isFromDeeplink,
                     isFromAffiliate ?: false, trackerAttribution,
                     trackerListName, affiliateString, deeplinkUrl, layoutId)

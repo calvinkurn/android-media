@@ -1,31 +1,21 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.widgets;
 
-import android.graphics.drawable.Drawable;
 import android.view.View;
 
 public class ShareItem {
 
-    private Drawable icon;
+    private String icon;
     private String name;
     private View.OnClickListener onClickListener;
 
-    public ShareItem(Drawable icon, String name) {
-        this.icon = icon;
-        this.name = name;
-    }
-
-    public ShareItem(Drawable icon, String name, View.OnClickListener onClickListener) {
+    public ShareItem(String icon, String name, View.OnClickListener onClickListener) {
         this.icon = icon;
         this.name = name;
         this.onClickListener = onClickListener;
     }
 
-    public Drawable getIcon() {
+    public String getIcon() {
         return icon;
-    }
-
-    public void setIcon(Drawable icon) {
-        this.icon = icon;
     }
 
     public String getName() {
