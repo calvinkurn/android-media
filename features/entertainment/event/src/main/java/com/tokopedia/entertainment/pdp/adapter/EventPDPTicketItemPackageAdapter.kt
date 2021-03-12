@@ -92,9 +92,9 @@ class EventPDPTicketItemPackageAdapter(
                     if (position == 0) heightItemView += itemView.height.toDp()
                     if (!onCoachmarkListener.getLocalCache()) {
                         if (listItemPackage.size == 1 && position == 0) {
-                            onCoachmarkListener.showCoachMark(viewTargetCoachmark)
+                            onCoachmarkListener.addCoachmark(viewTargetCoachmark, isRecommendationPackage)
                         } else if (listItemPackage.size >= 2 && position == 1) {
-                            onCoachmarkListener.showCoachMark(viewTargetCoachmark)
+                            onCoachmarkListener.addCoachmark(viewTargetCoachmark, isRecommendationPackage)
                         }
                     }
                 }
@@ -183,7 +183,6 @@ class EventPDPTicketItemPackageAdapter(
 
         private fun renderForRecommendationPackage(items: PackageItem) {
             with(itemView) {
-
                 onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -202,8 +201,9 @@ class EventPDPTicketItemPackageAdapter(
                 }
 
                 itemView.post {
-                    if (!onCoachmarkListener.getLocalCacheRecom()) {
-                        onCoachmarkListener.showCoachMarkRecom(itemView)
+                    if (!onCoachmarkListener.getLocalCache() && position==0) {
+                        onCoachmarkListener.addCoachmark(itemView, isRecommendationPackage)
+                        onCoachmarkListener.showCoachMark()
                     }
                 }
             }

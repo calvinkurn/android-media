@@ -59,6 +59,7 @@ import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageTypeFactory>(),
         OnBindItemTicketListener, OnCoachmarkListener {
@@ -81,6 +82,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     private var hashItemMap: HashMap<String, ItemMap> = hashMapOf()
     private var pdpData: ProductDetailData = ProductDetailData()
     private var packageTypeFactoryImp = PackageTypeFactoryImpl(this, this)
+    private var coachmarkList: MutableList<CoachMark2Item> = mutableListOf()
 
     private lateinit var recommendationAdapter: EventPDPParentPackageAdapter
 
@@ -300,6 +302,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         viewModel.recommendationTicketModel.observe(viewLifecycleOwner, Observer {
             it?.run {
                 renderRecommendationList(this)
+                showCoachMark()
             }
         })
 
@@ -320,11 +323,13 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         viewModel.verifyResponse.observe(viewLifecycleOwner, Observer {
             metaDataResponse = it.eventVerify.metadata
             gatewayCode = it.eventVerify.gatewayCode
-            if (userSession.isLoggedIn) {
-                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
+            context?.let {
+                if (userSession.isLoggedIn) {
+                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
+                } else {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN)
+                }
             }
         })
 
@@ -364,52 +369,42 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
     }
 
-    override fun getLocalCacheRecom(): Boolean {
-        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY_RECOM, false)
+    override fun showCoachMark() {
+       if (coachmarkList.isNotEmpty()) {
+           context?.let {
+               val coachMark = CoachMark2(it)
+               coachMark.apply {
+                   showCoachMark(ArrayList(coachmarkList), scroll_ticket_pdp, 0)
+               }
+           }
+           localCacheHandler.apply {
+               putBoolean(SHOW_COACH_MARK_KEY, false)
+               applyEditor()
+           }
+       }
     }
 
-    override fun showCoachMark(view: View) {
-        context?.let {
-            val coachMark = CoachMark2(it)
-            coachMark.apply {
-                showCoachMark(getCoachMarkItems(view), null, 0)
-            }
+    override fun addCoachmark(view: View, isRecommendationPackage: Boolean) {
+        if (!isRecommendationPackage) {
+            coachmarkList.add(0,
+                    CoachMark2Item(
+                            view,
+                            getString(R.string.ent_home_coachmark_title),
+                            getString(R.string.ent_home_coachmark_subtitle),
+                            CoachMark2.POSITION_BOTTOM
+                    )
+            )
+        } else {
+            coachmarkList.add(1,
+                    CoachMark2Item(
+                            view,
+                            getString(R.string.ent_home_coachmark_title_recom),
+                            getString(R.string.ent_home_coachmark_subtitle_recom),
+                            CoachMark2.POSITION_BOTTOM
+                    )
+            )
         }
-        localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
-            applyEditor()
-        }
-    }
 
-    override fun showCoachMarkRecom(view: View) {
-        context?.let {
-            val coachMark = CoachMark2(it)
-            coachMark.apply {
-                showCoachMark(getCoachMarkItemsRecom(view), null, 0)
-            }
-        }
-        localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY_RECOM, false)
-            applyEditor()
-        }
-    }
-
-    private fun getCoachMarkItems(view: View): ArrayList<CoachMark2Item> {
-        return arrayListOf(CoachMark2Item(
-                view,
-                getString(R.string.ent_home_coachmark_title),
-                getString(R.string.ent_home_coachmark_subtitle),
-                CoachMark2.POSITION_BOTTOM
-        ))
-    }
-
-    private fun getCoachMarkItemsRecom(view: View): ArrayList<CoachMark2Item> {
-        return arrayListOf(CoachMark2Item(
-                view,
-                getString(R.string.ent_home_coachmark_title_recom),
-                getString(R.string.ent_home_coachmark_subtitle_recom),
-                CoachMark2.POSITION_BOTTOM
-        ))
     }
 
     override fun clickRecommendation(list: List<String>) {
@@ -479,7 +474,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         const val PREFERENCES_NAME = "event_ticket_preferences"
         const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
-        const val SHOW_COACH_MARK_KEY_RECOM = "show_coach_mark_key_event_ticket_recom"
         private const val COACH_MARK_START_DELAY = 1000L
     }
 

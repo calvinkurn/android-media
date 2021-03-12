@@ -76,10 +76,8 @@ class PackageParentViewHolder(view: View,
                         RecyclerView.VERTICAL, false
                 )
             }
-            if (!onCoachmarkListener.getLocalCacheRecom()) {
+            if (!onCoachmarkListener.getLocalCache()) {
                 expand_event_pdp_ticket.setExpand(true)
-            } else {
-                expand_event_pdp_ticket.setExpand(false)
             }
         }
     }
