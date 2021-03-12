@@ -280,9 +280,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun onSuccessGetFirstRecommendationData(recommendation: RecommendationWidget) {
         widgetTitle = recommendation.title
         addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
-        addItem(TopadsHeadlineUiModel(), addSeparator = false)
+        addTopAdsHeadLine()
         adapter?.notifyDataSetChanged()
         addRecommendationItem(recommendation.recommendationItemList)
+    }
+
+    private fun addTopAdsHeadLine() {
+        addItem(TopadsHeadlineUiModel(), addSeparator = false)
     }
 
     private fun addRecommendationItem(list: List<RecommendationItem>) {
