@@ -9,7 +9,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.EXPERIMENT_NAM
 
 fun isABNewTokopoint(): Boolean{
     return try{
-        true
         RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME_TOKOPOINT) == EXPERIMENT_NAME_TOKOPOINT
     }catch (ex: Exception){
         false
