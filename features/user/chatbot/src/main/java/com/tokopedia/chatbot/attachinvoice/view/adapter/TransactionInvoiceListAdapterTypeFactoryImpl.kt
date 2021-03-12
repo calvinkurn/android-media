@@ -6,16 +6,20 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chatbot.attachinvoice.view.model.EmptyTransactionInvoiceUiModel
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
+import com.tokopedia.chatbot.attachinvoice.view.viewholder.EmptyViewHolderListener
 import com.tokopedia.chatbot.attachinvoice.view.viewholder.TransactionInvoiceEmptyViewHolder
 import com.tokopedia.chatbot.attachinvoice.view.viewholder.TransactionInvoiceViewHolder
+import com.tokopedia.chatbot.attachinvoice.view.viewholder.TransactionInvoiceViewHolderListener
 
-class TransactionInvoiceListAdapterTypeFactoryImpl(private val emptyViewHolderListener: TransactionInvoiceEmptyViewHolder.EmptyViewHolderListener)
-    : BaseAdapterTypeFactory(), TransactionInvoiceListAdapterTypeFactory {
+class TransactionInvoiceListAdapterTypeFactoryImpl(
+        private val transactionInvoiceViewHolderListener: TransactionInvoiceViewHolderListener,
+        private val emptyViewHolderListener: EmptyViewHolderListener,
+) : BaseAdapterTypeFactory(), TransactionInvoiceListAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             TransactionInvoiceViewHolder.LAYOUT -> {
-                TransactionInvoiceViewHolder(parent)
+                TransactionInvoiceViewHolder(parent, transactionInvoiceViewHolderListener)
             }
             TransactionInvoiceEmptyViewHolder.LAYOUT -> {
                 TransactionInvoiceEmptyViewHolder(parent, emptyViewHolderListener)

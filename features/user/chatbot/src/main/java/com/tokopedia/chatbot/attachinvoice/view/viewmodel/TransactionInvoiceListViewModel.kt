@@ -77,9 +77,11 @@ class TransactionInvoiceListViewModel @Inject constructor(private val userSessio
     private fun mapResponse(response: GetInvoiceListPojo): ArrayList<TransactionInvoiceUiModel> {
         val result = ArrayList<TransactionInvoiceUiModel>()
         response.getInvoiceList.map {
-            result.add(TransactionInvoiceUiModel(it.attributes.id, it.attributes.title, it.attributes.description,
-                    it.attributes.createTime, it.attributes.statusId, it.attributes.status, it.attributes.totalAmount,
-                    it.attributes.invoiceUrl, it.attributes.imageUrl, userSession.userId, userSession.name))
+            result.add(TransactionInvoiceUiModel(it.attributes.id, it.attributes.title,
+                    it.attributes.description, it.attributes.createTime, it.attributes.statusId,
+                    it.attributes.status, it.attributes.totalAmount, it.attributes.invoiceUrl,
+                    it.attributes.imageUrl, userSession.userId, userSession.name, it.attributes.code,
+                    it.typeId, it.type))
         }
         return result
     }

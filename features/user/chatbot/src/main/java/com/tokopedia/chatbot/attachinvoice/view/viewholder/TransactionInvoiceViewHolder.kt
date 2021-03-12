@@ -8,11 +8,13 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-class TransactionInvoiceViewHolder(itemView: View) : AbstractViewHolder<TransactionInvoiceUiModel>(itemView) {
+class TransactionInvoiceViewHolder(itemView: View, private val listener: TransactionInvoiceViewHolderListener)
+    : AbstractViewHolder<TransactionInvoiceUiModel>(itemView) {
 
     private val tvInvoiceDate: Typography = itemView.findViewById(R.id.tv_invoice_date)
     private val tvStatus: Label = itemView.findViewById(R.id.tv_status)
@@ -27,6 +29,7 @@ class TransactionInvoiceViewHolder(itemView: View) : AbstractViewHolder<Transact
         setStatus(invoice)
         tvInvoiceName.text = invoice.title
         tvInvoiceDesc.text = invoice.description
+        tvInvoiceDesc.showWithCondition(!invoice.description.isNullOrEmpty())
         setPrice(invoice.amount)
         tvInvoiceDate.text = invoice.createdTime
     }
@@ -60,4 +63,8 @@ class TransactionInvoiceViewHolder(itemView: View) : AbstractViewHolder<Transact
     companion object {
         var LAYOUT = R.layout.invoice_transaction_card_item
     }
+}
+
+interface TransactionInvoiceViewHolderListener {
+    fun onItemClick(invoice: TransactionInvoiceUiModel)
 }

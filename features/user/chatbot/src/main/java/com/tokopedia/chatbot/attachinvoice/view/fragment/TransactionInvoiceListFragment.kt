@@ -13,16 +13,16 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.chatbot.attachinvoice.di.AttachInvoiceModule
 import com.tokopedia.chatbot.attachinvoice.di.DaggerAttachInvoiceComponent
-import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceListFragmentListener
 import com.tokopedia.chatbot.attachinvoice.view.adapter.TransactionInvoiceListAdapterTypeFactoryImpl
 import com.tokopedia.chatbot.attachinvoice.view.model.EmptyTransactionInvoiceUiModel
-import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
-import com.tokopedia.chatbot.attachinvoice.view.viewholder.TransactionInvoiceEmptyViewHolder
+import com.tokopedia.chatbot.attachinvoice.view.viewholder.EmptyViewHolderListener
+import com.tokopedia.chatbot.attachinvoice.view.viewholder.TransactionInvoiceViewHolderListener
 import com.tokopedia.chatbot.attachinvoice.view.viewmodel.TransactionInvoiceListViewModel
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -30,7 +30,8 @@ import javax.inject.Inject
 const val KEY_MESSAGE_ID = "messageId"
 const val KEY_FILTER_EVENT = "filterEvent"
 
-class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), TransactionInvoiceEmptyViewHolder.EmptyViewHolderListener {
+class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+        EmptyViewHolderListener, TransactionInvoiceViewHolderListener {
 
     private var messageId: Int = 0
     private var filterEvent: String = ""
@@ -110,14 +111,11 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     override fun onItemClicked(item: Visitable<*>?) {
-        activity?.run {
-            if (item is InvoiceViewModel) {
-                val data = Intent()
-                data.putExtra(ChatbotInternalRouter.Companion
-                        .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY, SelectedInvoice(item))
-                setResult(Activity.RESULT_OK, data)
-                finish()
-            }
+        if (item is TransactionInvoiceUiModel) {
+            val data = Intent()
+            data.putExtra(ChatbotInternalRouter.Companion
+                    .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY, SelectedInvoice(item))
+            listener?.setResult(data)
         }
     }
 
@@ -126,7 +124,7 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return TransactionInvoiceListAdapterTypeFactoryImpl(this)
+        return TransactionInvoiceListAdapterTypeFactoryImpl(this, this)
     }
 
     companion object {
@@ -147,4 +145,20 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
         loadInitialData()
     }
 
+    override fun onItemClick(invoice: TransactionInvoiceUiModel) {
+        activity?.run {
+            val data = Intent()
+            data.putExtra(ChatbotInternalRouter.Companion
+                    .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY, SelectedInvoice
+            (invoice))
+            setResult(Activity.RESULT_OK, data)
+            finish()
+        }
+    }
+
+}
+
+interface TransactionInvoiceListFragmentListener {
+    fun getButtonView(): UnifyButton
+    fun setResult(data: Intent)
 }

@@ -9,7 +9,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class TransactionInvoiceEmptyViewHolder(itemView: View, private var emptyViewHolderListener: EmptyViewHolderListener? = null)
+class TransactionInvoiceEmptyViewHolder(itemView: View, private var emptyViewHolderListener: EmptyViewHolderListener)
     : AbstractViewHolder<EmptyTransactionInvoiceUiModel>(itemView) {
     private val ivIcon: ImageUnify = itemView.findViewById(R.id.icon)
     private val tvTitle: Typography = itemView.findViewById(R.id.title)
@@ -21,7 +21,7 @@ class TransactionInvoiceEmptyViewHolder(itemView: View, private var emptyViewHol
         tvTitle.text = getString(element.title)
         tvDescription.text = getString(element.description)
         button.setOnClickListener {
-            emptyViewHolderListener?.onTryAgain()
+            emptyViewHolderListener.onTryAgain()
         }
         button.showWithCondition(element.showButton)
     }
@@ -29,8 +29,8 @@ class TransactionInvoiceEmptyViewHolder(itemView: View, private var emptyViewHol
     companion object {
         var LAYOUT = R.layout.invoice_transaction_empty_view
     }
+}
 
-    interface EmptyViewHolderListener {
-        fun onTryAgain()
-    }
+interface EmptyViewHolderListener {
+    fun onTryAgain()
 }

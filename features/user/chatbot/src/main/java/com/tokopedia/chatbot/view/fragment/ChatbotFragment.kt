@@ -41,6 +41,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
+import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
@@ -108,11 +109,12 @@ private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
 private const val FIRST_PAGE = 1
 private const val RESEND = 1
 private const val DELETE = 0
+
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener,
-        TypingListener,ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener {
+        TypingListener, ChatOptionListListener, CsatOptionListListener,
+        View.OnClickListener, TransactionInvoiceBottomSheetListener {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -142,7 +144,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var mCsatResponse: WebSocketCsatResponse
     lateinit var attribute: Attributes
     private var isBackAllowed = true
-    private lateinit var ticker:Ticker
+    private lateinit var ticker: Ticker
     private var csatOptionsViewModel: CsatOptionsViewModel? = null
 
     override fun initInjector() {
@@ -211,7 +213,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onClickEmoji(number: Int) {
         startActivityForResult(context?.let {
             ChatBotProvideRatingActivity
-                .getInstance(it, number,mCsatResponse)
+                    .getInstance(it, number, mCsatResponse)
         }, REQUEST_SUBMIT_FEEDBACK)
         chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, number.toString())
     }
@@ -321,7 +323,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun showTicker() {
-        presenter.showTickerData(onError(),onSuccesGetTickerData())
+        presenter.showTickerData(onError(), onSuccesGetTickerData())
     }
 
     private fun onSuccesGetTickerData(): (TickerData) -> Unit {
@@ -339,11 +341,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun showSingleTicker(tickerData: TickerData) {
         ticker.tickerTitle = tickerData.items?.get(0)?.title
-        ticker.setHtmlDescription(tickerData.items?.get(0)?.text?:"")
+        ticker.setHtmlDescription(tickerData.items?.get(0)?.text ?: "")
         ticker.tickerType = getTickerType(tickerData.type ?: "")
         ticker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                RouteManager.route(view?.context,linkUrl.toString())
+                RouteManager.route(view?.context, linkUrl.toString())
             }
 
             override fun onDismiss() {
@@ -357,15 +359,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         tickerData.items?.forEach {
             mockData.add(com.tokopedia.unifycomponents.ticker.TickerData(it?.title,
-                    it?.text?:"",
+                    it?.text ?: "",
                     getTickerType(tickerData.type ?: "")))
         }
 
         val adapter = TickerPagerAdapter(activity, mockData)
         ticker.addPagerView(adapter, mockData)
-        adapter.setPagerDescriptionClickEvent(object :TickerPagerCallback{
+        adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                RouteManager.route(view?.context,linkUrl.toString())
+                RouteManager.route(view?.context, linkUrl.toString())
             }
         })
     }
@@ -446,7 +448,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun manageActionBubble(visitable: Visitable<*>) {
-        when{
+        when {
             visitable is MessageViewModel && visitable.isSender -> hideActionBubble()
             visitable is AttachInvoiceSentViewModel && visitable.isSender -> hideActionBubble()
         }
@@ -457,7 +459,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
-        if (visitable is BaseChatViewModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)){
+        if (visitable is BaseChatViewModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)) {
             chatbotAnalytics.eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
         }
     }
@@ -490,15 +492,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun showSearchInvoiceScreen() {
-//        activity?.let {
-//            val intent = ChatbotInternalRouter.Companion.getAttachInvoiceIntent(it,
-//                    session.userId,
-//                    messageId.toInt())
-//            startActivityForResult(intent, TOKOPEDIA_ATTACH_INVOICE_REQ_CODE)
-//        }
         activity?.let {
-            val bottomSheetUnify =  TransactionInvoiceBottomSheet.newInstance(it, messageId.toIntOrZero())
-            bottomSheetUnify.show(childFragmentManager,"")
+            val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(it, messageId.toIntOrZero(), this)
+            bottomSheetUnify.show(childFragmentManager, "")
         }
     }
 
@@ -519,7 +515,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onImageUploadCancelClicked(image : ImageUploadViewModel) {
+    override fun onImageUploadCancelClicked(image: ImageUploadViewModel) {
         presenter.cancelImageUpload()
         getViewState().showRetryUploadImages(image, true)
     }
@@ -826,7 +822,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onReceiveChatSepratorEvent(chatSepratorViewModel: ChatSepratorViewModel, quickReplyList: List<QuickReplyViewModel>) {
         getViewState().showLiveChatSeprator(chatSepratorViewModel)
-        getViewState().showLiveChatQuickReply(quickReplyList)    }
+        getViewState().showLiveChatQuickReply(quickReplyList)
+    }
 
     override fun isBackAllowed(isBackAllowed: Boolean) {
         this.isBackAllowed = isBackAllowed
@@ -837,8 +834,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun updateToolbar(profileName: String?, profileImage: String?) {
-        if (activity is ChatbotActivity){
-            (activity as ChatbotActivity).upadateToolbar(profileName,profileImage)
+        if (activity is ChatbotActivity) {
+            (activity as ChatbotActivity).upadateToolbar(profileName, profileImage)
         }
     }
 
@@ -873,7 +870,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val viewBottomSheetPage = View.inflate(context, R.layout.retry_upload_image_bottom_sheet_layout, null).apply {
             val rvPages = findViewById<RecyclerView>(R.id.rv_image_upload_option)
             rvPages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            val adapter = ImageRetryBottomSheetAdapter(onBottomSheetItemClicked(element,bottomSheetPage))
+            val adapter = ImageRetryBottomSheetAdapter(onBottomSheetItemClicked(element, bottomSheetPage))
             rvPages.adapter = adapter
             adapter.setList(listOf<String>(context?.getString(R.string.chatbot_delete)
                     ?: "", context?.getString(R.string.chatbot_resend) ?: ""))
@@ -904,7 +901,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 DELETE -> {
                     removeDummy(element)
                     bottomSheetPage.dismiss()
-                    view?.let { Toaster.make(it, "Gambarmu sudah dihapus.",Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL) }
+                    view?.let { Toaster.make(it, "Gambarmu sudah dihapus.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL) }
                 }
             }
         }
@@ -922,12 +919,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             dialog.setDesc(context?.getString(R.string.cb_bot_leave_the_queue_desc_one))
             dialog.setBtnOk(context?.getString(R.string.cb_bot_ok_text))
             dialog.setBtnCancel(context?.getString(R.string.cb_bot_cancel_text))
-            dialog.setOnOkClickListener{
+            dialog.setOnOkClickListener {
                 presenter.OnClickLeaveQueue()
                 (activity as ChatbotActivity).finish()
 
             }
-            dialog.setOnCancelClickListener{
+            dialog.setOnCancelClickListener {
                 dialog.dismiss()
             }
             dialog.setCancelable(true)
@@ -935,6 +932,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             return true
         }
         return super.onBackPressed()
+    }
+
+    override fun onBottomSheetDismissListener(data: Intent) {
+        onSelectedInvoiceResult(Activity.RESULT_OK, data)
     }
 }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.chatbot.attachinvoice.view
 
-import TransactionInvoiceListFragment
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +14,8 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.VALUE_PEMBELIAN
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.VALUE_PENARIKAN_DANA
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.VALUE_PENJUALAN
+import com.tokopedia.chatbot.attachinvoice.view.fragment.TransactionInvoiceListFragment
+import com.tokopedia.chatbot.attachinvoice.view.fragment.TransactionInvoiceListFragmentListener
 import com.tokopedia.chatbot.view.adapter.ChatBotViewPagerAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnify
@@ -29,17 +31,21 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     private lateinit var submitButton: UnifyButton
     private lateinit var context: FragmentActivity
     private var messageId: Int = 0
+    private lateinit var listener: TransactionInvoiceBottomSheetListener
 
     init {
         isFullpage = true
+        isDragable = true
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(context: FragmentActivity, messageId: Int): TransactionInvoiceBottomSheet {
+        fun newInstance(context: FragmentActivity, messageId: Int,
+                        listener: TransactionInvoiceBottomSheetListener): TransactionInvoiceBottomSheet {
             return TransactionInvoiceBottomSheet().apply {
                 this.context = context
                 this.messageId = messageId
+                this.listener = listener
             }
         }
     }
@@ -87,8 +93,14 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     override fun getButtonView(): UnifyButton {
         return submitButton
     }
+
+    override fun setResult(data: Intent) {
+        listener.onBottomSheetDismissListener(data)
+        dismissAllowingStateLoss()
+    }
 }
 
-interface TransactionInvoiceListFragmentListener {
-    fun getButtonView(): UnifyButton
+
+interface TransactionInvoiceBottomSheetListener {
+    fun onBottomSheetDismissListener(data: Intent)
 }
