@@ -33,8 +33,8 @@ class ProductVariantTickerViewHolder(itemView: View) : AbstractViewHolder<Produc
 
 
     private fun setupView() {
-        val verticalSpacing = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
-        val horizontalSpacing = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl4)
+        val verticalSpacing = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+        val horizontalSpacing = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
         itemView.setMargin(horizontalSpacing, 0, horizontalSpacing, verticalSpacing)
     }
 
