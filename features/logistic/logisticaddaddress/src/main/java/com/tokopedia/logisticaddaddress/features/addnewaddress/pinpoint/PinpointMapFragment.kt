@@ -801,10 +801,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
         })
 
-        setOnTouchListener(View.OnTouchListener { _, event ->
+        setOnTouchListener(View.OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 if (event.rawX >= (this.right - this.compoundPaddingRight)) {
-                    this.setText("")
+                    setText("")
+                    v.performClick()
                     return@OnTouchListener true
                 }
             }
