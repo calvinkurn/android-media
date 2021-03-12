@@ -14,23 +14,20 @@ import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isGivenDateIsBelowThan24H
-import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
-import com.tokopedia.product.detail.view.widget.CampaignRibbon.Companion.ONGOING
+import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import kotlinx.android.synthetic.main.item_product_content.view.*
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Yehezkiel on 25/05/20
  */
-class PartialContentView(private val view: View,
-                         private val listener: DynamicProductDetailListener) {
+class PartialContentView(private val view: View, private val listener: DynamicProductDetailListener) : CampaignRibbon.CampaignCountDownCallback {
     companion object {
         const val ONE_SECOND = 1000L
     }
 
-    fun renderData(data: ProductContentMainData, isUpcomingNplType: Boolean, upcomingNplData: UpcomingNplDataModel) = with(view) {
+    fun renderData(data: ProductContentMainData,
+                   isUpcomingNplType: Boolean,
+                   upcomingNplData: UpcomingNplDataModel) = with(view) {
         txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
         product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         product_name.text = MethodChecker.fromHtml(data.productName)
@@ -48,8 +45,9 @@ class PartialContentView(private val view: View,
             text_cashback_green.text = context.getString(R.string.template_cashback, data.cashbackPercentage.toString())
         }
 
-        campaign_ribbon.setDynamicProductDetailListener(listener)
-        campaign_ribbon.renderOnGoingCampaign(data)
+        val campaignRibbon = campaign_ribbon
+        campaignRibbon.setCampaignCountDownCallback(this@PartialContentView)
+        campaignRibbon.setDynamicProductDetailListener(listener)
 
         when {
             isUpcomingNplType -> {
@@ -57,6 +55,7 @@ class PartialContentView(private val view: View,
                 renderCampaignInactiveNpl(data.price.priceFmt)
             }
             data.campaign.isActive -> {
+                campaignRibbon.renderOnGoingCampaign(data)
                 renderCampaignActive(data.campaign, data.stockWording)
             }
             else -> {
@@ -99,20 +98,21 @@ class PartialContentView(private val view: View,
     private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
         setTextCampaignActive(campaign)
 //        renderFlashSale(campaign, stockWording)
+        campaign_ribbon.show()
     }
 
     private fun renderCampaignInactive(price: String) = with(view) {
         txt_main_price.text = price
         text_slash_price.gone()
         text_discount_red.gone()
-        discount_timer_holder.gone()
+        campaign_ribbon.gone()
     }
 
     private fun renderCampaignInactiveNpl(price: String) = with(view) {
         txt_main_price.text = price
-//        discount_timer_holder.show()
         text_slash_price.gone()
         text_discount_red.gone()
+        campaign_ribbon.gone()
     }
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
@@ -151,50 +151,60 @@ class PartialContentView(private val view: View,
         }
     }
 
-    private fun renderFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
-        if (campaign.isCampaignNewUser && !campaign.shouldShowRibbonCampaign) {
-            renderFlashSaleNewUserAbove24H(campaign, stockWording)
-        } else if (campaign.shouldShowRibbonCampaign) {
-            if (campaign.campaignID.toInt() > 0) {
+//    private fun renderFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
+//        if (campaign.isCampaignNewUser && !campaign.shouldShowRibbonCampaign) {
+//            renderFlashSaleNewUserAbove24H(campaign, stockWording)
+//        } else if (campaign.shouldShowRibbonCampaign) {
+//            if (campaign.campaignID.toInt() > 0) {
 //                renderStockBarFlashSale(campaign, stockWording)
-            } else {
+//            } else {
 //                renderSlashPriceFlashSale()
-            }
+//            }
 //            showCountDownTimer(campaign)
-            text_title_discount_timer.text = campaign.campaignTypeName
-            discount_timer_holder.show()
-        } else {
-            discount_timer_holder.gone()
-        }
-    }
+//            text_title_discount_timer.text = campaign.campaignTypeName
+//            discount_timer_holder.show()
+//        } else {
+//            discount_timer_holder.gone()
+//        }
+//    }
 
-    private fun renderFlashSaleNewUserAbove24H(campaign: CampaignModular, stockWording: String) = with(view) {
+//    private fun renderFlashSaleNewUserAbove24H(campaign: CampaignModular, stockWording: String) = with(view) {
 //        renderStockBarFlashSale(campaign, stockWording)
-        count_down.hide()
-        discount_timer_holder.show()
-        text_title_discount_timer.text = campaign.campaignTypeName
-    }
+//        count_down.hide()
+//        discount_timer_holder.show()
+//        text_title_discount_timer.text = campaign.campaignTypeName
+//    }
 
-    private fun renderNplRibbon(ribbonCopy: String, startDate: String) = with(view) {
-        if (startDate.isGivenDateIsBelowThan24H()) {
-            text_title_discount_timer.text = context.getString(R.string.campaign_npl_start)
-            showCountDownTimerUpcomingNpl(startDate)
-        } else {
-            text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
-            count_down.hide()
-        }
+//    private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
+//        showStockBarFlashSale()
+//        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+//        setProgressStockBar(campaign, stockWording)
+//    }
 
+//    private fun renderSlashPriceFlashSale() {
 //        hideStockBarAndBackgroundColor()
-        discount_timer_holder.show()
-    }
+//    }
+
+//    private fun renderNplRibbon(ribbonCopy: String, startDate: String) = with(view) {
+//        if (startDate.isGivenDateIsBelowThan24H()) {
+//            text_title_discount_timer.text = context.getString(R.string.campaign_npl_start)
+//            showCountDownTimerUpcomingNpl(startDate)
+//        } else {
+//            text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
+//            count_down.hide()
+//        }
+//
+//        hideStockBarAndBackgroundColor()
+//        discount_timer_holder.show()
+//    }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(view) {
         txt_main_price.text = context.getString(R.string.template_price, "",
                 campaign.originalPrice.getCurrencyFormatted())
-        discount_timer_holder.gone()
+//        discount_timer_holder.gone()
         text_discount_red.gone()
         text_slash_price.gone()
-        sale_text_stock_available.gone()
+//        sale_text_stock_available.gone()
         text_stock_available.show()
     }
 
@@ -203,26 +213,30 @@ class PartialContentView(private val view: View,
         tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
     }
 
-    private fun showCountDownTimerUpcomingNpl(startDateData: String) = with(view) {
-        try {
-            val now = System.currentTimeMillis()
-            val startTime = startDateData.toLongOrZero() * ProductNotifyMeViewHolder.SECOND
-            val startDate = Date(startTime)
-            val delta = startDate.time - startTime
-
-            if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
-                count_down.show()
-                count_down.setup(delta, startDate) {
-                    listener.refreshPage()
-                }
-                discount_timer_holder.show()
-            } else {
-                layout_discount_timer.gone()
-            }
-        } catch (e: Throwable) {
-            discount_timer_holder.hide()
-        }
+    override fun onOnGoingCampaignEnded(campaign: CampaignModular) {
+        hideProductCampaign(campaign = campaign)
     }
+
+//    private fun showCountDownTimerUpcomingNpl(startDateData: String) = with(view) {
+//        try {
+//            val now = System.currentTimeMillis()
+//            val startTime = startDateData.toLongOrZero() * ProductNotifyMeViewHolder.SECOND
+//            val startDate = Date(startTime)
+//            val delta = startDate.time - startTime
+//
+//            if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
+//                count_down.show()
+//                count_down.setup(delta, startDate) {
+//                    listener.refreshPage()
+//                }
+//                discount_timer_holder.show()
+//            } else {
+//                layout_discount_timer.gone()
+//            }
+//        } catch (e: Throwable) {
+//            discount_timer_holder.hide()
+//        }
+//    }
 
 //    private fun showCountDownTimer(campaign: CampaignModular) = with(view) {
 //        try {
@@ -254,5 +268,20 @@ class PartialContentView(private val view: View,
 //        } catch (ex: Exception) {
 //            stock_bar_sold_product.hide()
 //        }
+//    }
+
+//    private fun showStockBarFlashSale() = with(view) {
+//        stock_bar_sold_product.show()
+//        sale_text_stock_available.show()
+//    }
+
+//    private fun hideStockBarFlashSale() = with(view) {
+//        stock_bar_sold_product.hide()
+//        sale_text_stock_available.hide()
+//    }
+
+//    private fun hideStockBarAndBackgroundColor() = with(view) {
+//        hideStockBarFlashSale()
+//        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 //    }
 }

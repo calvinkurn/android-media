@@ -54,20 +54,20 @@
             app:layout_constraintTop_toBottomOf="@id/tpg_campaign_name_s2" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:visibility="gone"
-            android:id="@+id/tgp_sold_out_s2"
-            android:textColor="@color/Unify_Static_White"
-            app:typographyType="small"
-            android:text="Terjual habis! Cek barang lainnya yuk"
+            android:id="@+id/tgp_sold_out_wording_s2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:text="Terjual habis! Cek barang lainnya yuk"
+            android:textColor="@color/Unify_Static_White"
+            android:visibility="gone"
             app:layout_constraintLeft_toRightOf="@id/iu_campaign_logo_s2"
-            app:layout_constraintTop_toBottomOf="@id/tpg_campaign_name_s2" />
+            app:layout_constraintTop_toBottomOf="@id/tpg_campaign_name_s2"
+            app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tgp_stock_copy_s2"
+            android:id="@+id/tgp_stock_wording_s2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
