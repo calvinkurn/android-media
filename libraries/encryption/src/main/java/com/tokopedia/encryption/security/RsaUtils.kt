@@ -1,4 +1,4 @@
-package com.tokopedia.sessioncommon.util
+package com.tokopedia.encryption.security
 
 /**
  * Created by Yoris Prayogo on 16/02/21.
@@ -6,8 +6,6 @@ package com.tokopedia.sessioncommon.util
  */
 
 import android.util.Base64
-import com.tokopedia.sessioncommon.extensions.getSHA256Hash
-import com.tokopedia.sessioncommon.extensions.toHexString
 import java.security.KeyFactory
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.X509EncodedKeySpec
@@ -18,19 +16,17 @@ import javax.crypto.Cipher
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
 
-class RSAUtils {
+object RsaUtils {
 
-    companion object {
-        private const val TRANSFORMATION = "RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING"
-        private const val RSA_ALGORITHM = "RSA"
-    }
+    private const val TRANSFORMATION = "RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING"
+    private const val RSA_ALGORITHM = "RSA"
 
     fun encrypt(message: String, publicKey: String, isNeedHash: Boolean = false): String {
         try {
             if (message.isNotEmpty()) {
                 var finalMsg = message
                 if(isNeedHash){
-                    finalMsg = message.getSHA256Hash().toHexString()
+                    finalMsg = message.sha256()
                 }
                 val convertedPublicKey = getPublicKey(cleanKey(publicKey))
                 convertedPublicKey?.run {
