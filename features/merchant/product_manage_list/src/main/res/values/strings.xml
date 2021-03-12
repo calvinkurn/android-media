@@ -241,7 +241,6 @@
     <string name="product_manage_campaign_stock_campaign_stock">Stok Campaign (%s)</string>
     <string name="product_manage_campaign_stock_event_action">Lihat varian produk</string>
     <string name="product_manage_campaign_stock_variant_zero_desc">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
-    <string name="product_manage_campaign_stock_open_campaign">Buka halaman Campaign lewat laptop atau komputer untuk ubah detail stok campaign.</string>
     <string name="product_manage_campaign_stock_redirection_title">Pantau pergerakan stok campaign \ndi manapun, kapanpun</string>
     <string name="product_manage_campaign_stock_redirection_desc">Gunakan aplikasi Tokopedia Seller untuk lihat alokasi stok produk untuk campaign di tokomu.</string>
 
@@ -270,7 +269,7 @@
     <string name="label_delete">Delete</string>
 
     <string name="courier_option">Atur Layanan Kurir</string>
-    
+
     <!--broadcast chat-->
     <string name="broadcast_chat_error_state_message_empty_stock">Broadcast Chat hanya bisa dibuat untuk produk yang masih tersedia.</string>
     <string name="broadcast_chat_error_state_message_empty_variant">Oops, Broadcast Chat gagal dibuat. Yuk, coba lagi!</string>
@@ -297,4 +296,13 @@
     <string name="content_desc_btnMultiEdit">button atur sekaligus</string>
     <string name="message_loading_progress_dialog">Loading</string>
     <string name="checklist_filter_see_all_product_manage">Checklist Filter</string>
+    <string name="bottom_sheet_stock_location_title">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
+    <string name="bottom_sheet_stock_location_description">Halaman ini menampilkan stok di lokasi utama saja</string>
+    <string name="bottom_sheet_stock_location_primary_cta">Saya Mengerti</string>
+    <string name="product_manage_multi_location_delete_product_description">Produk akan dihapus di semua lokasi dan  kamu harus mendaftarkannya lagi jika ingin  ditampilkan kembali.</string>
+    <string name="product_manage_multi_location_delete_product_title">Yakin hapus produk?</string>
+    <string name="product_manage_no_access_title">Kamu tidak punya izin untuk mengakses halaman Produk</string>
+    <string name="product_manage_back_to_home">Kembali ke Home</string>
+    <string name="product_manage_no_access_description">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
+    <string name="product_manage_refresh_page">Refresh Halaman</string>
 </resources>

@@ -100,6 +100,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -1036,13 +1037,24 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
             onErrorLogin(ErrorHandler.getErrorMessage(context, it))
-
         }
+    }
+
+    override fun showLocationAdminPopUp(): () -> Unit = {
+        LocationAdminDialog(context) {
+            clearData()
+            dismissLoadingLogin()
+        }.show()
+    }
+
+    override fun showGetAdminTypeError(): (Throwable) -> Unit = {
+        val errorMessage = ErrorHandler.getErrorMessage(context, it)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        dismissLoadingLogin()
     }
 
     override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
