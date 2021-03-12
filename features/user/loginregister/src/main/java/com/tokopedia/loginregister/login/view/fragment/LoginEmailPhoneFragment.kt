@@ -48,6 +48,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -102,6 +103,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -762,6 +764,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             setFCM()
             SubmitDeviceWorker.scheduleWorker(this, true)
             DataVisorWorker.scheduleWorker(this, true)
+            AppAuthWorker.scheduleWorker(this, true)
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
@@ -1078,13 +1081,24 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
             onErrorLogin(ErrorHandler.getErrorMessage(context, it))
-
         }
+    }
+
+    override fun showLocationAdminPopUp(): () -> Unit = {
+        LocationAdminDialog(context) {
+            clearData()
+            dismissLoadingLogin()
+        }.show()
+    }
+
+    override fun showGetAdminTypeError(): (Throwable) -> Unit = {
+        val errorMessage = ErrorHandler.getErrorMessage(context, it)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        dismissLoadingLogin()
     }
 
     override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
