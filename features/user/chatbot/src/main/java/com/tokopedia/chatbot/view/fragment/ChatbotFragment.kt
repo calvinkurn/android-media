@@ -437,16 +437,21 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         sendEventForWelcomeMessage(visitable)
-        privateManageActionBubble(visitable)
+        manageActionBubble(visitable)
         mapMessageToList(visitable)
         getViewState().hideEmptyMessage(visitable)
         getViewState().onCheckToHideQuickReply(visitable)
     }
 
-    private fun privateManageActionBubble(visitable: Visitable<*>) {
-        if (visitable is MessageViewModel && visitable.isSender) {
-            getViewState().hideActionBubbleOnSenderMsg()
+    private fun manageActionBubble(visitable: Visitable<*>) {
+        when{
+            visitable is MessageViewModel && visitable.isSender -> hideActionBubble()
+            visitable is AttachInvoiceSentViewModel && visitable.isSender -> hideActionBubble()
         }
+    }
+
+    private fun hideActionBubble() {
+        getViewState().hideActionBubbleOnSenderMsg()
     }
 
     private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
@@ -668,9 +673,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
-        getViewState().hideActionBubble(model)
         chatbotAnalytics.eventClick(ACTION_ACTION_BUBBLE_CLICKED)
-        presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
+        if (selected.action.equals("lihat_semua_transaksi", true)) {
+            showSearchInvoiceScreen()
+        } else {
+            getViewState().hideActionBubble(model)
+            presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
+        }
     }
 
     override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
