@@ -19,7 +19,7 @@ class ShopEditAddressUtilsTest {
     @Test
     fun `Validator Address return true`() {
         val address1 = "Jln. Dr. Satrio no, 364. Jakarta Selatan"
-        val address2 = "Jalan Dr. Satrio, nomer 355, Setiabudi, Jakarta Selatan"
+        val address2 = "Jln. Dr. Satrio no, 364, Setiabudi, Jakarta Selatan"
 
         val expectedResult = true
 
