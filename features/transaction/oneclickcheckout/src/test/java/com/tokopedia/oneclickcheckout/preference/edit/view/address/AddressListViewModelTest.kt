@@ -78,6 +78,37 @@ class AddressListViewModelTest {
     }
 
     @Test
+    fun `Search Address Success With Chosen Address`() {
+        val response = AddressListModel(listAddress = listOf(
+                RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    latitude = "1"
+                    longitude = "1"
+                    postalCode = "1"
+                },
+                RecipientAddressModel().apply {
+                    id = "2"
+                    destinationDistrictId = "2"
+                    latitude = "2"
+                    longitude = "2"
+                    postalCode = "2"
+                    isStateChosenAddress = true
+                }))
+        every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response)
+
+        addressListViewModel.searchAddress("", 0, "0", false)
+
+        response.listAddress[1].isSelected = true
+        assertEquals(OccState.FirstLoad(response), addressListViewModel.addressList.value)
+        assertEquals("2", addressListViewModel.selectedId)
+        assertEquals("2", addressListViewModel.destinationLongitude)
+        assertEquals("2", addressListViewModel.destinationLatitude)
+        assertEquals("2", addressListViewModel.destinationDistrict)
+        assertEquals("2", addressListViewModel.destinationPostalCode)
+    }
+
+    @Test
     fun `Set Selected Address`() {
         val addressModel1 = RecipientAddressModel().apply {
             id = "1"
