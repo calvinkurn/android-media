@@ -6,20 +6,14 @@ package com.tokopedia.sessioncommon.domain.query
  */
 
 object LoginTokenV2Query {
-
-    private const val grantType = "\$grant_type"
-    private const val username = "\$username"
-    private const val password = "\$password"
-    private const val hash = "\$h"
-
     val loginEmailQuery: String = """
-        mutation login_email_v2($grantType: String!, $username: String!, $password: String!, $hash: String!){
+        mutation login_email_v2(${'$'}grantType: String!, ${'$'}username: String!, ${'$'}password: String!, ${'$'}hash: String!){
             login_token_v2(
                 input: {
-                    grant_type: $grantType
-                    username: $username
-                    password: $password
-                    h: $hash
+                    grant_type: ${'$'}grantType
+                    username: ${'$'}username
+                    password: ${'$'}password
+                    h: ${'$'}hash
                 }
             ) {
                 acc_sid
