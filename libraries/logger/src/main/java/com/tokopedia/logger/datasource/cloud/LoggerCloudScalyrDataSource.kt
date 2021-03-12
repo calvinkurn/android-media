@@ -56,7 +56,6 @@ class LoggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEve
             e.printStackTrace()
         } finally {
             urlConnection?.disconnect()
-            Log.d("iniresponseapa", responseCode.toString())
             return responseCode
         }
     }
