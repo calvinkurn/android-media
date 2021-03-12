@@ -97,8 +97,13 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
             OccIdlingResource.increment()
             withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
+                if (selectedId == "-1" && !isLoadMore) {
+                    addressList.firstOrNull { it.isStateChosenAddress }?.run {
+                        selectedId = id
+                    }
+                }
                 for (item in addressList) {
-                    item.isSelected = item.id == selectedId || item.isStateChosenAddress
+                    item.isSelected = item.id == selectedId
                     if (item.id == selectedId) {
                         destinationDistrict = item.destinationDistrictId
                         destinationLatitude = item.latitude
