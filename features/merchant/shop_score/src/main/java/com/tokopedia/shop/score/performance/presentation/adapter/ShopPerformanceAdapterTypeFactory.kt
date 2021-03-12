@@ -9,8 +9,9 @@ import com.tokopedia.shop.score.performance.presentation.model.*
 
 class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: ShopPerformanceListener,
                                         private val itemShopPerformanceListener: ItemShopPerformanceListener,
-                                        private val itemPotentialPowerMerchantListener: ItemPotentialPowerMerchantListener,
-                                        private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener
+                                        private val itemPotentialPowerMerchantListener: ItemPotentialRegularMerchantListener,
+                                        private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener,
+                                        private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener
 ) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
     override fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int {
@@ -29,16 +30,16 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return TransitionPeriodReliefViewHolder.LAYOUT
     }
 
-    override fun type(itemCurrentStatusPMUiModel: ItemCurrentStatusPMUiModel): Int {
-        return ItemCurrentStatusPMViewHolder.LAYOUT
+    override fun type(itemStatusRMUiModel: ItemStatusRMUiModel): Int {
+        return ItemStatusPMViewHolder.LAYOUT
     }
 
     override fun type(itemPotentialPMBenefitUIModel: SectionPotentialPMBenefitUiModel): Int {
         return CardPotentialPMBenefitViewHolder.LAYOUT
     }
 
-    override fun type(itemPotentialStatusPMUiModel: ItemPotentialStatusPMUiModel): Int {
-        return ItemPotentialStatusPMViewHolder.LAYOUT
+    override fun type(itemStatusPMUiModel: ItemStatusPMUiModel): Int {
+        return ItemStatusRMViewHolder.LAYOUT
     }
 
     override fun type(sectionShopRecommendationUiModel: SectionShopRecommendationUiModel): Int {
@@ -60,9 +61,9 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             ItemDetailPerformanceViewHolder.LAYOUT -> ItemDetailPerformanceViewHolder(parent, itemShopPerformanceListener)
             ShopPerformanceShimmerViewHolder.LAYOUT -> ShopPerformanceShimmerViewHolder(parent)
             TransitionPeriodReliefViewHolder.LAYOUT -> TransitionPeriodReliefViewHolder(parent)
-            ItemCurrentStatusPMViewHolder.LAYOUT -> ItemCurrentStatusPMViewHolder(parent)
+            ItemStatusPMViewHolder.LAYOUT -> ItemStatusPMViewHolder(parent, itemStatusPowerMerchantListener)
             CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(parent)
-            ItemPotentialStatusPMViewHolder.LAYOUT -> ItemPotentialStatusPMViewHolder(parent, itemPotentialPowerMerchantListener)
+            ItemStatusRMViewHolder.LAYOUT -> ItemStatusRMViewHolder(parent, itemPotentialPowerMerchantListener)
             SectionShopFeatureRecommendationViewHolder.LAYOUT -> SectionShopFeatureRecommendationViewHolder(parent, itemRecommendationFeatureListener)
             ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(parent)
             else -> return super.createViewHolder(parent, type)

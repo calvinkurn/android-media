@@ -1,8 +1,15 @@
 package com.tokopedia.shop.score.common.domain.mapper
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
+import com.tokopedia.shop.score.common.ShopScoreConstant.DOWN_POTENTIAL_PM
+import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_BRONZE_PM
+import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_DIAMOND_PM
+import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_GOLD_PM
+import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_SILVER_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_ADMIN_FEATURE
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_BROADCAST_CHAT_FEATURE_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_FREE_SHIPPING_FEATURE_URL
@@ -38,12 +45,16 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_TOTAL_LEVEL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ZERO
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.STILL_POTENTIAL_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER
+import com.tokopedia.shop.score.common.ShopScoreConstant.UP_POTENTIAL_PM
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ShopScoreMapper @Inject constructor(private val userSession: UserSessionInterface) {
+class ShopScoreMapper @Inject constructor(private val userSession: UserSessionInterface,
+                                          @ApplicationContext val context: Context?
+) {
 
     fun mapToShopPerformanceDetail(titlePerformanceDetail: String): ShopPerformanceDetailUiModel {
         val shopPerformanceDetailUiModel = ShopPerformanceDetailUiModel()
@@ -110,6 +121,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 add(mapToTransitionPeriodReliefUiModel())
             }
             add(mapToCardPotentialBenefit())
+            add(mapToItemCurrentStatusRMUiModel())
+            add(mapToItemPotentialStatusPMUiModel(true))
         }
     }
 
@@ -569,6 +582,68 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             ))
         }
         return itemPotentialPMBenefitList
+    }
+
+    private fun mapToItemPotentialStatusPMUiModel(statusActive: Boolean): ItemStatusPMUiModel {
+        val nextUpdate = "5 Juli 2021"
+        val statusPM = "naik"
+        val gradeName = "Gold"
+        val potentialGrade = "Diamond"
+        val nonActivePM = "nonaktif"
+        val bgPowerMerchant = when (gradeName) {
+            GRADE_BRONZE_PM -> {
+                R.drawable.bg_header_bronze
+            }
+            GRADE_SILVER_PM -> {
+                R.drawable.bg_header_silver
+            }
+            GRADE_GOLD_PM -> {
+                R.drawable.bg_header_gold
+            }
+            GRADE_DIAMOND_PM -> {
+                R.drawable.bg_header_diamond
+            }
+            else -> 0
+        }
+        val descStatus = when(statusActive) {
+            true -> {
+                when (statusPM) {
+                    UP_POTENTIAL_PM, STILL_POTENTIAL_PM -> {
+                        context?.getString(R.string.desc_up_still_pm_status, statusPM, potentialGrade).orEmpty()
+                    }
+                    DOWN_POTENTIAL_PM -> {
+                        context?.getString(R.string.desc_up_still_pm_status, statusPM, potentialGrade).orEmpty()
+                    }
+                    else -> ""
+                }
+            }
+            else -> {
+                context?.getString(R.string.desc_inactive_pm_status, nonActivePM).orEmpty()
+            }
+        }
+        return ItemStatusPMUiModel(statusPowerMerchant = gradeName, bgPowerMerchant = bgPowerMerchant,
+                updateDatePotential = nextUpdate, descPotentialPM = descStatus, isActivePM = true)
+    }
+
+    private fun mapToItemCurrentStatusRMUiModel(): ItemStatusRMUiModel {
+        val updateDate = "29 Agustus 2021"
+        val statusPM = "Gold"
+        val bgPowerMerchant = when (statusPM) {
+            GRADE_BRONZE_PM -> {
+                R.drawable.bg_header_bronze
+            }
+            GRADE_SILVER_PM -> {
+                R.drawable.bg_header_silver
+            }
+            GRADE_GOLD_PM -> {
+                R.drawable.bg_header_gold
+            }
+            GRADE_DIAMOND_PM -> {
+                R.drawable.bg_header_diamond
+            }
+            else -> 0
+        }
+        return ItemStatusRMUiModel(updateDatePotential = updateDate, bgGradePM = bgPowerMerchant, statusGradePM = statusPM)
     }
 
     private fun mapToCardTooltipLevel(level: Int): List<CardTooltipLevelUiModel> {

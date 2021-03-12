@@ -50,6 +50,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvDescEligiblePowerMerchant">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerEligiblePowerMerchant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_12"
@@ -81,14 +82,14 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_see_all_benefit_pm"
-                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginEnd="@dimen/spacing_lvl2"
                     android:textColor="@color/Unify_G500"
+                    android:background="?selectableItemBackground"
                     app:layout_constraintStart_toStartOf="@id/tv_pm_potential_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_pm_potential_value"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
                     android:text="@string/see_all_benefit" />

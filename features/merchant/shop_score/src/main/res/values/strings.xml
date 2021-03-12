@@ -73,16 +73,20 @@
     <string name="btn_show_penalty">Tampilkan Pelanggaran</string>
     <string name="date_penalty_detail">Tanggal pelanggaran %s</string>
     <string name="current_regarding_penalty_pm_label">Berdasarkan reputasi, tokomu dapat</string>
+    <string name="grade_higher_than_reputation_pm_label">Berdasarkan Performamu di %s, tokomu dapat, tokomu dapat</string>
+
     <string name="btn_call_help_center">Hubungi Pusat Bantuan</string>
     <string name="next_update_date_pm_status">Update berikutnya: %s</string>
     <string name="point_deduction_date_result_detail_penalty">Mulai aktif pada: <![CDATA[<b>%1s</b>]]></string>
     <string name="on_going_date_result_detail_penalty">Aktif hingga: <![CDATA[<b>%1s</b>]]></string>
     <string name="over_penalty_date_result_detail_penalty">Selesai sejak: <![CDATA[<b>%1s</b>]]></string>
-    <string name="desc_pm_status">Dari Performamu saat ini, tokomu berpotensi <![CDATA[<b>%1s</b>]]> di grade <![CDATA[<b>%2s</b>]]>.</string>
+    <string name="desc_up_still_pm_status">Dari Performamu saat ini, tokomu berpotensi <![CDATA[<b>%1s</b>]]> di grade <![CDATA[<b>%2s</b>]]>.</string>
+    <string name="desc_down_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Karena saat ini masih masa transisi, kamu punya waktu untuk memperbaiki Performamu, ya!</string>
+    <string name="desc_inactive_pm_status">Dari Performamu saat ini, status Power Merchant <![CDATA[<b>berpotensi jadi %s</b>]]>. Karena saat ini masih masa transisi, kamu punya waktu untuk memperbaiki Performamu, ya!</string>
     <string name="ticker_deduction_point_penalty">Ada potongan poin penalti %s. Lihat detail &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
     <string name="content_penalty_label">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="title_eligible_status_power_merchant">Selamat! Karena Performamu, kamu bisa jadi Power Merchant %s</string>
-    <string name="desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga <![CDATA[<b>%1s kali lipat</b>]]></string>
+    <string name="desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga <![CDATA[<b>5 kali lipat</b>]]></string>
     <string name="title_shop_pm_potential">Toko dengan Power Merchant berpotensi:</string>
     <string name="text_item_potential_pm_benefit_1">Menerima pesanan lebih banyak <![CDATA[<b>5 kali lipat</b>]]></string>
     <string name="text_item_potential_pm_benefit_2">Meningkatkan penghasilan hingga <![CDATA[<b>5,5 kali lipat</b>]]></string>
@@ -289,5 +293,7 @@
     
     <string name="title_header_performance_new_seller_before_transition">Belum ada level &amp; skor untuk tokomu</string>
     <string name="desc_header_performance_new_seller_before_transition">Level &amp; skor Performa Tokomu akan ditampilkan jika sudah 90 hari bergabung. Kamu akan dapat proyeksi skor di hari ke-60, pada %s, ya.</string>
+    <string name="desc_next_update_pm_section">Update kenaikan grade dilakukan setiap bulan dan penurunan grade setiap 3 bulan.</string>
+    <string name="title_next_update_pm_section">Update Berikutnya</string>
 
 </resources>

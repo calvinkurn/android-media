@@ -10,14 +10,15 @@ interface ItemShopPerformanceListener {
     fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String)
 }
 
-interface ItemCurrentStatusPowerMerchantListener {
-    fun onItemClickedCurrentStatus()
-}
-
-interface ItemPotentialPowerMerchantListener {
-    fun onItemClickedBenefitPotentialPM()
+interface ItemPotentialRegularMerchantListener {
+    fun onItemClickedBenefitPotentialRM()
 }
 
 interface ItemRecommendationFeatureListener {
     fun onItemClickedRecommendationFeature(appLink: String)
+}
+
+interface ItemStatusPowerMerchantListener {
+    fun onItemClickedNextUpdatePM()
+    fun onItemClickedGoToPMActivation()
 }

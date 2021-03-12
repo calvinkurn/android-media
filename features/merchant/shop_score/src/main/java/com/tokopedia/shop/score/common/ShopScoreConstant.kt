@@ -51,4 +51,13 @@ object ShopScoreConstant {
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
+    const val PM_INACTIVE = "inactive"
+    const val PM_ACTIVE = "active"
+    const val UP_POTENTIAL_PM = "naik"
+    const val STILL_POTENTIAL_PM = "tetap"
+    const val DOWN_POTENTIAL_PM = "turun"
+    const val GRADE_BRONZE_PM = "Bronze"
+    const val GRADE_SILVER_PM = "Silver"
+    const val GRADE_GOLD_PM = "Gold"
+    const val GRADE_DIAMOND_PM = "Diamon"
 }

@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.presentation.adapter.*
+import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetNextUpdatePMSection
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPerformanceDetail
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipLevel
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipScore
@@ -20,15 +23,15 @@ import javax.inject.Inject
 
 
 class ShopPerformancePageFragment: BaseDaggerFragment(),
-        ShopPerformanceListener, ItemShopPerformanceListener, ItemCurrentStatusPowerMerchantListener,
-        ItemPotentialPowerMerchantListener, ItemRecommendationFeatureListener {
+        ShopPerformanceListener, ItemShopPerformanceListener,
+        ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener, ItemStatusPowerMerchantListener {
 
     @Inject
     lateinit var viewModel: ShopPerformanceViewModel
 
     private val shopPerformanceAdapterTypeFactory by lazy {
         ShopPerformanceAdapterTypeFactory(this, this,
-                this, this)
+                this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -76,12 +79,19 @@ class ShopPerformancePageFragment: BaseDaggerFragment(),
         bottomSheetDetail.show(childFragmentManager)
     }
 
-    override fun onItemClickedCurrentStatus() {
-
+    override fun onItemClickedNextUpdatePM() {
+        val bottomSheetNextUpdate = BottomSheetNextUpdatePMSection.newInstance()
+        bottomSheetNextUpdate.show(childFragmentManager)
     }
 
-    override fun onItemClickedBenefitPotentialPM() {
+    override fun onItemClickedGoToPMActivation() {
+        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+        RouteManager.route(requireContext(), appLink)
+    }
 
+    override fun onItemClickedBenefitPotentialRM() {
+        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+        RouteManager.route(requireContext(), appLink)
     }
 
     override fun onItemClickedRecommendationFeature(appLink: String) {

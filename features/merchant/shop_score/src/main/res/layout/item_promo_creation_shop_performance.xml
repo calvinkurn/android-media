@@ -73,7 +73,8 @@
             android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
             android:layout_marginTop="@dimen/layout_lvl1"
             android:adjustViewBounds="true"
-            android:background="@drawable/ic_squircle"
+            android:elevation="@dimen/spacing_lvl2"
+            android:background="@drawable/ic_squircle_recommendation"
             android:padding="@dimen/dp_12" />
 
     </FrameLayout>
