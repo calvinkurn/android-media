@@ -7,13 +7,13 @@ package com.tokopedia.sessioncommon.domain.query
 
 object LoginTokenV2Query {
     val loginEmailQuery: String = """
-        mutation login_email_v2(${'$'}grantType: String!, ${'$'}username: String!, ${'$'}password: String!, ${'$'}hash: String!){
+        mutation login_email_v2(${'$'}grant_type: String!, ${'$'}username: String!, ${'$'}password: String!, ${'$'}h: String!){
             login_token_v2(
                 input: {
-                    grant_type: ${'$'}grantType
+                    grant_type: ${'$'}grant_type
                     username: ${'$'}username
                     password: ${'$'}password
-                    h: ${'$'}hash
+                    h: ${'$'}h
                 }
             ) {
                 acc_sid
