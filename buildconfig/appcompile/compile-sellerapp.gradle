@@ -127,6 +127,7 @@ include "features:transaction:sellerorder"
 include "features:ordermanagement:snapshot"
 
 include "features:communication:push-notification-common"
+include "features:im:moengage_wrapper"
 
 include "features:user:attachproduct"
 include "features:user:attachcommon"

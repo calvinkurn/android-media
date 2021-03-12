@@ -98,13 +98,7 @@ class ProductReviewOldViewHolder(val view: View, val listener: DynamicProductDet
                     txt_like_static_pdp.show()
                 }
 
-                if (reviews.first().productVariantReview.variantTitle.isNotEmpty()) {
-                    txt_variant_review_pdp.show()
-                    txt_variant_review_pdp.text = reviews.first().productVariantReview.variantTitle
-                } else {
-                    txt_variant_review_pdp.hide()
 
-                }
                 rating_review_pdp.loadImage(RatingView.getRatingDrawable(reviewData.productRating))
                 txt_date_user_pdp.text = MethodChecker.fromHtml(
                         view.context.getString(R.string.date_review_pattern, reviewData.reviewCreateTime, "<b>" + reviewData.user.fullName + "</b>"))

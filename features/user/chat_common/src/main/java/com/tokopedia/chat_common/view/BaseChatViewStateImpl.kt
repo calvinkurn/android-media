@@ -358,5 +358,4 @@ open class BaseChatViewStateImpl(
     open fun getAttachmentMenuId() = R.id.rv_attachment_menu
     open fun getRootViewId() = R.id.main
     open fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
-
 }
