@@ -49,6 +49,8 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
                 widgetMyBills.setTitle(fintechProduct.info.title)
                 widgetMyBills.setDescription(fintechProduct.info.subtitle)
                 widgetMyBills.hasMoreInfo(true)
+
+                widgetMyBills.setAdditionalImage(fintechProduct.info.iconUrl)
                 widgetMyBills.visibility = View.VISIBLE
 
                 if (fintechProduct.checkBoxDisabled) {

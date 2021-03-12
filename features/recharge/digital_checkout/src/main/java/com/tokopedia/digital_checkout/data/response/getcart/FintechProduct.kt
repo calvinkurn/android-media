@@ -59,6 +59,9 @@ data class FintechProduct(
             var urlLink: String = "",
             @SerializedName("tooltip_text")
             @Expose
-            var tooltipText: String = ""
+            var tooltipText: String = "",
+            @SerializedName("icon_url")
+            @Expose
+            val iconUrl: String = ""
     ) : Parcelable
 }

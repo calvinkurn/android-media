@@ -4,7 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.layout_digital_checkout_my_bills_section.view.*
 import org.jetbrains.annotations.NotNull
@@ -33,11 +37,11 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
         }
 
     fun setTitle(title: String) {
-        tvCheckoutMyBillsHeaderTitle.text = title
+        tvCheckoutMyBillsHeaderTitle.text = MethodChecker.fromHtml(title)
     }
 
     fun setDescription(description: String) {
-        tvCheckoutMyBillsDescription.text = description
+        tvCheckoutMyBillsDescription.text = MethodChecker.fromHtml(description)
     }
 
     fun setChecked(isChecked: Boolean) {
@@ -52,6 +56,13 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
 
     fun hasMoreInfo(state: Boolean) {
         icCheckoutMyBillsInfo.visibility = if (state) View.VISIBLE else View.GONE
+    }
+
+    fun setAdditionalImage(imageUrl: String) {
+        if (imageUrl.isNotEmpty()) {
+            ivAdditionalFintechImage.loadImage(imageUrl)
+            ivAdditionalFintechImage.show()
+        } else ivAdditionalFintechImage.hide()
     }
 
     interface ActionListener {
