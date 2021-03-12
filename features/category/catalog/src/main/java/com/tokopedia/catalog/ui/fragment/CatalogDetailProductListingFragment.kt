@@ -313,11 +313,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         layout_no_data?.hide()
         resetPage()
         loadMoreTriggerListener?.resetState()
+        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
         fetchProductData(getProductListParams(getPage()))
-
         viewModel.fetchQuickFilters(getQuickFilterParams())
         setSortFilterIndicatorCounter()
-        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
     }
 
     override fun getDepartMentId(): String {
@@ -386,8 +385,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             putString(CategoryNavConstants.ROWS, pagingRowCount.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
-            putAllString(getSelectedSort())
-            putAllString(getSelectedFilter())
+            viewModel.searchParametersMap.value?.let { safeSearchParams ->
+                putAllString(safeSearchParams)
+            }
         }
         param.putString(CatalogConstant.PRODUCT_PARAMS, createParametersForQuery(searchProductRequestParams.parameters))
         return param
