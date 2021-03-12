@@ -36,7 +36,7 @@ class HomeViewModelSalamWidgetUnitTest {
         val salamWidget = SalamWidget(
                 SalamWidgetData(
                         "tokopedia://salam",
-                        "#000000",
+                        "test",
                         "Silahkan Bayar Sekarang",
                         1,
                         "tokopedia.com/image.png",
@@ -128,7 +128,7 @@ class HomeViewModelSalamWidgetUnitTest {
         val salamWidget = SalamWidget(
                 SalamWidgetData(
                         "tokopedia://salam",
-                        "#000000",
+                        "test",
                         "Silahkan Bayar Sekarang",
                         1,
                         "tokopedia.com/image.png",
@@ -143,7 +143,7 @@ class HomeViewModelSalamWidgetUnitTest {
                 listOf(
                         ReminderData(
                                 "tokopedia://salam",
-                                listOf("#000000"),
+                                listOf("test"),
                                 "Silahkan Bayar Sekarang",
                                 "1",
                                 "tokopedia.com/image.png",

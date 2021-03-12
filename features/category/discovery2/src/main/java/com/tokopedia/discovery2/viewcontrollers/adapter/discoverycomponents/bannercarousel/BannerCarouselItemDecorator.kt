@@ -16,14 +16,14 @@ internal class BannerCarouselItemDecorator : RecyclerView.ItemDecoration() {
         val itemCount = state.itemCount
 
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
-            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_4)
+            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_12)
+            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
         } else if (itemCount > 0 && itemPosition == itemCount - 1) {
-            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
-            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_4)
+            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_12)
+            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
         } else {
-            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_4)
-            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_4)
+            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
+            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
         }
     }
 }
