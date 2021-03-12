@@ -1,6 +1,6 @@
 package com.tokopedia.play.util.video.buffer
 
-import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineScope
@@ -15,19 +15,20 @@ import javax.inject.Inject
  * Created by jegul on 29/09/20
  */
 class PlayViewerVideoBufferGovernor (
-        private val playVideoManager: PlayVideoManager,
+        private val playVideoPlayer: PlayVideoWrapper,
         private val dispatcher: CoroutineDispatcherProvider,
         private val scope: CoroutineScope
 ) {
 
     class Factory @Inject constructor (
-            private val playVideoManager: PlayVideoManager,
             private val dispatcher: CoroutineDispatcherProvider
     ) {
 
-        fun create(scope: CoroutineScope): PlayViewerVideoBufferGovernor {
+        fun create(
+                playVideoPlayer: PlayVideoWrapper,
+                scope: CoroutineScope): PlayViewerVideoBufferGovernor {
             return PlayViewerVideoBufferGovernor(
-                    playVideoManager = playVideoManager,
+                    playVideoPlayer = playVideoPlayer,
                     dispatcher = dispatcher,
                     scope = scope
             )
@@ -36,7 +37,7 @@ class PlayViewerVideoBufferGovernor (
 
     fun startBufferGovernance() {
         scope.launch(dispatcher.immediate) {
-            playVideoManager.getVideoStateFlow()
+            playVideoPlayer.getVideoStateFlow()
                     .distinctUntilChanged()
                     .flowOn(dispatcher.io)
                     .collectLatest { state ->
@@ -49,14 +50,12 @@ class PlayViewerVideoBufferGovernor (
     }
 
     private fun resetPlayer() {
-        if (playVideoManager.isVideoLive()) {
-            val videoUri = playVideoManager.currentUri
-            playVideoManager.release()
-            if (videoUri != null) playVideoManager.playUri(videoUri, autoPlay = true)
-        } else {
-            playVideoManager.stop(resetState = false)
-            playVideoManager.resumeOrPlayPreviousVideo(true)
-        }
+        val videoUri = playVideoPlayer.currentUri
+
+        if (playVideoPlayer.isVideoLive()) playVideoPlayer.release()
+        else playVideoPlayer.stop(resetState = false)
+
+        if (videoUri != null) playVideoPlayer.playUri(videoUri, autoPlay = true)
     }
 
     companion object {

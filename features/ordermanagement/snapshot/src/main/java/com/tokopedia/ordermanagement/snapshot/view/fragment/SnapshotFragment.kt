@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -50,6 +51,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     private val REQUEST_CODE_LOGIN = 588
     private var orderId = ""
     private var orderDetailId = ""
+    private var isSnapshotFromSOM = false
     private var responseSnapshot = GetOrderSnapshot()
     private var srlSnapshot: SwipeToRefresh? = null
     private var refreshHandler: RefreshHandler? = null
@@ -120,6 +122,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
         if (arguments?.getString(PARAM_ORDER_ID) != null && arguments?.getString(PARAM_ORDER_DETAIL_ID) != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
             orderDetailId = arguments?.getString(PARAM_ORDER_DETAIL_ID).toString()
+            isSnapshotFromSOM = arguments?.getBoolean(IS_SNAPSHOT_FROM_SOM) ?: false
             val paramSnapshot = SnapshotParam(orderId = orderId, orderDetailId = orderDetailId)
             snapshotViewModel.loadSnapshot(paramSnapshot)
         }
@@ -161,9 +164,13 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                         visible()
                         text = getString(R.string.btn_snapshot_to_pdp_label)
                         setOnClickListener {
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId.toString())
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId)
                             userSession.userId?.let { userId ->
-                                SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId.toString(), userId)
+                                if (isSnapshotFromSOM) {
+                                    SnapshotAnalytics.clickSeeProductPageFromSOM(result.data.orderDetail.productId, userId)
+                                } else {
+                                    SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId, userId)
+                                }
                             }
                         }
                     }
@@ -200,7 +207,11 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
             RouteManager.route(it, ApplinkConst.SHOP, shopId)
         }
         userSession.userId?.let { userId ->
-            SnapshotAnalytics.clickShopPage(shopId, userId)
+            if (isSnapshotFromSOM) {
+                SnapshotAnalytics.clickShopPageFromSOM(shopId, userId)
+            } else {
+                SnapshotAnalytics.clickShopPage(shopId, userId)
+            }
         }
     }
 

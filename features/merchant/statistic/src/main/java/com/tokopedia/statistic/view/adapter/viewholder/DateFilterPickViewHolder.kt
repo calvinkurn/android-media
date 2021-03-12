@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
-import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.bottomsheet.CalendarPicker
+import com.tokopedia.statistic.view.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_date_range_pick.view.*
 import java.util.*
 
@@ -32,22 +32,11 @@ class DateFilterPickViewHolder(
     }
 
     private var element: DateFilterItem.Pick? = null
-    private val datePicker: CalendarPicker by lazy {
-        val picker = CalendarPicker.newInstance()
-        if (element?.type == DateFilterItem.TYPE_PER_WEEK) {
-            val title = itemView?.context?.getString(R.string.stc_per_week).orEmpty()
-            picker.setMode(CalendarPickerView.SelectionMode.RANGE)
-            picker.setTitle(title)
-        } else if (element?.type == DateFilterItem.TYPE_PER_DAY) {
-            val title = itemView?.context?.getString(R.string.stc_per_day).orEmpty()
-            picker.setMode(CalendarPickerView.SelectionMode.SINGLE)
-            picker.setTitle(title)
-        }
-        return@lazy picker
-    }
+    private var datePicker: CalendarPicker? = null
 
     override fun bind(element: DateFilterItem.Pick) {
         this.element = element
+        initCalendarPicker(element)
         with(itemView) {
             tvStcSingleLabel.text = element.label
             radStcSingleDateRange.isChecked = element.isSelected
@@ -65,8 +54,24 @@ class DateFilterPickViewHolder(
             setupDatePicker()
 
             if (element.startDate != null && element.endDate != null) {
-                datePicker.selectedDates = listOf(element.startDate!!, element.endDate!!)
+                datePicker?.selectedDates = listOf(element.startDate!!, element.endDate!!)
                 setSelectedDate(element.startDate, element.endDate)
+            }
+        }
+    }
+
+    private fun initCalendarPicker(element: DateFilterItem.Pick) {
+        if (datePicker != null) return
+
+        datePicker = CalendarPicker.newInstance(element).apply {
+            if (element.type == DateFilterItem.TYPE_PER_WEEK) {
+                val title = itemView.context?.getString(R.string.stc_per_week).orEmpty()
+                setMode(CalendarPickerView.SelectionMode.RANGE)
+                setTitle(title)
+            } else if (element.type == DateFilterItem.TYPE_PER_DAY) {
+                val title = itemView.context?.getString(R.string.stc_per_day).orEmpty()
+                setMode(CalendarPickerView.SelectionMode.SINGLE)
+                setTitle(title)
             }
         }
     }
@@ -80,11 +85,11 @@ class DateFilterPickViewHolder(
     private fun setupDatePicker() = with(itemView) {
         edtStcSingle.label = context.getString(R.string.stc_date)
         edtStcSingle.setOnClickListener {
-            datePicker.showDatePicker(fm)
+            datePicker?.showDatePicker(fm)
         }
 
-        datePicker.setOnDismissListener {
-            setSelectedDate(datePicker.selectedDates.firstOrNull(), datePicker.selectedDates.lastOrNull())
+        datePicker?.setOnDismissListener {
+            setSelectedDate(datePicker?.selectedDates?.firstOrNull(), datePicker?.selectedDates?.lastOrNull())
         }
     }
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PromoCouponView">
+        <attr name="promo_coupon_view_type" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="mvc" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="PromoRoundImageView">
+        <attr name="promo_round_radius" format="dimension" />
+    </declare-styleable>
+
+</resources>

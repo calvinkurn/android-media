@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_HEIGHT
+import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_WIDTH
 import com.tokopedia.productcard.ProductCardModel.Companion.WORDING_SEGERA_HABIS
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.loadImage
@@ -109,12 +111,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
         progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
             if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-//                progressBarStock.setProgressIcon(ContextCompat.getDrawable(context, R.drawable.ic_fire_filled))
                 progressBarStock.setProgressIcon(
                         icon = ContextCompat.getDrawable(context, R.drawable.ic_fire_filled),
-                        offsetY = ProductCardModel.FIRE_OFFSET,
-                        width = context.resources.getDimension(R.dimen.dp_12).toInt(),
-                        height = context.resources.getDimension(R.dimen.dp_16).toInt())
+                        width = context.resources.getDimension(FIRE_WIDTH).toInt(),
+                        height = context.resources.getDimension(FIRE_HEIGHT).toInt())
             }
             progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
             progressBarStock.setValue(productCardModel.stockBarPercentage, true)

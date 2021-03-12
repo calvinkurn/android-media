@@ -37,6 +37,7 @@ object SmartBillsQueries {
                   percentage:Percentage
                 }
                 bills: Bills{
+                  Flag
                   index: Index
                   productID: ProductID
                   productName: ProductName

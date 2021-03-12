@@ -57,6 +57,7 @@ object ApplinkConstInternalOrder {
 
     // snapshot
     const val PARAM_ORDER_DETAIL_ID = "order_detail_id"
+    const val IS_SNAPSHOT_FROM_SOM = "is_snapshot_from_som"
 
     @JvmField
     val HOST_SELLER = "seller"

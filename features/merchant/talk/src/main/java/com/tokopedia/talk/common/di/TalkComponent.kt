@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity
 import com.tokopedia.talk.feature.reporttalk.data.TalkApi
+import com.tokopedia.talk.feature.sellersettings.common.activity.TalkSellerSettingsActivity
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import retrofit2.Retrofit
@@ -21,5 +22,6 @@ interface TalkComponent {
     fun userSession(): UserSessionInterface
     fun coroutineDispatchers(): CoroutineDispatchers
     fun inject(talkInboxActivity: TalkInboxActivity)
+    fun inject(talkSellerSettingsActivity: TalkSellerSettingsActivity)
     fun getTalkApi(): TalkApi
 }
