@@ -2,8 +2,10 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.aut
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -107,6 +109,16 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     override fun onDestroy() {
         super.onDestroy()
         compositeSubs.clear()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("bottomsheet", "onStop: ")
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        Log.d("bottomsheet", "onDismiss: ")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

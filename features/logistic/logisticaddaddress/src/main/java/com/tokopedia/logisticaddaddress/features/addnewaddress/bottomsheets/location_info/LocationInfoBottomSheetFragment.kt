@@ -23,15 +23,13 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationInfoBinding
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.utils.lifecycle.autoCleared
+
 /**
  * Created by fwidjaja on 2019-06-18.
  */
 class LocationInfoBottomSheetFragment : BottomSheets() {
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
-
-    private var binding by autoCleared<BottomsheetLocationInfoBinding>()
 
     companion object {
         @JvmStatic
@@ -64,7 +62,7 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
     }
 
     override fun initView(view: View) {
-        binding = BottomsheetLocationInfoBinding.bind(view)
+        val binding = BottomsheetLocationInfoBinding.bind(view)
         binding.imgLocationNotDetected.loadRemoteImageDrawable(ADDRESS_NOT_DETECTED)
         binding.btnActivateLocation.setOnClickListener {
             AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(isFullFlow, isLogisticLabel)
