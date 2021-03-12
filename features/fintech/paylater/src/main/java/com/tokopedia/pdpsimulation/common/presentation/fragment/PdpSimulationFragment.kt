@@ -179,18 +179,16 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun getFragments(): List<Fragment> {
-        val fragmentList = mutableListOf<Fragment>()
-        when (paymentMode) {
+        return when (paymentMode) {
             is CreditCard -> {
-                fragmentList.add(CreditCardSimulationFragment.newInstance(this))
-                fragmentList.add(CreditCardTncFragment.newInstance(this))
+                listOf<Fragment>(CreditCardSimulationFragment.newInstance(this),
+                        CreditCardTncFragment.newInstance(this))
             }
             else -> {
-                fragmentList.add(PayLaterSimulationFragment.newInstance(this))
-                fragmentList.add(PayLaterOffersFragment.newInstance(this))
+                listOf<Fragment>(PayLaterSimulationFragment.newInstance(this),
+                        PayLaterOffersFragment.newInstance(this))
             }
         }
-        return fragmentList
     }
 
     private fun handleRegisterWidgetVisibility(position: Int) {
@@ -228,15 +226,19 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun showNoNetworkView() {
-        parentDataGroup.gone()
-        modeSwitcher.gone()
-        daftarGroup.gone()
+        hideDataGroup()
         payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
         payLaterParentGlobalError.show()
         payLaterParentGlobalError.setActionClickListener {
             payLaterParentGlobalError.gone()
             getSimulationProductInfo()
         }
+    }
+
+    fun hideDataGroup() {
+        parentDataGroup.gone()
+        modeSwitcher.gone()
+        daftarGroup.gone()
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {

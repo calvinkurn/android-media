@@ -117,8 +117,6 @@ object ProductDetailConstant {
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
-    const val PARAM_PRICE =  "price"
-    const val PARAM_PRODUCT_URL =  "product_url"
 
 
     //Arguments

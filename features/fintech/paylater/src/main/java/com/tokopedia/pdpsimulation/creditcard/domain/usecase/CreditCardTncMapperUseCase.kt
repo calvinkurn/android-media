@@ -3,10 +3,12 @@ package com.tokopedia.pdpsimulation.creditcard.domain.usecase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.pdpsimulation.common.constants.*
+import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardPdpInfoContent
 import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardPdpMetaData
 import com.tokopedia.pdpsimulation.creditcard.domain.model.PdpInfoTableItem
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 class CreditCardTncMapperUseCase @Inject constructor() : UseCase<CreditCardPdpMetaData>() {
@@ -42,24 +44,23 @@ class CreditCardTncMapperUseCase @Inject constructor() : UseCase<CreditCardPdpMe
             for (pdpInfo in pdpInfoList) {
                 if (!pdpInfo.content.isNullOrEmpty()) {
                     when (pdpInfo.contentType) {
-                        DATA_TYPE_BULLET -> {
-                            pdpInfo.viewType = VIEW_TYPE_BULLET
-                            pdpInfo.bulletList = gson.fromJson<ArrayList<String>>(pdpInfo.content, bulletType)
-                        }
-                        DATA_TYPE_MIN_TRANSACTION -> {
-                            val tableData = gson.fromJson(pdpInfo.content, PdpInfoTableItem::class.java)
-                            pdpInfo.tableData = tableData
-                            pdpInfo.viewType = VIEW_TYPE_TABLE_MIN_TRX
-                        }
-                        DATA_TYPE_SERVICE_FEE -> {
-                            val tableData = gson.fromJson(pdpInfo.content, PdpInfoTableItem::class.java)
-                            pdpInfo.tableData = tableData
-                            pdpInfo.viewType = VIEW_TYPE_TABLE_SERVICE
-                        }
+                        DATA_TYPE_BULLET -> setBulletData(pdpInfo, bulletType, gson)
+                        DATA_TYPE_MIN_TRANSACTION -> setTableData(pdpInfo, VIEW_TYPE_TABLE_MIN_TRX, gson)
+                        DATA_TYPE_SERVICE_FEE -> setTableData(pdpInfo, VIEW_TYPE_TABLE_SERVICE, gson)
                         else -> pdpInfo.viewType = VIEW_TYPE_BULLET
                     }
                 } else pdpInfo.viewType = VIEW_TYPE_BULLET
             }
         } ?: throw NullPointerException(CREDIT_CARD_TNC_DATA_FAILURE)
+    }
+
+    private fun setTableData(pdpInfo: CreditCardPdpInfoContent, tableType: Int, gson: Gson) {
+        pdpInfo.tableData = gson.fromJson(pdpInfo.content, PdpInfoTableItem::class.java)
+        pdpInfo.viewType = tableType
+    }
+
+    private fun setBulletData(pdpInfo: CreditCardPdpInfoContent, bulletType: Type, gson: Gson) {
+        pdpInfo.viewType = VIEW_TYPE_BULLET
+        pdpInfo.bulletList = gson.fromJson<ArrayList<String>>(pdpInfo.content, bulletType)
     }
 }

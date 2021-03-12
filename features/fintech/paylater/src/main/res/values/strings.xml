@@ -40,6 +40,8 @@
     <string name="credit_card_not_applicable_ticker_text"><![CDATA[Tenang, kamu bisa coba pakai payLater. Ada  bunga 0% juga! <a href=\'https://google.com\'>Lihat Simulasi PayLater</a>]]></string>
     <string name="credit_card_tnc_more_info_text">Info Selengkapnya</string>
     <string name="credit_card_best_offer_text">Penawaran Terbaik</string>
+    <string name="credit_card_offer_label">PROMO</string>
+    <string name="credit_card_bank_sub_header">Lihat pilihan kartu</string>
 
 
     <!-- PayLater Products Detail Page -->

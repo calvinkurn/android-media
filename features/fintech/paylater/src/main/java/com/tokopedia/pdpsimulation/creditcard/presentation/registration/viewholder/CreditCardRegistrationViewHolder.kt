@@ -19,11 +19,12 @@ class CreditCardRegistrationViewHolder(val view: View) : RecyclerView.ViewHolder
             ivPartnerLogo.loadImage(bankData.bankLogoUrl ?: "")
             tvTitlePaymentPartner.text = bankData.bankName
             if (bankData.bankPdpInfo.isNullOrEmpty()) {
-                tvDescription.text = "Lihat pilihan kartu"
-            } else tvDescription.text = bankData.bankPdpInfo
+                tvDescription.text = context.getString(R.string.credit_card_bank_sub_header)
+            } else
+                tvDescription.text = bankData.bankPdpInfo
             if (bankData.isPromo == true) {
                 paymentOfferLabel.setLabelType(Label.GENERAL_DARK_RED)
-                paymentOfferLabel.text = "PROMO"
+                paymentOfferLabel.text = context.getString(R.string.credit_card_offer_label)
                 paymentOfferLabel.visible()
             } else {
                 paymentOfferLabel.gone()
