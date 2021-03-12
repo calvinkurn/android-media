@@ -564,7 +564,7 @@ class DigitalCartViewModelTest {
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
-        digitalCartViewModel.updateTotalPriceWithFintechProduct(true, 0.0)
+        digitalCartViewModel.updateTotalPriceWithFintechProduct(true, null)
 
         // then
         // if fintech product checked, update total price
