@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -87,6 +88,14 @@ class PlayParentViewModel constructor(
     init {
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
         loadNextPage()
+    }
+
+    fun setNewState(bundle: Bundle) {
+        handle.set(PLAY_KEY_CHANNEL_ID, bundle.get(PLAY_KEY_CHANNEL_ID))
+        if (bundle.containsKey(PLAY_KEY_SOURCE_TYPE) && bundle.containsKey(PLAY_KEY_SOURCE_ID)) {
+            handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
+            handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
+        }
     }
 
     fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId)
