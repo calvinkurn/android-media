@@ -143,9 +143,9 @@ class PlayActivity : BaseActivity(),
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val channelId = intent?.data?.lastPathSegment
         val newBundle = intent?.extras
-        if (channelId != viewModel.startingChannelId && newBundle != null) {
+        val channelId = newBundle?.get(PLAY_KEY_CHANNEL_ID)
+        if (channelId != null && channelId != viewModel.startingChannelId) {
             viewModel.setNewState(newBundle)
             viewModel.loadNextPage()
         }

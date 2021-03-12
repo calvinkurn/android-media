@@ -259,12 +259,6 @@ class PlayFragment @Inject constructor(
         }
     }
 
-//    fun onNewChannelId(channelId: String?) {
-//        if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
-//            (activity as PlayNewChannelInteractor).onNewChannel(channelId)
-//        }
-//    }
-
     private fun processChannelInfo() {
         playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
     }

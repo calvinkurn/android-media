@@ -92,10 +92,8 @@ class PlayParentViewModel constructor(
 
     fun setNewState(bundle: Bundle) {
         handle.set(PLAY_KEY_CHANNEL_ID, bundle.get(PLAY_KEY_CHANNEL_ID))
-        if (bundle.containsKey(PLAY_KEY_SOURCE_TYPE)) {
-            handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
-            if (bundle.containsKey(PLAY_KEY_SOURCE_ID)) handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
-        }
+        if (bundle.containsKey(PLAY_KEY_SOURCE_TYPE)) handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
+        if (bundle.containsKey(PLAY_KEY_SOURCE_ID)) handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
     }
 
     fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId)
