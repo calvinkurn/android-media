@@ -27,7 +27,7 @@ class SeeInvoiceActivity: BaseSimpleWebViewActivity() {
     }
 
     private fun initWebSettingsConfig() {
-        val webView = findViewById<TkpdWebView>(R.id.webview)
+        val webView = findViewById<TkpdWebView>(com.tokopedia.webview.R.id.webview)
         webView.settings.run {
             builtInZoomControls = true
             displayZoomControls = false
