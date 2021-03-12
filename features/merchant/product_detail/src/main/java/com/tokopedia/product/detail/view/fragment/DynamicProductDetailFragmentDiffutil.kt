@@ -749,7 +749,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                openInstallmentFlow(true)
+                openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData
+                        ?: FtInstallmentCalculationDataResponse())
             }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
@@ -777,8 +778,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun getPurchaseProtectionUrl(): String {
-        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL
-                ?: ""
+        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL ?: ""
     }
 
     private fun getPPTitleName(): String {
@@ -2226,24 +2226,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 return
             }
         }
-    }
-
-    private fun openInstallmentFlow(shouldOpenNewFlow: Boolean) {
-        if (shouldOpenNewFlow) openPdpSimulation()
-        else openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData
-                ?: FtInstallmentCalculationDataResponse())
-    }
-
-    private fun openPdpSimulation() {
-        val intent = RouteManager.getIntent(activity, ApplinkConst.PAYLATER)
-        val bundle = Bundle().apply {
-            putString(ProductDetailConstant.PARAM_PRODUCT_URL, viewModel.getDynamicProductInfoP1?.basic?.url
-                    ?: "")
-            putInt(ProductDetailConstant.PARAM_PRICE, viewModel.getDynamicProductInfoP1?.finalPrice
-                    ?: 0)
-        }
-        intent.putExtras(bundle)
-        startActivity(intent)
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
