@@ -308,6 +308,7 @@
 
     <!-- shop page showcase tab -->
     <string name="shop_page_showcase_featured_text">Etalase Unggulan</string>
+    <string name="shop_page_showcase_all_text">Semua Etalase</string>
     <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
 
 </resources>
