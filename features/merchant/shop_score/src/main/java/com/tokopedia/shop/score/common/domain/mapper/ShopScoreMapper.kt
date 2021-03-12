@@ -74,7 +74,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_speed_process_order
                     descTips = R.string.desc_tips_speed_process_order
-                    moreInformation = R.string.read_tips_more_info_performance_detail
+                    moreInformation = R.string.read_tips_for_send_fast_order
                     urlLink = SPEED_SENDING_ORDERS_URL
                 }
             }

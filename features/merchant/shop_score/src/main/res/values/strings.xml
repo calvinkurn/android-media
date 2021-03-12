@@ -116,9 +116,9 @@
     <string name="desc_tips_open_seller_app">Dihitung per hari setiap Seller membuka Tokopedia Seller melalui Seller App (Android), Tokopedia App (iOS dan Android) atau website Tokopedia Seller. </string>
 
     <string name="increase_up_to_performance">Tingkatkan hingga <![CDATA[<b> > %1s</b>]]></string>
-    <string name="read_tips_more_info_performance_detail">Yuk, baca tips lebih lanjut &lt;a href="#"&gt;di sini!&lt;/a&gt;</string>
-    <string name="set_hour_operational_shop_performance_detail">Atur jam operasional tokomu &lt;a href="#"&gt;di sini!&lt;/a&gt;</string>
-    <string name="set_time_selling_shop_performance_detail">Yuk, baca tips atur waktu jualan online &lt;a href="#"&gt;di sini!&lt;/a&gt;</string>
+    <string name="read_tips_more_info_performance_detail">Yuk, baca tips lebih lanjut &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
+    <string name="set_hour_operational_shop_performance_detail">Atur jam operasional tokomu &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
+    <string name="read_tips_for_send_fast_order">Yuk, baca tips untuk cepat kirim pesanan &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
 
 
     <string name="title_income_information_level">Pendapatan:</string>
