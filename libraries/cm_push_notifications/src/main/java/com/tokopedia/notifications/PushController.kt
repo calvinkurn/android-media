@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.data.converters.JsonBundleConverter.jsonToBundle
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
@@ -139,6 +140,7 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     suspend fun postOfflineNotification(baseNotificationModel: BaseNotificationModel) {
+        IrisAnalyticsEvents.sendPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel)
         createAndPostNotification(baseNotificationModel)
         baseNotificationModel.status = NotificationStatus.ACTIVE
         PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
