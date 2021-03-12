@@ -246,6 +246,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE)
             reviewEmptyTitle.text = getString(R.string.review_history_no_product_search_result_title)
             reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
+            reviewEmptyButton.hide()
             show()
         }
         reviewHistorySwipeRefresh.hide()
@@ -256,6 +257,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
             reviewEmptyTitle.text = getString(R.string.review_history_no_review_history_title)
             reviewEmptySubtitle.text = getString(R.string.review_history_no_review_history_content)
+            reviewEmptyButton.hide()
             show()
         }
         reviewHistorySearchBar.hide()

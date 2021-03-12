@@ -36,6 +36,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
@@ -167,11 +169,11 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private val draw: Drawable?
         get() {
             var drawable: TextDrawable? = null
-            if (activity != null) {
-                drawable = TextDrawable(activity!!)
-                drawable.text = resources.getString(R.string.login)
-                drawable.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                drawable.textSize = 14f
+            activity?.let {
+                drawable = TextDrawable(it)
+                drawable?.text = resources.getString(R.string.login)
+                drawable?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                drawable?.textSize = 14f
             }
             return drawable
         }
@@ -744,19 +746,21 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 listTickerInfo.forEach {
                     mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
                 }
-                val adapter = TickerPagerAdapter(activity!!, mockData)
-                adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
+                activity?.let {
+                    val adapter = TickerPagerAdapter(it, mockData)
+                    adapter.setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        }
 
-                    override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
-                    }
+                        override fun onDismiss() {
+                            registerAnalytics.trackClickCloseTickerButton()
+                        }
 
-                })
-                tickerAnnouncement.addPagerView(adapter, mockData)
+                    })
+                    tickerAnnouncement.addPagerView(adapter, mockData)
+                }
             } else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
@@ -789,6 +793,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
         when (registerCheckData.registerType) {
             PHONE_TYPE -> {
+                registerAnalytics.trackClickPhoneSignUpButton()
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
@@ -935,7 +940,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
-                val uuid = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 goToAddName(uuid)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity
                             .RESULT_CANCELED) {
@@ -949,8 +954,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
-                val accessToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                val phoneNumber = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
+                val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToChooseAccountPage(accessToken, phoneNumber)
 
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
@@ -1165,7 +1170,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 dialog.setPrimaryCTAClickListener {
                     registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                     dialog.dismiss()
-                    startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
+                    val intent = LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+                    startActivity(intent)
                     it.finish()
                 }
                 dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
@@ -1179,7 +1186,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun showRegisteredPhoneDialog(phone: String) {
-        registerAnalytics.trackClickPhoneSignUpButton()
         registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST)
         registerAnalytics.trackFailedClickPhoneSignUpButtonAlreadyRegistered()
         context?.let {
@@ -1230,7 +1236,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -1241,7 +1247,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
-
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, true)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -1252,7 +1259,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
 
     private fun showProceedWithPhoneDialog(phone: String) {
-        registerAnalytics.trackClickPhoneSignUpButton()
         context?.let {
             activity?.runOnUiThread {
                 val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
@@ -1317,6 +1323,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             it.finish()
 
             saveFirstInstallTime()
+
+            SubmitDeviceWorker.scheduleWorker(requireContext(), true)
+            DataVisorWorker.scheduleWorker(requireContext(), true)
         }
     }
 

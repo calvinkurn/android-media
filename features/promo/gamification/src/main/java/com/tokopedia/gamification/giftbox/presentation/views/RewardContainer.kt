@@ -81,7 +81,7 @@ class RewardContainer @JvmOverloads constructor(
         var hasCoupons = false
 
         //set coupons if available
-        val list = rewardEntity.couponDetailResponse?.couponMap?.values
+        val list = rewardEntity.couponDetailResponse?.couponDetailList
         if (list != null && list.isNotEmpty()) {
             hasCoupons = true
             couponList.clear()

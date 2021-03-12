@@ -25,11 +25,6 @@ import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.google.firebase.FirebaseApp;
-import com.moengage.inapp.InAppManager;
-import com.moengage.inapp.InAppMessage;
-import com.moengage.inapp.InAppTracker;
-import com.moengage.push.PushManager;
-import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -52,6 +47,12 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
+import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
+import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
+import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.devicefingerprint.appauth.AppAuthActivityLifecycleCallbacks;
 import com.tokopedia.notifications.data.AmplificationDataSource;
@@ -70,7 +71,6 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
-import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
@@ -99,8 +99,7 @@ import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
  */
 
 public abstract class ConsumerMainApplication extends ConsumerRouterApplication implements
-        MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener {
+        MoengageInAppListener, MoengagePushListener, CustomPushDataListener {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -386,13 +385,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     @NotNull
     private Boolean executePostCreateSequence() {
         StethoUtil.initStetho(ConsumerMainApplication.this);
-        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(ConsumerMainApplication.this);
-        InAppManager.getInstance().setInAppListener(ConsumerMainApplication.this);
+        MoengageInteractor.INSTANCE.setPushListener(ConsumerMainApplication.this);
+        MoengageInteractor.INSTANCE.setInAppListener(ConsumerMainApplication.this);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(ConsumerMainApplication.this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         createCustomSoundNotificationChannel();
-        PushManager.getInstance().setMessageListener(new CustomPushListener());
+        MoengageInteractor.INSTANCE.setMessageListener(this);
 
         TimberWrapper.init(ConsumerMainApplication.this);
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
@@ -534,21 +533,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     @Override
-    public void onInAppShown(InAppMessage message) {
-    }
-
-    @Override
-    public boolean showInAppMessage(InAppMessage message) {
-        InAppTracker.getInstance(this).trackInAppClicked(message);
-        return true;
-    }
-
-    @Override
-    public void onInAppClosed(InAppMessage message) {
-
-    }
-
-    @Override
     public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
         return handleClick(screenName, extras, deepLinkUri);
     }
@@ -620,5 +604,22 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 }
             }
         }
+    }
+
+    @NotNull
+    @Override
+    public Intent getPersistentNotificationIntent() {
+        return new Intent(ConsumerMainApplication.this, MainParentActivity.class);
+    }
+
+    @NotNull
+    @Override
+    public Intent getNotificationBroadcastIntent() {
+        return new Intent(ConsumerMainApplication.this, NotificationBroadcast.class);
+    }
+
+    @Override
+    public int getIcStatNotifyWhiteDrawable() {
+        return R.drawable.ic_stat_notify_white;
     }
 }

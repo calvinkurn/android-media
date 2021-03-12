@@ -567,7 +567,7 @@
               "Masukkan kartu ATM, lalu PIN Anda",
               "Pilih Menu <b>TRANSAKSI LAIN</b>",
               "Pilih menu <b>PEMBAYARAN lalu pilih menu <b>VIRTUAL ACCOUNT</b>",
-              "Masukkan Nomor Virtual Account <b>99017085959895559</b>",
+              "Masukkan Nomor Virtual Account <b>{payment_code}</b>",
               "Tekan <b>BAYAR jika setuju dengan informasi pembayaran.",
               "Tekan <b>BENAR, lalu tekan <b>BAYAR</b>",
               "Simpan struk ATM sebagai bukti pembayaran"
@@ -578,7 +578,7 @@
             "channel_steps": [
               "<b>LOGIN ke Mobile Banking BTN.</b>",
               "Pilih menu <b>PEMBAYARAN.</b>",
-              "Masukkan Nomor Virtual Account <b>99017085959895559</b>, klik <b>PROSES.</b>",
+              "Masukkan Nomor Virtual Account <b>{payment_code}</b>, klik <b>PROSES.</b>",
               "Masukkan <i>Kode Verifikasi</i> lalu klik <b>PROSES</b> jika setuju dengan informasi pembayaran.",
               "Transaksi Anda selesai. Simpan struk sebagai bukti transaksi."
             ]
@@ -589,7 +589,7 @@
               "<b>LOGIN ke Internet Banking BTN.</b>",
               "Pilih menu <b>PAYMENT.</b>",
               "Pilih rekening Anda dan pilih <b>VIRTUAL ACCOUNT</b> pada <i>bill type</i>.",
-              "Masukkan Nomor Virtual Account 99017085959895559, klik <b>NEXT.</b>",
+              "Masukkan Nomor Virtual Account {payment_code}, klik <b>NEXT.</b>",
               "Masukkan <i>mPasscode</i> lalu klik <b>SUBMIT</b> jika setuju dengan informasi pembayaran",
               "Transaksi Anda selesai. Simpan struk sebagai bukti transaksi."
             ]
@@ -597,7 +597,7 @@
           {
             "payment_channel": "Kantor Bank BTN",
             "channel_steps": [
-              "Isi Nomor Rekening Penerima dengan <b>Nomor Virtual Account 99017085959895559</b>",
+              "Isi Nomor Rekening Penerima dengan <b>Nomor Virtual Account {payment_code}</b>",
               "Isi <b>Nama Penerima dengan Nama Virtual Account.</b>",
               "Isi <b>Pemohon dengan nama Penyetor.</b>",
               "Isi <b>Jumlah yang Dikirim dengan nominal yang akan disetor.</b>",
@@ -608,7 +608,7 @@
             "payment_channel": "ATM Bank Lain",
             "channel_steps": [
               "Pilih menu <b>TRANSFER ANTAR BANK ONLINE.</b>",
-              "Isi <b>kode Bank BTN (147) diikuti <b>Nomor Virtual Account BTN 99017085959895559</b>",
+              "Isi <b>kode Bank BTN (147) diikuti <b>Nomor Virtual Account BTN {payment_code}</b>",
               "Masukkan jumlah transaksi. Jumlah transaksi yang diinput harus sama persis dengan informasi tagihan di layar ATM.",
               "Periksa kembali pembayaran Virtual Account."
             ]
@@ -618,7 +618,7 @@
             "channel_steps": [
               "Isi <b>Nama Penerima</b> dengan <b>Nama Virtual Account.</b>",
               "Isi <b>Bank Tujuan</b> dengan <b>BANK BTN.</b>",
-              "Isi <b>Nomor Rekening Tujuan 99017085959895559</b>",
+              "Isi <b>Nomor Rekening Tujuan {payment_code}</b>",
               "Isi <b>Informasi Pengirim dengan nama dan alamat pengirim dana.</b>",
               "Isi <b>Jumlah yang Dikirim dengan nominal dana yang akan di-transfer</b>"
             ]
@@ -801,7 +801,7 @@
               "Masukkan kartu ATM, lalu PIN Anda",
               "Pilih Menu <b>TRANSAKSI LAIN</b>",
               "Pilih menu <b>PEMBAYARAN</b> lalu pilih menu <b>VIRTUAL ACCOUNT</b>",
-              "Masukkan Nomor Virtual Account <b>8870185959895559</b>",
+              "Masukkan Nomor Virtual Account <b>{payment_code}</b>",
               "Tekan <b>BAYAR</b> jika setuju dengan informasi pembayaran.",
               "Tekan <b>BENAR</b>, lalu tekan <b>BAYAR</b>",
               "Simpan struk ATM sebagai bukti pembayaran"
@@ -812,7 +812,7 @@
             "channel_steps": [
               "<b>LOGIN</b> ke Mobile Banking Muamalat.",
               "Pilih menu <b>PEMBAYARAN</b>.",
-              "Masukkan Nomor Virtual Account <b>8870185959895559</b>, klik <b>PROSES</b>.",
+              "Masukkan Nomor Virtual Account <b>{payment_code}</b>, klik <b>PROSES</b>.",
               "Masukkan <i>Kode Verifikasi</i> lalu klik <b>PROSES</b> jika setuju dengan informasi pembayaran.",
               "Transaksi Anda selesai. Simpan struk sebagai bukti transaksi."
             ]
@@ -823,7 +823,7 @@
               "<b>LOGIN</b> ke Internet Banking Muamalat.",
               "Pilih menu <b>PAYMENT</b>.",
               "Pilih rekening Anda dan pilih <b>VIRTUAL ACCOUNT</b> pada <i>bill type</i>.",
-              "Masukkan Nomor Virtual Account 8870185959895559, klik <b>NEXT</b>.",
+              "Masukkan Nomor Virtual Account {payment_code}, klik <b>NEXT</b>.",
               "Masukkan <i>mPasscode</i> lalu klik <b>SUBMIT</b> jika setuju dengan informasi pembayaran",
               "Transaksi Anda selesai. Simpan struk sebagai bukti transaksi."
             ]
@@ -831,7 +831,7 @@
           {
             "payment_channel": "Kantor Bank Muamalat",
             "channel_steps": [
-              "Isi Nomor Rekening Penerima dengan <b>Nomor Virtual Account 8870185959895559</b>",
+              "Isi Nomor Rekening Penerima dengan <b>Nomor Virtual Account {payment_code}</b>",
               "Isi <b>Nama Penerima</b> dengan Nama Virtual Account.",
               "Isi <b>Pemohon</b> dengan nama Penyetor.",
               "Isi <b>Jumlah yang Dikirim</b> dengan nominal yang akan disetor.",
@@ -842,7 +842,7 @@
             "payment_channel": "ATM Bank Lain",
             "channel_steps": [
               "Pilih menu <b>TRANSFER ANTAR BANK ONLINE</b>.",
-              "Isi <b>kode Bank Muamalat (147)</b> diikuti <b>Nomor Virtual Account Muamalat 8870185959895559</b>",
+              "Isi <b>kode Bank Muamalat (147)</b> diikuti <b>Nomor Virtual Account Muamalat {payment_code}</b>",
               "Masukkan jumlah transaksi. Jumlah transaksi yang diinput harus sama persis dengan informasi tagihan di layar ATM.",
               "Periksa kembali pembayaran Virtual Account."
             ]
@@ -852,7 +852,7 @@
             "channel_steps": [
               "Isi <b>Nama Penerima</b> dengan <b>Nama Virtual Account</b>.",
               "Isi <b>Bank Tujuan</b> dengan <b>BANK MUAMALAT</b>.",
-              "Isi <b>Nomor Rekening Tujuan 8870185959895559</b>",
+              "Isi <b>Nomor Rekening Tujuan {payment_code}</b>",
               "Isi <b>Informasi Pengirim</b> dengan nama dan alamat pengirim dana.",
               "Isi <b>Jumlah yang Dikirim</b> dengan nominal dana yang akan di-transfer",
               "Pastikan pembayaran Anda sudah BERHASIL dan unggah bukti untuk mempercepat proses verifikasi"

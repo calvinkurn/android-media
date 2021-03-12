@@ -71,7 +71,7 @@ abstract class BaseNotificationViewHolder constructor(
         return element.isLongerContent
     }
 
-    private fun bindContainer(element: NotificationUiModel) {
+    protected open fun bindContainer(element: NotificationUiModel) {
         if (!element.isRead()) {
             container?.setBackgroundColor(clickedColor)
         } else {

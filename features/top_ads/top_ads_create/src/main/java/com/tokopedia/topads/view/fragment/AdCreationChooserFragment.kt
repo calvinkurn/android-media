@@ -16,10 +16,10 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.AdChooserViewModel
@@ -118,7 +118,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 val image = this.findViewById<ImageUnify>(R.id.top_corner_icon1)
                 image.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_ic_thumb_up))
                 val topCorner = this.findViewById<ImageUnify>(R.id.top_corner_bg1)
-                topCorner.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_bg_top_corner))
+                topCorner.setImageResource(R.drawable.topads_create_bg_top_corner)
 
                 val icon2 = this.findViewById<ImageUnify>(R.id.icon2)
                 val icon3 = this.findViewById<ImageUnify>(R.id.icon3)
@@ -144,7 +144,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 val image = this.findViewById<ImageUnify>(R.id.top_corner_icon2)
                 image.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_ic_gear))
                 val topCorner = this.findViewById<ImageUnify>(R.id.top_corner_bg2)
-                topCorner.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_bg_top_corner))
+                topCorner.setImageResource(R.drawable.topads_create_bg_top_corner)
 
                 val icon6 = this.findViewById<ImageUnify>(R.id.icon6)
                 val icon7 = this.findViewById<ImageUnify>(R.id.icon7)
@@ -170,6 +170,15 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             }
             addItem(autoAdsView)
             addItem(manualAutoAds)
+            autoAds?.setOnClickListener {
+                if (adStatus == AUTO) {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
+                    startActivityForResult(intent, AUTO_ADS_DISABLED)
+                }
+                if (adStatus == MANUAL || adStatus == NO_ADS) {
+                    RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+                }
+            }
         }
     }
 

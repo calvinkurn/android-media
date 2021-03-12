@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -16,8 +17,16 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 ) : FirebaseMessagingManager {
 
     override fun onNewToken(newToken: String?) {
-        if (!userSession.isLoggedIn || newToken == null || !isNewToken(newToken)) return
-        updateTokenOnServer(newToken)
+//        if (!userSession.isLoggedIn || newToken == null || !isNewToken(newToken)) return
+        if(newToken == null) return
+        if(isNewToken(newToken)){
+            if(userSession.isLoggedIn){
+                updateTokenOnServer(newToken)
+            } else {
+                setDeviceId(newToken)
+            }
+        }
+
     }
 
     override fun isNewToken(token: String): Boolean {
@@ -71,6 +80,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             updateFcmTokenUseCase(params, {
                 if (it.updateTokenSuccess()) {
                     saveNewTokenToPref(newToken)
+                    setDeviceId(newToken)
                     listener?.onSuccess()
                 }
             }, {
@@ -83,6 +93,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             listener?.onError(exception)
             logFailUpdateFcmToken(exception, newToken)
         }
+    }
+
+    private fun setDeviceId(newToken: String) {
+        userSession.deviceId = newToken
     }
 
     private fun logFailUpdateFcmToken(error: Throwable, token: String) {

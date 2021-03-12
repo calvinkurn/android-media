@@ -78,7 +78,11 @@ data class NotificationUiModel(
         @SerializedName("track_history")
         val trackHistory: List<TrackHistory> = listOf(),
         @SerializedName("widget")
-        val widget: Widget = Widget()
+        val widget: Widget = Widget(),
+        @SerializedName("is_last_journey")
+        val isLastJourney: Boolean = false,
+        @SerializedName("unique_id")
+        val order_id: String = ""
 ) : Visitable<NotificationTypeFactory> {
 
     @delegate:Transient

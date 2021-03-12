@@ -12,19 +12,25 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
+import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
+import com.tokopedia.vouchercreation.voucherlist.model.remote.ChatBlastSellerMetadata
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class VoucherDetailViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
-    private val voucherDetailUseCase: VoucherDetailUseCase,
-    private val cancelVoucherUseCase: CancelVoucherUseCase,
-    private val shopBasicDataUseCase: ShopBasicDataUseCase) : BaseViewModel(dispatchers.main) {
+        private val dispatchers: CoroutineDispatchers,
+        private val voucherDetailUseCase: VoucherDetailUseCase,
+        private val cancelVoucherUseCase: CancelVoucherUseCase,
+        private val shopBasicDataUseCase: ShopBasicDataUseCase,
+        private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase) : BaseViewModel(dispatchers.main) {
 
     private val mVoucherIdLiveData = MutableLiveData<Int>()
+
+    private val _broadCastMetaData = MutableLiveData<Result<ChatBlastSellerMetadata>>()
+    val broadCastMetadata: LiveData<Result<ChatBlastSellerMetadata>> get() = _broadCastMetaData
 
     private val mMerchantVoucherModelLiveData = MediatorLiveData<Result<VoucherUiModel>>().apply {
         addSource(mVoucherIdLiveData) { voucherId ->
@@ -80,4 +86,13 @@ class VoucherDetailViewModel @Inject constructor(
         mCancelledVoucherIdLiveData.value = Pair(voucherId, cancelStatus)
     }
 
+    fun getBroadCastMetaData() {
+        launchCatchError(block = {
+            _broadCastMetaData.value = Success(withContext(dispatchers.io){
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            })
+        }, onError = {
+            _broadCastMetaData.value = Fail(it)
+        })
+    }
 }

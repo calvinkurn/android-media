@@ -6,9 +6,23 @@
     style="@style/BaseNotification_Container"
     android:paddingBottom="@dimen/unify_space_0">
 
+    <com.tokopedia.unifycomponents.ContainerUnify
+        android:id="@+id/unify_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:container_color="GREY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/iv_icon"
         style="@style/BaseNotification_Icon"
+        android:contentDescription="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -50,8 +64,8 @@
 
         <com.tokopedia.notifcenter.widget.OrderThumbnailImageView
             android:id="@+id/iv_product_thumbnail"
-            android:layout_width="@dimen/notif_dp_38"
-            android:layout_height="@dimen/notif_dp_38"
+            android:layout_width="@dimen/notif_dp_46"
+            android:layout_height="@dimen/notif_dp_46"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -198,10 +212,10 @@
             android:id="@+id/tp_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/unify_space_8"
-            android:paddingBottom="@dimen/unify_space_8"
+            android:paddingTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
             android:text="@string/cta_widget_notifcenter_see_previous"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_N500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_history"
             app:typographyType="body_3"

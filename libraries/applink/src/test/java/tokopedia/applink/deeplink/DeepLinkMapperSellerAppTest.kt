@@ -194,6 +194,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check statistic appLink then should return tokopedia internal statistic in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/statistic_dashboard"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.STATISTIC_DASHBOARD, expectedDeepLink)
+    }
+
+    @Test
     fun `check seller history appLink then should return seller home seller history in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_HISTORY, expectedDeepLink)

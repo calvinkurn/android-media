@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.customview;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -32,6 +31,9 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.widgets.ShareItem;
  */
 
 public class ShareReviewDialog {
+
+    public static final String FACEBOOK_ICON_URL = "https://images.tokopedia.net/img/android/review/review_ic_facebook_share.png";
+    public static final String LINK_ICON_URL = "https://images.tokopedia.net/img/android/review/review_ic_copy_share.png";
 
     private Fragment fragment;
     private final Context context;
@@ -67,13 +69,8 @@ public class ShareReviewDialog {
 
     public void setAdapter() {
         adapter = new ShareAdapter(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            adapter.addItem(new ShareItem(context.getDrawable(R.drawable.ic_facebook_share), "Facebook", shareFb()));
-            adapter.addItem(new ShareItem(context.getDrawable(R.drawable.ic_copy_share), "Copy Link", shareCopyLink()));
-        } else {
-            adapter.addItem(new ShareItem(context.getResources().getDrawable(R.drawable.ic_facebook_share), "Facebook", shareFb()));
-            adapter.addItem(new ShareItem(context.getResources().getDrawable(R.drawable.ic_copy_share), "Copy Link", shareCopyLink()));
-        }
+        adapter.addItem(new ShareItem(FACEBOOK_ICON_URL, "Facebook", shareFb()));
+        adapter.addItem(new ShareItem(LINK_ICON_URL, "Copy Link", shareCopyLink()));
         appGrid.setAdapter(adapter);
     }
 

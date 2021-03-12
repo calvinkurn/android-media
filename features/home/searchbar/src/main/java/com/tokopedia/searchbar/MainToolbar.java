@@ -29,7 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class MainToolbar extends Toolbar {
 
-    private static String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
+    private static final String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
     private boolean wishlistNewPage = false;
     protected ImageView btnNotification;
     protected ImageView btnWishlist;

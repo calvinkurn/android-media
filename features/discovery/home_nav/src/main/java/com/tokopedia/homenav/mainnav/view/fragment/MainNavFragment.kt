@@ -34,6 +34,9 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
+import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.CONTROL
+import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.EXP_NAME
+import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
@@ -232,6 +235,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun getUserId(): String {
         return userSession.userId
+    }
+
+    override fun getReviewCounterAbIsUnify(): Boolean {
+        return remoteConfig.getString(EXP_NAME, CONTROL) == VARIANT
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {

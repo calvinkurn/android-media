@@ -162,7 +162,7 @@ open class DynamicPostViewHolder(v: View,
             }
 
             itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {
-                itemView.authorTitle.text = header.avatarTitle
+                itemView.authorTitle.text = MethodChecker.fromHtml(header.avatarTitle)
                 itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
             }
 

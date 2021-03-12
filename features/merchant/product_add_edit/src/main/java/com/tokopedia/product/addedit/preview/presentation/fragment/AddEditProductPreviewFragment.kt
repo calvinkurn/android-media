@@ -47,6 +47,9 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
@@ -73,6 +76,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -146,14 +151,13 @@ class AddEditProductPreviewFragment :
     private var postalCode: String = ""
     private var districtId: Int = 0
     private var formattedAddress: String = ""
+    private var productInputModel: ProductInputModel? = null
+    private var isFragmentVisible = false
 
     private var toolbar: Toolbar? = null
 
     // action button
     private var doneButton: AppCompatTextView? = null
-
-    // notification
-    private var tickerAddEditProductNotification: Ticker? = null
 
     // photo
     private var addEditProductPhotoButton: Typography? = null
@@ -282,11 +286,11 @@ class AddEditProductPreviewFragment :
         toolbar = activity?.findViewById(R.id.toolbar)
         toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
 
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
+
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
-
-        // ticker specification unavailable
-        tickerAddEditProductNotification = activity?.findViewById(R.id.ticker_add_edit_product_notification)
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
@@ -486,8 +490,29 @@ class AddEditProductPreviewFragment :
         stopPreparePagePerformanceMonitoring()
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_PREVIEW)
+            if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model
+                mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
+                    productInputModel = this
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (isFragmentVisible) {
+            outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
+        }
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        isFragmentVisible = false
         removeObservers()
     }
 
@@ -792,6 +817,10 @@ class AddEditProductPreviewFragment :
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
             viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
+            // set data only in draft or edit mode to make dynamic ui preview
+            if (isDrafting() || viewModel.productInputModel.value?.productId != 0L) {
+                productInputModel = viewModel.productInputModel.value
+            }
         }
     }
 
@@ -806,7 +835,6 @@ class AddEditProductPreviewFragment :
     private fun displayEditMode() {
         toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
-        tickerAddEditProductNotification?.isVisible = !RollenceUtil.getSpecificationRollence()
 
         enablePhotoEdit()
         enableDetailEdit()
@@ -947,6 +975,12 @@ class AddEditProductPreviewFragment :
             }
             stopRenderPerformanceMonitoring()
             stopPerformanceMonitoring()
+            //check whether productInputModel has value from savedInstanceState
+            if (productInputModel != null) {
+                viewModel.productInputModel.value = productInputModel
+                checkEnableOrNot()
+                productInputModel = null
+            }
         })
     }
 
@@ -1000,7 +1034,8 @@ class AddEditProductPreviewFragment :
                     Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
-                    view?.let { Toaster.make(it, result.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+                    val errorMessage = ErrorHandler.getErrorMessage(activity, result.exception)
+                    Toaster.build(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
                 else -> {
                     // no-op
@@ -1305,6 +1340,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun showLoading() {
+        loadingLayout?.progress = 0.0f
         loadingLayout?.show()
         doneButton?.hide()
     }

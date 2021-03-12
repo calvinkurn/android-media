@@ -1,0 +1,14 @@
+{
+  "readme": "click finish on product shipping page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAddProduct",
+      "eventCategory" : "add product page",
+      "eventAction" : "click finish success",
+      "eventLabel" : "{{.*}}",
+      "shopId" : "{{.+}}",
+      "screenName":"/addproductpage - shipping"
+    }
+  ]
+}

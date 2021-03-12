@@ -15,15 +15,14 @@
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:background="@android:color/holo_purple"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         app:typographyType="heading_3"
         android:layout_marginTop="@dimen/dp_8"
         android:id="@+id/deals_channel_title"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/home_component_margin_default"
+        android:layout_marginEnd="@dimen/home_component_margin_default"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -55,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="@+id/deals_count_down"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.tokopedia.design.countdown.CountDownView
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
         android:id="@+id/deals_count_down"
         android:layout_marginTop="@dimen/dp_2"
         android:layout_width="0dp"
@@ -109,8 +108,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:background="@android:color/holo_blue_bright" />
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 app:typographyType="heading_6"
@@ -138,7 +136,8 @@
                 app:srcCompat="@drawable/ic_home_pdp_view_count"
                 app:layout_constraintStart_toEndOf="@+id/deals_product_image"
                 app:layout_constraintTop_toTopOf="@+id/deals_product_image"
-                app:layout_constraintBottom_toBottomOf="@+id/deals_product_view_count"/>
+                app:layout_constraintBottom_toBottomOf="@+id/deals_product_view_count"
+                android:contentDescription="@string/content_desc_icon_image" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/deals_product_name"
@@ -228,9 +227,10 @@
                 app:layout_constraintStart_toEndOf="@id/deals_product_image"
                 app:layout_constraintTop_toBottomOf="@id/deals_product_price"
                 tools:layout_width="67dp"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:contentDescription="@string/content_desc_icon_image"/>
 
-            <ProgressBar
+            <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/deals_stockbar"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_4"

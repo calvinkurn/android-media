@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
 import com.tokopedia.topads.common.getPdpAppLink
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.dashboard.R
@@ -29,9 +30,20 @@ import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FIRST_LAUNCH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IS_CHANGED
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_DAILY_BUDGET
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_INSIGHT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_KEYWORD
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT_AD
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_SHOP_AD
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_INSIGHT_TAB
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_TAB
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -62,6 +74,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private val INSIGHT_PAGE = 3
     private var adType = "-1"
     private var isNoProduct = false
+    var redirectToTab = 0
+    var redirectToTabInsight = 0
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -195,12 +209,27 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun renderTabAndViewPager() {
         val bundle = intent.extras
+        redirectToTab = bundle?.getInt(TOPADS_MOVE_TO_DASHBOARD, 0) ?: 0
+        if (intent.extras?.get(PARAM_TAB) != null) {
+            redirectToTab = when (intent.extras?.get(PARAM_TAB)) {
+                PARAM_INSIGHT -> CONST_3
+                PARAM_PRODUCT_AD -> CONST_1
+                PARAM_SHOP_AD -> CONST_2
+                else -> CONST_0
+            }
+        }
+        if (redirectToTab == CONST_3) {
+            redirectToTabInsight = when (intent.extras?.get(PARAM_INSIGHT_TAB)) {
+                PARAM_DAILY_BUDGET -> CONST_1
+                PARAM_KEYWORD -> CONST_2
+                PARAM_PRODUCT -> CONST_0
+                else -> CONST_0
+            }
+        }
         view_pager.adapter = getViewPagerAdapter()
         view_pager.offscreenPageLimit = 3
-        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, 0)
-                ?: 0)?.select()
-        view_pager.currentItem = bundle?.getInt(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, 0)
-                ?: 0
+        tab_layout?.getUnifyTabLayout()?.getTabAt(redirectToTab)?.select()
+        view_pager.currentItem = redirectToTab
         if (view_pager.currentItem != 0) {
             bottom.gone()
         }
@@ -250,7 +279,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), BerandaTabFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_iklan_produck), TopAdsProductIklanFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_headline_title), TopAdsHeadlineBaseFragment.createInstance()))
-        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_recommend), TopAdsRecommendationFragment.createInstance(btnHeight)))
+        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_recommend), TopAdsRecommendationFragment.createInstance(btnHeight, redirectToTabInsight)))
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         pagerAdapter.setList(list)
         return pagerAdapter

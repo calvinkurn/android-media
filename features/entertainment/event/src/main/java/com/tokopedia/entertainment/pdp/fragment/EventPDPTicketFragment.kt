@@ -338,7 +338,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     private fun showViewBottom(state: Boolean) {
         viewBottom?.visibility = if (state) View.VISIBLE else View.GONE
-        constraintLayout?.visibility = if (state) View.VISIBLE else View.GONE
+        containerEventBottom?.visibility = if (state) View.VISIBLE else View.GONE
         if (!state) txtTotalHarga.text = String.format(resources.getString(R.string.ent_default_totalPrice))
     }
 

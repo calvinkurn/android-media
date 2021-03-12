@@ -1,0 +1,9 @@
+{
+  "readme": "open product shipping page",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/addproductpage - shipping"
+    }
+  ]
+}

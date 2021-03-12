@@ -9,14 +9,14 @@ import com.tokopedia.topads.view.fragment.BudgetingAdsFragment.Companion.BROAD_T
 import com.tokopedia.topads.view.fragment.BudgetingAdsFragment.Companion.SPECIFIC_TYPE
 import kotlinx.android.synthetic.main.topads_create_layout_budget_list_item.view.*
 
-class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<String>?, var selectedSuggestBid: MutableList<Int>?, var itemClicked: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
+class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<String>?, var selectedSuggestBid: MutableList<String>?, var itemClicked: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_create_layout_budget_list_item
     }
 
-    override fun bind(item: BidInfoItemViewModel, typeList: MutableList<Int>, minBid: Int) {
+    override fun bind(item: BidInfoItemViewModel, typeList: MutableList<Int>, minBid: String) {
         view.setOnClickListener {
             itemClicked?.invoke(adapterPosition)
         }
@@ -30,10 +30,10 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
                         view.keywordType.text = SPECIFIC_TYPE
                 }
 
-                if (selectedSuggestBid?.get(adapterPosition) != 0) {
+                if (selectedSuggestBid?.get(adapterPosition) != "0") {
                     view.keywordBudget.text = "Rp " + selectedSuggestBid?.get(adapterPosition).toString()
                 } else {
-                    view.keywordBudget.text = minBid.toString()
+                    view.keywordBudget.text = minBid
                     selectedSuggestBid?.set(adapterPosition, minBid)
                 }
             }

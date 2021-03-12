@@ -38,15 +38,22 @@ class ChatListViewComponent(
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             if (recyclerView.canScrollDown && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                val offset = recyclerView.computeVerticalScrollOffset()
-                val range = recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()
-                if (offset + SCROLL_OFFSET_INDICATOR < range - 1) csDownView.show()
+                if (isChatPositionBeyondOffset(recyclerView)) csDownView.show()
                 else csDownView.hide()
             } else if (recyclerView.scrollState != RecyclerView.SCROLL_STATE_SETTLING) {
                 csDownView.apply { showIndicatorRed(false) }.hide()
+            } else if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_SETTLING) {
+                if (!recyclerView.canScrollDown) csDownView.hide()
+                else {
+                    if (isChatPositionBeyondOffset(recyclerView)) csDownView.show()
+                    else csDownView.hide()
+                }
             }
         }
     }
+
+    private val RecyclerView.canScrollDown: Boolean
+        get() = canScrollVertically(1)
 
     private val chatAdapter = ChatAdapter()
 
@@ -88,8 +95,11 @@ class ChatListViewComponent(
         chatAdapter.unregisterAdapterDataObserver(adapterObserver)
     }
 
-    private val RecyclerView.canScrollDown: Boolean
-        get() = canScrollVertically(1)
+    private fun isChatPositionBeyondOffset(recyclerView: RecyclerView): Boolean {
+        val offset = recyclerView.computeVerticalScrollOffset()
+        val range = recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()
+        return offset + SCROLL_OFFSET_INDICATOR < range - 1
+    }
 
     companion object {
         private const val SCROLL_OFFSET_INDICATOR = 90

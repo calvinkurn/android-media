@@ -77,13 +77,18 @@ object FileUtil {
     }
 
     fun writeBufferToFile(buffer: ByteArray, path: String): Boolean {
+        var fos: FileOutputStream? = null
         return try {
-            val fos = FileOutputStream(path)
+            fos = FileOutputStream(path)
             fos.write(buffer)
-            fos.close()
             true
         } catch (e: Throwable) {
+            System.gc()
             false
+        } finally {
+            try {
+                fos?.close()
+            } catch (ignored: Exception) { }
         }
     }
 

@@ -20,13 +20,6 @@ class AnalyticsDebuggerModule {
     }
 
     @Provides
-    @Named(NAMED_GTM_ANALYTICS)
-    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase,
-                         deleteGtmLogUseCase: DeleteGtmLogUseCase): AnalyticsDebugger.Presenter {
-        return AnalyticsDebuggerPresenter(getGtmLogUseCase, deleteGtmLogUseCase)
-    }
-
-    @Provides
     @Named(NAMED_FPM_ANALYTICS)
     fun provideFpmPresenter(getFpmLogUseCase: GetFpmLogUseCase,
                             deleteFpmLogUseCase: DeleteFpmLogUseCase,
@@ -46,13 +39,6 @@ class AnalyticsDebuggerModule {
     fun provideTopAdsPresenter(getTopAdsLogUseCase: GetTopAdsLogUseCase,
                                 deleteTopAdsLogUseCase: DeleteTopAdsLogUseCase): TopAdsDebugger.Presenter {
         return TopAdsDebuggerPresenter(getTopAdsLogUseCase, deleteTopAdsLogUseCase)
-    }
-
-    @Provides
-    @Named(NAMED_GTM_ERROR_ANALYTICS)
-    fun provideGtmErrorPresenter(getGtmErrorLogUseCase: GetGtmErrorLogUseCase,
-                                 deleteGtmErrorLogUseCase: DeleteGtmErrorLogUseCase): AnalyticsDebugger.Presenter {
-        return AnalyticsGtmErrorDebuggerPresenter(getGtmErrorLogUseCase, deleteGtmErrorLogUseCase)
     }
 
     @Provides

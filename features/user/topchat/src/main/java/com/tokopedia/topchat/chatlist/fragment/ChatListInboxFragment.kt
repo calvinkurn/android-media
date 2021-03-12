@@ -116,7 +116,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var rvAdapter: ChatListAdapter? = null
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
-    private lateinit var broadCastButton: FloatingActionButton
+    private var broadCastButton: FloatingActionButton? = null
     private var containerListener: InboxFragmentContainer? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -136,7 +136,10 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             chatFilter?.reset()
             chatFilter?.onRoleChanged(isTabSeller())
             webSocket.onRoleChanged(role)
-            loadInitialData()
+            if (isResumed) {
+                loadInitialData()
+                setupSellerBroadcast()
+            }
         }
     }
 
@@ -222,6 +225,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             initView(it)
             setUpRecyclerView(it)
             setupObserver()
+            setupSellerBroadcastButtonObserver()
             setupSellerBroadcast()
             setupChatSellerBannedStatus()
             setupEmptyModel()
@@ -289,27 +293,29 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun setupSellerBroadcast() {
-        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
-        setupSellerBroadcastButton()
-        viewModel.loadChatBlastSellerMetaData()
+        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) {
+            broadCastButton?.hide()
+        } else {
+            viewModel.loadChatBlastSellerMetaData()
+        }
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
     }
 
-    private fun setupSellerBroadcastButton() {
+    private fun setupSellerBroadcastButtonObserver() {
         viewModel.broadCastButtonVisibility.observe(viewLifecycleOwner, Observer { visibility ->
             when (visibility) {
                 true -> {
-                    broadCastButton.show()
+                    broadCastButton?.show()
                 }
-                false -> broadCastButton.hide()
+                false -> broadCastButton?.hide()
             }
         })
         viewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
-            broadCastButton.setOnClickListener {
+            broadCastButton?.setOnClickListener {
                 if (isSellerMigrationEnabled(context)) {
                     val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
                     val webViewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)

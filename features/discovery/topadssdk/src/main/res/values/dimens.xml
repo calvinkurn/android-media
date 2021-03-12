@@ -54,4 +54,6 @@
 
     <dimen name="shop_recommendation_width">220dp</dimen>
     <dimen name="dp_148">148dp</dimen>
+    <dimen name="topads_sdk_headline_ad_width">132dp</dimen>
+    <dimen name="topads_sdk_headline_ad_max_height">226dp</dimen>
 </resources>
