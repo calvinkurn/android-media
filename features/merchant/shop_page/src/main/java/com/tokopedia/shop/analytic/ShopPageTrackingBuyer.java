@@ -181,7 +181,19 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CLICK,
                 DataLayer.mapOf(
-                        ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseChipName, etalaseName), loginNonLoginString, SEARCH_RESULT)),
+                        ACTION_FIELD, DataLayer.mapOf(
+                                LIST,
+                                joinDash(
+                                        SHOPPAGE,
+                                        shopId,
+                                        getProductEtalaseEvent(
+                                                selectedEtalaseChipName,
+                                                etalaseName
+                                        ),
+                                        loginNonLoginString,
+                                        SEARCH_RESULT
+                                )
+                        ),
                         PRODUCTS, createProductListSearchResultMap(
                                 shopProductUiModelArrayList,
                                 selectedEtalaseChipName,
@@ -426,11 +438,16 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 isOwner,
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
-                joinDash(CLICK_PRODUCT, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSection), loginNonLoginString, SEARCH_RESULT),
+                joinDash(
+                        CLICK_PRODUCT,
+                        getProductEtalaseEvent(etalaseNameTrackerString, etalaseSection),
+                        loginNonLoginString,
+                        SEARCH_RESULT),
                 keyword,
                 customDimensionShopPage,
                 shopProductUiModel,
-                etalaseNameTrackerString, etalaseSection,
+                etalaseNameTrackerString,
+                etalaseSection,
                 productPosStart,
                 shopId
         );
@@ -749,7 +766,11 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     ){
         String etalaseSectionTrackerString;
         if (isEtalaseSectionCampaign) {
-            etalaseSectionTrackerString = String.format(LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN, isUpcoming ? VALUE_UPCOMING : VALUE_ONGOING, etalaseSection);
+            etalaseSectionTrackerString = String.format(
+                    LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN,
+                    isUpcoming ? VALUE_UPCOMING : VALUE_ONGOING,
+                    etalaseSection
+            );
         } else {
             etalaseSectionTrackerString = etalaseSection;
         }
