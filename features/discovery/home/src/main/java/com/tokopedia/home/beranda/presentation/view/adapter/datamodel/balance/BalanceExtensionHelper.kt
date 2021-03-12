@@ -32,6 +32,8 @@ fun HomeHeaderWalletAction.buildWalletTitleTextAttribute(): BalanceTextAttribute
     var isBold = false
     var applink = ""
 
+    colourRef = R.color.Unify_N700
+
     walletBalanceCondition (
             isNotLinkedCondition = {
                 text = "(+ ${cashBalance} )"
