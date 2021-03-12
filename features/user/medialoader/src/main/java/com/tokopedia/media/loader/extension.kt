@@ -10,7 +10,6 @@ import android.widget.ImageView
 import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.transform.fitCenter
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.MediaTarget
