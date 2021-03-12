@@ -63,7 +63,7 @@
 
     </RelativeLayout>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/back_button"
         android:layout_width="?actionBarSize"
         android:layout_height="?actionBarSize"

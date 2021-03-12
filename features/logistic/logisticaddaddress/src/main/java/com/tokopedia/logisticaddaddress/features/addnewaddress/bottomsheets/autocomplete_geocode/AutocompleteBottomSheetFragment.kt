@@ -111,16 +111,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         compositeSubs.clear()
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d("bottomsheet", "onStop: ")
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        Log.d("bottomsheet", "onDismiss: ")
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
             val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
