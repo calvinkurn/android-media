@@ -17,7 +17,7 @@
             <com.google.android.gms.maps.MapView
                 android:id="@+id/map_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <ImageView
                 android:id="@+id/pointer_0"
@@ -54,12 +54,11 @@
             android:id="@+id/ic_current_location"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_above="@+id/cl_bottomsheet_getdistrict"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:contentDescription="@string/lokasi_saat_ini"
             app:srcCompat="@drawable/ic_gps_enable" />
 
     </RelativeLayout>
