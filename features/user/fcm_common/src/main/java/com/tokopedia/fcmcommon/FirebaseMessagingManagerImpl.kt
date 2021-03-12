@@ -16,7 +16,6 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 ) : FirebaseMessagingManager {
 
     override fun onNewToken(newToken: String?) {
-//        if (!userSession.isLoggedIn || newToken == null || !isNewToken(newToken)) return
         if(newToken == null) return
 
         storeNewToken(newToken)
