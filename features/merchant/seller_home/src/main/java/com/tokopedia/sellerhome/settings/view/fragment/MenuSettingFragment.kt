@@ -151,7 +151,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     override fun onNoAccess() {
-        showToasterError(context?.getString(R.string.admin_no_permission_oops).orEmpty())
+        showToasterError(context?.getString(R.string.seller_menu_admin_no_permission_oops).orEmpty())
     }
 
     override fun onDestroyView() {

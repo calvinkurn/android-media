@@ -8,8 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity

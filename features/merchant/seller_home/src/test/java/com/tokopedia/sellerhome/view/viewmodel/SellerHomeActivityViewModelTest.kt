@@ -290,20 +290,6 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is not shop owner but is location admin, user is not eligible`() = coroutineTestRule.runBlockingTest {
-        coEvery {
-            userSession.isShopOwner
-        } returns false
-        coEvery {
-            userSession.isLocationAdmin
-        } returns true
-
-        mViewModel.getAdminInfo()
-
-        assert((mViewModel.isRoleEligible.value as? Success)?.data == false)
-    }
-
-    @Test
     fun `if user is shop owner, we dont need to check for role permission`() = coroutineTestRule.runBlockingTest {
         coEvery {
             userSession.isShopOwner
