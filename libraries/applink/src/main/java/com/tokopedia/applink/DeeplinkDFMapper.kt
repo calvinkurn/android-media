@@ -122,7 +122,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.HOTEL_INTERNAL_O
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INSURANCE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_MANAGEMENT_HISTORY
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
