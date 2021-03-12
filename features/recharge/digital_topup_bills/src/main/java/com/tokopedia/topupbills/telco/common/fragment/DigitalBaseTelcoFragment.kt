@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
@@ -16,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -26,7 +24,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
@@ -46,6 +43,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.abs
@@ -214,13 +212,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(DigitalTopupBillsGqlQuery.prefixSelectTelco, getTelcoMenuId())
         viewModel.catalogPrefixSelect.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessCustomData()
                 is Fail -> onErrorCustomData()
             }
         })
+        viewModel.getPrefixOperator(DigitalTopupBillsGqlQuery.prefixSelectTelco, getTelcoMenuId())
     }
 
     private fun onSuccessCustomData() {
