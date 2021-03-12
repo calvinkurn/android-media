@@ -15,7 +15,7 @@ object ShopEditAddressUtils {
         return newAddress
     }
 
-    fun validatorAddress(addr1: String, addr2: String): Boolean {
+    fun validateAddressSimilarity(addr1: String, addr2: String): Boolean {
         val matchWord = levenshteinDistance(addr1, addr2)
         val minWordLen = minLenSentence(addr1, addr2)
         val verboseTest = matchWord.toDouble()/minWordLen.toDouble()

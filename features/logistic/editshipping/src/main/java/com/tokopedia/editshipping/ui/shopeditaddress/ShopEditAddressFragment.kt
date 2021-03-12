@@ -304,7 +304,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun checkValidateAddressDetail(addressHelper: String, userAddress: String) {
         val normalizeAddressHelper = ShopEditAddressUtils.normalize(addressHelper)
         val normalizeUserAddress = ShopEditAddressUtils.normalize(userAddress)
-        if (ShopEditAddressUtils.validatorAddress(normalizeAddressHelper, normalizeUserAddress)) {
+        if (ShopEditAddressUtils.validateAddressSimilarity(normalizeAddressHelper, normalizeUserAddress)) {
             validate = true
             helperShopDetail?.text = ""
         } else {

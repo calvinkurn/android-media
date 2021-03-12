@@ -17,25 +17,25 @@ class ShopEditAddressUtilsTest {
     }
 
     @Test
-    fun `Validator Address return true`() {
+    fun `Validate Address Similarity return true`() {
         val address1 = "Jln. Dr. Satrio no, 364. Jakarta Selatan"
         val address2 = "Jln. Dr. Satrio no, 364, Setiabudi, Jakarta Selatan"
 
         val expectedResult = true
 
-        val actualResult = ShopEditAddressUtils.validatorAddress(address1, address2)
+        val actualResult = ShopEditAddressUtils.validateAddressSimilarity(address1, address2)
 
         Assert.assertEquals(expectedResult, actualResult)
     }
 
     @Test
-    fun `Validator Address return false`() {
+    fun `Validate Address Similarity return false`() {
         val address1 = "Jln. Dr. Satrio no, 364. Jakarta Selatan"
         val address2 = "Jalan Karet Kuningan, Setiabudi, jakarta Selatan"
 
         val expectedResult = false
 
-        val actualResult = ShopEditAddressUtils.validatorAddress(address1, address2)
+        val actualResult = ShopEditAddressUtils.validateAddressSimilarity(address1, address2)
 
         Assert.assertEquals(expectedResult, actualResult)
     }
