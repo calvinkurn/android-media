@@ -6,6 +6,8 @@ data class OrderProfile(
         val onboardingHeaderMessage: String = "",
         val onboardingComponent: OnboardingComponentResponse = OnboardingComponentResponse(),
         val hasPreference: Boolean = false,
+        val profileRevampWording: String = "",
+        val isRecom: Boolean = false,
         val profileId: Int = 0,
         val status: Int = 0,
         val enable: Boolean = true,

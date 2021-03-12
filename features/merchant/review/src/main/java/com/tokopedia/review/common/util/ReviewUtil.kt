@@ -125,12 +125,14 @@ fun ChipsUnify.toggle() {
 
 fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
     val clickedItem = this.getItemAtPosition(position) as ListItemUnify
-        when (choiceMode) {
-            ListView.CHOICE_MODE_SINGLE -> {
-                items.filter { it.listRightRadiobtn?.isChecked ?: false }.map { it.listRightRadiobtn?.isChecked = false }
+    when (choiceMode) {
+        ListView.CHOICE_MODE_SINGLE -> {
+            items.filter {
+                it.listRightRadiobtn?.isChecked ?: false
+            }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
 
-                clickedItem.listRightRadiobtn?.isChecked = true
-            }
+            clickedItem.listRightRadiobtn?.isChecked = true
+        }
     }
 }
 

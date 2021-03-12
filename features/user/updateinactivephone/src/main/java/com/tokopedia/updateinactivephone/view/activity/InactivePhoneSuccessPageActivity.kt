@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UserDataTemporary
 import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
@@ -57,6 +58,13 @@ class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
         }
 
         textDescription?.text = MethodChecker.fromHtml(desc)
+        showTicker()
+    }
+
+    private fun showTicker() {
+        tickerInactivePhoneNumber?.apply {
+            setHtmlDescription(getString(R.string.text_success_ticker))
+        }?.show()
     }
 
     override fun onBackPressed() {

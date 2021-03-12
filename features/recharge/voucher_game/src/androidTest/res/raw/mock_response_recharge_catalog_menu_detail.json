@@ -1,0 +1,135 @@
+{
+  "data": {
+    "rechargeCatalogMenuDetail": {
+      "catalog": {
+        "id": 4,
+        "name": "voucher-game",
+        "label": "Voucher Game",
+        "icon": ""
+      },
+      "recommendations": [],
+      "promos": [
+        {
+          "id": 2300,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/8/66931192/66931192_1238da0c-6c45-472f-9117-a8ab574c9f16.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-cashback-2/",
+          "status": 1,
+          "title": "[DGTOPED] Top Up, Tagihan, Travel, Hiburan cashback hingga Rp500rb.",
+          "subtitle": "Kode Promo: {DGTOPED}",
+          "promo_code": "DGTOPED"
+        },
+        {
+          "id": 2780,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/19/42484317/42484317_e990d99f-56f1-4f0b-ab75-df71b018b2d6.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-diskon-7",
+          "status": 1,
+          "title": "[DGMASTERCARD] Ada diskon 10% hingga 50rb untuk Top-up Pulsa hingga Bayar Tagihan",
+          "subtitle": "Kode Promo: {DGMASTERCARD}",
+          "promo_code": "DGMASTERCARD"
+        },
+        {
+          "id": 2800,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/10/42484317/42484317_846a1ac4-4e09-4afc-a85f-6c9d6ba3dc01.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-cashback-16",
+          "status": 1,
+          "title": "[DGSHOPPING]. Bayar Tagihan Dapat Kupon Belanja di Official Store",
+          "subtitle": "Kode Promo: (DGSHOPPING}",
+          "promo_code": "DGSHOPPING"
+        },
+        {
+          "id": 2832,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/10/34631992/34631992_d970f2e6-9b81-482b-879a-dba0463b521e.png",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-google-play-3/",
+          "status": 1,
+          "title": "[Google Play] Beli kode voucher Google Play, dapat bonus in-game item One Punch Man.",
+          "subtitle": "",
+          "promo_code": ""
+        },
+        {
+          "id": 2706,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/17/42484317/42484317_b4d4f400-5054-4f4b-80c5-3902e6fbc098.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-travel-entertainment",
+          "status": 1,
+          "title": "[COMBOHEPI] Promo Tiket Pesawat sampai Voucher Makan cashback hingga 500rb",
+          "subtitle": "Kode Promo: {COMBOHEPI}",
+          "promo_code": "COMBOHEPI"
+        },
+        {
+          "id": 2398,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/1/34631992/34631992_44d8f48f-d961-42fd-adb8-f126d94a611d.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-cashback-6/",
+          "status": 1,
+          "title": "[COBASERU] Food&Voucher sampai Voucher Game, Cashback s.d Rp50rb. ",
+          "subtitle": "Kode Promo: {COBASERU}",
+          "promo_code": "COBASERU"
+        },
+        {
+          "id": 2253,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/1/34631992/34631992_3b1c99e8-70b9-43e1-b225-4deeb3e37556.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-cashback-13/",
+          "status": 1,
+          "title": "[COBATOPUP] Top Up Apa Saja, Cashback hingga Rp50.000.",
+          "subtitle": "Kode Promo: {COBATOPUP}",
+          "promo_code": "COBATOPUP"
+        },
+        {
+          "id": 2530,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/1/34631992/34631992_019a144f-05b4-4626-8672-6df9d0365557.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-google-play-1/",
+          "status": 1,
+          "title": "[GOOGLENEW4] Beli Kode Voucher Google Play, cashback 50%. Kuota Terbatas.",
+          "subtitle": "Kode promo: {GOOGLENEW4}",
+          "promo_code": "GOOGLENEW4"
+        },
+        {
+          "id": 2810,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/15/66931192/66931192_39d3a19b-f32f-4f6a-96c8-50cb5890b74c.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-commonwealth",
+          "status": 1,
+          "title": "[COMMON50] Top Up, Tagihan, Travel, Entertainment, diskon Rp50.000 dengan debit Commonwealth.",
+          "subtitle": "Kode promo: {COMMON50}",
+          "promo_code": "COMMON50"
+        },
+        {
+          "id": 1989,
+          "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/13/66931192/66931192_bb5068b0-d5fb-479f-825b-d687acf35a66.jpg",
+          "filename_webp": "",
+          "img_url": "https://www.tokopedia.com/promo/digital-standard-chartered/",
+          "status": 1,
+          "title": "[SCPREMDG] Cashback hingga Rp50.000 dengan kartu kredit Standard Chartered Premium.",
+          "subtitle": "Kode Promo: {SCPREMDG}",
+          "promo_code": "SCPREMDG"
+        }
+      ],
+      "tickers": [],
+      "banners": [
+        {
+          "id": 2820,
+          "title": "IAP Feb 2021",
+          "img_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/2/66301108/66301108_0000d6af-6257-46a9-8d5a-e38d1d6b9473.png",
+          "link_url": "",
+          "promo_code": "",
+          "app_link": ""
+        },
+        {
+          "id": 2828,
+          "title": "Google New User - Feb",
+          "img_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/8/66301108/66301108_05631e60-f2ea-4392-b987-c9527a4ebb69.jpg",
+          "link_url": "https://www.tokopedia.com/promo/digital-google-play-1/",
+          "promo_code": "",
+          "app_link": "https://www.tokopedia.com/promo/digital-google-play-1/"
+        }
+      ],
+      "express_checkout": false
+    }
+  }
+}

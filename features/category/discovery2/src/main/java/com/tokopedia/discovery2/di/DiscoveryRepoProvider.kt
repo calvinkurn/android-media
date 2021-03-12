@@ -9,6 +9,8 @@ import com.tokopedia.discovery2.repository.emptystate.DiscoveryEmptyStateReposit
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
+import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterDiscoveryRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
@@ -37,6 +39,10 @@ class DiscoveryRepoProvider : RepositoryProvider {
 
     override fun provideQuickFilterRepository(): QuickFilterRepository {
         return QuickFilterDiscoveryRepository()
+    }
+
+    override fun provideFilterRepository(): FilterRepository {
+        return FilterRestRepository()
     }
 
     override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {

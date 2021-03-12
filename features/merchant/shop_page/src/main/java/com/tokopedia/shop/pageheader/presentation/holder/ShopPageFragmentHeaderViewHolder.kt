@@ -5,25 +5,31 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.extension.formatToSimpleNumber
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
+import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -51,6 +57,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         get() = view.shop_page_follow_unfollow_button.takeIf {
             isUsingNewNavigation()
         } ?: view.shop_page_follow_unfollow_button_old
+    private var coachMark: CoachMark2? = null
 
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
@@ -65,7 +72,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_location_icon.setImageResource(locationImageIcon)
             view.shop_page_main_profile_location_icon.show()
             view.shop_page_main_profile_location.show()
-            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_location, shopLocation, view.shop_page_main_profile_location.context.getString(R.string.content_desc_shop_page_main_profile_location));
+            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_location, shopLocation, view.shop_page_main_profile_location.context.getString(R.string.content_desc_shop_page_main_profile_location))
         }else{
             view.shop_page_main_profile_location_icon.hide()
             view.shop_page_main_profile_location.hide()
@@ -118,7 +125,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             showFollowButton()
             view.play_seller_widget_container.visibility = View.GONE
-            updateFavoriteButton()
+            followButton.isLoading = true
         }
     }
 
@@ -126,8 +133,15 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.visibility = View.GONE
     }
 
-    fun showFollowButton(){
+    private fun showFollowButton(){
         followButton.visibility = View.VISIBLE
+        followButton.setOnClickListener {
+            if (!followButton.isLoading) {
+                removeCompoundDrawableFollowButton()
+                followButton.isLoading = true
+                listener.setFollowStatus(isShopFavorite)
+            }
+        }
     }
 
     private fun setupTextContentSgcWidget(){
@@ -165,7 +179,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData) {
-        isShopFavorite = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
         view.shop_page_main_profile_follower_icon.setImageResource(followerImageIcon)
         view.shop_page_main_profile_follower_icon.show()
         view.shop_page_main_profile_follower.show()
@@ -176,7 +189,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_follower, MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
                     favoriteData.totalFavorite.toDouble().formatToSimpleNumber())).toString(), view.context.getString(R.string.content_desc_shop_page_main_profile_follower))
         }
-        updateFavoriteButton()
     }
 
     fun updateShopTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel?, shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean) {
@@ -202,9 +214,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     private fun showShopStatusTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean = false) {
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
-        view.tickerShopStatus.setHtmlDescription(shopPageHeaderDataModel.statusMessage)
+        view.tickerShopStatus.setHtmlDescription(
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                    generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
+                } else {
+                    shopPageHeaderDataModel.statusMessage
+                }
+        )
         view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                // set tracker data based on shop status
                 when (shopPageHeaderDataModel.shopStatus) {
                     ShopStatusDef.CLOSED -> {
                         shopPageTracking?.sendOpenShop()
@@ -224,7 +243,15 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                                 ))
                     }
                 }
-                listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+                if(linkUrl == context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url)) {
+                    // linkUrl is from appended moderate description, show bottomsheet to request open moderate
+                    listener.setShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance().apply {
+                        init(listener)
+                    })
+                } else {
+                    // original url, open web view
+                    listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+                }
             }
 
             override fun onDismiss() {}
@@ -235,6 +262,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
         }
+    }
+
+    private fun generateShopModerateTickerDescription(originalStatusMessage: String) : String {
+        // append action text to request open moderation
+        val appendedText = context.getString(
+                R.string.shop_page_header_request_unmoderate_appended_text,
+                context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url),
+                context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
+        )
+        return originalStatusMessage + appendedText
     }
 
     private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus) {
@@ -251,24 +288,68 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun isShopFavourited() = isShopFavorite
 
-    fun updateFavoriteButton() {
-        followButton.isLoading = false
-        followButton.setOnClickListener {
-            if (!followButton.isLoading) {
-                followButton.isLoading = true
-                listener.toggleFavorite(!isShopFavorite)
-            }
-        }
+    private fun changeColorButton() {
         if (isShopFavorite) {
             followButton.buttonVariant = UnifyButton.Variant.GHOST
             followButton.buttonType = UnifyButton.Type.ALTERNATE
-            followButton.text = context.getString(R.string.shop_header_action_following)
-
         } else {
             followButton.buttonVariant = UnifyButton.Variant.FILLED
             followButton.buttonType = UnifyButton.Type.MAIN
-            followButton.text = context.getString(R.string.shop_header_action_follow)
         }
+    }
+
+    fun setFollowStatus(followStatus: FollowStatus?, shopId: String, userId: String) {
+        followButton.isLoading = false
+        isShopFavorite = followStatus?.status?.userIsFollowing == true
+        followStatus?.let {
+            followButton.text = it.followButton?.buttonLabel
+            val voucherUrl = it.followButton?.voucherIconURL
+            val coachMarkText = it.followButton?.coachmarkText
+            if (!voucherUrl.isNullOrBlank()) {
+                followButton.loadLeftDrawable(
+                        context = context,
+                        url = voucherUrl,
+                        convertIntoSize = 50
+                )
+                shopPageTracking?.impressionVoucherFollowUnfollowShop(shopId, userId)
+            } else {
+                removeCompoundDrawableFollowButton()
+            }
+            if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
+                setCoachMark(coachMarkText)
+                listener.saveFirstTimeVisit()
+                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+            }
+        }
+        changeColorButton()
+    }
+
+    fun isCoachMarkDismissed(): Boolean? {
+        return coachMark?.isDismissed
+    }
+
+    fun dismissCoachMark(shopId: String, userId: String) {
+        coachMark?.dismissCoachMark()
+        shopPageTracking?.impressionCoachMarkDissapearFollowUnfollowShop(shopId, userId)
+    }
+
+    fun removeCompoundDrawableFollowButton() {
+        if (!followButton.compoundDrawables.isNullOrEmpty()) {
+            followButton.removeDrawable()
+        }
+    }
+
+    private fun setCoachMark(description: String) {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        coachMarkItem.add(
+                CoachMark2Item(
+                        anchorView = followButton,
+                        title = "",
+                        description = MethodChecker.fromHtml(description)
+                )
+        )
+        coachMark = CoachMark2(context)
+        coachMark?.showCoachMark(coachMarkItem)
     }
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
@@ -302,21 +383,31 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun setFavoriteValue(isShopFavorite: Boolean) {
-        this.isShopFavorite = isShopFavorite
+    fun updateFollowStatus(followShop: FollowShop) {
+        followButton.isLoading = false
+        followButton.text = followShop.buttonLabel
+        isShopFavorite = followShop.isFollowing == true
+        removeCompoundDrawableFollowButton()
+        changeColorButton()
     }
 
-    fun toggleFavourite() {
-        isShopFavorite = !isShopFavorite
+    fun setLoadingFollowButton(isLoading: Boolean) {
+        followButton.isLoading = isLoading
     }
 
     interface ShopPageFragmentViewHolderListener {
         fun onFollowerTextClicked(shopFavourited: Boolean)
-        fun toggleFavorite(isFavourite: Boolean)
+        fun setFollowStatus(isFollowing: Boolean)
         fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
         fun openShopInfo()
         fun onStartLiveStreamingClicked()
+        fun saveFirstTimeVisit()
+        fun isFirstTimeVisit(): Boolean?
+        fun onSendRequestOpenModerate(optionValue : String)
+        fun onCompleteSendRequestOpenModerate()
+        fun onCompleteCheckRequestModerateStatus(moderateStatusResult : ShopModerateRequestResult)
+        fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet)
     }
 
 

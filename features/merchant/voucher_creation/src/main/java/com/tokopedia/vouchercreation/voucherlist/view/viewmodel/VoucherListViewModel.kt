@@ -4,23 +4,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherListParam
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherStatus
+import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
+import com.tokopedia.vouchercreation.voucherlist.model.remote.ChatBlastSellerMetadata
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -33,8 +36,13 @@ class VoucherListViewModel @Inject constructor(
         private val cancelVoucherUseCase: CancelVoucherUseCase,
         private val shopBasicDataUseCase: ShopBasicDataUseCase,
         private val voucherDetailUseCase: VoucherDetailUseCase,
+        private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
+
+    private var showBroadCastChatTicker: Boolean = true
+
+    private val bcTickerExpirationPeriod = 3 // months
 
     private val notStartedVoucherRequestParam by lazy {
         VoucherListParam.createParam(status = VoucherStatus.NOT_STARTED)
@@ -63,6 +71,9 @@ class VoucherListViewModel @Inject constructor(
         get() = _localVoucherListLiveData
 
     private val _fullVoucherListLiveData = MutableLiveData<MutableList<VoucherUiModel>>().apply { value = mutableListOf() }
+
+    private val _broadCastMetaData = MutableLiveData<Result<ChatBlastSellerMetadata>>()
+    val broadCastMetadata: LiveData<Result<ChatBlastSellerMetadata>> get() = _broadCastMetaData
 
     private val _cancelVoucherResponseLiveData = MediatorLiveData<Result<Int>>().apply {
         addSource(_cancelledVoucherLiveData) { id ->
@@ -188,6 +199,36 @@ class VoucherListViewModel @Inject constructor(
 
     private fun searchVoucherByKeyword(keyword: String) {
         _localVoucherListLiveData.value = _fullVoucherListLiveData.value?.filter {
-            it.name.contains(keyword, true) } ?: listOf()
+            it.name.contains(keyword, true)
+        } ?: listOf()
+    }
+
+    fun getBroadCastMetaData() {
+        launchCatchError(block = {
+            _broadCastMetaData.value = Success(withContext(dispatchers.io) {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            })
+        }, onError = {
+            _broadCastMetaData.value = Fail(it)
+        })
+    }
+
+    fun setShowBroadCastChatTicker(showBroadCastChatTicker: Boolean) {
+        this.showBroadCastChatTicker = showBroadCastChatTicker
+    }
+
+    fun getShowBroadCastChatTicker(): Boolean {
+        return showBroadCastChatTicker
+    }
+
+    fun isBroadCastChatTickerExpired(firstTimeVisitLong: Long): Boolean {
+        val firstTimeVisit = Date(firstTimeVisitLong)
+        val calendar = Calendar.getInstance()
+        calendar.time = firstTimeVisit
+        calendar.add(Calendar.MONTH, bcTickerExpirationPeriod)
+        // = 0 => equal
+        // < 0 => current date is before the expiration date
+        // > 0 => current date is after the expiration date
+        return Date() >= calendar.time
     }
 }

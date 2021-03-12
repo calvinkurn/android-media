@@ -15,6 +15,10 @@ public class ShopPageConstant {
     public static final String AB_TEST_NAVIGATION_REVAMP_KEY = "Navigation Revamp";
     public static final String AB_TEST_NAVIGATION_REVAMP_OLD_VALUE = "Existing Navigation";
     public static final String AB_TEST_NAVIGATION_REVAMP_NEW_VALUE = "Navigation Revamp";
+    public static final String SHOP_SHARE_DEFAULT_CHANNEL = "default";
+    public static final String SHOP_SHARE_OTHERS_CHANNEL = "others";
+    public static final String SHOP_SHARE_GQL_TRACKER_ACTION = "ShopSharing";
+    public static final String SHOP_SHARE_GQL_TRACKER_SOURCE = "shop-page";
     public static final int DEFAULT_MEMBERSHIP_POSITION = 0;
     public static final int DEFAULT_MERCHANT_VOUCHER_POSITION = 1;
     public static final int DEFAULT_FEATURED_POSITION = 2;

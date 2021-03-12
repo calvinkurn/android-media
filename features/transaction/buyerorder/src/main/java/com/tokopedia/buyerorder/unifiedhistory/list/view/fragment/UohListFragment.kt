@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -213,16 +215,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var isFetchRecommendation = false
     private var currPage = 1
     private var currRecommendationListPage = 0
-    private var textChangedJob: Job? = null
     private var isReset = false
     private var filterStatus = ""
     private var orderIdNeedUpdated = ""
     private var currIndexNeedUpdate = -1
-    private var isTyping = false
     private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
     private val REQUEST_CODE_LOGIN = 288
+    private val MIN_KEYWORD_CHARACTER_COUNT = 3
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -419,38 +420,35 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
-        search_bar?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                textChangedJob?.cancel()
-                textChangedJob = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500L)
-
-                    if (!isTyping) {
-                        isTyping = true
-                        resetFilter()
-                    }
-
-                    paramUohOrder.searchableText = s.toString()
-                    refreshHandler?.startRefresh()
-                    scrollRecommendationListener.resetState()
-                    userSession.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-        })
-
         search_bar?.searchBarIcon?.setOnClickListener {
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
             search_bar?.searchBarTextField?.text?.clear()
+            triggerSearch()
+        }
+
+        search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                UohUtils.hideKeyBoard(search_bar.context, view)
+                if (search_bar?.searchBarTextField?.text?.length ?: 0 < MIN_KEYWORD_CHARACTER_COUNT) {
+                    showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
+                } else {
+                    triggerSearch()
+                }
+                true
+            } else false
         }
 
         addEndlessScrollListener()
+    }
+
+    private fun triggerSearch() {
+        search_bar?.searchBarTextField?.text?.toString()?.let { keyword ->
+            resetFilter()
+            paramUohOrder.searchableText = keyword
+            refreshHandler?.startRefresh()
+            scrollRecommendationListener.resetState()
+            userSession.userId?.let { UohAnalytics.submitSearch(keyword, it) }
+        }
     }
 
     private fun addEndlessScrollListener() {

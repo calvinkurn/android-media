@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="yellow_100">#FFFAE6</color>
-    <color name="container_help_text">#F531353B</color>
     <color name="container_help_background">#FFFAE6</color>
     <color name="container_help_background_shadow">#FFC400</color>
     <color name="video_thumbnail_title">#F531353B</color>

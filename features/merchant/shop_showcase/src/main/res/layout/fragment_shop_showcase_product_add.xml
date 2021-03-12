@@ -107,6 +107,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:elevation="@dimen/dp_16"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="0dp"
         app:cardElevation="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"

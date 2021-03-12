@@ -18,6 +18,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.STATUS_MULTIPLE_ACCOUNT
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.STATUS_SUCCESS
 import com.tokopedia.updateinactivephone.common.UserDataTemporary
 import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
@@ -96,10 +98,10 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
             when (it) {
                 is Success -> {
-                    if (it.data.validation.status == 1) {
+                    if (it.data.validation.status == STATUS_SUCCESS) {
                         userDataTemp.setIndex(1)
                         gotoOnboardingIdCardPage()
-                    } else if (it.data.validation.status == 2) {
+                    } else if (it.data.validation.status == STATUS_MULTIPLE_ACCOUNT) {
                         gotoAccountListPage(userDataTemp.getOldPhone())
                     }
                 }

@@ -31,7 +31,7 @@
     <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>
     <string name="menu_user_menu_subscription">Langganan</string>
     <string name="menu_user_menu_complain">Pesanan Dikomplain</string>
-    <string name="menu_user_menu_tokopedia_care">Tokopedia Care</string>
+    <string name="menu_user_menu_tokopedia_care">Bantuan Tokopedia Care</string>
     <string name="menu_user_menu_qr_code">QR Code</string>
 
     <string name="menu_user_menu_wishlist_tracker_name">Wishlist</string>
@@ -39,7 +39,7 @@
     <string name="menu_user_menu_recent_view_tracker_name">Recent View</string>
     <string name="menu_user_menu_subscription_tracker_name">Subscription</string>
     <string name="menu_user_menu_complain_tracker_name">Complain</string>
-    <string name="menu_user_menu_tokopedia_care_tracker_name">Tokopedia Care</string>
+    <string name="menu_user_menu_tokopedia_care_tracker_name">Bantuan Tokopedia Care</string>
     <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
 
     <string name="title_transaction_section">Transaksi berlangsung</string>
@@ -85,4 +85,5 @@
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>
+    <string name="account_header_store_title">Toko saya:</string>
 </resources>

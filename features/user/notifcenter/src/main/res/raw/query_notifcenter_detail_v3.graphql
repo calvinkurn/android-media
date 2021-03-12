@@ -48,6 +48,8 @@ query notifcenter_detail_v3(
 			status
 			read_status
 		    notif_order_type
+		    is_last_journey
+            unique_id
             widget {
                 title
                 description
@@ -174,6 +176,8 @@ query notifcenter_detail_v3(
 			status
 			read_status
 		    notif_order_type
+		    is_last_journey
+            unique_id
             widget {
                 title
                 description

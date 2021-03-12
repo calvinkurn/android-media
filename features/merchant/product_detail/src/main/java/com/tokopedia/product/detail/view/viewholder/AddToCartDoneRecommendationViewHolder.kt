@@ -21,10 +21,6 @@ class AddToCartDoneRecommendationViewHolder(
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_layout
     }
 
-    private val fact: RecommendationProductTypeFactory by lazy {
-        RecommendationProductTypeFactory(recommendationListener)
-    }
-
     override fun bind(element: AddToCartDoneRecommendationDataModel) {
         with(itemView) {
             title_recom.text = element.recommendationWidget.title

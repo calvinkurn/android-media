@@ -1,5 +1,6 @@
 package com.tokopedia.categorylevels.di
 
+import com.tokopedia.categorylevels.domain.repository.CategoryFullFilterRepository
 import com.tokopedia.categorylevels.domain.repository.CategoryQuickFilterRepository
 import com.tokopedia.categorylevels.domain.repository.CategoryProductCardsGqlRepository
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
@@ -10,4 +11,5 @@ import dagger.Component
 interface CategoryRevampComponent {
     fun getCategoryProductCardsGqlRepository(): CategoryProductCardsGqlRepository
     fun getCategoryQuickFilterRepository(): CategoryQuickFilterRepository
+    fun getCategoryFullFilterRepository(): CategoryFullFilterRepository
 }

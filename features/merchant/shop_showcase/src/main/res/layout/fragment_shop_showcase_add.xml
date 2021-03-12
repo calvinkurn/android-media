@@ -49,6 +49,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
+                android:theme="@style/TextDarkMode"
                 app:layout_constraintTop_toBottomOf="@+id/tv_add_showcase_title"
                 app:text_field_counter="128"
                 app:text_field_input_type="text"

@@ -79,6 +79,11 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
             uri_previous
         }
         tab_name
+        suggestion {
+            currentKeyword
+            query
+            text
+        }
         shops {
             shop_id
             shop_name
