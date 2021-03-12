@@ -433,8 +433,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
         } else {
             digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
         }
-        viewModel.updateTotalPriceWithFintechProduct(isChecked, getPriceInput())
-        viewModel.updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
+        viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }
 
     override fun onFintechMoreInfoChecked(info: FintechProduct.FintechProductInfo) {
@@ -470,8 +469,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
                 inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
                     override fun onInputPriceByUserFilled(paymentAmount: Long?) {
                         viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble()
-                                ?: 0.0, false)
-//                                fintechProductWidget.isChecked())
+                                ?: 0.0)
                         viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble()
                                 ?: 0.0)
                     }

@@ -13,6 +13,12 @@ data class PaymentSummary (
         summaries.add(payment)
     }
 
+    fun addToSummary(position: Int, payment: Payment) {
+        if (summaries.size >= position) {
+            summaries.add(position, payment)
+        } else summaries.add(payment)
+    }
+
     fun changeSummaryValue(title: String, priceAmount: String) {
         val item: Payment = summaries.firstOrNull { it.title == title } ?: return
         item.priceAmount = priceAmount

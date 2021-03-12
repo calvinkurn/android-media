@@ -232,7 +232,7 @@ class DigitalCartViewModel @Inject constructor(
 
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
-            paymentSummary.addToSummary(Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
+            paymentSummary.addToSummary(0, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
             _payment.postValue(paymentSummary)
 
             requestCheckoutParam.transactionAmount = pricePlain
@@ -285,7 +285,7 @@ class DigitalCartViewModel @Inject constructor(
         resetCheckoutSummaryPromoAndTotalPrice()
         val promoDataValue = promoData.value?.amount ?: 0
         if (promoDataValue > 0) {
-            paymentSummary.addToSummary(Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
+            paymentSummary.addToSummary(1, Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
             _payment.postValue(paymentSummary)
             _totalPrice.forceRefresh()
         } else {
@@ -304,15 +304,24 @@ class DigitalCartViewModel @Inject constructor(
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
-    fun updateTotalPriceWithFintechProduct(isChecked: Boolean, inputPrice: Double?) {
-        requestCheckoutParam.isFintechProductChecked = isChecked
+    fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, inputPrice: Double?) {
+        if (requestCheckoutParam.fintechProducts.containsKey(fintechProduct.tierId) && !isChecked) {
+            //remove
+            requestCheckoutParam.fintechProducts.remove(fintechProduct.tierId)
+        } else if (!requestCheckoutParam.fintechProducts.containsKey(fintechProduct.tierId) && isChecked) {
+            //add
+            requestCheckoutParam.fintechProducts[fintechProduct.tierId] = fintechProduct
+        }
+        updateTotalPriceWithFintechProduct(inputPrice)
+        updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
+    }
 
+    fun updateTotalPriceWithFintechProduct(inputPrice: Double?) {
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = inputPrice ?: attributes.pricePlain
-            if (isChecked) {
-                val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
-                        ?: 0.0
-                totalPrice += fintechProductPrice
+
+            requestCheckoutParam.fintechProducts.forEach { fintech ->
+                totalPrice += fintech.value.fintechAmount
             }
             _totalPrice.postValue(totalPrice)
         }
@@ -327,9 +336,9 @@ class DigitalCartViewModel @Inject constructor(
         _payment.postValue(paymentSummary)
     }
 
-    fun setTotalPriceBasedOnUserInput(totalPrice: Double, isFintechProductChecked: Boolean) {
+    fun setTotalPriceBasedOnUserInput(totalPrice: Double) {
         requestCheckoutParam.transactionAmount = totalPrice
-        updateTotalPriceWithFintechProduct(isFintechProductChecked, totalPrice)
+        updateTotalPriceWithFintechProduct(totalPrice)
     }
 
     fun setSubtotalPaymentSummaryOnUserInput(totalPrice: Double) {
