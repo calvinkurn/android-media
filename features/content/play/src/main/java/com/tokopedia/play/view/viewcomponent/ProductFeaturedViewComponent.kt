@@ -48,6 +48,11 @@ class ProductFeaturedViewComponent(
         else show()
     }
 
+    fun showIfNotEmpty() {
+        if (adapter.itemCount == 0) hide()
+        else show()
+    }
+
     fun showPlaceholder() {
         setFeaturedProducts(getPlaceholder(), TOTAL_PLACEHOLDER)
     }

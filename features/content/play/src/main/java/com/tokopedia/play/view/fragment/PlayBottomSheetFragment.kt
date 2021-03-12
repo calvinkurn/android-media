@@ -17,7 +17,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.extensions.isAnyShown
@@ -78,12 +77,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val generalErrorMessage: String
         get() = getString(R.string.play_general_err_message)
-
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
-
-    private val channelId: String
-        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
@@ -155,6 +148,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 toasterType = Toaster.TYPE_NORMAL,
                 message = getString(R.string.play_voucher_code_copied)
         )
+        analytic.clickCopyVoucher(voucher)
     }
 
     /**
@@ -313,17 +307,6 @@ class PlayBottomSheetFragment @Inject constructor(
         if (shouldFinish) activity?.finish()
     }
 
-    private fun sendTrackerImpression(playResult: PlayResult<PlayProductTagsUiModel.Complete>) {
-        if (playResult is PlayResult.Success) {
-            if (playResult.data.productList.isNotEmpty()
-                    && playResult.data.productList.first() is PlayProductUiModel.Product) {
-                with(analytic) { impressionProductList(
-                        playResult.data.productList as List<PlayProductUiModel.Product>
-                ) }
-            }
-        }
-    }
-
     private fun copyToClipboard(content: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                 .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
@@ -353,8 +336,6 @@ class PlayBottomSheetFragment @Inject constructor(
                         onError = it.onRetry
                 )
             }
-
-            sendTrackerImpression(it)
         })
     }
 

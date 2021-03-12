@@ -1,6 +1,7 @@
 package com.tokopedia.play.analytic
 
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -185,7 +186,7 @@ class PlayAnalytic(
                     hashMapOf<String, Any>(
                             "ecommerce" to hashMapOf(
                                     "currencyCode" to "IDR",
-                                    "impressions" to convertProductsToListOfObject(listOfProducts)
+                                    "impressions" to convertProductsToListOfObject(listOfProducts, "bottom sheet")
                             )
                     )
             )
@@ -205,7 +206,7 @@ class PlayAnalytic(
                         "ecommerce" to hashMapOf(
                                 "click" to hashMapOf(
                                         "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                                        "products" to  listOf(convertProductToHashMapWithList(product, position))
+                                        "products" to  listOf(convertProductToHashMapWithList(product, position, "bottom sheet"))
                                 )
                         )
                 )
@@ -333,20 +334,148 @@ class PlayAnalytic(
         )
     }
 
+    fun impressionHighlightedVoucher(vouchers: List<MerchantVoucherUiModel>) {
+        val voucherId = vouchers.firstOrNull { it.highlighted }?.id ?: return
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "impression on merchant voucher",
+                        KEY_EVENT_LABEL to "$channelId - $voucherId - ${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    fun clickHighlightedVoucher(voucher: MerchantVoucherUiModel) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "click on merchant voucher",
+                        KEY_EVENT_LABEL to "$channelId - ${voucher.id} - ${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    fun impressionFeaturedProduct(products: List<PlayProductUiModel.Product>, maxFeaturedProduct: Int) {
+        if (products.isNotEmpty()) {
+            val featuredProducts = products.take(maxFeaturedProduct)
+            trackingQueue.putEETracking(
+                    EventModel(
+                            "productView",
+                            KEY_TRACK_GROUP_CHAT_ROOM,
+                            "view on featured product",
+                            "$channelId - ${featuredProducts[0].id} - ${channelType.value} - featured product tagging"
+                    ),
+                    hashMapOf(
+                            "ecommerce" to hashMapOf(
+                                    "currencyCode" to "IDR",
+                                    "impressions" to convertProductsToListOfObject(featuredProducts, "featured product")
+                            )
+                    ),
+                    hashMapOf(
+                            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                            KEY_USER_ID to userId,
+                            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                    )
+            )
+        }
+    }
+
+    fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        "productClick",
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_TRACK_CLICK,
+                        "$channelId - ${featuredProduct.id} - ${channelType.value} - featured product tagging"
+                ),
+                hashMapOf(
+                        "ecommerce" to hashMapOf(
+                                "click" to hashMapOf(
+                                        "actionField" to hashMapOf( "list" to "/groupchat - featured product" ),
+                                        "products" to  listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
+                                )
+                        )
+                ),
+                hashMapOf(
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    fun impressionPrivateVoucher(vouchers: List<MerchantVoucherUiModel>) {
+        val voucherId = vouchers.firstOrNull { it.highlighted }?.id ?: return
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "impression on private voucher",
+                        KEY_EVENT_LABEL to "$channelId - $voucherId - ${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    fun clickCopyVoucher(voucher: MerchantVoucherUiModel) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "click copy on private voucher",
+                        KEY_EVENT_LABEL to "$channelId - ${voucher.id} - ${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
+    fun clickFeaturedProductSeeMore() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "click product pinned message",
+                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
+    }
+
     fun getTrackingQueue() = trackingQueue
 
     /**
      * Private methods
      */
-    private fun convertProductsToListOfObject(listOfProducts: List<PlayProductUiModel.Product>): MutableList<HashMap<String, Any>> {
+    private fun convertProductsToListOfObject(listOfProducts: List<PlayProductUiModel.Product>, sourceFrom: String): MutableList<HashMap<String, Any>> {
         val products = mutableListOf<HashMap<String, Any>>()
         listOfProducts.forEachIndexed { index, product ->
-            products.add(convertProductToHashMapWithList(product, index))
+            products.add(convertProductToHashMapWithList(product, index, sourceFrom))
         }
         return products
     }
 
-    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int): HashMap<String, Any> {
+    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
         return hashMapOf(
                 "name" to product.title,
                 "id" to product.id,
@@ -357,7 +486,7 @@ class PlayAnalytic(
                 "brand" to "",
                 "category" to "",
                 "variant" to "",
-                "list" to "/groupchat - bottom sheet",
+                "list" to "/groupchat - $sourceFrom",
                 "position" to position
         )
     }
@@ -390,7 +519,7 @@ class PlayAnalytic(
                         "$KEY_TRACK_CLICK buy in bottom sheet",
                         "$channelId - ${product.id} - ${channelType.value}"
                 ),
-                hashMapOf<String, Any>(
+                hashMapOf(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "add" to hashMapOf(
@@ -411,7 +540,7 @@ class PlayAnalytic(
                         "$KEY_TRACK_CLICK atc in bottom sheet",
                         "$channelId - ${product.id} - ${channelType.value}"
                 ),
-                hashMapOf<String, Any>(
+                hashMapOf(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "add" to hashMapOf(
@@ -432,7 +561,7 @@ class PlayAnalytic(
                         "$KEY_TRACK_CLICK atc in varian page",
                         "$channelId - ${product.id} - ${channelType.value}"
                 ),
-                hashMapOf<String, Any>(
+                hashMapOf(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "add" to hashMapOf(
@@ -509,6 +638,7 @@ class PlayAnalytic(
         private const val KEY_TRACK_ADD_TO_CART = "addToCart"
         private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
         private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
+        private const val KEY_TRACK_VIEW_GROUP_CHAT_IRIS = "viewGroupChatIris"
         private const val KEY_TRACK_CURRENT_SITE = "tokopediamarketplace"
         private const val KEY_TRACK_BUSINESS_UNIT = "play"
 
