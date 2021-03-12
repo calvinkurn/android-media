@@ -28,6 +28,8 @@
     <string name="play_product_updated">Produk telah diupdate</string>
     <string name="play_link_copied">Link berhasil disalin</string>
 
+    <string name="play_live_ended_subtitle">Swipe ke kiri buat nonton video lainnya!</string>
+
     <!--Floating Window / PiP-->
     <string name="play_pip_permission_rationale_title">Aktifkan akses Draw over other apps</string>
     <string name="play_pip_permission_rationale_desc">Akses ini dibutuhkan untuk dapat membuka Tokopedia Play dalam mode Picture-in-Picture</string>

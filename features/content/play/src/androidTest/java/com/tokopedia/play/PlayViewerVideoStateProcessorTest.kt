@@ -14,6 +14,7 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -50,12 +51,12 @@ class PlayViewerVideoStateProcessorTest {
     private val scope = TestCoroutineScope(testDispatcher)
 
     private val playVideoProcessor = PlayViewerVideoStateProcessor.Factory(
-            playVideoManager = playVideoManager,
             exoPlaybackExceptionParser = playbackExceptionParser,
             dispatcher = dispatcher
     ).create(
             scope = scope,
-            channelTypeSource = { PlayChannelType.Live }
+            channelTypeSource = { PlayChannelType.Live },
+            playVideoPlayer = PlayVideoWrapper.Builder(appContext).build()
     )
 
     private var theState: PlayViewerVideoState = PlayViewerVideoState.Unknown

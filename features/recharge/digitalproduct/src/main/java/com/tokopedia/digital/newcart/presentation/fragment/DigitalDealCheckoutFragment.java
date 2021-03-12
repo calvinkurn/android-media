@@ -175,6 +175,9 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                 presenter.onExpandCollapseButtonView();
             }
         });
+
+        mybillEgold = view.findViewById(R.id.egold_mybill);
+        mybillEgold.setOnMoreInfoClickedListener(this);
     }
 
     @Override

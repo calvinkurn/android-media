@@ -199,5 +199,4 @@ class TopchatRoomDeeplinkTest {
         assertThat(intent, isPointingTo(topchat))
         assertThat(intent, lastPathSegmentEqualTo(msgId))
     }
-
 }

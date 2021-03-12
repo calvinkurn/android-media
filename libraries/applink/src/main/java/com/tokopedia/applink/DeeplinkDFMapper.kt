@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI
@@ -90,7 +91,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.GEOLOCATION
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
@@ -128,6 +128,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX
@@ -247,7 +248,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(GENERAL_TEMPLATE) ||
                         it.startsWith(CAMERA_OCR) ||
                         it.startsWith(VOUCHER_GAME) ||
-                        it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART)
+                        it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) || it.startsWith(CHECKOUT_DIGITAL)
             }, DF_BASE, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_EMONEY) }, DF_BASE, R.string.title_digital_emoney))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_BRIZZI) }, DF_BASE, R.string.title_digital_emoney))
@@ -466,7 +467,6 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(PREFERENCE_EDIT)
             }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
-            add(DFP({ it.startsWith(NORMAL_CHECKOUT)}, DF_BASE, R.string.title_normal_checkout))
 
             // buyerorder
             add(DFP({
@@ -487,6 +487,9 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(BELANJA_INTERNAL_ORDER) ||
                         it.startsWith(MARKETPLACE_INTERNAL_ORDER)
             }, DF_BASE, R.string.title_buyerorder))
+
+            // snapshot
+            add(DFP({ it.startsWith(INTERNAL_ORDER_SNAPSHOT)}, DF_BASE, R.string.title_snapshot))
         }
     }
 

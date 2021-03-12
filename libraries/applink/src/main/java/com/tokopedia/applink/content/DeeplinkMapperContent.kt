@@ -24,10 +24,8 @@ object DeeplinkMapperContent {
     }
 
     /**
-     * tokopedia://people/{user_id}
-     * tokopedia://people/{user_id}?after_post=true
-     * tokopedia://people/{user_id}?after_edit=true
-     * tokopedia://people/{user_id}?success_post=true
+     * Replace "tokopedia" scheme to "tokopedia-android-internal"
+     * This method keeps the query parameters intact on the deeplink
      */
     fun getRegisteredNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
