@@ -1206,11 +1206,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun observeP2Other() {
         viewLifecycleOwner.observe(viewModel.p2Other) {
-            if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.MOST_HELPFUL_REVIEW)
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
-            }
-
             pdpUiUpdater?.updateDataP2General(it)
             updateUi()
             (activity as? ProductDetailActivity)?.stopMonitoringP2Other()
@@ -1674,6 +1669,11 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         updateButtonState()
         setupTickerOcc()
 
+        if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.MOST_HELPFUL_REVIEW)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
+        }
+
         if (it.vouchers.isNullOrEmpty()) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.SHOP_VOUCHER)
         } else {
@@ -2047,6 +2047,11 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         reportProduct({
             DynamicProductDetailTracking.Click.eventClickReportFromComponent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
         }, {})
+    }
+
+    override fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel ?: ComponentTrackDataModel())
+        goToReviewImagePreview()
     }
 
     private fun reportProductFromToolbar() {

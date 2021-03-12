@@ -2,6 +2,7 @@ package com.tokopedia.devicefingerprint.datavisor.workmanager
 
 import android.content.Context
 import androidx.work.*
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DV_SHARED_PREF_NAME
@@ -124,6 +125,9 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
 
         fun scheduleWorker(context: Context, forceWorker: Boolean) {
             val appContext = context.applicationContext
+            if (GlobalConfig.isSellerApp()){
+                return
+            }
             if (forceWorker || needToRun(appContext)) {
                 runWorker(appContext)
             }
