@@ -62,7 +62,8 @@ object RechargeHomepageSectionMapper {
         val sectionsList = mutableListOf<RechargeHomepageSections.Section>()
         for (i in 0..sections.size-1){
             sectionsList.add(RechargeHomepageSections.Section(sections.get(i).id, template = sections.get(i).template))
-            if(sections.get(i).template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER)){
+            if(sections.get(i).template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER) ||
+                    sections.get(i).template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER_EMPTY)){
                 sectionsList.add(RechargeHomepageSections.Section(RechargeHomepageViewModel.ID_TICKER, template = RechargeHomepageViewModel.SECTION_TICKER))
             }
         }
