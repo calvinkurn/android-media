@@ -21,7 +21,7 @@ data class FlightLowestPriceArgs(
         @Expose
         val endDate: String = "",
 
-        @SerializedName("classID")
+        @SerializedName("class")
         @Expose
         val classID: Int = 0,
 
