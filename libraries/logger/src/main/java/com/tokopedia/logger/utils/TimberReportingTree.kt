@@ -85,7 +85,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             put("os", Build.VERSION.RELEASE)
             put("device", Build.MODEL)
             put("cls", classLine)
-            plus(message)
+            putAll(message)
         }
 
         return mapMessage.convertMapToJsonString()
