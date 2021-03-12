@@ -54,7 +54,6 @@ class ShopHomeAdapterTypeFactory(
             PLAY_CAROUSEL_WIDGET -> return CarouselPlayWidgetViewHolder.LAYOUT
             else -> return HideViewHolder.LAYOUT
         }
-        // return -1
     }
 
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
