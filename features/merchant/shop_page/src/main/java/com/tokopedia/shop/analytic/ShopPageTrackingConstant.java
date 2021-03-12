@@ -100,6 +100,14 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FILTER_PRICE = "click filter price - min : %s - max : %s";
     public static final String CLICK_FILTER_RATING = "click filter rating - ";
     public static final String CLICK_FOLLOW_UNFOLLOW_TNC_PAGE = "click %1s on t&c page";
+    public static final String VIEW_FOLLOW_VOUCHER_ICON = "view follow voucher icon";
+    public static final String VIEW_COACHMARK_FOLLOW = "view coachmark follow";
+    public static final String VIEW_TOASTER_FOLLOW_SUCCESS = "view toaster follow success";
+    public static final String VIEW_TOASTER_FOLLOW_ERROR = "view toaster follow error";
+    public static final String VIEW_TOASTER_UNFOLLOW_SUCCESS = "view toaster unfollow success";
+    public static final String VIEW_TOASTER_UNFOLLOW_ERROR = "view toaster unfollow error";
+    public static final String CLICK_CEK_TOASTER_SUCCESS = "click cek toaster success";
+    public static final String SEE_ENTRY_POINT = "see entry point";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -165,9 +173,10 @@ public class ShopPageTrackingConstant {
     public static final String WISHLIST = "wishlist";
     public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
     public static final String CLICK_ADD_TO_CART = "click add to cart";
-
     public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
     public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
+    public static final String SHOP_PAGE_LABEL = "shop page - ";
+    public static final String COACHMARK_DISAPPEAR = " - coachmark disappear";
 
     //key
     public static final String EVENT = "event";

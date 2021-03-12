@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view;
 
 import android.text.TextUtils;
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentUiModel;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Owner;
@@ -91,14 +91,14 @@ public class ReviewProductListMapper {
         return userId.equals(String.valueOf(owner.getUser().getUserId()));
     }
 
-    private List<ImageAttachmentViewModel> generateImageAttachmentModel(Review review) {
-        List<ImageAttachmentViewModel> imageAttachmentViewModels = new ArrayList<>();
+    private List<ImageAttachmentUiModel> generateImageAttachmentModel(Review review) {
+        List<ImageAttachmentUiModel> imageAttachmentUiModels = new ArrayList<>();
         for(ReviewImageAttachment reviewImageAttachment :review.getReviewImageAttachment()){
-            ImageAttachmentViewModel imageAttachmentViewModel = new ImageAttachmentViewModel(reviewImageAttachment.getAttachmentId(),
+            ImageAttachmentUiModel imageAttachmentUiModel = new ImageAttachmentUiModel(reviewImageAttachment.getAttachmentId(),
                     reviewImageAttachment.getDescription(), reviewImageAttachment.getUriThumbnail(), reviewImageAttachment.getUriLarge());
-            imageAttachmentViewModels.add(imageAttachmentViewModel);
+            imageAttachmentUiModels.add(imageAttachmentUiModel);
         }
-        return imageAttachmentViewModels;
+        return imageAttachmentUiModels;
     }
 
     private boolean isReviewCanReported(String userId, Review review) {

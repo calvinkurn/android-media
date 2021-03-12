@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.ui.adapter.AnalyticsDebuggerTypeFactory
 import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewModel
 
@@ -148,7 +148,6 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     companion object {
-
         val TAG = BaseAnalyticsDebuggerFragment::class.java.simpleName
     }
 }

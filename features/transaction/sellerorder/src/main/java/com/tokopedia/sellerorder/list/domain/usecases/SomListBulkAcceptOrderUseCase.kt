@@ -16,8 +16,13 @@ class SomListBulkAcceptOrderUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<SomListBulkAcceptOrderUiModel>(gqlRepository) {
 
     override suspend fun executeOnBackground(): SomListBulkAcceptOrderUiModel {
+        return executeOnBackground(false)
+    }
+
+    override suspend fun executeOnBackground(useCache: Boolean): SomListBulkAcceptOrderUiModel {
+        val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListBulkAcceptOrderResponse.Data::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListBulkAcceptOrderResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {

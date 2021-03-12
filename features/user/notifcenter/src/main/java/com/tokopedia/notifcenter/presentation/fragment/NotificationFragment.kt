@@ -421,9 +421,11 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         viewModel.cancelAllUseCase()
         viewModel.reset()
         filter?.reset()
-        viewModel.loadNotificationFilter(role)
-        triggerMarkAsSeenTracker(previousRole)
-        loadInitialData()
+        if (isResumed) {
+            viewModel.loadNotificationFilter(role)
+            triggerMarkAsSeenTracker(previousRole)
+            loadInitialData()
+        }
     }
 
     private fun triggerMarkAsSeenTracker(@RoleType role: Int?) {

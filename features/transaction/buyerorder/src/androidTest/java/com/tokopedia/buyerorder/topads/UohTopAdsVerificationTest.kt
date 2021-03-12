@@ -65,8 +65,9 @@ class UohTopAdsVerificationTest {
                 checkProduct(uohRecyclerView, i)
             }
             loading()
-            topAdsAssertion.assert()
         }
+        // Must be put outside of uoh robot scope, for class name report generator
+        topAdsAssertion.assert()
     }
 
     private fun checkProduct(uohRecyclerView: RecyclerView, i: Int) {

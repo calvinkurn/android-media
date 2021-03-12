@@ -377,9 +377,12 @@ class AddChangePinViewModelTest {
 
     @Test
     fun `on checkSkipOtpPin executed`() {
-        val mockParam = mapOf(ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION)
+        val mockParam = mapOf(
+                ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION,
+                ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN_SKIP_OTP to "validateToken"
+        )
 
-        viewModel.checkSkipOtpPin()
+        viewModel.checkSkipOtpPin("validateToken")
 
         /* Then */
         verify {
@@ -398,7 +401,7 @@ class AddChangePinViewModelTest {
             firstArg<(SkipOtpPinPojo) -> Unit>().invoke(skipOtpPinPojo)
         }
 
-        viewModel.checkSkipOtpPin()
+        viewModel.checkSkipOtpPin("validateToken")
 
         /* Then */
         verify { skipOtpPinObserver.onChanged(Success(skipOtpPinPojo.data)) }
@@ -412,7 +415,7 @@ class AddChangePinViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewModel.checkSkipOtpPin()
+        viewModel.checkSkipOtpPin("validateToken")
 
         /* Then */
         verify { skipOtpPinObserver.onChanged(Fail(mockThrowable)) }
@@ -427,7 +430,7 @@ class AddChangePinViewModelTest {
             firstArg<(SkipOtpPinPojo) -> Unit>().invoke(skipOtpPinPojo)
         }
 
-        viewModel.checkSkipOtpPin()
+        viewModel.checkSkipOtpPin("validateToken")
 
         /* Then */
         Assert.assertThat(viewModel.skipOtpPinResponse.value, CoreMatchers.instanceOf(Fail::class.java))

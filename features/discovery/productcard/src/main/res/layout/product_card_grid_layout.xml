@@ -167,6 +167,7 @@
             android:layout_marginLeft="@dimen/product_card_content_margin"
             android:layout_marginRight="@dimen/product_card_content_margin"
             android:layout_marginBottom="@dimen/product_card_flashsale_label_margintop"
+            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
             app:layout_constraintEnd_toEndOf="parent"

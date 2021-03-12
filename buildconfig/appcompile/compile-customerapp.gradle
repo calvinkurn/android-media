@@ -155,6 +155,8 @@ include "features:operational:contact_us"
 include "features:operational:csat_rating"
 include "features:ovop2p"
 
+include "features:ordermanagement:snapshot"
+
 include "features:payment:common_payment"
 include "features:payment:payment"
 include "features:payment:thankyou_native"
@@ -175,6 +177,7 @@ include "features:promo:promo_ui_common"
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"
 include "features:promo:promotions_target"
+include "features:promo:mvc_widget"
 
 include "features:top_ads:top_ads_detail_sheet"
 include "features:top_ads:top_ads_dashboard"

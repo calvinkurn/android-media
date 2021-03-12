@@ -3,7 +3,6 @@ package com.tokopedia.digital.newcart.presentation.activity;
 import android.content.Context;
 import android.net.Uri;
 
-
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -22,6 +21,9 @@ import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealN
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * applink
@@ -45,6 +47,19 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         String instantCheckoutParam = uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_INSTANT_CHECKOUT());
         passData.setInstantCheckout(instantCheckoutParam != null ? instantCheckoutParam : "0");
         passData.setIdemPotencyKey(generateATokenRechargeCheckout(context));
+
+        HashMap<String, String> fields = new HashMap<>();
+        Set<String> parameters = uriData.getQueryParameterNames();
+        if (!parameters.isEmpty()) {
+            for (String param : parameters) {
+                if (param.startsWith(DigitalCheckoutPassData.Companion.getPARAM_FIELD_LABEL_PREFIX())) {
+                    String value = uriData.getQueryParameter(param);
+                    String key = param.replaceFirst(DigitalCheckoutPassData.Companion.getPARAM_FIELD_LABEL_PREFIX(), "");
+                    fields.put(key, value);
+                }
+            }
+        }
+        passData.setFields(fields);
         return passData;
     }
 

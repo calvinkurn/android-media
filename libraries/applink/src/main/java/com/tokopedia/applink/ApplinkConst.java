@@ -187,6 +187,7 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
     String TRAVEL_AND_ENTERTAINMENT_ORDER = "tokopedia://travelent/order";
+    String SNAPSHOT_ORDER = "tokopedia://snapshot/order";
 
     String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
     String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
@@ -440,6 +441,7 @@ public interface ApplinkConst {
         String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
         String CONTENT_CREATE_POST = "sellerapp://content/create_post";
         String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
+        String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
     }
 
     interface Query {

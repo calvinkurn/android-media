@@ -1,17 +1,13 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
@@ -158,7 +154,7 @@ object ShopPageHomeMapper {
             isLoggedIn: Boolean
     ): List<BaseShopHomeWidgetUiModel> {
         return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() || it.type.toLowerCase() == DYNAMIC.toLowerCase() }.onEach {
+            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() || it.type.toLowerCase() == DYNAMIC.toLowerCase() || it.name == VOUCHER_STATIC}.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct, isLoggedIn)
                 widgetUiModel?.let { model ->
                     add(model)
@@ -172,15 +168,15 @@ object ShopPageHomeMapper {
             isMyOwnProduct: Boolean,
             isLoggedIn: Boolean
     ): BaseShopHomeWidgetUiModel? {
+        if (widgetResponse.name == VOUCHER_STATIC) {
+            return mapToVoucherUiModel(widgetResponse)
+        }
         return when (widgetResponse.type.toLowerCase()) {
             DISPLAY.toLowerCase() -> {
                 mapToDisplayWidget(widgetResponse)
             }
             PRODUCT.toLowerCase() -> {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
-            }
-            VOUCHER.toLowerCase() -> {
-                mapToVoucherUiModel(widgetResponse)
             }
             CAMPAIGN.toLowerCase() -> {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
@@ -286,33 +282,6 @@ object ShopPageHomeMapper {
                 widgetResponse.type,
                 mapToHeaderModel(widgetResponse.header)
         )
-    }
-
-    fun mapToListVoucher(
-            data: List<MerchantVoucherModel>
-    ): List<MerchantVoucherViewModel>? {
-        return mutableListOf<MerchantVoucherViewModel>().apply {
-            data.onEach {
-                add(mapToVoucherItem(it))
-            }
-        }
-    }
-
-    private fun mapToVoucherItem(data: MerchantVoucherModel): MerchantVoucherViewModel {
-        return MerchantVoucherViewModel().apply {
-            voucherId = data.voucherId
-            voucherName = data.voucherName
-            voucherCode = data.voucherCode ?: ""
-            merchantVoucherType = data.merchantVoucherType?.type.takeIf { it != -1 }
-                    ?: MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
-            merchantVoucherAmountType = data.merchantVoucherAmount?.type.takeIf { it != -1 }
-                    ?: MerchantVoucherAmountTypeDef.TYPE_FIXED
-            merchantVoucherAmount = data.merchantVoucherAmount?.amount
-            minimumSpend = data.minimumSpend
-            ownerId = data.merchantVoucherOwner.ownerId
-            validThru = data.validThru.toLong()
-            tnc = data.tnc
-        }
     }
 
     private fun mapToDisplayWidget(widgetResponse: ShopLayoutWidget.Widget): ShopHomeDisplayWidgetUiModel {
