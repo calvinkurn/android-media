@@ -70,7 +70,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         arguments?.getString(PARAM_PRODUCT_URL) ?: ""
     }
 
-    private val isCreditCardModeAvailable: Boolean = true
+    private val isCreditCardModeAvailable: Boolean = false
     private var paymentMode: PaymentMode = PayLater
     private var payLaterDataList = arrayListOf<PayLaterItemProductData>()
     private var applicationStatusList = arrayListOf<PayLaterApplicationDetail>()

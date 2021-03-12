@@ -24,14 +24,11 @@ object PayLaterPartnerTypeMapper {
             status = payLaterStatus.status
         }
 
-        return if (payLaterPartnerData.isAbleToApply == false) {
-            UsageStepsPartnerType
-        } else {
-            when {
-                isApplicationActive -> UsageStepsPartnerType
-                status != STATUS_EMPTY -> ProcessingApplicationPartnerType
-                else -> RegisterStepsPartnerType
-            }
+        return when {
+            payLaterPartnerData.isAbleToApply == false -> UsageStepsPartnerType
+            isApplicationActive -> UsageStepsPartnerType
+            status != STATUS_EMPTY -> ProcessingApplicationPartnerType
+            else -> RegisterStepsPartnerType
         }
     }
 

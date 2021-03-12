@@ -2742,9 +2742,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
-        openInstallmentFlow(true)
-
-        /*if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
+        if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             doActionOrLogin({
                 nplFollowersButton?.startLoading()
                 trackToggleFavoriteShop(componentTrackDataModel)
@@ -2753,7 +2751,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID
                         ?: "", isNplFollowType)
             })
-        }*/
+        }
     }
 
     private fun trackToggleFavoriteShop(componentTrackDataModel: ComponentTrackDataModel?) {
