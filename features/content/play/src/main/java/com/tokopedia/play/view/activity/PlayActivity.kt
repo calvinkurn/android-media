@@ -141,14 +141,16 @@ class PlayActivity : BaseActivity(),
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
+        val fragment = activeFragment
         val channelId = intent?.data?.lastPathSegment
-        if (fragment != null && fragment is PlayFragment && channelId != null) {
+        if (fragment != null && channelId != null) {
+            setIntent(intent)
             fragment.onNewChannelId(channelId)
         }
     }
 
     override fun onNewChannel(channelId: String?) {
+        setupViewModel()
     }
 
     override fun onEnterPiPMode() {
