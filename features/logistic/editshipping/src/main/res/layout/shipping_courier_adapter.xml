@@ -20,7 +20,8 @@
             app:srcCompat="@drawable/ic_14_google"
             android:layout_weight="0.1"
             android:layout_marginLeft="@dimen/dp_5"
-            android:layout_gravity="left"/>
+            android:layout_gravity="left"
+            android:contentDescription="null"/>
 
         <TextView
             android:id="@+id/name"

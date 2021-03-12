@@ -216,7 +216,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
     override fun onErrorAddEdit(throwable: Throwable?) {
         if (view != null && activity != null)
-            Toaster.make(view!!, ErrorHandler.getErrorMessage(activity, throwable),
+            Toaster.make(requireView(), ErrorHandler.getErrorMessage(activity, throwable),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_retry), View.OnClickListener {
                 presenter.saveAddress(populateData(), isAddNew)
             })
