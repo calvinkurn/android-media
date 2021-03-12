@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.showcase.di.component.DaggerShopPageShowcaseComponent
@@ -150,16 +149,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
             setHasFixedSize(true)
             layoutManager = linearLayoutManager
             adapter = featuredShowcaseAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                        featuredShowcaseRv?.setMargin(16, 8, 0, 0)
-                    } else {
-                        featuredShowcaseRv?.setMargin(0, 8, 0, 0)
-                    }
-                }
-            })
         }
     }
 

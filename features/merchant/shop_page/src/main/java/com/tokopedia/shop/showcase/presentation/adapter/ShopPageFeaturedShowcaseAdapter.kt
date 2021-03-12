@@ -25,7 +25,7 @@ class ShopPageFeaturedShowcaseAdapter : RecyclerView.Adapter<ShopPageFeaturedSho
     }
 
     override fun onBindViewHolder(holder: ShopPageFeaturedShowcaseViewHolder, position: Int) {
-        holder.bind(showcaseFeaturedList[position])
+        holder.bind(showcaseFeaturedList)
     }
 
     fun updateFeaturedShowcaseDataset(newList: List<ShopEtalaseModel>) {

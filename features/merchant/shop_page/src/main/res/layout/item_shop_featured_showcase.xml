@@ -16,8 +16,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivShowcaseImg"
-            android:layout_width="@dimen/dp_116"
-            android:layout_height="@dimen/dp_116"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             app:unify_image_type="rect"
             app:unify_image_corner_radius="0"
             />
@@ -26,17 +26,20 @@
             android:id="@+id/tvShowcaseName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:typographyType="body_2"
+            app:typographyType="body_1"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            tools:text="Bike Light"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:ellipsize="end"
+            android:singleLine="true"
+            tools:text="Bicycle bag rockbros official store"
             />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShowcaseCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
+            app:typographyType="body_2"
             android:layout_marginTop="@dimen/dp_2"
             android:layout_marginStart="@dimen/dp_8"
             tools:text="16 Produk"
