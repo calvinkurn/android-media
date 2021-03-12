@@ -9,7 +9,6 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -171,7 +170,7 @@
                         android:maxLines="5"
                         android:textSize="@dimen/sp_16"
                         android:background="@null"
-                        tools:text="" />
+                        tools:text="@tools:sample/lorem/random" />
 
                 </LinearLayout>
 
