@@ -56,7 +56,13 @@ private fun renderSellerCashback(cartListData: CartListData, view: View) {
             text = cartListData.shoppingSummaryData.sellerCashbackWording
             visibility = View.VISIBLE
         }
+        view.separator_seller_cashback?.apply {
+            visibility = View.VISIBLE
+        }
     } else {
+        view.separator_seller_cashback?.apply {
+            visibility = View.GONE
+        }
         view.text_total_cashback_value?.apply {
             visibility = View.GONE
         }
