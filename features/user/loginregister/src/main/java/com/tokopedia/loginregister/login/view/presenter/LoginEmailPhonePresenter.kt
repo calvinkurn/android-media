@@ -208,29 +208,31 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 }
                 loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                 val tokenResult = loginTokenV2UseCase.executeOnBackground()
-                LoginV2Mapper(userSession).map(tokenResult,
-                        onSuccessLoginToken = {
-                            view.onSuccessLoginEmail()
-                        },
-                        onErrorLoginToken = {
-                            view.onErrorLoginEmail(email).invoke(it)
-                        },
-                        onShowPopupError = {
-                            view.showPopup().invoke(it.loginToken.popupError)
-                        },
-                        onGoToActivationPage = {
-                            view.onGoToActivationPage(email).invoke(it)
-                        },
-                        onGoToSecurityQuestion = {
-                            view.onGoToSecurityQuestion(email).invoke()
-                        }
-                )
+                view?.run {
+                    LoginV2Mapper(userSession).map(tokenResult,
+                            onSuccessLoginToken = {
+                                onSuccessLoginEmail()
+                            },
+                            onErrorLoginToken = {
+                                onErrorLoginEmail(email).invoke(it)
+                            },
+                            onShowPopupError = {
+                                showPopup().invoke(it.loginToken.popupError)
+                            },
+                            onGoToActivationPage = {
+                                onGoToActivationPage(email).invoke(it)
+                            },
+                            onGoToSecurityQuestion = {
+                                onGoToSecurityQuestion(email).invoke()
+                            }
+                    )
+                }
             }
             else {
-                view.onErrorLoginEmail(email)
+                view?.onErrorLoginEmail(email)
             }
         }, {
-            view.onErrorLoginEmail(email)
+            view?.onErrorLoginEmail(email)
         })
     }
 
