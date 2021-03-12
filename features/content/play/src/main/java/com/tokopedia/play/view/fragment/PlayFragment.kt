@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -364,9 +363,9 @@ class PlayFragment @Inject constructor(
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
             when(it) {
                 is PlaySocketInfo.Reconnect ->
-                    analytic.errorState("$ERR_STATE_SOCKET: ${getString(R.string.play_message_socket_reconnect)}")
+                    analytic.trackSocketError(getString(R.string.play_message_socket_reconnect))
                 is PlaySocketInfo.Error ->
-                    analytic.errorState("$ERR_STATE_SOCKET: ${it.throwable.localizedMessage}")
+                    analytic.trackSocketError(it.throwable.localizedMessage.orEmpty())
             }
         })
     }
@@ -464,6 +463,8 @@ class PlayFragment @Inject constructor(
         pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
     }
+
+    fun getVideoLatency() = playViewModel.videoLatency
 
     private fun stopPageMonitoring() {
         pageMonitoring.stopMonitoring()
