@@ -447,18 +447,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When is not shop Owner and is not shop Admin should not get admin permission and role is not eligible`() {
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(false)
-
-        viewModel.setProductId("")
-
-        verifyGetAdminProductPermissionNotCalled(getAccessId())
-        verifyGetAdminEditStockPermissionNotCalled()
-        verifyGetAdminProductPermissionResult(Success(false))
-    }
-
-    @Test
     fun `When product id is not blank, is not shop owner, but is shop admin, and admin permission is not yet known, should get admin permission`() {
         onGetIsShopOwner_thenReturn(false)
         onGetIsShopAdmin_thenReturn(true)
