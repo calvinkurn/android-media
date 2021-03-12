@@ -226,7 +226,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     data.addressId.toString(), data.cityId.toString(),
                     data.districtId.toString(),
                     data.latitude, data.longitude,
-                    data.addressName, data.postalCode.toString())
+                    "${data.addressName} ${data.receiverName}", data.postalCode)
         }
     }
 
