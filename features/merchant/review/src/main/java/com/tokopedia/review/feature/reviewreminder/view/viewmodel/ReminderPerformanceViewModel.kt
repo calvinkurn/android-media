@@ -12,7 +12,7 @@ import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderS
 import javax.inject.Inject
 
 class ReminderPerformanceViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
+        dispatcherProvider: CoroutineDispatchers,
         private val productrevGetReminderStatsUseCase: ProductrevGetReminderStatsUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 

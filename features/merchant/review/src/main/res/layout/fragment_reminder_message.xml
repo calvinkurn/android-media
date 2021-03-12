@@ -217,9 +217,9 @@
                 <com.tokopedia.unifycomponents.CardUnify
                     android:id="@+id/card_products"
                     android:layout_width="match_parent"
-                    android:maxHeight="@dimen/dp_290"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:maxHeight="@dimen/dp_290"
                     app:card_type="border"
                     app:layout_constraintTop_toBottomOf="@id/text_subtitle_product">
 
@@ -227,16 +227,16 @@
                         android:id="@+id/rv_products"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="match_parent"
-                        app:typographyType="body_3"
+                        android:layout_height="wrap_content"
                         android:padding="@dimen/dp_24"
-                        android:textAlignment="center"
-                        app:typographyWeight="reguler"
                         android:text="Belum ada produk yang bisa diulas"
-                        android:layout_height="wrap_content"/>
+                        android:textAlignment="center"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler" />
 
                 </com.tokopedia.unifycomponents.CardUnify>
 
@@ -268,8 +268,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/dp_12"
             android:textAlignment="center"
-            app:typographyType="body_2"
-            app:typographyWeight="reguler" />
+            app:typographyType="body_2" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_send"

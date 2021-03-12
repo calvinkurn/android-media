@@ -5,24 +5,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
-import androidx.fragment.app.Fragment
+import androidx.core.text.HtmlCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.review.R
+import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounter
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplate
+import com.tokopedia.review.feature.reviewreminder.di.component.DaggerReviewReminderComponent
+import com.tokopedia.review.feature.reviewreminder.view.bottomsheet.EditMessageBottomSheet
+import com.tokopedia.review.feature.reviewreminder.view.viewmodel.ReminderMessageViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
-class ReminderMessageFragment : Fragment() {
+class ReminderMessageFragment : BaseDaggerFragment() {
 
     companion object {
         private const val TAG_BOTTOM_SHEET_HOW_TO = "bottomSheetHowTo"
         private const val TAG_BOTTOM_SHEET_EDIT_MESSAGE = "bottomSheetEditMessage"
     }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var viewModel: ReminderMessageViewModel? = null
 
     private var iconInformation: IconUnify? = null
     private var buttonEditMessage: UnifyButton? = null
@@ -37,8 +52,24 @@ class ReminderMessageFragment : Fragment() {
     private var bottomSheetEditMessage: BottomSheetUnify? = null
     private var dialogSend: DialogUnify? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ReminderMessageViewModel::class.java)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_reminder_message, container, false)
+    }
+
+    override fun getScreenName() = ""
+
+    override fun initInjector() {
+        val component = activity?.run {
+            DaggerReviewReminderComponent.builder()
+                    .reviewComponent(ReviewInstance.getComponent(application))
+                    .build()
+        }
+        component?.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,10 +84,12 @@ class ReminderMessageFragment : Fragment() {
         scrollView = view.findViewById(R.id.scroll_view)
         cardProducts = view.findViewById(R.id.card_products)
 
-        initBottomSheet()
         initView()
+        initBottomSheet()
         setupViewInteraction()
         initCoachMark()
+        observeViewModel()
+        fetchData()
     }
 
     private fun initBottomSheet() {
@@ -64,20 +97,16 @@ class ReminderMessageFragment : Fragment() {
         bottomSheetHowTo?.setTitle("Cara pakai pengingat ulasan")
         bottomSheetHowTo?.setChild(View.inflate(context, R.layout.bottom_sheet_review_reminder_how_to, null))
 
-        bottomSheetEditMessage = BottomSheetUnify()
-        bottomSheetEditMessage?.setTitle("Ubah Pesan")
-        bottomSheetEditMessage?.setChild(View.inflate(context, R.layout.bottom_sheet_review_reminder_edit_message, null))
-        bottomSheetEditMessage?.isKeyboardOverlap = false
+        bottomSheetEditMessage = EditMessageBottomSheet(textSampleMessage?.text?.toString()) { message ->
+            textSampleMessage?.text = message
+        }
     }
 
     private fun initView() {
-        textSampleMessage?.text = "Hi Mia, makasih sudah belanja di toko kami. Bisa bantu kasih ulasannya? \uD83D\uDE00"
-        textEstimation?.text = "Estimasi terkirim ke 26 pembeli (10 produk)"
-
         dialogSend = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            dialogTitle.text = "Kirim Pengingat Ulasan ini?"
-            setPrimaryCTAText("Kirim")
-            setSecondaryCTAText("Ubah Pesan")
+            dialogTitle.text = getString(R.string.review_reminder_dialog_send_title)
+            setPrimaryCTAText(getString(R.string.review_reminder_dialog_send_button_primary))
+            setSecondaryCTAText(getString(R.string.review_reminder_dialog_send_button_secondary))
         }
     }
 
@@ -94,25 +123,48 @@ class ReminderMessageFragment : Fragment() {
     }
 
     private fun initCoachMark() {
-
         val coachMarkItems = arrayListOf(
                 CoachMark2Item(
                         textSampleMessage as View,
-                        "Ingatkan pembeli untuk kasih ulasan melalui chat",
-                        "Pesan hanya bisa dikirim min. 7 hari setelah transaksi selesai ke pembeli yang belum tulis ulasan dan pernah chat sebelumnya."
+                        getString(R.string.review_reminder_coachmark_1_title),
+                        getString(R.string.review_reminder_coachmark_1_description)
                 ),
                 CoachMark2Item(
                         buttonEditMessage as View,
-                        "Ubah pesan chat di sini",
-                        "Kamu dapat mengubah isi pesan sesuai dengan keinginanmu."
+                        getString(R.string.review_reminder_coachmark_2_title),
+                        getString(R.string.review_reminder_coachmark_2_description)
                 ),
                 CoachMark2Item(
                         cardProducts as View,
-                        "Daftar produk yang belum diulas",
-                        "Cek produk apa saja yang belum mendapat ulasan di sini."
+                        getString(R.string.review_reminder_coachmark_3_title),
+                        getString(R.string.review_reminder_coachmark_3_description)
                 )
         )
         val coachMark = CoachMark2(requireContext())
         coachMark.showCoachMark(coachMarkItems, scrollView)
+    }
+
+    private fun observeViewModel() {
+        viewModel?.getEstimation()?.observe(viewLifecycleOwner, observerEstimation)
+        viewModel?.getTemplate()?.observe(viewLifecycleOwner, observerTemplate)
+    }
+
+    private fun fetchData() {
+        viewModel?.fetchReminderCounter()
+        viewModel?.fetchReminderTemplate()
+        viewModel?.fetchProductList()
+    }
+
+    private val observerEstimation = Observer { reminderCounter: ProductrevGetReminderCounter ->
+        val stringEstimation = getString(
+                R.string.review_reminder_estimation,
+                reminderCounter.totalBuyer,
+                reminderCounter.totalProduct
+        )
+        textEstimation?.text = HtmlCompat.fromHtml(stringEstimation, HtmlCompat.FROM_HTML_MODE_COMPACT)
+    }
+
+    private val observerTemplate = Observer { template: ProductrevGetReminderTemplate ->
+        textSampleMessage?.text = template.template
     }
 }

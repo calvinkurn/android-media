@@ -16,11 +16,12 @@
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
-        <!--        <com.tokopedia.unifycomponents.ImageUnify-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="@dimen/dp_16"-->
-        <!--            app:unify_image_corner_radius="@dimen/dp_5" />-->
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            app:unify_image_url_src="https://images.tokopedia.net/img/android/review_reminder/open_review_reminder.png" />
+
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
@@ -42,16 +43,17 @@
             android:text="@string/review_reminder_how_to_title_2"
             app:typographyType="heading_4" />
 
-        <!--        <com.tokopedia.unifycomponents.ImageUnify-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="@dimen/dp_16"-->
-        <!--            app:unify_image_corner_radius="@dimen/dp_5" />-->
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            app:unify_image_url_src="https://images.tokopedia.net/img/android/review_reminder/using_review_reminder.png" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_36"
             android:text="@string/review_reminder_how_to_description_2"
             app:typographyType="body_2" />
 

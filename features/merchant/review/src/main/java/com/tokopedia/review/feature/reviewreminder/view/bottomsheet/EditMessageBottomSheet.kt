@@ -13,18 +13,23 @@ import android.widget.LinearLayout
 import com.tokopedia.review.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class EditMessageBottomSheet(
-        private var message: String?
+        private val message: String?,
+        private val onSave: (String) -> Unit
 ) : BottomSheetUnify() {
 
     companion object {
         const val TAG_BUYER = "@nama_pembeli"
     }
 
+    private var isAddBuyerEnabled = true
+
     private var textAreaEditMessage: TextAreaUnify? = null
     private var textAreaInput: EditText? = null
     private var layoutAddBuyer: LinearLayout? = null
+    private var buttonSave: UnifyButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isKeyboardOverlap = false
@@ -40,6 +45,7 @@ class EditMessageBottomSheet(
 
         textAreaEditMessage = view.findViewById(R.id.textarea_edit_message)
         layoutAddBuyer = view.findViewById(R.id.layout_add_buyer)
+        buttonSave = view.findViewById(R.id.button_save)
 
         textAreaInput = textAreaEditMessage?.textAreaInput
 
@@ -83,7 +89,18 @@ class EditMessageBottomSheet(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
 
-        layoutAddBuyer?.setOnClickListener { addTagBuyer() }
+        layoutAddBuyer?.setOnClickListener {
+            if (isAddBuyerEnabled) {
+                addTagBuyer()
+            }
+        }
+
+        buttonSave?.setOnClickListener {
+            textAreaInput?.text?.let {
+                onSave(it.toString())
+            }
+            dismiss()
+        }
     }
 
     private fun enableAddLayout(isEnabled: Boolean) {
@@ -93,6 +110,7 @@ class EditMessageBottomSheet(
                 this.isEnabled = isEnabled
             }
         }
+        isAddBuyerEnabled = isEnabled
     }
 
     private fun addTagBuyer() {

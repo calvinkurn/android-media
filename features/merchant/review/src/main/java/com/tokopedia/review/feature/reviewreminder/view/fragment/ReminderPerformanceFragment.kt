@@ -66,13 +66,13 @@ class ReminderPerformanceFragment : BaseDaggerFragment() {
 
     private val observerReminderStats = Observer { productrevGetReminderStats: ProductrevGetReminderStats ->
         textPeriod?.text = productrevGetReminderStats.timeRange
-        textNumberChat?.text = "${productrevGetReminderStats.totalReminderStats}"
+        textNumberChat?.text = getString(R.string.review_reminder_postfix_chat, productrevGetReminderStats.totalReminderStats)
         textLastSent?.text = productrevGetReminderStats.lastReminderTime
         textIncrementChat?.text = productrevGetReminderStats.lastReminderStats
         textReviewPercentage?.text = productrevGetReminderStats.reviewPercentage
     }
 
-    private fun fetchData(){
-        viewModel?.testData()
+    private fun fetchData() {
+        viewModel?.fetchReminderStats()
     }
 }
