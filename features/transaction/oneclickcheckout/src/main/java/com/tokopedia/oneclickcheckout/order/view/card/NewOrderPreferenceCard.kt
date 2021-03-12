@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -568,8 +569,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
         AddressListBottomSheet(usecase, object : AddressListBottomSheet.AddressListBottomSheetListener {
-            override fun onSelect(addressId: String) {
-                listener.onAddressChange(addressId)
+            override fun onSelect(addressModel: RecipientAddressModel) {
+                listener.onAddressChange(addressModel)
             }
 
             override fun onAddAddress(token: Token?) {
@@ -656,7 +657,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         fun onAddAddress(token: Token?)
 
-        fun onAddressChange(addressId: String)
+        fun onAddressChange(addressModel: RecipientAddressModel)
 
         fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel)
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -11,6 +12,7 @@ import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
@@ -20,6 +22,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     var savedQuery: String = ""
     var selectedId = "-1"
+    var selectedAddressModel: AddressModel? = null
     var destinationLatitude: String = ""
     var destinationLongitude: String = ""
     var destinationDistrict: String = ""
@@ -36,12 +39,11 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String, addressState: Int, localCacheAddressId: String) {
-        // Todo : add addressState param to GetAddressCornerUseCase
+    fun searchAddress(query: String, addressState: Int, localCacheAddressId: String, isWhitelistChosenAddress: Boolean) {
         _addressList.value = OccState.Loading
         OccIdlingResource.increment()
         compositeSubscription.add(
-                useCase.execute(query, addressState, localCacheAddressId.toIntOrZero())
+                useCase.execute(query, addressState, localCacheAddressId.toIntOrZero(), isWhitelistChosenAddress)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 _addressList.value = OccState.Failed(Failure(e))
@@ -64,12 +66,12 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         )
     }
 
-    fun loadMore(addressState: Int, localCacheAddressId: String) {
+    fun loadMore(addressState: Int, localCacheAddressId: String, isWhitelistChosenAddress: Boolean) {
         if (_addressList.value !is OccState.Loading && !isLoadingMore) {
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                    useCase.loadMore(savedQuery, ++this.page, addressState, localCacheAddressId.toIntOrZero())
+                    useCase.loadMore(savedQuery, ++this.page, addressState, localCacheAddressId.toIntOrZero(), isWhitelistChosenAddress)
                             .subscribe(object : rx.Observer<AddressListModel> {
                                 override fun onError(e: Throwable?) {
                                     _addressList.value = OccState.Failed(Failure(e))
@@ -96,7 +98,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
             withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
                 for (item in addressList) {
-                    item.isSelected = item.id == selectedId
+                    item.isSelected = item.id == selectedId || item.isStateChosenAddress
                     if (item.id == selectedId) {
                         destinationDistrict = item.destinationDistrictId
                         destinationLatitude = item.latitude
@@ -124,10 +126,19 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         }
     }
 
-    fun setSelectedAddress(addressId: String) {
+    fun setSelectedAddress(address: RecipientAddressModel) {
         val addressModel = addressListModel
         if (addressModel != null && (_addressList.value is OccState.Success || _addressList.value is OccState.FirstLoad)) {
-            selectedId = addressId
+            selectedId = address.id
+            selectedAddressModel = AddressModel(
+                    addressId = address.id?.toIntOrZero() ?: 0,
+                    cityId = address.cityId?.toIntOrZero() ?: 0,
+                    districtId = address.destinationDistrictId?.toIntOrZero() ?: 0,
+                    latitude = address.latitude,
+                    longitude = address.longitude,
+                    addressName = address.addressName,
+                    receiverName = address.recipientName,
+                    postalCode = address.postalCode)
             logicSelection(addressModel, isChangeSelection = true)
         }
     }

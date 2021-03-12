@@ -198,4 +198,6 @@ object ProductDetailConstant {
     const val SHIPPING_ERROR_WEIGHT = 50503
 
     const val ELIGIBLE_TRADE_IN = 1
+
+    const val BS_SHIPMENT_ERROR_TAG = "BS_SHIPMENT_ERROR_TAG"
 }

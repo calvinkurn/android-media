@@ -203,6 +203,10 @@ class DiscomBottomSheetFragment : BottomSheets(),
         AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
+    override fun showToasterError() {
+        // no-op
+    }
+
     fun setActionListener(actionListener: ActionListener) {
         this.actionListener = actionListener
     }

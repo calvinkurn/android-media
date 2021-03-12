@@ -71,7 +71,7 @@ object ProductDetailBottomSheetBuilder {
 
             imgError.loadImage(data.iconURL)
             btn_error.text = data.buttonCopy
-            txtError.text = data.subtitle
+            txtError.text = HtmlLinkHelper(context, data.subtitle).spannedString
 
             btn_error.setOnClickListener {
                 dismiss()

@@ -453,15 +453,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {
-        cartDataList.add(0, tickerAnnouncementHolderData)
+        cartDataList.add(tickerAnnouncementHolderData)
     }
 
     fun addChooseAddressWidget(data: CartChooseAddressHolderData) {
-        var position = 0
-        if (cartDataList.firstOrNull() != null && cartDataList.first() is TickerAnnouncementHolderData) {
-            position = 1
-        }
-        cartDataList.add(position, data)
+        cartDataList.add(data)
     }
 
     fun addCartTickerError(cartItemTickerErrorHolderData: CartItemTickerErrorHolderData) {
@@ -716,16 +712,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 notifyItemRemoved(index)
                 cartEmptyHolderData = null
             }
-        }
-    }
-
-    fun renderEmptyCart(cartEmptyHolderData: CartEmptyHolderData) {
-        if (cartDataList.isNotEmpty() && cartDataList[0] is TickerAnnouncementHolderData) {
-            cartDataList.set(0, cartEmptyHolderData)
-            notifyItemChanged(0)
-        } else {
-            cartDataList.add(0, cartEmptyHolderData)
-            notifyItemInserted(0)
         }
     }
 
@@ -1335,35 +1321,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun setCheckboxGlobalItemState(cheked: Boolean, isCheckUncheckDirectAction: Boolean) {
-        var tmpIndex = -1
-        getData().forEachIndexed { index, data ->
-            when (data) {
-                is CartSelectAllHolderData -> {
-                    data.isCheked = cheked
-                    data.isCheckUncheckDirectAction = isCheckUncheckDirectAction
-                    tmpIndex = index
-                    return@forEachIndexed
-                }
-            }
-        }
-
-        if (tmpIndex != -1) {
-            notifyItemChanged(tmpIndex)
-        }
-    }
-
-    fun resetGlobalItemLock() {
-        getData().forEach { data ->
-            when (data) {
-                is CartSelectAllHolderData -> {
-                    data.isCheckUncheckDirectAction = true
-                    return@forEach
-                }
-            }
-        }
-    }
-
     fun isAllAvailableItemCheked(): Boolean {
         getData().forEach {
             when (it) {
@@ -1404,20 +1361,4 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return false
     }
 
-    fun setGlobalDeleteVisibility(isShow: Boolean) {
-        var tmpIndex = -1
-        getData().forEachIndexed { index, data ->
-            when (data) {
-                is CartSelectAllHolderData -> {
-                    data.isShowDeleteButton = isShow
-                    tmpIndex = index
-                    return@forEachIndexed
-                }
-            }
-        }
-
-        if (tmpIndex != -1) {
-            notifyItemChanged(tmpIndex)
-        }
-    }
 }

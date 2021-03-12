@@ -18,8 +18,8 @@ object RatesMapper {
         val weightFormatted = request.getWeightTxt()
         val productShippingHeader = ProductShippingHeaderDataModel(
                 id = 1,
-                shippingTo = shop.cityName,
-                shippingFrom = "${address.districtName}, ${address.provinceName}",
+                shippingTo = "${address.districtName}, ${address.provinceName}",
+                shippingFrom = shop.cityName,
                 weight = weightFormatted,
                 boType = ratesModel.freeShipping.flag,
                 freeOngkirEstimation = ratesModel.freeShipping.etaText,

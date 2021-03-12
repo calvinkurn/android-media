@@ -24,6 +24,8 @@ internal class ChooseAddressViewHolder(
         @JvmField
         @LayoutRes
         val LAYOUT = R.layout.search_result_product_choose_address_layout
+
+        private const val SOURCE = "search page"
     }
 
     private var chooseAddressContainer: ConstraintLayout? = null
@@ -61,6 +63,8 @@ internal class ChooseAddressViewHolder(
 
             override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
 
+            override fun getLocalizingAddressHostSourceTrackingData() = SOURCE
+
             override fun onLocalizingAddressLoginSuccess() {
 
             }
@@ -68,7 +72,12 @@ internal class ChooseAddressViewHolder(
     }
 
     override fun bind(element: ChooseAddressViewModel?) {
+        bindChooseAddressWidget()
         bindChangeViewButton()
+    }
+
+    private fun bindChooseAddressWidget() {
+        chooseAddressWidget?.updateWidget()
     }
 
     private fun bindChangeViewButton() {

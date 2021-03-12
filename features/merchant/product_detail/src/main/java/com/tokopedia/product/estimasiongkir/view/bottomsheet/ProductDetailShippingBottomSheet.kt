@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -19,14 +21,19 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.KEY_PRODUCT_
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingErrorDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
+import com.tokopedia.product.estimasiongkir.util.ProductDetailShippingTracking
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAdapter
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -52,6 +59,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     }
     private var shouldRefresh: Boolean = false
 
+    @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         viewContainer = View.inflate(context, R.layout.bs_product_shipping_rate_estimate, null)
@@ -117,9 +125,19 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         viewModel?.ratesVisitableResult?.observe(this) {
             it.doSuccessOrFail({
                 adapter?.submitList(it.data)
-            }) {
+            }) { throwable ->
+                showError(throwable)
             }
         }
+    }
+
+    private fun showError(it: Throwable) {
+        val errorType = if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+        adapter?.submitList(listOf(ProductShippingErrorDataModel(errorType = errorType)))
     }
 
     private fun setupRecyclerView(view: View) {
@@ -148,7 +166,16 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     override fun openUspBottomSheet(freeOngkirUrl: String, uspTokoCabangImgUrl: String) {
         context?.let {
+            ProductDetailShippingTracking.onPelajariTokoCabangClicked(sharedViewModel.rateEstimateRequest.value?.userId
+                    ?: "")
             ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl).show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
+        }
+    }
+
+    override fun refreshPage(height: Int) {
+        sharedViewModel.rateEstimateRequest.value?.let {
+            showShimmerPage(height)
+            viewModel?.setRatesRequest(it.copy(forceRefresh = true))
         }
     }
 

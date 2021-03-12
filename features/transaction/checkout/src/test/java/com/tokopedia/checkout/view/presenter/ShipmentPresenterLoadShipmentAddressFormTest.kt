@@ -200,6 +200,67 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
+    fun `WHEN load checkout page and data is null THEN should trigger finish activity`() {
+        // Given
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(null)
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.onShipmentAddressFormEmpty()
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page with no error and address list is empty THEN should trigger finish activity`() {
+        // Given
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(errorCode = 0, groupAddress = emptyList()))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.onShipmentAddressFormEmpty()
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page with no error and address list is not empty but the user address data is null THEN should trigger finish activity`() {
+        // Given
+        val data = CartShipmentAddressFormData(errorCode = 0, groupAddress = listOf(GroupAddress().apply {
+            userAddress = null
+        }))
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.onShipmentAddressFormEmpty()
+            view.stopTrace()
+        }
+    }
+
+
+    @Test
     fun `WHEN load checkout page get state address id match THEN should render checkout page`() {
         // Given
         val groupAddress = GroupAddress().apply {
@@ -246,7 +307,34 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun `WHEN load checkout page get state district id not match THEN should navigate to address list page`() {
+    fun `WHEN load checkout page get state address id not match but no toaster message THEN should render checkout page and don't show toaster`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = UserAddress.STATE_ADDRESS_ID_NOT_MATCH)
+        }
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), popUpMessage = ""))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.updateLocalCacheAddressData(any())
+            view.renderCheckoutPage(any(), any(), any())
+            view.stopTrace()
+        }
+
+        verify(inverse = true) {
+            view.showToastNormal(any())
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page get error code open address list THEN should navigate to address list page`() {
         // Given
         val data = CartShipmentAddressFormData().apply {
             errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST
@@ -269,6 +357,35 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
             view.renderCheckoutPageNoMatchedAddress(any(), any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page get error code open address list and user address is null THEN should navigate to address list page with default address state`() {
+        // Given
+        val defaultAddressState = 0
+        val data = CartShipmentAddressFormData().apply {
+            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST
+            groupAddress = listOf(
+                    GroupAddress().apply {
+                        userAddress = null
+                    }
+            )
+        }
+
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.renderCheckoutPageNoMatchedAddress(any(), defaultAddressState)
             view.stopTrace()
         }
     }

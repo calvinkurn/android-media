@@ -41,7 +41,7 @@ class ProductServiceDetailAdapter : RecyclerView.Adapter<ProductServiceDetailAda
             serviceDetailName?.text = context.getString(R.string.location_dot_builder, product.serviceProductName)
             serviceDetailPrice?.text = product.serviceProductPrice
             serviceDetailEstimation?.shouldShowWithAction(product.serviceProductEstimation.isNotEmpty()) {
-                serviceDetailEstimation.text = context.getString(R.string.pdp_shipping_estimation_builder, product.serviceProductEstimation)
+                serviceDetailEstimation.text = product.serviceProductEstimation
             }
             codLabel?.shouldShowWithAction(product.isCod) {
                 if (product.codText.isEmpty()) {

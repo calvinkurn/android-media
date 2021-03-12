@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -131,9 +132,9 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
 
     private fun getAddressAdapterListener(): AddressListItemAdapter.OnSelectedListener {
         return object : AddressListItemAdapter.OnSelectedListener {
-            override fun onSelect(addressId: String) {
+            override fun onSelect(addressModel: RecipientAddressModel) {
                 bottomSheet?.dismiss()
-                listener.onSelect(addressId)
+                listener.onSelect(addressModel)
             }
         }
     }
@@ -259,35 +260,8 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         onChangeData(OccState.Loading)
         OccIdlingResource.increment()
         compositeSubscription.add(
-                useCase.execute(query, addressState, getLocalCacheAddressId().toIntOrZero())
-                        .subscribe(object : rx.Observer<AddressListModel> {
-                            override fun onError(e: Throwable?) {
-                                onChangeData(OccState.Failed(Failure(e)))
-                                OccIdlingResource.decrement()
-                                isLoadingMore = false
-                            }
-
-                            override fun onNext(t: AddressListModel) {
-                                token = t.token
-                                logicSelection(t)
-                                savedQuery = query
-                                page = 1
-                                isLoadingMore = false
-                            }
-
-                            override fun onCompleted() {
-                                OccIdlingResource.decrement()
-                            }
-                        })
-        )
-    }
-
-    fun loadMore() {
-        if (progressBar?.visibility == View.GONE && !isLoadingMore) {
-            isLoadingMore = true
-            OccIdlingResource.increment()
-            compositeSubscription.add(
-                    useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toIntOrZero())
+                fragment?.context?.let { ChooseAddressUtils.isRollOutUser(it) }?.let {
+                    useCase.execute(query, addressState, getLocalCacheAddressId().toIntOrZero(), it)
                             .subscribe(object : rx.Observer<AddressListModel> {
                                 override fun onError(e: Throwable?) {
                                     onChangeData(OccState.Failed(Failure(e)))
@@ -296,14 +270,45 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                                 }
 
                                 override fun onNext(t: AddressListModel) {
-                                    logicSelection(t, isLoadMore = true)
+                                    token = t.token
+                                    logicSelection(t)
+                                    savedQuery = query
+                                    page = 1
+                                    isLoadingMore = false
                                 }
 
                                 override fun onCompleted() {
                                     OccIdlingResource.decrement()
-                                    isLoadingMore = false
                                 }
                             })
+                }
+        )
+    }
+
+    fun loadMore() {
+        if (progressBar?.visibility == View.GONE && !isLoadingMore) {
+            isLoadingMore = true
+            OccIdlingResource.increment()
+            compositeSubscription.add(
+                    fragment?.context?.let { ChooseAddressUtils.isRollOutUser(it) }?.let {
+                        useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toIntOrZero(), it)
+                                .subscribe(object : rx.Observer<AddressListModel> {
+                                    override fun onError(e: Throwable?) {
+                                        onChangeData(OccState.Failed(Failure(e)))
+                                        OccIdlingResource.decrement()
+                                        isLoadingMore = false
+                                    }
+
+                                    override fun onNext(t: AddressListModel) {
+                                        logicSelection(t, isLoadMore = true)
+                                    }
+
+                                    override fun onCompleted() {
+                                        OccIdlingResource.decrement()
+                                        isLoadingMore = false
+                                    }
+                                })
+                    }
             )
         }
     }
@@ -346,7 +351,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         get() = SupervisorJob() + Dispatchers.Main.immediate
 
     interface AddressListBottomSheetListener {
-        fun onSelect(addressId: String)
+        fun onSelect(addressModel: RecipientAddressModel)
 
         fun onAddAddress(token: Token?)
     }

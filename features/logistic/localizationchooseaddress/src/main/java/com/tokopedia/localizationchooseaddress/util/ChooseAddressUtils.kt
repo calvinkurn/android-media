@@ -13,8 +13,10 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.localizationchooseaddress.R
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,7 +54,7 @@ object ChooseAddressUtils {
     /**
      * Rollence key
      */
-    fun isRollOutUser(context: Context): Boolean {
+    fun isRollOutUser(context: Context?): Boolean {
         val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
         return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
     }
@@ -65,16 +67,18 @@ object ChooseAddressUtils {
      * it mean data has same. no need action from host
      */
     fun isLocalizingAddressHasUpdated(context: Context, localizingAddressStateData: LocalCacheModel): Boolean {
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        var latestChooseAddressData = chooseAddressPref.getLocalCacheData()
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val latestChooseAddressData = chooseAddressPref.getLocalCacheData()
         var validate = false
-        if (latestChooseAddressData?.address_id != localizingAddressStateData.address_id) validate = true
-        if (latestChooseAddressData?.city_id != localizingAddressStateData.city_id) validate = true
-        if (latestChooseAddressData?.district_id != localizingAddressStateData.district_id) validate = true
-        if (latestChooseAddressData?.lat != localizingAddressStateData.lat) validate = true
-        if (latestChooseAddressData?.long != localizingAddressStateData.long) validate = true
-        if (latestChooseAddressData?.label != localizingAddressStateData.label) validate = true
-        if (latestChooseAddressData?.postal_code != localizingAddressStateData.postal_code) validate = true
+        if (latestChooseAddressData != null) {
+            if (latestChooseAddressData.address_id != localizingAddressStateData.address_id) validate = true
+            if (latestChooseAddressData.city_id != localizingAddressStateData.city_id) validate = true
+            if (latestChooseAddressData.district_id != localizingAddressStateData.district_id) validate = true
+            if (latestChooseAddressData.lat != localizingAddressStateData.lat) validate = true
+            if (latestChooseAddressData.long != localizingAddressStateData.long) validate = true
+            if (latestChooseAddressData.label != localizingAddressStateData.label) validate = true
+            if (latestChooseAddressData.postal_code != localizingAddressStateData.postal_code) validate = true
+        }
         return validate
     }
 
@@ -90,9 +94,9 @@ object ChooseAddressUtils {
         )
     }
 
-    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, addressName: String, postalCode: String) {
+    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String, postalCode: String) {
         val chooseAddressPref = ChooseAddressSharePref(context)
-        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, addressName, postalCode)
+        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode)
         chooseAddressPref.setLocalCache(localData)
     }
 
@@ -103,13 +107,13 @@ object ChooseAddressUtils {
      * coachmark must implemented by own host page
      */
     fun isLocalizingAddressNeedShowCoachMark(context: Context): Boolean? {
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        return chooseAddressPref.getCoachMarkState()
+        val coachMarkStatePref = CoachMarkStateSharePref(context)
+        return coachMarkStatePref.getCoachMarkState()
     }
 
     fun coachMarkLocalizingAddressAlreadyShown(context: Context) {
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        chooseAddressPref.setCoachMarkState(false)
+        val coachMarkStatePref = CoachMarkStateSharePref(context)
+        coachMarkStatePref.setCoachMarkState(false)
     }
 
     fun coachMarkItem(context: Context, view: View) : CoachMarkItem {
@@ -168,6 +172,23 @@ object ChooseAddressUtils {
             val mode = Settings.Secure.getInt(context.contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF)
             mode != Settings.Secure.LOCATION_MODE_OFF
 
+        }
+    }
+
+    fun LocalCacheModel.convertToLocationParams(): String {
+        return "user_lat=" + lat +
+                "&user_long=" + long +
+                "&user_addressId=" + address_id +
+                "&user_cityId=" + city_id +
+                "&user_districtId=" + district_id +
+                "&user_postCode=" + postal_code
+    }
+
+    fun setLabel(data: ChosenAddressModel) : String {
+        return if (data.addressName.isEmpty() || data.receiverName.isEmpty()) {
+            "${data.districtName}, ${data.cityName}"
+        } else {
+            "${data.addressName} ${data.receiverName}"
         }
     }
 }

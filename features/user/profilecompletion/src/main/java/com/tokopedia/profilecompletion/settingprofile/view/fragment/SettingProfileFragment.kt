@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
@@ -27,7 +28,6 @@ import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTra
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
-import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
@@ -104,28 +104,39 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun showChangeEmailDialog() {
-        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
-        dialog.setTitle(getString(R.string.add_and_verify_phone))
-        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
-        dialog.setOk(getString(R.string.title_add_phone))
-        dialog.setOkOnClickListner(View.OnClickListener {
-            goToAddPhone()
-            dialog.dismiss()
-        })
-        dialog.setSecondary(getString(R.string.label_cancel))
-        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
-        dialog.show()
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.add_and_verify_phone))
+                setDescription(getString(R.string.add_and_verify_phone_detail))
+                setPrimaryCTAText(getString(R.string.title_add_phone))
+                setPrimaryCTAClickListener {
+                    goToAddPhone()
+                    this.dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.label_cancel))
+                setSecondaryCTAClickListener {
+                    this.dismiss()
+                }
+            }.show()
+        }
     }
 
     private fun showVerifyEmailDialog() {
-        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
-        dialog.setTitle(getString(R.string.add_and_verify_phone))
-        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
-        dialog.setOk(getString(R.string.title_verify_phone))
-        dialog.setOkOnClickListner(View.OnClickListener { goToAddPhone() })
-        dialog.setSecondary(getString(R.string.label_cancel))
-        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
-        dialog.show()
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.add_and_verify_phone))
+                setDescription(getString(R.string.add_and_verify_phone_detail))
+                setPrimaryCTAText(getString(R.string.title_verify_phone))
+                setPrimaryCTAClickListener {
+                    goToAddPhone()
+                    this.dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.label_cancel))
+                setSecondaryCTAClickListener {
+                    this.dismiss()
+                }
+            }.show()
+        }
     }
 
     private fun initObserver() {
@@ -180,7 +191,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun initSettingProfileData() {
         showLoading()
-        profileInfoViewModel.getUserProfileInfo(context!!)
+        profileInfoViewModel.getUserProfileInfo(requireContext())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -249,7 +260,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun refreshProfile() {
         showLoading(true)
-        profileInfoViewModel.getUserProfileInfo(context!!)
+        profileInfoViewModel.getUserProfileInfo(requireContext())
     }
 
     private fun onSuccessAddGender(data: Intent?) {
@@ -304,7 +315,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
                 } else {
                     showLoading(true)
-                    profileInfoViewModel.uploadProfilePicture(context!!, savedLocalImageUrl)
+                    profileInfoViewModel.uploadProfilePicture(requireContext(), savedLocalImageUrl)
                 }
 
             } else {
@@ -398,11 +409,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     getString(R.string.subtitle_email_setting_profile),
                     getString(R.string.hint_email_setting_profile),
                     getString(R.string.message_email_setting_profile),
-                    false
-            ) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
-                startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
-            }
+                    false,
+                    View.OnClickListener {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+                        startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
+                    })
         } else {
             email.showFilled(
                     getString(R.string.subtitle_email_setting_profile),

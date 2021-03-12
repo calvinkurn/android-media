@@ -20,6 +20,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -183,7 +184,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
-    var enableCaching: Boolean = true
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionType: Int = 0
@@ -193,10 +193,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var parentProductId: String? = null
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
-    var userLocationCache: LocalCacheModel = LocalCacheModel()
+    private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
-    private var shouldHitRates: Boolean = false
+    private var isNewShipment: Boolean = false
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
 
     private var submitTicketSubscription: Subscription? = null
@@ -245,6 +245,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartOcsUseCase.get().unsubscribe()
         toggleNotifyMeUseCase.get().cancelJobs()
         discussionMostHelpfulUseCase.get().cancelJobs()
+    }
+
+    fun getUserLocationCache() : LocalCacheModel {
+        return userLocationCache
     }
 
     fun updateVideoTrackerData(stopDuration: Long, videoDuration: Long) {
@@ -298,8 +302,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getBebasOngkirDataByProductId() : BebasOngkirImage {
         val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        val boType = _p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType ?: 0
-        val image = _p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
+        val boType = p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType ?: 0
+        val image = p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
         return image
     }
 
@@ -352,15 +356,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return listOf()
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "", isUseOldNav: Boolean = false, isNewShipment: Boolean = false) {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel) {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
-            shouldHitRates = !isNewShipment
+            userLocationCache = userLocationLocal
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
+
+                isNewShipment = ChooseAddressUtils.isRollOutUser(null)
 
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
@@ -373,7 +380,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 assignTradeinParams()
 
                 //Remove any unused component based on P1 / PdpLayout
-                removeDynamicComponent(it.listOfLayout, isAffiliate, isUseOldNav, isNewShipment)
+                removeDynamicComponent(it.listOfLayout, isAffiliate, isUseOldNav)
 
                 //Render initial data
                 _productLayout.postValue(it.listOfLayout.asSuccess())
@@ -492,12 +499,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private fun updateShippingValue(shippingPriceValue: Int?) {
-        if (!shouldHitRates) return
+        if (isNewShipment) return
         shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt()
                 ?: 30000 else shippingPriceValue
     }
 
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean, isNewShipment: Boolean) {
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
@@ -871,13 +878,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return getProductInfoP3UseCase.get().executeOnBackground(
                 GetProductInfoP3UseCase.createParams(weight, shopDomain, origin),
                 forceRefresh,
-                isUserSessionActive, shouldHitRates)
+                isUserSessionActive, !isNewShipment)
     }
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
         getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId, generateUserLocationRequest(userLocationCache))
-        getPdpLayoutUseCase.get().forceRefresh = forceRefresh
-        getPdpLayoutUseCase.get().enableCaching = enableCaching
         return getPdpLayoutUseCase.get().executeOnBackground()
     }
 }

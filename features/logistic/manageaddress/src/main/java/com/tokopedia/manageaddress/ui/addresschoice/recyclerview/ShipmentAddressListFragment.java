@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.addresschoice.recyclerview;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -209,8 +210,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     maxItemPosition = lastVisibleItemPosition;
                 }
 
-                if ((maxItemPosition + 1) == totalItemCount && !isLoading && dy > 0) {
-                    mPresenter.loadMore(prevState, getChosenAddrId());
+                if ((maxItemPosition + 1) == totalItemCount && !isLoading && dy > 0 && getContext() != null) {
+                    mPresenter.loadMore(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
                 }
             }
         });
@@ -318,16 +319,20 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onSearchReset() {
-        mPresenter.getAddress(prevState, getChosenAddrId());
+        if (getContext() != null) {
+            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+        }
     }
 
     private void performSearch(String query, boolean resetPage) {
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
         checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
-        if (!query.isEmpty()) {
-            mPresenter.searchAddress(query, prevState, getChosenAddrId());
-        } else {
-            mPresenter.getAddress(prevState, getChosenAddrId());
+        if (getContext() != null) {
+            if (!query.isEmpty()) {
+                mPresenter.searchAddress(query, prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+            } else {
+                mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+            }
         }
     }
 
@@ -382,7 +387,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         address.setPostalCode(intentModel.getPostalCode());
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
-                        mPresenter.getAddress(prevState, getChosenAddrId());
+                        if (getContext() != null) {
+                            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                        }
                         mCurrentAddress = address;
                     } else
                         mActivityListener.finishAndSendResult(address);
@@ -403,7 +410,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newAddress.setPostalCode(intentModel.getPostalCode());
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
-                        mPresenter.getAddress(prevState, getChosenAddrId());
+                        if (getContext() != null) {
+                            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                        }
                         mCurrentAddress = newAddress;
                     } else
                         mActivityListener.finishAndSendResult(newAddress);
@@ -442,6 +451,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initSearchView() {
         mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
         mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());

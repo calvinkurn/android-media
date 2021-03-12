@@ -40,6 +40,7 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
             type
             title
             position
+            url
           }
           badges{
             title

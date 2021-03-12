@@ -15,6 +15,7 @@ data class ChosenAddressAddToCart(
         val geolocation: String = ""
 ) {
         companion object {
+                const val MODE_EMPTY = 0
                 const val MODE_ADDRESS = 1
                 const val MODE_SNIPPET = 2
         }

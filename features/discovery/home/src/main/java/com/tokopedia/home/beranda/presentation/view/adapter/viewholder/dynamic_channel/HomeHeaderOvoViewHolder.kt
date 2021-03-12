@@ -17,12 +17,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 
 class HomeHeaderOvoViewHolder(itemView: View,
-                              private val listener: HomeCategoryListener,
-                              private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener
+                              private val listener: HomeCategoryListener
 )
 : AbstractViewHolder<HomeHeaderOvoDataModel>(itemView) {
 
@@ -65,15 +63,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
         val chooseAddressView = itemView.widget_choose_address
-        chooseAddressView.bindChooseAddress(chooseAddressWidgetListener)
-        chooseAddressView.run {
-            visibility = if (needToShowChooseAddress) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-        }
-
+        listener.initializeChooseAddressWidget(chooseAddressView, needToShowChooseAddress)
     }
 
     private fun renderEmptySpace(isUserLogin: Boolean) {

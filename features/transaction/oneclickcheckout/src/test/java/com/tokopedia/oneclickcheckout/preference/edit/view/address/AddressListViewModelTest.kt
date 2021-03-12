@@ -35,11 +35,11 @@ class AddressListViewModelTest {
         val token = Token()
         val response = AddressListModel(token = token)
         val searchQuery = "search"
-        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
+        every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
             assertEquals(OccState.Loading, addressListViewModel.addressList.value)
         }
 
-        addressListViewModel.searchAddress(searchQuery, 0, "0")
+        addressListViewModel.searchAddress(searchQuery, 0, "0", false)
 
         assertEquals(OccState.FirstLoad(response), addressListViewModel.addressList.value)
         assertEquals(searchQuery, addressListViewModel.savedQuery)
@@ -63,10 +63,10 @@ class AddressListViewModelTest {
                     longitude = "2"
                     postalCode = "2"
                 }))
-        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response)
+        every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response)
 
         addressListViewModel.selectedId = "2"
-        addressListViewModel.searchAddress("", 0, "0")
+        addressListViewModel.searchAddress("", 0, "0", false)
 
         response.listAddress[1].isSelected = true
         assertEquals(OccState.FirstLoad(response), addressListViewModel.addressList.value)
@@ -79,25 +79,29 @@ class AddressListViewModelTest {
 
     @Test
     fun `Set Selected Address`() {
-        val response = AddressListModel(listAddress = listOf(
-                RecipientAddressModel().apply {
-                    id = "1"
-                    destinationDistrictId = "1"
-                    latitude = "1"
-                    longitude = "1"
-                    postalCode = "1"
-                },
-                RecipientAddressModel().apply {
-                    id = "2"
-                    destinationDistrictId = "2"
-                    latitude = "2"
-                    longitude = "2"
-                    postalCode = "2"
-                }))
-        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response)
+        val addressModel1 = RecipientAddressModel().apply {
+            id = "1"
+            destinationDistrictId = "1"
+            latitude = "1"
+            longitude = "1"
+            postalCode = "1"
+            addressName = "1"
+            recipientName = "1"
+        }
+        val addressModel2 = RecipientAddressModel().apply {
+            id = "2"
+            destinationDistrictId = "2"
+            latitude = "2"
+            longitude = "2"
+            postalCode = "2"
+            addressName = "2"
+            recipientName = "2"
+        }
+        val response = AddressListModel(listAddress = listOf(addressModel1, addressModel2))
+        every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response)
 
-        addressListViewModel.searchAddress("", 0, "0")
-        addressListViewModel.setSelectedAddress("2")
+        addressListViewModel.searchAddress("", 0, "0", false)
+        addressListViewModel.setSelectedAddress(addressModel2)
 
         response.listAddress[1].isSelected = true
         assertEquals(OccState.Success(response), addressListViewModel.addressList.value)
@@ -110,7 +114,15 @@ class AddressListViewModelTest {
 
     @Test
     fun `Set Selected Address On Null State`() {
-        addressListViewModel.setSelectedAddress("2")
+        val addressModel2 = RecipientAddressModel().apply {
+            id = "2"
+            destinationDistrictId = "2"
+            latitude = "2"
+            longitude = "2"
+            postalCode = "2"
+        }
+
+        addressListViewModel.setSelectedAddress(addressModel2)
 
         assertEquals("-1", addressListViewModel.selectedId)
         assertEquals("", addressListViewModel.destinationLongitude)
@@ -121,26 +133,26 @@ class AddressListViewModelTest {
 
     @Test
     fun `Set Selected Address On Invalid State`() {
-        val response = AddressListModel(listAddress = listOf(
-                RecipientAddressModel().apply {
-                    id = "1"
-                    destinationDistrictId = "1"
-                    latitude = "1"
-                    longitude = "1"
-                    postalCode = "1"
-                },
-                RecipientAddressModel().apply {
-                    id = "2"
-                    destinationDistrictId = "2"
-                    latitude = "2"
-                    longitude = "2"
-                    postalCode = "2"
-                }))
-        every { getAddressCornerUseCase.execute("", null, null) } returns Observable.just(response)
-        addressListViewModel.searchAddress("", 0, "0")
+        val addressModel1 = RecipientAddressModel().apply {
+            id = "1"
+            destinationDistrictId = "1"
+            latitude = "1"
+            longitude = "1"
+            postalCode = "1"
+        }
+        val addressModel2 = RecipientAddressModel().apply {
+            id = "2"
+            destinationDistrictId = "2"
+            latitude = "2"
+            longitude = "2"
+            postalCode = "2"
+        }
+        val response = AddressListModel(listAddress = listOf(addressModel1, addressModel2))
+        every { getAddressCornerUseCase.execute("", null, null, false) } returns Observable.just(response)
+        addressListViewModel.searchAddress("", 0, "0", false)
 
-        addressListViewModel.searchAddress("search", 0, "0")
-        addressListViewModel.setSelectedAddress("2")
+        addressListViewModel.searchAddress("search", 0, "0", false)
+        addressListViewModel.setSelectedAddress(addressModel2)
 
         assertEquals("-1", addressListViewModel.selectedId)
         assertEquals("", addressListViewModel.destinationLongitude)
@@ -152,9 +164,9 @@ class AddressListViewModelTest {
     @Test
     fun `Search Address Failed`() {
         val response = Throwable()
-        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.error(response)
+        every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.error(response)
 
-        addressListViewModel.searchAddress("", 0, "0")
+        addressListViewModel.searchAddress("", 0, "0", false)
 
         assertEquals(OccState.Failed(Failure(response)), addressListViewModel.addressList.value)
     }
@@ -169,14 +181,14 @@ class AddressListViewModelTest {
             })
         }
         val response = AddressListModel(token = token, listAddress = listAddress)
-        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response)
-        addressListViewModel.searchAddress("", 0, "0")
+        every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response)
+        addressListViewModel.searchAddress("", 0, "0", false)
         val additionalAddress = RecipientAddressModel().apply {
             id = "11"
         }
-        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listOf(additionalAddress)))
+        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listOf(additionalAddress)))
 
-        addressListViewModel.loadMore(0, "0")
+        addressListViewModel.loadMore(0, "0", false)
 
         assertEquals(OccState.Success(response.copy(hasNext = false, listAddress = listAddress + additionalAddress)), addressListViewModel.addressList.value)
     }
@@ -191,11 +203,11 @@ class AddressListViewModelTest {
             })
         }
         val response = AddressListModel(token = token, listAddress = listAddress)
-        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(response)
-        addressListViewModel.searchAddress("", 0, "0")
-        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
+        every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response)
+        addressListViewModel.searchAddress("", 0, "0", false)
+        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
 
-        addressListViewModel.loadMore(0, "0")
+        addressListViewModel.loadMore(0, "0", false)
 
         assertEquals(OccState.Success(response.copy(hasNext = true, listAddress = listAddress + listAddress)), addressListViewModel.addressList.value)
     }
@@ -209,12 +221,12 @@ class AddressListViewModelTest {
                 id = i.toString()
             })
         }
-        every { getAddressCornerUseCase.execute(any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
-        addressListViewModel.searchAddress("", 0, "0")
+        every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
+        addressListViewModel.searchAddress("", 0, "0", false)
         val response = Throwable()
-        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any()) } returns Observable.error(response)
+        every { getAddressCornerUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.error(response)
 
-        addressListViewModel.loadMore(0, "0")
+        addressListViewModel.loadMore(0, "0", false)
 
         assertEquals(OccState.Failed(Failure(response)), addressListViewModel.addressList.value)
     }

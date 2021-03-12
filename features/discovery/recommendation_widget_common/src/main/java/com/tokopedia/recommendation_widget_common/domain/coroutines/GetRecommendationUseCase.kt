@@ -20,13 +20,14 @@ import javax.inject.Inject
 open class GetRecommendationUseCase @Inject
 constructor(private val context: Context, private val graphqlRepository: GraphqlRepository)
     : UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {
-
-    override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
-        val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
-        val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam) ?: inputParameter.queryParam
+    private val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
+    init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)
-        graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
         graphqlUseCase.setGraphqlQuery(GetRecommendationUseCaseRequest.widgetListQuery)
+    }
+    override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
+        val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam) ?: inputParameter.queryParam
+        graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
         return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.mappingToRecommendationModel()
     }
 }

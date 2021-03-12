@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
@@ -18,8 +17,10 @@ import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,8 +43,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     private var chooseAddressWidgetListener: ChooseAddressWidgetListener? = null
     private var textChosenAddress: Typography? = null
-    private var buttonChooseAddress: IconUnify? = null
+    private var buttonChooseAddress: ConstraintLayout? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
+    private var hasClicked: Boolean? = false
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
@@ -55,7 +57,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         chooseAddressPref = ChooseAddressSharePref(context)
 
         textChosenAddress = findViewById(R.id.text_chosen_address)
-        buttonChooseAddress = findViewById(R.id.btn_arrow)
+        buttonChooseAddress = findViewById(R.id.choose_address_widget)
 
         checkRollence()
     }
@@ -79,7 +81,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = data.addressName,
+                                label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
@@ -103,11 +105,13 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                 districtId = data.districtId.toString(),
                                 lat = data.latitude,
                                 long = data.longitude,
-                                label = data.addressName,
+                                label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                    } else {
+                        chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
                     }
                 }
                 is Fail -> {
@@ -123,9 +127,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     fun updateWidget(){
-         val data = ChooseAddressUtils.getLocalizingAddressData(context)
+        val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
-            textChosenAddress?.text = context.getString(R.string.txt_label_default)
+            textChosenAddress?.text = data.label
         } else {
             val label = context.getString(R.string.txt_send_to, data?.label)
             textChosenAddress?.text = HtmlLinkHelper(context, label).spannedString
@@ -140,10 +144,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
-        localData?.let { chooseAddressPref?.setLocalCache(it) }
         updateWidget()
-        if (localData?.city_id?.isEmpty() == true) {
+        if (localData?.city_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
             chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it) }
+            initObservers()
         }
     }
 
@@ -155,15 +159,17 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         }
 
         initChooseAddressFlow()
-        initObservers()
 
         buttonChooseAddress?.setOnClickListener {
-            val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
-            val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-            source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
-            val chooseAddressBottomSheet = ChooseAddressBottomSheet()
-            chooseAddressBottomSheet.setListener(this)
-            chooseAddressBottomSheet.show(fragment?.childFragmentManager)
+            if (hasClicked == false ) {
+                val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+                val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceTrackingData()
+                source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
+                val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+                chooseAddressBottomSheet.setListener(this)
+                chooseAddressBottomSheet.show(fragment?.childFragmentManager)
+                hasClicked = true
+            }
         }
     }
 
@@ -172,6 +178,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     override fun onAddressDataChanged() {
+        buttonChooseAddress?.let {
+            Toaster.build(it, context.getString(R.string.toaster_success_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromWidget()
     }
 
@@ -183,6 +192,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     override fun onLocalizingAddressLoginSuccessBottomSheet() {
         chooseAddressWidgetListener?.onLocalizingAddressLoginSuccess()
+    }
+
+    override fun onDismissChooseAddressBottomSheet() {
+        hasClicked = false
     }
 
     interface ChooseAddressWidgetListener {
@@ -217,11 +230,18 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          */
         fun getLocalizingAddressHostFragment(): Fragment
 
-
         /**
          * String Source of Host Page
          */
         fun getLocalizingAddressHostSourceData(): String
+
+        /**
+         * String Tracking Source of Host Page
+         * By default, this method will return String Source from getLocalizingAddressHostSourceData
+         */
+        fun getLocalizingAddressHostSourceTrackingData(): String {
+            return getLocalizingAddressHostSourceData()
+        }
 
         /**
          * this listen is use to notify host/fragment if login is success

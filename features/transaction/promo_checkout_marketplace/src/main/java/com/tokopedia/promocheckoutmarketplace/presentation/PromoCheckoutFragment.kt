@@ -33,11 +33,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -78,7 +78,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(),
@@ -103,6 +102,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private var isPromoCheckoutlastSeenBottomsheetShown = false
     private var hasTriedToGetLastSeenData = false
     private var isPromoMvcLockCourierFlow = false
+
+    private lateinit var promoCoachMark: CoachMark2
+    private lateinit var coachMarkRecyclerListener: RecyclerView.OnScrollListener
+    private var promoWithCoachMarkIndex: Int = -1
+
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PromoCheckoutViewModel::class.java)
@@ -146,7 +151,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
         const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 250L
 
-        private const val COACHMARK_PERIOD_ONE_YEAR : Long = 365
+        private const val PREFERENCES_NAME = "promo_coachmark_preferences"
+
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
 
         fun createInstance(pageSource: Int,
@@ -181,6 +187,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+
+        context?.let {
+            localCacheHandler = LocalCacheHandler(it, PREFERENCES_NAME)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -879,7 +889,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun renderPromoCoachMark() {
-        val coachMarkIndex = adapter.list.indexOfFirst { item ->
+        promoWithCoachMarkIndex = adapter.list.indexOfFirst { item ->
             if (item is PromoListItemUiModel) {
                 item.uiData.coachMark.isShown
             } else {
@@ -887,25 +897,48 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
         }
 
-        if (coachMarkIndex != -1 && PersistentCacheManager.instance.get(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, Boolean::class.java, false) != true) {
-            recyclerView.smoothScrollToPosition(coachMarkIndex)
+        if (promoWithCoachMarkIndex != -1 && localCacheHandler.getBoolean(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, false) != true) {
+            // initiate the scroll listener to dismiss coachmark if scrolled
+            if (!::coachMarkRecyclerListener.isInitialized) {
+                coachMarkRecyclerListener = object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                        if (promoWithCoachMarkIndex != -1 && layoutManager.findFirstVisibleItemPosition() == promoWithCoachMarkIndex &&
+                                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
+                            promoCoachMark.dismissCoachMark()
+                            recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
+                        } else if (promoWithCoachMarkIndex != -1 && layoutManager.findLastVisibleItemPosition() == promoWithCoachMarkIndex &&
+                                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
+                            promoCoachMark.dismissCoachMark()
+                            recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
+                        }
+                    }
+                }
+            }
+
+            val scrollPosition = if (adapter.list.size > promoWithCoachMarkIndex) promoWithCoachMarkIndex + 1 else promoWithCoachMarkIndex
+            recyclerView.smoothScrollToPosition(scrollPosition)
             Handler().postDelayed({
-                val holder = recyclerView.findViewHolderForAdapterPosition(coachMarkIndex)
-                val coachMarkData = adapter.list[coachMarkIndex] as PromoListItemUiModel
+                val holder = recyclerView.findViewHolderForAdapterPosition(promoWithCoachMarkIndex)
+                val coachMarkData = adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel
                 holder?.let {
                     val coachMarkItem = arrayListOf(
                             CoachMark2Item(
-                                    holder.itemView,
+                                    holder.itemView.findViewById(R.id.container_constraint_promo_checkout),
                                     coachMarkData.uiData.coachMark.title,
                                     coachMarkData.uiData.coachMark.content,
-                                    CoachMark2.POSITION_TOP
+                                    CoachMark2.POSITION_BOTTOM
                             )
                     )
 
                     context?.let {
-                        val coachMark = CoachMark2(it)
-                        coachMark.showCoachMark(coachMarkItem)
-                        PersistentCacheManager.instance.put(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true, TimeUnit.DAYS.toMillis(COACHMARK_PERIOD_ONE_YEAR))
+                        promoCoachMark = CoachMark2(it)
+                        promoCoachMark.showCoachMark(coachMarkItem)
+                        recyclerView.addOnScrollListener(coachMarkRecyclerListener)
+                        localCacheHandler.apply {
+                            putBoolean(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true)
+                            applyEditor()
+                        }
                     }
                 }
             }, 300)
@@ -983,6 +1016,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickPromoListItem(element: PromoListItemUiModel) {
         viewModel.updatePromoListAfterClickPromoItem(element)
         renderStickyPromoHeader(recyclerView)
+
+        // dismiss coachmark if user click promo with coachmark
+        if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] == element &&
+                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
+            promoCoachMark.dismissCoachMark()
+        }
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {

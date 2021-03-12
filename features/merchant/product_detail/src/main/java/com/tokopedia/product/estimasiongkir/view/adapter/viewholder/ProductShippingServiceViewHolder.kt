@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductServiceDetailDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductServiceDetailAdapter
 
@@ -18,15 +17,15 @@ class ProductShippingServiceViewHolder(view: View) : AbstractViewHolder<ProductS
 
     private val serviceName: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.product_shipping_service_name)
     private val rvServices: RecyclerView? = itemView.findViewById(R.id.rv_product_shipping_service)
+    private val adapter = ProductServiceDetailAdapter()
+
+    init {
+        rvServices?.adapter = adapter
+    }
 
     override fun bind(element: ProductShippingServiceDataModel) {
         serviceName?.text = element.serviceName
-        renderServiceDetail(element.productService)
+        adapter.updateServices(element.productService)
     }
 
-    private fun renderServiceDetail(productServices: List<ProductServiceDetailDataModel>) = with(itemView) {
-        val adapter = ProductServiceDetailAdapter()
-        rvServices?.adapter = adapter
-        adapter.updateServices(productServices)
-    }
 }

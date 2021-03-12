@@ -48,6 +48,7 @@ ext {
             commonElectronicMoney           : ":features:recharge:common_electronic_money",
             digitalHomepage                 : ":features:recharge:digital_homepage",
             digitalproduct                  : ":features:recharge:digitalproduct",
+            digitalCheckout                 : ":features:recharge:digital_checkout",
             digitalTopupBills               : ":features:recharge:digital_topup_bills",
             rechargeGeneral                 : ":features:recharge:recharge_general",
             rechargeOcr                     : ":features:recharge:rechargeocr",
@@ -67,7 +68,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
@@ -124,7 +124,6 @@ ext {
             productDetailCommon             : ":features:merchant:product_detail_common",
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
-            atc_variant                     : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
             ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
@@ -136,6 +135,8 @@ ext {
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
+            moengageWrapper                 : ":features:im:moengage_wrapper",
+
 
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",

@@ -10,10 +10,12 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.toPx
@@ -44,6 +46,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentArrow: IconUnify? = itemView.findViewById(R.id.ic_pdp_shipment_arrow_right)
 
     private val impressHolder = ImpressHolder()
+    private var componentTrackDataModel: ComponentTrackDataModel? = null
 
     override fun bind(element: ProductShipmentDataModel) {
         val data = element.rates
@@ -59,10 +62,15 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
             }
             data.p2RatesError.isNotEmpty() -> {
                 hideShipmentLoading()
-                renderShipmentError(data.title, data.subtitle, data.p2RatesError.firstOrNull()?.errorCode ?: 0)
+                renderShipmentError(data.title, data.subtitle, data.p2RatesError.firstOrNull()?.errorCode
+                        ?: 0)
             }
             else -> {
                 // receive rates data
+                if (componentTrackDataModel == null) {
+                    componentTrackDataModel = getComponentTrackData(element)
+                }
+
                 itemView.addOnImpressionListener(impressHolder) {
                     listener.showCoachmark(shipmentTitle, element.isBoeType())
                 }
@@ -76,11 +84,11 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         adjustUiError()
 
         shipmentTitle?.text = title
-        otherCourierTxt?.text = subtitle
+        otherCourierTxt?.text = HtmlLinkHelper(context, subtitle).spannedString
 
         shipmentOtherContainer?.setOnClickListener(null)
         otherCourierTxt?.setOnClickListener {
-            listener.goToShipmentErrorAddressOrChat(errorCode)
+            listener.clickShippingComponentError(errorCode, title, componentTrackDataModel)
         }
 
         otherCourierTxt?.show()
@@ -92,23 +100,25 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private fun renderShipmentSuccess(element: ProductShipmentDataModel) = with(itemView) {
         hideShipmentLoading()
-        renderText(element.rates)
+        renderText(element.rates, element.localDestination)
         renderTokoCabang(element.isFullfillment, element.tokoCabangIconUrl)
-        renderOtherSection(element.rates.instanLabel, element.rates.subtitle, element.isCod)
+        renderOtherSection(element)
     }
 
-    private fun renderOtherSection(instantLabel: String, subtitle: String, isCod: Boolean) = with(itemView) {
-        adjustUiSuccess()
-        if (instantLabel.isEmpty() && !isCod) {
+    private fun renderOtherSection(element: ProductShipmentDataModel) = with(itemView) {
+        val rates = element.rates
+        adjustUiSuccess(rates.title, rates.instanLabel, element.isCod)
+        if (rates.instanLabel.isEmpty() && !element.isCod) {
             renderSubtitleGreen()
             hideLabelAndBo()
+            shipmentArrow?.hide()
             return@with
         }
 
-        renderSubtitleNormal(subtitle)
-        shipmentLabelCod?.showWithCondition(isCod)
-        shipmentLabelInstant?.shouldShowWithAction(instantLabel.isNotEmpty()) {
-            shipmentLabelInstant.setLabel(instantLabel)
+        renderSubtitleNormal(rates.subtitle)
+        shipmentLabelCod?.showWithCondition(element.isCod)
+        shipmentLabelInstant?.shouldShowWithAction(rates.instanLabel.isNotEmpty()) {
+            shipmentLabelInstant.setLabel(rates.instanLabel)
         }
     }
 
@@ -133,10 +143,11 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentTokoCabangGroup?.gone()
     }
 
-    private fun renderText(data: P2RatesEstimateData) = with(itemView) {
+    private fun renderText(data: P2RatesEstimateData, localDestination: String) = with(itemView) {
+        val destination = if (localDestination.isEmpty()) data.destination else context.getString(R.string.pdp_shipping_to_builder, localDestination)
         shipmentTitle?.text = data.title
-        shipmentDestination?.shouldShowWithAction(data.destination.isNotEmpty()) {
-            shipmentDestination.text = data.destination.renderHtmlBold(context)
+        shipmentDestination?.shouldShowWithAction(destination.isNotEmpty()) {
+            shipmentDestination.text = destination.renderHtmlBold(context)
         }
         shipmentEstimation?.shouldShowWithAction(data.etaText.isNotEmpty()) {
             shipmentEstimation.text = data.etaText
@@ -158,22 +169,23 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private fun adjustUiError() = with(itemView) {
         otherCourierTxt?.setWeight(Typography.REGULAR)
-        otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         shipmentArrow?.setOnClickListener(null)
         shipmentArrow?.hide()
-        shipmentOtherContainer?.setMargin(0, 4.toPx(), 0, 0)
+        shipmentOtherContainer?.setMargin(0, 5.toPx(), 0, 0)
+        shipmentOtherContainer?.setPadding(0, 0, 20.toPx(), 0)
     }
 
-    private fun adjustUiSuccess() = with(itemView) {
-        otherCourierTxt?.setOnClickListener(null)
-        shipmentOtherContainer?.setOnClickListener {
-            listener.openShipmentClickedBottomSheet()
-        }
-        shipmentArrow?.setOnClickListener {
-            listener.openShipmentClickedBottomSheet()
-        }
+    private fun adjustUiSuccess(title: String, instantLabel: String, isCod: Boolean) = with(itemView) {
+        val clickListener = commonClickListener(title, instantLabel, isCod)
+        otherCourierTxt?.setOnClickListener(clickListener)
+        shipmentOtherContainer?.setOnClickListener(clickListener)
+        shipmentArrow?.setOnClickListener(clickListener)
+
+        otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         shipmentArrow?.show()
         shipmentOtherContainer?.setMargin(0, 14.toPx(), 0, 0)
+        shipmentOtherContainer?.setPadding(0, 0, 0, 0)
     }
 
     private fun hideLabelAndBo() = with(itemView) {
@@ -192,4 +204,14 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentLoadingContainer?.hide()
         shipmentContentContainer?.show()
     }
+
+    private fun commonClickListener(title: String, instantLabel: String, isCod: Boolean): View.OnClickListener {
+        return View.OnClickListener {
+            listener.openShipmentClickedBottomSheet(title, instantLabel, isCod, componentTrackDataModel)
+        }
+    }
+
+    private fun getComponentTrackData(element: ProductShipmentDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "",
+            element?.name ?: "", adapterPosition + 1)
 }

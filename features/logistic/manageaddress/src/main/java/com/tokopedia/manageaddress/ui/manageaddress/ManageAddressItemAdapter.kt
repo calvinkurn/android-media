@@ -20,6 +20,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
@@ -90,7 +91,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     address_detail.text = data.street + ", " + data.postalCode
                 }
                 val bitmap = (assetMoreBtn as VectorDrawable).toBitmap()
-                val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true))
+                val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 80.toDp(), 80.toDp(), true))
                 btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
                 val cardSelected: Boolean

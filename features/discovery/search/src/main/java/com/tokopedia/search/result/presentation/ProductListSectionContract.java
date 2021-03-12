@@ -129,7 +129,7 @@ public interface ProductListSectionContract {
 
         void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
 
-        void sendGTMTrackingProductClick(ProductItemViewModel item, String userId, String suggestedRelatedKeyword);
+        void sendGTMTrackingProductClick(ProductItemViewModel item, String userId, String suggestedRelatedKeyword, String dimension90);
 
         void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
 
@@ -141,7 +141,7 @@ public interface ProductListSectionContract {
 
         void startRenderPerformanceMonitoring();
 
-        void sendProductImpressionTrackingEvent(ProductItemViewModel item, String suggestedRelatedKeyword);
+        void sendProductImpressionTrackingEvent(ProductItemViewModel item, String suggestedRelatedKeyword, String dimension90);
 
         void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel);
 

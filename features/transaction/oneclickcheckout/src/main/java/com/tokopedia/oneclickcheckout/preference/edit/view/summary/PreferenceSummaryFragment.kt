@@ -23,11 +23,13 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
@@ -217,6 +219,27 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
             }
         })
+        viewModel.localCacheAddressResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is AddressModel -> {
+                    updateLocalCacheAddressData(it)
+                }
+            }
+        })
+    }
+
+    private fun updateLocalCacheAddressData(addressModel: AddressModel) {
+        activity?.let {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = it,
+                    addressId = addressModel.addressId.toString(),
+                    cityId = addressModel.cityId.toString(),
+                    districtId = addressModel.districtId.toString(),
+                    lat = addressModel.latitude,
+                    long = addressModel.longitude,
+                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
+                    postalCode = addressModel.postalCode)
+        }
     }
 
     private fun setupViews(data: ProfilesItemModel) {
@@ -407,9 +430,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 val parent = activity
                 if (parent is PreferenceEditParent) {
                     if (arguments?.getBoolean(ARG_IS_EDIT) == true && parent.getProfileId() > 0) {
-                        viewModel.updatePreference(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), isDefaultProfileChecked(cbMainPreference), parent.getFromFlow())
+                        viewModel.updatePreference(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), isDefaultProfileChecked(cbMainPreference), parent.getFromFlow(), parent.getNewlySelectedAddressModel(), parent.isSelectedPreference())
                     } else {
-                        viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), isDefaultProfileChecked(cbMainPreference), parent.getFromFlow())
+                        viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), isDefaultProfileChecked(cbMainPreference), parent.getFromFlow(), parent.getNewlySelectedAddressModel(), parent.isSelectedPreference())
                     }
                     preferenceListAnalytics.eventClickSimpanOnSummaryPurchaseSetting()
                 }
