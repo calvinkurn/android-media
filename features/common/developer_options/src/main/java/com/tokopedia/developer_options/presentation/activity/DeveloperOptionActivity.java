@@ -57,6 +57,7 @@ import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivit
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.developer_options.utils.TimberWrapper;
+import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -136,6 +137,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
+    private TextView appAuthSecretView;
     private TextView tvFakeResponse;
 
     private Button requestFcmToken;
@@ -262,6 +264,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
         accessTokenView = findViewById(R.id.access_token);
+        appAuthSecretView = findViewById(R.id.app_auth_secret);
         requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
@@ -609,6 +612,16 @@ public class DeveloperOptionActivity extends BaseActivity {
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
             }
+        });
+
+        appAuthSecretView.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            String decoder = AppAuthKt.getDecoder(this);
+            ClipData clip = ClipData.newPlainText("Copied Text", decoder);
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(clip);
+            }
+            Toast.makeText(this, decoder, Toast.LENGTH_LONG).show();
         });
 
         requestFcmToken.setOnClickListener(v -> {

@@ -144,6 +144,10 @@ interface LoginEmailPhoneContract {
         fun onSuccessActivateUser(activateUserData: ActivateUserData)
 
         fun onFailedActivateUser(throwable: Throwable)
+
+        fun showLocationAdminPopUp(): () -> Unit
+
+        fun showGetAdminTypeError(): (Throwable) -> Unit
     }
 
     interface Presenter : CustomerPresenter<View> {

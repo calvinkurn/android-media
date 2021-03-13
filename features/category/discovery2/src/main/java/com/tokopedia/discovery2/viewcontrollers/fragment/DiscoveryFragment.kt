@@ -272,10 +272,6 @@ class DiscoveryFragment :
         fetchDiscoveryPageData()
     }
 
-    private fun bindStickyViewHolder() {
-        recyclerView.rebindStickyViewHolder()
-    }
-
     private fun setUpObserver() {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, {
             when (it) {
@@ -283,7 +279,6 @@ class DiscoveryFragment :
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
-                        bindStickyViewHolder()
                         if (listComponent.isNullOrEmpty()) {
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
