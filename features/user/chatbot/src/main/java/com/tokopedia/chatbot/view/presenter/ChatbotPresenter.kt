@@ -545,4 +545,11 @@ class ChatbotPresenter @Inject constructor(
     override fun showTickerData(onError: (Throwable) -> Unit, onSuccesGetTickerData: (TickerData) -> Unit) {
         getTickerDataUseCase.execute(TickerDataSubscriber(onError,onSuccesGetTickerData))
     }
+
+    override fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel {
+        val text = "Transaksi yang berkendala tidak ada di daftar pilihan."
+        val value = "Transaksi yang berkendala tidak ada di daftar pilihan."
+        val action = "transaction_not_listed"
+        return ChatActionBubbleViewModel(text, value, action)
+    }
 }

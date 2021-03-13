@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl2"
-    android:layout_marginBottom="@dimen/spacing_lvl2"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,8 +32,10 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
             app:layout_constraintLeft_toLeftOf="@id/tv_invoice_date"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_date"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:srcCompat="@tools:sample/avatars[0]" />
 
         <com.tokopedia.unifycomponents.Label

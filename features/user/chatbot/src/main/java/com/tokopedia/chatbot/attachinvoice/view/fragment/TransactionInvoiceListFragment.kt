@@ -3,16 +3,20 @@ package com.tokopedia.chatbot.attachinvoice.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.chatbot.attachinvoice.di.AttachInvoiceModule
 import com.tokopedia.chatbot.attachinvoice.di.DaggerAttachInvoiceComponent
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants
 import com.tokopedia.chatbot.attachinvoice.view.adapter.TransactionInvoiceListAdapterTypeFactoryImpl
 import com.tokopedia.chatbot.attachinvoice.view.model.EmptyTransactionInvoiceUiModel
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
@@ -81,7 +85,7 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
                             isError = true
                         }
                         is TransactionInvoiceUiModel -> {
-                            renderList(it.data)
+                            renderList(it.data, (it.data.size >= InvoiceConstants.DEFAULT_LIMIT))
                             isError = false
                         }
                     }
@@ -103,6 +107,15 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
         })
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        val recyclerView = super.getRecyclerView(view)
+        if (recyclerView is VerticalRecyclerView) {
+            recyclerView.clearItemDecoration()
+        }
+        return view
     }
 
     override fun onResume() {

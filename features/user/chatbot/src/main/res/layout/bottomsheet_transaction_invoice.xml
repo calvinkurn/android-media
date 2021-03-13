@@ -28,12 +28,12 @@
         android:layout_height="@dimen/dp_6"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:background="@drawable/chatbot_bg_shader_gray"
-        app:layout_constraintBottom_toTopOf="@+id/transaction_invoice_btn_submit"
+        app:layout_constraintBottom_toTopOf="@+id/transaction_not_found_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/transaction_invoice_btn_submit"
+        android:id="@+id/transaction_not_found_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

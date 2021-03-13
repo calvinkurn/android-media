@@ -28,7 +28,7 @@ private const val TITLE_WITHDRAWING_FUNDS = "Penarikan Dana"
 class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceListFragmentListener {
     private lateinit var tabsUnify: TabsUnify
     private lateinit var touchViewPager: TouchViewPager
-    private lateinit var submitButton: UnifyButton
+    private lateinit var transactionNotFoundButton: UnifyButton
     private lateinit var context: FragmentActivity
     private var messageId: Int = 0
     private lateinit var listener: TransactionInvoiceBottomSheetListener
@@ -36,6 +36,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     init {
         isFullpage = true
         isDragable = true
+        isHideable = true
     }
 
     companion object {
@@ -56,7 +57,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         contentView.run {
             tabsUnify = findViewById(R.id.transaction_invoice_tab_layout)
             touchViewPager = findViewById(R.id.transaction_invoice_view_pager)
-            submitButton = findViewById(R.id.transaction_invoice_btn_submit)
+            transactionNotFoundButton = findViewById(R.id.transaction_not_found_btn)
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -65,8 +66,9 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         super.onViewCreated(view, savedInstanceState)
         setTitle(getString(R.string.string_attach_invoice_activity_title))
         renderTabAndViewPager()
-        submitButton.setOnClickListener {
-
+        transactionNotFoundButton.setOnClickListener {
+            listener.transactionNotFoundClick()
+            dismissAllowingStateLoss()
         }
     }
 
@@ -91,7 +93,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     }
 
     override fun getButtonView(): UnifyButton {
-        return submitButton
+        return transactionNotFoundButton
     }
 
     override fun setResult(data: Intent) {
@@ -103,4 +105,5 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
 
 interface TransactionInvoiceBottomSheetListener {
     fun onBottomSheetDismissListener(data: Intent)
+    fun transactionNotFoundClick()
 }

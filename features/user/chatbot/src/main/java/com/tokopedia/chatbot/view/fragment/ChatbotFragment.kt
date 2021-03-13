@@ -937,5 +937,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onBottomSheetDismissListener(data: Intent) {
         onSelectedInvoiceResult(Activity.RESULT_OK, data)
     }
+
+    override fun transactionNotFoundClick() {
+        val selected = presenter.getActionBubbleforNoTrasaction()
+        presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
+    }
 }
 

@@ -106,5 +106,7 @@ interface ChatbotContract {
 
         fun cancelImageUpload()
 
+        fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel
+
     }
 }
