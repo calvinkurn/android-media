@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -75,7 +76,7 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getFilteredInvoiceLiveData().observe(viewLifecycleOwner, {
+        viewModel.getFilteredInvoiceLiveData().observe(viewLifecycleOwner, Observer{
             when (it) {
                 is Success -> {
                     when (it.data.first()) {
