@@ -491,7 +491,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 opponentId)
     }
 
-    override fun showSearchInvoiceScreen() {
+    fun showSearchInvoiceScreen() {
         activity?.let {
             val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(it, messageId.toIntOrZero(), this)
             bottomSheetUnify.show(childFragmentManager, "")
