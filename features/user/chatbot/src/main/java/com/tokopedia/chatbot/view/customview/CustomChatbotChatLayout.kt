@@ -185,7 +185,7 @@ class CustomChatbotChatLayout : FrameLayout {
                 message!!.post {
                     if (message!!.lineCount >= EllipsizeMaker.MESSAGE_LINE_COUNT) {
                         message!!.maxLines = EllipsizeMaker.MESSAGE_LINE_COUNT
-                        message!!.text = EllipsizeMaker.getTruncatedMsg(message!!)
+                        EllipsizeMaker.setTruncatedMsg(message!!, msg)
                         info?.visibility = View.VISIBLE
                         info?.setOnClickListener {
                             showFullMessage(msg)
