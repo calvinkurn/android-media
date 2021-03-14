@@ -1,6 +1,10 @@
 package com.tokopedia.hotel.search_map.presentation.viewmodel
 
+import android.location.Location
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.VisibleRegion
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
@@ -12,9 +16,8 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.mockk
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -66,8 +69,9 @@ class HotelSearchMapViewModelTest {
         //given
         val destinationId = 100.toLong()
         val type = HotelTypeEnum.CITY.value
-        val latitude = 0.0f
-        val longitude = 0.0f
+        val latitude = 0.0
+        val longitude = 0.0
+        val radius = 0.0
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
@@ -76,7 +80,7 @@ class HotelSearchMapViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
+                , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == destinationId)
@@ -94,8 +98,9 @@ class HotelSearchMapViewModelTest {
         //given
         val destinationId = 100.toLong()
         val type = HotelTypeEnum.DISTRICT.value
-        val latitude = 0.0f
-        val longitude = 0.0f
+        val latitude = 0.0
+        val longitude = 0.0
+        val radius = 0.0
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
@@ -104,7 +109,7 @@ class HotelSearchMapViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
+                , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -123,8 +128,9 @@ class HotelSearchMapViewModelTest {
         //given
         val destinationId = 100.toLong()
         val type = HotelTypeEnum.REGION.value
-        val latitude = 0.0f
-        val longitude = 0.0f
+        val latitude = 0.0
+        val longitude = 0.0
+        val radius = 0.0
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
@@ -133,7 +139,7 @@ class HotelSearchMapViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
+                , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -152,8 +158,9 @@ class HotelSearchMapViewModelTest {
     fun initSearchParam_typeCoordinate_shouldInitSearchParam() {
         //given
         val destinationId = 100.toLong()
-        val latitude = 3.0f
-        val longitude = 4.0f
+        val latitude = 3.0
+        val longitude = 4.0
+        val radius = 22.0
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
@@ -163,7 +170,7 @@ class HotelSearchMapViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , "", totalRoom, totalAdult, latitude, longitude, searchType, ""))
+                , "", totalRoom, totalAdult, latitude, longitude, radius,searchType, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -409,7 +416,86 @@ class HotelSearchMapViewModelTest {
     }
 
     @Test
-    fun getCurrentLocation(){
+    fun setPermissionHelper_shouldReturnSuccess(){
+        //given
+        val permissionCheckerHelper: PermissionCheckerHelper = mockk()
 
+        //when
+        hotelSearchResultViewModel.setPermissionHelper(permissionCheckerHelper)
+
+        //then
+        val actual = hotelSearchResultViewModel.permissionCheckerHelper
+        assert(actual == permissionCheckerHelper)
+    }
+
+    @Test
+    fun getMidPoint_shouldReturnSuccess(){
+        //given
+        val latitude = 3.0
+        val longitude = 4.0
+        val latLong = LatLng(latitude,longitude)
+
+        //when
+        hotelSearchResultViewModel.getMidPoint(latLong)
+
+        //then
+        val actual = hotelSearchResultViewModel.screenMidPoint.value
+        assert(actual is Success)
+        assert((actual as Success).data.longitude == latLong.longitude)
+        assert(actual.data.latitude == latLong.latitude)
+    }
+
+    @Test
+    fun getMidPoint_shouldReturnFail(){
+        //given
+        val latitude = 0.0
+        val longitude = 0.0
+        val latLong = LatLng(latitude,longitude)
+
+        //when
+        hotelSearchResultViewModel.getMidPoint(latLong)
+
+        //then
+        val actual = hotelSearchResultViewModel.screenMidPoint.value
+        assert(actual is Fail)
+    }
+
+    @Test
+    fun getVisibleRadius_positiveFlow(){
+        //given
+        val googleMap = mockk<GoogleMap>()
+        val throwable = mockk<Throwable>()
+        val radius: Double = 30.9
+        try {
+            val visibleRegion: VisibleRegion = mockk()
+            val diagonalDistance = FloatArray(1)
+
+            val farLeft = visibleRegion.farLeft
+            val nearRight = visibleRegion.nearRight
+
+            Location.distanceBetween(
+                    farLeft.latitude,
+                    farLeft.longitude,
+                    nearRight.latitude,
+                    nearRight.longitude,
+                    diagonalDistance
+            )
+            //when
+            hotelSearchResultViewModel.getVisibleRadius(googleMap)
+            //then
+            val actual = hotelSearchResultViewModel.radius.value
+            assert(actual is Success)
+            assert((actual as Success).data == radius)
+        } catch (error: Throwable) {
+            //given
+            every { hotelSearchResultViewModel.getVisibleRadius(googleMap) } throws throwable
+
+            //when
+            hotelSearchResultViewModel.getVisibleRadius(googleMap)
+
+            //then
+            val actual = hotelSearchResultViewModel.radius.value
+            assert(actual is Fail)
+        }
     }
 }
