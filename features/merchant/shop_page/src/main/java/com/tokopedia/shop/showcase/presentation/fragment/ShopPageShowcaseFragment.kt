@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.showcase.di.component.DaggerShopPageShowcaseComponent
 import com.tokopedia.shop.showcase.di.component.ShopPageShowcaseComponent
 import com.tokopedia.shop.showcase.presentation.adapter.ShopPageFeaturedShowcaseAdapter
+import com.tokopedia.shop.showcase.presentation.adapter.ShopPageShowcaseListAdapter
 import com.tokopedia.shop.showcase.presentation.viewmodel.ShopPageShowcaseViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -58,8 +60,12 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
 
     private var showcaseShimmerView: LinearLayout? = null
     private var featuredShowcaseRv: RecyclerView? = null
+    private var allShowcaseRv: RecyclerView? = null
     private var featuredShowcaseAdapter: ShopPageFeaturedShowcaseAdapter? = null
+    private var allShowcaseListAdapter: ShopPageShowcaseListAdapter? = null
     private var tvFeaturedShowcaseTitle: Typography? = null
+    private var tvAllShowcaseTitle: Typography? = null
+    private var icShowcaseSearch: IconUnify? = null
     private var shopId: String = DEFAULT_SHOP_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +116,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
                 is Success -> {
                     setViewState(VIEW_CONTENT)
                     featuredShowcaseAdapter?.updateFeaturedShowcaseDataset(it.data)
+                    allShowcaseListAdapter?.updateShowcaseList(it.data)
                 }
                 is Fail -> { }
             }
@@ -123,11 +130,16 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
                 showcaseShimmerView?.visible()
                 featuredShowcaseRv?.hide()
                 tvFeaturedShowcaseTitle?.hide()
+                tvAllShowcaseTitle?.hide()
+                icShowcaseSearch?.hide()
             }
             VIEW_CONTENT -> {
                 showcaseShimmerView?.hide()
                 featuredShowcaseRv?.visible()
+                allShowcaseRv?.visible()
                 tvFeaturedShowcaseTitle?.visible()
+                tvAllShowcaseTitle?.visible()
+                icShowcaseSearch?.visible()
             }
         }
     }
@@ -136,7 +148,10 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
         view?.let {
             showcaseShimmerView = it.findViewById(R.id.showcase_loading_shimmer)
             featuredShowcaseRv = it.findViewById(R.id.rvFeaturedShowcase)
+            allShowcaseRv = it.findViewById(R.id.rvAllShowcase)
             tvFeaturedShowcaseTitle = it.findViewById(R.id.tvFeaturedTitle)
+            tvAllShowcaseTitle = it.findViewById(R.id.tvAllShowcaseTitle)
+            icShowcaseSearch = it.findViewById(R.id.icSearchShowcase)
 
             initRecyclerView()
         }
@@ -144,11 +159,32 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
 
     private fun initRecyclerView() {
         featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter()
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        allShowcaseListAdapter = ShopPageShowcaseListAdapter()
+
+        val featuredShowcaseLayoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+        )
+
+        val allShowcaseLayoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.VERTICAL,
+                false
+        )
+
+        // init featured showcase recyclerview
         featuredShowcaseRv?.apply {
             setHasFixedSize(true)
-            layoutManager = linearLayoutManager
+            layoutManager = featuredShowcaseLayoutManager
             adapter = featuredShowcaseAdapter
+        }
+
+        // ini all showcase recyclerview
+        allShowcaseRv?.apply {
+            setHasFixedSize(true)
+            layoutManager = allShowcaseLayoutManager
+            adapter = allShowcaseListAdapter
         }
     }
 

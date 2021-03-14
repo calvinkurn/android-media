@@ -17,7 +17,7 @@ class ShopPageFeaturedShowcaseViewHolder(
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        private const val MARGIN_DP_12 = 12.0f
+        private const val MARGIN_DP_10 = 10.0f
     }
 
     private var ivShowcaseImg: ImageUnify? = null
@@ -52,11 +52,11 @@ class ShopPageFeaturedShowcaseViewHolder(
         )
         if (position == 0) {
             // set margin for first featured showcase item
-            layoutParams.setMargins(MARGIN_DP_12.toPx().toInt(), 0, 0, 0)
+            layoutParams.setMargins(MARGIN_DP_10.toPx().toInt(), 0, 0, 0)
         }
         else if (position == list.size - 1) {
             // set margin for last featured showcase item
-            layoutParams.setMargins(0, 0, MARGIN_DP_12.toPx().toInt(), 0)
+            layoutParams.setMargins(0, 0, MARGIN_DP_10.toPx().toInt(), 0)
         }
         itemView.layoutParams = layoutParams
     }
