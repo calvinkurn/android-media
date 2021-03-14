@@ -65,9 +65,21 @@
                     android:id="@+id/btnGetRadiusHotelSearchMap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/hotel_120dp"
+                    android:layout_marginTop="@dimen/layout_lvl8"
                     android:visibility="gone"
                     app:fbType="group"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/hotel_loader"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_gravity="center_horizontal"
+                    app:loader_type="circular"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/layout_lvl8"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

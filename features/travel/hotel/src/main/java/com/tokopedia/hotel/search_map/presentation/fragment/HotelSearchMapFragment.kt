@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.search_map.presentation.fragment
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -39,7 +40,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -47,6 +47,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.common.util.HotelSearchMapQuery
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
@@ -62,8 +63,8 @@ import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivi
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -88,8 +89,8 @@ import kotlin.math.abs
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener,
-        OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnCameraIdleListener, SubmitFilterListener {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener,
+        GoogleMap.OnCameraMoveListener, SubmitFilterListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -172,9 +173,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Success -> {
                     showCollapsingHeader()
                     onSuccessGetResult(it.data)
-                    changeMarkerState(cardListPosition)
+                    if(!it.data.properties.isNullOrEmpty()){
+                        changeMarkerState(cardListPosition)
+                    }
                 }
                 is Fail -> {
+                    hideLoader()
                     hideCollapsingHeader()
                     animateCollapsingToolbar(COLLAPSING_FULL_SCREEN)
                     showGetListError(it.throwable)
@@ -190,11 +194,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         })
 
-        /**Will add radius as search param*/
         hotelSearchMapViewModel.radius.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    hideFindNearHereView()
                     hotelSearchModel.apply {
                         searchType = HotelTypeEnum.COORDINATE.value
                         searchId = ""
@@ -260,6 +262,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun loadInitialData() {
         isLoadingInitialData = true
+        showLoader()
         adapter.clearAllElements()
         adapterCardList.clearAllElements()
         showLoading()
@@ -296,6 +299,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
+    override fun onCameraMove() {
+        hideFindNearHereView()
+    }
+
     override fun onMarkerClick(marker: Marker): Boolean {
         allMarker.forEach {
             if (it.tag == marker.tag) {
@@ -319,7 +326,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+        val searchQuery = HotelSearchMapQuery.propertySearchInput
         hotelSearchMapViewModel.searchProperty(page, searchQuery)
     }
 
@@ -574,7 +581,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
             googleMap.setOnMarkerClickListener(this)
-            googleMap.setOnCameraIdleListener(this)
             googleMap.setOnMapClickListener {
                 // do nothing
             }
@@ -608,6 +614,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         wrapper.addView(textView)
         wrapper.setOnClickListener {
             showCardListView()
+            hideFindNearHereView()
+            googleMap.setOnCameraIdleListener(this)
+            googleMap.setOnCameraMoveListener(this)
             hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
             hotelSearchMapViewModel.getVisibleRadius(googleMap)
         }
@@ -642,12 +651,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun changeMarkerState(position: Int) {
         resetMarkerState()
-        if (cardListPosition == position) allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+        if(!allMarker.isNullOrEmpty()){
+            if (cardListPosition == position) allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+        }
     }
 
     private fun resetMarkerState() {
-        allMarker.forEach {
-            it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title))
+        if (!allMarker.isNullOrEmpty()){
+            allMarker.forEach {
+                it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title))
+            }
         }
     }
 
@@ -729,6 +742,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     adapter.dataSize,
                     SEARCH_SCREEN_NAME)
         }
+
+        hideLoader()
 
         val searchProperties = data.properties
 
@@ -886,12 +901,28 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         ivGetLocationHotelSearchMap.gone()
     }
 
+    private fun showLoader(){
+        hotel_loader.show()
+    }
+
+    private fun hideLoader(){
+        hotel_loader.gone()
+    }
+
     private fun showFindNearHereView() {
         btnGetRadiusHotelSearchMap.visible()
+        animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_SHOW_VALUE)
     }
 
     private fun hideFindNearHereView() {
-        btnGetRadiusHotelSearchMap.gone()
+        animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_HIDE_VALUE)
+    }
+
+    private fun animatebtnGetRadiusHotelSearchMap(value: Float){
+        ObjectAnimator.ofFloat(btnGetRadiusHotelSearchMap, BUTTON_RADIUS_ANIMATION_Y, value).apply {
+            duration = DELAY_BUTTON_RADIUS
+            start()
+        }
     }
 
     //for setup quick filter after click submit in bottom sheet
@@ -1040,6 +1071,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val BUTTON_RADIUS_HEADING_SIZE = 6
         private const val BUTTON_RADIUS_PADDING_ALL = 0
         private const val BUTTON_RADIUS_PADDING_RIGHT = 6
+        private const val BUTTON_RADIUS_ANIMATION_Y = "translationY"
 
         private const val INIT_MARKER_TAG = 0
 
@@ -1048,6 +1080,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
+        const val BUTTON_RADIUS_SHOW_VALUE: Float = 80f
+        const val BUTTON_RADIUS_HIDE_VALUE: Float = -300f
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
