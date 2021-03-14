@@ -20,7 +20,10 @@ import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
-import com.tokopedia.play.view.contract.*
+import com.tokopedia.play.view.contract.PlayFullscreenManager
+import com.tokopedia.play.view.contract.PlayNavigation
+import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
@@ -45,7 +48,6 @@ import javax.inject.Inject
  * Example: tokopedia://play/12345?source_type=SHOP&source_id=123
  */
 class PlayActivity : BaseActivity(),
-        PlayNewChannelInteractor,
         PlayNavigation,
         PlayPiPCoordinator,
         SwipeContainerViewComponent.DataSource,
@@ -140,14 +142,12 @@ class PlayActivity : BaseActivity(),
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
-        val channelId = intent?.data?.lastPathSegment
-        if (fragment != null && fragment is PlayFragment && channelId != null) {
-            fragment.onNewChannelId(channelId)
+        val newBundle = intent?.extras
+        val channelId = newBundle?.get(PLAY_KEY_CHANNEL_ID)
+        if (channelId != null && channelId != viewModel.startingChannelId) {
+            viewModel.setNewState(newBundle)
+            viewModel.loadNextPage()
         }
-    }
-
-    override fun onNewChannel(channelId: String?) {
     }
 
     override fun onEnterPiPMode() {

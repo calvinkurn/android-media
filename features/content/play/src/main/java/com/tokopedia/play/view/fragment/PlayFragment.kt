@@ -32,7 +32,6 @@ import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
-import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
@@ -256,12 +255,6 @@ class PlayFragment @Inject constructor(
         return when {
             isHandled -> isHandled
             else -> false
-        }
-    }
-
-    fun onNewChannelId(channelId: String?) {
-        if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
-            (activity as PlayNewChannelInteractor).onNewChannel(channelId)
         }
     }
 
