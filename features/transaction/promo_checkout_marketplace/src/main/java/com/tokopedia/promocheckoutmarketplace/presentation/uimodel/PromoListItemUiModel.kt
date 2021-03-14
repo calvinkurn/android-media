@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
 data class PromoListItemUiModel(
+        var id: String = "",
         var uiData: UiData,
         var uiState: UiState
 ) : Visitable<PromoCheckoutAdapterTypeFactory> {
