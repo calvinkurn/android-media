@@ -1018,7 +1018,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         renderStickyPromoHeader(recyclerView)
 
         // dismiss coachmark if user click promo with coachmark
-        if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] == element &&
+        if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] is PromoListItemUiModel &&
+                (adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel).id == element.id &&
                 ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
             promoCoachMark.dismissCoachMark()
         }
