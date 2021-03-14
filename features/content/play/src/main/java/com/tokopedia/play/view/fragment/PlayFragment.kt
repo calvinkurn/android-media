@@ -262,10 +262,13 @@ class PlayFragment @Inject constructor(
         playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
     }
 
+    //TODO("Somehow when clearing viewpager, onResume is called, and when it happens, channel id is already empty so this might cause crash")
     private fun onPageFocused() {
-        analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
-        playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
-        sendSwipeRoomAnalytic()
+        try {
+            playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
+            sendSwipeRoomAnalytic()
+        } catch (e: Throwable) {}
     }
 
     private fun onPageDefocused() {

@@ -140,13 +140,12 @@ class PlayActivity : BaseActivity(),
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val newBundle = intent?.extras
-        val channelId = newBundle?.get(PLAY_KEY_CHANNEL_ID)
-        if (channelId != null && channelId != viewModel.startingChannelId) {
-            viewModel.setNewState(newBundle)
-            viewModel.loadNextPage()
+        val newBundle = intent.extras
+
+        if (newBundle != null) {
+            viewModel.setNewChannelParams(newBundle)
         }
     }
 
