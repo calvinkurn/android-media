@@ -63,8 +63,8 @@ import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivi
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -90,7 +90,7 @@ import kotlin.math.abs
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener,
         OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener,
-        GoogleMap.OnCameraMoveListener, SubmitFilterListener{
+        GoogleMap.OnCameraMoveListener, SubmitFilterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -173,7 +173,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Success -> {
                     showCollapsingHeader()
                     onSuccessGetResult(it.data)
-                    if(!it.data.properties.isNullOrEmpty()){
+                    if (!it.data.properties.isNullOrEmpty()) {
                         changeMarkerState(cardListPosition)
                     }
                 }
@@ -281,6 +281,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setupToolbarAction()
         setUpTitleAndSubtitle()
         setupCollapsingToolbar()
+        setupFindWithMapButton()
         Handler().postDelayed({
             animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
         }, ANIMATION_DETAIL_TIMES)
@@ -301,6 +302,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onCameraMove() {
         hideFindNearHereView()
+        googleMap.setOnCameraIdleListener(this)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -580,6 +582,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isRotateGesturesEnabled = true
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
+            googleMap.setOnCameraMoveListener(this)
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnMapClickListener {
                 // do nothing
@@ -615,8 +618,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         wrapper.setOnClickListener {
             showCardListView()
             hideFindNearHereView()
-            googleMap.setOnCameraIdleListener(this)
-            googleMap.setOnCameraMoveListener(this)
             hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
             hotelSearchMapViewModel.getVisibleRadius(googleMap)
         }
@@ -651,13 +652,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun changeMarkerState(position: Int) {
         resetMarkerState()
-        if(!allMarker.isNullOrEmpty()){
+        if (!allMarker.isNullOrEmpty()) {
             if (cardListPosition == position) allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
         }
     }
 
     private fun resetMarkerState() {
-        if (!allMarker.isNullOrEmpty()){
+        if (!allMarker.isNullOrEmpty()) {
             allMarker.forEach {
                 it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title))
             }
@@ -901,11 +902,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         ivGetLocationHotelSearchMap.gone()
     }
 
-    private fun showLoader(){
+    private fun showLoader() {
         hotel_loader.show()
     }
 
-    private fun hideLoader(){
+    private fun hideLoader() {
         hotel_loader.gone()
     }
 
@@ -918,7 +919,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_HIDE_VALUE)
     }
 
-    private fun animatebtnGetRadiusHotelSearchMap(value: Float){
+    private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
         ObjectAnimator.ofFloat(btnGetRadiusHotelSearchMap, BUTTON_RADIUS_ANIMATION_Y, value).apply {
             duration = DELAY_BUTTON_RADIUS
             start()
@@ -1044,6 +1045,40 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun getCurrentLocation() {
         hotelSearchMapViewModel.getCurrentLocation(fusedLocationClient, requireActivity())
+    }
+
+    private fun setupFindWithMapButton() {
+        val wrapper = LinearLayout(context)
+        wrapper.gravity = Gravity.CENTER
+
+        val imageView = ImageView(context)
+        imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
+        imageView.setImageResource(R.drawable.ic_hotel_search_maps)
+        wrapper.addView(imageView)
+
+        val textView = TextView(context)
+        textView.apply {
+            setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
+            setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
+            text = getString(R.string.hotel_search_map_search_with_map)
+        }
+        wrapper.addView(textView)
+        wrapper.setOnClickListener {
+            animateCollapsingToolbar(COLLAPSING_FULL_SCREEN)
+        }
+        btnHotelSearchWithMap.addItem(wrapper)
+
+        rvVerticalPropertiesHotelSearchMap.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && !adapter.isLoading) {
+                    btnHotelSearchWithMap.visible()
+                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    btnHotelSearchWithMap.gone()
+                }
+            }
+        })
     }
 
     companion object {
