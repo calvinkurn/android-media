@@ -163,10 +163,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun performSearch(query: String, saveAddressDataModel: SaveAddressDataModel?) {
+    private fun performSearch(query: String, addressId: Int?) {
         clearData()
         maxItemPosition = 0
-        val addrId = saveAddressDataModel?.id ?: getChosenAddrId()
+        val addrId = addressId ?: getChosenAddrId()
         context?.let {
             viewModel.searchAddress(query, prevState, addrId, ChooseAddressUtils.isRollOutUser(it))
         }
@@ -244,9 +244,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         setChosenAddress()
                     } else {
                         bottomSheetLainnya?.dismiss()
-                        context?.let {
-                            viewModel.searchAddress("", prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
-                        }
+                        performSearch("", _selectedAddressItem?.id?.toIntOrNull())
                         viewModel.getStateChosenAddress("address")
                     }
 
@@ -606,7 +604,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             activity?.setResult(Activity.RESULT_OK, resultIntent)
             activity?.finish()
         } else {
-            performSearch("", addressDataModel)
+            performSearch("", addressDataModel.id)
         }
     }
 
