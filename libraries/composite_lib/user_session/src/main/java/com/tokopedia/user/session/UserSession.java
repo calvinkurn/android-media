@@ -31,10 +31,14 @@ import static com.tokopedia.user.session.Constants.IS_AFFILIATE;
 import static com.tokopedia.user.session.Constants.IS_FIRST_TIME_USER;
 import static com.tokopedia.user.session.Constants.IS_FIRST_TIME_USER_NEW_ONBOARDING;
 import static com.tokopedia.user.session.Constants.IS_GOLD_MERCHANT;
+import static com.tokopedia.user.session.Constants.IS_LOCATION_ADMIN;
 import static com.tokopedia.user.session.Constants.IS_LOGIN;
 import static com.tokopedia.user.session.Constants.IS_MSISDN_VERIFIED;
+import static com.tokopedia.user.session.Constants.IS_MULTI_LOCATION_SHOP;
 import static com.tokopedia.user.session.Constants.IS_POWER_MERCHANT_IDLE;
+import static com.tokopedia.user.session.Constants.IS_SHOP_ADMIN;
 import static com.tokopedia.user.session.Constants.IS_SHOP_OFFICIAL_STORE;
+import static com.tokopedia.user.session.Constants.IS_SHOP_OWNER;
 import static com.tokopedia.user.session.Constants.KEY_ADVERTISINGID;
 import static com.tokopedia.user.session.Constants.KEY_ANDROID_ID;
 import static com.tokopedia.user.session.Constants.LOGIN_ID;
@@ -442,6 +446,46 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public void setFcmTimestamp() {
         setLong(GCM_STORAGE, GCM_ID_TIMESTAMP, System.currentTimeMillis());
+    }
+
+    @Override
+    public boolean isShopOwner() {
+        return getAndTrimOldBoolean(LOGIN_SESSION, IS_SHOP_OWNER, false);
+    }
+
+    @Override
+    public void setIsShopOwner(boolean isShopOwner) {
+        setBoolean(LOGIN_SESSION, IS_SHOP_OWNER, isShopOwner);
+    }
+
+    @Override
+    public boolean isShopAdmin() {
+        return getAndTrimOldBoolean(LOGIN_SESSION, IS_SHOP_ADMIN, false);
+    }
+
+    @Override
+    public void setIsShopAdmin(boolean isShopAdmin) {
+        setBoolean(LOGIN_SESSION, IS_SHOP_ADMIN, isShopAdmin);
+    }
+
+    @Override
+    public boolean isLocationAdmin() {
+        return getAndTrimOldBoolean(LOGIN_SESSION, IS_LOCATION_ADMIN, false);
+    }
+
+    @Override
+    public void setIsLocationAdmin(boolean isLocationAdmin) {
+        setBoolean(LOGIN_SESSION, IS_LOCATION_ADMIN, isLocationAdmin);
+    }
+
+    @Override
+    public boolean isMultiLocationShop() {
+        return getAndTrimOldBoolean(LOGIN_SESSION, IS_MULTI_LOCATION_SHOP, false);
+    }
+
+    @Override
+    public void setIsMultiLocationShop(boolean isMultiLocationShop) {
+        setBoolean(LOGIN_SESSION, IS_MULTI_LOCATION_SHOP, isMultiLocationShop);
     }
 
     @Override

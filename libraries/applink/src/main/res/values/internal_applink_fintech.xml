@@ -13,11 +13,13 @@
 
     <string name="path_saldo_deposit">/saldo</string>
     <string name="path_saldo_intro">/saldo-intro</string>
+    <string name="path_paylater" translatable="false">/paylater</string>
 
     <string name="applink_saldo_deposit_title">Saldo</string>
     <string name="applink_saldo_intro_title">Saldo Intro</string>
     <string name="applink_wallet_title">Ovo</string>
     <string name="ovo_pay_with_qr_title">Ovo Pay with QR</string>
+    <string name="applink_pay_later_title">Pay Later</string>
 
 
 <!--    // lanayana -->
