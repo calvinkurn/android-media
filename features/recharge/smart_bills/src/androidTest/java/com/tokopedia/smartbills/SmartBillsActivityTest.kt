@@ -1,13 +1,15 @@
 package com.tokopedia.smartbills
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -22,6 +24,7 @@ import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.ResourcePathUtil
 import org.hamcrest.core.AllOf
+import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -70,9 +73,9 @@ class SmartBillsActivityTest {
     fun validateSmartBills() {
         Thread.sleep(3000)
         validate_onboarding()
-        validate_tooltip()
         validate_bill_selection()
         validate_bill_detail()
+        validate_tooltip()
 
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, SMART_BILLS_VALIDATOR_QUERY), hasAllSuccess())
     }
@@ -91,11 +94,13 @@ class SmartBillsActivityTest {
     }
 
     private fun validate_tooltip(){
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(2000)
         onView(withId(R.id.action_menu_tooltip)).check(ViewAssertions.matches(isDisplayed()))
                 .perform(click())
-        onView(withId(R.id.btn_tooltip_sbm)).check(ViewAssertions.matches(isDisplayed()))
-                .perform(click())
+        Thread.sleep(2000)
+        onView(allOf(withId(R.id.btn_tooltip_sbm), withText("Pelajari Selengkapnya"))).perform(click())
+        Thread.sleep(2000)
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
