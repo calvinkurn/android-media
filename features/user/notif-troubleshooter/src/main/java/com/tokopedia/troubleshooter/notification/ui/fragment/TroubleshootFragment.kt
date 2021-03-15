@@ -22,6 +22,7 @@ import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalyti
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
+import com.tokopedia.troubleshooter.notification.databinding.FragmentNotifTroubleshooterBinding
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
@@ -48,7 +49,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
+import com.tokopedia.utils.view.binding.CreateMethod
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
@@ -58,6 +60,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: TroubleshootViewModel
+
+    private val binding: FragmentNotifTroubleshooterBinding? by viewBinding(
+            createMethod = CreateMethod.INFLATE
+    )
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
@@ -108,8 +114,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun initView() {
-        lstConfig?.layoutManager = LinearLayoutManager(context)
-        lstConfig?.adapter = adapter
+        binding?.lstConfig?.layoutManager = LinearLayoutManager(context)
+        binding?.lstConfig?.adapter = adapter
         adapter.status(StatusState.Loading)
         adapter.addElement(ConfigUIView.items())
         adapter.footerMessage(false)
@@ -283,9 +289,9 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
-        txtToken?.show()
+        binding?.txtToken?.show()
 
-        txtToken?.text = when {
+        binding?.txtToken?.text = when {
             newToken.isEmpty() -> {
                 getString(R.string.notif_error_update_token)
             }
