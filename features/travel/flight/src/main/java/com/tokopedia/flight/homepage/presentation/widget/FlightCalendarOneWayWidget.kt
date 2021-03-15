@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.SubTitle
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
@@ -19,11 +18,10 @@ import java.util.*
 
 class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
 
-    private lateinit var calendar: CalendarPickerView
     private lateinit var fareCalendarViewModel: FlightFareCalendarViewModel
 
-    var minCalendarDate: Date = Date()
-    var maxCalendarDate: Date = Date()
+    lateinit var minCalendarDate: Date
+    lateinit var maxCalendarDate: Date
     lateinit var selectedCalendarDate: Date
     lateinit var departureCode: String
     lateinit var arrivalCode: String
@@ -82,11 +80,11 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
             val mapFareParam = hashMapOf<String, Any>()
             mapFareParam[PARAM_DEPARTURE_CODE] = departureCode
             mapFareParam[PARAM_ARRIVAL_CODE] = arrivalCode
-            mapFareParam[PARAM_YEAR] = minDate.dateToString(TRAVEL_CAL_YYYY)
+            mapFareParam[PARAM_YEAR] = minCalendarDate.dateToString(TRAVEL_CAL_YYYY)
             mapFareParam[PARAM_CLASS] = classFlight.toString()
 
             activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minDate, maxDate)
+                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minCalendarDate, maxCalendarDate)
             }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
