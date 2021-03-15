@@ -608,7 +608,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         if (isLocalization == true) {
             val resultIntent = Intent().apply {
-                putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
                 putExtra(ChooseAddressConstant.EXTRA_IS_FROM_ANA, true)
             }
             activity?.setResult(Activity.RESULT_OK, resultIntent)
