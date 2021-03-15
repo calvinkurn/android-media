@@ -861,7 +861,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                                 CoachMark2.POSITION_TOP
                         ),
                         CoachMark2Item(
-                                headerHotelSearchMap, // need to change to filter view later
+                                quickFilterSortHotelSearchMap,
                                 getString(R.string.hotel_search_map_coach_mark_filter_title),
                                 getString(R.string.hotel_search_map_coach_mark_filter_desc),
                                 CoachMark2.POSITION_BOTTOM
