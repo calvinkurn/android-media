@@ -26,6 +26,7 @@ import com.tokopedia.chatbot.attachinvoice.view.viewholder.EmptyViewHolderListen
 import com.tokopedia.chatbot.attachinvoice.view.viewholder.TransactionInvoiceViewHolderListener
 import com.tokopedia.chatbot.attachinvoice.view.viewmodel.TransactionInvoiceListViewModel
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -76,7 +77,7 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getFilteredInvoiceLiveData().observe(viewLifecycleOwner, Observer{
+        viewModel.getFilteredInvoiceLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     when (it.data.first()) {
@@ -113,10 +114,16 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         val recyclerView = super.getRecyclerView(view)
+        setTopMargin(recyclerView)
         if (recyclerView is VerticalRecyclerView) {
             recyclerView.clearItemDecoration()
         }
         return view
+    }
+
+    private fun setTopMargin(recyclerView: RecyclerView?) {
+        recyclerView?.setMargin(0, context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)?.toInt()
+                ?: 0, 0, 0)
     }
 
     override fun onResume() {
