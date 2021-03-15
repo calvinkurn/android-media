@@ -670,7 +670,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
                 statsInfoViewOnStateChanged(isFreezeOrBanned = true)
                 pipViewOnStateChanged(isFreezeOrBanned = true)
-                pinnedViewOnStateChanged()
+                pinnedViewOnStateChanged(isFreezeOrBanned = true)
 
                 /**
                  * Non view component
