@@ -403,8 +403,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
         String etalaseNameTrackerString = isSelectedEtalaseCampaign? String.format(LABEL_ETALASE_CAMPAIGN, selectedEtalaseChipName) : selectedEtalaseChipName;
-        String etalaseSectionTrackerString = getEtalaseNameTrackerString(
-                isEtalaseSectionCampaign,  isUpcoming, etalaseSection, DEFAULT_VALUE_ETALASE_TYPE);
+        String etalaseSectionTrackerString = getEtalaseNameTrackerString(isEtalaseSectionCampaign,  isUpcoming, etalaseSection, DEFAULT_VALUE_ETALASE_TYPE);
         Map<String, Object> event = createProductClickMap(
                 PRODUCT_CLICK,
                 isOwner,
@@ -436,8 +435,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             int etalaseType
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
-        String etalaseNameTrackerString = getEtalaseNameTrackerString(
-                isEtalaseCampaign,  isUpcoming, selectedEtalaseChipName, etalaseType);
+        String etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign,  isUpcoming, selectedEtalaseChipName, etalaseType);
         Map<String, Object> event = createProductClickSearchResultMap(
                 PRODUCT_CLICK,
                 isOwner,
@@ -520,8 +518,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
         String etalaseNameTrackerString = isSelectedEtalaseCampaign? String.format(LABEL_ETALASE_CAMPAIGN, selectedEtalaseChipName) : selectedEtalaseChipName;
-        String etalaseSectionTrackerString = getEtalaseNameTrackerString(
-                isEtalaseSectionCampaign,  isUpcoming, etalaseSection, DEFAULT_VALUE_ETALASE_TYPE);
+        String etalaseSectionTrackerString = getEtalaseNameTrackerString(isEtalaseSectionCampaign,  isUpcoming, etalaseSection, DEFAULT_VALUE_ETALASE_TYPE);
         Map<String, Object> event = createProductImpressionMap(
                 PRODUCT_VIEW,
                 isOwner,
@@ -553,8 +550,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             int etalaseType
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
-        String etalaseNameTrackerString = getEtalaseNameTrackerString(
-                isEtalaseCampaign,  isUpcoming, selectedEtalaseChipName, etalaseType);
+        String etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign,  isUpcoming, selectedEtalaseChipName, etalaseType);
         Map<String, Object> event = createProductImpressionSearchResultMap(
                 PRODUCT_VIEW,
                 isOwner,
@@ -581,8 +577,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                               boolean isUpcoming) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
         String etalaseNameTrackerString = isSelectedEtalaseCampaign? String.format(LABEL_ETALASE_CAMPAIGN, selectedEtalaseName) : selectedEtalaseName;
-        String etalaseSectionTrackerString = getEtalaseNameTrackerString(
-                isEtalaseSectionCampaign,  isUpcoming, sectionName, DEFAULT_VALUE_ETALASE_TYPE);
+        String etalaseSectionTrackerString = getEtalaseNameTrackerString(isEtalaseSectionCampaign,  isUpcoming, sectionName, DEFAULT_VALUE_ETALASE_TYPE);
         String etalaseEvent = joinDash(getProductEtalaseEvent(etalaseNameTrackerString, etalaseSectionTrackerString), loginNonLoginString);
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
@@ -601,8 +596,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             int etalaseType
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
-        String etalaseNameTrackerString = getEtalaseNameTrackerString(
-                isEtalaseCampaign,  isUpcoming, selectedEtalaseName, etalaseType);
+        String etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign,  isUpcoming, selectedEtalaseName, etalaseType);
         String etalaseEvent = joinDash(getProductEtalaseEvent(etalaseNameTrackerString, ""), loginNonLoginString, SEARCH_RESULT);
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
