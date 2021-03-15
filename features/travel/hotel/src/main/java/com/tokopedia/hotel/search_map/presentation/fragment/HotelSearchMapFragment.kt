@@ -762,6 +762,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             searchProperties.forEach {
                 addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
             }
+            animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
         } else {
             hideCardListView()
             hideSearchWithMap()
