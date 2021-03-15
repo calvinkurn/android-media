@@ -180,7 +180,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Fail -> {
                     hideLoader()
                     hideCollapsingHeader()
-                    animateCollapsingToolbar(COLLAPSING_FULL_SCREEN)
+                    animateCollapsingToolbar()
                     showGetListError(it.throwable)
                 }
             }
@@ -261,6 +261,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun loadInitialData() {
+        hideErrorNoResult()
+        showHotelResultList()
         isLoadingInitialData = true
         showLoader()
         adapter.clearAllElements()
@@ -747,19 +749,25 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         hideLoader()
+        showQuickFilterShimmering(false)
 
         val searchProperties = data.properties
 
-        showQuickFilterShimmering(false)
-
-        renderCardListMap(searchProperties)
-        renderList(searchProperties.map {
-            it.isForHorizontalItem = false
-            it
-        }.toList())
-
-        searchProperties.forEach {
-            addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
+        if (searchProperties.isNotEmpty()) {
+            renderCardListMap(searchProperties)
+            renderList(searchProperties.map {
+                it.isForHorizontalItem = false
+                it
+            }.toList())
+            searchProperties.forEach {
+                addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
+            }
+        } else {
+            hideCardListView()
+            hideSearchWithMap()
+            hideHotelResultList()
+            showErrorNoResult()
+            animateCollapsingToolbar(COLLAPSING_ONE_FOURTH_OF_SCREEN)
         }
 
         if (isFirstInitializeFilter) {
@@ -1066,7 +1074,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
-            animateCollapsingToolbar(COLLAPSING_FULL_SCREEN)
+            animateCollapsingToolbar()
         }
         btnHotelSearchWithMap.addItem(wrapper)
 
@@ -1074,13 +1082,37 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && !adapter.isLoading) {
-                    btnHotelSearchWithMap.visible()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && !adapter.isLoading && adapter.isContainData) {
+                    showSearchWithMap()
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    btnHotelSearchWithMap.gone()
+                    hideSearchWithMap()
                 }
             }
         })
+    }
+
+    private fun showHotelResultList() {
+        rvVerticalPropertiesHotelSearchMap.visible()
+    }
+
+    private fun hideHotelResultList() {
+        rvVerticalPropertiesHotelSearchMap.gone()
+    }
+
+    private fun showSearchWithMap() {
+        btnHotelSearchWithMap.visible()
+    }
+
+    private fun hideSearchWithMap() {
+        btnHotelSearchWithMap.gone()
+    }
+
+    private fun showErrorNoResult() {
+        containerEmptyResultState.visible()
+    }
+
+    private fun hideErrorNoResult() {
+        containerEmptyResultState.gone()
     }
 
     companion object {
@@ -1092,8 +1124,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val ANIMATION_DETAIL_TIMES: Long = 500
 
         private const val COLLAPSING_HALF_OF_SCREEN = 1.0 / 2.0
+        private const val COLLAPSING_ONE_FOURTH_OF_SCREEN = 1.0 / 5.0
         private const val COLLAPSING_ONE_TENTH_OF_SCREEN = 1.0 / 10.0
-        private const val COLLAPSING_FULL_SCREEN = 1.0
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
         private const val REQUEST_CHANGE_SEARCH_HOTEL = 101
