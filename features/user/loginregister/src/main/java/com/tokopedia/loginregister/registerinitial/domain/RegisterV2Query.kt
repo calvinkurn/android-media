@@ -11,7 +11,7 @@ object RegisterV2Query {
     private const val h = "\$h"
 
     val registerQuery: String = """
-        mutation register($regType String!, $fullname: String, $email: String, password: String, $osType: String, $validateToken: String, $h: String) {
+        mutation register($regType String!, $fullname: String, $email: String, $password: String, $osType: String, $validateToken: String, $h: String) {
             register_v2(input: {
                 reg_type: $regType
                 fullname: $fullname
