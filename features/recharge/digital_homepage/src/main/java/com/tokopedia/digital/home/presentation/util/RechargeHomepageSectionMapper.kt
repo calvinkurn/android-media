@@ -229,8 +229,8 @@ object RechargeHomepageSectionMapper {
                     it.content,
                     when(it.type){
                         "info" -> Ticker.TYPE_INFORMATION
-                        "announcement" -> Ticker.TYPE_ANNOUNCEMENT
-                        "error" -> Ticker.TYPE_ERROR
+                        "success" -> Ticker.TYPE_ANNOUNCEMENT
+                        "danger" -> Ticker.TYPE_ERROR
                         "warning" -> Ticker.TYPE_WARNING
                         else -> Ticker.TYPE_INFORMATION
                     },
