@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -51,18 +52,23 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
                             viewTreeObserver.removeGlobalOnLayoutListener(this)
                         }
                         val layoutParams = emptySpace.layoutParams
-                        if (!isUserLogin) {
-                            layoutParams.height = listener.homeMainToolbarHeight -
-                                    itemView.resources.getDimensionPixelOffset(R.dimen.dp_12)
-                        } else {
-                            layoutParams.height = listener.homeMainToolbarHeight -
-                                    itemView.resources.getDimensionPixelOffset(R.dimen.dp_8)
-                        }
+                        setupHeight(isUserLogin, layoutParams)
                         emptySpace.layoutParams = layoutParams
                         emptySpace.invalidate()
                     }
                 }
         )
+    }
+
+    private fun setupHeight(isUserLogin: Boolean, layoutParams: ViewGroup.LayoutParams) {
+        var additionalHeight = 0
+
+        if (listener.isNewNavigation()) {
+            additionalHeight = -(itemView.resources.getDimensionPixelOffset(R.dimen.dp_8))
+            if (!isUserLogin) additionalHeight = -(itemView.resources.getDimensionPixelOffset(R.dimen.dp_12))
+        }
+
+        layoutParams.height = listener.homeMainToolbarHeight + additionalHeight
     }
 
     private fun renderOvoLayout(data: HeaderDataModel?, needToShowUserWallet: Boolean ) {
