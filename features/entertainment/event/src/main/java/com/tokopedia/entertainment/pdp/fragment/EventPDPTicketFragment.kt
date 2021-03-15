@@ -306,7 +306,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         viewModel.recommendationTicketModel.observe(viewLifecycleOwner, Observer {
             it?.run {
                 renderRecommendationList(this)
-                showCoachMark(this)
+                if(!getLocalCache()) showCoachMark(this)
             }
         })
 
@@ -404,14 +404,13 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                     )
                 }
                 if (listRecom.isNotEmpty()) {
-                    rvEventRecommendationList.findViewHolderForAdapterPosition(0)?.itemView?.
-                    findViewById<RecyclerView>(R.id.rv_event_parent_ticket)?.let {
-                        coachmarkList.add(1,
+                    rvEventRecommendationList.findViewHolderForAdapterPosition(0)?.itemView?.let {
+                        coachmarkList.add(if(checkAvailableCoachmark() != null) 1 else 0,
                                 CoachMark2Item(
                                         it,
                                         getString(R.string.ent_home_coachmark_title_recom),
                                         getString(R.string.ent_home_coachmark_subtitle_recom),
-                                        CoachMark2.POSITION_BOTTOM
+                                        CoachMark2.POSITION_TOP
                                 )
                         )
                     }
@@ -505,7 +504,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         const val PREFERENCES_NAME = "event_ticket_preferences"
         const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
-        private const val COACH_MARK_START_DELAY = 1000L
+        private const val COACH_MARK_START_DELAY = 200L
     }
 
 }
