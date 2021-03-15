@@ -205,8 +205,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
                     for (i in 0 until productCardModelList.size) {
                         if (i < 3) {
-                            items.add(BannerShopProductViewModel(cpmData, productCardModelList[i], appLink,
-                                    cpmData.cpm.cpmShop.products[i].image.m_url, cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl))
+                            items.add(BannerShopProductViewModel(cpmData, productCardModelList[i],
+                                    cpmData.cpm.cpmShop.products[i].applinks,
+                                    cpmData.cpm.cpmShop.products[i].image.m_url,
+                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl))
                         }
                     }
                     if (productCardModelList.size < 3) {
