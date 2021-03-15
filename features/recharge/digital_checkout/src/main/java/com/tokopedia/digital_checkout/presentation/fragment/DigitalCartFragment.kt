@@ -20,6 +20,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
@@ -33,8 +36,6 @@ import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_P
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
-import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
-import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
@@ -44,6 +45,7 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -60,6 +62,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
 import javax.inject.Inject
@@ -84,6 +87,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(DigitalCartViewModel::class.java) }
+    private val addToCartViewModel by lazy { viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java) }
 
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
@@ -134,21 +138,33 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun loadData() {
         cartPassData?.let {
-            if (it.needGetCart) {
-                viewModel.getCart(it, getString(R.string.digital_cart_login_message))
+            if (it.isFromPDP) {
+                viewModel.getCart(cartPassData?.categoryId
+                        ?: "", getString(R.string.digital_cart_login_message))
             } else {
-                viewModel.addToCart(it, getDigitalIdentifierParam(), digitalSubscriptionParams,
-                        getString(R.string.digital_cart_login_message))
+                hideContent()
+                loaderCheckout.visibility = View.VISIBLE
+                addToCartViewModel.addToCart(it, getDigitalIdentifierParam(), digitalSubscriptionParams)
             }
         }
     }
 
     private fun getCartAfterCheckout() {
-        cartPassData?.let { viewModel.getCart(it, getString(R.string.digital_cart_login_message)) }
+        cartPassData?.let {
+            viewModel.getCart(cartPassData?.categoryId
+                    ?: "", getString(R.string.digital_cart_login_message))
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> viewModel.getCart(it.data)
+                is Fail -> closeViewWithMessageAlert(it.throwable.message)
+            }
+        })
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
             renderCartDigitalInfoData(it)
@@ -228,11 +244,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun showContent() {
         contentCheckout.visibility = View.VISIBLE
         checkoutBottomViewWidget.visibility = View.VISIBLE
-    }
-
-    private fun hideContent() {
-        contentCheckout.visibility = View.GONE
-        checkoutBottomViewWidget.visibility = View.GONE
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
@@ -583,6 +594,11 @@ class DigitalCartFragment : BaseDaggerFragment() {
         intent.putExtra(EXTRA_COUPON_ACTIVE, couponActive)
         intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
         startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
+    }
+
+    private fun hideContent() {
+        contentCheckout.hide()
+        layout_digital_checkout_bottom_view.hide()
     }
 
     private fun getPromoDigitalModel(): PromoDigitalModel = viewModel.getPromoDigitalModel(cartPassData, getPriceInput())

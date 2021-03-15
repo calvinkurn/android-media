@@ -146,4 +146,16 @@
     <string name="kyc_desc_verifikasi_wajah">Verifikasi wajah</string>
     <string name="kyc_desc_foto_ktp_result">Result foto KTP</string>
     <string name="kyc_desc_verifikasi_wajah_result">Result verifikasi wajah</string>
+
+    <string name="kyc_benefit_onboarding_title">Verifikasi datamu, yuk!</string>
+    <string name="kyc_benefit_onboarding_subtitle">Dapatkan akses ke berbagai layanan ini dengan upload foto KTP dan wajah:</string>
+
+    <string name="kyc_benefit_one_title">Bisa jadi Power Merchant</string>
+    <string name="kyc_benefit_one_desc">Upgrade status toko &amp; tingkatkan penjualan dengan berbagai fitur khusus.</string>
+
+    <string name="kyc_benefit_two_title">Tambah skor Performa Toko</string>
+    <string name="kyc_benefit_two_desc">Performa Toko kamu akan meningkat setelah KTP berhasil diverifikasi.</string>
+
+    <string name="kyc_benefit_three_title">Tingkatkan keamanan toko</string>
+    <string name="kyc_benefit_three_desc">Datamu akan digunakan untuk mengamankan akses ke tokomu.</string>
 </resources>

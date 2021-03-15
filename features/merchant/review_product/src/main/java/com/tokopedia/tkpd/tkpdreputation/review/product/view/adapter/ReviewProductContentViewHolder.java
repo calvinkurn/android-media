@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentUiModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.util.TimeUtil;
@@ -186,9 +186,9 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         }
     }
 
-    private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentViewModel> reviewAttachment) {
+    private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentUiModel> reviewAttachment) {
         ArrayList<ImageUpload> list = new ArrayList<>();
-        for (ImageAttachmentViewModel vm : reviewAttachment) {
+        for (ImageAttachmentUiModel vm : reviewAttachment) {
             list.add(new ImageUpload(
                     vm.getUriThumbnail(),
                     vm.getUriLarge(),

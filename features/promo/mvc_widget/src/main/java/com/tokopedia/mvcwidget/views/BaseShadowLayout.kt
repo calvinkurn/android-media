@@ -50,11 +50,11 @@ open class BaseShadowLayout : ConstraintLayout {
     }
 
     constructor(context: Context) : super(context) {
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         init(null)
     }
 
     private fun init(attrs: AttributeSet?) {
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         readAttrs(attrs)
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
     }

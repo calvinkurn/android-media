@@ -76,6 +76,7 @@ class DigitalCartActivityTest {
             passData.productId = "30"
             passData.isPromo = "0"
             passData.needGetCart = true
+            passData.isFromPDP = true
             passData.instantCheckout = "0"
             passData.idemPotencyKey = "17211378_d44feedc9f7138c1fd91015d5bd88810"
             putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)

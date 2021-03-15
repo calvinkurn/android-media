@@ -39,7 +39,8 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         indicatorView.activeColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0_32)
         seeAllPromo.unlockFeature = true
-        seeAllPromo.setLabelType("#31353b")
+        val labelColorHexString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.home_dms_color_banner_label_type))}"
+        seeAllPromo.setLabelType(labelColorHexString)
         seeAllPromo.opacityLevel = 0.9f
     }
 
