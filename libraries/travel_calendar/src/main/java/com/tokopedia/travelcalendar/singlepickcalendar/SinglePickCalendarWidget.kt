@@ -7,32 +7,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.travelcalendar.*
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.travelcalendar.viewmodel.TravelHolidayCalendarViewModel
-import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
+open class SinglePickCalendarWidget : BottomSheetUnify() {
 
     private lateinit var calendarUnify: UnifyCalendar
     private lateinit var loadingProgressBar: ProgressBar
     private lateinit var listenerCalendar: ActionListener
 
-    private lateinit var btnClose: ImageButton
     private lateinit var holidayCalendarViewModel: TravelHolidayCalendarViewModel
 
     lateinit var minDate: Date
     lateinit var maxDate: Date
     lateinit var selectedDate: Date
+
+    var isFirstTime: Boolean = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -40,6 +41,14 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setTitle(SelectionRangeCalendarWidget.CALENDAR_TITLE)
+        isFullpage = true
+        showCloseIcon = true
+        setCloseClickListener { this.dismissAllowingStateLoss() }
+
+        val childView = View.inflate(context, R.layout.dialog_calendar_single_pick, null)
+        setChild(childView)
 
         initInjector()
 
@@ -71,7 +80,7 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
         }
     }
 
-    fun initInjector() {
+    private fun initInjector() {
         val component = TravelCalendarComponentInstance
                 .getComponent(activity?.application as Application)
         component.inject(this)
@@ -79,7 +88,6 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.dialog_calendar_single_pick, container, false)
-        btnClose = view.findViewById(R.id.btn_close)
         loadingProgressBar = view.findViewById(R.id.loading_progress_bar)
         calendarUnify = view.findViewById(R.id.calendar_unify)
         return view
@@ -93,11 +101,13 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
         holidayCalendarViewModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
             loadingProgressBar.visibility = View.GONE
             it?.let {
-                renderSinglePickCalendar(it)
+                if (isFirstTime) {
+                    renderSinglePickCalendar(it)
+                    isFirstTime = false
+                }
             }
         })
 
-        btnClose.setOnClickListener { dismissAllowingStateLoss() }
     }
 
     open fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {

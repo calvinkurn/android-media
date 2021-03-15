@@ -3,81 +3,53 @@ package com.tokopedia.flight.homepage.presentation.widget
 import android.app.Application
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.calendar.CalendarPickerView
-import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.SubTitle
-import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightFareCalendarViewModel
-import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHolidayCalendarViewModel
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
-import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.flight_calendar_single_pick.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.tokopedia.travelcalendar.singlecalendar.SinglePickCalendarWidget
 import java.util.*
-import javax.inject.Inject
 
-class FlightCalendarOneWayWidget : BottomSheetUnify() {
+class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
 
     private lateinit var calendar: CalendarPickerView
-    private lateinit var listener: ActionListener
-    private lateinit var holidayCalendarViewModel: FlightHolidayCalendarViewModel
     private lateinit var fareCalendarViewModel: FlightFareCalendarViewModel
-    private lateinit var titlePage: TextView
 
-    lateinit var minDate: Date
-    lateinit var maxDate: Date
-    lateinit var selectedDate: Date
+    var minCalendarDate: Date = Date()
+    var maxCalendarDate: Date = Date()
+    lateinit var selectedCalendarDate: Date
     lateinit var departureCode: String
     lateinit var arrivalCode: String
 
-    var isFirstTime: Boolean = true
-
     var classFlight: Int = 0
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setTitle(SelectionRangeCalendarWidget.CALENDAR_TITLE)
-        isFullpage = true
-        showCloseIcon = true
-        setCloseClickListener { this.dismissAllowingStateLoss() }
-
-        val childView = View.inflate(context, R.layout.flight_calendar_single_pick, null)
-        setChild(childView)
-
         initInjector()
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
         fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
 
         arguments?.run {
             this.getString(ARG_MIN_DATE)?.let {
-                minDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
+                minCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
             }
 
             this.getString(ARG_MAX_DATE)?.let {
-                maxDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
+                maxCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
             }
 
             this.getString(ARG_SELECTED_DATE)?.let {
-                selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
+                selectedCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
             }
 
             this.getString(ARG_DEPARTURE_CODE)?.let {
@@ -105,31 +77,6 @@ class FlightCalendarOneWayWidget : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loading_progress_bar.visibility = View.VISIBLE
-
-        holidayCalendarViewModel.getCalendarHoliday()
-        holidayCalendarViewModel.holidayCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            loading_progress_bar.visibility = View.GONE
-            it?.let {
-                if (isFirstTime) {
-                    renderSinglePickCalendar(it)
-                    isFirstTime = false
-                }
-            }
-        })
-    }
-
-    private fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {
-        val calendarUnify = requireView().findViewById<UnifyCalendar>(com.tokopedia.travelcalendar.R.id.calendar_unify)
-        calendar = calendarUnify.calendarPickerView!!
-
-        val nextYear = Calendar.getInstance()
-        nextYear.add(Calendar.YEAR, 1)
-
-        calendar?.init(minDate, nextYear.time, holidayArrayList)
-                ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-                ?.withSelectedDate(selectedDate)
-
         if (::departureCode.isInitialized && ::arrivalCode.isInitialized && classFlight > 0) {
 
             val mapFareParam = hashMapOf<String, Any>()
@@ -147,25 +94,7 @@ class FlightCalendarOneWayWidget : BottomSheetUnify() {
                     calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
                 }
             })
-
         }
-
-        calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
-            override fun onDateSelected(date: Date) {
-                if (::listener.isInitialized) {
-                    listener.onDateSelected(date)
-
-                    GlobalScope.launch {
-                        delay(300)
-                        dismissAllowingStateLoss()
-                    }
-                }
-            }
-
-            override fun onDateUnselected(date: Date) {
-
-            }
-        })
     }
 
     private fun mapFareFlightToSubtitleCalendar(listFareAttribute: List<FlightFareAttributes>): ArrayList<SubTitle> {
@@ -175,14 +104,6 @@ class FlightCalendarOneWayWidget : BottomSheetUnify() {
                     it.displayedFare, if (it.isLowestFare) getString(R.string.flight_calendar_lowest_fare_price_color) else ""))
         }
         return subTitleList
-    }
-
-    fun setListener(listener: ActionListener) {
-        this.listener = listener
-    }
-
-    interface ActionListener {
-        fun onDateSelected(dateSelected: Date)
     }
 
     companion object {
