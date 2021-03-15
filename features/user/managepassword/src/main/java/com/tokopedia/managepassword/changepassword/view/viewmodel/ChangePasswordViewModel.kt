@@ -3,6 +3,8 @@ package com.tokopedia.managepassword.changepassword.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordData
 import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordRequestModel
@@ -10,8 +12,7 @@ import com.tokopedia.managepassword.changepassword.domain.usecase.ChangePassword
 import com.tokopedia.managepassword.changepassword.domain.usecase.ChangePasswordV2UseCase
 import com.tokopedia.managepassword.common.ManagePasswordConstant
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.extensions.decodeBase64
-import com.tokopedia.sessioncommon.util.RSAUtils
+import com.tokopedia.sessioncommon.util.PasswordUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +39,9 @@ class ChangePasswordViewModel @Inject constructor(
             old.isEmpty() && new.isEmpty() && confirmation.isEmpty() -> {
                 _validatePassword.postValue(LiveDataValidateResult.EMPTY_PARAMS)
             }
+            !PasswordUtils.isValidPassword(new) -> {
+                _validatePassword.postValue(LiveDataValidateResult.INVALID_LENGTH)
+            }
             new == old -> {
                 _validatePassword.postValue(LiveDataValidateResult.SAME_WITH_OLD)
             }
@@ -54,9 +58,8 @@ class ChangePasswordViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             val result = generatePublicKeyUseCase.executeOnBackground()
             if(result.keyData.hash.isNotEmpty()) {
-                val rsaUtils = RSAUtils()
-                val encryptedPassword = rsaUtils.encrypt(new, result.keyData.key.decodeBase64(), true)
-                val encryptedConfirmationPass = rsaUtils.encrypt(confirmation, result.keyData.key.decodeBase64(), true)
+                val encryptedPassword = RsaUtils.encrypt(new, result.keyData.key.decodeBase64(), true)
+                val encryptedConfirmationPass = RsaUtils.encrypt(confirmation, result.keyData.key.decodeBase64(), true)
                 changePasswordV2UseCase.setParams(encode, new = encryptedPassword, confirmation = encryptedConfirmationPass, validationToken, hash = result.keyData.hash)
                 val changePassResponse = changePasswordV2UseCase.executeOnBackground()
                 _response.postValue(Success(changePassResponse.changePassword))

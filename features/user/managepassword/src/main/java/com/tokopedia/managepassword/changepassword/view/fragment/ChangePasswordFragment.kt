@@ -152,6 +152,9 @@ class ChangePasswordFragment : BaseDaggerFragment() {
                         viewModel.submitChangePassword("encode", newPassword, confirmationPassword, "token")
                     }
                 }
+                LiveDataValidateResult.INVALID_LENGTH -> {
+                    onErrorTextField(textNewPassword, getString(R.string.change_password_invalid_length))
+                }
                 LiveDataValidateResult.SAME_WITH_OLD -> {
                     onErrorTextField(textNewPassword, getString(R.string.change_password_same_with_old))
                 }
