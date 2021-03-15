@@ -3,6 +3,8 @@ package com.tokopedia.managepassword.addpassword.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordData
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2UseCase
@@ -10,8 +12,6 @@ import com.tokopedia.managepassword.common.ManagePasswordConstant
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.extensions.decodeBase64
-import com.tokopedia.sessioncommon.util.RSAUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -72,10 +72,9 @@ class AddPasswordViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             val key = generatePublicKeyUseCase.executeOnBackground().keyData
             if(key.hash.isNotEmpty()) {
-                val rsaUtils = RSAUtils()
                 val decodedKey = key.key.decodeBase64()
-                val encryptedPassword = rsaUtils.encrypt(password, decodedKey, true)
-                val encryptedConfirmPassword = rsaUtils.encrypt(confirmationPassword, decodedKey, true)
+                val encryptedPassword = RsaUtils.encrypt(password, decodedKey, true)
+                val encryptedConfirmPassword = RsaUtils.encrypt(confirmationPassword, decodedKey, true)
 
                 addPasswordV2UseCase.setParams(encryptedPassword, encryptedConfirmPassword, key.hash)
                 addPasswordV2UseCase.submit(onSuccess = {
