@@ -10,6 +10,7 @@ import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.*
 import timber.log.Timber
 
 object ShopUtil {
@@ -45,7 +46,10 @@ object ShopUtil {
     }
 
     fun isUsingNewShopPageHeader(): Boolean {
-        //todo need to add ab  test  implementation later
-        return true
+        val shopHeaderType = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                AB_TEST_NEW_SHOP_HEADER_KEY,
+                AB_TEST_NEW_SHOP_HEADER_OLD_VALUE
+        )
+        return shopHeaderType.equals(AB_TEST_NEW_SHOP_HEADER_NEW_VALUE, true)
     }
 }
