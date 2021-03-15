@@ -101,7 +101,7 @@ class ManageAddressViewModelTest {
         every {
             setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
         } answers  {
-            (secondArg() as ((String) -> Unit)).invoke(success)
+            (thirdArg() as ((String) -> Unit)).invoke(success)
         }
 
         manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
@@ -115,7 +115,7 @@ class ManageAddressViewModelTest {
         every {
             setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
         } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+            (lastArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
         manageAddressViewModel.setDefaultPeopleAddress("1", false, 0, 0, true)
