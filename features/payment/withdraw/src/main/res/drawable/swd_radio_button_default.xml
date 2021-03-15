@@ -3,7 +3,7 @@
 
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/Neutral_N0" />
+            <solid android:color="@color/Unify_N0" />
 
             <size
                 android:width="@dimen/swd_radio_button"
@@ -11,7 +11,7 @@
 
             <stroke
                 android:width="@dimen/spacing_lvl1"
-                android:color="@color/light_N200" />
+                android:color="@color/Unify_N200" />
         </shape>
     </item>
 </layer-list>

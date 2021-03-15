@@ -5,6 +5,11 @@
     <string name="bs_button_txt">Cek Kupon Saya</string>
     <string name="merchant_shop_common_follow_label">Follow</string>
 
+    // Admin Revamp
+    <string name="admin_no_permission_title">Kamu tidak punya izin untuk mengakses halaman %s</string>
+    <string name="admin_no_permission_desc">Hubungi pemilik toko untuk bisa mengakses halaman %s, ya.</string>
+    <string name="admin_no_permission_action">Kembali ke Home</string>
+
     <!-- Content Description -->
     <string name="register_membership_background_content_description">Register Membership Background</string>
     <string name="membership_stamp_1">Stamp 1 Image</string>
@@ -13,4 +18,5 @@
     <string name="membership_stamp_4">Stamp 4 Image</string>
     <string name="membership_stamp_5">Stamp 5 Image</string>
     <string name="follow_button_npl_etalase">Follow Button</string>
+    <string name="membership_success">Membership Success</string>
 </resources>

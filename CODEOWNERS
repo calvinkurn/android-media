@@ -50,7 +50,6 @@
 /features/common/qr_scanner                   	        @tokopedia/android-core-dev
 
 /features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
-/features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
@@ -212,6 +211,7 @@
 /features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
 /features/fintech/instant_loan          				@tokopedia/android-minionyoda-dev
 /features/fintech/layanan_finansial                     @tokopedia/android-minionyoda-dev
+/features/fintech/paylater                              @tokopedia/android-minionyoda-dev
 /features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionyoda-dev
 /features/fintech/saldo_details         				@tokopedia/android-minionyoda-dev
 /features/fintech/home_credit           				@tokopedia/android-minionyoda-dev

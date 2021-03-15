@@ -111,7 +111,19 @@ class PlayAnalytic(
         )
     }
 
-    fun errorState(errorMessage: String) {
+    fun trackVideoError(message: String) {
+        errorState("$ERR_STATE_VIDEO: $message")
+    }
+
+    fun trackSocketError(message: String) {
+        errorState("$ERR_STATE_SOCKET: $message")
+    }
+
+    fun trackGlobalError(message: String) {
+        errorState("$ERR_STATE_GLOBAL: $message")
+    }
+
+    private fun errorState(errorMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_VIEW_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -644,5 +656,9 @@ class PlayAnalytic(
 
         private const val KEY_TRACK_CLICK = "click"
         private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
+
+        private const val ERR_STATE_VIDEO = "Video Player"
+        private const val ERR_STATE_GLOBAL = "Global Error"
+        private const val ERR_STATE_SOCKET = "Socket Connection"
     }
 }

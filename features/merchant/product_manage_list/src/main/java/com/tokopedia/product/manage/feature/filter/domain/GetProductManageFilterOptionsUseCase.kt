@@ -6,7 +6,6 @@ import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
-import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase.Companion.PARAM_SHOP_ID
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase.Companion.HIDE_NO_COUNT
@@ -33,6 +32,7 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
         const val DEFAULT_HIDE_SHOWCASE_GROUP = true
         private const val DEFAULT_CATEGORIES_FILTER = "seller"
         private const val RELOAD_ETALASE = true
+        private const val PARAM_SHOP_ID = "shopID"
 
         fun createRequestParams(shopId: String, isOwner: Boolean): RequestParams {
             return RequestParams.create().apply {
