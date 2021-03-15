@@ -37,24 +37,10 @@ class SeeInvoiceActivity: BaseSimpleWebViewActivity() {
         webView.setInitialScale(1)
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun doWebPrint() {
-        val webView = WebView(this)
-        webView.settings.run {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            builtInZoomControls = true
-            displayZoomControls = true
-        }
-        val data = intent?.extras?.getString(KEY_URL, "defaultKey")
-        webView.loadUrl(data)
-        onPrintClicked(webView)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_download -> {
-                doWebPrint()
+                onDownloadClick()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -63,7 +49,8 @@ class SeeInvoiceActivity: BaseSimpleWebViewActivity() {
 
     @Suppress("DEPRECATION")
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun onPrintClicked(webView: WebView?) {
+    private fun onDownloadClick() {
+        val webView = findViewById<TkpdWebView>(com.tokopedia.webview.R.id.webview)
         webView?.let {
             val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
 
