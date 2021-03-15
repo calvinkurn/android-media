@@ -297,11 +297,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         GlobalScope.launch(Dispatchers.Main) {
             delay(DELAY_BUTTON_RADIUS)
             showFindNearHereView()
+            showCardListView()
         }
     }
 
     override fun onCameraMove() {
         hideFindNearHereView()
+        hideCardListView()
         googleMap.setOnCameraIdleListener(this)
     }
 
