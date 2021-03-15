@@ -7,7 +7,6 @@ import com.tokopedia.seller.action.common.interfaces.SellerActionContract
 import com.tokopedia.seller.action.common.provider.SellerActionProvider
 import com.tokopedia.seller.action.coroutine.SellerActionTestCoroutineDispatchers
 import com.tokopedia.seller.action.order.domain.model.Order
-import com.tokopedia.seller.action.order.domain.model.SellerActionOrderCode
 import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
