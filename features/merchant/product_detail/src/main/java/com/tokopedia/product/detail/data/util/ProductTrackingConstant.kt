@@ -72,6 +72,7 @@ object ProductTrackingConstant {
         const val KEY_ISLOGGIN = "isLoggedInStatus"
         const val KEY_ADD = "add"
         const val BUSINESS_UNIT = "physical goods"
+        const val BUSINESS_UNIT_PDP = "product detail page"
         const val CURRENT_SITE = "tokopediamarketplace"
         const val CURRENT_SITE_FINTECH = "tokopediafintechinsurance"
         const val KEY_FINTECH = "fintech"

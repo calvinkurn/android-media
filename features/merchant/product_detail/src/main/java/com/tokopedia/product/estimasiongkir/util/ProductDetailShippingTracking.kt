@@ -15,7 +15,7 @@ object ProductDetailShippingTracking {
                 ProductTrackingConstant.Category.PRODUCT_DETAIL_PAGE_SHIPPING,
                 ProductTrackingConstant.Action.CLICK_PELAJARI_TOKO_CABANG,
                 "")
-        mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
+        mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
         mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
         mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
