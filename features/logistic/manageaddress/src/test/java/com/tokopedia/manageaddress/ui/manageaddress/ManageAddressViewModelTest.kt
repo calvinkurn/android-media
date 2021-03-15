@@ -99,12 +99,12 @@ class ManageAddressViewModelTest {
     @Test
     fun `Set Default Address Success`() {
         every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any())
+            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
         } answers  {
             (secondArg() as ((String) -> Unit)).invoke(success)
         }
 
-        manageAddressViewModel.setDefaultPeopleAddress("1", -1, -1, true)
+        manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
 
         assertEquals(ManageAddressState.Success(success), manageAddressViewModel.setDefault.value)
     }
@@ -113,12 +113,12 @@ class ManageAddressViewModelTest {
     fun `Set Default Address Fail`() {
         val response = Throwable()
         every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any())
+            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
         } answers {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        manageAddressViewModel.setDefaultPeopleAddress("1", 0, 0, true)
+        manageAddressViewModel.setDefaultPeopleAddress("1", false, 0, 0, true)
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.setDefault.value)
     }
