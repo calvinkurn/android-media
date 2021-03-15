@@ -163,10 +163,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun performSearch(query: String, addressId: Int?) {
+    private fun performSearch(query: String, saveAddressDataModel: SaveAddressDataModel?) {
         clearData()
         maxItemPosition = 0
-        val addrId = addressId ?: getChosenAddrId()
+        val addrId = saveAddressDataModel?.id ?: getChosenAddrId()
         context?.let {
             viewModel.searchAddress(query, prevState, addrId, ChooseAddressUtils.isRollOutUser(it))
         }
@@ -244,7 +244,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         setChosenAddress()
                     } else {
                         bottomSheetLainnya?.dismiss()
-                        performSearch("", _selectedAddressItem?.id?.toIntOrNull())
                         viewModel.getStateChosenAddress("address")
                     }
 
@@ -392,7 +391,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
 
         searchAddress?.clearListener = {
-           performSearch("", null)
+            performSearch("", null)
         }
 
         searchAddress?.searchBarPlaceholder = "Cari Alamat"
@@ -469,7 +468,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
             btn_alamat_utama?.setOnClickListener {
-                viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
+                viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
@@ -478,7 +477,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
             btn_alamat_utama_choose?.setOnClickListener {
                 context?.let {
-                    viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(it))
                 }
                 _selectedAddressItem = data
             }
@@ -604,7 +603,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             activity?.setResult(Activity.RESULT_OK, resultIntent)
             activity?.finish()
         } else {
-            performSearch("", addressDataModel.id)
+            performSearch("", addressDataModel)
         }
     }
 

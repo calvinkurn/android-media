@@ -53,6 +53,7 @@ class AddressCornerMapper @Inject constructor() : Func1<GetPeopleAddressResponse
             this.partnerId = it.partnerId
             this.partnerName = it.partnerName
             this.isStateChosenAddress = it.isStateChosenAddress
+            this.isRadioButtonChecked = it.radioButonChecked
         }
     }
 }

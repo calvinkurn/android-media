@@ -95,7 +95,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
                 val cardSelected: Boolean
-                if (data.isStateChosenAddress && !isItemClicked) {
+                if (data.isRadioButtonChecked && !isItemClicked) {
                     cardSelected = true
                     selectedPos = layoutPosition
                 } else {
