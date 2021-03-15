@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.uimodel.*
@@ -41,6 +42,7 @@ class OtherMenuAdapterTypeFactory(
             ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
             SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
+            LoadingViewholder.LAYOUT -> SellerLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -95,5 +97,9 @@ class OtherMenuAdapterTypeFactory(
 
     override fun type(indentedSettingTitleUiModel: IndentedSettingTitleUiModel): Int {
         return IndentedSettingTitleViewHolder.LAYOUT
+    }
+
+    override fun type(settingLoadingUiModel: SettingLoadingUiModel): Int {
+        return LoadingViewholder.LAYOUT
     }
 }
