@@ -16,9 +16,10 @@
         android:paddingRight="@dimen/dp_8"
         android:gravity="center_vertical"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        tools:ignore="UselessParent">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/btn_close"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"

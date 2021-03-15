@@ -134,7 +134,7 @@ public class Menus extends BaseBottomSheetView {
         private class HeaderViewHolder extends RecyclerView.ViewHolder {
 
             private Typography tvTitle;
-            private View buttonCLose;
+            private ImageView buttonCLose;
 
             HeaderViewHolder(View view) {
                 super(view);
