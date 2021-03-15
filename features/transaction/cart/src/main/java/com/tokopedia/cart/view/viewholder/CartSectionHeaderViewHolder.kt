@@ -20,19 +20,21 @@ class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBind
     }
 
     fun bind(element: CartSectionHeaderHolderData) {
-        binding.labelTitle.text = element.title
-        if (TextUtils.isEmpty(element.showAllAppLink)) {
-            binding.labelShowAll.gone()
-            binding.icShowAll.gone()
-        } else {
-            binding.labelShowAll.setOnClickListener {
-                listener?.onShowAllItem(element.showAllAppLink)
+        with(binding) {
+            labelTitle.text = element.title
+            if (TextUtils.isEmpty(element.showAllAppLink)) {
+                labelShowAll.gone()
+                icShowAll.gone()
+            } else {
+                labelShowAll.setOnClickListener {
+                    listener?.onShowAllItem(element.showAllAppLink)
+                }
+                icShowAll.setOnClickListener {
+                    listener?.onShowAllItem(element.showAllAppLink)
+                }
+                labelShowAll.visible()
+                icShowAll.visible()
             }
-            binding.icShowAll.setOnClickListener {
-                listener?.onShowAllItem(element.showAllAppLink)
-            }
-            binding.labelShowAll.visible()
-            binding.icShowAll.visible()
         }
     }
 

@@ -104,85 +104,95 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderFulfillment(cartShopHolderData: CartShopHolderData) {
-        binding.labelFulfillment.visibility = if (cartShopHolderData.shopGroupAvailableData.isFulfillment) View.VISIBLE else View.GONE
-        if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
-            binding.tvFulfillDistrict.show()
-            binding.tvFulfillDistrict.text = cartShopHolderData.shopGroupAvailableData.fulfillmentName
-        } else {
-            binding.tvFulfillDistrict.gone()
+        with(binding) {
+            labelFulfillment.visibility = if (cartShopHolderData.shopGroupAvailableData.isFulfillment) View.VISIBLE else View.GONE
+            if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
+                tvFulfillDistrict.show()
+                tvFulfillDistrict.text = cartShopHolderData.shopGroupAvailableData.fulfillmentName
+            } else {
+                tvFulfillDistrict.gone()
+            }
         }
     }
 
     private fun renderEstimatedTimeArrival(cartShopHolderData: CartShopHolderData) {
         val eta = cartShopHolderData.shopGroupAvailableData.estimatedTimeArrival
-        if (eta.isNotBlank()) {
-            binding.textEstimatedTimeArrival.text = eta
-            binding.textEstimatedTimeArrival.show()
-            binding.separatorEstimatedTimeArrival.show()
-        } else {
-            binding.textEstimatedTimeArrival.gone()
-            binding.separatorEstimatedTimeArrival.gone()
+        with(binding) {
+            if (eta.isNotBlank()) {
+                textEstimatedTimeArrival.text = eta
+                textEstimatedTimeArrival.show()
+                separatorEstimatedTimeArrival.show()
+            } else {
+                textEstimatedTimeArrival.gone()
+                separatorEstimatedTimeArrival.gone()
+            }
         }
     }
 
     private fun renderErrorItemHeader(data: CartShopHolderData) {
-        if (data.shopGroupAvailableData.isError) {
-            binding.cbSelectShop.isEnabled = false
-            binding.flShopItemContainer.foreground = ContextCompat.getDrawable(binding.flShopItemContainer.context, R.drawable.fg_disabled_item)
-            binding.llShopContainer.setBackgroundResource(R.drawable.bg_error_shop)
-            if (data.shopGroupAvailableData.errorTitle?.isNotBlank() == true) {
-                val errorDescription = data.shopGroupAvailableData.errorDescription
-                if (errorDescription?.isNotBlank() == true) {
-                    binding.llWarningAndError.tickerError.tickerTitle = data.shopGroupAvailableData.errorTitle
-                    binding.llWarningAndError.tickerError.setTextDescription(errorDescription)
+        with(binding) {
+            if (data.shopGroupAvailableData.isError) {
+                cbSelectShop.isEnabled = false
+                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_disabled_item)
+                llShopContainer.setBackgroundResource(R.drawable.bg_error_shop)
+                if (data.shopGroupAvailableData.errorTitle?.isNotBlank() == true) {
+                    val errorDescription = data.shopGroupAvailableData.errorDescription
+                    if (errorDescription?.isNotBlank() == true) {
+                        llWarningAndError.tickerError.tickerTitle = data.shopGroupAvailableData.errorTitle
+                        llWarningAndError.tickerError.setTextDescription(errorDescription)
+                    } else {
+                        llWarningAndError.tickerError.tickerTitle = null
+                        llWarningAndError.tickerError.setTextDescription(data.shopGroupAvailableData.errorTitle
+                                ?: "")
+                    }
+                    llWarningAndError.tickerError.tickerType = TYPE_ERROR
+                    llWarningAndError.tickerError.tickerShape = SHAPE_LOOSE
+                    llWarningAndError.tickerError.closeButtonVisibility = View.GONE
+                    llWarningAndError.tickerError.show()
+                    llWarningAndError.tickerError.post {
+                        binding.llWarningAndError.tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.llWarningAndError.tickerError.requestLayout()
+                    }
+                    llWarningAndError.layoutError.show()
                 } else {
-                    binding.llWarningAndError.tickerError.tickerTitle = null
-                    binding.llWarningAndError.tickerError.setTextDescription(data.shopGroupAvailableData.errorTitle ?: "")
+                    llWarningAndError.layoutError.gone()
                 }
-                binding.llWarningAndError.tickerError.tickerType = TYPE_ERROR
-                binding.llWarningAndError.tickerError.tickerShape = SHAPE_LOOSE
-                binding.llWarningAndError.tickerError.closeButtonVisibility = View.GONE
-                binding.llWarningAndError.tickerError.show()
-                binding.llWarningAndError.tickerError.post {
-                    binding.llWarningAndError.tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                    binding.llWarningAndError.tickerError.requestLayout()
-                }
-                binding.llWarningAndError.layoutError.show()
             } else {
-                binding.llWarningAndError.layoutError.gone()
+                cbSelectShop.isEnabled = true
+                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_enabled_item)
+                llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                llWarningAndError.layoutError.gone()
             }
-        } else {
-            binding.cbSelectShop.isEnabled = true
-            binding.flShopItemContainer.foreground = ContextCompat.getDrawable(binding.flShopItemContainer.context, R.drawable.fg_enabled_item)
-            binding.llShopContainer.setBackgroundColor(binding.llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            binding.llWarningAndError.layoutError.gone()
         }
     }
 
     private fun renderWarningItemHeader(data: CartShopHolderData) {
-        if (data.shopGroupAvailableData.isWarning) {
-            val warningDescription = data.shopGroupAvailableData.warningDescription
-            if (warningDescription?.isNotBlank() == true) {
-                binding.llWarningAndError.tickerWarning.tickerTitle = data.shopGroupAvailableData.warningTitle
-                binding.llWarningAndError.tickerWarning.setTextDescription(warningDescription)
+        with(binding.llWarningAndError) {
+            if (data.shopGroupAvailableData.isWarning) {
+                val warningDescription = data.shopGroupAvailableData.warningDescription
+                if (warningDescription?.isNotBlank() == true) {
+                    tickerWarning.tickerTitle = data.shopGroupAvailableData.warningTitle
+                    tickerWarning.setTextDescription(warningDescription)
+                } else {
+                    tickerWarning.tickerTitle = null
+                    tickerWarning.setTextDescription(data.shopGroupAvailableData.warningTitle
+                            ?: "")
+                }
+                tickerWarning.tickerType = TYPE_WARNING
+                tickerWarning.tickerShape = SHAPE_LOOSE
+                tickerWarning.closeButtonVisibility = View.GONE
+                tickerWarning.show()
+                tickerWarning.post {
+                    binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                    binding.llWarningAndError.tickerWarning.requestLayout()
+                }
+                layoutWarning.show()
             } else {
-                binding.llWarningAndError.tickerWarning.tickerTitle = null
-                binding.llWarningAndError.tickerWarning.setTextDescription(data.shopGroupAvailableData.warningTitle ?: "")
+                tickerWarning.gone()
+                layoutWarning.gone()
             }
-            binding.llWarningAndError.tickerWarning.tickerType = TYPE_WARNING
-            binding.llWarningAndError.tickerWarning.tickerShape = SHAPE_LOOSE
-            binding.llWarningAndError.tickerWarning.closeButtonVisibility = View.GONE
-            binding.llWarningAndError.tickerWarning.show()
-            binding.llWarningAndError.tickerWarning.post {
-                binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                binding.llWarningAndError.tickerWarning.requestLayout()
-            }
-            binding.llWarningAndError.layoutWarning.show()
-        } else {
-            binding.llWarningAndError.tickerWarning.gone()
-            binding.llWarningAndError.layoutWarning.gone()
         }
     }
 
@@ -211,37 +221,43 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderPreOrder(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shopGroupAvailableData.preOrderInfo.isNotBlank()) {
-            binding.labelPreOrder.text = cartShopHolderData.shopGroupAvailableData.preOrderInfo
-            binding.labelPreOrder.show()
-            binding.separatorPreOrder.show()
-        } else {
-            binding.labelPreOrder.gone()
-            binding.separatorPreOrder.gone()
+        with(binding) {
+            if (cartShopHolderData.shopGroupAvailableData.preOrderInfo.isNotBlank()) {
+                labelPreOrder.text = cartShopHolderData.shopGroupAvailableData.preOrderInfo
+                labelPreOrder.show()
+                separatorPreOrder.show()
+            } else {
+                labelPreOrder.gone()
+                separatorPreOrder.gone()
+            }
         }
     }
 
     private fun renderIncidentLabel(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shopGroupAvailableData.incidentInfo.isNotBlank()) {
-            binding.labelIncident.text = cartShopHolderData.shopGroupAvailableData.incidentInfo
-            binding.labelIncident.show()
-            binding.separatorIncident.show()
-        } else {
-            binding.labelIncident.gone()
-            binding.separatorIncident.gone()
+        with(binding) {
+            if (cartShopHolderData.shopGroupAvailableData.incidentInfo.isNotBlank()) {
+                labelIncident.text = cartShopHolderData.shopGroupAvailableData.incidentInfo
+                labelIncident.show()
+                separatorIncident.show()
+            } else {
+                labelIncident.gone()
+                separatorIncident.gone()
+            }
         }
     }
 
     private fun renderFreeShipping(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shopGroupAvailableData.freeShippingBadgeUrl.isNotBlank()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(
-                    binding.imgFreeShipping, cartShopHolderData.shopGroupAvailableData.freeShippingBadgeUrl
-            )
-            binding.imgFreeShipping.show()
-            binding.separatorFreeShipping.show()
-        } else {
-            binding.imgFreeShipping.gone()
-            binding.separatorFreeShipping.gone()
+        with(binding) {
+            if (cartShopHolderData.shopGroupAvailableData.freeShippingBadgeUrl.isNotBlank()) {
+                ImageHandler.loadImageWithoutPlaceholderAndError(
+                        imgFreeShipping, cartShopHolderData.shopGroupAvailableData.freeShippingBadgeUrl
+                )
+                imgFreeShipping.show()
+                separatorFreeShipping.show()
+            } else {
+                imgFreeShipping.gone()
+                separatorFreeShipping.gone()
+            }
         }
     }
 

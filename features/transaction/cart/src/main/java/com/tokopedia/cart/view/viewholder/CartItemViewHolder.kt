@@ -127,9 +127,11 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderDefaultActionState() {
-        binding.llShopNoteSection.gone()
-        binding.textMoveToWishlist.gone()
-        binding.btnDeleteCart.gone()
+        with(binding) {
+            llShopNoteSection.gone()
+            textMoveToWishlist.gone()
+            btnDeleteCart.gone()
+        }
     }
 
     private fun renderProductAction(data: CartItemHolderData, viewHolderListener: ViewHolderListener) {
@@ -160,12 +162,13 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
-        binding.cbSelectItem.isEnabled = data.cartItemData?.isError == false
-        binding.cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
-        binding.cbSelectItem.skipAnimation()
+        val cbSelectItem = binding.cbSelectItem
+        cbSelectItem.isEnabled = data.cartItemData?.isError == false
+        cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
+        cbSelectItem.skipAnimation()
 
-        var prevIsChecked: Boolean = binding.cbSelectItem.isChecked
-        binding.cbSelectItem.setOnCheckedChangeListener { _, isChecked ->
+        var prevIsChecked: Boolean = cbSelectItem.isChecked
+        cbSelectItem.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
@@ -221,10 +224,11 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderProductProperties(data: CartItemHolderData) {
-        binding.layoutProductInfo.gone()
+        val layoutProductInfo = binding.layoutProductInfo
+        layoutProductInfo.gone()
         val productInformationList = data.cartItemData?.originData?.productInformation
         if (productInformationList?.isNotEmpty() == true) {
-            binding.layoutProductInfo.removeAllViews()
+            layoutProductInfo.removeAllViews()
             productInformationList.forEach {
                 var tmpLabel = it
                 if (tmpLabel.toLowerCase(Locale.getDefault()).contains(LABEL_CASHBACK)) {
@@ -233,16 +237,16 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 informationLabel.add(tmpLabel.toLowerCase(Locale.getDefault()))
 
                 val productInfo = createProductInfoText(it)
-                binding.layoutProductInfo.addView(productInfo)
+                layoutProductInfo.addView(productInfo)
             }
-            binding.layoutProductInfo.show()
+            layoutProductInfo.show()
         }
 
         if (data.cartItemData?.originData?.wholesalePrice ?: 0 > 0) {
             val wholesaleLabel = itemView.context.getString(R.string.label_wholesale_product)
             val productInfo = createProductInfoText(wholesaleLabel)
-            binding.layoutProductInfo.addView(productInfo)
-            binding.layoutProductInfo.show()
+            layoutProductInfo.addView(productInfo)
+            layoutProductInfo.show()
             informationLabel.add(wholesaleLabel.toLowerCase(Locale.getDefault()))
         }
     }
@@ -344,19 +348,20 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     private fun renderVariant(data: CartItemHolderData) {
         var paddingRight = 0
         val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
+        val textProductVariant = binding.textProductVariant
         if (data.cartItemData?.originData?.variant?.isNotBlank() == true) {
-            binding.textProductVariant.text = data.cartItemData?.originData?.variant
-            binding.textProductVariant.show()
+            textProductVariant.text = data.cartItemData?.originData?.variant
+            textProductVariant.show()
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
         } else {
             if (data.cartItemData?.originData?.warningMessage?.isNotBlank() == true) {
-                binding.textProductVariant.text = ""
-                binding.textProductVariant.invisible()
+                textProductVariant.text = ""
+                textProductVariant.invisible()
             } else {
-                binding.textProductVariant.gone()
+                textProductVariant.gone()
             }
         }
-        binding.textProductVariant.setPadding(0, paddingTop, paddingRight, 0);
+        textProductVariant.setPadding(0, paddingTop, paddingRight, 0);
     }
 
     private fun renderActionNotes(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
@@ -369,7 +374,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             } else false
         }
 
-        this.binding.tvLabelRemarkOption.setOnClickListener {
+        binding.tvLabelRemarkOption.setOnClickListener {
             if (data.cartItemData?.isError == false) {
                 data.isStateNotesOnFocuss = true
                 binding.etRemark.requestFocus()
@@ -389,47 +394,9 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
         data.isStateHasNotes = data.isStateNotesOnFocuss || data.cartItemData?.updatedData?.remark?.isNotBlank() == true
 
-        if (data.isStateHasNotes) {
-            // Has a notes from pdp or not at all but click add notes button
-            if (data.isStateNotesOnFocuss && (data.cartItemData?.originData?.originalRemark.isNullOrBlank() || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark)) {
-                // Notes is empty after click add notes button or has value after use click change notes button
-                this.binding.tvRemark.visibility = View.GONE
-                this.binding.etRemark.setText(Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark))
-                this.binding.etRemark.visibility = View.VISIBLE
-                this.binding.tvLabelRemarkTitle.visibility = View.VISIBLE
-                this.binding.etRemark.setSelection(binding.etRemark.length())
-                this.binding.tvLabelRemarkOption.visibility = View.GONE
-                this.binding.tvNoteCharCounter.visibility = View.VISIBLE
-                binding.tvLabelRemarkOption.setPadding(0, 0, 0, 0)
-            } else {
-                // Has notes from pdp
-                this.binding.etRemark.visibility = View.GONE
-                this.binding.tvLabelRemarkTitle.visibility = View.GONE
-                this.binding.tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark
-                        ?: "")
-                this.binding.tvRemark.visibility = View.VISIBLE
-                this.binding.tvLabelRemarkOption.visibility = View.VISIBLE
-                this.binding.tvNoteCharCounter.visibility = View.GONE
-                this.binding.tvLabelRemarkOption.text = binding.tvLabelRemarkOption.context.getString(R.string.label_button_change_note)
-                binding.tvLabelRemarkOption.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+        renderNotesViews(data)
 
-                setNotesWidth()
-            }
-            binding.tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
-        } else {
-            // No notes at all
-            this.binding.etRemark.visibility = View.GONE
-            this.binding.tvLabelRemarkTitle.visibility = View.GONE
-            this.binding.tvRemark.visibility = View.GONE
-            this.binding.tvNoteCharCounter.visibility = View.GONE
-            this.binding.tvLabelRemarkOption.text = binding.tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
-            this.binding.tvLabelRemarkOption.visibility = View.VISIBLE
-            this.binding.etRemark.setText("")
-            binding.tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
-            binding.tvLabelRemarkOption.setPadding(0, 0, 0, 0)
-        }
-
-        this.binding.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData?.updatedData?.maxCharRemark
+        binding.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData?.updatedData?.maxCharRemark
                 ?: 0))
         binding.etRemark.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
@@ -452,6 +419,50 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         binding.llShopNoteSection.show()
     }
 
+    private fun renderNotesViews(data: CartItemHolderData) {
+        with(binding) {
+            if (data.isStateHasNotes) {
+                // Has a notes from pdp or not at all but click add notes button
+                if (data.isStateNotesOnFocuss && (data.cartItemData?.originData?.originalRemark.isNullOrBlank() || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark)) {
+                    // Notes is empty after click add notes button or has value after use click change notes button
+                    tvRemark.visibility = View.GONE
+                    etRemark.setText(Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark))
+                    etRemark.visibility = View.VISIBLE
+                    tvLabelRemarkTitle.visibility = View.VISIBLE
+                    etRemark.setSelection(etRemark.length())
+                    tvLabelRemarkOption.visibility = View.GONE
+                    tvNoteCharCounter.visibility = View.VISIBLE
+                    tvLabelRemarkOption.setPadding(0, 0, 0, 0)
+                } else {
+                    // Has notes from pdp
+                    etRemark.visibility = View.GONE
+                    tvLabelRemarkTitle.visibility = View.GONE
+                    tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark
+                            ?: "")
+                    tvRemark.visibility = View.VISIBLE
+                    tvLabelRemarkOption.visibility = View.VISIBLE
+                    tvNoteCharCounter.visibility = View.GONE
+                    tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_change_note)
+                    tvLabelRemarkOption.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+
+                    setNotesWidth()
+                }
+                tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+            } else {
+                // No notes at all
+                etRemark.visibility = View.GONE
+                tvLabelRemarkTitle.visibility = View.GONE
+                tvRemark.visibility = View.GONE
+                tvNoteCharCounter.visibility = View.GONE
+                tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
+                tvLabelRemarkOption.visibility = View.VISIBLE
+                etRemark.setText("")
+                tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                tvLabelRemarkOption.setPadding(0, 0, 0, 0)
+            }
+        }
+    }
+
     private fun setNotesWidth() {
         val padding = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
         val paddingLeftRight = padding * 2
@@ -469,33 +480,34 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
+        val qtyEditorCart = binding.qtyEditorCart
         if (quantityTextWatcher != null) {
             // remove previous listener
-            binding.qtyEditorCart.editText.removeTextChangedListener(quantityTextWatcher)
+            qtyEditorCart.editText.removeTextChangedListener(quantityTextWatcher)
         }
 
-        binding.qtyEditorCart.autoHideKeyboard = true
-        binding.qtyEditorCart.minValue = data.cartItemData?.originData?.minOrder ?: 0
-        binding.qtyEditorCart.maxValue = data.cartItemData?.originData?.maxOrder ?: 0
+        qtyEditorCart.autoHideKeyboard = true
+        qtyEditorCart.minValue = data.cartItemData?.originData?.minOrder ?: 0
+        qtyEditorCart.maxValue = data.cartItemData?.originData?.maxOrder ?: 0
         // reset listener
-        binding.qtyEditorCart.setValueChangedListener { _, _, _ -> /* no-op */ }
-        binding.qtyEditorCart.setValue(data.cartItemData?.updatedData?.quantity ?: 0)
-        binding.qtyEditorCart.setValueChangedListener { newValue, _, _ ->
+        qtyEditorCart.setValueChangedListener { _, _, _ -> /* no-op */ }
+        qtyEditorCart.setValue(data.cartItemData?.updatedData?.quantity ?: 0)
+        qtyEditorCart.setValueChangedListener { newValue, _, _ ->
             cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
             actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
             cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
         }
-        binding.qtyEditorCart.setSubstractListener {
+        qtyEditorCart.setSubstractListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityMinusButtonClicked(data, adapterPosition, parentPosition)
             }
         }
-        binding.qtyEditorCart.setAddClickListener {
+        qtyEditorCart.setAddClickListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityPlusButtonClicked(data, adapterPosition, parentPosition)
             }
         }
-        binding.qtyEditorCart.editText.setOnFocusChangeListener { v, hasFocus ->
+        qtyEditorCart.editText.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 val qtyStr = (v as? AppCompatEditText)?.text?.toString()
                 actionListener?.onCartItemQuantityInputFormClicked(
@@ -503,15 +515,15 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 )
             }
         }
-        binding.qtyEditorCart.editText.setOnEditorActionListener { _, actionId, _ ->
+        qtyEditorCart.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(binding.qtyEditorCart.editText.context, itemView)
                 true
             } else false
         }
         quantityTextWatcher = QuantityTextWatcher(quantityTextwatcherListener)
-        binding.qtyEditorCart.editText.addTextChangedListener(quantityTextWatcher)
-        binding.qtyEditorCart.editText.isEnabled = data.cartItemData?.isError == false
+        qtyEditorCart.editText.addTextChangedListener(quantityTextWatcher)
+        qtyEditorCart.editText.isEnabled = data.cartItemData?.isError == false
     }
 
     private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, parentPosition: Int) {
@@ -527,18 +539,19 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderActionWishlist(action: ActionData, data: CartItemHolderData) {
+        val textMoveToWishlist = binding.textMoveToWishlist
         if (data.cartItemData?.originData?.isWishlisted == true && action.id == ACTION_WISHLISTED) {
-            binding.textMoveToWishlist.text = action.message
-            binding.textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
-            binding.textMoveToWishlist.setOnClickListener { }
+            textMoveToWishlist.text = action.message
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
+            textMoveToWishlist.setOnClickListener { }
         } else if (data.cartItemData?.originData?.isWishlisted == false && action.id == ACTION_WISHLIST) {
-            binding.textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
-            binding.textMoveToWishlist.setOnClickListener {
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
+            textMoveToWishlist.setOnClickListener {
                 actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
                         ?: 0, binding.iuImageProduct)
             }
         }
-        binding.textMoveToWishlist.show()
+        textMoveToWishlist.show()
     }
 
     private fun getOnClickProductItemListener(

@@ -38,47 +38,51 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
     }
 
     private fun renderProductInfo(data: DisabledCartItemHolderData) {
-        binding.tvProductName.text = data.productName
-        binding.textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
-        binding.iuImageProduct.loadImage(data.productImage)
-        if (data.data?.originData?.variant?.isNotBlank() == true) {
-            binding.textProductVariant.text = data.data?.originData?.variant
-            binding.textProductVariant.show()
-        } else {
-            binding.textProductVariant.gone()
-        }
-        renderSlashPrice(data)
+        with(binding) {
+            tvProductName.text = data.productName
+            textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
+            iuImageProduct.loadImage(data.productImage)
+            if (data.data?.originData?.variant?.isNotBlank() == true) {
+                textProductVariant.text = data.data?.originData?.variant
+                textProductVariant.show()
+            } else {
+                textProductVariant.gone()
+            }
+            renderSlashPrice(data)
 
-        data.data?.let { cartItemData ->
-            binding.tvProductName.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
-            binding.iuImageProduct.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+            data.data?.let { cartItemData ->
+                tvProductName.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+                iuImageProduct.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+            }
         }
     }
 
     private fun renderSlashPrice(data: DisabledCartItemHolderData) {
-        if (data.data?.originData?.priceOriginal != 0L) {
-            var hasSlashPrice = false
-            if (data.data?.originData?.slashPriceLabel?.isNotBlank() == true) {
-                binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.data?.originData?.priceOriginal
-                        ?: 0, false).removeDecimalSuffix()
-                binding.labelSlashPricePercentage.text = data.data?.originData?.slashPriceLabel
-                hasSlashPrice = true
-            }
+        with(binding) {
+            if (data.data?.originData?.priceOriginal != 0L) {
+                var hasSlashPrice = false
+                if (data.data?.originData?.slashPriceLabel?.isNotBlank() == true) {
+                    textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.data?.originData?.priceOriginal
+                            ?: 0, false).removeDecimalSuffix()
+                    labelSlashPricePercentage.text = data.data?.originData?.slashPriceLabel
+                    hasSlashPrice = true
+                }
 
-            if (hasSlashPrice) {
-                binding.textSlashPrice.paintFlags = binding.textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                binding.textSlashPrice.show()
-                binding.labelSlashPricePercentage.show()
-                binding.textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+                if (hasSlashPrice) {
+                    textSlashPrice.paintFlags = textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    textSlashPrice.show()
+                    labelSlashPricePercentage.show()
+                    textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+                } else {
+                    textSlashPrice.gone()
+                    labelSlashPricePercentage.gone()
+                    textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
+                }
             } else {
-                binding.textSlashPrice.gone()
-                binding.labelSlashPricePercentage.gone()
-                binding.textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
+                textSlashPrice.gone()
+                labelSlashPricePercentage.gone()
+                textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
             }
-        } else {
-            binding.textSlashPrice.gone()
-            binding.labelSlashPricePercentage.gone()
-            binding.textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
         }
     }
 
