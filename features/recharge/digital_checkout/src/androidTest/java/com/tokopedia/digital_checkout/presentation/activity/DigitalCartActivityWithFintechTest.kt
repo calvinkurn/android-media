@@ -82,6 +82,7 @@ class DigitalCartActivityWithFintechTest {
             passData.operatorId = "5"
             passData.productId = "30"
             passData.isPromo = "0"
+            passData.isFromPDP = true
             passData.needGetCart = true
             passData.instantCheckout = "0"
             passData.idemPotencyKey = "17211378_d44feedc9f7138c1fd91015d5bd88810"

@@ -12,10 +12,10 @@ data class AppAuthResponse(
 data class StatusMessage(
         @SerializedName("status")
         @Expose
-        val status: String = "",
-        @SerializedName("message")
+        val status: Boolean = false,
+        @SerializedName("error_message")
         @Expose
-        val message: String = ""
+        val errorMessage: String = ""
 ) {
-        var isSuccess = status == "OK" && message == "success"
+        var isSuccess = status && errorMessage.isEmpty()
 }
