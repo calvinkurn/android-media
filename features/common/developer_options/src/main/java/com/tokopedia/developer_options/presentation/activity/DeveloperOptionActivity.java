@@ -52,10 +52,12 @@ import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
+import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.developer_options.utils.TimberWrapper;
+import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -91,6 +93,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView reviewNotifBtn;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
+    private AppCompatTextView abTestRollenceEditorStartButton;
     private ToggleButton toggleTimberDevOption;
     private Spinner spinnerEnvironmentChooser;
 
@@ -134,6 +137,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
+    private TextView appAuthSecretView;
     private TextView tvFakeResponse;
 
     private Button requestFcmToken;
@@ -230,6 +234,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
+        abTestRollenceEditorStartButton = findViewById(R.id.ab_test_rollence_editor_start);
 
         reviewNotifBtn = findViewById(R.id.review_notification);
 
@@ -259,6 +264,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
         accessTokenView = findViewById(R.id.access_token);
+        appAuthSecretView = findViewById(R.id.app_auth_secret);
         requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
@@ -358,6 +364,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             Editable prefix = remoteConfigPrefix.getText();
 
             startRemoteConfigEditor(prefix != null ? prefix.toString() : "");
+        });
+
+        abTestRollenceEditorStartButton.setOnClickListener(v -> {
+            startAbTestRollenceEditor();
         });
 
         vForceCrash.setOnClickListener(v -> {
@@ -582,6 +592,16 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
+        appAuthSecretView.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            String decoder = AppAuthKt.getDecoder(this);
+            ClipData clip = ClipData.newPlainText("Copied Text", decoder);
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(clip);
+            }
+            Toast.makeText(this, decoder, Toast.LENGTH_LONG).show();
+        });
+
         requestFcmToken.setOnClickListener(v -> {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
@@ -591,6 +611,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             new FakeResponseActivityProvider().startActivity(this);
         });
 
+    }
+
+    private void startAbTestRollenceEditor() {
+        Intent intent = new Intent(DeveloperOptionActivity.this, AbTestRollenceConfigFragmentActivity.class);
+        startActivity(intent);
     }
 
     private int toInt(String str) {

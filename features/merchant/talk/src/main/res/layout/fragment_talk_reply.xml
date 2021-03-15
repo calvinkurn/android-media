@@ -38,7 +38,7 @@
         android:animateLayoutChanges="true"
         android:background="@color/Unify_N50"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/replyTextBox">
+        app:layout_constraintBottom_toTopOf="@id/replyTemplateContainer">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/replyAttachedProductReview"
@@ -51,6 +51,31 @@
             android:paddingEnd="@dimen/layout_lvl2"
             android:paddingTop="@dimen/layout_lvl1"
             android:paddingBottom="@dimen/layout_lvl1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/replyTemplateContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/replyTextBox">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/replyTemplates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:paddingTop="@dimen/layout_lvl1"
+            android:paddingBottom="@dimen/layout_lvl1"
+            android:background="@android:color/transparent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </FrameLayout>

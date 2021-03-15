@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -389,6 +390,19 @@ class AddEditProductDescriptionViewModelTest {
         val isValid = viewModel.getVariantCountMessage(0) ==
                 productInput.variantInputModel.selections[0].options.size.toString() + " "
         assert(isValid)
+    }
+
+    @Test
+    fun `When update productInputModel Expect return expected isHampersProduct`() {
+        viewModel.updateProductInputModel(productInputModel = ProductInputModel(detailInputModel = DetailInputModel(categoryId = "12")))
+
+        viewModel.isHampersProduct.getOrAwaitValue()
+        Assert.assertEquals(false, viewModel.isHampersProduct.value)
+
+        viewModel.updateProductInputModel(productInputModel = ProductInputModel(detailInputModel = DetailInputModel(categoryId = "2916")))
+
+        viewModel.isHampersProduct.getOrAwaitValue()
+        Assert.assertEquals(true, viewModel.isHampersProduct.value)
     }
 
     @Test

@@ -64,6 +64,11 @@ public class CMInApp {
     public String screen = "*";
 
     @Expose
+    @ColumnInfo(name = "campaignCode")
+    @SerializedName("campaignCode")
+    public String campaignCode = "";
+
+    @Expose
     @SerializedName("d")
     @ColumnInfo(name = "d")
     public boolean cancelable = false;
@@ -138,6 +143,14 @@ public class CMInApp {
 
     public void setScreen(String screen) {
         this.screen = screen;
+    }
+
+    public String getCampaignCode() {
+        return campaignCode;
+    }
+
+    public void setCampaignCode(String campaignCode) {
+        this.campaignCode = campaignCode;
     }
 
     public boolean isCancelable() {

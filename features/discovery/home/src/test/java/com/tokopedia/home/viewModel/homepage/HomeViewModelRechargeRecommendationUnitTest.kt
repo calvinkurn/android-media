@@ -145,7 +145,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
                                 "tokopedia://link",
                                 "tokopedia.com/image.png",
                                 "Judul",
-                                "#000000",
+                                "",
                                 " Silahkan Bayar Sekarang"
                         )
                 )
@@ -155,7 +155,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 listOf(
                         ReminderData(
                                 "tokopedia://recharge",
-                                listOf("#000000"),
+                                listOf(""),
                                 "Silahkan Bayar Sekarang",
                                 "1",
                                 "tokopedia.com/image.png",
@@ -260,7 +260,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
                                 "tokopedia://link",
                                 "tokopedia.com/image.png",
                                 "Judul",
-                                "#000000",
+                                "",
                                 " Silahkan Bayar Sekarang"
                         )
                 )

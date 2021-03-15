@@ -103,6 +103,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private val autoAdsWidget: AutoAdsWidgetCommon?
         get() = autoads_edit_widget
+
     enum class State {
         EXPANDED, COLLAPSED, IDLE
     }
@@ -113,7 +114,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
         context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
+            TopadsGroupFilterSheet.newInstance(this)
         }
     }
 
@@ -153,8 +154,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
         }
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
-        snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.abstraction.R.color.green_400))
+        activity?.run {
+            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this) { loadData() }
+            snackbarRetry?.setColorActionRetry(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.green_400))
+        }
 
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
@@ -252,6 +255,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         }
     }
 
+    private fun isAttached(): Boolean {
+        return activity != null && isAdded
+    }
+
     private fun showProgressLayout() {
         btnReload?.setOnClickListener {
             swipe_refresh_layout.isRefreshing = true
@@ -300,7 +307,9 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoAdsWidget?.gone()
         autoads_layout.gone()
         if (checkInProgress()) {
-            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
+            context?.run {
+                imgBg.background = AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
+            }
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             showProgressLayout()
             autoadsOnboarding.gone()
@@ -401,33 +410,41 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         if ((activity as TopAdsDashboardActivity?)?.getAdInfo() == MANUAL_AD && tab_layout?.tabLayout?.selectedTabPosition == 1)
             adType = SINGLE_AD
 
-        topAdsDashboardPresenter.getStatistic(startDate!!, endDate!!, selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
+        topAdsDashboardPresenter.getStatistic(startDate ?: Date(), endDate
+                ?: Date(), selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
     }
 
     override fun onLoadTopAdsShopDepositError(throwable: Throwable) {
-        snackbarRetry?.showRetrySnackbar()
+        if (isAttached())
+            snackbarRetry?.showRetrySnackbar()
     }
 
     override fun onErrorGetShopInfo(throwable: Throwable) {
-        swipe_refresh_layout.isRefreshing = false
-        snackbarRetry?.showRetrySnackbar()
+        if (isAttached()) {
+            swipe_refresh_layout.isRefreshing = false
+            snackbarRetry?.showRetrySnackbar()
+        }
     }
 
     override fun onErrorGetStatisticsInfo(throwable: Throwable) {
-        swipe_refresh_layout.isRefreshing = false
-        snackbarRetry?.showRetrySnackbar()
+        if (isAttached()) {
+            swipe_refresh_layout.isRefreshing = false
+            snackbarRetry?.showRetrySnackbar()
+        }
     }
 
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
-        swipe_refresh_layout.isRefreshing = false
-        snackbarRetry?.hideRetrySnackbar()
-        this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
-            topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
-        }
-        val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
-        if (fragment != null && fragment is TopAdsDashStatisticFragment) {
-            fragment.showLineGraph(this.dataStatistic)
+        if (isAttached()) {
+            swipe_refresh_layout.isRefreshing = false
+            snackbarRetry?.hideRetrySnackbar()
+            this.dataStatistic = dataStatistic
+            if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
+                topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
+            }
+            val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
+            if (fragment != null && fragment is TopAdsDashStatisticFragment) {
+                fragment.showLineGraph(this.dataStatistic)
+            }
         }
     }
 
