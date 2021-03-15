@@ -8,9 +8,11 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
-class GqlGetShopProductUseCase (
-                                private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopProduct.GetShopProduct>() {
+class GqlGetShopProductUseCase @Inject constructor (
+        private val gqlUseCase: MultiRequestGraphqlUseCase
+): UseCase<ShopProduct.GetShopProduct>() {
 
     private val query = """
             query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){

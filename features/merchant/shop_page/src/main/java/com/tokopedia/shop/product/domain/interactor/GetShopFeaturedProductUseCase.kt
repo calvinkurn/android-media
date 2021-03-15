@@ -7,8 +7,11 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
-class GetShopFeaturedProductUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<List<ShopFeaturedProduct>>() {
+class GetShopFeaturedProductUseCase @Inject constructor(
+        private val gqlUseCase: MultiRequestGraphqlUseCase
+): UseCase<List<ShopFeaturedProduct>>() {
 
     private val query = """
             query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!){
