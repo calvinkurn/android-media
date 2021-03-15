@@ -186,7 +186,7 @@ class SomListViewModel @Inject constructor(
     }
 
     private fun isLoadInitialData(): Boolean {
-        return getOrderListParams.nextOrderId == 0L
+        return getOrderListParams.nextOrderId.isBlank() || getOrderListParams.nextOrderId == "0"
     }
 
     private fun updateLoadOrderStatus(job: Job) {
@@ -262,7 +262,7 @@ class SomListViewModel @Inject constructor(
             val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
             val result = somListGetOrderListUseCase.executeOnBackground(params)
             getUserRolesJob()?.join()
-            getOrderListParams.nextOrderId = result.first.toLongOrZero()
+            getOrderListParams.nextOrderId = result.first
             _orderListResult.postValue(Success(result.second))
         }, onError = {
             _orderListResult.postValue(Fail(it))
@@ -275,7 +275,7 @@ class SomListViewModel @Inject constructor(
             val job = launchCatchError(block = {
                 val getOrderListParams = getOrderListParams.copy(
                         search = invoice,
-                        nextOrderId = 0L
+                        nextOrderId = "0"
                 )
                 val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
                 val result = somListGetOrderListUseCase.executeOnBackground(params)
@@ -338,10 +338,10 @@ class SomListViewModel @Inject constructor(
     }
 
     fun resetNextOrderId() {
-        getOrderListParams.nextOrderId = 0L
+        getOrderListParams.nextOrderId = "0"
     }
 
-    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0L
+    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId.isNotBlank() && getOrderListParams.nextOrderId != "0"
 
     fun getDataOrderListParams() = getOrderListParams
 

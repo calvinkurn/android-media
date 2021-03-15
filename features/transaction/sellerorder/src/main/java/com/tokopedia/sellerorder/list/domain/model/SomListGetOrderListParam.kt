@@ -39,7 +39,7 @@ data class SomListGetOrderListParam(
         var isMobile: Boolean = true,
         @SerializedName("next_order_id")
         @Expose
-        var nextOrderId: Long = 0,
+        var nextOrderId: String = "0",
         @SerializedName("lang")
         @Expose
         var lang: String = "id",

@@ -162,7 +162,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             shippingList = mutableSetOf(12)
             orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
-            nextOrderId = 123456L
+            nextOrderId = "123456"
         }
         viewModel.updateGetOrderListParams(newParams)
     }
@@ -622,7 +622,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         val orderId = "1234567890"
         val invoice = "INV/20200922/XX/IX/123456789"
         var counter = 0
-        viewModel.getDataOrderListParams().nextOrderId = 100L
+        viewModel.getDataOrderListParams().nextOrderId = "100"
 
         coEvery {
             somListGetOrderListUseCase.executeOnBackground(any())
