@@ -12,6 +12,8 @@ import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.home_account_member.view.*
 
@@ -27,6 +29,12 @@ class MemberViewHolder(itemView: View, val listener: HomeAccountUserListener): B
             ImageUtils.loadImageWithoutPlaceholderAndError(home_account_member_layout_member_icon, member.icon)
 
             home_account_member_layout_title?.text = member.title
+
+            if (member.isError) {
+                home_account_member_card?.hide()
+            } else {
+
+            }
             setupItemAdapter(this, member)
         }
     }

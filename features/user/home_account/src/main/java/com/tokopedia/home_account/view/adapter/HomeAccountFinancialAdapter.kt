@@ -57,7 +57,6 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener) : Recyc
         this.list.find { it.type == type }?.let {
             this.list.remove(it)
         }
-        notifyDataSetChanged()
     }
 
     private fun orderItem() {
@@ -103,11 +102,6 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener) : Recyc
             ErrorFinancialItemViewHolder.TYPE_ERROR_OVO,
             ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO -> {
                 createErrorFinancialItemViewHolder(parent)
-            }
-            AccountConstants.LAYOUT.TYPE_ERROR -> {
-                val view = LayoutInflater.from(parent.context).inflate(ErrorItemViewHolder.LAYOUT, parent, false)
-                view.setOnClickListener { listener.onFinancialErrorClicked(viewType) }
-                ErrorItemViewHolder(view, listener)
             }
             ErrorFinancialViewHolder.ERROR_TYPE -> {
                 createErrorFinancialViewHolder(parent)

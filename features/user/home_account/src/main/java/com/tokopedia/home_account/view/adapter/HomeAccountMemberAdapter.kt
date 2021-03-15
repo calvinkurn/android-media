@@ -9,8 +9,10 @@ import com.tokopedia.home_account.data.model.MemberItemDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.viewholder.ErrorItemViewHolder
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.CardUnify
-import kotlinx.android.synthetic.main.home_account_item_error.view.*
+import com.tokopedia.unifycomponents.CardUnify.Companion.TYPE_SHADOW
+import com.tokopedia.unifycomponents.CardUnify.Companion.TYPE_SHADOW_DISABLED
 
 /**
  * Created by Yoris Prayogo on 19/10/20.
@@ -38,6 +40,9 @@ class HomeAccountMemberAdapter(val listener: HomeAccountUserListener): RecyclerV
             is MemberItemViewHolder -> {
                 holder.bind(list[position])
             }
+            is ErrorItemViewHolder -> {
+                holder.bind()
+            }
         }
     }
 
@@ -45,13 +50,13 @@ class HomeAccountMemberAdapter(val listener: HomeAccountUserListener): RecyclerV
         return when (viewType) {
             AccountConstants.LAYOUT.TYPE_ERROR -> {
                 val view = LayoutInflater.from(parent.context).inflate(ErrorItemViewHolder.LAYOUT, parent, false)
-                view.home_account_item_error_container?.cardType = CardUnify.TYPE_CLEAR
-                view.setOnClickListener { listener.onMemberErrorClicked() }
+                val cardUnify = (parent.parent as CardUnify?)
+                cardUnify?.cardType = TYPE_SHADOW_DISABLED
                 ErrorItemViewHolder(view, listener)
             }
             else -> {
                 val view = LayoutInflater.from(parent.context).inflate(MemberItemViewHolder.LAYOUT, parent, false)
-                return MemberItemViewHolder(view, listener)
+                MemberItemViewHolder(view, listener)
             }
         }
     }
