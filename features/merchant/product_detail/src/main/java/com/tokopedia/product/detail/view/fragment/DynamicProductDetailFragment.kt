@@ -1919,7 +1919,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     productName,
                     productImageUrl,
                     it.data.variant.isVariant,
-                    it.basic.getShopId()
+                    it.basic.getShopId(),
+                    viewModel.p2Data.value?.bebasOngkir?.boImages?.first()?.imageURL
             )
             val bundleData = Bundle()
             bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)

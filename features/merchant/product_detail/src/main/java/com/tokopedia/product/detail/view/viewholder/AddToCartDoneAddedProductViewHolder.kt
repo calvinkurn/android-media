@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -28,6 +29,9 @@ class AddToCartDoneAddedProductViewHolder(
             }
             button_go_to_cart.setOnClickListener {
                 addToCartDoneAddedProductListener.onButtonGoToCartClicked()
+            }
+            element.bebasOngkirUrl?.let {
+                free_ongkir_image?.loadImage(it)
             }
         }
     }
