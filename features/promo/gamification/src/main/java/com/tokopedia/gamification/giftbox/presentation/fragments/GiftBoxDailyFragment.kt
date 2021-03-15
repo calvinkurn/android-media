@@ -51,6 +51,7 @@ import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
@@ -218,7 +219,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         giftBoxDailyView.postDelayed({ playPrizeSound() }, soundDelay)
 
                         when (rewardState) {
-                            RewardContainer.RewardState.COUPON_ONLY-> {
+                            RewardContainer.RewardState.COUPON_ONLY -> {
                                 performRewardAnimation(startDelay, stageLightAnim)
                             }
 
@@ -474,10 +475,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 rewardContainer.postDelayed({
                     setupBottomSheet(true)
                     var shopId = ""
-                    if(!recommendation.shopId.isNullOrEmpty()){
+                    if (!recommendation.shopId.isNullOrEmpty()) {
                         shopId = recommendation.shopId
                     }
-                    pdpGamificationView.getRecommendationParams(recommendation.pageName?:"", shopId, shopId.isEmpty())
+                    pdpGamificationView.getRecommendationParams(recommendation.pageName ?: "", shopId, shopId.isEmpty())
                 }, 1000L)
 
             }
@@ -849,6 +850,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
             dialog.setTitle(backButton.title)
+            dialog.dialogImageContainer.layoutParams.apply {
+                height = 180.toPx()
+                width = 180.toPx()
+            }
+            dialog.dialogImageContainer.setBackgroundColor(ContextCompat.getColor(it,R.color.gf_black_transparent))
+            dialog.dialogImageContainer.outlineProvider = null
+            dialog.setImageDrawable(R.drawable.gami_exit_icon)
             dialog.setDescription(backButton.text)
             dialog.setPrimaryCTAText(backButton.yesText)
             dialog.setPrimaryCTAClickListener {
@@ -870,8 +878,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun onBackPressed(): Boolean {
-        backButton = BackButton("cancel",null,true,"Are you sure you want to exit?","Hadiahmu tinggal dikirim, lho! Jika kamu ingin mengirimnya nanti, kamu bisa ke halaman Riwayat Hadiah Game hingga 30 hari ke depan.","Go to Game Rewards History")
-        if (!hasWonRp0Reward() && backButton != null) {
+        backButton = BackButton(requireContext().getString(R.string.gami_back_button_cancel),
+                null, true,
+                requireContext().getString(R.string.gami_back_button_message),
+                requireContext().getString(R.string.gami_back_button_title),
+                requireContext().getString(R.string.gami_back_button_ok))
+        if (hasWonRp0Reward() && backButton != null) {
             showBackDialog(backButton!!)
             return false
         }

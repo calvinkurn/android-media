@@ -69,5 +69,9 @@
     <string name="gami_info_label">Information</string>
     <string name="gami_hadiah_yang_mungkin_didapat">Hadiah yang mungkin didapat</string>
     <string name="gami_produk_rekomendasi">Produk Rekomendasi</string>
+    <string name="gami_back_button_message">Hadiahnya udah siap, nanti bisa kamu kirim lewat halaman Daftar Hadiah Game selama 30 hari ke depan.</string>
+    <string name="gami_back_button_title">Belum mau kirim hadiah ini?.</string>
+    <string name="gami_back_button_ok">Cek Daftar Hadiah Game</string>
+    <string name="gami_back_button_cancel">Ke Home</string>
 
 </resources>
