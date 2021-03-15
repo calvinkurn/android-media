@@ -40,7 +40,7 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
 
     private fun renderListInfo(element: ProductDetailInfoDataModel) = with(view) {
         rvProductDetail?.adapter = adapter
-        adapter.updateData(element.getShowableData())
+        adapter.updateData(element.getShowableData(), getComponentTrackData(element))
     }
 
     private fun renderDescription(element: ProductDetailInfoDataModel) = with(view) {
