@@ -11,6 +11,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_smartbills_tooltip.*
 
 class SmartBillsToolTipBottomSheet : BottomSheetUnify() {
+    lateinit var tooltipListener: Listener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,7 +25,7 @@ class SmartBillsToolTipBottomSheet : BottomSheetUnify() {
     private fun initView(view: View) {
         with(view) {
             btn_tooltip_sbm.setOnClickListener {
-                RouteManager.route(context, SmartBillsFragment.HELP_SBM_URL)
+                tooltipListener.onClickMoreLearn()
             }
         }
     }
@@ -33,12 +34,17 @@ class SmartBillsToolTipBottomSheet : BottomSheetUnify() {
         private const val TAG = "SmartBillsToolTipBottomSheet"
 
         @JvmStatic
-        fun newInstance(context: Context): SmartBillsToolTipBottomSheet {
+        fun newInstance(context: Context, listener: SmartBillsToolTipBottomSheet.Listener): SmartBillsToolTipBottomSheet {
             return SmartBillsToolTipBottomSheet().apply {
                 val childView = View.inflate(context, R.layout.bottomsheet_smartbills_tooltip, null)
+                tooltipListener = listener
                 setChild(childView)
                 setCloseClickListener { this.dismiss() }
             }
         }
+    }
+
+    interface Listener{
+        fun onClickMoreLearn()
     }
 }

@@ -66,7 +66,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
         SmartBillsViewHolder.DetailListener,
         TopupBillsCheckoutWidget.ActionListener,
-        SmartBillsActivity.SbmActivityListener{
+        SmartBillsActivity.SbmActivityListener,
+        SmartBillsToolTipBottomSheet.Listener{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -508,10 +509,18 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun clickToolTip() {
         context?.let {
-            val tooltipBottomSheet = SmartBillsToolTipBottomSheet.newInstance(it)
+            smartBillsAnalytics.clickToolTip()
+            val tooltipBottomSheet = SmartBillsToolTipBottomSheet.newInstance(it, this)
             fragmentManager?.run {
                 tooltipBottomSheet.show(this)
             }
+        }
+    }
+
+    override fun onClickMoreLearn() {
+        context?.let {
+            smartBillsAnalytics.clickMoreLearn()
+            RouteManager.route(context, HELP_SBM_URL)
         }
     }
 
