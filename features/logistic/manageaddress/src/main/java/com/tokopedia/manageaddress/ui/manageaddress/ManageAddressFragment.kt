@@ -245,9 +245,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         setChosenAddress()
                     } else {
                         bottomSheetLainnya?.dismiss()
-                        context?.let {
-                            viewModel.searchAddress("", prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
-                        }
                         viewModel.getStateChosenAddress("address")
                     }
 
@@ -395,7 +392,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
 
         searchAddress?.clearListener = {
-           performSearch("", null)
+            performSearch("", null)
         }
 
         searchAddress?.searchBarPlaceholder = "Cari Alamat"
@@ -482,7 +479,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
             btn_alamat_utama?.setOnClickListener {
-                viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
+                viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
@@ -491,7 +488,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
             btn_alamat_utama_choose?.setOnClickListener {
                 context?.let {
-                    viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(it))
                 }
                 _selectedAddressItem = data
             }
