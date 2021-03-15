@@ -42,6 +42,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.sessioncommon.util.PasswordUtils
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -59,7 +60,6 @@ import javax.inject.Named
  * @author by nisie on 10/25/18.
  */
 class RegisterEmailFragment : BaseDaggerFragment() {
-    var PASSWORD_MINIMUM_LENGTH = 8
     var NAME = "NAME"
     var PASSWORD = "PASSWORD"
     var EMAIL = "EMAIL"
@@ -286,19 +286,9 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun passwordWatcher(wrapper: TextFieldUnify?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
-                    setWrapperErrorNew(wrapper, null)
-                }
-            }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable) {
-                showPasswordHint()
-                if (s.isEmpty()) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
-                } else if (wrapperPassword?.textFieldInput?.text.toString().length < PASSWORD_MINIMUM_LENGTH) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_minimal_password))
-                }
                 checkIsValidForm()
             }
         }
@@ -338,22 +328,46 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     private fun registerEmail() {
         showLoadingProgress()
-        registerAnalytics?.trackClickSignUpButtonEmail()
-        if(isUseEncryption()){
-            registerInitialViewModel?.registerRequestV2(
-                    wrapperEmail?.textFieldInput?.text.toString(),
-                    wrapperPassword?.textFieldInput?.text.toString(),
-                    wrapperName?.textFieldInput?.text.toString(),
-                    token
-            )
+        if(validatePasswordInput()) {
+            registerAnalytics?.trackClickSignUpButtonEmail()
+            if (isUseEncryption()) {
+                registerInitialViewModel?.registerRequestV2(
+                        wrapperEmail?.textFieldInput?.text.toString(),
+                        wrapperPassword?.textFieldInput?.text.toString(),
+                        wrapperName?.textFieldInput?.text.toString(),
+                        token
+                )
+            } else {
+                registerInitialViewModel?.registerRequest(
+                        wrapperEmail?.textFieldInput?.text.toString(),
+                        wrapperPassword?.textFieldInput?.text.toString(),
+                        wrapperName?.textFieldInput?.text.toString(),
+                        token
+                )
+            }
         } else {
-            registerInitialViewModel?.registerRequest(
-                    wrapperEmail?.textFieldInput?.text.toString(),
-                    wrapperPassword?.textFieldInput?.text.toString(),
-                    wrapperName?.textFieldInput?.text.toString(),
-                    token
-            )
+            dismissLoadingProgress()
         }
+    }
+
+    private fun validatePasswordInput(): Boolean {
+        wrapperPassword?.textFieldInput?.text?.toString()?.run {
+            return when {
+                isEmpty() -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_field_required))
+                    false
+                }
+                !PasswordUtils.isValidMinimumlength(this) -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_minimal_password))
+                    false
+                }
+                !PasswordUtils.isValidMaxLength(this) -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_maximal_password))
+                    false
+                } else -> false
+            }
+        }
+        return false
     }
 
     fun isCanRegister(name: String?, email: String?, password: String): Boolean {
@@ -361,6 +375,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         if (TextUtils.isEmpty(password)) {
             isValid = false
         } else if (password.length < PASSWORD_MINIMUM_LENGTH) {
+            isValid = false
+        } else if(password.length > PASSWORD_MAXIMUM_LENGTH){
             isValid = false
         }
         if (TextUtils.isEmpty(name)) {
@@ -381,7 +397,9 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun checkIsValidForm() {
-        if (isCanRegister(wrapperName?.textFieldInput?.text.toString(), wrapperEmail?.textFieldInput?.text.toString(), wrapperPassword?.textFieldInput?.text.toString())) {
+        if (isCanRegister(wrapperName?.textFieldInput?.text.toString(),
+                        wrapperEmail?.textFieldInput?.text.toString(),
+                        wrapperPassword?.textFieldInput?.text.toString())) {
             setRegisterButtonEnabled()
         } else {
             setRegisterButtonDisabled()
