@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.evoucher.presentation.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
@@ -28,6 +29,7 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -50,6 +52,8 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
     lateinit var progressDialog: ProgressDialog
     private lateinit var shareAsPdfBottomSheets: HotelSharePdfBottomSheets
+
+    private var uri: Uri? = null
 
     override fun getScreenName(): String = ""
 
@@ -103,9 +107,27 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
     override fun initInjector() = getComponent(HotelEVoucherComponent::class.java).inject(this)
 
-    fun takeScreenshot() {
+    fun takeScreenshot(isShare: Boolean) {
         val bitmap = getScreenBitmap()
-        shareImageUri(saveImage(bitmap))
+        uri = saveImage(bitmap)
+        if (isShare) {
+            shareImageUri(uri)
+        } else {
+            showToastMessage(uri)
+        }
+    }
+
+    private fun showToastMessage(uri: Uri?) {
+        if (uri != null) {
+            view?.let {
+                Toaster.build(
+                        it,
+                        getString(R.string.hotel_save_as_image_success),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_NORMAL
+                ).show()
+            }
+        }
     }
 
     private fun getScreenBitmap(): Bitmap? {
@@ -151,13 +173,20 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         return uri
     }
 
+    private fun removeImageFromStorage(uri: Uri?) {
+        if (uri != null) {
+            context?.contentResolver?.delete(uri, null, null)
+            this.uri = null
+        }
+    }
+
     private fun shareImageUri(uri: Uri?) {
         if (uri != null) {
             val intent = Intent(Intent.ACTION_SEND)
             intent.putExtra(Intent.EXTRA_STREAM, uri)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.type = "image/png"
-            startActivity(intent)
+            startActivityForResult(intent, SHARE_IMG_REQUEST_CODE)
         }
     }
 
@@ -265,10 +294,20 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 R.raw.gql_mutation_hotel_share_pdf), emailList, orderId)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode) {
+            SHARE_IMG_REQUEST_CODE -> {
+                removeImageFromStorage(uri)
+            }
+        }
+    }
+
     companion object {
 
         const val TAG_SHARE_AS_PDF = "TAG_SHARE_AS_PDF"
         const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
+        const val SHARE_IMG_REQUEST_CODE = 4532
 
         fun getInstance(orderId: String): HotelEVoucherFragment = HotelEVoucherFragment().also {
             it.arguments = Bundle().apply {
