@@ -250,7 +250,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         )
 
         viewModel.getTickerHomepageSection(
-                viewModel.createRechargeHomepageTickerParams(listOf(5), 5)
+                viewModel.createRechargeHomepageTickerParams(listOf(), platformId)
         )
     }
 
