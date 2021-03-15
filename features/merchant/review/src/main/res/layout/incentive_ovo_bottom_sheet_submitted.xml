@@ -42,6 +42,7 @@
         android:gravity="center"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintTop_toBottomOf="@id/incentiveOvoSubmittedTitle"
         app:layout_constraintStart_toStartOf="@id/incentiveOvoSubmittedTitle"
         app:layout_constraintEnd_toEndOf="@id/incentiveOvoSubmittedTitle"

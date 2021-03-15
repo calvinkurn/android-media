@@ -17,7 +17,6 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     companion object {
         val LAYOUT = R.layout.item_review_pending
-        const val UNLOCK_UNIFY_LABEL = true
     }
 
     override fun bind(element: ReviewPendingUiModel) {
@@ -31,7 +30,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             }
             showDate(timestamp.createTimeFormatted)
             showNew(status.seen)
-            showOvoIncentive(status.isEligible)
+            showIncentive(status.isEligible)
         }
     }
 
@@ -94,25 +93,11 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         itemView.reviewPendingNewIcon.showWithCondition(!seen)
     }
 
-    private fun showOvoIncentive(isEligible: Boolean) {
+    private fun showIncentive(isEligible: Boolean) {
         if (isEligible) {
-            itemView.reviewPendingOvoIncentiveLabel.apply {
-                unlockFeature = UNLOCK_UNIFY_LABEL
-                fontColorByPass = getColorString(com.tokopedia.unifyprinciples.R.color.Unify_P600)
-                setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N50))
-                val ovoIncentiveIcon = ContextCompat.getDrawable(context, R.drawable.ic_ovo_incentive_label)
-                ovoIncentiveIcon?.setBounds(0, 0, 16.toPx(), 16.toPx())
-                gravity = Gravity.CENTER_VERTICAL
-                setCompoundDrawables(ovoIncentiveIcon, null, null, null)
-                compoundDrawablePadding = 4.toPx()
-                show()
-            }
+            itemView.reviewPendingOvoIncentiveLabel.show()
             return
         }
         itemView.reviewPendingOvoIncentiveLabel.hide()
-    }
-
-    private fun getColorString(color: Int): String {
-        return "#${Integer.toHexString(ContextCompat.getColor(itemView.context, color))}"
     }
 }
