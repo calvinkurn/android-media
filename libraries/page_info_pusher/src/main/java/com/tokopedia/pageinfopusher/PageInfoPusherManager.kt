@@ -121,6 +121,7 @@ class PageInfoPusherManager(val activity: Activity) {
                     activity.finish()
                 } else if (actionApplink.isNotBlank()) {
                     RouteManager.route(activity, actionApplink)
+                    activity.finish()
                 }
             }
             setOverlayClose(false)
