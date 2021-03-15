@@ -14,8 +14,8 @@
             <gradient
                 android:type="linear"
                 android:angle="0"
-                android:endColor="@color/settingnotif_green_ic"
-                android:startColor="@color/settingnotif_lightish_green_ic"/>
+                android:endColor="@color/Unify_G500"
+                android:startColor="@color/Unify_G300"/>
         </shape>
     </item>
 </layer-list>
