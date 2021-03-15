@@ -180,6 +180,7 @@ class DigitalCartViewModel @Inject constructor(
 
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
+            paymentSummary.summaries.clear()
             paymentSummary.addToSummary(0, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
             _payment.postValue(paymentSummary)
 
