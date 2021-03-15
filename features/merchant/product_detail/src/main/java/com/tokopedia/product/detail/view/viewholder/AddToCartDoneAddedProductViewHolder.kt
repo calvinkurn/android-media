@@ -29,7 +29,7 @@ class AddToCartDoneAddedProductViewHolder(
             }
             element.bebasOngkirUrl?.let {
                 free_ongkir_image.show()
-                free_ongkir_image?.loadImage(it)
+                free_ongkir_image?.setImageUrl(it)
             }
         }
     }
