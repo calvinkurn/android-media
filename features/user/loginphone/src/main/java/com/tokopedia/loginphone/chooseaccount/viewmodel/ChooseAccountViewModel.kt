@@ -20,6 +20,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -40,6 +41,7 @@ class ChooseAccountViewModel @Inject constructor(
         @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
+        private val getAdminTypeUseCase: GetAdminTypeUseCase,
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -71,6 +73,10 @@ class ChooseAccountViewModel @Inject constructor(
     private val mutableGoToSecurityQuestion = MutableLiveData<String>()
     val goToSecurityQuestion: LiveData<String>
         get() = mutableGoToSecurityQuestion
+
+    private val mutableShowAdminLocationPopUp = MutableLiveData<Result<Boolean>>()
+    val showAdminLocationPopUp: LiveData<Result<Boolean>>
+        get() = mutableShowAdminLocationPopUp
 
     fun loginTokenPhone(key: String, email: String, phoneNumber: String) {
         loginTokenUseCase.executeLoginPhoneNumber(LoginTokenUseCase.generateParamLoginPhone(
@@ -145,7 +151,18 @@ class ChooseAccountViewModel @Inject constructor(
     fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSessionInterface,
                 onSuccessGetUserInfo(),
-                onFailedGetUserInfo()))
+                onFailedGetUserInfo(),
+                getAdminTypeUseCase,
+                showLocationAdminPopUp(),
+                showGetAdminTypeError()))
+    }
+
+    private fun showLocationAdminPopUp(): (() -> Unit) = {
+        mutableShowAdminLocationPopUp.value = Success(true)
+    }
+
+    private fun showGetAdminTypeError(): ((e: Throwable) -> Unit) = {
+        mutableShowAdminLocationPopUp.value = Fail(it)
     }
 
     private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {

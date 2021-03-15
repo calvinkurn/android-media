@@ -25,7 +25,7 @@
           "creative_slot": "{{.*}}",
           "item_id": "{{.+}}",
           "item_name": "{{.+}}",
-          "creative_url": ""
+          "creative_url": "{{.+}}"
         }
       ],
       "eventCategory": "digital - homepage",

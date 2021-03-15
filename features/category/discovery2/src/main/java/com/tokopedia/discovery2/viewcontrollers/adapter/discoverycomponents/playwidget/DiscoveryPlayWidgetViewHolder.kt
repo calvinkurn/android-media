@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget
 
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -9,7 +8,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.play.widget.PlayWidgetViewHolder
-import com.tokopedia.play.widget.analytic.ImpressionableModel
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -17,9 +15,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.user.session.UserSession
 
 class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), PlayWidgetListener, PlayWidgetInListAnalyticListener {
@@ -86,5 +82,29 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
 
     override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    }
+
+    override fun onClickBannerCard(view: PlayWidgetSmallView, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetBannerClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition)
+    }
+
+    override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetMediumBannerUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetBannerClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition)
+    }
+
+    override fun onClickViewAll(view: PlayWidgetSmallView, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLihatSemuaClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition)
+    }
+
+    override fun onClickViewAll(view: PlayWidgetMediumView, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLihatSemuaClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition)
+    }
+
+    override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetMediumOverlayUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetOverLayImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.appLink)
+    }
+
+    override fun onClickOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetMediumOverlayUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetOverLayClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.appLink)
     }
 }

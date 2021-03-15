@@ -33,6 +33,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
@@ -51,6 +52,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
@@ -92,6 +94,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
     private var isGpsEnable: Boolean = true
+    private var warehouseDataModel: Warehouse? = null
+    private var isEditWarehouse: Boolean = false
+    private var isReqLocation: Boolean = false
 
     private var composite = CompositeSubscription()
 
@@ -133,6 +138,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     putBoolean(EXTRA_IS_FULL_FLOW, extra.getBoolean(EXTRA_IS_FULL_FLOW, true))
                     putBoolean(EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true))
                     putBoolean(EXTRA_IS_CIRCUIT_BREAKER, extra.getBoolean(EXTRA_IS_CIRCUIT_BREAKER, false))
+                    putParcelable(EXTRA_WAREHOUSE_DATA, extra.getParcelable(EXTRA_WAREHOUSE_DATA))
+                    putBoolean(EXTRA_IS_EDIT_WAREHOUSE, extra.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false))
                 }
                 permissionCheckerHelper = PermissionCheckerHelper()
             }
@@ -162,6 +169,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
             isCircuitBreaker = it.getBoolean(EXTRA_IS_CIRCUIT_BREAKER, false)
+            warehouseDataModel = it.getParcelable(EXTRA_WAREHOUSE_DATA)
+            isEditWarehouse = it.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
         }
     }
 
@@ -191,6 +200,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.VISIBLE
         if (!isMismatch) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
+        if (isEditWarehouse) {
+            detail_address_layout.visibility = View.GONE
+        } else {
+            detail_address_layout.visibility = View.VISIBLE
+        }
     }
 
     private fun setViewListener() {
@@ -342,7 +356,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             fusedLocationClient?.lastLocation
                     ?.addOnSuccessListener {
                         if (it != null) {
-                            showAutoComplete(it.latitude, it.longitude)
+                            if (!isEditWarehouse) showAutoComplete(it.latitude, it.longitude)
+                            else showAutoComplete(currentLat, currentLong)
                         } else {
                             showAutoComplete(DEFAULT_LAT, DEFAULT_LONG)
                         }
@@ -351,6 +366,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun doUseCurrentLocation(isFullFlow: Boolean) {
+        isReqLocation = true
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             requestLocation()
         } else {
@@ -634,11 +650,15 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     private fun setResultPinpoint() {
         saveAddressDataModel?.editDetailAddress = et_detail_address?.text.toString()
-        activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)
-            })
-            finish()
+        if (isEditWarehouse && saveAddressDataModel?.districtId != warehouseDataModel?.districtId) {
+            view?.let { Toaster.build(it, getString(R.string.toaster_not_avail_shop_loc), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+        } else {
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)
+                })
+                finish()
+            }
         }
     }
 
@@ -841,7 +861,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     override fun onPermissionGranted() {
                         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                             if (data != null) {
-                                moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL) } }
+                                if (isEditWarehouse && !isReqLocation) moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
+                                else moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
+                            }
+                        }
                         googleMap?.isMyLocationEnabled = true
                     }
 

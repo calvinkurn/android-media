@@ -11,9 +11,9 @@ import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
@@ -22,12 +22,14 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.view.contract.*
 import com.tokopedia.play.view.fragment.PlayFragment
+import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -35,7 +37,7 @@ import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
- * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL]
+ * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL], [com.tokopedia.play.PLAY_APP_LINK]
  * Query parameters:
  * - source_type: String
  * - source_id: String
@@ -67,6 +69,10 @@ class PlayActivity : BaseActivity(),
 
     private lateinit var viewModel: PlayParentViewModel
 
+    private val pipAdapter: FloatingWindowAdapter by lifecycleBound(
+            creator = { FloatingWindowAdapter(this) }
+    )
+
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
         set(value) {
@@ -97,7 +103,7 @@ class PlayActivity : BaseActivity(),
     private val startChannelId: String
         get() = intent?.data?.lastPathSegment.orEmpty()
 
-    private val activeFragment: PlayFragment?
+    val activeFragment: PlayFragment?
         get() = try { swipeContainerView.getActiveFragment() as? PlayFragment } catch (e: Throwable) { null }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +113,8 @@ class PlayActivity : BaseActivity(),
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
+
+        removePip()
 
         setupIntentExtra()
 
@@ -182,6 +190,9 @@ class PlayActivity : BaseActivity(),
 
     override fun onShouldLoadNextPage() {
         viewModel.loadNextPage()
+    }
+
+    override fun onSwipeNextPage() {
         playPreference.setOnboardingShown(viewModel.userId)
     }
 
@@ -279,9 +290,7 @@ class PlayActivity : BaseActivity(),
         swipeContainerView.scrollTo(SwipeContainerViewComponent.ScrollDirection.Next, isSmoothScroll = true)
     }
 
-    fun getPltPerformanceResultData(): PltPerformanceData? {
-        return pageMonitoring.getPltPerformanceData()
-    }
+    fun getPerformanceMonitoring(): PlayPltPerformanceCallback = pageMonitoring
 
     private fun startPageMonitoring() {
         pageMonitoring.startPlayMonitoring()
@@ -299,6 +308,10 @@ class PlayActivity : BaseActivity(),
 
     private fun setupIntentExtra() {
         intent.putExtra(PLAY_KEY_CHANNEL_ID, startChannelId)
+    }
+
+    private fun removePip() {
+        pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
     }
 
     companion object {
