@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.product
 
+import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -28,6 +29,10 @@ open class ProductBasicViewHolder(
     private val tvCurrentPrice: TextView = itemView.findViewById(R.id.tv_current_price)
 
     private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
+
+    init {
+        tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    }
 
     open fun bind(item: PlayProductUiModel.Product) {
         ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
