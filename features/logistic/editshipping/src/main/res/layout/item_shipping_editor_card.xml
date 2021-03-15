@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/dp_4">
+
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_16">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_shipper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:closeButtonVisibility="gone"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:tckv_content_text_size = "@dimen/sp_12"
+                app:tickerShapeType="loose"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <ImageView
+                android:id="@+id/img_shipment_item"
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/shipment_name"
+                app:layout_constraintBottom_toBottomOf="@id/shipment_category"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/shipment_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/Unify_N700_96"
+                android:textSize="@dimen/sp_16"
+                app:layout_constraintStart_toEndOf="@id/img_shipment_item"
+                app:layout_constraintTop_toBottomOf="@id/ticker_shipper"
+                app:typographyType="heading_6" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/shipment_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_2"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:textColor="@color/Unify_N700_96"
+                android:textSize="@dimen/sp_16"
+                app:layout_constraintStart_toStartOf="@id/shipment_name"
+                app:layout_constraintTop_toBottomOf="@id/shipment_name"
+                app:layout_constraintEnd_toStartOf="@id/cb_shipment_item"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cb_shipment_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_18"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/img_shipment_item"
+                app:layout_constraintBottom_toBottomOf="@id/img_shipment_item" />
+
+            <include
+                android:id="@+id/layout_coupon"
+                layout="@layout/item_coupon"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintTop_toBottomOf="@id/shipment_category"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_shipment_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_18"
+                android:layout_marginEnd="@dimen/dp_18"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/label_feature_items"
+                android:visibility="visible"
+                tools:itemCount="4"
+                app:layout_constraintTop_toBottomOf="@id/layout_coupon"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btn_information"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintStart_toEndOf="@id/rv_shipment_label"
+                app:layout_constraintTop_toTopOf="@id/rv_shipment_label"
+                app:layout_constraintBottom_toBottomOf="@id/rv_shipment_label"
+                app:icon_name="INFORMATION"
+                tools:ignore="ContentDescription" />
+
+
+            <FrameLayout
+                android:id="@+id/item_child_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@+id/rv_shipment_label">
+
+                <View
+                    android:id="@+id/divider_shipment"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@color/Unify_N75"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginEnd="@dimen/unify_space_12"
+                    android:layout_marginStart="@dimen/unify_space_12" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/shipment_item_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:itemCount="3"
+                    android:layout_marginTop="@dimen/unify_space_16"
+                    android:layout_marginEnd="@dimen/unify_space_16"
+                    android:layout_marginStart="@dimen/unify_space_16"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:listitem="@layout/item_shipper_product_name"
+                    app:layout_constraintTop_toBottomOf="@id/divider_shipment" />
+
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

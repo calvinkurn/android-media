@@ -11,7 +11,6 @@ import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
@@ -38,7 +37,7 @@ import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
- * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL]
+ * Applink: [com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_DETAIL], [com.tokopedia.play.PLAY_APP_LINK]
  * Query parameters:
  * - source_type: String
  * - source_id: String
@@ -104,7 +103,7 @@ class PlayActivity : BaseActivity(),
     private val startChannelId: String
         get() = intent?.data?.lastPathSegment.orEmpty()
 
-    private val activeFragment: PlayFragment?
+    val activeFragment: PlayFragment?
         get() = try { swipeContainerView.getActiveFragment() as? PlayFragment } catch (e: Throwable) { null }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -291,9 +290,7 @@ class PlayActivity : BaseActivity(),
         swipeContainerView.scrollTo(SwipeContainerViewComponent.ScrollDirection.Next, isSmoothScroll = true)
     }
 
-    fun getPltPerformanceResultData(): PltPerformanceData? {
-        return pageMonitoring.getPltPerformanceData()
-    }
+    fun getPerformanceMonitoring(): PlayPltPerformanceCallback = pageMonitoring
 
     private fun startPageMonitoring() {
         pageMonitoring.startPlayMonitoring()
