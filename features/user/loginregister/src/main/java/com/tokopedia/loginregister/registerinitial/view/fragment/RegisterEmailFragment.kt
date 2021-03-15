@@ -374,9 +374,9 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         var isValid = true
         if (TextUtils.isEmpty(password)) {
             isValid = false
-        } else if (password.length < PASSWORD_MINIMUM_LENGTH) {
+        } else if (password.length < PasswordUtils.PASSWORD_MINIMUM_LENGTH) {
             isValid = false
-        } else if(password.length > PASSWORD_MAXIMUM_LENGTH){
+        } else if(password.length > PasswordUtils.PASSWORD_MAXIMUM_LENGTH){
             isValid = false
         }
         if (TextUtils.isEmpty(name)) {
