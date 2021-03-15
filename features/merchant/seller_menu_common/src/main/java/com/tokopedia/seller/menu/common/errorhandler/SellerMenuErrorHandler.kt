@@ -7,6 +7,7 @@ import com.tokopedia.seller.menu.common.exception.SellerMenuException
 object SellerMenuErrorHandler {
 
     const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
+    const val ERROR_GET_ADMIN_ACCESS_ROLE = "Error when get admin access role."
 
     fun logExceptionToCrashlytics(throwable: Throwable, message: String) {
         try {
