@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
@@ -12,7 +13,9 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderActionButtonWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPerformanceWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.PLAY
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE
@@ -21,7 +24,9 @@ class ShopPageHeaderAdapterTypeFactory(
         private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
         private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
         private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-        private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener
+        private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+        private val sgcPlayWidget: ShopPageTrackingSGCPlayWidget?,
+        private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener
 ) : BaseAdapterTypeFactory() {
 
     private var adapterShopHeader: ShopPageHeaderAdapter? = null
@@ -35,6 +40,7 @@ class ShopPageHeaderAdapterTypeFactory(
             SHOP_BASIC_INFO.toLowerCase() -> ShopHeaderBasicInfoWidgetViewHolder.LAYOUT
             SHOP_PERFORMANCE.toLowerCase() -> ShopHeaderPerformanceWidgetViewHolder.LAYOUT
             SHOP_ACTION.toLowerCase() -> ShopHeaderActionButtonWidgetViewHolder.LAYOUT
+            PLAY.toLowerCase() -> ShopHeaderPlayWidgetViewHolder.LAYOUT
             else -> HideViewHolder.LAYOUT
         }
 
@@ -49,6 +55,11 @@ class ShopPageHeaderAdapterTypeFactory(
                     shopActionButtonWidgetChatButtonComponentListener,
                     shopActionButtonWidgetFollowButtonComponentListener,
                     adapterShopHeader
+            )
+            ShopHeaderPlayWidgetViewHolder.LAYOUT -> ShopHeaderPlayWidgetViewHolder(
+                    parent,
+                    sgcPlayWidget,
+                    shopPlayWidgetListener
             )
             else -> super.createViewHolder(parent, type)
         }

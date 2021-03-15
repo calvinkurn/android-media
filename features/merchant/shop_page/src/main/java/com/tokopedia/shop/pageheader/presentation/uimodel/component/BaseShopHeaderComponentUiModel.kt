@@ -16,6 +16,7 @@ interface BaseShopHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory> {
         const val BUTTON_SHOP_NOTES = "catatan_toko"
         const val BUTTON_CHAT = "chat"
         const val BUTTON_FOLLOW = "follow_member"
+        const val BUTTON_PLAY = "play"
     }
 
     val name: String

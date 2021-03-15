@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.loadLeftDrawable
 import com.tokopedia.shop.common.util.removeDrawable
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderActionWidgetFollowButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -13,7 +14,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 class ShopActionButtonWidgetFollowButtonComponentViewHolder(
         itemView: View,
         private val listener: Listener
-) : AbstractViewHolder<ShopHeaderButtonComponentUiModel>(itemView) {
+) : AbstractViewHolder<ShopHeaderActionWidgetFollowButtonComponentUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_follow_button_component
@@ -34,7 +35,7 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
         }
     }
 
-    override fun bind(model: ShopHeaderButtonComponentUiModel) {
+    override fun bind(model: ShopHeaderActionWidgetFollowButtonComponentUiModel) {
         buttonFollow?.apply {
             val isShowLoading = model.isButtonLoading
             isLoading = isShowLoading

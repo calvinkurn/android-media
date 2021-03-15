@@ -23,6 +23,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -37,7 +38,8 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
                                           private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-                                          private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener
+                                          private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+                                          private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener
 ) {
     private var isShopFavorite = false
 
@@ -59,10 +61,6 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 //        } ?: view.shop_page_follow_unfollow_button_old
     private var coachMark: CoachMark2? = null
 
-    companion object {
-        private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
-    }
-
     private var shopPageHeaderAdapter: ShopPageHeaderAdapter? = null
 
     fun setShopHeaderWidgetData(listWidget: List<ShopHeaderWidgetUiModel>) {
@@ -70,9 +68,12 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                 shopHeaderBasicInfoWidgetListener,
                 shopPerformanceWidgetBadgeTextValueListener,
                 shopActionButtonWidgetChatButtonComponentListener,
-                shopActionButtonWidgetFollowButtonComponentListener
+                shopActionButtonWidgetFollowButtonComponentListener,
+                shopPageTrackingSGCPlayWidget,
+                shopPlayWidgetListener
         ))
         view.rv_shop_page_header_widget?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+        view.rv_shop_page_header_widget?.itemAnimator = null
         view.rv_shop_page_header_widget?.adapter = shopPageHeaderAdapter
         shopPageHeaderAdapter?.setData(listWidget)
     }
@@ -178,16 +179,9 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 //        }
 //    }
 //
-//    private fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel){
-//        view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()) View.VISIBLE else View.GONE
-//        setupTextContentSgcWidget()
-//        setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
-//        if(shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
-//        view.container_lottie?.setOnClickListener {
-//            shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-//            listener.onStartLiveStreamingClicked()
-//        }
-//    }
+    fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel){
+        shopPageHeaderAdapter?.setPlayWidgetData(shopPageHeaderDataModel)
+    }
 //
 //    fun setShopName(shopName: String) {
 //        val name = MethodChecker.fromHtml(shopName)
@@ -377,6 +371,10 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         } else {
             null
         }
+    }
+
+    fun isPlayWidgetPlaceHolderAvailable(): Boolean {
+        return shopPageHeaderAdapter?.isPlayWidgetPlaceholderAvailable() ?: false
     }
 
 //    /**

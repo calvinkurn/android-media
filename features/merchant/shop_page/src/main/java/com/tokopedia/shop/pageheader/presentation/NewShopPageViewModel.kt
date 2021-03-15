@@ -414,11 +414,7 @@ class NewShopPageViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io ,block = {
             var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
             if(isMyShop(shopId = shopId)) {
-                broadcasterConfig = asyncCatchError(
-                        dispatcherProvider.io,
-                        block = { getShopBroadcasterConfig(shopId) },
-                        onError = { null }
-                ).await() ?: Broadcaster.Config()
+                broadcasterConfig = getShopBroadcasterConfig(shopId)
             }
             _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }) {

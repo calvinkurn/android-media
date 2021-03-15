@@ -17,10 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -102,6 +99,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
@@ -139,7 +137,8 @@ class NewShopPageFragment :
         ShopHeaderBasicInfoWidgetViewHolder.Listener,
         ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
         ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-        ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener
+        ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+        ShopHeaderPlayWidgetViewHolder.Listener
 {
 
     companion object {
@@ -300,6 +299,10 @@ class NewShopPageFragment :
         shopViewModel?.shopUnmoderateData?.removeObservers(this)
         shopViewModel?.shopModerateRequestStatus?.removeObservers(this)
         shopViewModel?.shopShareTracker?.removeObservers(this)
+        shopViewModel?.followStatusData?.removeObservers(this)
+        shopViewModel?.followShopData?.removeObservers(this)
+        shopViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
+        shopViewModel?.shopPageTickerData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -324,6 +327,7 @@ class NewShopPageFragment :
                 shopPageTracking,
                 shopPageTrackingSGCPlay,
                 view.context,
+                this,
                 this,
                 this,
                 this,
@@ -454,7 +458,7 @@ class NewShopPageFragment :
                     onSuccessGetShopIdFromDomain(result.data)
                 }
                 is Fail -> {
-                    onErrorGetShopPageHeaderContentData(result.throwable)
+                    onErrorGetShopPageTabData(result.throwable)
                 }
             }
         })
@@ -549,6 +553,15 @@ class NewShopPageFragment :
                     it.statusMessage = result.data.statusMessage
                     it.shopStatus = result.data.shopStatus
                     shopPageFragmentHeaderViewHolder?.updateShopTicker(it, isMyShop)
+                }
+            }
+        })
+
+        shopViewModel?.shopSellerPLayWidgetData?.observe(owner, Observer { result ->
+            if (result is Success) {
+                shopPageHeaderDataModel?.let {
+                    it.broadcaster = result.data
+                    shopPageFragmentHeaderViewHolder?.setupSgcPlayWidget(it)
                 }
             }
         })
@@ -665,21 +678,6 @@ class NewShopPageFragment :
         getShopPageP1Data()
     }
 
-    private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, error)
-        view?.let { view ->
-            Toaster.make(
-                    view,
-                    errorMessage,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    getString(R.string.shop_page_retry),
-                    View.OnClickListener {
-                        getShopPageP2Data()
-                    })
-        }
-    }
-
     private fun getShopPageP2Data() {
         getShopTickerStatus()
         getFollowStatus()
@@ -691,7 +689,7 @@ class NewShopPageFragment :
     }
 
     private fun getSellerPlayWidget() {
-        if (isMyShop)
+        if (shopPageFragmentHeaderViewHolder?.isPlayWidgetPlaceHolderAvailable() == true)
             shopViewModel?.getSellerPlayWidgetData(shopId)
     }
 

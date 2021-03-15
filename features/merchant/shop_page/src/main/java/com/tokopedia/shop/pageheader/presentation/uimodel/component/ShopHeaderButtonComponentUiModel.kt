@@ -1,21 +1,28 @@
 package com.tokopedia.shop.pageheader.presentation.uimodel.component
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderButtonComponentTypeFactory
 
-data class ShopHeaderButtonComponentUiModel(
-        override val name: String = "",
-        override val type: String = "",
-        val icon: String = "",
-        var label: String = "",
-        val buttonType: String = "",
-        val link: String = "",
-        val isBottomSheet: Boolean = false
-) : BaseShopHeaderComponentUiModel, InterfaceShopHeaderFollowButtonFields {
+open class ShopHeaderButtonComponentUiModel : BaseShopHeaderComponentUiModel {
 
-    override var isButtonLoading = false
-    override var leftDrawableUrl = ""
-    override var isFollowing = false
+    override var name: String = ""
+    override var type: String = ""
+    var icon: String = ""
+    var label: String = ""
+    var buttonType: String = ""
+    var link: String = ""
+    var isBottomSheet: Boolean = false
+
+    fun mapComponentModel(component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component) {
+        name = component.name
+        type = component.type
+        icon = component.data.icon
+        label = component.data.label
+        buttonType = component.data.buttonType
+        link = component.data.link
+        isBottomSheet = component.data.isBottomSheet
+    }
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return if (typeFactory is ShopHeaderButtonComponentTypeFactory) {
