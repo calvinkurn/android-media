@@ -364,7 +364,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                 !PasswordUtils.isValidMaxLength(this) -> {
                     setWrapperErrorNew(wrapperPassword, getString(R.string.error_maximal_password))
                     false
-                } else -> false
+                } else -> true
             }
         }
         return false
