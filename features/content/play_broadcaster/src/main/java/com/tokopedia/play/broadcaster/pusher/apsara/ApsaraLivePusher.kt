@@ -53,7 +53,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
     }
 
     var mApsaraLivePusherInfoListener: ApsaraLivePusherInfoListener? = null
-    var mApsaraLivePusherStatus: ApsaraLivePusherStatus = ApsaraLivePusherStatus.Idle
+    var mApsaraLivePusherStatus: ApsaraLivePusherState = ApsaraLivePusherState.Idle
 
     private var mAliVcLivePusher: AlivcLivePusher? = null
     private var mIngestUrl: String = ""
@@ -133,7 +133,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         } catch (e: Exception) {
             sendCrashlyticsLog(e)
         }
-        mApsaraLivePusherStatus = ApsaraLivePusherStatus.Stop
+        mApsaraLivePusherStatus = ApsaraLivePusherState.Stop
         mApsaraLivePusherInfoListener?.onStop()
     }
 
@@ -171,12 +171,12 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
 
     private val mAliVcLivePushErrorListener = object : AlivcLivePushErrorListener {
         override fun onSystemError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.SystemError)
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Error(ApsaraLivePusherErrorStatus.SystemError)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.SystemError)
         }
 
         override fun onSDKError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.SystemError)
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Error(ApsaraLivePusherErrorStatus.SystemError)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.SystemError)
         }
     }
@@ -190,7 +190,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         }
 
         override fun onReconnectFail(pusher: AlivcLivePusher?) {
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.ReconnectFailed)
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Error(ApsaraLivePusherErrorStatus.ReconnectFailed)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ReconnectFailed)
             reconnectPushAsync()
         }
@@ -200,13 +200,13 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
 
         override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
             // Indicates that data transmission times out.
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.NetworkLoss)
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Error(ApsaraLivePusherErrorStatus.NetworkLoss)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.NetworkLoss)
             reconnectPushAsync()
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.ConnectFailed)
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Error(ApsaraLivePusherErrorStatus.ConnectFailed)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ConnectFailed)
         }
 
@@ -219,7 +219,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
 
         override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
             // Indicates that a reconnection is successful.
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Live
             mApsaraLivePusherInfoListener?.onRecovered()
         }
 
@@ -229,7 +229,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
 
         override fun onNetworkPoor(pusher: AlivcLivePusher?) {
             // Indicates poor network conditions.
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.NetworkPoor)
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Error(ApsaraLivePusherErrorStatus.NetworkPoor)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.NetworkPoor)
         }
     }
@@ -244,21 +244,21 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         }
 
         override fun onPushStarted(pusher: AlivcLivePusher?) {
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Live
             mApsaraLivePusherInfoListener?.onStarted()
         }
 
         override fun onPushPauesed(pusher: AlivcLivePusher?) {
-            if (mApsaraLivePusherStatus !is ApsaraLivePusherStatus.Live) return
+            if (mApsaraLivePusherStatus !is ApsaraLivePusherState.Live) return
 
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Pause
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Pause
             mApsaraLivePusherInfoListener?.onPaused()
         }
 
         override fun onPushResumed(pusher: AlivcLivePusher?) {
-            if (mApsaraLivePusherStatus !is ApsaraLivePusherStatus.Pause) return
+            if (mApsaraLivePusherStatus !is ApsaraLivePusherState.Pause) return
 
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Live
             mApsaraLivePusherInfoListener?.onResumed()
         }
 
@@ -266,7 +266,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         }
 
         override fun onPushRestarted(pusher: AlivcLivePusher?) {
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Restart
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Restart
             mApsaraLivePusherInfoListener?.onRestarted()
         }
 
