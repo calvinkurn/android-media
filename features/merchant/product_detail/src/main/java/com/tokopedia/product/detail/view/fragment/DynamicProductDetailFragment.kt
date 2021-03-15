@@ -826,13 +826,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     override fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventRecommendationClick(
-                recomItem, chipValue, position, viewModel.isUserSessionActive, pageName, title, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                recomItem, chipValue, false, position, viewModel.isUserSessionActive, pageName, title, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
     }
 
     override fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         if (::trackingQueue.isInitialized) {
             DynamicProductDetailTracking.Impression.eventRecommendationImpression(
-                    trackingQueue, position, recomItem, chipValue, viewModel.isUserSessionActive, pageName, title,
+                    trackingQueue, position, recomItem, chipValue, false, viewModel.isUserSessionActive, pageName, title,
                     viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         }
     }

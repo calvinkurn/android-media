@@ -241,6 +241,8 @@ object ProductTrackingConstant {
     object TopAds {
         const val PDP_BANNER_TOPADS = "/product - tdn banner ads"
         const val DFAULT_CREATIVE_NAME_BANNER_TOP_ADS = "none / other"
+        const val RECOMMENDATION_COMPARISON = "comparison widget"
+        const val RECOMMENDATION_CAROUSELL = "carousell"
     }
 
     object MiniSocialProof {
