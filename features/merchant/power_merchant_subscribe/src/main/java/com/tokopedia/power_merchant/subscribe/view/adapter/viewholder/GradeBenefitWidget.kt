@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
 import kotlinx.android.synthetic.main.widget_pm_grade_benefit.view.*
@@ -26,10 +28,17 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         setupTabLayout(element)
         setupPagerView(element)
         selectDefaultTab(element)
+        setupView()
+    }
+
+    private fun setupView() = with(itemView) {
+        tvPmLearMorePowerMerchant.setOnClickListener {
+            RouteManager.route(context, Constant.Url.POWER_MERCHANT_EDU)
+        }
     }
 
     private fun selectDefaultTab(element: WidgetGradeBenefitUiModel) {
-        val selected = element.benefitPages.indexOfFirst { it.isSelected }
+        val selected = element.benefitPages.indexOfFirst { it.isActive }
         if (selected != RecyclerView.NO_POSITION) {
             itemView.rvPmGradeBenefitPager.scrollToPosition(selected)
             itemView.tabPmGradeBenefit.tabLayout.getTabAt(selected)?.select()
@@ -40,7 +49,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         with(itemView.tabPmGradeBenefit) {
             tabLayout.removeAllTabs()
             element.benefitPages.forEach {
-                addNewTab(it.title)
+                addNewTab(it.gradeName)
             }
 
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

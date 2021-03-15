@@ -9,12 +9,13 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 09/03/21
  */
 
-class GetPMShopInfoUseCase(
+class GetPMShopInfoUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PMShopInfoMapper
 ) : BaseGqlUseCase<PMShopInfoUiModel>() {
@@ -26,7 +27,7 @@ class GetPMShopInfoUseCase(
         val errors: List<GraphqlError>? = gqlResponse.getError(GMShopInfoResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<GMShopInfoResponse>()
-            return mapper.mapRemoteModelToUiModel(response.goldGetPMShopInfo?.data)
+            return mapper.mapRemoteModelToUiModel(response.goldGetPMShopInfo)
         } else {
             throw MessageErrorException(errors.joinToString(" - ") { it.message })
         }

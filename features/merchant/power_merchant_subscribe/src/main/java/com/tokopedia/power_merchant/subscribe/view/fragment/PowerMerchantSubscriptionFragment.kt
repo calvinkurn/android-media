@@ -1,22 +1,38 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.KYCStatusId
+import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
+import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PowerMerchantNotificationBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 02/03/21
@@ -30,7 +46,18 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private val recyclerView by lazy { super.getRecyclerView(view) }
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val sharedViewModel: SubscriptionActivityViewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory).get(SubscriptionActivityViewModel::class.java)
+    }
+    private val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
+    }
+
+    private val recyclerView: RecyclerView?
+        get() = super.getRecyclerView(view)
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
@@ -49,13 +76,130 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        renderDummyTransition()
-        //renderDummyFinalPeriod()
+        setupView()
+        observeShopSettingInfo()
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel?) {}
 
     override fun loadData(page: Int) {}
+
+    private fun setupView() = view?.run {
+
+    }
+
+    private fun observeShopSettingInfo() {
+        sharedViewModel.powerMerchantSettingInfo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> fetchPageContent(it.data)
+                is Fail -> {
+                    //show on error fetch setting info
+                }
+            }
+        })
+    }
+
+    private fun fetchPageContent(data: PowerMerchantSettingInfoUiModel) {
+        when (data.periodeType) {
+            PeriodType.TRANSITION_PERIOD -> observeShopInfoAndPMGradeBenefits()
+            PeriodType.FINAL_PERIOD -> renderDummyFinalPeriod()
+        }
+    }
+
+    private fun observeShopInfoAndPMGradeBenefits() {
+        mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> renderRegistrationPM(it.data)
+                is Fail -> {
+                    //show error state
+                }
+            }
+        })
+        mViewModel.getPMRegistrationData()
+    }
+
+    private fun renderRegistrationPM(data: PMGradeBenefitAndShopInfoUiModel) {
+        val widgets = listOf(
+                getHeaderWidgetData(data.shopInfo),
+                getPotentialBenefitWidgetData(),
+                WidgetDividerUiModel,
+                WidgetGradeBenefitUiModel(benefitPages = data.gradeBenefitList)
+        )
+        renderList(widgets)
+
+        setupFooterCta(data.shopInfo)
+    }
+
+    private fun setupFooterCta(shopInfo: PMShopInfoUiModel) = view?.run {
+        val needTnC = (!shopInfo.isKyc && shopInfo.isEligibleShopScore) || (shopInfo.isKyc && shopInfo.isEligibleShopScore)
+        if (shopInfo.kycStatusId == KYCStatusId.PENDING) {
+            pmRegistrationFooterView.gone()
+        } else {
+            pmRegistrationFooterView.visible()
+        }
+        pmRegistrationFooterView.setTnCVisibility(needTnC)
+        val ctaText = if (needTnC || shopInfo.isNewSeller) {
+            getString(R.string.power_merchant_register_now)
+        } else {
+            getString(R.string.pm_interested_to_register)
+        }
+        pmRegistrationFooterView.setCtaText(ctaText)
+
+        pmRegistrationFooterView.setOnCtaClickListener {
+            when {
+                shopInfo.isEligiblePm -> submitPMRegistration()
+                !shopInfo.isKyc && ((!shopInfo.isNewSeller && shopInfo.isEligibleShopScore)
+                        || (shopInfo.isNewSeller && shopInfo.hasActiveProduct)) -> submitKYC()
+                else -> showRegistrationTermBottomSheet(shopInfo)
+            }
+        }
+    }
+
+    private fun submitKYC() {
+        RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+    }
+
+    private fun showRegistrationTermBottomSheet(shopInfo: PMShopInfoUiModel) {
+        val isNewSeller = shopInfo.isNewSeller
+        val title = if (isNewSeller) {
+            getString(R.string.pm_bottom_sheet_active_product_title)
+        } else {
+            getString(R.string.pm_bottom_sheet_shop_score_title)
+        }
+        val description = if (isNewSeller) {
+            getString(R.string.pm_bottom_sheet_active_product_description)
+        } else {
+            getString(R.string.pm_bottom_sheet_shop_score_description)
+        }
+        val illustrationUrl = if (isNewSeller) {
+            Constant.ImageUrl.ADD_PRODUCT_BOTTOM_SHEET
+        } else {
+            Constant.ImageUrl.SHOP_SCORE_BOTTOM_SHEET
+        }
+        val ctaText = getString(R.string.pm_learn_shop_performance)
+        val appLink = if (isNewSeller) {
+            ApplinkConst.SellerApp.PRODUCT_ADD
+        } else {
+            ApplinkConst.SHOP_SCORE_DETAIL
+        }
+
+        val shopScoreBottomSheet = PowerMerchantNotificationBottomSheet.createInstance(title, description, illustrationUrl)
+        shopScoreBottomSheet.setPrimaryButtonClickListener(ctaText) {
+            shopScoreBottomSheet.dismiss()
+            RouteManager.route(context, appLink)
+        }
+
+        //to prevent IllegalStateException: Fragment already added
+        if (shopScoreBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+        Handler().post {
+            shopScoreBottomSheet.show(childFragmentManager)
+        }
+    }
+
+    private fun submitPMRegistration() {
+
+    }
 
     private fun renderDummyFinalPeriod() {
         view?.pmRegistrationFooterView?.gone()
@@ -80,149 +224,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         renderList(widgets)
     }
 
-    private fun renderDummyTransition() {
-        view?.pmRegistrationFooterView?.visible()
-        val gradeBenefits = listOf(
-                GradeBenefitItemUiModel(
-                        iconUrl = "https://www.freeiconspng.com/uploads/baby-icon-14.jpg",
-                        description = "Dapat menampilkan 5 produk unggulan di bagian atas tokomu"
-                ),
-                GradeBenefitItemUiModel(
-                        iconUrl = "https://www.freeiconspng.com/uploads/baby-icon-14.jpg",
-                        description = "Dapat menampilkan 5 produk unggulan di bagian atas tokomu"
-                ),
-                GradeBenefitItemUiModel(
-                        iconUrl = "https://www.freeiconspng.com/uploads/baby-icon-14.jpg",
-                        description = "Dapat menampilkan 5 produk unggulan di bagian atas tokomu"
-                ),
-                GradeBenefitItemUiModel(
-                        iconUrl = "https://www.freeiconspng.com/uploads/baby-icon-14.jpg",
-                        description = "Dapat menampilkan 5 produk unggulan di bagian atas tokomu"
-                ),
-                GradeBenefitItemUiModel(
-                        iconUrl = "https://www.freeiconspng.com/uploads/baby-icon-14.jpg",
-                        description = "Dapat menampilkan 5 produk unggulan di bagian atas tokomu"
-                ),
-                GradeBenefitItemUiModel(
-                        iconUrl = "https://www.freeiconspng.com/uploads/baby-icon-14.jpg",
-                        description = "Dapat menampilkan 5 produk unggulan di bagian atas tokomu"
-                )
-        )
-
-        val widgets = listOf(
-                getHeaderWidgetData(PMShopInfoUiModel()),
-                getPotentialBenefitWidgetData(),
-                WidgetDividerUiModel,
-                WidgetGradeBenefitUiModel(
-                        benefitPages = listOf(
-                                GradeBenefitPagerUiModel(
-                                        title = "Bronze",
-                                        isSelected = false,
-                                        gradeBenefits = gradeBenefits
-                                ),
-                                GradeBenefitPagerUiModel(
-                                        title = "Silver",
-                                        isSelected = false,
-                                        gradeBenefits = gradeBenefits
-                                ),
-                                GradeBenefitPagerUiModel(
-                                        title = "Gold",
-                                        isSelected = true,
-                                        gradeBenefits = gradeBenefits
-                                ),
-                                GradeBenefitPagerUiModel(
-                                        title = "Diamond",
-                                        isSelected = false,
-                                        gradeBenefits = gradeBenefits
-                                )
-                        )
-                )
-        )
-
-        renderList(widgets)
-    }
-
     private fun getHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
         return WidgetRegistrationHeaderUiModel(
                 shopInfo = shopInfo,
-                terms = listOf(getFirstPmRegistrationTerm(shopInfo), getSecondPmRegistrationTerm(shopInfo))
-        )
-    }
-
-    private fun getFirstPmRegistrationTerm(shopInfo: PMShopInfoUiModel): RegistrationTermUiModel {
-        val shopScoreResIcon: Int = if ((shopInfo.isNewSeller && shopInfo.hasActiveProduct) || shopInfo.isEligibleShopScore) {
-            R.drawable.ic_pm_checked
-        } else {
-            R.drawable.ic_pm_not_checked
-        }
-
-        val title: String
-        val description: String
-        var ctaText: String? = null
-        var ctaAppLink: String? = null
-        if (shopInfo.isNewSeller) { //new seller
-            if (shopInfo.hasActiveProduct) {
-                title = getString(R.string.pm_already_have_one_active_product)
-                description = getString(R.string.pm_label_already_have_one_active_product)
-            } else {
-                title = getString(R.string.pm_have_not_one_active_product_yet)
-                description = getString(R.string.pm_label_have_not_one_active_product_yet)
-                ctaText = getString(R.string.pm_add_product)
-                ctaAppLink = ApplinkConst.SellerApp.PRODUCT_ADD
-            }
-        } else { //existing seller
-            if (shopInfo.isEligibleShopScore) {
-                val textColor = "#" + Integer.toHexString(requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                title = getString(R.string.pm_shop_score_eligible, textColor, shopInfo.shopScore)
-                description = getString(R.string.pm_shop_score_eligible_description, shopInfo.shopScoreThreshold)
-            } else {
-                val textColor = "#" + Integer.toHexString(requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
-                title = getString(R.string.pm_shop_score_not_eligible, textColor, shopInfo.shopScore)
-                description = getString(R.string.pm_shop_score_not_eligible_description, shopInfo.shopScoreThreshold)
-                ctaText = getString(R.string.pm_learn_shop_performance)
-                ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
-            }
-        }
-
-        return RegistrationTermUiModel(
-                title = title,
-                descriptionHtml = description,
-                resDrawableIcon = shopScoreResIcon,
-                clickableText = ctaText,
-                appLinkOrUrl = ctaAppLink
-        )
-    }
-
-    private fun getSecondPmRegistrationTerm(shopInfo: PMShopInfoUiModel): RegistrationTermUiModel {
-        val shopKycResIcon: Int
-        val title: String
-        val description: String
-        when (shopInfo.kycStatusId) {
-            KYCStatusId.VERIFIED, KYCStatusId.APPROVED -> {
-                title = getString(R.string.pm_kyc_verified)
-                description = getString(R.string.pm_description_kyc_verified)
-                shopKycResIcon = R.drawable.ic_pm_checked
-            }
-            KYCStatusId.NOT_VERIFIED -> {
-                title = getString(R.string.pm_kyc_not_verified)
-                description = getString(R.string.pm_description_kyc_not_verified)
-                shopKycResIcon = R.drawable.ic_pm_not_checked
-            }
-            KYCStatusId.PENDING -> {
-                title = getString(R.string.pm_kyc_verification_waiting)
-                description = getString(R.string.pm_description_kyc_verification_waiting)
-                shopKycResIcon = R.drawable.ic_pm_waiting
-            }
-            else -> {
-                title = getString(R.string.pm_verification_failed)
-                description = getString(R.string.pm_description_kyc_verification_failed)
-                shopKycResIcon = R.drawable.ic_pm_failed
-            }
-        }
-        return RegistrationTermUiModel(
-                title = title,
-                descriptionHtml = description,
-                resDrawableIcon = shopKycResIcon
+                terms = PMRegistrationTermHelper.getPMRegistrationTerms(requireContext(), shopInfo)
         )
     }
 

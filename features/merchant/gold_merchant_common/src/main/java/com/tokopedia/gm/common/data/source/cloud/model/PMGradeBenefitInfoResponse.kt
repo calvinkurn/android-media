@@ -20,7 +20,7 @@ data class PMGradeBenefitInfoModel(
         val nextQuarterlyCalibrationRefreshDate: String? = "",
         @SerializedName("current_pm_grade")
         val currentPMGrade: CurrentPmGradeModel? = null,
-        @SerializedName("current_pm_grade")
+        @SerializedName("current_benefit_list")
         val currentPMBenefits: List<PMGradeBenefitModel>? = null,
         @SerializedName("next_pm_grade")
         val nextPMGrade: NextPMGradeModel? = null,
@@ -89,6 +89,8 @@ data class PMGradeBenefitModel(
         val categoryName: String? = "",
         @SerializedName("benefit_name")
         val benefitName: String? = "",
+        @SerializedName("benefit_description")
+        val benefitDescription: String? = "",
         @SerializedName("related_link_applink")
         val appLink: String? = "",
         @SerializedName("seq_num")

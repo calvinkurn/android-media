@@ -26,7 +26,7 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
         )
     }
 
-    private fun getPMGradeBenefitList(pmGradeBenefitList: List<PmGradeWithBenefitsModel>?): List<PMGradeWithBenefitsUiModel>? {
+    fun getPMGradeBenefitList(pmGradeBenefitList: List<PmGradeWithBenefitsModel>?): List<PMGradeWithBenefitsUiModel>? {
         pmGradeBenefitList?.let { list ->
             return list.map {
                 PMGradeWithBenefitsUiModel(
@@ -73,6 +73,7 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
                         PMGradeBenefitUiModel(
                                 categoryName = it.categoryName.orEmpty(),
                                 benefitName = it.benefitName.orEmpty(),
+                                description = it.benefitDescription.orEmpty(),
                                 sequenceNum = it.sequenceNum.orZero(),
                                 appLink = it.appLink,
                                 iconUrl = it.iconUrl

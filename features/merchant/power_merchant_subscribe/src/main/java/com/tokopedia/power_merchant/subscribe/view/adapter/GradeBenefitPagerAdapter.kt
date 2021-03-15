@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.GradeBenefitPagerUiModel
 import kotlinx.android.synthetic.main.item_pm_grade_benefit_pager.view.*
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.item_pm_grade_benefit_pager.view.*
  */
 
 class GradeBenefitPagerAdapter(
-        private val pages: List<GradeBenefitPagerUiModel>
+        private val pages: List<PMGradeWithBenefitsUiModel>
 ) : RecyclerView.Adapter<GradeBenefitPagerAdapter.GradeBenefitPagerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GradeBenefitPagerViewHolder {
@@ -32,13 +33,13 @@ class GradeBenefitPagerAdapter(
 
     inner class GradeBenefitPagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(page: GradeBenefitPagerUiModel) {
+        fun bind(page: PMGradeWithBenefitsUiModel) {
             setupBenefitListView(page)
         }
 
-        private fun setupBenefitListView(page: GradeBenefitPagerUiModel) {
+        private fun setupBenefitListView(page: PMGradeWithBenefitsUiModel) {
             with(itemView.rvPmGradeBenefitItem) {
-                val benefitAdapter = GradeBenefitAdapter(page.gradeBenefits)
+                val benefitAdapter = GradeBenefitAdapter(page.benefits.orEmpty())
                 layoutManager = object : LinearLayoutManager(context) {
                     override fun canScrollVertically(): Boolean = false
                 }

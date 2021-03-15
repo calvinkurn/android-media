@@ -50,7 +50,7 @@ class RegistrationTermAdapter(
             if (!term.clickableText.isNullOrBlank() && !term.appLinkOrUrl.isNullOrBlank()) {
                 val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
                 val termDescription = PowerMerchantSpannableUtil.createSpannableString(
-                        text = term.descriptionHtml,
+                        text = term.descriptionHtml.parseAsHtml(),
                         highlightText = term.clickableText,
                         colorId = itemView.context.getResColor(ctaTextColor),
                         isBold = true

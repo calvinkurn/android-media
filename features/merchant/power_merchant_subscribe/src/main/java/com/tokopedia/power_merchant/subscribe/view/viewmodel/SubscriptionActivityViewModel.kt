@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantSettingInfoUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,10 +26,6 @@ class SubscriptionActivityViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    companion object {
-        private const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-ui"
-    }
-
     val powerMerchantSettingInfo: LiveData<Result<PowerMerchantSettingInfoUiModel>>
         get() = _powerMerchantSettingInfo
 
@@ -36,7 +33,7 @@ class SubscriptionActivityViewModel @Inject constructor(
 
     fun getPowerMerchantSettingInfo() {
         launchCatchError(block = {
-            val params = GetPowerMerchantSettingInfoUseCase.createParams(userSession.get().shopId, PM_SETTING_INFO_SOURCE)
+            val params = GetPowerMerchantSettingInfoUseCase.createParams(userSession.get().shopId, Constant.PM_SETTING_INFO_SOURCE)
             getPowerMerchantSettingInfoUseCase.get().params = params
             val result = Success(withContext(dispatcher.io) {
                 getPowerMerchantSettingInfoUseCase.get().executeOnBackground()

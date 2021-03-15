@@ -20,8 +20,10 @@
         android:id="@+id/pmRegistrationFooterView"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_height="@dimen/layout_lvl6" />
+        tools:layout_height="@dimen/layout_lvl6"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

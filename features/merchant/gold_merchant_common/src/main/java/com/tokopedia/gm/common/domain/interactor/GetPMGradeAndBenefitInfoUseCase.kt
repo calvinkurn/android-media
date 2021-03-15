@@ -9,12 +9,13 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 10/03/21
  */
 
-class GetPMGradeBenefitInfoUseCase(
+class GetPMGradeAndBenefitInfoUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PMGradeBenefitInfoMapper
 ) : BaseGqlUseCase<PMGradeBenefitInfoUiModel>() {

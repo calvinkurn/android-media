@@ -9,6 +9,8 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.ColorInt
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import timber.log.Timber
 
 object PowerMerchantSpannableUtil {
 
@@ -18,7 +20,7 @@ object PowerMerchantSpannableUtil {
      * textView.setMovementMethod(LinkMovementMethod.getInstance())
      * */
     fun createSpannableString(
-        text: String,
+        text: CharSequence,
         highlightText: String,
         @ColorInt colorId: Int,
         isBold: Boolean = false,
@@ -41,12 +43,20 @@ object PowerMerchantSpannableUtil {
         }
 
         val colorSpan = ForegroundColorSpan(colorId)
-        spannableString.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(colorSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        try {
+            spannableString.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(colorSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } catch (e: IndexOutOfBoundsException) {
+            Timber.e(e)
+        }
 
         if(isBold) {
             val styleSpan = StyleSpan(Typeface.BOLD)
-            spannableString.setSpan(styleSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            try {
+                spannableString.setSpan(styleSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e(e)
+            }
         }
 
         boldTextList?.forEach {
@@ -54,7 +64,11 @@ object PowerMerchantSpannableUtil {
             val boldEndIndex = boldStartIndex + it.length
 
             val styleSpan = StyleSpan(Typeface.BOLD)
-            spannableString.setSpan(styleSpan, boldStartIndex, boldEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            try {
+                spannableString.setSpan(styleSpan, boldStartIndex, boldEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e(e)
+            }
         }
 
         return spannableString

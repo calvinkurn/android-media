@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.model
 
+import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
 /**
@@ -7,7 +8,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  */
 
 class WidgetGradeBenefitUiModel(
-        val benefitPages: List<GradeBenefitPagerUiModel>
+        val benefitPages: List<PMGradeWithBenefitsUiModel>
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
