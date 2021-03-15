@@ -3,7 +3,6 @@ package com.tokopedia.digital_checkout.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -598,7 +597,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun hideContent() {
         contentCheckout.hide()
-        layout_digital_checkout_bottom_view.hide()
+        checkoutBottomViewWidget.hide()
     }
 
     private fun getPromoDigitalModel(): PromoDigitalModel = viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
