@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -211,13 +210,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(DigitalTopupBillsGqlQuery.prefixSelectTelco, getTelcoMenuId())
         viewModel.catalogPrefixSelect.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessCustomData()
                 is Fail -> onErrorCustomData()
             }
         })
+        viewModel.getPrefixOperator(DigitalTopupBillsGqlQuery.prefixSelectTelco, getTelcoMenuId())
     }
 
     private fun onSuccessCustomData() {
