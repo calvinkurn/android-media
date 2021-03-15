@@ -94,7 +94,11 @@ data class ProductMiniSocialProofDataModel(
 
     private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>): MutableList<ProductMiniSocialProofItemDataModel> {
         if(count != 0F) {
-            list.add(ProductMiniSocialProofItemDataModel(type, count.toString(), count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            if(type == RATING) {
+                list.add(ProductMiniSocialProofItemDataModel(type, rating.toString(), count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            } else {
+                list.add(ProductMiniSocialProofItemDataModel(type, count.toString(), count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            }
         }
         return list
     }
