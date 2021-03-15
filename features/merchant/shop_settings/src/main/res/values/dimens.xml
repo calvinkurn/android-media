@@ -2,4 +2,7 @@
 <resources>
     <dimen name="sp_6">6sp</dimen>
     <dimen name="shop_edit_image_size">64dp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_17">17sp</dimen>
 </resources>

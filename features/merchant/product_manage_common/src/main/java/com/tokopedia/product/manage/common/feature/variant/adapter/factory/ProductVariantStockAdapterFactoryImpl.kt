@@ -4,9 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductTicker
+import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariantTicker
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantStockTickerViewHolder
+import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantTickerViewHolder
 import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantStockViewHolder
 
 class ProductVariantStockAdapterFactoryImpl(
@@ -15,12 +15,12 @@ class ProductVariantStockAdapterFactoryImpl(
 
     override fun type(viewModel: ProductVariant): Int = ProductVariantStockViewHolder.LAYOUT
 
-    override fun type(viewModel: ProductTicker): Int = ProductVariantStockTickerViewHolder.LAYOUT
+    override fun type(viewModel: ProductVariantTicker): Int = ProductVariantTickerViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ProductVariantStockViewHolder.LAYOUT -> ProductVariantStockViewHolder(parent, listener)
-            ProductVariantStockTickerViewHolder.LAYOUT -> ProductVariantStockTickerViewHolder(parent)
+            ProductVariantTickerViewHolder.LAYOUT -> ProductVariantTickerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
