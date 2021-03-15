@@ -16,12 +16,12 @@ class GetShopInfoPeriodUseCase @Inject constructor(
 ) : GraphqlUseCase<ShopInfoPeriodUiModel>(graphqlRepository) {
 
     companion object {
-        const val SHOP_ID = "shopID"
+        const val SHOP_ID = "shopIDs"
         const val SOURCE = "source"
         private const val SELLER_APP_SOURCE = "sellerapp"
         val SHOP_INFO_ID_QUERY = """
             query shopInfoByID(${'$'}shopIDs: Int!, ${'$'}source: String!) {
-              shopInfoByID(input:{shopIDs:[${'$'}shopID], fields:["create_info"], source: ${'$'}source}) {
+              shopInfoByID(input:{shopIDs:[${'$'}shopIDs], fields:["create_info"], source: ${'$'}source}) {
                 result{
                   createInfo{
                     shopCreated
