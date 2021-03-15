@@ -12,11 +12,11 @@ import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
+import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
@@ -416,16 +416,37 @@ class HotelSearchMapViewModelTest {
     }
 
     @Test
-    fun setPermissionHelper_shouldReturnSuccess(){
+    fun onGetLocation_shouldReturnFail(){
         //given
-        val permissionCheckerHelper: PermissionCheckerHelper = mockk()
+        val throwable = mockk<Throwable>()
+//        every { hotelSearchResultViewModel.onGetLocation() } returns (throwable) as Unit
 
         //when
-        hotelSearchResultViewModel.setPermissionHelper(permissionCheckerHelper)
+        hotelSearchResultViewModel.onGetLocation()
 
         //then
-        val actual = hotelSearchResultViewModel.permissionCheckerHelper
-        assert(actual == permissionCheckerHelper)
+        val actual = hotelSearchResultViewModel.latLong.value
+        assert(actual is Fail)
+    }
+
+    @Test
+    fun onGetLocation_shouldReturnSuccess(){
+        //given
+        val latitude = 3.0
+        val longitude = 4.0
+        val callback: (DeviceLocation) -> Unit = mockk(relaxed = true)
+        callback.invoke(DeviceLocation(latitude,longitude))
+
+        every { hotelSearchResultViewModel.onGetLocation() } returns   callback
+
+        //when
+        hotelSearchResultViewModel.onGetLocation()
+
+        //then
+        val actual = hotelSearchResultViewModel.latLong.value
+        assert(actual is Success)
+        assert((actual as Success).data.second == longitude)
+        assert(actual.data.first == latitude)
     }
 
     @Test
