@@ -54,8 +54,8 @@ class ShopHomeAdapterTypeFactory(
             RECENT_ACTIVITY, BUY_AGAIN -> return ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> return ShopHomeNplCampaignViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> return CarouselPlayWidgetViewHolder.LAYOUT
+            else -> return HideViewHolder.LAYOUT
         }
-        return -1
     }
 
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
