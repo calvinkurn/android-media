@@ -32,6 +32,7 @@
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/dp_5"
+                    android:contentDescription="@string/content_description_like"
                     app:srcCompat="@drawable/ic_like_normal" />
 
                 <TextView
@@ -65,8 +66,9 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_8"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_5"
                     android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:contentDescription="@string/content_description_reply_chevron"
                     app:srcCompat="@drawable/ic_arrow_down_grey" />
             </LinearLayout>
 
@@ -123,7 +125,7 @@
                         android:id="@+id/seller_label"
                         style="@style/TextView.Micro.Green.Bold"
                         android:layout_marginEnd="@dimen/dp_5"
-                        android:background="@drawable/label_seller"
+                        android:background="@drawable/label_seller_review_product"
                         android:gravity="center_horizontal"
                         android:paddingBottom="@dimen/dp_2"
                         android:paddingLeft="@dimen/dp_10"
@@ -159,9 +161,10 @@
                 android:id="@+id/reply_overflow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/content_description_reply_overflow"
                 app:srcCompat="@drawable/reputation_ic_more_vert_grey" />
         </RelativeLayout>
     </LinearLayout>

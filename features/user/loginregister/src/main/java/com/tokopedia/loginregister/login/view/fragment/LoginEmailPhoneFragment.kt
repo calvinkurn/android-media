@@ -87,7 +87,6 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -102,6 +101,7 @@ import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -353,16 +353,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
 
     override fun showLoadingDiscover() {
-        val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
+        val pb = LoaderUnify(requireContext())
         val lastPos = socmedButtonsContainer.childCount - 1
-        if (socmedButtonsContainer.childCount >= 1 && socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
+        if (socmedButtonsContainer.childCount >= 1 && socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
             socmedButtonsContainer.addView(pb, lastPos)
         }
     }
 
     override fun dismissLoadingDiscover() {
         val lastPos = socmedButtonsContainer.childCount - 2
-        if (socmedButtonsContainer.childCount >= 2 && socmedButtonsContainer.getChildAt(lastPos) is ProgressBar) {
+        if (socmedButtonsContainer.childCount >= 2 && socmedButtonsContainer.getChildAt(lastPos) is LoaderUnify) {
             socmedButtonsContainer.removeViewAt(lastPos)
         }
     }
@@ -582,9 +582,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginGoogleClick() {
-        activity?.run{
+        if (activity != null) {
             onDismissBottomSheet()
-            analytics.eventClickLoginGoogle(applicationContext)
+            analytics.eventClickLoginGoogle(requireActivity().applicationContext)
 
             openGoogleLoginIntent()
         }
@@ -596,9 +596,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginFacebookClick() {
-        activity?.run {
+        if (activity != null) {
             onDismissBottomSheet()
-            analytics.eventClickLoginFacebook(applicationContext)
+            analytics.eventClickLoginFacebook(requireActivity().applicationContext)
             presenter.getFacebookCredential(this@LoginEmailPhoneFragment, callbackManager)
         }
     }
@@ -756,12 +756,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         saveFirstInstallTime()
-
-        /*
-        * broadcast through AIDL service if user have login
-        * (send the flag into another app).
-        * */
-        context?.let { PushNotificationApi.bindService(it) }
     }
 
     override fun setLoginSuccessSellerApp() {
@@ -1159,9 +1153,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
-        activity?.run {
-            val intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+        if (activity != null){
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)

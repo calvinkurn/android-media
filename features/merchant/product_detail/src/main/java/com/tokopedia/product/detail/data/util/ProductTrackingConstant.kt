@@ -243,4 +243,8 @@ object ProductTrackingConstant {
         const val DFAULT_CREATIVE_NAME_BANNER_TOP_ADS = "none / other"
     }
 
+    object MiniSocialProof {
+        const val CLICK_BUYER_PHOTOS = "click - foto dari pembeli on social proof"
+    }
+
 }

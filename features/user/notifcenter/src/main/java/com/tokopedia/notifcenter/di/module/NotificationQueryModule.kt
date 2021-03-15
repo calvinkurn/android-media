@@ -6,6 +6,7 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
+import com.tokopedia.notifcenter.domain.NotifOrderListUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.domain.NotificationMarkAsSeenUseCase
 import dagger.Module
@@ -84,4 +85,9 @@ import javax.inject.Named
     @Named(NotifcenterDetailUseCase.QUERY_NOTIFCENTER_DETAIL_V3)
     fun provideNotifcenterDetailV3(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, NotifcenterDetailUseCase.queryRes)
+    @Provides
+    @NotificationScope
+    @Named(NotifOrderListUseCase.QUERY_ORDER_LIST)
+    fun provideNotifcenterOrderList(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, NotifOrderListUseCase.queryRes)
 }

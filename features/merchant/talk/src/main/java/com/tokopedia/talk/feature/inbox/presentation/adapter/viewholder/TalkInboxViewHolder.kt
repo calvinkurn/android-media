@@ -30,8 +30,9 @@ class TalkInboxViewHolder(
             setProductThumbnail(productThumbnail)
             setProductName(productName)
             setQuestion(content)
-            setNotification(isUnread)
+            setNotification(if(element.isSellerView) state.isUnresponded else isUnread)
             setCountAndDate(totalAnswer, lastReplyTime)
+            setAlertState(state.hasProblem, element.isSellerView)
             itemView.addOnImpressionListener(element.impressHolder) {
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }
@@ -94,6 +95,10 @@ class TalkInboxViewHolder(
             talkInboxDate.text = date
         }
 
+    }
+
+    private fun setAlertState(hasProblem: Boolean, isSellerView: Boolean) {
+        itemView.talkInboxAlertSignifier.showWithCondition(hasProblem && isSellerView)
     }
 
 }
