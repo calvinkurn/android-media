@@ -2,6 +2,7 @@ package com.tokopedia.orderhistory.view.activity.base
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
@@ -10,11 +11,14 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.orderhistory.AndroidFileUtil
 import com.tokopedia.orderhistory.R
+import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.di.OrderHistoryContextModule
 import com.tokopedia.orderhistory.idling.FragmentTransactionIdle
 import com.tokopedia.orderhistory.stub.di.DaggerOrderHistoryComponentStub
 import com.tokopedia.orderhistory.stub.di.OrderHistoryComponentStub
+import com.tokopedia.orderhistory.stub.usecase.GetProductOrderHistoryUseCaseStub
 import com.tokopedia.orderhistory.stub.view.activity.OrderHistoryActivityStub
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,6 +26,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
+import javax.inject.Inject
 
 open class OrderHistoryTest {
 
@@ -41,6 +46,16 @@ open class OrderHistoryTest {
         get() = InstrumentationRegistry
                 .getInstrumentation().context.applicationContext
 
+    protected val exShopId = "1479278"
+
+    @Inject
+    protected lateinit var getProductOrderHistoryUseCase: GetProductOrderHistoryUseCaseStub
+
+    protected var chatHistoryProductResponse: ChatHistoryProductResponse = AndroidFileUtil.parse(
+            "success_get_product_order_history.json",
+            ChatHistoryProductResponse::class.java
+    )
+
     protected lateinit var orderHistoryComponentStub: OrderHistoryComponentStub
 
     @ExperimentalCoroutinesApi
@@ -56,7 +71,9 @@ open class OrderHistoryTest {
     }
 
     protected fun setupOrderHistoryActivity() {
-        val intent = Intent()
+        val intent = Intent().apply {
+            data = Uri.parse("tokopedia://product-order-history/$exShopId")
+        }
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
         fragmentTransactionIdling = FragmentTransactionIdle(
