@@ -28,6 +28,8 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import com.newrelic.agent.android.NewRelic;
+
 import java.util.ArrayList;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
@@ -45,6 +47,8 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        NewRelic.withApplicationToken("AAf63ea1389b0e576285d1d782cdde48c9fcb385f0-NRMA").start(this.getApplication());
+        
         isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
