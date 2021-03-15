@@ -84,6 +84,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
@@ -135,8 +136,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_S
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
@@ -144,7 +147,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
-import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -264,6 +266,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OVO_PAY_WITH_QR_ENTRY) }, DF_BASE, R.string.ovo_pay_with_qr_title))
             add(DFP({ it.startsWith(OQR_PIN_URL_ENTRY) }, DF_BASE, R.string.ovo_pay_with_qr_title))
             add(DFP({ it.startsWith(OVO_WALLET) }, DF_BASE, R.string.applink_wallet_title))
+            add(DFP({ it.startsWith(PAYLATER) }, DF_BASE, R.string.applink_pay_later_title))
 
             add(DFP({ it.startsWith(SALDO_DEPOSIT) ||
                     it.startsWith(SALDO_INTRO)}, DF_USER_SETTINGS, R.string.applink_saldo_deposit_title, { DFWebviewFallbackUrl.FINTECH_SALDO }))
@@ -282,6 +285,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ADD_ADDRESS_V2) }, DF_BASE, R.string.path_add_address_v2))
             add(DFP({ it.startsWith(DISTRICT_RECOMMENDATION_SHOP_SETTINGS) }, DF_BASE, R.string.path_district_recommendation_shop_settings))
             add(DFP({ it.startsWith(GEOLOCATION) }, DF_BASE, R.string.path_geolocation))
+            add(DFP({ it.startsWith(SHOP_EDIT_ADDRESS) }, DF_BASE, R.string.path_edit_shop_address))
+            add(DFP({ it.startsWith(SELLER_WAREHOUSE_DATA) }, DF_BASE, R.string.path_shop_settings_address))
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
@@ -526,7 +531,10 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(ApplinkConst.PLAY_BROADCASTER) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
 
+            // Logistic
             add(DFP({ it.startsWith(SELLER_COD_ACTIVATION )}, DF_BASE_SELLER_APP, R.string.path_shop_setting_cod_activation ))
+            add(DFP({ it.startsWith(SELLER_WAREHOUSE_DATA) }, DF_BASE_SELLER_APP, R.string.path_shop_settings_address))
+
 
             add(DFP({
                 it.startsWithPattern(SHOP_PAGE_BASE) ||
