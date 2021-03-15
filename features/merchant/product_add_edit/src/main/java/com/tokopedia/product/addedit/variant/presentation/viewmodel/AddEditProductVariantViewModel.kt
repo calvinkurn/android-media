@@ -472,7 +472,9 @@ class AddEditProductVariantViewModel @Inject constructor(
             )
         } else {
             // condition if updating existing product variant
-            productVariant.pictures = variantPicture
+            if (variantPicture.isNotEmpty()) { // prevent clearing variant
+                productVariant.pictures = variantPicture
+            }
             productVariant
         }
     }
