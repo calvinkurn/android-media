@@ -30,6 +30,7 @@ class OrderHistoryCassavaTest : OrderHistoryTest() {
     private val cassavaDir = "tracker/user/orderhistory"
 
     private val cassavaImpressionProduct = "$cassavaDir/product_card_impression.json"
+    private val cassavaClickProduct = "$cassavaDir/product_card_click.json"
 
     @ExperimentalCoroutinesApi
     @Before
@@ -52,6 +53,27 @@ class OrderHistoryCassavaTest : OrderHistoryTest() {
         verifyRecyclerViewDisplayed(R.id.recycler_view)
         assertThat(
                 getAnalyticsWithQuery(gtmLogDbSource, context, cassavaImpressionProduct),
+                hasAllSuccess()
+        )
+    }
+
+    @Test
+    fun assess_product_card_click() {
+        // Given
+        setupOrderHistoryActivity()
+        getProductOrderHistoryUseCase.response = chatHistoryProductResponse
+        intending(anyIntent()).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+        inflateTestFragment()
+
+        // When
+        performClickOnProductCard(R.id.recycler_view)
+
+        // Then
+        verifyRecyclerViewDisplayed(R.id.recycler_view)
+        assertThat(
+                getAnalyticsWithQuery(gtmLogDbSource, context, cassavaClickProduct),
                 hasAllSuccess()
         )
     }
