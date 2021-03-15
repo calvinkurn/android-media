@@ -370,13 +370,11 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
     ): CoachMark2Item? {
         val buttonFollowView = shopPageHeaderAdapter?.getFollowButtonView()
         val coachMarkText = followStatusData?.followButton?.coachmarkText.orEmpty()
-//        return if (!coachMarkText.isBlank() && listener.isFirstTimeVisit() == false && buttonFollowView != null) {
-        return if (buttonFollowView != null) {
+        return if (!coachMarkText.isBlank() && listener.isFirstTimeVisit() == false && buttonFollowView != null) {
             CoachMark2Item(
                     anchorView = buttonFollowView,
                     title = "",
-                    description = "Description follow here"
-//                    description = MethodChecker.fromHtml(coachMarkText)
+                    description = MethodChecker.fromHtml(coachMarkText)
             )
         } else {
             null
