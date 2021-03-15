@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -25,12 +24,16 @@ import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParam
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
-import com.tokopedia.digital_checkout.usecase.*
+import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
+import com.tokopedia.digital_checkout.usecase.DigitalCheckoutUseCase
+import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
+import com.tokopedia.digital_checkout.usecase.DigitalPatchOtpUseCase
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper.getRequestBodyCheckout
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.ResponseDataNullException
@@ -45,7 +48,6 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.lang.reflect.Type
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -58,7 +60,6 @@ import javax.inject.Inject
 class DigitalCartViewModel @Inject constructor(
         private val analytics: DigitalAnalytics,
         private val digitalGetCartUseCase: DigitalGetCartUseCase,
-        private val digitalAddToCartUseCase: DigitalAddToCartUseCase,
         private val cancelVoucherUseCase: DigitalCancelVoucherUseCase,
         private val digitalPatchOtpUseCase: DigitalPatchOtpUseCase,
         private val digitalCheckoutUseCase: DigitalCheckoutUseCase,
@@ -114,62 +115,19 @@ class DigitalCartViewModel @Inject constructor(
 
     private val paymentSummary = PaymentSummary(mutableListOf())
 
-    fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
+    fun getCart(categoryId: String,
                 errorNotLoginMessage: String = "") {
         if (!userSession.isLoggedIn) {
             _errorMessage.postValue(errorNotLoginMessage)
         } else {
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
-            digitalCheckoutPassData.categoryId?.let { categoryId ->
-                digitalGetCartUseCase.execute(
-                        DigitalGetCartUseCase.createParams(categoryId.toInt()),
-                        onSuccessGetCart(digitalCheckoutPassData.source),
-                        onErrorGetCart()
-                )
-            }
+            digitalGetCartUseCase.execute(
+                    DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
+                    onSuccessGetCart(),
+                    onErrorGetCart()
+            )
         }
-    }
-
-    fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
-                  digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams,
-                  errorNotLoginMessage: String = "") {
-        if (!userSession.isLoggedIn) {
-            _errorMessage.postValue(errorNotLoginMessage)
-        } else {
-            _showContentCheckout.postValue(false)
-            _showLoading.postValue(true)
-
-            launchCatchError(block = {
-                val data = withContext(dispatcher) {
-                    digitalAddToCartUseCase.setRequestParams(
-                            DigitalAddToCartUseCase.getRequestBodyAtcDigital(
-                                    digitalCheckoutPassData,
-                                    userSession.userId.toInt(),
-                                    digitalIdentifierParam,
-                                    digitalSubscriptionParams
-                            ), digitalCheckoutPassData.idemPotencyKey)
-                    digitalAddToCartUseCase.executeOnBackground()
-                }
-                onSuccessAddToCart(data, digitalCheckoutPassData.source)
-
-            }) {
-                _showLoading.postValue(false)
-                errorHandler(it)
-            }
-        }
-    }
-
-    private fun onSuccessAddToCart(data: Map<Type, RestResponse?>, source: Int) {
-
-        val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
-        val restResponse = data[token]
-        val lala = restResponse!!.getData<DataResponse<*>>()
-        val responseCartData: ResponseCartData = lala.data as ResponseCartData
-        val mappedCartData = DigitalCheckoutMapper.mapToCartDigitalInfoData(responseCartData)
-
-        mapDataSuccessCart(source, mappedCartData)
     }
 
     fun processPatchOtpCart(digitalIdentifierParam: RequestBodyIdentifier,
@@ -190,34 +148,28 @@ class DigitalCartViewModel @Inject constructor(
             val responsePatchOtpSuccess = data.data as ResponsePatchOtpSuccess
 
             if (responsePatchOtpSuccess.success) {
-                getCart(digitalCheckoutPassData, errorNotLoginMessage)
+                getCart(digitalCheckoutPassData.categoryId ?: "", errorNotLoginMessage)
             }
 
         }) {
-            _showLoading.postValue(false)
-            errorHandler(it)
+            handleError(it)
         }
     }
 
-    private fun onSuccessGetCart(source: Int): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
         return {
-            _showContentCheckout.postValue(true)
-            _showLoading.postValue(false)
-
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
-            mapDataSuccessCart(source, mappedCartData)
+            mapDataSuccessCart(mappedCartData)
         }
     }
 
     private fun onErrorGetCart(): (Throwable) -> Unit {
         return {
-            _showLoading.postValue(false)
-            errorHandler(it)
+            handleError(it)
         }
     }
 
-    private fun mapDataSuccessCart(source: Int, mappedCartData: CartDigitalInfoData) {
-        analytics.eventAddToCart(mappedCartData, source, userSession.userId)
+    private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData) {
         analytics.eventCheckout(mappedCartData, userSession.userId)
 
         requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken, requestCheckoutParam)
@@ -225,8 +177,6 @@ class DigitalCartViewModel @Inject constructor(
         if (mappedCartData.isNeedOtp) {
             _isNeedOtp.postValue(userSession.phoneNumber)
         } else {
-            _showContentCheckout.postValue(true)
-            _showLoading.postValue(false)
             _cartDigitalInfoData.postValue(mappedCartData)
             _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
 
@@ -241,10 +191,12 @@ class DigitalCartViewModel @Inject constructor(
             promoData?.let {
                 _promoData.postValue(it)
             }
+            _showContentCheckout.postValue(true)
+            _showLoading.postValue(false)
         }
     }
 
-    private fun errorHandler(e: Throwable) {
+    fun handleError(e: Throwable) {
         if (e is UnknownHostException) {
             _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
         } else if (e is SocketTimeoutException || e is ConnectException) {
@@ -258,6 +210,7 @@ class DigitalCartViewModel @Inject constructor(
         } else {
             _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
         }
+        _showLoading.postValue(false)
     }
 
     fun cancelVoucherCart() {
@@ -376,8 +329,7 @@ class DigitalCartViewModel @Inject constructor(
                     _paymentPassData.postValue(checkoutData)
 
                 }) {
-                    _showLoading.postValue(false)
-                    errorHandler(it)
+                    handleError(it)
                 }
             }
         }

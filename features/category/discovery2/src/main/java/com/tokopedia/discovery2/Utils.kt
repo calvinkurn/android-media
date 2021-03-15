@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.BlendMode
@@ -8,6 +9,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
+import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -244,6 +246,12 @@ class Utils {
             return if(isAllKeyNullOrEmpty) url else {"$url?$queryString"}
         }
 
-        
+
+        fun getDisplayMetric(context: Context?): DisplayMetrics {
+            val displayMetrics = DisplayMetrics()
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+            return displayMetrics
+        }
+
     }
 }

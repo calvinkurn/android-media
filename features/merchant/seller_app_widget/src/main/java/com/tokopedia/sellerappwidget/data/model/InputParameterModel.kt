@@ -23,7 +23,7 @@ data class InputParameterModel(
         @SerializedName("is_mobile")
         val isMobile: Boolean = true,
         @SerializedName("next_order_id")
-        val nextOrderId: Int = 0,
+        val nextOrderId: String = "0",
         @SerializedName("lang")
         val lang: String = "id",
         @SerializedName("page")
@@ -33,5 +33,7 @@ data class InputParameterModel(
         @SerializedName("is_shipping_printed")
         val isShippingPrinted: Int = 0,
         @SerializedName("deadline")
-        val deadline: Int = 0
+        val deadline: Int = 0,
+        @SerializedName("source")
+        val source: String = "widget"
 )
