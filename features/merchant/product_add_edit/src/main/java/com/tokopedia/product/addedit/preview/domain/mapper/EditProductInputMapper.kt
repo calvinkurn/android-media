@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.preview.domain.mapper
 import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
@@ -49,15 +50,20 @@ class EditProductInputMapper @Inject constructor() {
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
-                        variantInputModel: VariantInputModel): ProductEditParam {
+                        variantInputModel: VariantInputModel,
+                        shouldPutStockOnParam: Boolean = true): ProductEditParam {
+
+        // Put null to stock and status param as we will update product stock separately (related to multilocation)
+        val stock: Int? = if (shouldPutStockOnParam) detailInputModel.stock else null
+        val status: Int? = if (detailInputModel.status != IS_ACTIVE || shouldPutStockOnParam || detailInputModel.stock > 0) detailInputModel.status else null
 
         return ProductEditParam(
                 productId,
                 detailInputModel.productName,
                 detailInputModel.price,
                 PRICE_CURRENCY,
-                detailInputModel.stock,
-                getActiveStatus(detailInputModel.status),
+                stock,
+                status?.let { getActiveStatus(it) },
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
                 mapShipmentUnit(shipmentInputModel.weightUnit),
