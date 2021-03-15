@@ -33,6 +33,6 @@ class AutoClearedNullableValue<T : Any?>(val fragment: Fragment) : ReadWriteProp
 }
 
 /**
- * Creates an [AutoClearedValue] associated with this fragment.
+ * Creates an [AutoClearedNullableValue] associated with this fragment.
  */
 fun <T : Any?> Fragment.autoClearedNullable() = AutoClearedNullableValue<T>(this)
