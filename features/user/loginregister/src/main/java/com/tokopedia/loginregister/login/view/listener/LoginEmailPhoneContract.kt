@@ -11,7 +11,6 @@ import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
@@ -39,7 +38,7 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
-        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo)
+        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo? = null)
 
         fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo)
 
@@ -152,6 +151,8 @@ interface LoginEmailPhoneContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun loginEmail(email: String, password: String, isSmartLock : Boolean = false)
+
+        fun loginEmailV2(email: String, password: String, isSmartLock : Boolean = false, useHash: Boolean = false)
 
         fun loginGoogle(accessToken: String, email: String)
 
