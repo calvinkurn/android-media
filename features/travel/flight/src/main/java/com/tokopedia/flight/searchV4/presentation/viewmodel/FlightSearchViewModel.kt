@@ -14,7 +14,7 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightLowestPriceQuery
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.promo_chips.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.model.FlightLowestPrice
 import com.tokopedia.flight.promo_chips.model.FlightLowestPriceArgs
 import com.tokopedia.flight.promo_chips.usecase.FlightLowestPriceUseCase
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
@@ -83,8 +83,8 @@ class FlightSearchViewModel @Inject constructor(
     val tickerData: LiveData<Result<TravelTickerModel>>
         get() = mutableTickerData
 
-    private val mutablePromoData = MutableLiveData<Result<List<AirlinePrice>>>()
-    val promoData: LiveData<Result<List<AirlinePrice>>>
+    private val mutablePromoData = MutableLiveData<Result<FlightLowestPrice>>()
+    val promoData: LiveData<Result<FlightLowestPrice>>
         get() = mutablePromoData
 
     val progress = MutableLiveData<Int>()
@@ -478,7 +478,8 @@ class FlightSearchViewModel @Inject constructor(
                 departureAirport, arrivalAirport, departureDate, returnDate, classId)
 
         launchCatchError(dispatcherProvider.ui(), {
-            flightLowestPriceUseCase.execute(FlightLowestPriceQuery.flightLowestPriceInput, dataParam)
+            val data = flightLowestPriceUseCase.execute(FlightLowestPriceQuery.flightLowestPriceInput, dataParam)
+            mutablePromoData.postValue(data)
         }) {
             if (it is FlightSearchThrowable) {
                 mutablePromoData.postValue(Fail(it))

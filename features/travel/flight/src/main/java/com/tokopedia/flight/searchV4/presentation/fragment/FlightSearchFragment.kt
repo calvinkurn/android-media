@@ -767,11 +767,21 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     private fun initPromoChips(){
+        var idPromo: Int = 0
         flightSearchViewModel.promoData.observe(viewLifecycleOwner, {
             when(it){
                 is Success ->{
-                    if (!it.data.isNullOrEmpty()) {
-                        promoChipsWidget.renderPromoList(it.data)
+                    if (!it.data.dataPromoChips.isNullOrEmpty()) {
+                        when(isReturnTrip()){
+                            false -> {
+                                idPromo = 0
+                            }
+                            true -> {
+                                idPromo = 1
+                                promoChipsWidget.clearPromoList()
+                            }
+                        }
+                        promoChipsWidget.renderPromoList(it.data.dataPromoChips[idPromo].airlinePrices)
                     }else{
                         hidePromoChips()
                     }

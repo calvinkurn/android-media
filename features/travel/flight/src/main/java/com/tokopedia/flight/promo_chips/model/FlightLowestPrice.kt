@@ -4,13 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class FlightLowestPrice(
-        @SerializedName("date")
+        @SerializedName("data")
         @Expose
-        val date: String = "",
-
-        @SerializedName("airlinePrices")
-        @Expose
-        val airlinePrices: List<AirlinePrice> = listOf(),
+        val dataPromoChips: List<DataPromoChips> = listOf()
 ){
     data class Response(
             @SerializedName("flightLowestPrice")
