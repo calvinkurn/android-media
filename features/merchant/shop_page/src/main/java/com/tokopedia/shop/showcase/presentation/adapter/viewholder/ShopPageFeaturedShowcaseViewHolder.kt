@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -13,7 +14,8 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by Rafli Syam on 09/03/2021
  */
 class ShopPageFeaturedShowcaseViewHolder(
-        itemView: View
+        itemView: View,
+        listener: ShopShowcaseListImageListener
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -23,11 +25,17 @@ class ShopPageFeaturedShowcaseViewHolder(
     private var ivShowcaseImg: ImageUnify? = null
     private var tvShowcaseName: Typography? = null
     private var tvShowcaseCount: Typography? = null
+    private var showcaseId: String = ""
 
     init {
         ivShowcaseImg = itemView.findViewById(R.id.ivShowcaseImg)
         tvShowcaseName = itemView.findViewById(R.id.tvShowcaseName)
         tvShowcaseCount = itemView.findViewById(R.id.tvShowcaseCount)
+
+        // ini listeners
+        itemView.setOnClickListener {
+            listener.onShowcaseListItemSelected(showcaseId)
+        }
     }
 
     fun bind(list: List<ShopEtalaseModel>) {
@@ -35,6 +43,7 @@ class ShopPageFeaturedShowcaseViewHolder(
         val element = list[adapterPosition]
 
         // set card content
+        showcaseId = element.id
         ivShowcaseImg?.setImageUrl(element.imageUrl ?: "")
         tvShowcaseName?.text = element.name
         tvShowcaseCount?.text = itemView.context.getString(

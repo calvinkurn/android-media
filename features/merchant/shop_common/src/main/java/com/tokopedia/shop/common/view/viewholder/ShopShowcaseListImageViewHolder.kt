@@ -9,21 +9,31 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopShowcaseListImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ShopShowcaseListImageViewHolder(
+        itemView: View,
+        listener: ShopShowcaseListImageListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private var showcaseImage: ImageUnify? = null
     private var tvShowcaseName: Typography? = null
     private var tvShowcaseCount: Typography? = null
     private var showcaseCampaignLabel: Label? = null
+    private var showcaseId: String = ""
 
     init {
         showcaseImage = itemView.findViewById(R.id.ivShowcaseImage)
         tvShowcaseName = itemView.findViewById(R.id.tvShowcaseName)
         tvShowcaseCount = itemView.findViewById(R.id.tvShowcaseCount)
         showcaseCampaignLabel = itemView.findViewById(R.id.showcaseCampaignLabel)
+
+        // init listeners
+        itemView.setOnClickListener {
+            listener.onShowcaseListItemSelected(showcaseId)
+        }
     }
 
     fun bind(element: ShopEtalaseModel) {
+        showcaseId = element.id
         showcaseImage?.setImageUrl(element.imageUrl ?: "")
         tvShowcaseName?.text = element.name
         tvShowcaseCount?.text = itemView.context.getString(
@@ -58,4 +68,8 @@ class ShopShowcaseListImageViewHolder(itemView: View) : RecyclerView.ViewHolder(
         }
     }
 
+}
+
+interface ShopShowcaseListImageListener {
+    fun onShowcaseListItemSelected(showcaseId: String)
 }

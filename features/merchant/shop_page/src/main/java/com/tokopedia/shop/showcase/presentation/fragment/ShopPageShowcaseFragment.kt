@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.showcase.di.component.DaggerShopPageShowcaseComponent
 import com.tokopedia.shop.showcase.di.component.ShopPageShowcaseComponent
@@ -35,7 +36,9 @@ import javax.inject.Inject
 /**
  * Created by Rafli Syam on 05/03/2021
  */
-class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShowcaseComponent> {
+class ShopPageShowcaseFragment : BaseDaggerFragment(),
+        HasComponent<ShopPageShowcaseComponent>,
+        ShopShowcaseListImageListener {
 
     companion object {
 
@@ -106,22 +109,12 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
             SHOWCASE_REQUEST_CODE -> {
                 // get data from shop showcase list
                 data?.let {
-
                     val showcaseId = it.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
                     val isReloadShowcaseData = it.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 
-                    startActivity(ShopProductListResultActivity.createIntent(
-                            activity,
-                            shopId,
-                            "",
-                            showcaseId,
-                            shopAttribution,
-                            "",
-                            shopRef
-                    ).apply {
-                        putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isReloadShowcaseData)
-                    })
-
+                    showcaseId?.let {id ->
+                        goToShowcaseProductListResult(id, isReloadShowcaseData)
+                    }
                 }
             }
         }
@@ -143,6 +136,10 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
 
     override fun initInjector() {
         component?.inject(this)
+    }
+
+    override fun onShowcaseListItemSelected(showcaseId: String) {
+        goToShowcaseProductListResult(showcaseId, true)
     }
 
     private fun loadShowcaseData() {
@@ -209,8 +206,8 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
     }
 
     private fun initRecyclerView() {
-        featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter()
-        allShowcaseListAdapter = ShopPageShowcaseListAdapter()
+        featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter(this)
+        allShowcaseListAdapter = ShopPageShowcaseListAdapter(this)
 
         val featuredShowcaseLayoutManager = LinearLayoutManager(
                 context,
@@ -259,6 +256,22 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(), HasComponent<ShopPageShow
                 putExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE, showcaseListBundle)
                 startActivityForResult(this, SHOWCASE_REQUEST_CODE)
             }
+        }
+    }
+
+    private fun goToShowcaseProductListResult(showcaseId: String, isNeedToReloadData: Boolean) {
+        context?.let { ctx ->
+            startActivity(ShopProductListResultActivity.createIntent(
+                    ctx,
+                    shopId,
+                    "",
+                    showcaseId,
+                    shopAttribution,
+                    "",
+                    shopRef
+            ).apply {
+                putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
+            })
         }
     }
 
