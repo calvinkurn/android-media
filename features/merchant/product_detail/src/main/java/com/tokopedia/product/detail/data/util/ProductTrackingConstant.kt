@@ -8,6 +8,7 @@ object ProductTrackingConstant {
         const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
+        const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
     }
 
     object Tracking {
@@ -71,6 +72,7 @@ object ProductTrackingConstant {
         const val KEY_ISLOGGIN = "isLoggedInStatus"
         const val KEY_ADD = "add"
         const val BUSINESS_UNIT = "physical goods"
+        const val BUSINESS_UNIT_PDP = "product detail page"
         const val CURRENT_SITE = "tokopediamarketplace"
         const val CURRENT_SITE_FINTECH = "tokopediafintechinsurance"
         const val KEY_FINTECH = "fintech"
