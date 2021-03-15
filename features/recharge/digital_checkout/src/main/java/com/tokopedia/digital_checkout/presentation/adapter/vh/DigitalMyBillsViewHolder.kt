@@ -2,9 +2,9 @@ package com.tokopedia.digital_checkout.presentation.adapter.vh
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
-import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_digital_checkout_my_bills_section.view.*
