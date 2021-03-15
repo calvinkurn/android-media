@@ -1,6 +1,8 @@
 package com.tokopedia.pageinfopusher
 
 import android.app.Activity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -12,6 +14,7 @@ class PageInfoPusherManager(val activity: Activity) {
 
     val MAINAPP_GENERAL_INFO = "android_mainapp_general_info"
     val SELLERAPP_GENERAL_INFO = "android_sellerapp_general_info"
+    val PRO_GENERAL_INFO = "android_pro_general_info"
 
     val remoteConfig : RemoteConfig
 
@@ -21,13 +24,15 @@ class PageInfoPusherManager(val activity: Activity) {
 
     fun showGeneralInfoMessage() {
         try {
-            val rawConfig = if (GlobalConfig.isSellerApp()) {
+            val rawConfig = if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
                 remoteConfig.getString(SELLERAPP_GENERAL_INFO)
-            } else {
+            } else if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION) {
                 remoteConfig.getString(MAINAPP_GENERAL_INFO)
+            } else {
+                remoteConfig.getString(PRO_GENERAL_INFO)
             }
 
-            if (rawConfig.isNullOrEmpty()) return
+            if (rawConfig.isNullOrBlank()) return
 
             val configList: org.json.JSONArray = org.json.JSONArray(rawConfig)
             for (i in 0 until configList.length()) {
@@ -41,20 +46,25 @@ class PageInfoPusherManager(val activity: Activity) {
     private fun handleConfig(config: JSONObject) {
         try {
             val className: String? = activity.javaClass.canonicalName
-            val pages: String? = config.optString("pages")
-            val environment: String? = config.optString("environment")
-            val appVersions: String? = config.optString("app_versions")
-            val manufacturers: String? = config.optString("device_manufacturers")
-            val models: String? = config.optString("device_models")
-            val osVersions: String? = config.optString("android_os_versions")
-            val isForceClose: Boolean = config.optBoolean("is_force_close")
-            val message: String? = config.optString("message")
+            val pages: String = config.optString("pages")
+            val environment: String = config.optString("environment")
+            val minAppVer: String = config.optString("min_app_ver_code")
+            val maxAppVer: String = config.optString("max_app_ver_code")
+            val manufacturers: String = config.optString("device_manufacturers")
+            val models: String = config.optString("device_models")
+            val minOsVer: String = config.optString("min_os_ver")
+            val maxOsVer: String = config.optString("max_os_ver")
+            val title: String = config.optString("title")
+            val buttonText: String = config.optString("button_text")
+            val actionApplink: String = config.optString("action_applink")
+            val message: String = config.optString("message")
 
             if (!isEligibleForGeneralInfo(pages, className)) return
-            if (!isEligibleForGeneralInfo(appVersions, GlobalConfig.VERSION_NAME)) return
             if (!isEligibleForGeneralInfo(manufacturers, android.os.Build.MANUFACTURER)) return
             if (!isEligibleForGeneralInfo(models, android.os.Build.MODEL)) return
-            if (!isEligibleForGeneralInfo(osVersions, android.os.Build.VERSION.SDK_INT.toString())) return
+
+            if (!isRangeEligibleForGeneralInfo(minRange = minAppVer, maxRange = maxAppVer, value = GlobalConfig.VERSION_CODE)) return
+            if (!isRangeEligibleForGeneralInfo(minRange = minOsVer, maxRange = maxOsVer, value = android.os.Build.VERSION.SDK_INT)) return
 
             if ("all" != environment && GlobalConfig.isAllowDebuggingTools() && "dev" != environment) return
             if ("all" != environment && !GlobalConfig.isAllowDebuggingTools() && "prod" != environment) return
@@ -65,33 +75,53 @@ class PageInfoPusherManager(val activity: Activity) {
                     + "';manufacturer='" + android.os.Build.MANUFACTURER
                     + "';model='" + android.os.Build.MODEL
                     + "';os='" + android.os.Build.VERSION.SDK_INT.toString()
+                    + "';title='" + title + "'"
+                    + "';button_text='" + buttonText + "'"
+                    + "';action_applink='" + actionApplink + "'"
                     + "';message='" + message + "'")
 
-            message?.let { showPopUp(it, isForceClose) }
+            showPopUp(message = message, title = title, buttonText = buttonText, actionApplink =  actionApplink)
 
         } catch (e: java.lang.Exception) {
         }
     }
 
-    private fun isEligibleForGeneralInfo(requirements: String?, value: String?): Boolean {
-        if (requirements.isNullOrEmpty()) return false
+    private fun isEligibleForGeneralInfo(requirements: String, value: String?): Boolean {
+        if (requirements.isBlank()) return false
 
         val requirementList = requirements.split("\\s*,\\s*").map { s -> s.trim() }
         return ("all" == requirementList[0] || requirementList.contains(value))
     }
 
-    private fun showPopUp(message: String, isForceClose: Boolean) {
+    private fun isRangeEligibleForGeneralInfo(minRange: String, maxRange: String, value: Int): Boolean {
+        if (minRange == "all" || maxRange == "all") return true
+
+        if (minRange.isBlank() || maxRange.isBlank()) return false
+
+        val min = minRange.toIntOrNull()
+        val max = maxRange.toIntOrNull()
+
+        if (min == null || max == null) return false
+
+        return (min <= value && value <= max)
+    }
+
+    private fun showPopUp(message: String, title: String, buttonText: String, actionApplink: String) {
         DialogUnify(context = activity,
                 actionType = DialogUnify.SINGLE_ACTION,
                 imageType = DialogUnify.NO_IMAGE).apply {
-            setTitle(activity.getString(R.string.announcement))
+            setTitle(title)
             setDescription(message)
-            setPrimaryCTAText(activity.getString(R.string.action_dismiss))
+            setPrimaryCTAText(buttonText)
             setPrimaryCTAClickListener {
                 this.dismiss()
             }
             setOnDismissListener {
-                if (isForceClose) activity.finish()
+                if (actionApplink == ApplinkConst.GeneralInfo.GENERAL_INFO_FORCE_CLOSE_PAGE) {
+                    activity.finish()
+                } else if (actionApplink.isNotBlank()) {
+                    RouteManager.route(activity, actionApplink)
+                }
             }
             setOverlayClose(false)
             show()

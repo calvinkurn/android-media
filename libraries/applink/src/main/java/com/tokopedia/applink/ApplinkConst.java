@@ -611,4 +611,8 @@ public interface ApplinkConst {
     interface Navigation {
         String MAIN_NAV = "tokopedia://navigation/main";
     }
+
+    interface GeneralInfo {
+        String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
+    }
 }
