@@ -19,6 +19,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
+import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.PlayViewerPiPCoordinator
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -343,9 +344,9 @@ class PlayVideoFragment @Inject constructor(
             pipState: PiPState = playViewModel.pipState,
             state: PlayViewerVideoState = playViewModel.viewerVideoState,
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
-        if (isFreezeOrBanned) {
+        if (isFreezeOrBanned && !playViewModel.bottomInsets.isAnyBottomSheetsShown) {
             videoView.setPlayer(null)
             videoView.hide()
             return

@@ -19,6 +19,7 @@ import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.shop.home.GqlQueryConstant
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -41,6 +42,13 @@ class ShopPageHomeModule {
     @Named(GQL_ATC_MUTATION)
     fun provideAddToCartMutation(@ShopPageContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GqlQueryConstant.GQL_ATC_OCC_MUTATION)
+    fun provideAddToCartOCCMutation(@ShopPageContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout);
     }
 
     @ShopPageHomeScope

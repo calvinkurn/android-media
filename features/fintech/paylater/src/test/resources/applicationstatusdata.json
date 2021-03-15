@@ -1,0 +1,35 @@
+{
+  "creditapplication_getUserApplicationStatus": {
+    "tkp_user_id": 3816220,
+    "application_detail": [
+      {
+        "id": 974,
+        "gateway_name": "Kredivo",
+        "gateway_code": "KREDIVO",
+        "application_status": "Waiting",
+        "expiration_date": "2021-03-16"
+      },
+      {
+        "id": 0,
+        "gateway_name": "Indodana",
+        "gateway_code": "INDODANA",
+        "application_status": "Cancelled",
+        "expiration_date": ""
+      },
+      {
+        "id": 0,
+        "gateway_name": "Home Credit",
+        "gateway_code": "HOMECREDIT",
+        "application_status": "Cancelled",
+        "expiration_date": ""
+      },
+      {
+        "id": 0,
+        "gateway_name": "BRI Ceria",
+        "gateway_code": "BRICERIA",
+        "application_status": "Cancelled",
+        "expiration_date": ""
+      }
+    ]
+  }
+}

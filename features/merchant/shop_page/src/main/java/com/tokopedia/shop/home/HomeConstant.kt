@@ -6,6 +6,7 @@ object HomeConstant {
 
 object GqlQueryConstant {
     const val GQL_ATC_MUTATION = "atcMutation"
+    const val GQL_ATC_OCC_MUTATION = "atcOccMutation"
 }
 
 object WidgetType {
@@ -13,6 +14,7 @@ object WidgetType {
     const val PRODUCT = "product"
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
+    const val PERSONALIZATION = "perso"
 }
 
 object WidgetName {
@@ -24,6 +26,8 @@ object WidgetName {
     const val PLAY_CAROUSEL_WIDGET = "play"
     const val VIDEO = "video"
     const val PRODUCT = "product"
+    const val RECENT_ACTIVITY = "recent_activity"
+    const val BUY_AGAIN = "buy_again"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
     const val VOUCHER_STATIC = "voucher_static"
 }
