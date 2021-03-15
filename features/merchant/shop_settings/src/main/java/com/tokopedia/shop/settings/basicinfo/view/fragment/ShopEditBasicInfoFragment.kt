@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -44,6 +43,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -73,7 +73,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private var shopDomainTextWatcher: TextWatcher? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var snackbar: Snackbar? = null
-    private var tvSave: TextView? = null
+    private var tvSave: Typography? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
 

@@ -29,11 +29,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title"
-                style="@style/TextView.Title"
+                android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:layout_marginEnd="@dimen/dp_32"
                 android:layout_weight="1"
                 android:lineSpacingExtra="@dimen/sp_8"
+                app:typographyType="body_1"
+                app:typographyWeight="reguler"
                 tools:text="MyShop" />
 
             <ImageView
@@ -42,13 +44,17 @@
                 android:layout_height="@dimen/dp_36"
                 android:padding="@dimen/dp_6"
                 android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/settings_of_the_item"
                 app:srcCompat="@drawable/ic_three_dots_more_menu" />
 
         </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_1"
-            style="@style/TextView.Micro.BlackDisabled"
+            app:typographyWeight="reguler"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/font_black_disabled_38"
             android:layout_marginEnd="@dimen/dp_56"
             android:layout_marginTop="@dimen/dp_4"
             android:lineSpacingExtra="@dimen/sp_6"
@@ -56,7 +62,10 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_2"
-            style="@style/TextView.Micro.BlackDisabled"
+            app:typographyWeight="reguler"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/font_black_disabled_38"
             android:layout_marginEnd="@dimen/dp_56"
             android:layout_marginTop="@dimen/dp_2"
             android:lineSpacingExtra="@dimen/sp_6"

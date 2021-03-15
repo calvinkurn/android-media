@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/divider"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title_menu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -37,6 +37,7 @@
         app:layout_goneMarginLeft="@dimen/dp_16"
         app:layout_goneMarginStart="@dimen/dp_16"
         android:textColor="@color/grey_750"
+        app:typographyWeight="reguler"
         android:textSize="@dimen/sp_14"
         android:singleLine="true"
         tools:text="Bakar bakar Bakar bakar Bakar bakar Bakar bakar"

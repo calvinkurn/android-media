@@ -101,7 +101,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         KeyboardHandler.DropKeyboard(context, view)
-        if (item!!.itemId == R.id.menu_add) {
+        if (item.itemId == R.id.menu_add) {
             onAddNoteButtonClicked()
             return true
         } else if (item.itemId == R.id.menu_reorder) {

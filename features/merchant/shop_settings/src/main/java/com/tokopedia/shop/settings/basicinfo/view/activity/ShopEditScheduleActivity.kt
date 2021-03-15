@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -30,6 +29,7 @@ import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewMode
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
@@ -170,7 +170,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
             it.title = getString(R.string.shop_settings_shop_status)
         }
 
-        val tvSave: TextView? = findViewById(R.id.tvSave)
+        val tvSave: Typography? = findViewById(R.id.tvSave)
         tvSave?.apply {
             visibility = View.VISIBLE
             isEnabled = true

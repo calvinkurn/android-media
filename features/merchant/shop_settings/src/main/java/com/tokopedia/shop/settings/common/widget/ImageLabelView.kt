@@ -2,11 +2,8 @@ package com.tokopedia.shop.settings.common.widget
 
 import android.content.Context
 import android.graphics.Typeface
-import android.os.Build
 import androidx.annotation.ColorInt
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -14,21 +11,21 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 
 import com.tokopedia.shop.settings.R
+import com.tokopedia.unifyprinciples.Typography
 
 class ImageLabelView : FrameLayout {
     private var titleText: String? = null
     private var titleTextSize: Float = 0.toFloat()
     private var titleTextStyleValue: Int = 0
-    private var titleTextView: TextView? = null
+    private var titleTextView: Typography? = null
     @ColorInt
     private var titleColorValue: Int = 0
 
     internal var imageView: ImageView? = null
     private var drawableRes: Int = 0
-    private var tvContent: TextView? = null
+    private var tvContent: Typography? = null
     private var contentHint: String? = null
 
     constructor(context: Context) : super(context) {
@@ -43,24 +40,19 @@ class ImageLabelView : FrameLayout {
         init(attrs)
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init(attrs)
-    }
-
     private fun init(attrs: AttributeSet?) {
         applyAttrs(attrs)
         val view = LayoutInflater.from(context).inflate(R.layout.widget_label_view_image,
                 this, true)
         titleTextView = view.findViewById(R.id.tvTitle)
-        titleTextView!!.text = titleText
-        titleTextView!!.setTypeface(null, titleTextStyleValue)
-        titleTextView!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
-        titleTextView!!.setTextColor(titleColorValue)
+        titleTextView?.text = titleText
+        titleTextView?.setTypeface(null, titleTextStyleValue)
+        titleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
+        titleTextView?.setTextColor(titleColorValue)
         imageView = view.findViewById(R.id.imageView)
         tvContent = view.findViewById(R.id.tvContent)
-        tvContent!!.hint = contentHint
-        tvContent!!.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N75))
+        tvContent?.hint = contentHint
+        tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N75))
         setImage(drawableRes)
     }
 
@@ -89,29 +81,20 @@ class ImageLabelView : FrameLayout {
         }
     }
 
-    fun setTitle(title: String) {
-        if (TextUtils.isEmpty(title)) {
-            titleTextView!!.visibility = View.GONE
-        } else {
-            titleTextView!!.text = title
-            titleTextView!!.visibility = View.VISIBLE
-        }
-    }
-
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
         isClickable = enabled
         if (enabled) {
-            tvContent!!.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N75))
-            titleTextView!!.setTextColor(titleColorValue)
+            tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N75))
+            titleTextView?.setTextColor(titleColorValue)
         } else {
-            tvContent!!.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            titleTextView!!.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            titleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         }
     }
 
     fun setContent(content: String) {
-        tvContent!!.text = content
+        tvContent?.text = content
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {

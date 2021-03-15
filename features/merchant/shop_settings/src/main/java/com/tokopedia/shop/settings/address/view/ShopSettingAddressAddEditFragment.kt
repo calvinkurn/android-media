@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.address.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -81,6 +82,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
         return v
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeViews()
@@ -97,7 +99,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             if (position == 0 && !tfPostalCode?.textFieldInput?.text.toString()[0].isDigit())
                 tfPostalCode?.textFieldInput?.setText("")
         }
-        tfPostalCode?.textFieldInput?.setOnTouchListener { view, motionEvent ->
+        tfPostalCode?.textFieldInput?.setOnTouchListener { _, _ ->
             if (tfPostalCode?.textFieldInput?.isPopupShowing != true)
                 tfPostalCode?.textFieldInput?.showDropDown()
             false
@@ -110,7 +112,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
         tfAddress?.textFieldInput?.isSingleLine = false
 
-        tfDistrict?.textFieldInput?.setOnTouchListener { view, motionEvent ->
+        tfDistrict?.textFieldInput?.setOnTouchListener { _, _ ->
             if (!hasTouchedDistrict) {
                 gotoDistrictActivity()
                 hasTouchedDistrict = true

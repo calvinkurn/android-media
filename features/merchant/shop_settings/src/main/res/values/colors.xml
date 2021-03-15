@@ -12,5 +12,6 @@
     <color name="grey_300">#e0e0e0</color>
     <color name="grey_750">#4b4b4b</color>
     <color name="tkpd_main_green">#42b549</color>
+    <color name="font_black_disabled_38">#61000000</color>
 
 </resources>

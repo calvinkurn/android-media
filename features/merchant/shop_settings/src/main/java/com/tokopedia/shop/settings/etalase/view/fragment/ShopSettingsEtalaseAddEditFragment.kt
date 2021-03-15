@@ -223,11 +223,11 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        progress_bar?.visibility = View.VISIBLE
+        loader?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        progress_bar?.visibility = View.GONE
+        loader?.visibility = View.GONE
     }
 
     private fun isEtalaseCountAtMax(): Boolean {

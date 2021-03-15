@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -36,6 +35,7 @@ import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.shop.settings.common.widget.Menus
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -334,7 +334,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
+        val tvSave: Typography? = activity?.findViewById(R.id.tvSave)
         tvSave?.hide()
     }
 

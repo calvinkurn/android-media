@@ -26,7 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_200"
         app:srcCompat="@drawable/bg_all_promo"
-        android:layout_marginBottom="@dimen/dp_20" />
+        android:layout_marginBottom="@dimen/dp_20"
+        android:contentDescription="@string/power_merchant" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view_description"

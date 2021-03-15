@@ -24,9 +24,8 @@
         app:titleTextAppearance="?titleTextAppearance"
         tools:targetApi="lollipop">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSave"
-            style="@style/TextView.Title.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -39,6 +38,9 @@
             android:paddingRight="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
             android:text="@string/label_save"
+            android:textColor="@color/g_500"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler"
             android:visibility="gone"
             tools:visibility="visible" />
     </androidx.appcompat.widget.Toolbar>
@@ -77,7 +79,7 @@
         app:text_field_counter="@integer/max_slogan_char"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        style="@style/TextView.Micro.BlackDisabled"
+        android:textColor="@color/font_black_disabled_38"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="body_2"

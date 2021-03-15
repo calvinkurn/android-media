@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import android.view.View
-import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -13,6 +12,7 @@ import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.unifyprinciples.Typography
 
 class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
     override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
@@ -21,8 +21,8 @@ class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<Shop
     private var shopLocationUiModel: ShopLocationUiModel? = null
     private var isAddNew = true
 
-    private val saveTextView: TextView? by lazy {
-        toolbar?.findViewById<TextView>(R.id.tvSave)
+    private val saveTextView: Typography? by lazy {
+        toolbar?.findViewById<Typography>(R.id.tvSave)
     }
 
     companion object {
@@ -57,12 +57,13 @@ class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<Shop
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowTitleEnabled(true)
-            supportActionBar!!.title = this.title
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(true)
+            supportActionBar?.title = this.title
         }
     }
 

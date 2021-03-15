@@ -7,9 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -18,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.shop.settings.R;
+import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +111,7 @@ public class Menus extends BaseBottomSheetView {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            public TextView title;
+            public Typography title;
             public ImageView icon, iconEnd;
 
             public ViewHolder(View view) {
@@ -124,7 +124,7 @@ public class Menus extends BaseBottomSheetView {
 
         private class FooterViewHolder extends RecyclerView.ViewHolder {
 
-            private Button button;
+            private UnifyButton button;
 
             FooterViewHolder(View view) {
                 super(view);
@@ -134,7 +134,7 @@ public class Menus extends BaseBottomSheetView {
 
         private class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView tvTitle;
+            private Typography tvTitle;
             private View buttonCLose;
 
             HeaderViewHolder(View view) {

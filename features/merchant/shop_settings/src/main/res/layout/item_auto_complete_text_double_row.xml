@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item"
         style="?android:attr/dropDownItemStyle"
         android:layout_width="match_parent"
