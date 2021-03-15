@@ -622,6 +622,7 @@ class RegisterInitialViewModel @Inject constructor(
         super.onCleared()
         activateUserUseCase.cancelJobs()
         registerRequestUseCase.cancelJobs()
+        registerRequestUseCaseV2.cancelJobs()
         registerCheckUseCase.cancelJobs()
         tickerInfoUseCase.unsubscribe()
         discoverUseCase.unsubscribe()
