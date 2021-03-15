@@ -60,9 +60,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    viewBinding {
-        enabled = true
-    }
 }
 dependencies {
     implementation project(rootProject.ext.libraries.applink)
@@ -117,5 +114,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.notifTroubleshooter)
 }
