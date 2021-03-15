@@ -23,8 +23,11 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
         tvVoucherDescription.text = item.description
 
         ivVoucherImage.setImageResource(
-                if (item.type == MerchantVoucherType.Shipping) R.drawable.ic_play_shipping_voucher
-                else R.drawable.ic_play_discount_voucher
+                when (item.type) {
+                    MerchantVoucherType.Private -> R.drawable.ic_play_special_voucher
+                    MerchantVoucherType.Shipping -> R.drawable.ic_play_shipping_voucher
+                    else -> R.drawable.ic_play_discount_voucher
+                }
         )
 
         itemView.setOnClickListener {
