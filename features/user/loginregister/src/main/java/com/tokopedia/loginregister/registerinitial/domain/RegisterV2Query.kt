@@ -2,7 +2,7 @@ package com.tokopedia.loginregister.registerinitial.domain
 
 object RegisterV2Query {
     val registerQuery: String = """
-        mutation register(${'$'}reg_type String!, ${'$'}fullname: String!, ${'$'}email: String!, ${'$'}password: String!, ${'$'}os_type: String!, ${'$'}validate_token: String!, ${'$'}h: String!) {
+        mutation register(${'$'}reg_type: String!, ${'$'}fullname: String!, ${'$'}email: String!, ${'$'}password: String!, ${'$'}os_type: String!, ${'$'}validate_token: String!, ${'$'}h: String!) {
             register_v2(input: {
                 reg_type: ${'$'}reg_type
                 fullname: ${'$'}fullname
