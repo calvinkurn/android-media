@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
@@ -40,8 +42,6 @@ import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
-import com.tokopedia.sessioncommon.extensions.decodeBase64
-import com.tokopedia.sessioncommon.util.RSAUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -323,7 +323,7 @@ class RegisterInitialViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
             if(keyData.key.isNotEmpty()) {
-                val encryptedPassword = RSAUtils().encrypt(password, keyData.key.decodeBase64(), true)
+                val encryptedPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
 
                 val params = createRegisterBasicParams(email, encryptedPassword, fullname, validateToken)
                 params[RegisterInitialQueryConstant.PARAM_HASH] = keyData.hash
