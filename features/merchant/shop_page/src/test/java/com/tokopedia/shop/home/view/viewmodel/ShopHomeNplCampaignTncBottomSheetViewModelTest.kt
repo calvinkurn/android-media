@@ -1,8 +1,14 @@
 package com.tokopedia.shop.home.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
@@ -10,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.util.LiveDataUtil.observeAwaitValue
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,9 +36,9 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     @RelaxedMockK
     lateinit var getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase
     @RelaxedMockK
-    lateinit var gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
+    lateinit var updateFollowStatusUseCase: UpdateFollowStatusUseCase
     @RelaxedMockK
-    lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
+    lateinit var getFollowStatusUseCase: GetFollowStatusUseCase
 
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
@@ -46,8 +53,8 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
                 testCoroutineDispatcherProvider,
                 userSession,
                 getCampaignNplTncUseCase,
-                gqlGetShopFavoriteStatusUseCase,
-                toggleFavouriteShopUseCase
+                updateFollowStatusUseCase,
+                getFollowStatusUseCase
         )
     }
 
@@ -69,9 +76,15 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
         val sampleCampaignId = "1234"
         val shopId = "12345"
         coEvery { getCampaignNplTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
-        coEvery { gqlGetShopFavoriteStatusUseCase.executeOnBackground() } returns ShopInfo()
+        coEvery { getFollowStatusUseCase.executeOnBackground().followStatus } returns FollowStatus(null, null, null)
         viewModel.getTncBottomSheetData(sampleCampaignId, shopId, false)
+
+        viewModel.campaignTncLiveData.observeAwaitValue()
+        viewModel.campaignFollowStatusLiveData.observeAwaitValue()
+
         coVerify { getCampaignNplTncUseCase.executeOnBackground() }
+        coVerify { getFollowStatusUseCase.executeOnBackground() }
+
         assert(viewModel.campaignTncLiveData.value is Success)
         assert(viewModel.campaignFollowStatusLiveData.value is Success)
     }
@@ -109,9 +122,9 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     fun `check whether _followUnfollowShopLiveData post success data`() {
         val shopId = "123"
         every { userSession.isLoggedIn } returns true
-        every { toggleFavouriteShopUseCase.createObservable(any()) } returns Observable.just(true)
-        viewModel.followUnfollowShop(shopId)
-        verify { toggleFavouriteShopUseCase.createObservable(any()) }
+        coEvery { updateFollowStatusUseCase.executeOnBackground() } returns FollowShopResponse(FollowShop(true,null,null,null, null, null))
+        viewModel.updateFollowStatus(shopId, UpdateFollowStatusUseCase.ACTION_FOLLOW)
+        coVerify { updateFollowStatusUseCase.executeOnBackground() }
         assert(viewModel.followUnfollowShopLiveData.value is Success)
     }
 
@@ -119,9 +132,9 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     fun `check whether _followUnfollowShopLiveData post fail data when usecase throw error`() {
         val shopId = "123"
         every { userSession.isLoggedIn } returns true
-        every { toggleFavouriteShopUseCase.createObservable(any()) } returns Observable.error(Exception())
-        viewModel.followUnfollowShop(shopId)
-        verify { toggleFavouriteShopUseCase.createObservable(any()) }
+        coEvery { updateFollowStatusUseCase.executeOnBackground() } throws Throwable()
+        viewModel.updateFollowStatus(shopId, UpdateFollowStatusUseCase.ACTION_FOLLOW)
+        coVerify { updateFollowStatusUseCase.executeOnBackground() }
         assert(viewModel.followUnfollowShopLiveData.value is Fail)
     }
 
@@ -129,7 +142,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     fun `check whether _followUnfollowShopLiveData post fail data when user not logged in`() {
         val shopId = "123"
         every { userSession.isLoggedIn } returns false
-        viewModel.followUnfollowShop(shopId)
+        viewModel.updateFollowStatus(shopId, UpdateFollowStatusUseCase.ACTION_FOLLOW)
         verify { userSession.isLoggedIn }
         assert(viewModel.followUnfollowShopLiveData.value is Fail)
     }

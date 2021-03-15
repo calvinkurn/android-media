@@ -367,7 +367,7 @@ public class ProductListFragment
 
     @NonNull
     private ProductItemDecoration createProductItemDecoration() {
-        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16));
+        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
     }
 
     @Override
@@ -546,16 +546,15 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendProductImpressionTrackingEvent(ProductItemViewModel item, String suggestedRelatedKeyword) {
+    public void sendProductImpressionTrackingEvent(ProductItemViewModel item, String suggestedRelatedKeyword, String dimension90) {
         String userId = getUserId();
-        String searchRef = getSearchRef();
         String eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword);
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
 
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
-        dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
+        dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, dimension90));
         productItemViewModels.add(item);
 
         if(irisSession != null){
@@ -773,14 +772,13 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId, String suggestedRelatedKeyword) {
+    public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId, String suggestedRelatedKeyword, String dimension90) {
         String eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword);
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
 
-        String searchRef = getSearchRef();
         SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
+                item.getProductAsObjectDataLayer(userId, filterSortParams, dimension90),
                 item.isOrganicAds(),
                 eventLabel,
                 filterSortParams

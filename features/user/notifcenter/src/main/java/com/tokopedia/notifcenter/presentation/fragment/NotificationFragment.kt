@@ -23,9 +23,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
@@ -33,6 +36,8 @@ import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.entity.orderlist.Card
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
@@ -56,20 +61,19 @@ import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeC
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.widget.NotificationFilterView
-import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
-import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
         InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
-        NotificationEndlessRecyclerViewScrollListener.Listener {
+        NotificationEndlessRecyclerViewScrollListener.Listener,
+        NotificationAdapter.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -115,6 +119,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun loadData(page: Int) {
         if (page == 1) {
+            if (!hasFilter()) {
+                viewModel.loadNotifOrderList(containerListener?.role)
+            }
             viewModel.loadFirstPageNotification(
                     containerListener?.role
             )
@@ -122,6 +129,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
+        if (rvAdapter?.lastItemIsErrorNetwork() == true) return
         if (!viewModel.hasFilter()) {
             viewModel.loadRecommendations(page)
         } else {
@@ -188,7 +196,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, NotificationTypeFactory> {
-        rvAdapter = NotificationAdapter(adapterTypeFactory)
+        rvAdapter = NotificationAdapter(adapterTypeFactory, this)
         return rvAdapter as NotificationAdapter
     }
 
@@ -203,10 +211,25 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        if (viewModel.hasFilter() || containerListener?.role == RoleType.SELLER) {
+        if (viewModel.hasFilter() || amISeller()) {
             return EmptyNotificationUiModel(viewModel.hasFilter())
         }
         return super.getEmptyDataViewModel()
+    }
+
+    override fun isListEmpty(): Boolean {
+        return super.isListEmpty() ||
+                (rvAdapter?.itemCount == 1 && rvAdapter?.hasNotifOrderList() == true)
+    }
+
+    override fun showGetListError(throwable: Throwable?) {
+        hideLoading()
+        updateStateScrollListener()
+        if (!isListEmpty) {
+            onGetListErrorWithExistingData(throwable)
+        } else {
+            onGetListErrorWithEmptyData(throwable)
+        }
     }
 
     private fun initView(view: View) {
@@ -264,6 +287,30 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                     isBumpReminder = false
             )
         })
+
+        viewModel.orderList.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Status.LOADING -> {
+                    if (rvAdapter?.hasNotifOrderList() == false) {
+                        updateOrRenderOrderListState(it.data)
+                    }
+                }
+                Status.SUCCESS -> {
+                    updateOrRenderOrderListState(it.data)
+                }
+                else -> {
+                }
+            }
+        })
+    }
+
+    private fun updateOrRenderOrderListState(data: NotifOrderListResponse?) {
+        rvAdapter?.updateOrRenderOrderListState(data) {
+            val visibleItems = rvLm.findFirstVisibleItemPositions(null)
+            if (visibleItems.isNotEmpty() && visibleItems.first() == 0) {
+                moveToTop()
+            }
+        }
     }
 
     private fun updateReminderState(
@@ -393,6 +440,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         )
     }
 
+    private fun showErrorMessage(msg: String) {
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     private fun showErrorMessage(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
@@ -414,9 +467,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         viewModel.cancelAllUseCase()
         viewModel.reset()
         filter?.reset()
-        viewModel.loadNotificationFilter(role)
-        triggerMarkAsSeenTracker(previousRole)
-        loadInitialData()
+        if (isResumed) {
+            viewModel.loadNotificationFilter(role)
+            triggerMarkAsSeenTracker(previousRole)
+            rvAdapter?.removeAllItems()
+            loadInitialData()
+        }
     }
 
     private fun triggerMarkAsSeenTracker(@RoleType role: Int?) {
@@ -432,6 +488,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onPageClickedAgain() {
+        moveToTop()
+    }
+
+    private fun moveToTop() {
         rv?.scrollToPosition(0)
     }
 
@@ -452,20 +512,60 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
-        if (usePdp()) {
-            goToPdp(product)
-        } else {
-            val buyPageIntent = getBuyPageIntent(notification, product)
-            startActivity(buyPageIntent)
+        doBuyAndAtc(notification, product) {
+            analytic.trackSuccessDoBuyAndAtc(
+                    notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
+            )
+            RouteManager.route(context, ApplinkConst.CART)
         }
     }
 
     override fun addProductToCart(notification: NotificationUiModel, product: ProductData) {
-        if (usePdp()) {
-            goToPdp(product)
-        } else {
-            val atcPageIntent = getAtcPageIntent(notification, product)
-            startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
+        doBuyAndAtc(notification, product) {
+            analytic.trackSuccessDoBuyAndAtc(
+                    notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
+            )
+            val msg = it.message.getOrNull(0) ?: ""
+            view?.let { view ->
+                Toaster.build(
+                        view,
+                        msg,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        view.context.getString(R.string.title_notifcenter_see_cart),
+                        View.OnClickListener {
+                            RouteManager.route(context, ApplinkConst.CART)
+                        }
+                ).show()
+            }
+        }
+    }
+
+    private fun doBuyAndAtc(
+            notification: NotificationUiModel,
+            product: ProductData,
+            onSuccess: (response: DataModel) -> Unit = {}
+    ) {
+        val buyParam = getAtcBuyParam(product)
+        viewModel.addProductToCart(buyParam, {
+            onSuccess(it)
+        }, { msg ->
+            showErrorMessage(msg)
+        })
+    }
+
+    private fun getAtcBuyParam(product: ProductData): RequestParams {
+        val addToCartRequestParams = AddToCartRequestParams(
+                productId = product.productId.toLongOrZero(),
+                shopId = product.shop.id.toInt(),
+                quantity = product.minOrder,
+                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_NOTIFCENTER
+        )
+        return RequestParams.create().apply {
+            putObject(
+                    AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                    addToCartRequestParams
+            )
         }
     }
 
@@ -527,6 +627,22 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         analytic.trackClickCtaWidget(element, containerListener?.role)
     }
 
+    override fun trackExpandTimelineHistory(element: NotificationUiModel) {
+        analytic.trackExpandTimelineHistory(element, containerListener?.role)
+    }
+
+    override fun amISeller(): Boolean {
+        return containerListener?.role == RoleType.SELLER
+    }
+
+    override fun trackClickOrderListItem(order: Card) {
+        analytic.trackClickOrderListItem(containerListener?.role, order)
+    }
+
+    override fun hasFilter(): Boolean {
+        return viewModel.hasFilter()
+    }
+
     private fun createViewHolderState(
             notification: NotificationUiModel,
             adapterPosition: Int,
@@ -564,99 +680,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         return View.OnClickListener {
             RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
         }
-    }
-
-    private fun getBuyPageIntent(
-            notification: NotificationUiModel, product: ProductData
-    ): Intent {
-        val atcAndBuyAction = ATC_AND_BUY
-        val needRefresh = true
-        return RouteManager.getIntent(
-                context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
-        ).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shop.id.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, product.minOrder)
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID,
-                    product.productId.toString()
-            )
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, product.shop.name)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, product.name)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, product.price.toFloat())
-            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.INBOX)
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL,
-                    notification.getEventLabel()
-            )
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION,
-                    NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
-            )
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40,
-                    NotificationAnalytic.LIST_NOTIFCENTER
-            )
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE,
-                    AddToCartRequestParams.ATC_FROM_NOTIFCENTER
-            )
-        }
-    }
-
-    private fun getAtcPageIntent(
-            notification: NotificationUiModel, product: ProductData
-    ): Intent {
-        val atcOnly = ATC_ONLY
-        val needRefresh = true
-        return RouteManager.getIntent(
-                context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
-        ).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shop.id.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, product.minOrder)
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID,
-                    product.productId.toString()
-            )
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, product.shop.name)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
-            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.INBOX)
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL,
-                    notification.getEventLabel()
-            )
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION,
-                    NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
-            )
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40,
-                    NotificationAnalytic.LIST_NOTIFCENTER
-            )
-            putExtra(
-                    ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE,
-                    AddToCartRequestParams.ATC_FROM_NOTIFCENTER
-            )
-        }
-    }
-
-    private fun usePdp(): Boolean {
-        return remoteConfig?.getBoolean(RemoteConfigKey.USE_PDP_FOR_OLD_NORMAL_CHECKOUT) ?: false
-    }
-
-    private fun goToPdp(product: ProductData?) {
-        if (product == null) return
-        RouteManager.route(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                product.productId.toString()
-        )
     }
 
     companion object {

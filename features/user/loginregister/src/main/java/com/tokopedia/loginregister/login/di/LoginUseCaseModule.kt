@@ -60,4 +60,5 @@ class LoginUseCaseModule {
     fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): DynamicBannerUseCase {
         return DynamicBannerUseCase(graphqlUseCase)
     }
+
 }

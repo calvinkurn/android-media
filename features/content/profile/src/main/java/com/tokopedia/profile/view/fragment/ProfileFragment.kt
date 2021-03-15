@@ -271,7 +271,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         })
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16)
+            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             val halfSpacing = spacing / 2
             val spanCount = 2
             override fun getItemOffsets(outRect: Rect, view: View,
@@ -1385,7 +1385,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.setUnderlineText(false)
-                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
             }
         }
 
@@ -1397,7 +1397,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.setUnderlineText(false)
-                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
             }
         }
         if (spannableString.indexOf(followers) != -1) {
@@ -1549,9 +1549,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         return ShowCaseBuilder()
                 .backgroundContentColorRes(R.color.profile_showcase_black)
                 .shadowColorRes(R.color.profile_showcase_shadow)
-                .titleTextColorRes(com.tokopedia.design.R.color.white)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .textColorRes(com.tokopedia.design.R.color.white)
+                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_14)
                 .nextStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
                 .finishStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)

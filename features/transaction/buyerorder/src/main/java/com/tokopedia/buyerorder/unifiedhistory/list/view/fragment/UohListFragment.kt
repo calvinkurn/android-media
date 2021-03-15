@@ -44,6 +44,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRAN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAIN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_DELIVERED
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_ONGOING
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCESSED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
@@ -381,6 +382,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         status = ""
                         statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
+                    }
+                    PARAM_UOH_ONGOING -> {
+                        status = DALAM_PROSES
+                        statusLabel = TRANSAKSI_BERLANGSUNG
+                        paramUohOrder.verticalCategory = ""
                     }
                 }
                 paramUohOrder.status = status
@@ -762,7 +768,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter3?.listener = {
             onClickFilterCategory()
         }
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
+                || filterStatus.equals(PARAM_UOH_ONGOING, true) && !isReset) {
             filter3?.title = ALL_PRODUCTS
 
         } else if ((filterStatus.equals(PARAM_MARKETPLACE, true)
@@ -789,7 +796,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter3?.let { chips.add(it) }
 
         // date
-        val typeDate = if (isReset || isFirstLoad) {
+        val typeDate = if (isReset || isFirstLoad || filterStatus.equals(PARAM_UOH_ONGOING, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -1539,7 +1546,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ))
             i++
         }
+
         userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+        // requested as old flow (from old order list)
+        UohAnalytics.orderDetailOpenScreenEvent()
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {

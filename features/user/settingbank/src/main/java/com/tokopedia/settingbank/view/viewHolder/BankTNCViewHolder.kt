@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.domain.TemplateData
+import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 

@@ -71,6 +71,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
+        private const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
+        private const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
 
         private const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
 
@@ -194,6 +196,15 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         super.onDestroy()
     }
 
+    override fun onPause() {
+        super.onPause()
+        fragmentManager?.fragments?.forEach {
+            if((it as? BottomSheetUnify)?.isVisible == true) {
+                it.dismiss()
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (!isClickTrackingAlreadySent) {
@@ -243,10 +254,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     if (chipsFilterText == stringData) return
 
                     positionFilter = updatedPosition
-                    val filterListItemUnify = populateFilterDate()
                     filterListUnify?.apply {
-                        setSelectedFilterOrSort(filterListItemUnify, positionFilter.orZero())
-                        onItemFilterClickedBottomSheet(updatedPosition, filterListItemUnify, this)
+                        onItemFilterClickedBottomSheet(updatedPosition, populateFilterDate(), this)
+                        this.deferNotifyDataSetChanged()
                     }
                 }
             }
@@ -571,16 +581,14 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             chip_text.text = chipsFilterText
         }
 
-        val filterListItemUnify = populateFilterDate()
-
         chipsFilter?.apply {
             setOnClickListener {
                 chipsFilter?.toggle()
-                initBottomSheetFilter(filterListItemUnify, getString(R.string.title_bottom_sheet_filter))
+                initBottomSheetFilter(populateFilterDate(), getString(R.string.title_bottom_sheet_filter))
             }
             setChevronClickListener {
                 chipsFilter?.toggle()
-                initBottomSheetFilter(filterListItemUnify, getString(R.string.title_bottom_sheet_filter))
+                initBottomSheetFilter(populateFilterDate(), getString(R.string.title_bottom_sheet_filter))
             }
         }
     }
@@ -651,7 +659,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 setCloseClickListener {
                     dismiss()
                 }
-                show(fragmentManager, title)
+                show(fragmentManager, BOTTOM_SHEET_FILTER_TAG)
             }
         }
     }
@@ -696,7 +704,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     dismiss()
                 }
             }
-            bottomSheetSort?.show(fragmentManager, title)
+            bottomSheetSort?.show(fragmentManager, BOTTOM_SHEET_SORT_TAG)
         }
     }
 
@@ -730,7 +738,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             filterBy = ReviewConstants.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
             filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
-            bottomSheetFilter?.dismiss()
+            if(bottomSheetFilter?.isVisible == true) {
+                bottomSheetFilter?.dismiss()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -746,7 +756,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
-            bottomSheetSort?.dismiss()
+            if(bottomSheetSort?.isVisible == true) {
+                bottomSheetSort?.dismiss()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

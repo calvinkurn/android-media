@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
@@ -35,11 +37,10 @@ import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
-import com.tokopedia.sessioncommon.extensions.decodeBase64
-import com.tokopedia.sessioncommon.util.RSAUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -67,6 +68,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
+                                                   private val getAdminTypeUseCase: GetAdminTypeUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
@@ -204,33 +206,35 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             if(keyData.key.isNotEmpty()) {
                 var finalPassword = password
                 if(useHash) {
-                    finalPassword = RSAUtils().encrypt(password, keyData.key.decodeBase64(), useHash)
+                    finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
                 }
                 loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                 val tokenResult = loginTokenV2UseCase.executeOnBackground()
-                LoginV2Mapper(userSession).map(tokenResult,
-                        onSuccessLoginToken = {
-                            view.onSuccessLoginEmail()
-                        },
-                        onErrorLoginToken = {
-                            view.onErrorLoginEmail(email).invoke(it)
-                        },
-                        onShowPopupError = {
-                            view.showPopup().invoke(it.loginToken.popupError)
-                        },
-                        onGoToActivationPage = {
-                            view.onGoToActivationPage(email).invoke(it)
-                        },
-                        onGoToSecurityQuestion = {
-                            view.onGoToSecurityQuestion(email).invoke()
-                        }
-                )
+                view?.run {
+                    LoginV2Mapper(userSession).map(tokenResult,
+                            onSuccessLoginToken = {
+                                onSuccessLoginEmail()
+                            },
+                            onErrorLoginToken = {
+                                onErrorLoginEmail(email).invoke(it)
+                            },
+                            onShowPopupError = {
+                                showPopup().invoke(it.loginToken.popupError)
+                            },
+                            onGoToActivationPage = {
+                                onGoToActivationPage(email).invoke(it)
+                            },
+                            onGoToSecurityQuestion = {
+                                onGoToSecurityQuestion(email).invoke()
+                            }
+                    )
+                }
             }
             else {
-                view.onErrorLoginEmail(email)
+                view?.onErrorLoginEmail(email)
             }
         }, {
-            view.onErrorLoginEmail(email)
+            view?.onErrorLoginEmail(email)
         })
     }
 
@@ -308,7 +312,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             idlingResourceProvider?.increment()
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfo(),
-                    view.onErrorGetUserInfo()
+                    view.onErrorGetUserInfo(),
+                    getAdminTypeUseCase,
+                    view.showLocationAdminPopUp(),
+                    view.showGetAdminTypeError()
                     , onFinished = {
                 idlingResourceProvider?.decrement()
             }))
@@ -322,6 +329,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 getProfileUseCase.execute(GetProfileSubscriber(userSession,
                         { checkStatusFingerprint() },
                         view.onErrorGetUserInfo(),
+                        getAdminTypeUseCase,
+                        view.showLocationAdminPopUp(),
+                        view.showGetAdminTypeError(),
                         onFinished = { idlingResourceProvider?.decrement() })
                 )
             }

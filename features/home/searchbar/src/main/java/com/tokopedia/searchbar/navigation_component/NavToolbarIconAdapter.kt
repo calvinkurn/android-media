@@ -171,7 +171,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 val drawable = getIconUnifyDrawable(
                         context = context,
                         iconId = iconToolbar.id,
-                        assetColor = ContextCompat.getColor(context, com.tokopedia.iconunify.R.color.icon_enable_default_color)
+                        assetColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
                 )
                 iconImage.imageDrawable = drawable
             }
@@ -276,7 +276,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             val drawable = getIconUnifyDrawable(
                     context = context,
                     iconId = iconToolbar.id,
-                    assetColor = ContextCompat.getColor(context, R.color.icon_enable_default_color)
+                    assetColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
             )
             iconImage.imageDrawable = drawable
         }

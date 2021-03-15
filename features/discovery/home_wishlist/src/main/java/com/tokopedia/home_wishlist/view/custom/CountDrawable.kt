@@ -5,6 +5,7 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import com.tokopedia.home_wishlist.R
 
 class CountDrawable(context: Context) : Drawable() {
 
@@ -23,7 +24,7 @@ class CountDrawable(context: Context) : Drawable() {
     private fun createTextPaint(context: Context) {
         textPaint.color = Color.WHITE
         textPaint.typeface = Typeface.DEFAULT
-        textPaint.textSize = context.resources.getDimension(com.tokopedia.design.R.dimen.sp_8)
+        textPaint.textSize = context.resources.getDimension(R.dimen.sp_8)
         textPaint.isAntiAlias = true
         textPaint.textAlign = Paint.Align.CENTER
     }

@@ -2,90 +2,87 @@ package com.tokopedia.settingbank.view.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.settingbank.di.QUERY_ADD_BANK_ACCOUNT
-import com.tokopedia.settingbank.domain.AddBankRequest
-import com.tokopedia.settingbank.domain.RichieAddBankAccountNewFlow
-import com.tokopedia.settingbank.view.viewState.*
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.settingbank.domain.model.AddBankRequest
+import com.tokopedia.settingbank.domain.model.AddBankResponse
+import com.tokopedia.settingbank.domain.model.Bank
+import com.tokopedia.settingbank.domain.model.TemplateData
+import com.tokopedia.settingbank.domain.usecase.AddBankAccountUseCase
+import com.tokopedia.settingbank.domain.usecase.CheckBankAccountUseCase
+import com.tokopedia.settingbank.domain.usecase.TermsAndConditionUseCase
+import com.tokopedia.settingbank.domain.usecase.ValidateAccountNumberUseCase
+import com.tokopedia.settingbank.view.viewState.AccountNameValidationResult
+import com.tokopedia.settingbank.view.viewState.CheckAccountNameState
+import com.tokopedia.settingbank.view.viewState.ValidateAccountNumberState
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 
-class AddAccountViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                              private val rawQueries: Map<String, String>,
-                                              dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+class AddAccountViewModel @Inject constructor(
+        private val addBankAccountUseCase: dagger.Lazy<AddBankAccountUseCase>,
+        private val termsAndConditionUseCase: dagger.Lazy<TermsAndConditionUseCase>,
+        private val checkBankAccountUseCase: dagger.Lazy<CheckBankAccountUseCase>,
+        private val validateAccountNumberUseCase: dagger.Lazy<ValidateAccountNumberUseCase>,
+        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val addAccountState = MutableLiveData<AddAccountState>()
+    val addBankAccountLiveData = MutableLiveData<Result<AddBankResponse>>()
+    val termsAndConditionLiveData = MutableLiveData<Result<TemplateData>>()
+    val validateAccountNumberStateLiveData = MutableLiveData<ValidateAccountNumberState>()
+    val accountNameValidationResult = MutableLiveData<AccountNameValidationResult>()
 
-    private var job: Job? = null
+    val checkAccountDataLiveData = MutableLiveData<Result<CheckAccountNameState>>()
 
     fun addBank(addBankRequest: AddBankRequest) {
-        cancelCurrentJob()
-        createNewJob()
-        if (addAccountState.value == OnAddBankRequestStarted)
-            return
-        addAccountState.value = OnAddBankRequestStarted
-        launchCatchError(block = {
-            val params = getAddBankParams(addBankRequest)
-            val data = makeAddBankGQL(params, job!!)
-            processResponse(data.getSuccessData())
-            addAccountState.value = OnAddBankRequestEnded
+        addBankAccountUseCase.get().addBankAccount(addBankRequest, {
+            addBankAccountLiveData.postValue(Success(it))
+        }, {
+            addBankAccountLiveData.postValue(Fail(it))
+        })
+    }
 
-        }) {
-            addAccountState.value = OnAddBankRequestEnded
-            addAccountState.value = OnAddAccountNetworkError(it)
-            it.printStackTrace()
+    fun checkAccountNumber(bankId: Long, accountNumber: String?) {
+        checkBankAccountUseCase.get().checkAccountNumber(bankId, accountNumber,
+                {
+                    checkAccountDataLiveData.postValue(Success(it))
+                },
+                {
+                    checkAccountDataLiveData.postValue(Fail(it))
+                }
+        )
+    }
+
+    fun validateEditedAccountInfo(bankId: Long, accountNumber: String?, editedAccountName: String?) {
+        checkBankAccountUseCase.get().validateAccountNumber(bankId, accountNumber, editedAccountName,
+                {
+                    checkAccountDataLiveData.postValue(Success(it))
+                },
+                {
+                    checkAccountDataLiveData.postValue(Fail(it))
+                }
+        )
+    }
+
+    fun loadTermsAndCondition() {
+        termsAndConditionUseCase.get().getTermsAndCondition({
+            termsAndConditionLiveData.postValue(Success(it))
+        }, {
+            termsAndConditionLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun validateAccountNumber(bank: Bank?, accountNumberStr: String) {
+        validateAccountNumberUseCase.get().cancelJobs()
+        validateAccountNumberUseCase.get().onTextChanged(bank, accountNumberStr) {
+            validateAccountNumberStateLiveData.postValue(it)
         }
-    }
-
-    private fun processResponse(response: RichieAddBankAccountNewFlow) {
-        if (response.response.status == 200) {
-            addAccountState.value = OnSuccessfullyAdded(response.response)
-        } else {
-            addAccountState.value = OnAccountAddingError(Exception(response.response.message))
-        }
-    }
-
-    private suspend fun makeAddBankGQL(params: Map<String, Any>, job: Job): GraphqlResponse =
-            withContext(Dispatchers.IO + job) {
-                val graphRequest = GraphqlRequest(rawQueries[QUERY_ADD_BANK_ACCOUNT],
-                        RichieAddBankAccountNewFlow::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphRequest))
-            }
-
-    private fun getAddBankParams(addBankRequest: AddBankRequest): Map<String, Any> = mapOf(
-            BANK_ID to addBankRequest.bankId,
-            BANK_NAME to addBankRequest.bankName,
-            ACCOUNT_NUMBER to addBankRequest.accountNo,
-            ACCOUNT_NAME to addBankRequest.accountName,
-            IS_MANUAL to addBankRequest.isManual
-    )
-
-    companion object {
-        const val BANK_ID = "bankID"
-        const val BANK_NAME = "bankName"
-        const val ACCOUNT_NUMBER = "accountNo"
-        const val ACCOUNT_NAME = "accountName"
-        const val IS_MANUAL = "isManual"
-    }
-
-    private fun createNewJob() {
-        job = Job()
-    }
-
-    private fun cancelCurrentJob() {
-        job?.cancel()
     }
 
     override fun onCleared() {
-        cancelCurrentJob()
+        validateAccountNumberUseCase.get().cancelJobs()
+        addBankAccountUseCase.get().cancelJobs()
+        termsAndConditionUseCase.get().cancelJobs()
+        checkBankAccountUseCase.get().cancelJobs()
         super.onCleared()
     }
 }

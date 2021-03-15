@@ -46,7 +46,7 @@ class EditProductFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var adapter: EditProductListAdapter
-    private var originalIdList: MutableList<Int> = arrayListOf()
+    private var originalIdList: MutableList<String> = arrayListOf()
     private var deletedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var addedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var btnState = true
@@ -169,7 +169,7 @@ class EditProductFragment : BaseDaggerFragment() {
         add_product.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_PRODUK, "")
             val intent = Intent(context, SelectProductActivity::class.java)
-            intent.putIntegerArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
+            intent.putStringArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
             startActivityForResult(intent, 1)
         }
     }
@@ -206,20 +206,21 @@ class EditProductFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
-                createProduct(data?.getStringArrayListExtra(RESULT_PRICE), data?.getIntegerArrayListExtra(RESULT_PROUCT), data?.getStringArrayListExtra(RESULT_NAME), data?.getStringArrayListExtra(RESULT_IMAGE))
+                createProduct(data?.getStringArrayListExtra(RESULT_PRICE), data?.getStringArrayListExtra(RESULT_PROUCT), data?.getStringArrayListExtra(RESULT_NAME), data?.getStringArrayListExtra(RESULT_IMAGE))
                 sharedViewModel.setProductIds(getProductIds())
             }
         }
     }
 
-    private fun createProduct(price: ArrayList<String>?, product: ArrayList<Int>?, name: ArrayList<String>?, image: ArrayList<String>?) {
+    private fun createProduct(price: ArrayList<String>?, product: ArrayList<String>?, name: ArrayList<String>?, image: ArrayList<String>?) {
         if (adapter.items.isNotEmpty() && adapter.items[0] is EditProductEmptyViewModel)
             adapter.items.clear()
         product?.forEachIndexed { ind, it ->
-            val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)!!, image[ind], name?.get(ind)!!)
-            adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", 0, 0, dataItem)))
+            val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)
+                    ?: "", image?.get(ind) ?: "", name?.get(ind) ?: "")
+            adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", "0", 0, dataItem)))
             if (!existsOriginal(it)) {
-                addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", 0, 0, dataItem))
+                addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", "0", 0, dataItem))
             }
         }
         adapter.notifyDataSetChanged()
@@ -229,7 +230,7 @@ class EditProductFragment : BaseDaggerFragment() {
         buttonStateCallback?.setButtonState()
     }
 
-    private fun existsOriginal(id: Int): Boolean {
+    private fun existsOriginal(id: String): Boolean {
         return originalIdList.find { id == it } != null
     }
 
@@ -258,12 +259,13 @@ class EditProductFragment : BaseDaggerFragment() {
 
     private fun filterAddedProducts() {
         /// for the products which are added and removed
-        val iterator = addedProducts.iterator()
-        while (iterator.hasNext()) {
-            val key = iterator.next()
-            deletedProducts.forEach { deleted ->
+        deletedProducts.forEach { deleted->
+            val iterator = addedProducts.iterator()
+            while (iterator.hasNext()){
+                val key = iterator.next()
                 if (key.itemID == deleted.itemID) {
                     iterator.remove()
+                    break
                 }
             }
         }

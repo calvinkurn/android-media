@@ -7,7 +7,7 @@ import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactory
 
 data class Product(
         @SerializedName("categoryId")
-        val categoryId: Int = 0,
+        val categoryId: String = "",
         @SerializedName("discountedPercentage")
         val discountedPercentage: Int = 0,
         @SerializedName("imageUrl")
@@ -29,7 +29,7 @@ data class Product(
         @SerializedName("priceBeforeInt")
         val priceBeforeInt: Int = 0,
         @SerializedName("priceInt")
-        val priceInt: Int = 0,
+        val priceInt: Double = 0.0,
         @SerializedName("productId")
         val productId: String = "",
         @SerializedName("productUrl")

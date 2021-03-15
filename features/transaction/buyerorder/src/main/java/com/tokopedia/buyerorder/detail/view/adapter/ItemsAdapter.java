@@ -597,7 +597,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
+            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
             tapActionTextView.setLayoutParams(params);
             tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -621,12 +621,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
             if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4);
+                float radius = context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4);
                 shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
             } else {
 
-                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
             }
 
             tapActionTextView.setBackground(shape);
@@ -856,7 +856,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
+            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
             tapActionTextView.setLayoutParams(params);
             tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -880,12 +880,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
             if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4);
+                float radius = context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4);
                 shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
             } else {
 
-                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
             }
 
             tapActionTextView.setBackground(shape);

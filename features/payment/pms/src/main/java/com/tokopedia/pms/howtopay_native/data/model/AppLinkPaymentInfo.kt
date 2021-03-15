@@ -7,6 +7,7 @@ data class AppLinkPaymentInfo(
         @SerializedName("bank_info") val bank_info : String,
         @SerializedName("bank_num") val bank_num : String,
         @SerializedName("bank_name") val bank_name : String,
+        @SerializedName("bank_logo") val bank_logo : String?,
         @SerializedName("gateway_code") val gateway_code : String,
         @SerializedName("gateway_logo") val gateway_logo : String?,
         @SerializedName("gateway_name") val gateway_name : String,

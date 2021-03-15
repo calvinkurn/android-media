@@ -1,13 +1,11 @@
 package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play.widget.data.PlayWidget
-import com.tokopedia.play.widget.data.PlayWidgetItem
-import com.tokopedia.play.widget.data.PlayWidgetItemShare
-import com.tokopedia.play.widget.data.PlayWidgetReminder
+import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -20,6 +18,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
         private val videoMapper: PlayWidgetVideoMapper,
         private val userSession: UserSessionInterface
 ) : PlayWidgetMapper {
+
+    private val htmlTextTransformer = DefaultHtmlTextTransformer()
 
     override fun mapWidget(data: PlayWidget, prevModel: PlayWidgetUiModel?): PlayWidgetUiModel {
         val widgetBackground = mapWidgetBackground(data)
@@ -38,9 +38,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
         )
     }
 
-    fun mapWidgetToggleReminder(data: PlayWidgetReminder) = PlayWidgetReminderUiModel(
-            success = data.header.status == PlayWidgetReminderUseCase.RESPONSE_STATUS_SUCCESS
-    )
+    fun mapWidgetToggleReminder(data: PlayWidgetReminder) = data.playToggleChannelReminder.header.status == PlayWidgetReminderUseCase.RESPONSE_STATUS_SUCCESS
 
     private fun mapWidgetBackground(data: PlayWidget): PlayWidgetBackgroundUiModel = PlayWidgetBackgroundUiModel(
             overlayImageUrl = data.meta.overlayImage,
@@ -71,7 +69,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
             appLink = item.appLink,
             webLink = item.webLink,
             imageUrl = item.backgroundUrl,
-            partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name)
+            partner = mapWidgetPartnerInfo(item.partner),
     )
 
     private fun mapWidgetItemChannel(prevItem: PlayWidgetMediumChannelUiModel?, item: PlayWidgetItem): PlayWidgetMediumChannelUiModel {
@@ -87,8 +85,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 totalView = item.stats.view.formatted,
                 totalViewVisible = item.video.isShowTotalView,
                 hasPromo = item.config.hasPromo,
-                activeReminder = item.config.isReminderSet,
-                partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
+                reminderType = getReminderType(item.config.isReminderSet),
+                partner = mapWidgetPartnerInfo(item.partner),
                 video = videoMapper.mapWidgetItemVideo(item.video),
                 hasAction = shouldHaveActionMenu(channelType, item.partner.id),
                 channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
@@ -115,4 +113,9 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 GlobalConfig.isSellerApp() &&
                 userSession.shopId == partnerId
     }
+
+    private fun mapWidgetPartnerInfo(partner: PlayWidgetItemPartner) = PlayWidgetPartnerUiModel(
+            id = partner.id,
+            name = htmlTextTransformer.transform(partner.name)
+    )
 }

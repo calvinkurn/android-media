@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/spacing_lvl3"
-    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/home_component_margin_default"
     android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/home_component_margin_default"
     android:paddingBottom="@dimen/spacing_lvl4"
     android:background="@color/Unify_N50">
 

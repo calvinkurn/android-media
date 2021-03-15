@@ -55,4 +55,9 @@ object ConstantKey {
         const val TAG = "P2#HOME_STATUS#"
         const val MAX_LIMIT = 1000
     }
+
+    object ResetPassword {
+        const val KEY_MANAGE_PASSWORD = "KEY_MANAGE_PASSWORD"
+        const val IS_SUCCESS_RESET = "IS_SUCCESS_RESET"
+    }
 }

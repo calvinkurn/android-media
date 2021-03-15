@@ -69,12 +69,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var adapter: EditKeywordListAdapter
     private lateinit var callBack: ButtonAction
-    private var minSuggestKeyword = 0
-    private var maxSuggestKeyword = 0
+    private var minSuggestKeyword = "0"
+    private var maxSuggestKeyword = "0"
     private var deletedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var editedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-    private var initialBudget: MutableList<Int> = mutableListOf()
+    private var initialBudget: MutableList<String> = mutableListOf()
     private var isnewlyAddded: MutableList<Boolean> = mutableListOf()
     private var originalKeyList: MutableList<String> = arrayListOf()
     private var selectedData: ArrayList<KeywordDataItem>? = arrayListOf()
@@ -143,7 +143,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val suggestions = java.util.ArrayList<DataSuggestions>()
-        val dummyId: MutableList<Int> = mutableListOf()
+        val dummyId: MutableList<Long> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
     }
@@ -157,7 +157,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             if (ifNewKeyword((adapter.items[position] as EditKeywordItemViewModel).data.tag)) {
                 addedKeywords?.forEach {
                     if (it.tag == (adapter.items[position] as EditKeywordItemViewModel).data.tag) {
-                        it.priceBid = bid.toInt()
+                        it.priceBid = bid
                         it.type = type
                     }
                 }
@@ -166,7 +166,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 actionStatusChange(position)
             }
             (adapter.items[position] as EditKeywordItemViewModel).data.type = type
-            (adapter.items[position] as EditKeywordItemViewModel).data.priceBid = bid.toInt()
+            (adapter.items[position] as EditKeywordItemViewModel).data.priceBid = bid
             adapter.notifyItemChanged(position)
 
         }
@@ -177,11 +177,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
-        if ((adapter.items[pos] as EditKeywordItemViewModel).data.priceBid == 0)
-            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
-        bundle.putInt(MAX_BID, maxSuggestKeyword)
-        bundle.putInt(MIN_BID, minSuggestKeyword)
-        bundle.putInt(SUGGESTION_BID, (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid)
+        if ((adapter.items[pos] as EditKeywordItemViewModel).data.priceBid == "0")
+            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword.toString()
+        bundle.putString(MAX_BID, maxSuggestKeyword)
+        bundle.putString(MIN_BID, minSuggestKeyword)
+        bundle.putString(SUGGESTION_BID, (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid)
         bundle.putInt(ITEM_POSITION, pos)
         bundle.putInt(CURRENT_KEY_TYPE, (adapter.items[pos] as EditKeywordItemViewModel).data.type)
         bundle.putString(KEYWORD_NAME, (adapter.items[pos] as EditKeywordItemViewModel).data.tag)
@@ -220,8 +220,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
 
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
-        minSuggestKeyword = data[0].minBid
-        maxSuggestKeyword = data[0].maxBid
+        data.firstOrNull()?.let {
+            minSuggestKeyword = it.minBid
+            maxSuggestKeyword = it.maxBid
+        }
         adapter.setBid(minSuggestKeyword)
     }
 
@@ -350,7 +352,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         selectedKeywords?.forEach {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.tag } == null) {
-                if(it.bidSuggest == 0)
+                if (it.bidSuggest == "0")
                     it.bidSuggest = minSuggestKeyword
                 adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS,
                         "0", it.bidSuggest, false, it.keyword, it.source)))

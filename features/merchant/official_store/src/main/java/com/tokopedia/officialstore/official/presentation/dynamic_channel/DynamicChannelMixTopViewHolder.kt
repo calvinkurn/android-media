@@ -234,7 +234,8 @@ class DynamicChannelMixTopViewHolder(
             gradient.cornerRadius = 0f
             view.background = gradient
         } else {
-            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: "#ffffff"))
+            val defaultColorString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_N0))}"
+            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: defaultColorString))
         }
     }
 }

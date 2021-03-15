@@ -38,6 +38,7 @@ import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
 import com.tokopedia.logout.di.module.LogoutModule
 import com.tokopedia.logout.viewmodel.LogoutViewModel
+import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
@@ -73,7 +74,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private var isClearDataOnly = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-
     private var tetraDebugger: TetraDebugger? = null
 
     override fun getNewFragment(): Fragment? = null
@@ -175,6 +175,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+
+        PushNotificationApi.bindService(applicationContext)
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {

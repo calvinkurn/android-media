@@ -35,6 +35,7 @@ import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.common_tradein.utils.TradeInUtils;
 import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.common_tradein.model.TradeInParams;
@@ -341,7 +342,7 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING)
             campaignId = TradeinConstants.CAMPAIGN_ID_STAGING;
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                TradeinConstants.APPID, TradeinConstants.APIKEY, TokopediaUrl.getInstance().getTYPE() == Env.STAGING, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
+                TradeinConstants.APPID, Keys.AUTH_TRADE_IN_API_KEY_MA, TokopediaUrl.getInstance().getTYPE() == Env.STAGING, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
         requestPermission();
     }
 
