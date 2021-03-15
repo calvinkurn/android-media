@@ -49,16 +49,16 @@ class PlayWidgetTools @Inject constructor(
         }
     }
 
-    suspend fun setToggleReminder(channelId: String,
-                                  remind: Boolean,
-                                  coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidgetReminder {
+    suspend fun updateToggleReminder(channelId: String,
+                                     reminderType: PlayWidgetReminderType,
+                                     coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidgetReminder {
         return withContext(coroutineContext) {
-            reminderUseCase.params = PlayWidgetReminderUseCase.createParams(channelId, remind)
+            reminderUseCase.setRequestParams(PlayWidgetReminderUseCase.createParams(channelId, reminderType.reminded))
             reminderUseCase.executeOnBackground()
         }
     }
 
-    suspend fun mapWidgetToggleReminder(response: PlayWidgetReminder, coroutineContext: CoroutineContext = Dispatchers.Default): PlayWidgetReminderUiModel {
+    suspend fun mapWidgetToggleReminder(response: PlayWidgetReminder, coroutineContext: CoroutineContext = Dispatchers.Default): Boolean {
         return withContext(coroutineContext) {
             val mapper = mapperProviders[PlayWidgetSize.Medium]
             if (mapper is PlayWidgetMediumUiMapper) mapper.mapWidgetToggleReminder(response)
@@ -104,6 +104,13 @@ class PlayWidgetTools @Inject constructor(
         return when (model) {
             is PlayWidgetUiModel.Small -> deleteChannelSmallWidget(model, channelId)
             is PlayWidgetUiModel.Medium -> deleteChannelMediumWidget(model, channelId)
+            else -> model
+        }
+    }
+
+    fun updateActionReminder(model: PlayWidgetUiModel, channelId: String, reminderType: PlayWidgetReminderType): PlayWidgetUiModel {
+        return when (model) {
+            is PlayWidgetUiModel.Medium -> updateMediumWidgetActionReminder(model, channelId, reminderType)
             else -> model
         }
     }
@@ -177,6 +184,15 @@ class PlayWidgetTools @Inject constructor(
                                 channelTypeTransition = mediumWidget.channelTypeTransition.changeTo(prevType)
                         )
                     }
+                    else mediumWidget
+                }
+        )
+    }
+
+    private fun updateMediumWidgetActionReminder(model: PlayWidgetUiModel.Medium, channelId: String, reminderType: PlayWidgetReminderType): PlayWidgetUiModel.Medium {
+        return model.copy(
+                items = model.items.map { mediumWidget ->
+                    if (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(reminderType = reminderType)
                     else mediumWidget
                 }
         )

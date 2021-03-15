@@ -17,6 +17,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
     const val PARAM_MARKETPLACE = "marketplace"
     const val PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses"
+    const val PARAM_UOH_ONGOING = "uoh_ongoing"
     const val PARAM_UOH_WAITING_CONFIRMATION = "uoh_waiting_confirmation"
     const val PARAM_UOH_PROCESSED = "uoh_processed"
     const val PARAM_UOH_SENT = "uoh_sent"
@@ -54,6 +55,10 @@ object ApplinkConstInternalOrder {
     const val MENUNGGU_KONFIRMASI = "5"
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
+
+    // snapshot
+    const val PARAM_ORDER_DETAIL_ID = "order_detail_id"
+    const val IS_SNAPSHOT_FROM_SOM = "is_snapshot_from_som"
 
     @JvmField
     val HOST_SELLER = "seller"
@@ -141,6 +146,9 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val UNIFY_ORDER_MARKETPLACE_IN_PROCESS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE_DALAM_PROSES"
+
+    @JvmField
+    val UNIFY_ORDER_ONGOING = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_ONGOING"
 
     @JvmField
     val UNIFY_ORDER_WAITING_CONFIRMATION = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_WAITING_CONFIRMATION"
@@ -242,4 +250,10 @@ object ApplinkConstInternalOrder {
     val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
 
 
+    // order snapshot
+    @JvmField
+    val PATH_SNAPSHOT = "snapshot"
+
+    @JvmField
+    val INTERNAL_ORDER_SNAPSHOT = "${DeeplinkConstant.SCHEME_INTERNAL}://$PATH_SNAPSHOT/$HOST_ORDER"
 }

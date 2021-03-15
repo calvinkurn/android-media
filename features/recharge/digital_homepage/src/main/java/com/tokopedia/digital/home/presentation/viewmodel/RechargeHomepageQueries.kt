@@ -8,6 +8,9 @@ object RechargeHomepageQueries {
         """
                 query rechargeGetDynamicPageSkeleton($platformID: Int!, $enablePersonalize: Boolean) {
                   rechargeGetDynamicPageSkeleton(platformID: $platformID, enablePersonalize: $enablePersonalize){
+                    search_bar_placeholder
+                    search_bar_app_link
+                    search_bar_web_link
                     sections {
                       id
                       template

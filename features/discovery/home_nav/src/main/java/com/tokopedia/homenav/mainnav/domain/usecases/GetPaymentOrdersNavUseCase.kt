@@ -30,6 +30,7 @@ class GetPaymentOrdersNavUseCase (
                   tickerMessage: ticker_message
                   gatewayImg: gateway_img
                   applink: app_link
+                  bankImg: bank_img
                 }
               }
             }
@@ -51,7 +52,7 @@ class GetPaymentOrdersNavUseCase (
                         statusTextColor = "",
                         paymentAmountText = it.paymentAmount.toString(),
                         descriptionText = it.tickerMessage?:"",
-                        imageUrl = it.gatewayImg?:"",
+                        imageUrl = if(it.bankImg?.isNotBlank() == true) it.bankImg else it.gatewayImg ?: "",
                         id = it.transactionID?:"",
                         applink = it.applink?:""
                 )

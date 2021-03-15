@@ -1,15 +1,14 @@
 package com.tokopedia.settingbank.view.viewState
 
-sealed class TextWatcherState
-data class OnTextChanged(val isCheckEnable: Boolean,
-                         val clearAccountHolderName: Boolean,
-                         val isAddBankButtonEnable: Boolean) : TextWatcherState()
+sealed class ValidateAccountNumberState
+data class ValidateAccountNumberSuccess(val isCheckEnable: Boolean,
+                         val isAddBankButtonEnable: Boolean) : ValidateAccountNumberState()
 
-object OnNOBankSelected : TextWatcherState()
+object OnNOBankSelected : ValidateAccountNumberState()
 
 
-sealed class AccountNameTextWatcherState
-data class OnAccountNameValidated(val name: String) : AccountNameTextWatcherState()
-data class OnAccountNameError(val error: String) : AccountNameTextWatcherState()
+sealed class AccountNameValidationResult
+data class OnAccountNameValidated(val name: String) : AccountNameValidationResult()
+ object OnAccountValidationFailed : AccountNameValidationResult()
 
 

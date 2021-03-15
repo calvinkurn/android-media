@@ -14,6 +14,7 @@ import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
+import com.tokopedia.topchat.chatlist.pojo.ChatAdminNoAccessUiModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 
@@ -182,6 +183,14 @@ class ChatListAdapter constructor(
             notifyItemMoved(index, newChatIndex)
         }
         notifyItemChanged(newChatIndex, ChatItemListViewHolder.PAYLOAD_NEW_INCOMING_CHAT)
+    }
+
+    fun showNoAccessView() {
+        visitables.run {
+            clear()
+            add(0, ChatAdminNoAccessUiModel)
+        }
+        notifyDataSetChanged()
     }
 
     private fun findElementFinalIndex(element: ItemChatListPojo, offset: Int): Int {

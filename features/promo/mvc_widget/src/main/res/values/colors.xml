@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mvcw_chevron">#525A67</color>
+    <color name="mvcw_red">#D6001C</color>
+    <color name="mvcw_green_100">#EBFFEF</color>
+    <color name="mvcw_green_200">#D6FFDE</color>
+    <color name="mvcw_31353B">#31353B</color>
+    <color name="mvcw_6831353B">#AD31353B</color>
+</resources>

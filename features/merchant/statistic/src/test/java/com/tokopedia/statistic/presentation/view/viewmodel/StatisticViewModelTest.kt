@@ -58,6 +58,9 @@ class StatisticViewModelTest {
     lateinit var getLineGraphDataUseCase: GetLineGraphDataUseCase
 
     @RelaxedMockK
+    lateinit var getMultiLineGraphUseCase: GetMultiLineGraphUseCase
+
+    @RelaxedMockK
     lateinit var getProgressDataUseCase: GetProgressDataUseCase
 
     @RelaxedMockK
@@ -93,6 +96,7 @@ class StatisticViewModelTest {
                 { getLayoutUseCase },
                 { getCardDataUseCase },
                 { getLineGraphDataUseCase },
+                { getMultiLineGraphUseCase },
                 { getProgressDataUseCase },
                 { getPostDataUseCase },
                 { getCarouselDataUseCase },
@@ -123,16 +127,17 @@ class StatisticViewModelTest {
         val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7))
         val endDate = Date(DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1))
 
+        val mockPageSource = "page-source"
         val startDateFmt = DateTimeUtil.format(startDate.time, TestConst.DATE_FORMAT)
         val endDateFmt = DateTimeUtil.format(endDate.time, TestConst.DATE_FORMAT)
 
-        viewModel.setDateFilter(startDate, endDate, TestConst.DATE_TYPE_DAY)
+        viewModel.setDateFilter(mockPageSource, startDate, endDate, TestConst.DATE_TYPE_DAY)
 
         val dynamicParameterModel = privateDynamicParameter.get(viewModel) as DynamicParameterModel
 
         assert(dynamicParameterModel.startDate == startDateFmt)
         assert(dynamicParameterModel.endDate == endDateFmt)
-        assert(dynamicParameterModel.pageSource == TestConst.PAGE_SOURCE)
+        assert(dynamicParameterModel.pageSource == mockPageSource)
         assert(dynamicParameterModel.dateType == TestConst.DATE_TYPE_DAY)
     }
 
@@ -151,7 +156,7 @@ class StatisticViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } returns layoutList
 
-        viewModel.getWidgetLayout()
+        viewModel.getWidgetLayout(TestConst.PAGE_SOURCE)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -180,7 +185,7 @@ class StatisticViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } throws throwable
 
-        viewModel.getWidgetLayout()
+        viewModel.getWidgetLayout(TestConst.PAGE_SOURCE)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -206,7 +211,7 @@ class StatisticViewModelTest {
             getTickerUseCase.executeOnBackground()
         } returns tickers
 
-        viewModel.getTickers()
+        viewModel.getTickers(pageName)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -228,7 +233,7 @@ class StatisticViewModelTest {
             getTickerUseCase.executeOnBackground()
         } throws throwable
 
-        viewModel.getTickers()
+        viewModel.getTickers(pageName)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -384,6 +389,54 @@ class StatisticViewModelTest {
         }
 
         assert(viewModel.lineGraphWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get multi line graph widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getMultiLineGraphUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getMultiLineGraphUseCase.executeOnBackground()
+        }
+
+        //number of data keys and result should same
+        Assertions.assertTrue(dataKeys.size == result.size)
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get multi line graph widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getMultiLineGraphUseCase.executeOnBackground()
+        } throws RuntimeException("error")
+
+        viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getMultiLineGraphUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.multiLineGraphWidgetData.value is Fail)
     }
 
     @Test

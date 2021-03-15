@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.analytics.LIST
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -25,7 +26,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     companion object {
         private var noOfObject = 0
     }
-
+    private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
     private var componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get((DiscoveryListViewModel::class.java.canonicalName
             ?: "") + noOfObject++, DiscoveryListViewModel::class.java)
@@ -40,9 +41,14 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
             return
         setViewSpanType(holder, componentList[position].properties?.template)
-        with(viewHolderListModel.getViewHolderModel(
-                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position)) {
-            holder.bindView(this, parentComponent)
+        if(mCurrentHeader?.first == position && mCurrentHeader?.second?.itemViewType == getItemViewType(position)
+                && (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel != null ){
+            holder.bindView((mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel!!, parentComponent)
+        }else{
+            with(viewHolderListModel.getViewHolderModel(
+                    DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position)) {
+                holder.bindView(this, parentComponent)
+            }
         }
 
     }
@@ -110,6 +116,13 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     fun isStickyHeaderView(it: Int): Boolean {
         return DiscoveryHomeFactory.isStickyHeader(getItemViewType(it)) || (componentList.size > it && componentList[it].isSticky)
     }
+
+    fun setCurrentHeader(currentHeader : Pair<Int, RecyclerView.ViewHolder>?){
+        mCurrentHeader = currentHeader
+    }
+
+    fun getCurrentHeader() = mCurrentHeader
+
 }
 
 class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {

@@ -116,7 +116,13 @@ data class ShopLayoutWidget(
                 @SerializedName("cashback")
                 val cashback: Int = -1,
                 @SerializedName("statusCampaign")
-                val statusCampaign: String = ""
+                val statusCampaign: String = "",
+                @SerializedName("labelGroups")
+                val labelGroups: List<LabelGroup> = listOf(),
+                @SerializedName("recommendationType")
+                val recommendationType: String = "",
+                @SerializedName("minimumOrder")
+                val minimumOrder: Int? = 1
         ) {
             data class Banner(
                     @SerializedName("imageID")

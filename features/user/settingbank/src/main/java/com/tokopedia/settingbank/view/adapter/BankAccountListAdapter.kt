@@ -3,8 +3,8 @@ package com.tokopedia.settingbank.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.settingbank.domain.BankAccount
-import com.tokopedia.settingbank.domain.TemplateData
+import com.tokopedia.settingbank.domain.model.BankAccount
+import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.settingbank.view.viewHolder.BankTNCViewHolder
 import com.tokopedia.settingbank.view.viewHolder.BankAccountViewHolder
 

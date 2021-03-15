@@ -7,6 +7,10 @@
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="0dp"
     android:visibility="gone"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="@dimen/dp_8"
+            android:contentDescription="@string/content_desc_shop_home_get_failed_reload_image"
             app:layout_constraintBottom_toBottomOf="@+id/textReload"
             app:layout_constraintEnd_toStartOf="@+id/textReload"
             app:layout_constraintTop_toTopOf="@+id/textReload"

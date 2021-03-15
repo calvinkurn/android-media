@@ -1,22 +1,118 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.topchat.TopchatAndroidTestCoroutineContextDispatcher
+import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
-import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
+import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.topchat.common.network.TopchatCacheManager
+import com.tokopedia.topchat.stub.chatroom.usecase.*
+import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
+import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import dagger.Module
 import dagger.Provides
 
 @Module
-class ChatRoomFakeUseCaseModule constructor(
-        private val getChatUseCase: GetChatUseCase,
-        private val chatAttachmentUseCase: ChatAttachmentUseCase
-) {
+class ChatRoomFakeUseCaseModule {
 
     @Provides
     @ChatScope
-    fun provideGetChatUseCase(): GetChatUseCase = getChatUseCase
+    fun provideGetChatUseCase(
+            stub: GetChatUseCaseStub
+    ): GetChatUseCase = stub
 
     @Provides
     @ChatScope
-    fun provideChatAttachmentUseCase(): ChatAttachmentUseCase = chatAttachmentUseCase
+    fun provideGetChatUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<GetExistingChatPojo>,
+            mapper: TopChatRoomGetExistingChatMapper,
+            dispatchers: TopchatAndroidTestCoroutineContextDispatcher
+    ): GetChatUseCaseStub {
+        return GetChatUseCaseStub(gqlUseCase, mapper, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatAttachmentUseCase(
+            stub: ChatAttachmentUseCaseStub
+    ): ChatAttachmentUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatAttachmentUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
+            mapper: ChatAttachmentMapper,
+            dispatchers: TopchatAndroidTestCoroutineContextDispatcher
+    ): ChatAttachmentUseCaseStub {
+        return ChatAttachmentUseCaseStub(gqlUseCase, mapper, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideStickerGroupUseCase(
+            stub: ChatListGroupStickerUseCaseStub
+    ): ChatListGroupStickerUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideStickerGroupUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<ChatListGroupStickerResponse>,
+            cacheManager: TopchatCacheManager,
+            dispatchers: TopchatCoroutineContextProvider
+    ): ChatListGroupStickerUseCaseStub {
+        return ChatListGroupStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideStickerListUseCase(
+            stub: ChatListStickerUseCaseStub
+    ): ChatListStickerUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideStickerListUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<StickerResponse>,
+            cacheManager: TopchatCacheManager,
+            dispatchers: TopchatCoroutineContextProvider
+    ): ChatListStickerUseCaseStub {
+        return ChatListStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatRoomApiStubStub(): ChatRoomApi {
+        return ChatRoomApiStub()
+    }
+
+    @Provides
+    @ChatScope
+    fun provideGetTemplateChatRoomUseCase(
+            stub: GetTemplateChatRoomUseCaseStub
+    ): GetTemplateChatRoomUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetTemplateChatRoomUseCaseStub(
+            api: ChatRoomApiStub,
+            mapper: GetTemplateChatRoomMapper
+    ): GetTemplateChatRoomUseCaseStub {
+        return GetTemplateChatRoomUseCaseStub(api, mapper)
+    }
+
 }

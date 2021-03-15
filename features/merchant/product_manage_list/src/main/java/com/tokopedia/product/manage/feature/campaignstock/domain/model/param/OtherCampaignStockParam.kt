@@ -6,5 +6,7 @@ data class OtherCampaignStockParam(
         @SerializedName("variant")
         val variant: Boolean = true,
         @SerializedName("edit")
-        val edit: Boolean = true
+        val edit: Boolean = true,
+        @SerializedName("campaign")
+        val campaign: Boolean = true
 )
