@@ -67,58 +67,61 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun initObservers() {
-        viewModel.getChosenAddress.observe(context as LifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.addressId == 0) {
-                        val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-                        source?.let { it -> viewModel.getDefaultChosenAddress("", it) }
-                    } else {
-                        val data = it.data
-                        val localData = ChooseAddressUtils.setLocalizingAddressData(
-                                addressId = data.addressId.toString(),
-                                cityId = data.cityId.toString(),
-                                districtId = data.districtId.toString(),
-                                lat = data.latitude,
-                                long = data.longitude,
-                                label = "${data.addressName} ${data.receiverName}",
-                                postalCode = data.postalCode
-                        )
-                        chooseAddressPref?.setLocalCache(localData)
-                        chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+        val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+        if (fragment != null) {
+            viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.addressId == 0) {
+                            val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+                            source?.let { it -> viewModel.getDefaultChosenAddress("", it) }
+                        } else {
+                            val data = it.data
+                            val localData = ChooseAddressUtils.setLocalizingAddressData(
+                                    addressId = data.addressId.toString(),
+                                    cityId = data.cityId.toString(),
+                                    districtId = data.districtId.toString(),
+                                    lat = data.latitude,
+                                    long = data.longitude,
+                                    label = "${data.addressName} ${data.receiverName}",
+                                    postalCode = data.postalCode
+                            )
+                            chooseAddressPref?.setLocalCache(localData)
+                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                        }
+                    }
+                    is Fail -> {
+                        chooseAddressWidgetListener?.onLocalizingAddressServerDown()
                     }
                 }
-                is Fail -> {
-                    chooseAddressWidgetListener?.onLocalizingAddressServerDown()
-                }
-            }
-        })
+            })
 
-        viewModel.getDefaultAddress.observe(context as LifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.addressData.addressId != 0) {
-                        val data = it.data.addressData
-                        val localData = ChooseAddressUtils.setLocalizingAddressData(
-                                addressId = data.addressId.toString(),
-                                cityId = data.cityId.toString(),
-                                districtId = data.districtId.toString(),
-                                lat = data.latitude,
-                                long = data.longitude,
-                                label = "${data.addressName} ${data.receiverName}",
-                                postalCode = data.postalCode
-                        )
-                        chooseAddressPref?.setLocalCache(localData)
-                        chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
-                    } else {
-                        chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
+            viewModel.getDefaultAddress.observe(fragment.viewLifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.addressData.addressId != 0) {
+                            val data = it.data.addressData
+                            val localData = ChooseAddressUtils.setLocalizingAddressData(
+                                    addressId = data.addressId.toString(),
+                                    cityId = data.cityId.toString(),
+                                    districtId = data.districtId.toString(),
+                                    lat = data.latitude,
+                                    long = data.longitude,
+                                    label = "${data.addressName} ${data.receiverName}",
+                                    postalCode = data.postalCode
+                            )
+                            chooseAddressPref?.setLocalCache(localData)
+                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                        } else {
+                            chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
+                        }
+                    }
+                    is Fail -> {
+                        chooseAddressWidgetListener?.onLocalizingAddressServerDown()
                     }
                 }
-                is Fail -> {
-                    chooseAddressWidgetListener?.onLocalizingAddressServerDown()
-                }
-            }
-        })
+            })
+        }
     }
 
     private fun checkRollence(){

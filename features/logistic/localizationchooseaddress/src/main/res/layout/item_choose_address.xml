@@ -16,7 +16,7 @@
             android:id="@+id/img_mark_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_mark_ico"
+            app:srcCompat="@drawable/ic_mark_ico_choose_address"
             app:layout_constraintTop_toTopOf="@id/address_title"
             app:layout_constraintBottom_toBottomOf="@id/address_title"
             app:layout_constraintStart_toStartOf="parent"/>
