@@ -1,5 +1,6 @@
 {
   "readme": "Search Product Inspiration Card Tracking",
+  "mode": "exact",
   "query": [
     {
       "event": "clickSearchResult",
