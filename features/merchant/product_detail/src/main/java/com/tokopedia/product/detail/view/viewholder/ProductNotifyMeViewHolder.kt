@@ -14,11 +14,10 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
 
     companion object {
         val LAYOUT = R.layout.partial_product_notify_me
-        const val SECOND = 1000L
     }
 
     override fun bind(element: ProductNotifyMeDataModel) {
-        if (element.campaignID.isNotEmpty()) {
+        if (element.campaignID.isNotEmpty() && !element.isUpcomingNplType()) {
             itemView.layout_notify_me?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             itemView.layout_notify_me?.requestLayout()
             // render upcoming campaign ribbon

@@ -13,8 +13,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.isGivenDateIsBelowThan24H
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.widget.CampaignRibbon.Companion.UPCOMING
 import kotlinx.android.synthetic.main.item_product_content.view.*
 
 /**
@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.item_product_content.view.*
  */
 class PartialContentView(private val view: View, private val listener: DynamicProductDetailListener) : CampaignRibbon.CampaignCountDownCallback {
     companion object {
-        const val ONE_SECOND = 1000L
     }
 
     fun renderData(data: ProductContentMainData,
@@ -51,7 +50,11 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
 
         when {
             isUpcomingNplType -> {
-//                renderNplRibbon(upcomingNplData.ribbonCopy, upcomingNplData.startDate)
+                campaignRibbon.renderNplCampaignRibbon(
+                        campaignPeriod = UPCOMING,
+                        onGoingData = data,
+                        upcomingNplData = upcomingNplData
+                )
                 renderCampaignInactiveNpl(data.price.priceFmt)
             }
             data.campaign.isActive -> {
@@ -97,7 +100,6 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
 
     private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
         setTextCampaignActive(campaign)
-//        renderFlashSale(campaign, stockWording)
         campaign_ribbon.show()
     }
 
@@ -112,7 +114,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         txt_main_price.text = price
         text_slash_price.gone()
         text_discount_red.gone()
-        campaign_ribbon.gone()
+        campaign_ribbon.show()
     }
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
@@ -151,60 +153,12 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         }
     }
 
-//    private fun renderFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
-//        if (campaign.isCampaignNewUser && !campaign.shouldShowRibbonCampaign) {
-//            renderFlashSaleNewUserAbove24H(campaign, stockWording)
-//        } else if (campaign.shouldShowRibbonCampaign) {
-//            if (campaign.campaignID.toInt() > 0) {
-//                renderStockBarFlashSale(campaign, stockWording)
-//            } else {
-//                renderSlashPriceFlashSale()
-//            }
-//            showCountDownTimer(campaign)
-//            text_title_discount_timer.text = campaign.campaignTypeName
-//            discount_timer_holder.show()
-//        } else {
-//            discount_timer_holder.gone()
-//        }
-//    }
-
-//    private fun renderFlashSaleNewUserAbove24H(campaign: CampaignModular, stockWording: String) = with(view) {
-//        renderStockBarFlashSale(campaign, stockWording)
-//        count_down.hide()
-//        discount_timer_holder.show()
-//        text_title_discount_timer.text = campaign.campaignTypeName
-//    }
-
-//    private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
-//        showStockBarFlashSale()
-//        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
-//        setProgressStockBar(campaign, stockWording)
-//    }
-
-//    private fun renderSlashPriceFlashSale() {
-//        hideStockBarAndBackgroundColor()
-//    }
-
-//    private fun renderNplRibbon(ribbonCopy: String, startDate: String) = with(view) {
-//        if (startDate.isGivenDateIsBelowThan24H()) {
-//            text_title_discount_timer.text = context.getString(R.string.campaign_npl_start)
-//            showCountDownTimerUpcomingNpl(startDate)
-//        } else {
-//            text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
-//            count_down.hide()
-//        }
-//
-//        hideStockBarAndBackgroundColor()
-//        discount_timer_holder.show()
-//    }
-
     private fun hideProductCampaign(campaign: CampaignModular) = with(view) {
         txt_main_price.text = context.getString(R.string.template_price, "",
                 campaign.originalPrice.getCurrencyFormatted())
-//        discount_timer_holder.gone()
+        campaign_ribbon.hide()
         text_discount_red.gone()
         text_slash_price.gone()
-//        sale_text_stock_available.gone()
         text_stock_available.show()
     }
 
@@ -216,72 +170,4 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
     override fun onOnGoingCampaignEnded(campaign: CampaignModular) {
         hideProductCampaign(campaign = campaign)
     }
-
-//    private fun showCountDownTimerUpcomingNpl(startDateData: String) = with(view) {
-//        try {
-//            val now = System.currentTimeMillis()
-//            val startTime = startDateData.toLongOrZero() * ProductNotifyMeViewHolder.SECOND
-//            val startDate = Date(startTime)
-//            val delta = startDate.time - startTime
-//
-//            if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
-//                count_down.show()
-//                count_down.setup(delta, startDate) {
-//                    listener.refreshPage()
-//                }
-//                discount_timer_holder.show()
-//            } else {
-//                layout_discount_timer.gone()
-//            }
-//        } catch (e: Throwable) {
-//            discount_timer_holder.hide()
-//        }
-//    }
-
-//    private fun showCountDownTimer(campaign: CampaignModular) = with(view) {
-//        try {
-//            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-//            val endDateTimeMs = campaign.getEndDateLong * ONE_SECOND
-//            val now = System.currentTimeMillis()
-//            val endDate = dateFormat.parse(campaign.endDate)
-//            val delta = endDate.time - endDateTimeMs
-//
-//            if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
-//                count_down.show()
-//                count_down.setup(delta, endDate) {
-//                    hideProductCampaign(campaign)
-//                    listener.showAlertCampaignEnded()
-//                }
-//                discount_timer_holder.show()
-//            } else {
-//                layout_discount_timer.gone()
-//            }
-//        } catch (ex: Exception) {
-//            discount_timer_holder.hide()
-//        }
-//    }
-
-//    private fun setProgressStockBar(campaign: CampaignModular, stockWording: String) = with(view) {
-//        try {
-//            sale_text_stock_available.text = MethodChecker.fromHtml(stockWording)
-//            stock_bar_sold_product.progress = campaign.stockSoldPercentage
-//        } catch (ex: Exception) {
-//            stock_bar_sold_product.hide()
-//        }
-//    }
-
-//    private fun showStockBarFlashSale() = with(view) {
-//        stock_bar_sold_product.show()
-//        sale_text_stock_available.show()
-//    }
-
-//    private fun hideStockBarFlashSale() = with(view) {
-//        stock_bar_sold_product.hide()
-//        sale_text_stock_available.hide()
-//    }
-
-//    private fun hideStockBarAndBackgroundColor() = with(view) {
-//        hideStockBarFlashSale()
-//        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-//    }
 }

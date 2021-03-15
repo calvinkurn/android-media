@@ -37,12 +37,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/pdp_dp_10"
-            android:text="Harga Spesial"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintLeft_toRightOf="@id/iu_campaign_logo_s2"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5"
-            tools:ignore="MissingConstraints,RtlSymmetry" />
+            tools:ignore="MissingConstraints,RtlSymmetry"
+            tools:text="Harga Spesial" />
 
         <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/pbu_stock_bar_s2"
@@ -83,22 +83,20 @@
             android:layout_height="wrap_content"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/transparent_asset_type_3"
+            app:srcCompat="@drawable/transparent_asset_big"
             tools:ignore="MissingConstraints" />
 
-        <com.tokopedia.design.countdown.CountDownView
-            android:id="@+id/count_down_view_s2"
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/tus_timer_view_s2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/pdp_dp_10"
-            android:background="@drawable/bg_countdown_rounded_white"
-            app:coundDownBackgroud="@android:color/transparent"
-            app:countDownSparatorColor="@color/Unify_R500"
-            app:countDownTxtColor="@color/Unify_R500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:timer_unify_single_showClockIcon="false"
+            app:timer_unify_single_type="auto"
+            app:timer_unify_single_variant="alternate"
             tools:ignore="RtlSymmetry" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -107,11 +105,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pdp_dp_10"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:text="Berakhir dalam"
+            android:text="@string/label_ends_in"
             android:textColor="@color/Unify_N0"
-            app:layout_constraintBottom_toTopOf="@id/count_down_view_s2"
-            app:layout_constraintLeft_toLeftOf="@id/count_down_view_s2"
-            app:layout_constraintRight_toRightOf="@id/count_down_view_s2"
+            app:layout_constraintBottom_toTopOf="@id/tus_timer_view_s2"
+            app:layout_constraintLeft_toLeftOf="@id/tus_timer_view_s2"
+            app:layout_constraintRight_toRightOf="@id/tus_timer_view_s2"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
             tools:ignore="MissingConstraints" />
@@ -138,6 +136,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
+            tools:ignore="RtlSymmetry"
             tools:text="Khusus pembayaran dengan OVO" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

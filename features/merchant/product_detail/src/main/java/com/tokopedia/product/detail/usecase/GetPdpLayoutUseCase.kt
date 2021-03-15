@@ -122,6 +122,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         hideGimmick
                         isCheckImei
                         isUsingOvo
+                        background
+                        campaignIdentifier
+                        paymentInfoWording
                       }
                       thematicCampaign{
                         campaignName

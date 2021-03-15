@@ -44,7 +44,9 @@ data class CampaignModular(
         @SerializedName("campaignIdentifier")
         val campaignIdentifier: Int = 0,
         @SerializedName("background")
-        val background: String = ""
+        val background: String = "",
+        @SerializedName("paymentInfoWording")
+        val paymentInfoWording:String = ""
 ) {
     companion object {
         const val CAMPAIGN_ID_NEW_USER = 68
