@@ -24,6 +24,7 @@ import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
+import com.tokopedia.play.R
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -36,10 +37,13 @@ import kotlin.math.sign
  * (e.g. a horizontal RecyclerView in a vertical RecyclerView in a horizontal ViewPager2).
  */
 class NestedScrollableHost : FrameLayout {
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    private var touchSlop = 0
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        initWithAttrs(context, attrs)
+    }
+
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private var initialX = 0f
     private var initialY = 0f
     private val parentViewPager: ViewPager2?
@@ -51,10 +55,20 @@ class NestedScrollableHost : FrameLayout {
             return v as? ViewPager2
         }
 
-    private val child: View? get() = if (childCount > 0) getChildAt(0) else null
+    private var isScrollLocked: Boolean = false
 
-    init {
-        touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private val child: View?
+        get() = if (childCount > 0) getChildAt(0) else null
+
+    override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
+        handleInterceptTouchEvent(e)
+        return super.onInterceptTouchEvent(e)
+    }
+
+    private fun initWithAttrs(context: Context, attrs: AttributeSet) {
+        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.NestedScrollableHost)
+        isScrollLocked = attributeArray.getBoolean(R.styleable.NestedScrollableHost_lockScroll, false)
+        attributeArray.recycle()
     }
 
     private fun canChildScroll(orientation: Int, delta: Float): Boolean {
@@ -66,12 +80,12 @@ class NestedScrollableHost : FrameLayout {
         }
     }
 
-    override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-        handleInterceptTouchEvent(e)
-        return super.onInterceptTouchEvent(e)
-    }
-
     private fun handleInterceptTouchEvent(e: MotionEvent) {
+        if (isScrollLocked) {
+            parent.requestDisallowInterceptTouchEvent(true)
+            return
+        }
+
         val orientation = parentViewPager?.orientation ?: return
 
         // Early return if child can't scroll in same direction as parent
