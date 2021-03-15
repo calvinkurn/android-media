@@ -41,10 +41,7 @@ object PMRegistrationTermHelper {
             }
         } else { //existing seller
             if (shopInfo.isEligibleShopScore) {
-                val textColor = getHexColor(context, com.tokopedia.unifyprin
-
-
-                        ciples.R.color.Unify_G500)
+                val textColor = getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 title = context.getString(R.string.pm_shop_score_eligible, textColor, shopInfo.shopScore)
                 description = context.getString(R.string.pm_shop_score_eligible_description, shopInfo.shopScoreThreshold)
             } else {
