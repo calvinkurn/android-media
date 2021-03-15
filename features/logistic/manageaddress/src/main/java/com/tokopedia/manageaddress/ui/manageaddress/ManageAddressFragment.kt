@@ -213,6 +213,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         if (context?.let { context -> ChooseAddressUtils.isRollOutUser(context) } == true) {
                             updateTicker(it.data.pageInfo?.ticker)
                             updateButton(it.data.pageInfo?.buttonLabel)
+                            updateStateForCheckoutSnippet(it.data.listAddress)
                         }
                     }
                     updateData(it.data.listAddress)
@@ -244,9 +245,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         setChosenAddress()
                     } else {
                         bottomSheetLainnya?.dismiss()
-                        context?.let {
-                            viewModel.searchAddress("", prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
-                        }
                         viewModel.getStateChosenAddress("address")
                     }
 
@@ -394,7 +392,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
 
         searchAddress?.clearListener = {
-           performSearch("", null)
+            performSearch("", null)
         }
 
         searchAddress?.searchBarPlaceholder = "Cari Alamat"
@@ -422,6 +420,16 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 buttonChooseAddress?.text = getString(R.string.pilih_alamat)
             } else {
                 buttonChooseAddress?.text = btnLabel
+            }
+        }
+    }
+
+    private fun updateStateForCheckoutSnippet(addressList: List<RecipientAddressModel>) {
+        if (isFromCheckoutSnippet == true && _selectedAddressItem == null) {
+            val peopleAddress = addressList.firstOrNull { it.isStateChosenAddress }
+            if (peopleAddress != null) {
+                setButtonEnabled(true)
+                _selectedAddressItem = peopleAddress
             }
         }
     }
@@ -471,7 +479,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
             btn_alamat_utama?.setOnClickListener {
-                viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
+                viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
@@ -480,7 +488,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
             btn_alamat_utama_choose?.setOnClickListener {
                 context?.let {
-                    viewModel.setDefaultPeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(it))
                 }
                 _selectedAddressItem = data
             }
@@ -600,7 +608,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         if (isLocalization == true) {
             val resultIntent = Intent().apply {
-                putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
                 putExtra(ChooseAddressConstant.EXTRA_IS_FROM_ANA, true)
             }
             activity?.setResult(Activity.RESULT_OK, resultIntent)

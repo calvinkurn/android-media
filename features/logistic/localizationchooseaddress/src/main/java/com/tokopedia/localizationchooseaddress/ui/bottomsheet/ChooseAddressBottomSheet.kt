@@ -34,6 +34,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_IS_FROM_ANA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
@@ -180,7 +181,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             }
             REQUEST_CODE_ADDRESS_LIST -> {
                 val recipientAddress = data?.getParcelableExtra<RecipientAddressModel>(EXTRA_SELECTED_ADDRESS_DATA)
-                val isFromANA = data?.getBooleanExtra(EXTRA_SELECTED_ADDRESS_DATA, false)
+                val isFromANA = data?.getBooleanExtra(EXTRA_IS_FROM_ANA, false)
                 if (recipientAddress != null && isFromANA == false) {
                     viewModel.setStateChosenAddress(
                             status = recipientAddress.addressStatus,
@@ -193,6 +194,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             postalCode = recipientAddress.postalCode
                     )
                     isSnippetAddressFlow = false
+                } else if (isFromANA == true) {
+                    listener?.onAddressDataChanged()
+                    dismissBottomSheet()
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {

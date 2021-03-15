@@ -90,7 +90,6 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             element = element,
                             tokopointsAction = {
                                 //handle click for type tokopoints
-//                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -112,7 +111,6 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             },
                             rewardsAction = {
                                 //handle click for type rewards
-//                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -125,7 +123,6 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             },
                             couponsAction = {
                                 //handle click for type coupon
-//                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -138,7 +135,6 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             },
                             bboAction = {
                                 //handle click for type bbo
-//                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -169,7 +165,17 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
 
                     itemView.home_tv_btn_action_balance.handleItemCLickType(
                             element = element,
-                            tokopointsAction = {},
+                            tokopointsAction = {
+                                listener?.actionTokoPointClicked(
+                                        element.applinkContainer,
+                                        element.redirectUrl,
+                                        if (element.mainPageTitle.isEmpty())
+                                            TITLE_HEADER_WEBSITE
+                                        else
+                                            element.mainPageTitle
+                                )
+                                OvoWidgetTracking.sendClickOnTokopointsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                            },
                             ovoWalletAction = {
                                 if (RouteManager.isSupportApplink(itemView.context, element.applinkActionText)) {
                                     OvoWidgetTracking.eventOvo()
@@ -178,9 +184,36 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                     itemView.context.startActivity(intentBalanceWallet)
                                 }
                             },
-                            rewardsAction = {},
-                            couponsAction = {},
-                            bboAction = {},
+                            rewardsAction = {
+                                listener?.actionTokoPointClicked(
+                                        element.applinkContainer,
+                                        element.redirectUrl,
+                                        if (element.mainPageTitle.isEmpty())
+                                            TITLE_HEADER_WEBSITE
+                                        else
+                                            element.mainPageTitle
+                                )
+                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
+                            couponsAction = {
+                                listener?.actionTokoPointClicked(
+                                        element.applinkContainer,
+                                        element.redirectUrl,
+                                        if (element.mainPageTitle.isEmpty())
+                                            TITLE_HEADER_WEBSITE
+                                        else
+                                            element.mainPageTitle
+                                )
+                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
+                            bboAction = {
+                                listener?.actionTokoPointClicked(
+                                        element.applinkContainer,
+                                        element.redirectUrl,
+                                        if (element.mainPageTitle.isEmpty())
+                                            TITLE_HEADER_WEBSITE
+                                        else
+                                            element.mainPageTitle
+                                )
+                                OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
                             walletTopupAction = {},
                             walletOtherAction = {
                                 //handle click for type wallet other

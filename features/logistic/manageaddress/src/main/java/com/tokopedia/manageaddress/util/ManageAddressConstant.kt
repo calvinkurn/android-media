@@ -18,5 +18,11 @@ object ManageAddressConstant {
     const val EXTRA_REF = "EXTRA_REF"
 
     const val SCREEN_NAME_USER_NEW = "/user/address/create"
+
+    const val BOTTOMSHEET_TITLE_ATUR_LOKASI = "Atur lokasi"
+
+    const val EXTRA_WAREHOUSE_DATA = "EXTRA_WAREHOUSE_DATA"
+    const val EXTRA_LONG = "EXTRA_LONG"
+    const val EXTRA_LAT = "EXTRA_LAT"
     const val EXTRA_IS_LOCALIZATION = "EXTRA_IS_LOCALIZATION"
 }
