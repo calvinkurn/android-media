@@ -62,6 +62,7 @@
     <dimen name="play_product_grid_radius">8dp</dimen>
     <dimen name="play_product_featured_width">240dp</dimen>
     <dimen name="play_product_featured_height">72dp</dimen>
+    <dimen name="play_product_featured_placeholder_width">@dimen/play_product_featured_height</dimen>
     <dimen name="play_product_grid_more_action_size">32dp</dimen>
 
     <dimen name="play_pinned_voucher_radius">8dp</dimen>
