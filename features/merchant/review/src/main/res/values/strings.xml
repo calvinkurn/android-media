@@ -280,6 +280,7 @@
     <string name="title_get_benefit_performance">Dapatkan benefit sesuai performa</string>
     <string name="desc_get_benefit_performance">Reputasimu dikonversi menjadi grade Power Merchant dan dapat ditukar dengan berbagai benefit. &lt;a href="https://www.google.com"&gt;Info Selengkapnya&lt;/a&gt;</string>
     <string name="btn_shop_performance">Pelajari Performa Toko</string>
-    <string name="desc_info_reputation_migrate_shop_score">Mulai %s, Reputasi akan digabung dengan Performa Toko untuk lebih menarik pembeli</string>
+    <string name="desc_info_reputation_migrate_shop_score">Mulai dari <![CDATA[<b>%s</b>]]></string>
+    <string name="desc_title_card_shop_score">Mulai %s, Reputasi akan digabung dengan Performa Toko untuk lebih menarik pembeli</string>
 
 </resources>

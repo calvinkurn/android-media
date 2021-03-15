@@ -50,6 +50,10 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return ItemTimerNewSellerViewHolder.LAYOUT
     }
 
+    override fun type(sectionFaqUiModel: SectionFaqUiModel): Int {
+        return SectionFaqViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: LoadingModel?): Int {
         return ShopPerformanceShimmerViewHolder.LAYOUT
     }
@@ -66,6 +70,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             ItemStatusRMViewHolder.LAYOUT -> ItemStatusRMViewHolder(parent, itemPotentialPowerMerchantListener)
             SectionShopFeatureRecommendationViewHolder.LAYOUT -> SectionShopFeatureRecommendationViewHolder(parent, itemRecommendationFeatureListener)
             ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(parent)
+            SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,9 +22,13 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-            containerCornerShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.bg_performance_headline)
-            containerHeaderShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_headline)
-            containerHeaderShopPerformance?.clipToOutline = true
+            val roundedRadius = 16F
+            containerHeaderShopPerformance.shapeAppearanceModel = containerHeaderShopPerformance.shapeAppearanceModel
+                    .toBuilder()
+                    .setTopRightCorner(CornerFamily.ROUNDED, roundedRadius)
+                    .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                    .build()
+
             tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel.orZero().toString())
 
             tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore.toString() else "-"

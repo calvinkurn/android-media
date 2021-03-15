@@ -215,7 +215,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
 
     private void initCardShopScore() {
         String date = ReviewUtil.INSTANCE.getShopScoreDate(requireContext());
-        tvInfoMigrateReputation.setText(MethodChecker.fromHtml(getString(R.string.desc_info_reputation_migrate_shop_score)));
+        tvInfoMigrateReputation.setText(MethodChecker.fromHtml(getString(R.string.desc_title_card_shop_score, date)));
         iconChevronRightReputationDetail.setOnClickListener(view -> showBottomSheetMoveShopScore());
 
         cardReputationShopScore.setOnClickListener(view -> showBottomSheetMoveShopScore());

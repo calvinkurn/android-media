@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.bottomsheet
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -12,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
@@ -73,9 +75,9 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
             tvDescTipsDetail?.text = MethodChecker.fromHtml(getString(descTips))
             tvMoreInfoPerformanceDetail?.showWithCondition(!moreInformation.isZero())
             if (!moreInformation.isZero()) {
-                tvMoreInfoPerformanceDetail?.setClickableUrlHtml(getString(moreInformation, urlLink)) {
+                tvMoreInfoPerformanceDetail?.setTextMakeHyperlink(getString(moreInformation, urlLink)) {
                     if (urlLink.isNotBlank()) {
-                        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, it)
+                        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, urlLink)
                     }
                 }
             }

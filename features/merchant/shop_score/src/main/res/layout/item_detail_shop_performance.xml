@@ -4,6 +4,8 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
+    android:layout_marginStart="@dimen/spacing_lvl3"
+    android:layout_marginEnd="@dimen/spacing_lvl3"
     android:id="@+id/cardItemDetailShopPerformance"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -51,6 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/separatorItemDetail"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/spacing_lvl4"

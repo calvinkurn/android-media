@@ -13,14 +13,14 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_12"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toStartOf="@id/ic_info_status_penalty"
+        app:layout_constraintEnd_toStartOf="@id/ic_info_toggle_faq"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         tools:text="@string/example_title_faq_shop_score" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_info_status_penalty"
+        android:id="@+id/ic_info_toggle_faq"
         android:layout_width="@dimen/spacing_lvl5"
         android:layout_height="@dimen/spacing_lvl5"
         android:layout_marginStart="@dimen/spacing_lvl3"
@@ -56,10 +56,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_card_level_faq"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginEnd="@dimen/dp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +83,7 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card_shop_score_parameter_faq"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/spacing_lvl3"
@@ -96,7 +96,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_parameter_label"
@@ -113,13 +113,14 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_shop_score_parameter_faq"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_title_parameter_label"
-                tools:itemCount="2"
-                tools:listitem="@layout/item_parameter_performance_shop_score" />
+                tools:itemCount="2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

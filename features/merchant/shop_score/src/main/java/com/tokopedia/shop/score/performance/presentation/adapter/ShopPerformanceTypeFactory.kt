@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.performance.presentation.adapter
 
+import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.*
 
 interface ShopPerformanceTypeFactory {
@@ -12,4 +13,5 @@ interface ShopPerformanceTypeFactory {
     fun type(itemStatusPMUiModel: ItemStatusPMUiModel): Int
     fun type(sectionShopRecommendationUiModel: SectionShopRecommendationUiModel): Int
     fun type(timerNewSellerUiModel: ItemTimerNewSellerUiModel): Int
+    fun type(sectionFaqUiModel: SectionFaqUiModel): Int
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.review.common.util
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.util.TypedValue
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -19,8 +21,10 @@ import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifyprinciples.Typography
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.round
@@ -212,3 +216,13 @@ val List<SortItemUiModel>.getSortBy: String
     get() {
         return this.firstOrNull { it.isSelected }?.title.orEmpty()
     }
+
+fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
+    val htmlString = HtmlLinkHelper(context, text)
+    this.movementMethod =  LinkMovementMethod.getInstance()
+    this.highlightColor = Color.TRANSPARENT
+    this.text = htmlString.spannedString
+    htmlString.urlList.getOrNull(0)?.setOnClickListener {
+        onClick()
+    }
+}

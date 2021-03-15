@@ -22,3 +22,7 @@ interface ItemStatusPowerMerchantListener {
     fun onItemClickedNextUpdatePM()
     fun onItemClickedGoToPMActivation()
 }
+
+interface ItemFaqListener {
+    fun onArrowClicked(position: Int)
+}

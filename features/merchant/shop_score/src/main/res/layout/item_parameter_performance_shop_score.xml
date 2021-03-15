@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/separator_parameter_performance"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,7 +68,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_score_label"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
         tools:text="@string/score_parameter_shop_score_1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

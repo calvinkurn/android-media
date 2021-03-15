@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.setTextMakeHyperlink
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -56,12 +59,12 @@ class ShopScoreReputationBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupView() {
-        tvDatePerformancePage?.text = getString(R.string.desc_info_reputation_migrate_shop_score, "1 Juni 2021")
+        tvDatePerformancePage?.text = MethodChecker.fromHtml(getString(R.string.desc_info_reputation_migrate_shop_score, "1 Juni 2021"))
         tvMoreInterestBuyer?.text = MethodChecker.fromHtml(getString(R.string.more_interest_candidate_buyer))
-        tvDescGetBenefitPerformance?.setClickableUrlHtml(getString(R.string.desc_get_benefit_performance)) { url ->
-            if(url.isNotBlank()) {
-                //TODO
-            }
+
+        tvDescGetBenefitPerformance?.setTextMakeHyperlink(getString(R.string.desc_get_benefit_performance)) {
+            val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+            RouteManager.route(requireContext(), appLink)
         }
 
         ivMoreInterestBuyer?.loadImage(ReviewConstants.IV_MORE_INTEREST_BUYER)

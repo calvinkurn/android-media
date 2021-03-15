@@ -105,17 +105,20 @@ class ShopPerformancePageFragment: BaseDaggerFragment(),
     }
 
     override fun onItemClickedGoToPMActivation() {
-        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        RouteManager.route(requireContext(), appLink)
+        goToPowerMerchantSubscribe()
     }
 
     override fun onItemClickedBenefitPotentialRM() {
-        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        RouteManager.route(requireContext(), appLink)
+        goToPowerMerchantSubscribe()
     }
 
     override fun onItemClickedRecommendationFeature(appLink: String) {
         //TODO
+    }
+
+    private fun goToPowerMerchantSubscribe() {
+        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+        RouteManager.route(requireContext(), appLink)
     }
 
     private fun setupAdapter() {

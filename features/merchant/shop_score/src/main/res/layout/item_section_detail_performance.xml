@@ -5,7 +5,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_lvl2">
+    android:layout_marginStart="@dimen/spacing_lvl3"
+    android:layout_marginEnd="@dimen/spacing_lvl3"
+    >
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPerformanceDetailLabel"
@@ -28,11 +30,12 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        tools:text="1 Jan - 31 Mar 2021 | Update selanjutnya: 7 Mar 2021"/>
+        tools:text="@string/title_update_date"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/spacing_lvl4"/>
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl2"/>
 
 </LinearLayout>

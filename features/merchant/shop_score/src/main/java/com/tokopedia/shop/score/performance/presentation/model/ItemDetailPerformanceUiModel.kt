@@ -6,6 +6,7 @@ data class ItemDetailPerformanceUiModel(var titleDetailPerformance: String = "",
                                         var valueDetailPerformance: String = "",
                                         var colorValueDetailPerformance: String = "",
                                         var targetDetailPerformance: String = "",
+                                        var lastPosition: Int = 0
 ): BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

@@ -1,6 +1,10 @@
 package com.tokopedia.shop.score.common
 
+import android.graphics.Color
+import android.text.method.LinkMovementMethod
 import com.tokopedia.shop.score.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 
 object ShopScoreUtils {
 
@@ -12,5 +16,15 @@ object ShopScoreUtils {
             ShopScoreConstant.SHOP_SCORE_LEVEL_FOUR -> R.drawable.ic_four_level_white
             else -> R.drawable.ic_no_level
         }
+    }
+}
+
+fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
+    val htmlString = HtmlLinkHelper(context, text)
+    this.movementMethod =  LinkMovementMethod.getInstance()
+    this.highlightColor = Color.TRANSPARENT
+    this.text = htmlString.spannedString
+    htmlString.urlList.getOrNull(0)?.setOnClickListener {
+        onClick()
     }
 }

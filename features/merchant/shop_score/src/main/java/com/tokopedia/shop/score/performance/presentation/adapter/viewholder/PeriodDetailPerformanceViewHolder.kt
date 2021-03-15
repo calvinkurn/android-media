@@ -7,7 +7,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import kotlinx.android.synthetic.main.item_section_detail_performance.view.*
 
-class PeriodDetailPerformanceViewHolder(view: View):
+class PeriodDetailPerformanceViewHolder(view: View) :
         AbstractViewHolder<PeriodDetailPerformanceUiModel>(view) {
 
     companion object {
@@ -17,10 +17,8 @@ class PeriodDetailPerformanceViewHolder(view: View):
     override fun bind(element: PeriodDetailPerformanceUiModel?) {
         with(itemView) {
             setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            tvPerformanceDetailDate.text = String.format(
-                    getString(R.string.title_period_performance_detail),
-                    element?.period.orEmpty(),
-                    element?.nextUpdate.orEmpty())
+            tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performa, element?.period.orEmpty())
+            tvPerformanceDetailDate?.text = getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
         }
     }
 }

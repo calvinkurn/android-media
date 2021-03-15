@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
@@ -20,6 +21,10 @@ class ItemDetailPerformanceViewHolder(view: View,
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
             setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            if (adapterPosition + 1 == element?.lastPosition) {
+                cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
+                separatorItemDetail?.hide()
+            }
             tvTitlePerformanceProgress.text = element?.titleDetailPerformance.orEmpty()
             tvPerformanceValue.text = element?.valueDetailPerformance ?: "-"
             if (element?.colorValueDetailPerformance?.isNotBlank() == true) {

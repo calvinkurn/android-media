@@ -123,6 +123,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             add(mapToCardPotentialBenefit())
             add(mapToItemCurrentStatusRMUiModel())
             add(mapToItemPotentialStatusPMUiModel(true))
+            add(SectionFaqUiModel(mapToItemFaqUiModel()))
         }
     }
 
@@ -248,7 +249,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     titleDetailPerformance = ORDER_SUCCESS_RATE,
                     valueDetailPerformance = "85%",
                     colorValueDetailPerformance = "#D6001C",
-                    targetDetailPerformance = "90%"
+                    targetDetailPerformance = "90%",
             ))
             add(ItemDetailPerformanceUiModel(
                     titleDetailPerformance = CHAT_DISCUSSION_REPLY_SPEED,
@@ -284,7 +285,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     titleDetailPerformance = OPEN_TOKOPEDIA_SELLER,
                     valueDetailPerformance = "100%",
                     colorValueDetailPerformance = "#31353B",
-                    targetDetailPerformance = "100%"
+                    targetDetailPerformance = "100%",
+                    lastPosition = 7
             ))
         }
     }
@@ -605,7 +607,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
             else -> 0
         }
-        val descStatus = when(statusActive) {
+        val descStatus = when (statusActive) {
             true -> {
                 when (statusPM) {
                     UP_POTENTIAL_PM, STILL_POTENTIAL_PM -> {
@@ -646,25 +648,70 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return ItemStatusRMUiModel(updateDatePotential = updateDate, bgGradePM = bgPowerMerchant, statusGradePM = statusPM)
     }
 
-    private fun mapToCardTooltipLevel(level: Int): List<CardTooltipLevelUiModel> {
-        val cardTooltipLevelUiModelList = mutableListOf<CardTooltipLevelUiModel>()
-
-        for (i in 1..SHOP_SCORE_TOTAL_LEVEL) {
-            when (i) {
-                SHOP_SCORE_LEVEL_ONE -> {
-                    cardTooltipLevelUiModelList.add(CardTooltipLevelUiModel(R.string.title_level_1, R.string.desc_level_1, i == level))
-                }
-                SHOP_SCORE_LEVEL_TWO -> {
-                    cardTooltipLevelUiModelList.add(CardTooltipLevelUiModel(R.string.title_level_2, R.string.desc_level_2, i == level))
-                }
-                SHOP_SCORE_LEVEL_THREE -> {
-                    cardTooltipLevelUiModelList.add(CardTooltipLevelUiModel(R.string.title_level_3, R.string.desc_level_3, i == level))
-                }
-                SHOP_SCORE_LEVEL_FOUR -> {
-                    cardTooltipLevelUiModelList.add(CardTooltipLevelUiModel(R.string.title_level_4, R.string.desc_level_4, i == level))
-                }
-            }
+    private fun mapToCardTooltipLevel(level: Int = 0): List<CardTooltipLevelUiModel> {
+        return mutableListOf<CardTooltipLevelUiModel>().apply {
+            add(CardTooltipLevelUiModel(R.string.title_level_1, R.string.desc_level_1, SHOP_SCORE_LEVEL_ONE == level))
+            add(CardTooltipLevelUiModel(R.string.title_level_2, R.string.desc_level_2, SHOP_SCORE_LEVEL_TWO == level))
+            add(CardTooltipLevelUiModel(R.string.title_level_3, R.string.desc_level_3, SHOP_SCORE_LEVEL_THREE == level))
+            add(CardTooltipLevelUiModel(R.string.title_level_4, R.string.desc_level_4, SHOP_SCORE_LEVEL_FOUR == level))
         }
-        return cardTooltipLevelUiModelList
     }
+
+    private fun mapToItemFaqUiModel(): List<ItemFaqUiModel> {
+        return mutableListOf<ItemFaqUiModel>().apply {
+            add(ItemFaqUiModel(
+                    title = context?.getString(R.string.title_shop_score_performance).orEmpty(),
+                    desc_first = context?.getString(R.string.desc_shop_score_performance).orEmpty(),
+            ))
+            add(ItemFaqUiModel(
+                    title = context?.getString(R.string.title_shop_score_benefit).orEmpty(),
+                    desc_first = context?.getString(R.string.desc_shop_score_benefit).orEmpty(),
+            ))
+            add(ItemFaqUiModel(
+                    title = context?.getString(R.string.title_shop_score_benefit).orEmpty(),
+                    desc_first = context?.getString(R.string.desc_shop_score_benefit).orEmpty(),
+            ))
+            add(ItemFaqUiModel(
+                    title = context?.getString(R.string.title_shop_score_calculation).orEmpty(),
+                    desc_first = context?.getString(R.string.desc_section_1_shop_score_calculation).orEmpty(),
+                    desc_second = context?.getString(R.string.desc_section_2_shop_score_calculation).orEmpty(),
+                    isCalculationScore = true,
+                    cardLevelList = mapToCardTooltipLevel(),
+                    parameterFaqList = mapToItemParameterFaq()
+            ))
+            if (!userSession.isShopOfficialStore) {
+                add(ItemFaqUiModel(
+                        title = context?.getString(R.string.title_changes_shop_score_during_transition).orEmpty(),
+                        desc_first = context?.getString(R.string.desc_changes_shop_score_during_transition).orEmpty()
+                ))
+            }
+            add(ItemFaqUiModel(
+                    title = context?.getString(R.string.title_calculate_shop_performance_if_parameter_value_missing).orEmpty(),
+                    desc_first = context?.getString(R.string.desc_calculate_shop_performance_if_parameter_value_missing).orEmpty(),
+            ))
+            add(ItemFaqUiModel(
+                    title = context?.getString(R.string.title_calculate_shop_performance_for_new_seller).orEmpty(),
+                    desc_first = context?.getString(R.string.desc_calculate_shop_performance_for_new_seller).orEmpty(),
+            ))
+        }
+    }
+
+    private fun mapToItemParameterFaq(): List<ItemParameterFaqUiModel> {
+        return mutableListOf<ItemParameterFaqUiModel>().apply {
+            add(ItemParameterFaqUiModel(title = context?.getString(R.string.title_parameter_shop_score_1).orEmpty(),
+                    desc = context?.getString(R.string.desc_parameter_shop_score_1).orEmpty(),
+                    score = context?.getString(R.string.score_parameter_shop_score_1).orEmpty()
+            ))
+            add(ItemParameterFaqUiModel(title = context?.getString(R.string.title_parameter_shop_score_2).orEmpty(),
+                    desc = context?.getString(R.string.desc_parameter_shop_score_2).orEmpty(),
+                    score = context?.getString(R.string.score_parameter_shop_score_2).orEmpty()
+            ))
+            add(ItemParameterFaqUiModel(title = context?.getString(R.string.title_parameter_shop_score_3).orEmpty(),
+                    desc = context?.getString(R.string.desc_parameter_shop_score_3).orEmpty(),
+                    score = context?.getString(R.string.score_parameter_shop_score_3).orEmpty()
+            ))
+        }
+    }
+
+
 }
