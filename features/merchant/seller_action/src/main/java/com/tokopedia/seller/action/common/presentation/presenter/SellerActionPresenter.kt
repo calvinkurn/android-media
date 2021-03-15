@@ -1,9 +1,6 @@
 package com.tokopedia.seller.action.common.presentation.presenter
 
 import android.net.Uri
-import com.tokopedia.kotlin.extensions.convertFormatDate
-import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.seller.action.common.interfaces.SellerActionContract
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
