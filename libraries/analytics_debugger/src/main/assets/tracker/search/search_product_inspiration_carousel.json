@@ -1,5 +1,6 @@
 {
   "readme": "Search Product Inspiration Carousel Tracking",
+  "mode": "exact",
   "query": [
     {
       "event": "clickSearchResult",
