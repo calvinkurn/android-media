@@ -24,7 +24,8 @@
             android:layout_height="@dimen/dp_32"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            app:srcCompat="@drawable/ic_menus_close_default" />
+            app:srcCompat="@drawable/ic_menus_close_default"
+            android:contentDescription="@string/close_icon" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
@@ -32,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:textColor="@color/grey_750"
-            android:textSize="@dimen/sp_17"
+            app:typographyType="body_1"
             app:typographyWeight="reguler"
             tools:text="Atur" />
 

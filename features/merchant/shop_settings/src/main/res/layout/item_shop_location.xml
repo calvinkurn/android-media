@@ -52,6 +52,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_1"
             app:typographyWeight="reguler"
+            app:typographyType="body_2"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textColor="@color/font_black_disabled_38"
@@ -63,6 +64,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_2"
             app:typographyWeight="reguler"
+            app:typographyType="body_2"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textColor="@color/font_black_disabled_38"

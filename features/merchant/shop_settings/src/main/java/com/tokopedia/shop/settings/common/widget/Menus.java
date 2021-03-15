@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
@@ -124,7 +123,7 @@ public class Menus extends BaseBottomSheetView {
 
         private class FooterViewHolder extends RecyclerView.ViewHolder {
 
-            private UnifyButton button;
+            private Typography button;
 
             FooterViewHolder(View view) {
                 super(view);
