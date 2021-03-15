@@ -213,6 +213,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         if (context?.let { context -> ChooseAddressUtils.isRollOutUser(context) } == true) {
                             updateTicker(it.data.pageInfo?.ticker)
                             updateButton(it.data.pageInfo?.buttonLabel)
+                            updateButtonForCheckoutSnippet(it.data.listAddress)
                         }
                     }
                     updateData(it.data.listAddress)
@@ -422,6 +423,16 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 buttonChooseAddress?.text = getString(R.string.pilih_alamat)
             } else {
                 buttonChooseAddress?.text = btnLabel
+            }
+        }
+    }
+
+    private fun updateButtonForCheckoutSnippet(addressList: List<RecipientAddressModel>) {
+        if (isFromCheckoutSnippet == true && _selectedAddressItem == null) {
+            val peopleAddress = addressList.firstOrNull { it.isStateChosenAddress }
+            if (peopleAddress != null) {
+                setButtonEnabled(true)
+                _selectedAddressItem = peopleAddress
             }
         }
     }
