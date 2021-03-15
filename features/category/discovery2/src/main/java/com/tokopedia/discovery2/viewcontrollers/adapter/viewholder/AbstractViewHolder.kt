@@ -14,7 +14,7 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     }
 
     protected var parentAbstractViewHolder: AbstractViewHolder? = null
-    protected var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
+    var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
 
     abstract fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel)
 

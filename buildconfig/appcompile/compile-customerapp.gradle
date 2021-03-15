@@ -36,10 +36,6 @@ include "features:category:age_restriction"
 include "features:category:explore_category"
 include "features:category:discovery2"
 include "features:category:category_navbottomsheet"
-
-
-        include "features:digital:digital_browse"
-
 include "features:recharge:common_digital"
 include "features:recharge:digitalproduct"
 include "features:recharge:common_topup_bills"
@@ -99,6 +95,7 @@ include "features:digital:instant_debit_bca"
 include "features:fintech:saldo_details"
 include "features:fintech:common_wallet"
 include "features:fintech:wallet"
+include "features:fintech:paylater"
 
 include "features:home:dynamicbanner"
 include "features:home:navigation"

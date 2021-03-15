@@ -378,6 +378,22 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     chatFilter?.updateIsWhiteListTopBot(isWhiteListTopBot)
                 }
         )
+        viewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (isEligible) {
+                            loadInitialData()
+                        } else {
+                            onChatAdminNoAccess()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetListError(result.throwable)
+                }
+            }
+        }
     }
 
     private fun setupWebSocketObserver() {
@@ -659,6 +675,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         viewModel.broadCastButtonVisibility.removeObservers(this)
         viewModel.broadCastButtonUrl.removeObservers(this)
         viewModel.chatBannedSellerStatus.removeObservers(this)
+        viewModel.isChatAdminEligible.removeObservers(this)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
@@ -797,6 +814,13 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
+
+    private fun onChatAdminNoAccess() {
+        swipeToRefresh?.isEnabled = false
+        adapter?.showNoAccessView()
+    }
+
+    override fun returnToSellerHome() {}
 
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324

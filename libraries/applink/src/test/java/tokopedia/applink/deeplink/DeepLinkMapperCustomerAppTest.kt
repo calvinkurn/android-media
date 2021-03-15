@@ -970,6 +970,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check ongoing appLink then should return tokopedia internal ongoing in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://order/unified?filter=uoh_ongoing"
+        every {
+            DeeplinkMapperUohOrder.useUoh(context)
+        } returns true
+        assertEqualsDeepLinkMapper(ApplinkConst.PURCHASE_ONGOING, expectedDeepLink)
+    }
+
+    @Test
     fun `check ready to ship appLink then should return tokopedia internal ready to ship in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/ready-to-ship?tab_active=confirm_shipping"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP, expectedDeepLink)
