@@ -35,7 +35,6 @@ class EventPDPTicketItemPackageAdapter(
     private var isRecommendationPackage = false
     private var idPackage = ""
     private var packageName = ""
-    private var heightItemView = 0
     lateinit var eventPDPTracking: EventPDPTracking
 
     inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -65,38 +64,22 @@ class EventPDPTicketItemPackageAdapter(
                 val isNotEnded = checkNotEndSale(items.endDate, Calendar.getInstance().time)
                 val itemIsAvailable = (checkDate(items.dates, onBindItemTicketListener.getSelectedDate()) && items.available.toInt() >= 1)
                 val isRecomended = checkDate(items.dates, onBindItemTicketListener.getSelectedDate())
-                var viewTargetCoachmark = txtPilih_ticket
                 if (isRecomended) {
                     if (isSaleStarted && isNotEnded) {
                         if (itemIsAvailable) {
                             txtPilih_ticket.show()
-                            viewTargetCoachmark = txtPilih_ticket
                         } else {
                             txtHabis_ticket.show()
-                            viewTargetCoachmark = txtHabis_ticket
                             showSoldOut(itemView)
                         }
                     } else if (!isSaleStarted && isNotEnded) {
-                        viewTargetCoachmark = txtNotStarted
                         txtNotStarted.show()
                     } else if (isSaleStarted && !isNotEnded) {
-                        viewTargetCoachmark = txtAlreadyEnd
                         txtAlreadyEnd.show()
                     }
                 } else {
                     txtisRecommeded.show()
                     showSoldOut(itemView)
-                }
-
-                viewTargetCoachmark.post {
-                    if (position == 0) heightItemView += itemView.height.toDp()
-                    if (!onCoachmarkListener.getLocalCache()) {
-                        if (listItemPackage.size == 1 && position == 0) {
-                            onCoachmarkListener.addCoachmark(viewTargetCoachmark, isRecommendationPackage)
-                        } else if (listItemPackage.size >= 2 && position == 1) {
-                            onCoachmarkListener.addCoachmark(viewTargetCoachmark, isRecommendationPackage)
-                        }
-                    }
                 }
 
                 quantityEditor.setValue(items.minQty.toInt())
@@ -198,13 +181,6 @@ class EventPDPTicketItemPackageAdapter(
                 txtisRecommeded.text = context.getString(R.string.ent_pdp_ticket_change_date)
                 txtisRecommeded.setOnClickListener {
                     onBindItemTicketListener.clickRecommendation(items.dates)
-                }
-
-                itemView.post {
-                    if (!onCoachmarkListener.getLocalCache() && position==0) {
-                        onCoachmarkListener.addCoachmark(itemView, isRecommendationPackage)
-                        onCoachmarkListener.showCoachMark()
-                    }
                 }
             }
         }
