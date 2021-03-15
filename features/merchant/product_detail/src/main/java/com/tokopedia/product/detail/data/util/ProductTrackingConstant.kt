@@ -8,6 +8,7 @@ object ProductTrackingConstant {
         const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
+        const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
     }
 
     object Tracking {
