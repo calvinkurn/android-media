@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private static final String CACHE_NAME = "RemoteConfigDebugCache";
-    private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
-    private static final long CONFIG_CACHE_EXPIRATION = THREE_HOURS;
+    private static final long THIRTY_MINUTES = TimeUnit.MINUTES.toSeconds(30);
+    private static final long CONFIG_CACHE_EXPIRATION = THIRTY_MINUTES;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
