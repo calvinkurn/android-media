@@ -31,6 +31,12 @@ android {
         }
     }
 
+    android {
+        viewBinding {
+            enabled = true
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -53,6 +59,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleCommon
     implementation rootProject.ext.miscDependencies.sliceCore
     implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 }
 
 project.ext {
