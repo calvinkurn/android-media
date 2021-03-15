@@ -28,7 +28,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -91,7 +90,6 @@ import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterShared
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
@@ -544,6 +542,17 @@ class NewShopPageFragment :
             }
         })
 
+        shopViewModel?.shopPageTickerData?.observe(owner, Observer { result ->
+            if(result is Success){
+                shopPageHeaderDataModel?.let {
+                    it.statusTitle = result.data.statusTitle
+                    it.statusMessage = result.data.statusMessage
+                    it.shopStatus = result.data.shopStatus
+                    shopPageFragmentHeaderViewHolder?.updateShopTicker(it, isMyShop)
+                }
+            }
+        })
+
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
@@ -672,9 +681,13 @@ class NewShopPageFragment :
     }
 
     private fun getShopPageP2Data() {
-        shopViewModel?.getShopTickerData(shopId, shopDomain ?: "", isRefresh)
+        getShopTickerStatus()
         getFollowStatus()
         getSellerPlayWidget()
+    }
+
+    private fun getShopTickerStatus() {
+        shopViewModel?.getShopTickerData(shopId, shopDomain ?: "", isRefresh)
     }
 
     private fun getSellerPlayWidget() {

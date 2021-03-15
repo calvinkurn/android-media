@@ -1,26 +1,34 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.*
+import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.tickerShopStatus
+import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
 class NewShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                           private val shopPageTracking: ShopPageTrackingBuyer?,
@@ -212,102 +220,92 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 //        updateFavoriteButton()
 //    }
 //
-//    fun updateShopTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel?, shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean) {
-//        shopPageHeaderDataModel?.let { it ->
-//            when {
-//                shouldShowShopStatusTicker(it.statusTitle, it.statusMessage) -> {
-//                    showShopStatusTicker(it, isMyShop)
-//                }
-//                shouldShowShopStatusTicker(shopOperationalHourStatus.tickerTitle, shopOperationalHourStatus.tickerMessage) -> {
-//                    showShopOperationalHourStatusTicker(shopOperationalHourStatus)
-//                }
-//                else -> {
-//                    hideShopStatusTicker()
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {
-//        return title.isNotEmpty() && message.isNotEmpty()
-//    }
-//
-//    private fun showShopStatusTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean = false) {
-//        view.tickerShopStatus.show()
-//        view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
-//        view.tickerShopStatus.setHtmlDescription(
-//                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
-//                    generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
-//                } else {
-//                    shopPageHeaderDataModel.statusMessage
-//                }
-//        )
-//        view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
-//            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-//                // set tracker data based on shop status
-//                when (shopPageHeaderDataModel.shopStatus) {
-//                    ShopStatusDef.CLOSED -> {
-//                        shopPageTracking?.sendOpenShop()
-//                        shopPageTracking?.clickOpenOperationalShop(CustomDimensionShopPage
-//                                .create(
-//                                        shopPageHeaderDataModel.shopId,
-//                                        shopPageHeaderDataModel.isOfficial,
-//                                        shopPageHeaderDataModel.isGoldMerchant
-//                                ))
-//                    }
-//                    ShopStatusDef.NOT_ACTIVE -> {
-//                        shopPageTracking?.clickHowToActivateShop(CustomDimensionShopPage
-//                                .create(
-//                                        shopPageHeaderDataModel.shopId,
-//                                        shopPageHeaderDataModel.isOfficial,
-//                                        shopPageHeaderDataModel.isGoldMerchant
-//                                ))
-//                    }
-//                }
-//                if(linkUrl == context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url)) {
-//                    // linkUrl is from appended moderate description, show bottomsheet to request open moderate
-//                    listener.setShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance().apply {
-//                        init(listener)
-//                    })
-//                } else {
-//                    // original url, open web view
-//                    listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
-//                }
-//            }
-//
-//            override fun onDismiss() {}
-//
-//        })
-//        if (isMyShop) {
-//            view.tickerShopStatus.closeButtonVisibility = View.GONE
-//        } else {
-//            view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
-//        }
-//    }
-//
-//    private fun generateShopModerateTickerDescription(originalStatusMessage: String) : String {
-//        // append action text to request open moderation
-//        val appendedText = context.getString(
-//                R.string.shop_page_header_request_unmoderate_appended_text,
-//                context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url),
-//                context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
-//        )
-//        return originalStatusMessage + appendedText
-//    }
-//
-//    private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus) {
-//        view.tickerShopStatus.show()
-//        view.tickerShopStatus.tickerType = Ticker.TYPE_ANNOUNCEMENT
-//        view.tickerShopStatus.tickerTitle = shopOperationalHourStatus.tickerTitle
-//        view.tickerShopStatus.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
-//        view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
-//    }
-//
-//    private fun hideShopStatusTicker() {
-//        view.tickerShopStatus.hide()
-//    }
-//
+    fun updateShopTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean) {
+        shopPageHeaderDataModel.let {
+            when {
+                shouldShowShopStatusTicker(it.statusTitle, it.statusMessage) -> {
+                    showShopStatusTicker(it, isMyShop)
+                }
+                else -> {
+                    hideShopStatusTicker()
+                }
+            }
+        }
+    }
+
+    private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {
+        return title.isNotEmpty() && message.isNotEmpty()
+    }
+
+    private fun showShopStatusTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean = false) {
+        view.tickerShopStatus.show()
+        view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
+        view.tickerShopStatus.setHtmlDescription(
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                    generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
+                } else {
+                    shopPageHeaderDataModel.statusMessage
+                }
+        )
+        view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                // set tracker data based on shop status
+                when (shopPageHeaderDataModel.shopStatus) {
+                    ShopStatusDef.CLOSED -> {
+                        shopPageTracking?.sendOpenShop()
+                        shopPageTracking?.clickOpenOperationalShop(CustomDimensionShopPage
+                                .create(
+                                        shopPageHeaderDataModel.shopId,
+                                        shopPageHeaderDataModel.isOfficial,
+                                        shopPageHeaderDataModel.isGoldMerchant
+                                ))
+                    }
+                    ShopStatusDef.NOT_ACTIVE -> {
+                        shopPageTracking?.clickHowToActivateShop(CustomDimensionShopPage
+                                .create(
+                                        shopPageHeaderDataModel.shopId,
+                                        shopPageHeaderDataModel.isOfficial,
+                                        shopPageHeaderDataModel.isGoldMerchant
+                                ))
+                    }
+                }
+                if(linkUrl == context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url)) {
+                    // linkUrl is from appended moderate description, show bottomsheet to request open moderate
+                    listener.setShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance().apply {
+                        init(listener)
+                    })
+                } else {
+                    // original url, open web view
+                    listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+                }
+            }
+
+            override fun onDismiss() {}
+
+        })
+        if (isMyShop) {
+            view.tickerShopStatus.closeButtonVisibility = View.GONE
+        } else {
+            view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
+        }
+    }
+
+    private fun hideShopStatusTicker() {
+        view.tickerShopStatus.hide()
+    }
+
+    private fun generateShopModerateTickerDescription(originalStatusMessage: String) : String {
+        // append action text to request open moderation
+        val appendedText = context.getString(
+                R.string.shop_page_header_request_unmoderate_appended_text,
+                context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url),
+                context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
+        )
+        return originalStatusMessage + appendedText
+    }
+
     fun isShopFavourited() = isShopFavorite
+
     fun isFollowButtonPlaceHolderAvailable(): Boolean {
         return shopPageHeaderAdapter?.isFollowButtonPlaceholderAvailable() ?: false
     }
