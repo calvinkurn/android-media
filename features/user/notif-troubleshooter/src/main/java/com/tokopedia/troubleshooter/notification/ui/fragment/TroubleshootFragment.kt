@@ -276,7 +276,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
-        binding.txtToken.show()
+        binding.txtToken.visibility = View.VISIBLE
 
         binding.txtToken.text = when {
             newToken.isEmpty() -> {
