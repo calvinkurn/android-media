@@ -62,6 +62,7 @@ import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -139,8 +140,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             permissionCheckerHelper = PermissionCheckerHelper()
         }
-
-        hotelSearchMapViewModel.setPermissionHelper(permissionCheckerHelper)
 
         arguments?.let {
             val selectedParam = it.getParcelable(ARG_FILTER_PARAM) ?: ParamFilterV2()
@@ -1054,7 +1053,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             } else null
 
     private fun getCurrentLocation() {
-        hotelSearchMapViewModel.getCurrentLocation(fusedLocationClient, requireActivity())
+        val locationDetectorHelper = LocationDetectorHelper(
+                permissionCheckerHelper,
+                fusedLocationClient,
+                requireActivity().applicationContext)
+            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    requireActivity().getString(R.string.hotel_destination_need_permission))
     }
 
     private fun setupFindWithMapButton() {
