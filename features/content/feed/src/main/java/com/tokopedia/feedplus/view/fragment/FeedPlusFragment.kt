@@ -113,7 +113,6 @@ import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
@@ -531,7 +530,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 if (intent != null && intent.action != null && intent.action == BROADCAST_FEED) {
                     val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
                     if (isHaveNewFeed) {
-                        newFeed.show()
+                        onRefresh()
                         triggerNewFeedNotification()
                     }
                 }
