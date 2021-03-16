@@ -64,7 +64,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                         EVENT_PROMO_VIEW to mapOf(
                                 KEY_PROMOTIONS to list))
-                map[KEY_CAMPAIGN_CODE] = "${if(banner.campaignCode.isNullOrEmpty()) campaignCode else banner.campaignCode}"
                 map[KEY_E_COMMERCE] = eCommerce
                 trackingQueue.putEETracking(map as HashMap<String, Any>)
             }
