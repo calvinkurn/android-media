@@ -271,4 +271,7 @@
     <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d OVO Points dan masuk ke saldomu maks. 24 jam.</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
 
+    <!-- Kejar Ulasan -->
+    <string name="pursue_reviews_label">Kejar Ulasan</string>
+
 </resources>

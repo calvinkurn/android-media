@@ -11,10 +11,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/pursueReviewsLabel"
+        app:layout_constraintBottom_toBottomOf="@id/pursueReviewsLabel"
         tools:src="@drawable/review_ic_rating_star_four" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/pursueReviewsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:text="@string/pursue_reviews_label"
+        android:visibility="gone"
+        app:labelType="general_light_orange"
+        app:layout_constraintStart_toEndOf="@id/ivRatingFeedback"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackUser"
