@@ -82,7 +82,7 @@ data class ProductMiniSocialProofDataModel(
             return
         }
         val socialProofBuilder = mutableListOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText))
-        appendChipIfNotZero(rating, RATING, socialProofBuilder)
+        appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder)
         appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
         appendChipIfNotZero(talkCount.toFloat(), TALK, socialProofBuilder)
         socialProofData = socialProofBuilder.take(4)
@@ -94,7 +94,11 @@ data class ProductMiniSocialProofDataModel(
 
     private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>): MutableList<ProductMiniSocialProofItemDataModel> {
         if(count != 0F) {
-            list.add(ProductMiniSocialProofItemDataModel(type, count.toString(), count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            if(type == RATING) {
+                list.add(ProductMiniSocialProofItemDataModel(type, rating.toString(), count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            } else {
+                list.add(ProductMiniSocialProofItemDataModel(type, count.toString(), count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            }
         }
         return list
     }

@@ -2437,6 +2437,10 @@ open class HomeFragment : BaseDaggerFragment(),
         startActivityForResult(RouteManager.getIntent(requireContext(), appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
     }
 
+    override fun isNewNavigation(): Boolean {
+        return isNavRevamp()
+    }
+
     private fun observePlayWidgetReminder() {
         getHomeViewModel().playWidgetReminderObservable.observe(viewLifecycleOwner, Observer {
             when (it.status) {

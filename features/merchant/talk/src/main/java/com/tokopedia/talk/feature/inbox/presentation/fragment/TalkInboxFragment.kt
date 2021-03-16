@@ -540,7 +540,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setupSettingsIcon() {
-        talkInboxSettingsIcon.apply {
+        talkInboxSettingsIcon?.apply {
             setOnClickListener {
                 goToSellerSettings()
             }
@@ -549,7 +549,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun updateSettingsIconVisibility() {
-        talkInboxSettingsIcon.apply {
+        talkInboxSettingsIcon?.apply {
             if(isSellerView()) {
                 show()
                 return
@@ -680,16 +680,18 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private fun setupToolbar() {
         headerTalkInbox.apply {
             setTitle(R.string.title_talk_discuss)
-            if (GlobalConfig.isSellerApp() && isNewView()) {
-                addRightIcon(0).apply {
-                    clearImage()
-                    setImageDrawable(com.tokopedia.iconunify.getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
-                    setOnClickListener {
-                        goToSellerSettings()
+            if (GlobalConfig.isSellerApp()) {
+                if(isNewView()) {
+                    addRightIcon(0).apply {
+                        clearImage()
+                        setImageDrawable(com.tokopedia.iconunify.getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+                        setOnClickListener {
+                            goToSellerSettings()
+                        }
                     }
                 }
                 show()
-                talkInboxSettingsIcon.hide()
+                talkInboxSettingsIcon?.hide()
             }
         }
     }

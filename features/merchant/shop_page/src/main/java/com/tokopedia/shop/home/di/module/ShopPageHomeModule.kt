@@ -100,6 +100,7 @@ class ShopPageHomeModule {
                           title
                           url
                       }
+                      minimumOrder
                     }
                     ... on CampaignWidget {
                       campaignID

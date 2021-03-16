@@ -2,13 +2,9 @@ package com.tokopedia.homenav.mainnav.domain.usecases
 
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -16,10 +12,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-
 class GetShopInfoUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<ShopInfoPojo.Response>
-) : UseCase<Result<ShopInfoPojo>>() {
+        private val graphqlUseCase: GraphqlUseCase<ShopData>
+) : UseCase<Result<ShopData>>() {
 
     init {
         val query =
@@ -30,20 +25,27 @@ class GetShopInfoUseCase @Inject constructor(
                         shop_id
                     }
                  }
+                 notifications {
+                    sellerOrderStatus {
+                        newOrder
+                        readyToShip
+                        inResolution
+                    }
+                 }
             }
             """.trimIndent()
 
         graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setTypeClass(ShopInfoPojo.Response::class.java)
+        graphqlUseCase.setTypeClass(ShopData::class.java)
     }
 
     var params: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): Result<ShopInfoPojo> {
+    override suspend fun executeOnBackground(): Result<ShopData> {
         return try{
             graphqlUseCase.setRequestParams(params.parameters)
             val data = graphqlUseCase.executeOnBackground()
-            return Success(data.userShopInfo)
+            return Success(data)
         } catch (e: Exception) {
             Fail(e)
         }
