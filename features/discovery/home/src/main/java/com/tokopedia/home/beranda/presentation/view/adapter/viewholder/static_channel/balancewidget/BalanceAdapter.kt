@@ -211,7 +211,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                 if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
                                     OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
                                 } else
-                                    OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
+                                    OvoWidgetTracking.sendTokopointTrackerClick()
                                     //uncomment when we use new tracker
                                     //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
@@ -228,7 +228,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                 if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
                                     OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
                                 } else
-                                    OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
+                                    OvoWidgetTracking.sendTokopointTrackerClick()
                                     //uncomment when we use new tracker
                                     //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
