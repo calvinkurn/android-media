@@ -35,7 +35,7 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
         } else if (shouldGoToActivationPage(pojo)) {
             onGoToActivationPage(MessageErrorException(pojo.loginToken.errors[0].message))
         } else {
-            userSession.setToken(null, null, null)
+            removeUserSessionToken()
             if (pojo.loginToken.popupError.header.isNotEmpty() &&
                     pojo.loginToken.popupError.body.isNotEmpty() &&
                     pojo.loginToken.popupError.action.isNotEmpty()) {
@@ -75,5 +75,7 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
         onFinished.invoke()
     }
 
-
+    private fun removeUserSessionToken() {
+        userSession.setToken(null, null, null)
+    }
 }
