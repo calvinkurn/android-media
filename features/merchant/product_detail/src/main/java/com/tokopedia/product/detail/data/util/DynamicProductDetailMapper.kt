@@ -272,20 +272,18 @@ object DynamicProductDetailMapper {
     }
 
     fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
-        val images = SparseArray<ImageReviewGqlResponse.Image>()
-        val reviews = SparseArray<ImageReviewGqlResponse.Review>()
-        val hasNext = data.isHasNext ?: false
+        val result = mutableListOf<ImageReviewItem>()
 
-        data.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
-        data.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
+        data.detail?.images?.forEach {
+            val review = data.detail?.reviews?.firstOrNull { review ->
+                review.reviewId == it.reviewID
+            } ?: return@forEach
+            result.add(ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
+                    review.reviewer?.fullName, it.uriThumbnail,
+                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt))
+        }
 
-        return ImageReview(data.list?.map {
-            val image = images[it.imageID]
-            val review = reviews[it.reviewID]
-            ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
-                    review.reviewer?.fullName, image.uriThumbnail,
-                    image.uriLarge, review.rating, hasNext, data.detail?.imageCountFmt)
-        } ?: listOf(), data.detail?.imageCount ?: "")
+        return ImageReview(result, data.detail?.imageCount ?: "")
     }
 
     fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {

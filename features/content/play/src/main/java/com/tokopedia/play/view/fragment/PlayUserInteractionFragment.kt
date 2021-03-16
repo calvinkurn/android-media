@@ -8,10 +8,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -67,6 +64,7 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.invalidateInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -157,7 +155,8 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private var hasBeenOpened = false
+    private var isOpened = false
+    private var portraitInsets: WindowInsets? = null
 
     private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
@@ -207,6 +206,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
+        isOpened = false
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -233,7 +233,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        hasBeenOpened = true
+        isOpened = true
         invalidateSystemUiVisibility()
     }
 
@@ -444,7 +444,9 @@ class PlayUserInteractionFragment @Inject constructor(
             try {
                 val layoutParams = spaceSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
                 val initialBottomMargin = layoutParams.bottomMargin
-                val insets = activity?.window?.decorView?.rootWindowInsets
+                val rootInsets = activity?.window?.decorView?.rootWindowInsets
+                if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
+                val insets = if (orientation.isPortrait) portraitInsets else rootInsets
                 if (insets != null) {
                     layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
                     initialBottomMargin
@@ -453,7 +455,8 @@ class PlayUserInteractionFragment @Inject constructor(
         } else 0
 
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
-            if (!hasBeenOpened && (insets.systemWindowInsetTop == 0 || insets.systemWindowInsetBottom == 0)) return@doOnApplyWindowInsets
+            val skipTop = !isOpened && insets.systemWindowInsetTop == 0
+            val skipBottom = !isOpened && insets.systemWindowInsetBottom == 0
 
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
 
@@ -465,13 +468,13 @@ class PlayUserInteractionFragment @Inject constructor(
             var isMarginChanged = false
 
             val newTopMargin = insets.systemWindowInsetTop
-            if (marginLayoutParams.topMargin != newTopMargin) {
+            if (marginLayoutParams.topMargin != newTopMargin && !skipTop) {
                 marginLayoutParams.updateMargins(top = newTopMargin)
                 isMarginChanged = true
             }
 
             val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
-            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+            if (marginLayoutParams.bottomMargin != newBottomMargin && !skipBottom) {
                 marginLayoutParams.updateMargins(bottom = newBottomMargin)
                 isMarginChanged = true
             }

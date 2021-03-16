@@ -181,7 +181,7 @@ class PlayBottomSheetFragment @Inject constructor(
         observeVariantSheetContent()
         observeBottomInsetsState()
         observeBuyEvent()
-        observeEventUserInfo()
+        observeStatusInfo()
     }
 
     private fun openShopPage(partnerId: Long) {
@@ -375,7 +375,7 @@ class PlayBottomSheetFragment @Inject constructor(
         })
     }
 
-    private fun observeEventUserInfo() {
+    private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze || it.statusType.isBanned) {
                 viewModel.onFreezeBan()

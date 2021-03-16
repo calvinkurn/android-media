@@ -72,6 +72,8 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
             mAliVcLivePusher?.setAudioDenoise(true)
         } catch (e: Exception) {
             sendCrashlyticsLog(e)
+        } catch (e: Error) {
+            sendCrashlyticsLog(e)
         }
     }
 
