@@ -4,12 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
-import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
@@ -17,16 +13,13 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.lang.reflect.Type
 
 /**
  * @author by jessica on 26/03/20
@@ -45,7 +38,6 @@ class HotelSearchResultViewModelTest {
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
         hotelSearchResultViewModel = HotelSearchResultViewModel(dispatcher, searchPropertyUseCase, travelTickerCoroutineUseCase)
     }
 
@@ -77,8 +69,9 @@ class HotelSearchResultViewModelTest {
         //given
         val destinationId = 100.toLong()
         val type = HotelTypeEnum.CITY.value
-        val latitude = 0.0f
-        val longitude = 0.0f
+        val latitude = 0.0
+        val longitude = 0.0
+        val radius = 0.0
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
@@ -87,7 +80,7 @@ class HotelSearchResultViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-        , type, totalRoom, totalAdult, latitude, longitude, "", ""))
+                , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == destinationId)
@@ -105,8 +98,9 @@ class HotelSearchResultViewModelTest {
         //given
         val destinationId = 100.toLong()
         val type = HotelTypeEnum.DISTRICT.value
-        val latitude = 0.0f
-        val longitude = 0.0f
+        val latitude = 0.0
+        val longitude = 0.0
+        val radius = 0.0
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
@@ -115,7 +109,7 @@ class HotelSearchResultViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
+                , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -134,8 +128,9 @@ class HotelSearchResultViewModelTest {
         //given
         val destinationId = 100.toLong()
         val type = HotelTypeEnum.REGION.value
-        val latitude = 0.0f
-        val longitude = 0.0f
+        val latitude = 0.0
+        val longitude = 0.0
+        val radius = 0.0
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
@@ -144,7 +139,7 @@ class HotelSearchResultViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
+                , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -163,8 +158,9 @@ class HotelSearchResultViewModelTest {
     fun initSearchParam_typeCoordinate_shouldInitSearchParam() {
         //given
         val destinationId = 100.toLong()
-        val latitude = 3.0f
-        val longitude = 4.0f
+        val latitude = 3.0
+        val longitude = 4.0
+        val radius = 0.0
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
@@ -173,8 +169,8 @@ class HotelSearchResultViewModelTest {
         val searchType = HotelTypeEnum.COORDINATE.value
 
         //when
-        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , "", totalRoom, totalAdult, latitude, longitude, searchType, ""))
+        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName,
+                "", totalRoom, totalAdult, latitude, longitude, radius, searchType, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -338,8 +334,8 @@ class HotelSearchResultViewModelTest {
     @Test
     fun addFilterWithQuickFilter_shouldUpdateFilterV2() {
         //given
-        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
-                                                QuickFilter(name = "clean", values = listOf("clean")))
+        val quickFilters = listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+                QuickFilter(name = "clean", values = listOf("clean")))
         val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_SELECTED),
                 SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
 
@@ -355,7 +351,7 @@ class HotelSearchResultViewModelTest {
         val selectedFilter = listOf(ParamFilterV2(name = "hygiene verified", values = mutableListOf("hygiene verified")))
         hotelSearchResultViewModel.addFilter(selectedFilter)
 
-        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+        val quickFilters = listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
                 QuickFilter(name = "clean", values = listOf("clean")))
         val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_SELECTED),
                 SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
@@ -372,7 +368,7 @@ class HotelSearchResultViewModelTest {
         val selectedFilter = listOf(ParamFilterV2(name = "hygiene verified", values = mutableListOf("hygiene verified")))
         hotelSearchResultViewModel.addFilter(selectedFilter)
 
-        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+        val quickFilters = listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
                 QuickFilter(name = "clean", values = listOf("clean")))
         val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL),
                 SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
