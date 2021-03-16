@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_chatbot_6"
         android:text="@string/read_more"
         android:textColor="@color/read_more_color"
         android:textStyle="bold"

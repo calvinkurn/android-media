@@ -8,16 +8,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_chat_bubble"
-        android:layout_width="@dimen/dp_300"
+        android:layout_width="@dimen/chatbot_invoice_sent_width"
         android:layout_height="wrap_content"
-        android:minWidth="@dimen/dp_300">
+        android:minWidth="@dimen/chatbot_invoice_sent_width">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_invoice_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_44"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -27,20 +27,20 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_thumbnail"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_width="@dimen/dp_chatbot_50"
+            android:layout_height="@dimen/dp_chatbot_50"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:layout_constraintLeft_toLeftOf="@id/tv_invoice_date"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_date"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
             tools:srcCompat="@tools:sample/avatars[0]" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:maxLines="1"
             android:paddingStart="@dimen/spacing_lvl3"
@@ -56,9 +56,9 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_invoice_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_chatbot_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/unify_space_12"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="1"
             android:ellipsize="end"
@@ -75,7 +75,7 @@
             android:id="@+id/tv_invoice_desc"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/chatbot_black_color_opacity_lvl_35"
@@ -90,7 +90,7 @@
             android:id="@+id/tv_price_prefix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/unify_space_12"
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl3"

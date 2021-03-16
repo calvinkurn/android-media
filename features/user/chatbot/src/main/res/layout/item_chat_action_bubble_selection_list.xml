@@ -8,10 +8,10 @@
 
     <LinearLayout
         android:id="@+id/chat_action_bubble_selection_container"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent">

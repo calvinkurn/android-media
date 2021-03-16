@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_8"
-    android:paddingLeft="@dimen/dp_12"
-    android:paddingRight="@dimen/dp_12">
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:paddingLeft="@dimen/unify_space_12"
+    android:paddingRight="@dimen/unify_space_12">
 
     <FrameLayout
         android:id="@+id/fl_image_container"
-        android:layout_width="@dimen/dp_240"
-        android:layout_height="@dimen/dp_240"
+        android:layout_width="@dimen/dp_chatbot_240"
+        android:layout_height="@dimen/dp_chatbot_240"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         tools:ignore="RtlHardcoded">

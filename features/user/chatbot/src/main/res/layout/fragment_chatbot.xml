@@ -114,10 +114,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/chatbot_chat_background"
-                android:paddingLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_3"
-                android:layout_marginRight="@dimen/dp_3"
-                android:paddingTop="@dimen/dp_8"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/dp_chatbot_3"
+                android:layout_marginRight="@dimen/dp_chatbot_3"
+                android:paddingTop="@dimen/spacing_lvl3"
                 android:visibility="gone"
                 tools:visibility="visible"
                 tools:listitem="@layout/chatbot_item_quick_reply"
@@ -127,10 +127,10 @@
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/spacing_lvl3"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/spacing_lvl4"
                 android:background="@color/chatbot_chat_background">
 
                 <ImageView
@@ -168,7 +168,7 @@
                         android:hint="@string/cb_bot_reply_text"
                         android:inputType="textMultiLine"
                         android:maxLines="5"
-                        android:textSize="@dimen/sp_16"
+                        android:textSize="@dimen/fontSize_lvl4"
                         android:background="@null"
                         tools:text="@tools:sample/lorem/random" />
 

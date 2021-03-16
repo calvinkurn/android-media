@@ -11,7 +11,7 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:textColor="@color/grey_500"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -21,10 +21,10 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/senderAvatar"
-        android:layout_width="@dimen/dp_19"
-        android:layout_height="@dimen/dp_19"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_width="@dimen/dp_chatbot_19"
+        android:layout_height="@dimen/dp_chatbot_19"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:visibility="gone"
         tools:src="@drawable/chatbot_avatar"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="heading_6"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/senderAvatar"
@@ -51,9 +51,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/dp_chatbot_6"
         android:gravity="left"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,18 +65,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_lvl4"
-            android:paddingTop="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_chatbot_10"
             android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_chatbot_10"
             app:showCheckMark="false" />
 
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/chat_csat_option_list_container"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginTop="@dimen/dp_chatbot_3"
         app:layout_constraintLeft_toLeftOf="@id/custom_chat_layout_container"
         app:layout_constraintRight_toRightOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/custom_chat_layout_container">

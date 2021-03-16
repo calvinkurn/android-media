@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_3"
-    android:layout_marginBottom="@dimen/dp_3"
-    android:layout_marginLeft="@dimen/dp_11"
-    android:layout_marginRight="@dimen/dp_11"
+    android:layout_marginTop="@dimen/dp_chatbot_3"
+    android:layout_marginBottom="@dimen/dp_chatbot_3"
+    android:layout_marginLeft="@dimen/dp_chatbot_11"
+    android:layout_marginRight="@dimen/dp_chatbot_11"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,9 +31,9 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_thumbnail"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_width="@dimen/dp_chatbot_50"
+            android:layout_height="@dimen/dp_chatbot_50"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/unify_space_12"
             app:layout_constraintLeft_toLeftOf="@id/tv_invoice_date"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_date"
@@ -75,7 +75,7 @@
             android:id="@+id/tv_invoice_desc"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/chatbot_black_color_opacity_lvl_35"
@@ -88,7 +88,7 @@
             android:id="@+id/tv_price_prefix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/unify_space_12"
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl3"
