@@ -4,9 +4,9 @@
 
     <gradient
         android:angle="135"
-        android:centerColor="#00eeeeee"
+        android:centerColor="@color/topchat_dms_image_upload_overlay"
         android:centerX="30%"
-        android:endColor="#00eeeeee"
+        android:endColor="@color/topchat_dms_image_upload_overlay"
         android:startColor="#50000000"
         android:type="linear" />
 

@@ -34,5 +34,6 @@
     <color name="topchat_invoice_price">#F531353B</color>
 
     <color name="topchat_transparent">#00000000</color>
+    <color name="topchat_dms_image_upload_overlay">#00eeeeee</color>
 
 </resources>
