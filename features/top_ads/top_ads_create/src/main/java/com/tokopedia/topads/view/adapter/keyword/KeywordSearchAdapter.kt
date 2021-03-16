@@ -65,28 +65,27 @@ class KeywordSearchAdapter(private val onChecked: (() -> Unit)) : RecyclerView.A
                 onChecked.invoke()
             }
         }
-        if ((items[holder.adapterPosition].competition ?: "").isEmpty()) {
-            holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
-            holder.view.keywordCompetition.visibility = View.INVISIBLE
-
-        } else {
-            when (items[holder.adapterPosition].competition) {
-                KeywordItemViewHolder.LOW -> {
-                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
-                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
-                }
-
-                KeywordItemViewHolder.MEDIUM -> {
-                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
-                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
-                }
-
-                KeywordItemViewHolder.HIGH -> {
-                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
-                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
-                }
-
+        when (items[holder.adapterPosition].competition) {
+            KeywordItemViewHolder.LOW -> {
+                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
+                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
             }
+
+            KeywordItemViewHolder.MEDIUM -> {
+                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
+                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+            }
+
+            KeywordItemViewHolder.HIGH -> {
+                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
+                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
+            }
+
+            items[holder.adapterPosition].competition ?: "".isBlank() -> {
+                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
+                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
+            }
+
         }
     }
 

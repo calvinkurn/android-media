@@ -5,6 +5,9 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
@@ -41,6 +44,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     var onSaved: ((bid: String, type: Int, pos: Int) -> Unit)? = null
     var onDelete: ((pos: Int) -> Unit)? = null
     private var shopID = ""
+    private var typeSheet = ""
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -128,8 +132,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         name = arguments?.getString(KEYWORD_NAME) ?: ""
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
-
-
+        typeSheet = arguments?.getString("type")?:""
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
@@ -140,6 +143,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
+        prepareViewForCreate()
 
         setCloseClickListener {
             dismiss()
@@ -190,6 +194,20 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         desc_2?.setOnClickListener {
             title_2.isChecked = true
         }
+    }
+
+    private fun prepareViewForCreate() {
+        if(typeSheet.isNotEmpty()){
+            divider?.gone()
+            txtTypeKey?.gone()
+            radio_group?.gone()
+            divider1?.gone()
+            btnDeleteKeyword?.gone()
+            btnSave?.text = getString(R.string.lanjutkan)
+            activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+            btnSave?.setMargin(16,24,16,16)
+        }
+
     }
 
     companion object {

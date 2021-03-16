@@ -3,29 +3,22 @@ package com.tokopedia.topads.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
@@ -81,7 +74,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
         shopID = UserSession(this).shopId
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         initInjector()
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
         adapter = KeywordSearchAdapter(::onCheckedItem)
         setContentView(R.layout.topads_create_keyword_search_layout)
         setSearchBar()
@@ -148,7 +141,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
     }
 
     private fun fetchData() {
-        manualAd.visibility = View.GONE
+        manualAd?.gone()
+        manualAdTxt?.gone()
         if (search.searchBarTextField.text.toString().isNotEmpty()) {
             adapter.items.clear()
             txtError.text = Utils.validateKeywordCountAndChars(this, search.searchBarTextField.text.toString().trim())
@@ -170,8 +164,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
                 .show()
     }
 
-
     private fun onSuccessSearch(data: List<SearchData>) {
+        loader?.gone()
         val listKeywords: MutableList<String> = mutableListOf()
         if (manualKeywords.isNotEmpty())
             adapter.items.addAll(manualKeywords)
@@ -188,43 +182,26 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
 
     private fun checkIfNeedsManualAddition(listKeywords: MutableList<String>) {
         if (listKeywords.find { key -> search.searchBarTextField.text.toString() == key } == null) {
-            manualAd.visibility = View.VISIBLE
-            dividerManual.visibility = View.VISIBLE
-            manualAd.text = Html.fromHtml(String.format(getString(R.string.topads_common_new_manual_key), search.searchBarTextField.text.toString()))
-            setSpannable(getString(R.string.topads_common_tambah_button), rootView)
-        }
-    }
-
-    private fun setSpannable(moreInfo: String, view: View) {
-        val desc = view.findViewById<TextView>(R.id.manualAd)
-        val spannableText = SpannableString(moreInfo)
-        val startIndex = 0
-        val endIndex = spannableText.length
-        spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(view: View) {
+            manualAd?.visible()
+            manualAdTxt?.visible()
+            dividerManual?.visible()
+            manualAdTxt.text = MethodChecker.fromHtml(String.format(getString(R.string.topads_common_new_manual_key), search.searchBarTextField.text.toString()))
+            manualAd?.setOnClickListener {
                 addManualKeyword()
                 search.searchBarTextField.text.clear()
             }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(baseContext, com.tokopedia.unifyprinciples.R.color.Green_G500)
-            }
         }
-        spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        desc.movementMethod = LinkMovementMethod.getInstance()
-        desc.append(spannableText)
     }
 
     private fun addManualKeyword() {
         if (adapter.getSelectedItem().find { it.keyword == search.searchBarTextField.text.toString() } != null) {
             makeToast()
         } else {
-            headlineList.visibility = View.VISIBLE
-            manualAd.visibility = View.GONE
-            dividerManual.visibility = View.GONE
+            loader?.gone()
+            headlineList.visible()
+            manualAd.gone()
+            manualAdTxt?.gone()
+            dividerManual?.gone()
             val item = SearchData()
             item.keyword = search.searchBarTextField.text.toString()
             item.onChecked = true
@@ -233,14 +210,20 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
             adapter.items.add(0, item)
             adapter.notifyItemInserted(0)
             onSelectedItem()
-
         }
+        setEmpty(false)
     }
 
     private fun setEmpty(setEmpty: Boolean) {
         if (setEmpty) {
+            emptyImage?.visible()
+            title_empty?.visible()
+            desc_empty?.visible()
             headlineList.visibility = View.GONE
         } else {
+            emptyImage?.gone()
+            title_empty?.gone()
+            desc_empty?.gone()
             tip_btn.visibility = View.VISIBLE
             headlineList.visibility = View.VISIBLE
             emptyLayout.visibility = View.GONE

@@ -19,6 +19,7 @@ class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: I
         const val LOW = "low"
         const val HIGH = "high"
         const val MEDIUM = "mid"
+        const val UNKNOWN = "baru"
     }
 
     init {

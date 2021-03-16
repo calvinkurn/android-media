@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -19,17 +19,16 @@ import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
-import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.KeywordSearchActivity
-import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordSelectedAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
+import com.tokopedia.topads.view.sheet.KeyTipsSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -53,8 +52,7 @@ private const val CLICK_ON_SEARCH = "click - tambah kata kunci manual"
 private const val EVENT_CLICK_ON_SEARCH = "kata kunci yang ditambahkan manual"
 
 
-class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
-
+class KeywordAdsListFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: KeywordAdsViewModel
@@ -66,6 +64,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private var shopID = ""
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
+    private var stepModel: CreateManualAdsStepperModel? = null
 
     companion object {
 
@@ -74,11 +73,9 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         const val SEARCH_QUERY = "search"
         const val SELECTED_KEYWORDS = "selected_key"
         const val REQUEST_CODE_SEARCH = 47
-        fun createInstance(): Fragment {
-
+        fun createInstance(extras: Bundle?): Fragment {
             val fragment = KeywordAdsListFragment()
-            val args = Bundle()
-            fragment.arguments = args
+            fragment.arguments = extras
             return fragment
         }
     }
@@ -86,9 +83,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            viewModel = ViewModelProviders.of(it, viewModelFactory).get(KeywordAdsViewModel::class.java)
+            viewModel = ViewModelProvider(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         }
+        stepModel = arguments?.getParcelable("model")
         keywordListAdapter = KeywordListAdapter(KeywordListAdapterTypeFactoryImpl(this::onKeywordSelected))
         keywordSelectedAdapter = KeywordSelectedAdapter(::onItemUnchecked)
 
@@ -136,11 +134,11 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        STAGE = stepperModel?.STAGE ?: 0
+        STAGE = stepModel?.STAGE ?: 0
         if (STAGE == 0) {
             keywordSelectedAdapter.items.clear()
         }
-        val list: MutableList<String>? = stepperModel?.selectedProductIds
+        val list: MutableList<String>? = stepModel?.selectedProductIds
         val productId = list?.joinToString(",")
         keywordListAdapter.items.clear()
         viewModel.getSuggestionKeyword(productId
@@ -152,7 +150,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         setStepLayout(View.VISIBLE)
         setBtnText()
         keywordSelectedAdapter.items.clear()
-        stepperModel?.selectedKeywordStage?.asIterable()?.let { keywordSelectedAdapter.items.addAll(it) }
+        stepModel?.selectedKeywordStage?.asIterable()?.let { keywordSelectedAdapter.items.addAll(it) }
         keywordSelectedAdapter.notifyDataSetChanged()
         removeFromRecommended()
     }
@@ -171,7 +169,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         val iterator = keywordListAdapter.items.iterator()
         while (iterator.hasNext()) {
             val key = iterator.next()
-            if (stepperModel?.selectedKeywordStage?.find { item ->
+            if (stepModel?.selectedKeywordStage?.find { item ->
                         (key as KeywordItemViewModel).data.keyword == item.keyword
                     } != null) {
                 iterator.remove()
@@ -196,7 +194,6 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 sortListSelected()
             }
             showSelectMessage()
-
         }
     }
 
@@ -219,19 +216,22 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         tip_btn.visibility = View.VISIBLE
         headlineList.visibility = View.VISIBLE
-        keywordListAdapter.notifyDataSetChanged()
-        if (stepperModel?.STAGE == 1) {
+        if (stepModel?.STAGE == 1) {
             restorePrevState()
         }
+        keywordListAdapter.notifyDataSetChanged()
         showSelectMessage()
+        if (stepModel?.STAGE == 1) {
+            restorePrevState()
+        }
     }
 
     private fun onEmptySuggestion() {
         startLoading(false)
         STAGE = 1
         setBtnText()
-        if (stepperModel?.STAGE == 1) {
-            if (stepperModel?.selectedKeywordStage?.isNotEmpty() != false)
+        if (stepModel?.STAGE == 1) {
+            if (stepModel?.selectedKeywordStage?.isNotEmpty() != false)
                 restorePrevState()
         }
         if (keywordSelectedAdapter.items.isEmpty() && selectedKeyFromSearch?.isEmpty() != false) {
@@ -253,42 +253,15 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
     }
 
-    override fun initiateStepperModel() {
-        stepperModel = stepperModel ?: CreateManualAdsStepperModel()
-    }
-
-    override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
-
-    override fun gotoNextPage() {
-        stepperModel?.selectedKeywords = getSelectedKeyword()
-        stepperModel?.selectedSuggestBid = getSelectedBid()
-        stepperModel?.STAGE = 1
-        stepperModel?.selectedKeywordStage = keywordSelectedAdapter.items
+    private fun gotoNextPage() {
+        stepModel?.STAGE = 1
+        stepModel?.selectedKeywordStage = keywordSelectedAdapter.items
         val eventLabel = "$shopID - $EVENT_CLICK_LAJUKTAN"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, eventLabel, userID)
-        stepperListener?.goToNextPage(stepperModel)
-
-    }
-
-    private fun getSelectedKeyword(): MutableList<String> {
-        val list = mutableListOf<String>()
-        keywordSelectedAdapter.items.forEach {
-            list.add(it.keyword)
-        }
-        return list
-    }
-
-    private fun getSelectedBid(): MutableList<String> {
-        val list = mutableListOf<String>()
-        keywordSelectedAdapter.items.forEach {
-            list.add(it.bidSuggest)
-        }
-        return list
-    }
-
-    override fun populateView() {
-        if (activity is StepperActivity)
-            (activity as StepperActivity).updateToolbarTitle(getString(R.string.topads_common_keyword_list_step))
+        val intent = Intent()
+        intent.putExtra("model", stepModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun getScreenName(): String {
@@ -330,7 +303,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         tip_btn?.addItem(tooltipView)
 
         tip_btn.setOnClickListener {
-            TipSheetKeywordList().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
+            KeyTipsSheet().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, shopID, userID)
         }
         setAdapters()
@@ -398,7 +371,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun getProductIds(): String {
         val ids: MutableList<String> = mutableListOf()
-        stepperModel?.selectedProductIds?.forEach {
+        stepModel?.selectedProductIds?.forEach {
             ids.add(it)
         }
         return ids.joinToString(",")

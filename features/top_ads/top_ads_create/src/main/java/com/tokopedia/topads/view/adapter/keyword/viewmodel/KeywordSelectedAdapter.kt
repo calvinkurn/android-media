@@ -30,7 +30,6 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
         return items.count()
     }
 
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.view.keyword_name.text = items[holder.adapterPosition].keyword
@@ -54,11 +53,6 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
             }
 
         }
-        if (items[holder.adapterPosition].competition.isEmpty()) {
-            holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
-            holder.view.keywordCompetition.visibility = View.INVISIBLE
-
-        } else {
             holder.view.keywordCompetition.visibility = View.VISIBLE
             when (items[holder.adapterPosition].competition) {
                 KeywordItemViewHolder.LOW -> {
@@ -75,9 +69,11 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
                     holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
                     holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
                 }
+                "" -> {
+                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
+                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
+                }
 
             }
         }
-    }
-
 }

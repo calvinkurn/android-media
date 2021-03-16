@@ -13,7 +13,6 @@ import dagger.Component
 @Component(modules = [CreateAdsModule::class, ViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface CreateAdsComponent {
 
-    fun inject(createGroupAdsFragment: CreateGroupAdsFragment)
     fun inject(productAdsListFragment: ProductAdsListFragment)
     fun inject(keywordAdsListFragment: KeywordAdsListFragment)
     fun inject(budgetingAdsFragment: BudgetingAdsFragment)
