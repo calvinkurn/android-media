@@ -298,6 +298,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_SUCCESS)
                     val data = it.data
                     context?.let {
                         context ->
@@ -316,6 +317,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
 
                 is Fail -> {
+                    ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_NOT_SUCCESS)
                     view?.let { view ->
                         Toaster.build(view, it.throwable.message
                                 ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
@@ -563,6 +565,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val EMPTY_SEARCH_PICT_URL = "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
+        private const val IS_SUCCESS = "success"
+        private const val IS_NOT_SUCCESS = "not success"
 
         fun newInstance(bundle: Bundle): ManageAddressFragment {
             return ManageAddressFragment().apply {
@@ -579,7 +583,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun setChosenAddress() {
         if (isLocalization == true) {
-            ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId)
             val resultIntent = Intent().apply {
                 putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
             }
