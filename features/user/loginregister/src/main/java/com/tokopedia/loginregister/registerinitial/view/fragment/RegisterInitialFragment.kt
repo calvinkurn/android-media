@@ -914,27 +914,21 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
-            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
                 userSession.clearToken()
             } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
-            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION
-                    && resultCode == Activity.RESULT_OK
-                    && data != null) {
+            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let { validateToken ->
                     registerInitialViewModel.reloginAfterSQ(validateToken)
                 }
-
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
@@ -943,22 +937,17 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && data.extras != null) {
                 val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 goToAddName(uuid)
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == REQUEST_ADD_PIN) {
                 registerInitialViewModel.getUserInfoAfterAddPin()
-            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
-                    && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.extras != null) {
+            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH && resultCode == Activity.RESULT_OK && data != null && data.extras != null) {
                 val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToChooseAccountPage(accessToken, phoneNumber)
-
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
                 if (data != null) {
@@ -980,9 +969,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
                 it.finish()
-            } else if (requestCode == REQUEST_OTP_VALIDATE
-                    && resultCode == Activity.RESULT_OK
-                    && data != null) {
+            } else if (requestCode == REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
@@ -994,9 +981,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE
-                    && resultCode == Activity.RESULT_OK
-                    && data != null) {
+            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
@@ -1038,10 +1023,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
+    // rename function - ambiguity name
     private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA)
-                ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
         if (enable2FA) {
             activityShouldEnd = false
             sendTrackingSuccessRegister()
@@ -1063,7 +1048,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun goToAddName(uuid: String) {
         if (activity != null) {
-            val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER
+            val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
             val intent = RouteManager.getIntent(getContext(), applink)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
