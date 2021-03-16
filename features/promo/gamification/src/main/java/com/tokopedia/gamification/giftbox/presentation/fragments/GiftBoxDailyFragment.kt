@@ -469,7 +469,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
         pdpGamificationView.errorListener = object : PdpErrorListener {
             override fun onError() {
-//                setupBottomSheet(false)
+                setupBottomSheet(false)
             }
 
         }

@@ -16,6 +16,7 @@
         ],
         "benefits": [
           {
+            "displayType": "catalog",
             "text": "1 Kupon Cashback",
             "color": "#ffffff",
             "size": "small",
@@ -28,6 +29,7 @@
             "isBigPrize": false
           },
           {
+            "displayType": "card",
             "text": "1000000 TokoPoints",
             "color": "#ffffff",
             "size": "small",
@@ -40,6 +42,7 @@
             "isBigPrize": false
           },
           {
+            "displayType": "card",
             "text": "1000 OVO Points",
             "color": "#ffffff",
             "size": "small",
