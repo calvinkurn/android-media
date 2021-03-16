@@ -58,7 +58,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
     private lateinit var viewModel: TroubleshootViewModel
 
-    private val binding: FragmentNotifTroubleshooterBinding? by viewBinding(
+    private val binding: FragmentNotifTroubleshooterBinding by viewBinding(
             createMethod = CreateMethod.INFLATE
     )
 
@@ -101,8 +101,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun initView() {
-        binding?.lstConfig?.layoutManager = LinearLayoutManager(context)
-        binding?.lstConfig?.adapter = adapter
+        binding.lstConfig.layoutManager = LinearLayoutManager(context)
+        binding.lstConfig.adapter = adapter
         adapter.status(StatusState.Loading)
         adapter.addElement(ConfigUIView.items())
         adapter.footerMessage(false)
@@ -276,9 +276,9 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
-        binding?.txtToken?.show()
+        binding.txtToken.show()
 
-        binding?.txtToken?.text = when {
+        binding.txtToken.text = when {
             newToken.isEmpty() -> {
                 getString(R.string.notif_error_update_token)
             }

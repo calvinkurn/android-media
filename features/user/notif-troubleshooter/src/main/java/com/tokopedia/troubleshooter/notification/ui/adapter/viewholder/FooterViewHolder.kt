@@ -21,7 +21,7 @@ class FooterViewHolder(
         view: View
 ): AbstractViewHolder<FooterUIView>(view) {
 
-    private val binding: ItemFooterMessageBinding? by viewBinding()
+    private val binding: ItemFooterMessageBinding by viewBinding()
     private val context by lazy { itemView.context }
 
     override fun bind(element: FooterUIView?) {
@@ -29,10 +29,10 @@ class FooterViewHolder(
         helpCareLabel()
         footerVisibilityType(element.isDndMode)
 
-        binding?.btnAction?.setOnClickListener { onActionClicked(element.isDndMode) }
-        binding?.txtTitle?.setOnClickListener { listener.onInfoClicked() }
+        binding.btnAction.setOnClickListener { onActionClicked(element.isDndMode) }
+        binding.txtTitle.setOnClickListener { listener.onInfoClicked() }
 
-        binding?.txtTitle?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+        binding.txtTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 EMPTY_DRAWABLE,
                 EMPTY_DRAWABLE,
                 R.drawable.ic_ts_notif_info,
@@ -42,13 +42,13 @@ class FooterViewHolder(
 
     private fun footerVisibilityType(isDndMode: Boolean) {
         if (isDndMode) {
-            binding?.txtStatus?.show()
-            binding?.btnAction?.text = context?.getString(R.string.btn_notif_turnoff_dnd)
-            binding?.txtMessage?.text = context?.getString(R.string.notif_footer_dnd_message)
+            binding.txtStatus.show()
+            binding.btnAction.text = context.getString(R.string.btn_notif_turnoff_dnd)
+            binding.txtMessage.text = context.getString(R.string.notif_footer_dnd_message)
         } else {
-            binding?.txtStatus?.hide()
-            binding?.btnAction?.text = context?.getString(R.string.btn_notif_clear_cache)
-            binding?.txtMessage?.text = context?.getString(R.string.notif_footer_message)
+            binding.txtStatus.hide()
+            binding.btnAction.text = context.getString(R.string.btn_notif_clear_cache)
+            binding.txtMessage.text = context.getString(R.string.notif_footer_message)
         }
     }
 
@@ -56,9 +56,9 @@ class FooterViewHolder(
         val visitCareText = context.getString(R.string.notif_footer_visit_care)
         val unifyGreenColor = ContextCompat.getColor(context, Unify_G500)
 
-        binding?.txtHelpCare?.setCustomSpan(visitCareText, unifyGreenColor)
+        binding.txtHelpCare.setCustomSpan(visitCareText, unifyGreenColor)
 
-        binding?.txtHelpCare?.setOnClickListener {
+        binding.txtHelpCare.setOnClickListener {
             context.startActivity(RouteManager.getIntent(context, URL_TOKOPEDIA_CARE))
         }
     }
