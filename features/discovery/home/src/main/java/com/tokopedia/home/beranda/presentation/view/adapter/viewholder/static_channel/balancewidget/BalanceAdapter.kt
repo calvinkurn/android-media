@@ -86,7 +86,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                     itemView.home_container_action_balance.show()
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
-                    itemView.home_container_action_balance.handleItemCLickType(
+                    itemView.home_container_balance.handleItemCLickType(
                             element = element,
                             tokopointsAction = {
                                 //handle click for type tokopoints
