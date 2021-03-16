@@ -770,20 +770,21 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun initTickerReviewProduct() {
-        // TODO vindo : please set the correct way
         prefs?.let {
-            if (!it.getBoolean(ReviewConstants.HAS_TICKER_INBOX_REVIEW, false)) {
+            if (!it.getBoolean(ReviewConstants.HAS_TICKER_REVIEW_REMINDER, false)) {
                 tickerInboxReview?.apply {
-                    show()
+                    setHtmlDescription(getString(R.string.review_reminder_ticker_description))
                     setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REMINDER)
+                        }
 
                         override fun onDismiss() {
-                            RouteManager.route(context,ApplinkConstInternalMarketplace.REVIEW_SELLER_REMINDER)
-//                            hide()
-//                            it.edit().putBoolean(ReviewConstants.HAS_TICKER_INBOX_REVIEW, true).apply()
+                            hide()
+                            it.edit().putBoolean(ReviewConstants.HAS_TICKER_REVIEW_REMINDER, true).apply()
                         }
                     })
+                    show()
                 }
             } else {
                 tickerInboxReview.hide()
