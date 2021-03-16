@@ -5,13 +5,17 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.profilecompletion.addname.fragment.AddNameRegisterPhoneCleanViewFragment
 import com.tokopedia.profilecompletion.addname.fragment.AddNameRegisterPhoneFragment
 
 /**
  * @author by nisie on 22/04/19.
- * For navigate: use {@link ApplinkConstInternalGlobal.ADD_NAME_REGISTER}
- * Please add Param  {@link ApplinkConstInternalGlobal.PARAM_PHONE} and
- *  {@link ApplinkConstInternalGlobal.PARAM_UUID}
+ * For navigate
+ * default      : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER]
+ * clean view   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW]
+ * Please add Param
+ * {@link ApplinkConstInternalGlobal.PARAM_PHONE}
+ * {@link ApplinkConstInternalGlobal.PARAM_UUID}
  */
 class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
 
@@ -20,7 +24,7 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return AddNameRegisterPhoneFragment.createInstance(bundle)
+        return checkUri(bundle)
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -28,4 +32,16 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
         SplitCompat.installActivity(this)
     }
 
+    private fun checkUri(bundle: Bundle): Fragment {
+        val uri = intent?.data
+        return if (uri?.lastPathSegment?.contains(PATH_CLEAN_VIEW) == true) {
+            AddNameRegisterPhoneCleanViewFragment.createInstance(bundle)
+        } else {
+            AddNameRegisterPhoneFragment.createInstance(bundle)
+        }
+    }
+
+    companion object {
+        private const val PATH_CLEAN_VIEW = "clean-view"
+    }
 }

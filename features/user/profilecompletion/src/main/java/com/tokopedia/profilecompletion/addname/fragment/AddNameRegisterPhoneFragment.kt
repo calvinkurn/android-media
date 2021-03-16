@@ -43,10 +43,10 @@ import javax.inject.Inject
 /**
  * @author by nisie on 22/04/19.
  */
-class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View {
+open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View {
 
-    private var phoneNumber: String? = ""
-    private var uuid: String? = ""
+    var phoneNumber: String? = ""
+    var uuid: String? = ""
 
     lateinit var bottomInfo: TextView
     lateinit var progressBar: ProgressBar
@@ -79,8 +79,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun initInjector() {
-        if (activity != null
-                && activity?.application != null) {
+        if (activity != null && activity?.application != null) {
             DaggerAddNameComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
                     .build()
@@ -90,10 +89,8 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        phoneNumber =  getParamString(ApplinkConstInternalGlobal.PARAM_PHONE, arguments,
-                savedInstanceState, "")
-        uuid =  getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments,
-                savedInstanceState, "")
+        phoneNumber =  getParamString(ApplinkConstInternalGlobal.PARAM_PHONE, arguments, savedInstanceState, "")
+        uuid =  getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
 
     }
 
