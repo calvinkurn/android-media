@@ -11,23 +11,19 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.databinding.FragmentDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
@@ -40,6 +36,7 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
@@ -47,19 +44,15 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
 PopularCityAdapter.ActionListener {
 
     private var mToken: Token? = null
-    private var swipeRefreshLayout: SwipeToRefresh? = null
-    private var tvMessage: TextView? = null
     private var analytics: ActionListener? = null
-    private var llDiscomPopularCity: LinearLayout? = null
-    private var rvChipsPopularCity: RecyclerView? = null
     private var popularCityAdapter: PopularCityAdapter? = null
-    private var rlCurrLocation: RelativeLayout? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
-    private var dividerCurrLocation: View? = null
     private var isLocalization: Boolean? = null
     private val REQUEST_LOCATION: Int = 288
     private var hasRequestedLocation: Boolean = false
+
+    private var binding by autoCleared<FragmentDistrictRecommendationBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -92,17 +85,12 @@ PopularCityAdapter.ActionListener {
         }
 
         if (isLocalization == true) permissionCheckerHelper = PermissionCheckerHelper()
+        binding.searchInputView.visibility = View.VISIBLE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_district_recommendation, container, false)
-        tvMessage = view.findViewById(R.id.tv_message)
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        llDiscomPopularCity = view.findViewById(R.id.ll_discom_popular_city)
-        rvChipsPopularCity = view.findViewById(R.id.rv_discom_chips_popular_city)
-        rlCurrLocation = view.findViewById(R.id.rl_discom_current_location)
-        dividerCurrLocation = view.findViewById(R.id.discom_current_location_divider)
-        return view
+        binding = FragmentDistrictRecommendationBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,18 +102,18 @@ PopularCityAdapter.ActionListener {
             searchInputView.searchText = ""
             analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
-        swipeRefreshLayout!!.isEnabled = false
+        binding.swipeRefreshLayout.isEnabled = false
 
         if (isLocalization == true) {
-            rlCurrLocation?.apply {
+            binding.rlDiscomCurrentLocation.apply {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     ChooseAddressTracking.onClickGunakanLokasiIni(userSession.userId)
                     requestPermissionLocation()
                 }
             }
-            dividerCurrLocation?.visibility = View.VISIBLE
-            llDiscomPopularCity?.visibility = View.VISIBLE
+            binding.discomCurrentLocationDivider.visibility = View.VISIBLE
+            binding.llDiscomPopularCity.visibility = View.VISIBLE
             fusedLocationClient = FusedLocationProviderClient(requireActivity())
             searchInputView.setOnClickListener {
                 ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
@@ -136,20 +124,20 @@ PopularCityAdapter.ActionListener {
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
-            rvChipsPopularCity?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
+            binding.rvDiscomChipsPopularCity.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
             popularCityAdapter = PopularCityAdapter(context, this)
             popularCityAdapter?.cityList = cityList.toMutableList()
 
-            rvChipsPopularCity?.apply {
+            binding.rvDiscomChipsPopularCity.apply {
                 val dist = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
                 layoutManager = chipsLayoutManager
                 adapter = popularCityAdapter
                 dist?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             }
         } else {
-            rlCurrLocation?.visibility = View.GONE
-            dividerCurrLocation?.visibility = View.GONE
-            llDiscomPopularCity?.visibility = View.GONE
+            binding.rlDiscomCurrentLocation.visibility = View.GONE
+            binding.discomCurrentLocationDivider.visibility = View.GONE
+            binding.llDiscomPopularCity.visibility = View.GONE
         }
     }
 
@@ -232,7 +220,7 @@ PopularCityAdapter.ActionListener {
         super.renderList(list, hasNextPage)
 
         setSwipeRefreshSection(true)
-        llDiscomPopularCity?.visibility = View.GONE
+        binding.llDiscomPopularCity.visibility = View.GONE
 
         if (currentPage == defaultInitialPage && hasNextPage) {
             val page = currentPage + defaultInitialPage
@@ -248,7 +236,7 @@ PopularCityAdapter.ActionListener {
     }
 
     override fun showEmpty() {
-        tvMessage!!.text = getString(R.string.message_search_address_no_result)
+        binding.tvMessage.text = getString(R.string.message_search_address_no_result)
         setSwipeRefreshSection(false)
     }
 
@@ -257,16 +245,16 @@ PopularCityAdapter.ActionListener {
         setSwipeRefreshSection(false)
 
         if (isLocalization == true) {
-            llDiscomPopularCity?.visibility = View.VISIBLE
+            binding.llDiscomPopularCity.visibility = View.VISIBLE
         }
     }
 
     private fun setMessageSection(active: Boolean) {
-        tvMessage?.visibility = if (active) View.VISIBLE else View.GONE
+        binding.tvMessage.visibility = if (active) View.VISIBLE else View.GONE
     }
 
     private fun setSwipeRefreshSection(active: Boolean) {
-        swipeRefreshLayout?.visibility = if (active) View.VISIBLE else View.GONE
+        binding.swipeRefreshLayout.visibility = if (active) View.VISIBLE else View.GONE
     }
 
     fun requestPermissionLocation() {

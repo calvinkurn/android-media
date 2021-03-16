@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -331,6 +332,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
+                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    setSocialProofData()
                 }
             }
 
@@ -353,6 +356,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateNotifyMeAndContent(productId, it.upcomingCampaigns, it.validateTradeIn.isEligible, boeImageUrl)
             updateDataTradein(context, it.validateTradeIn)
+            updateData(ProductDetailConstant.REVIEW) {
+                productReviewMap?.run {
+                    listOfReviews = it.helpfulReviews
+                    imageReviews = it.imageReviews?.imageReviewItems
+                }
+            }
+
+            updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW) {
+                productReviewOldMap?.run {
+                    listOfReviews = it.helpfulReviews
+                    imageReviews = it.imageReviews?.imageReviewItems
+                }
+            }
         }
     }
 
@@ -442,20 +458,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateDataP2General(data: ProductInfoP2Other?) {
         data?.let {
-            updateData(ProductDetailConstant.REVIEW) {
-                productReviewMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews
-                }
-            }
-
-            updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW) {
-                productReviewOldMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews
-                }
-            }
-
             updateData(ProductDetailConstant.DISCUSSION_FAQ) {
                 productDiscussionMostHelpfulMap?.run {
                     if (it.discussionMostHelpful == null) {
@@ -590,7 +592,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage) {
+    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage, userLocationLocalData: LocalCacheModel) {
         //pair.first boType, pair.second boImage
         updateData(ProductDetailConstant.SHIPMENT) {
             shipmentData?.rates = data ?: P2RatesEstimateData()
@@ -600,6 +602,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirType = freeOngkirData.boType
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
+            shipmentData?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
         }
     }
 
@@ -619,7 +622,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (!loadInitialData) {
             val data = mapOfData[key]
             data?.let {
-                mapOfData[key] = it.newInstance()
+                val newInstance = it.newInstance()
+                if (it.impressHolder.isInvoke) {
+                    newInstance.impressHolder.invoke()
+                }
+                mapOfData[key] = newInstance
             }
         }
         updateAction.invoke()

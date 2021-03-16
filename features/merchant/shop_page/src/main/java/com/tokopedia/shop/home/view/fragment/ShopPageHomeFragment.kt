@@ -58,8 +58,7 @@ import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -94,7 +93,6 @@ import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.adapter.ShopPageHomeStaggeredGridLayoutManager
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
@@ -109,6 +107,7 @@ import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHead
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -151,7 +150,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         private const val REQUEST_CODE_ETALASE = 206
         private const val REQUEST_CODE_SORT = 301
-        private const val REQUEST_CODE_PLAY_ROOM = 256
+        private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 256
         private const val REQUEST_CODE_USER_LOGIN = 101
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
@@ -268,7 +267,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
-        staggeredGridLayoutManager = ShopPageHomeStaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager = StaggeredGridLayoutManagerWrapper(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         setupPlayWidgetAnalyticListener()
     }
 
@@ -573,7 +572,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
 
         observePlayWidget()
-        observePlayWidgetToggleReminder()
+        observePlayWidgetReminderEvent()
+        observePlayWidgetReminder()
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -697,12 +697,26 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             dataModelAtc: DataModel,
             shopHomeProductViewModel: ShopHomeProductUiModel?,
             parentPosition: Int,
-            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            isPersonalizationWidget: Boolean = false,
+            isOcc: Boolean = false
     ) {
-        view?.let { view ->
-            NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
+
+        if(isPersonalizationWidget) {
+            trackClickAddToCartPersonalization(dataModelAtc, shopHomeProductViewModel, shopHomeCarousellProductUiModel)
+        } else {
+            trackClickAddToCart(dataModelAtc, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
         }
-        trackClickAddToCart(dataModelAtc, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
+
+        if (isOcc) {
+            context?.let {
+                RouteManager.route(it, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        } else {
+            view?.let { view ->
+                NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
+            }
+        }
     }
 
     private fun trackClickAddToCart(
@@ -726,6 +740,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
+                customDimensionShopPage
+        )
+    }
+
+    private fun trackClickAddToCartPersonalization(
+            dataModelAtc: DataModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+    ) {
+        shopPageHomeTracking.addToCartPersonalizationProduct(
+                isOwner,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                dataModelAtc?.quantity ?: 1,
+                shopName,
+                viewModel?.userId.orEmpty(),
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                shopHomeCarousellProductUiModel?.name ?: "",
                 customDimensionShopPage
         )
     }
@@ -887,6 +920,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK)
                     (parentFragment as? InterfaceShopPageHeader)?.refreshData()
+            }
+            REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
+                val lastEvent = viewModel?.playWidgetReminderEvent?.value
+                if (lastEvent != null) viewModel?.shouldUpdatePlayWidgetToggleReminder(lastEvent.first, lastEvent.second)
             }
             else -> {
             }
@@ -1054,6 +1091,94 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         isWishlisted = shopHomeProductViewModel.isWishList,
                         productId = shopHomeProductViewModel.id ?: ""
                 )
+        )
+    }
+
+    override fun onPersonalizationCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
+        shopHomeProductViewModel?.let {
+            shopPageHomeTracking.clickProductPersonalization(
+                    isOwner,
+                    isLogin,
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopHomeProductViewModel.recommendationType ?: "",
+                    shopName,
+                    viewModel?.userId.orEmpty(),
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    shopHomeCarousellProductUiModel?.name ?: "",
+                    customDimensionShopPage
+            )
+            goToPDP(it.id ?: "")
+        }
+    }
+
+    override fun onCarouselPersonalizationProductItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
+            isOcc: Boolean
+    ) {
+        if (isLogin) {
+            shopHomeProductViewModel?.let { product ->
+                if (isOcc) {
+                    viewModel?.addProductToCartOcc(
+                            product,
+                            shopId,
+                            {
+                                onSuccessAddToCart(
+                                        it,
+                                        shopHomeProductViewModel,
+                                        parentPosition,
+                                        shopHomeCarousellProductUiModel,
+                                        isPersonalizationWidget = true,
+                                        isOcc = isOcc
+                                )
+                            },
+                            {
+                                onErrorAddToCart(it)
+                            }
+                    )
+                } else {
+                    viewModel?.addProductToCart(
+                        product,
+                        shopId,
+                        {
+                            onSuccessAddToCart(
+                                    it,
+                                    shopHomeProductViewModel,
+                                    parentPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    isPersonalizationWidget = true
+                            )
+                        },
+                        {
+                            onErrorAddToCart(it)
+                        }
+                    )
+                }
+            }
+        } else {
+            redirectToLoginPage()
+        }
+    }
+
+    override fun onCarouselProductPersonalizationItemImpression(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
+        shopPageHomeTracking.impressionProductPersonalization(
+                isOwner,
+                isLogin,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopHomeProductViewModel?.recommendationType ?: "",
+                viewModel?.userId.orEmpty(),
+                shopName,
+                itemPosition + 1,
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                shopHomeCarousellProductUiModel?.name ?: "",
+                customDimensionShopPage
         )
     }
 
@@ -1656,17 +1781,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, remind: Boolean, position: Int) {
-        if (isLogin) {
-            viewModel?.setToggleReminderPlayWidget(channelId, remind, position)
-        } else {
-            shopHomeAdapter.updatePlayWidgetReminder(PlayWidgetReminderUiModel(
-                    remind = remind,
-                    success = false,
-                    position = position
-            ))
-            redirectToLoginPage()
-        }
+    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+        viewModel?.shouldUpdatePlayWidgetToggleReminder(channelId, reminderType)
     }
 
     override fun onDeleteFailedTranscodingChannel(view: PlayWidgetMediumView, channelId: String) {
@@ -1691,9 +1807,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun notifyPlayWidgetTotalView(data: Intent) {
-        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
-        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-        shopHomeAdapter.updatePlayWidgetTotalView(PlayWidgetTotalViewUiModel(channelId, totalView))
+        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
+        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+        viewModel?.updatePlayWidgetTotalView(channelId, totalView)
     }
 
     private fun observePlayWidget() {
@@ -1734,19 +1850,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
     }
 
-    private fun observePlayWidgetToggleReminder() {
-        viewModel?.playWidgetToggleReminderObservable?.observe(viewLifecycleOwner, Observer {
-            if (it.success) {
-                showToastSuccess(
-                        if(it.remind) {
-                            getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                        } else {
-                            getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
-                        })
-            } else {
-                shopHomeAdapter.updatePlayWidgetReminder(it)
-                showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))
+    private fun observePlayWidgetReminder() {
+        viewModel?.playWidgetReminderObservable?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> showToastSuccess(
+                        when (it.data) {
+                            PlayWidgetReminderType.Remind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                            PlayWidgetReminderType.UnRemind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                        }
+                )
+                is Fail -> showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))
             }
+        })
+    }
+
+    private fun observePlayWidgetReminderEvent() {
+        viewModel?.playWidgetReminderEvent?.observe(viewLifecycleOwner, Observer {
+            redirectToLoginPage(requestCode = REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
         })
     }
 

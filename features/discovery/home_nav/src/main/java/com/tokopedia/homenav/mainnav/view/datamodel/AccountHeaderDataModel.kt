@@ -12,10 +12,16 @@ data class AccountHeaderDataModel(
         var ovoSaldo: String = "",
         var ovoPoint: String = "",
         var saldo: String = "",
+        var tokopointPointAmount: String = "",
+        var tokopointExternalAmount: String = "",
+        var tokopointBadgeUrl: String = "",
+        var tierBadgeUrl: String = "",
         var shopName: String = "",
         var shopId: String = "",
+        var shopOrderCount: Int = 0,
         var shopNotifCount: String = "",
         var shopApplink: String = "",
+        var adminRoleText: String? = null,
         var isGetUserNameError: Boolean = true,
         var isGetOvoError: Boolean = true,
         var isGetSaldoError: Boolean = true,
@@ -23,7 +29,8 @@ data class AccountHeaderDataModel(
         var isGetShopError: Boolean = true,
         var isCacheData: Boolean = false,
         var isGetShopLoading: Boolean = false,
-        var isProfileLoading: Boolean = false
+        var isProfileLoading: Boolean = false,
+        var canGoToSellerAccount: Boolean = true
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -51,18 +58,19 @@ data class AccountHeaderDataModel(
 
     fun copy(): AccountHeaderDataModel {
         return AccountHeaderDataModel(
-                id,
-                loginState,
-                userName,
-                userImage,
-                badge,
-                ovoSaldo,
-                ovoPoint,
-                saldo,
-                shopName,
-                shopId,
-                shopNotifCount,
-                shopApplink
+                id = id,
+                loginState = loginState,
+                userName = userName,
+                userImage = userImage,
+                badge = badge,
+                ovoSaldo = ovoSaldo,
+                ovoPoint = ovoPoint,
+                saldo = saldo,
+                shopName = shopName,
+                shopId = shopId,
+                shopOrderCount = shopOrderCount,
+                shopNotifCount = shopNotifCount,
+                shopApplink = shopApplink
         )
     }
 
@@ -84,16 +92,30 @@ data class AccountHeaderDataModel(
         this.isGetSaldoError = false
     }
 
+    fun setTokopointData(amount: String, point: String, badge: String){
+        this.tokopointPointAmount = point
+        this.tokopointExternalAmount = amount
+        this.tokopointBadgeUrl = badge
+        this.isGetSaldoError = false
+        this.isGetOvoError = false
+    }
+
     fun setUserBadge(badge: String) {
         this.badge = badge
         this.isGetUserMembershipError = false
     }
 
-    fun setUserShopName(shopName: String = "", shopId: String = "", isError: Boolean = false, isLoading: Boolean = false) {
+    fun setUserShopName(shopName: String = "", shopId: String = "", shopOrderCount: Int, isError: Boolean = false, isLoading: Boolean = false) {
         this.shopName = shopName
         this.shopId = shopId
+        this.shopOrderCount = shopOrderCount
         this.isGetShopError = isError
         this.isGetShopLoading = isLoading
+    }
+
+    fun setAdminData(adminRoleText: String?, canGoToSellerAccount: Boolean) {
+        this.adminRoleText = adminRoleText
+        this.canGoToSellerAccount = canGoToSellerAccount
     }
 
 }

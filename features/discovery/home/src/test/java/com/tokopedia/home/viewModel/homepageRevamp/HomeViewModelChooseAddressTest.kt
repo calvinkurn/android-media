@@ -27,7 +27,7 @@ class HomeViewModelChooseAddressTest {
                 needToShowChooseAddress = false
         ))))
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeChooseAddressData = HomeChooseAddressData(isActive = true)
+        homeViewModel.updateChooseAddressData(HomeChooseAddressData(isActive = true))
         homeViewModel.refreshHomeData()
 
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
@@ -42,7 +42,7 @@ class HomeViewModelChooseAddressTest {
                 needToShowChooseAddress = true
         ))))
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeChooseAddressData = HomeChooseAddressData(isActive = false)
+        homeViewModel.updateChooseAddressData(HomeChooseAddressData(isActive = false))
         homeViewModel.refreshHomeData()
 
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->

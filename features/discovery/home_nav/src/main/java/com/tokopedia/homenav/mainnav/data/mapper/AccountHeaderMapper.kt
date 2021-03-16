@@ -1,26 +1,27 @@
 package com.tokopedia.homenav.mainnav.data.mapper
 
-import android.content.Context
-import android.content.SharedPreferences
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.user.session.UserSessionInterface
 
-class AccountHeaderMapper (
-        private val context: Context,
+class AccountHeaderMapper(
         private val userSession: UserSessionInterface
 ) {
 
     fun mapToHeaderModel(userPojo: UserPojo?,
                          walletBalanceModel: WalletBalanceModel?,
+                         tokopointsStatusFilteredPojo: TokopointsStatusFilteredPojo?,
                          saldoPojo: SaldoPojo?,
                          userMembershipPojo: MembershipPojo?,
-                         shopInfoPojo: ShopInfoPojo?,
+                         shopInfoPojo: ShopData.ShopInfoPojo?,
+                         notificationPojo: ShopData.NotificationPojo?,
                          isCache: Boolean): AccountHeaderDataModel {
         var accountModel = AccountHeaderDataModel()
 
@@ -39,6 +40,9 @@ class AccountHeaderMapper (
                             ovo = it.cashBalance,
                             point = it.pointBalance)
                 }
+                tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.let {
+                    data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)
+                }
                 saldoPojo?.let {
                     data.setSaldoData(
                             saldo = convertPriceValueToIdrFormat(it.saldo.buyerUsable + it.saldo.sellerUsable, false) ?: ""
@@ -53,6 +57,7 @@ class AccountHeaderMapper (
                     data.setUserShopName(
                             shopName = it.info.shopName,
                             shopId =  it.info.shopId,
+                            shopOrderCount = getTotalOrderCount(notificationPojo),
                             isError = false,
                             isLoading = false
                     )
@@ -66,6 +71,14 @@ class AccountHeaderMapper (
             }
         }
         return accountModel
+    }
+
+    private fun getTotalOrderCount(notificationPojo: ShopData.NotificationPojo?): Int {
+        return notificationPojo?.let {
+            it.sellerOrderStatus.newOrderCount
+                    .plus(it.sellerOrderStatus.readyToShipOrderCount)
+                    .plus(it.sellerOrderStatus.inResolution)
+        }.orZero()
     }
 
     private fun getLoginState(): Int {

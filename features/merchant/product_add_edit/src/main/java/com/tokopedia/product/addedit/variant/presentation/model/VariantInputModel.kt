@@ -14,6 +14,7 @@ data class VariantInputModel(
 
 @Parcelize
 data class ProductVariantInputModel(
+        var id: String = "",
         var combination: List<Int> = listOf(),
         var pictures: List<PictureVariantInputModel> = listOf(),
         var price: BigInteger = 0.toBigInteger(),

@@ -26,7 +26,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -351,8 +350,12 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     override fun loadData(forceRefresh: Boolean) {
         if (productId != null || (productKey != null && shopDomain != null)) {
-            (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld(), isNewShipment())
+            context?.let {
+                (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
+                viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
+                        forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
+                        ?: LocalCacheModel())
+            }
         }
     }
 
@@ -380,7 +383,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         super.onCreate(savedInstanceState)
         setupRemoteConfig()
         assignDeviceId()
-        assignUserLocationData()
         loadData()
     }
 
@@ -566,9 +568,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun reloadUserLocationChanged() {
         if (viewModel.getDynamicProductInfoP1 == null || context == null || firstOpenPage == null || firstOpenPage == true) return
-        val isUserLocationChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), viewModel.userLocationCache)
+        val isUserLocationChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), viewModel.getUserLocationCache())
         if (isUserLocationChanged) {
-            assignUserLocationData()
             refreshPage()
         }
     }
@@ -1229,7 +1230,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun onSuccessUpdateAddress() {
         view?.showToasterSuccess(getString(R.string.pdp_shipping_success_change_address))
-        assignUserLocationData()
         onSwipeRefresh()
     }
 
@@ -1250,11 +1250,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun observeP2Other() {
         viewLifecycleOwner.observe(viewModel.p2Other) {
-            if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.MOST_HELPFUL_REVIEW)
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
-            }
-
             pdpUiUpdater?.updateDataP2General(it)
             updateUi()
             (activity as? ProductDetailActivity)?.stopMonitoringP2Other()
@@ -1317,7 +1312,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 viewModel.getP2RatesEstimateByProductId(),
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                boeData
+                boeData,
+                viewModel.getUserLocationCache()
         )
 
         /*
@@ -1452,7 +1448,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             if (view != null) {
                 val showLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it)
                         ?: false
-                val showBoe = coachMarkBoePref.shouldShowBoeCoachmark() && isBoeType
+                val showBoe = if (!isBoeType) false else coachMarkBoePref.shouldShowBoeCoachmark()
 
                 if (showLocalization || showBoe) {
                     val coachMarkList = arrayListOf<CoachMark2Item>()
@@ -1727,6 +1723,11 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         updateNplButtonFollowers(it.restrictionInfo)
         updateButtonState()
 
+        if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.MOST_HELPFUL_REVIEW)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
+        }
+
         if (it.vouchers.isNullOrEmpty()) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.SHOP_VOUCHER)
         } else {
@@ -1741,7 +1742,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 ratesData,
                 viewModel.getMultiOriginByProductId().isFulfillment,
                 viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
-                boeData
+                boeData,
+                viewModel.getUserLocationCache()
         )
 
         if (it.upcomingCampaigns.values.isEmpty()) {
@@ -1917,7 +1919,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     productName,
                     productImageUrl,
                     it.data.variant.isVariant,
-                    it.basic.getShopId()
+                    it.basic.getShopId(),
+                    viewModel.p2Data.value?.bebasOngkir?.boImages?.first()?.imageURL
             )
             val bundleData = Bundle()
             bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
@@ -1942,13 +1945,12 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             sharedViewModel?.setRequestData(RatesEstimateRequest(
                     productWeight = it.basic.weight.toFloat(),
                     shopDomain = viewModel.getShopInfo().shopCore.domain,
-                    origin = if (viewModel.getMultiOriginByProductId().isFulfillment)
-                        viewModel.getMultiOriginByProductId().getOrigin() else null,
+                    origin = viewModel.getMultiOriginByProductId().getOrigin(),
                     shopId = it.basic.shopID,
                     productId = it.basic.productID,
                     productWeightUnit = it.basic.weightUnit,
                     isFulfillment = viewModel.getMultiOriginByProductId().isFulfillment,
-                    destination = generateUserLocationRequestRates(viewModel.userLocationCache),
+                    destination = generateUserLocationRequestRates(viewModel.getUserLocationCache()),
                     boType = boData.boType,
                     freeOngkirUrl = boData.imageURL,
                     poTime = it.data.preOrder.preorderInDays,
@@ -2180,6 +2182,11 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         reportProduct({
             DynamicProductDetailTracking.Click.eventClickReportFromComponent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
         }, {})
+    }
+
+    override fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel ?: ComponentTrackDataModel())
+        goToReviewImagePreview()
     }
 
     private fun reportProductFromToolbar() {
@@ -3112,13 +3119,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 ?: viewModel.userSessionInterface.deviceId ?: ""
     }
 
-    private fun assignUserLocationData() {
-        context?.let {
-            viewModel.userLocationCache = ChooseAddressUtils.getLocalizingAddressData(it)
-                    ?: LocalCacheModel()
-        }
-    }
-
     private fun goToHargaFinal() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
         val tradeinParam = viewModel.tradeInParams
@@ -3363,11 +3363,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             e.printStackTrace()
             true
         }
-    }
-
-    override fun isNewShipment(): Boolean {
-        if (context == null) return false
-        return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {

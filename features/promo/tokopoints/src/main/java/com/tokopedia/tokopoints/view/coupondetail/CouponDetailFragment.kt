@@ -127,7 +127,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     private fun observeUserInfo() = mPresenter.userInfo.observe(viewLifecycleOwner, Observer {
         it.let {
-            phoneVerificationState = it.verifiedMsisdn
+            phoneVerificationState = it.mfGetUserInfo?.verifiedMsisdn
         }
     })
 
@@ -505,6 +505,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
 
     private fun setSwipeUi(swipeDetail: CouponSwipeDetail) = view?.apply {
+        ll_bottom_button?.show()
         layout_coupon_swipe.show()
         card_swipe?.apply {
             setTitle(swipeDetail.text)

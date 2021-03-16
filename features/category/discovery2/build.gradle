@@ -72,6 +72,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.productCard)
     api project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.playWidget)
 
 
     androidTestImplementation rootProject.ext.testDependencies.assertJCore

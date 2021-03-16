@@ -44,8 +44,8 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                 PARAM_FREE_SHIPPING to free_shipping_flag)
 
         val QUERY = """
-            query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean,${'$'}free_shipping_flag: Int) {
-                  ratesEstimateV3(input: {weight: ${'$'}weight, domain: ${'$'}domain, origin: ${'$'}origin, shop_id: ${'$'}shop_id, product_id: ${'$'}product_id,destination: ${'$'}destination, is_fulfillment: ${'$'}is_fulfillment,free_shipping_flag: ${'$'}free_shipping_flag }) {
+            query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean,${'$'}free_shipping_flag: Int, ${'$'}po_time: Int) {
+                  ratesEstimateV3(input: {weight: ${'$'}weight, domain: ${'$'}domain, origin: ${'$'}origin, shop_id: ${'$'}shop_id, product_id: ${'$'}product_id,destination: ${'$'}destination, is_fulfillment: ${'$'}is_fulfillment,free_shipping_flag: ${'$'}free_shipping_flag, po_time: ${'$'}po_time }) {
                       data{
                           tokocabang_from{
                                icon_url

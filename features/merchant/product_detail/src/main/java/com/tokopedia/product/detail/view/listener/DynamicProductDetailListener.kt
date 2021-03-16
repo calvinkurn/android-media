@@ -19,7 +19,6 @@ interface DynamicProductDetailListener {
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
-    fun isNewShipment(): Boolean
 
     /**
      * ProductMediaViewHolder
@@ -154,6 +153,11 @@ interface DynamicProductDetailListener {
      * ProductReportViewHolder
      */
     fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductMiniSocialProofChipViewHolder
+     */
+    fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
      * ProductShippingViewHolder

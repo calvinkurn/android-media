@@ -442,9 +442,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
                 // Initialize promo list item
                 val tmpCouponList = ArrayList<PromoListItemUiModel>()
-                couponSubSection.coupons.forEach { couponItem ->
+                couponSubSection.coupons.forEachIndexed { index, couponItem ->
                     val promoItem = uiModelMapper.mapPromoListItemUiModel(
-                            couponItem, promoHeader.uiData.identifierId, couponSubSection.isEnabled, preSelectedPromoList
+                            couponItem, promoHeader.uiData.identifierId,
+                            couponSubSection.isEnabled, preSelectedPromoList,
+                            index
                     )
                     if (eligibilityHeader.uiState.isEnabled) {
                         if (promoHeader.uiState.isCollapsed) {
