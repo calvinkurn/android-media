@@ -54,7 +54,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
 
-    protected val settingViewModel: UserSettingViewModel by viewModels()
+    protected val settingViewModel: UserSettingViewModel by viewModels { viewModelFactory }
 
     /*
     * a flag for preventing request network if needed

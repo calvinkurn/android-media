@@ -13,7 +13,7 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewMod
 
 class EmailFieldFragment: SettingFieldFragment() {
 
-    private val viewModel: SettingStateViewModel by viewModels()
+    private val viewModel: SettingStateViewModel by viewModels { viewModelFactory }
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
