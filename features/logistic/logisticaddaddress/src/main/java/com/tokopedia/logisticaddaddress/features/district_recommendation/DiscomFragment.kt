@@ -56,7 +56,6 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
         arguments?.let {
             mToken = it.getParcelable(ARGUMENT_DATA_TOKEN)
         }
-        binding.searchInputView.visibility = View.VISIBLE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
