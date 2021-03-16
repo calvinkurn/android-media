@@ -7,7 +7,6 @@ import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
 import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.catalog.usecase.listing.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -85,4 +84,5 @@ class CatalogUseCaseModule {
             : RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
+
 }
