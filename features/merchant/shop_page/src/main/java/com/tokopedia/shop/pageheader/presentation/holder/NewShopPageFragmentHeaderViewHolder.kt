@@ -2,6 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
@@ -13,6 +14,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -22,6 +24,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.Sho
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
@@ -37,6 +40,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val context: Context,
                                           private val shopHeaderBasicInfoWidgetListener: ShopHeaderBasicInfoWidgetViewHolder.Listener,
                                           private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+                                          private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
                                           private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener
@@ -67,6 +71,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         shopPageHeaderAdapter = ShopPageHeaderAdapter(ShopPageHeaderAdapterTypeFactory(
                 shopHeaderBasicInfoWidgetListener,
                 shopPerformanceWidgetBadgeTextValueListener,
+                shopPerformanceWidgetImageOnlyListener,
                 shopActionButtonWidgetChatButtonComponentListener,
                 shopActionButtonWidgetFollowButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,

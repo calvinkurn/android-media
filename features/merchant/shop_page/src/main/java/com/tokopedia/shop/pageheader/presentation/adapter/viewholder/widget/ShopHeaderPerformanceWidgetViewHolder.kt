@@ -10,11 +10,13 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderPerformanceWidgetAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPerformanceWidgetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 class ShopHeaderPerformanceWidgetViewHolder(
         itemView: View,
-        private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener
+        private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+        private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -26,7 +28,9 @@ class ShopHeaderPerformanceWidgetViewHolder(
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
         shopPerformanceWidgetAdapter = ShopPerformanceWidgetAdapter(ShopHeaderPerformanceWidgetAdapterTypeFactory(
-                shopPerformanceWidgetBadgeTextValueListener
+                model,
+                shopPerformanceWidgetBadgeTextValueListener,
+                shopPerformanceWidgetImageOnlyListener
         ))
         rvShopPerformanceWidget?.apply {
             adapter = shopPerformanceWidgetAdapter

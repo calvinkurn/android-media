@@ -28,6 +28,7 @@ class ShopHeaderActionButtonWidgetViewHolder(
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
         val shopActionButtonWidgetAdapter = ShopActionButtonWidgetAdapter(ShopHeaderActionButtonWidgetAdapterTypeFactory(
+                model,
                 shopActionButtonWidgetChatButtonComponentListener,
                 shopActionButtonWidgetFollowButtonComponentListener
         ))

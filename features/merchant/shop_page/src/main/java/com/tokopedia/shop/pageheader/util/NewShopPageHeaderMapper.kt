@@ -60,10 +60,12 @@ object NewShopPageHeaderMapper {
         } as T
     }
 
+    private var headerComponentPosition: Int = -1
     private fun mapToShopPageHeaderLayoutUiModel(
             shopPageHeaderLayoutResponseData: ShopPageHeaderLayoutResponse
     ): List<ShopHeaderWidgetUiModel> {
         return mutableListOf<ShopHeaderWidgetUiModel>().apply {
+            headerComponentPosition = 1
             shopPageHeaderLayoutResponseData.shopPageGetHeaderLayout.widgets.forEach { widgetResponseData ->
                 add(mapShopHeaderWidget(widgetResponseData))
             }
@@ -79,7 +81,10 @@ object NewShopPageHeaderMapper {
                 widgetResponseData.type,
                 mutableListOf<BaseShopHeaderComponentUiModel>().apply {
                     widgetResponseData.listComponent.forEach { componentResponseData ->
-                        mapShopHeaderComponent(componentResponseData)?.let {
+                        if(!widgetResponseData.type.equals(SHOP_BASIC_INFO, true)){
+                            headerComponentPosition++
+                        }
+                        mapShopHeaderComponent(headerComponentPosition, componentResponseData)?.let {
                             add(it)
                         }
                     }
@@ -88,6 +93,7 @@ object NewShopPageHeaderMapper {
     }
 
     private fun mapShopHeaderComponent(
+            componentPosition: Int,
             component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ): BaseShopHeaderComponentUiModel? {
         return when (component.type.toLowerCase()) {
@@ -95,6 +101,8 @@ object NewShopPageHeaderMapper {
             BaseShopHeaderComponentUiModel.ComponentType.BADGE_TEXT_VALUE.toLowerCase() -> mapShopHeaderBadgeTextValueComponent(component)
             BaseShopHeaderComponentUiModel.ComponentType.BUTTON.toLowerCase() -> mapShopHeaderButtonComponent(component)
             else -> null
+        }?.apply {
+            this.componentPosition = componentPosition
         }
     }
 

@@ -98,6 +98,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerA
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
@@ -105,6 +106,8 @@ import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHead
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
@@ -136,6 +139,7 @@ class NewShopPageFragment :
         InterfaceShopPageHeader,
         ShopHeaderBasicInfoWidgetViewHolder.Listener,
         ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+        ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
         ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
         ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
         ShopHeaderPlayWidgetViewHolder.Listener
@@ -327,6 +331,7 @@ class NewShopPageFragment :
                 shopPageTracking,
                 shopPageTrackingSGCPlay,
                 view.context,
+                this,
                 this,
                 this,
                 this,
@@ -640,7 +645,7 @@ class NewShopPageFragment :
                     getString(R.string.shop_follow_error_toaster_action_text)
             )
             {
-                onClickFollowUnFollowButton()
+                toggleFollowUnfollowButton()
             }.show()
             trackViewToasterFollowUnfollow(
                     isFollowing,
@@ -1661,12 +1666,34 @@ class NewShopPageFragment :
         }
     }
 
+    override fun onStartLiveStreamingClicked() {
+        //will be deleted later
+    }
+
     /**
      * Play Widget "Start Live Streaming"
      */
-    override fun onStartLiveStreamingClicked() {
+    override fun onStartLiveStreamingClicked(
+            componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+    ) {
+        val valueDisplayed = componentModel.label
+        sendClickShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
         val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
         startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
+    }
+
+    override fun onImpressionPlayWidgetComponent(componentModel: ShopHeaderPlayWidgetButtonComponentUiModel, shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
+        val valueDisplayed = componentModel.label
+        sendImpressionShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
     }
 
     private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {
@@ -1733,28 +1760,46 @@ class NewShopPageFragment :
         }
     }
 
-    override fun onShopNameClicked(appLink: String) {
+    override fun onShopBasicInfoWidgetComponentClicked(
+            componentModel: ShopHeaderBadgeTextValueComponentUiModel?,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?
+    ) {
+        val valueDisplayed = componentModel?.text?.getOrNull(1)?.textHtml?.split("•")?.getOrNull(0).orEmpty().trim()
+        val appLink = componentModel?.text?.getOrNull(0)?.textLink.orEmpty()
+        sendClickShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
         if (isShopInfoAppLink(appLink))
             redirectToShopInfoPage()
         else
             RouteManager.route(context, appLink)
     }
 
-    override fun onShopBadgeClicked(appLink: String) {
-        if (isShopInfoAppLink(appLink))
-            redirectToShopInfoPage()
-        else
-            RouteManager.route(context, appLink)
+    override fun onImpressionShopBasicInfoWidgetComponent(
+            componentModel: ShopHeaderBadgeTextValueComponentUiModel?,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?
+    ) {
+        val valueDisplayed = componentModel?.text?.getOrNull(1)?.textHtml?.split("•")?.getOrNull(0).orEmpty().trim()
+        sendImpressionShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
     }
 
-    override fun onShopChevronClicked(appLink: String) {
-        if (isShopInfoAppLink(appLink))
-            redirectToShopInfoPage()
-        else
-            RouteManager.route(context, appLink)
-    }
-
-    override fun onShopPerformanceWidgetBadgeTextValueItemClicked(appLink: String) {
+    override fun onShopPerformanceWidgetBadgeTextValueItemClicked(
+            componentModel: ShopHeaderBadgeTextValueComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+    ) {
+        val appLink = componentModel.text.getOrNull(0)?.textLink.orEmpty()
+        val valueDisplayed = componentModel.text.getOrNull(0)?.textHtml?.trim().orEmpty()
+        sendClickShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
         if (isShopReviewAppLink(appLink)) {
             val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
             viewPager.setCurrentItem(reviewTabPosition, false)
@@ -1764,12 +1809,93 @@ class NewShopPageFragment :
             RouteManager.route(context, appLink)
     }
 
-    override fun onButtonChatClicked() {
+    override fun onImpressionShopPerformanceWidgetBadgeTextValueItem(
+            componentModel: ShopHeaderBadgeTextValueComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+    ) {
+        val valueDisplayed = componentModel.text.getOrNull(0)?.textHtml.orEmpty()
+        sendImpressionShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
+    }
+
+    override fun onButtonChatClicked(
+            componentModel: ShopHeaderButtonComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+    ) {
+        val valueDisplayed = componentModel.label
+        sendClickShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
         goToChatSeller()
     }
 
+    override fun onImpressionButtonChat(
+            componentModel: ShopHeaderButtonComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+    ) {
+        val valueDisplayed = componentModel.label
+        sendImpressionShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )    }
+
+
+    private fun sendImpressionShopHeaderComponentTracking(
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?,
+            componentModel: BaseShopHeaderComponentUiModel?,
+            valueDisplayed: String
+    ) {
+        val componentId = componentModel?.name.orEmpty()
+        val componentName = componentModel?.name.orEmpty()
+        val componentPosition = componentModel?.componentPosition.orZero()
+        val headerId = shopHeaderWidgetUiModel?.widgetId.orEmpty()
+        val headerType = shopHeaderWidgetUiModel?.type.orEmpty()
+        shopPageTracking?.impressionShopHeaderComponent(
+                isMyShop,
+                shopId,
+                userId,
+                valueDisplayed,
+                componentId,
+                componentName,
+                headerId,
+                headerType,
+                componentPosition,
+                customDimensionShopPage
+        )
+    }
+
+    private fun sendClickShopHeaderComponentTracking(
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?,
+            componentModel: BaseShopHeaderComponentUiModel?,
+            valueDisplayed: String
+    ) {
+        val componentId = componentModel?.name.orEmpty()
+        val componentName = componentModel?.name.orEmpty()
+        val componentPosition = componentModel?.componentPosition.orZero()
+        val headerId = shopHeaderWidgetUiModel?.widgetId.orEmpty()
+        val headerType = shopHeaderWidgetUiModel?.type.orEmpty()
+        shopPageTracking?.clickShopHeaderComponent(
+                isMyShop,
+                shopId,
+                userId,
+                valueDisplayed,
+                componentId,
+                componentName,
+                headerId,
+                headerType,
+                componentPosition,
+                customDimensionShopPage
+        )
+    }
+
     override fun setFollowStatus(isFollowing: Boolean) {
-        //todo will be deleted later
+        //will be deleted later
     }
 
     override fun isFirstTimeVisit(): Boolean? {
@@ -1786,7 +1912,29 @@ class NewShopPageFragment :
         shopPageTracking?.impressionVoucherFollowUnfollowShop(shopId, userId)
     }
 
-    override fun onClickFollowUnFollowButton() {
+    override fun onClickFollowUnFollowButton(
+            componentModel: ShopHeaderButtonComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+    ) {
+        val valueDisplayed = componentModel.label
+        sendClickShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
+        toggleFollowUnfollowButton()
+    }
+
+    override fun onImpressionFollowButtonComponent(componentModel: ShopHeaderButtonComponentUiModel, shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
+        val valueDisplayed = componentModel.label
+        sendImpressionShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                valueDisplayed
+        )
+    }
+
+    private fun toggleFollowUnfollowButton() {
         shopPageTracking?.clickFollowUnfollowShopWithoutShopFollower(
                 !isFollowing,
                 CustomDimensionShopPage.create(
@@ -1818,6 +1966,17 @@ class NewShopPageFragment :
         }
         shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(true)
         shopViewModel?.updateFollowStatus(shopId, action)
+    }
+
+    override fun onImpressionShopPerformanceWidgetImageOnlyItem(
+            componentModel: ShopHeaderImageOnlyComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+    ) {
+        sendImpressionShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                ""
+        )
     }
 
 }

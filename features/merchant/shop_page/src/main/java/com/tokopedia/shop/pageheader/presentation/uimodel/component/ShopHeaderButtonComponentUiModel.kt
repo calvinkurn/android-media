@@ -1,13 +1,15 @@
 package com.tokopedia.shop.pageheader.presentation.uimodel.component
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderButtonComponentTypeFactory
 
-open class ShopHeaderButtonComponentUiModel : BaseShopHeaderComponentUiModel {
+open class ShopHeaderButtonComponentUiModel : BaseShopHeaderComponentUiModel, ImpressHolder() {
 
     override var name: String = ""
     override var type: String = ""
+    override var componentPosition: Int = -1
     var icon: String = ""
     var label: String = ""
     var buttonType: String = ""

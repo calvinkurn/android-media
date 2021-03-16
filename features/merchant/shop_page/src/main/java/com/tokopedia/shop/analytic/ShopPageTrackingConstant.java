@@ -108,6 +108,8 @@ public class ShopPageTrackingConstant {
     public static final String VIEW_TOASTER_UNFOLLOW_ERROR = "view toaster unfollow error";
     public static final String CLICK_CEK_TOASTER_SUCCESS = "click cek toaster success";
     public static final String SEE_ENTRY_POINT = "see entry point";
+    public static final String ACTION_IMPRESSION_SHOP_HEADER_BUYER = "impression header";
+    public static final String ACTION_IMPRESSION_SHOP_HEADER_SELLER = "impression header seller";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -177,6 +179,10 @@ public class ShopPageTrackingConstant {
     public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
     public static final String SHOP_PAGE_LABEL = "shop page - ";
     public static final String COACHMARK_DISAPPEAR = " - coachmark disappear";
+    public static final String LABEL_CLICK_SHOP_HEADER_BUYER = "click shop header - %s";
+    public static final String LABEL_CLICK_SHOP_HEADER_SELLER = "click shop header seller - %s";
+    public static final String LABEL_IMPRESSION_SHOP_HEADER_BUYER = "impression shop header - %s";
+    public static final String LABEL_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller - %s";
 
     //key
     public static final String EVENT = "event";
@@ -256,6 +262,11 @@ public class ShopPageTrackingConstant {
     public static final String VALUE_SEE_CAMPAIGN = "see campaign";
     public static final String VALUE_NO_SEE_CAMPAIGN = "no see campaign";
     public static final String VALUE_HOME = "home";
+    public static final String SHOP_HEADER_BASIC_INFO_TRACKER_TYPE = "basic info";
+    public static final String SHOP_HEADER_PERFORMANCE_TRACKER_TYPE = "performance";
+    public static final String SHOP_HEADER_ACTION_TRACKER_TYPE = "action";
+    public static final String SHOP_HEADER_PLAY_TRACKER_TYPE = "play";
+
 
     //dimension83
     public static final String BOE = "BoE";

@@ -10,14 +10,17 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 
 
 class ShopActionButtonWidgetChatButtonComponentViewHolder(
         itemView: View,
+        private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
         private val shopActionButtonWidgetChatButtonComponentListener: Listener
 ) : AbstractViewHolder<ShopHeaderButtonComponentUiModel>(itemView) {
 
@@ -26,7 +29,15 @@ class ShopActionButtonWidgetChatButtonComponentViewHolder(
     }
 
     interface Listener {
-        fun onButtonChatClicked()
+        fun onButtonChatClicked(
+                componentModel: ShopHeaderButtonComponentUiModel,
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+        )
+
+        fun onImpressionButtonChat(
+                componentModel: ShopHeaderButtonComponentUiModel,
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+        )
     }
 
     private val buttonChat: UnifyButton? = itemView.findViewById(R.id.button_shop_chat)
@@ -39,7 +50,16 @@ class ShopActionButtonWidgetChatButtonComponentViewHolder(
         buttonChat?.apply {
             text = model.label
             setOnClickListener {
-                shopActionButtonWidgetChatButtonComponentListener.onButtonChatClicked()
+                shopActionButtonWidgetChatButtonComponentListener.onButtonChatClicked(
+                        model,
+                        shopHeaderWidgetUiModel
+                )
+            }
+            addOnImpressionListener(model){
+                shopActionButtonWidgetChatButtonComponentListener.onImpressionButtonChat(
+                        model,
+                        shopHeaderWidgetUiModel
+                )
             }
         }
     }

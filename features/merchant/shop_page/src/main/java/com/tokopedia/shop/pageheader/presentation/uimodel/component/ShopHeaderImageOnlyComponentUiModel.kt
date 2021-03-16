@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation.uimodel.component
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderImageOnlyComponentTypeFactory
 
 data class ShopHeaderImageOnlyComponentUiModel(
@@ -9,7 +10,9 @@ data class ShopHeaderImageOnlyComponentUiModel(
         val image: String = "",
         val imageLink: String = "",
         val isBottomSheet: Boolean = false
-) : BaseShopHeaderComponentUiModel {
+) : BaseShopHeaderComponentUiModel, ImpressHolder() {
+
+    override var componentPosition: Int = -1
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return if(typeFactory is ShopHeaderImageOnlyComponentTypeFactory){

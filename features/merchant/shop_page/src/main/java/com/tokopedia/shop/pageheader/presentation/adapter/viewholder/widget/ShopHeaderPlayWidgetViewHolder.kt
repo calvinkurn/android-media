@@ -9,6 +9,7 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -30,7 +31,15 @@ class ShopHeaderPlayWidgetViewHolder(
     }
 
     interface Listener {
-        fun onStartLiveStreamingClicked()
+        fun onStartLiveStreamingClicked(
+                componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+        )
+
+        fun onImpressionPlayWidgetComponent(
+                componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+        )
     }
 
     private val playWidgetContainer: CardView? = itemView.findViewById(R.id.play_seller_widget_container)
@@ -38,10 +47,11 @@ class ShopHeaderPlayWidgetViewHolder(
     private val containerLottie: FrameLayout? = itemView.findViewById(R.id.container_lottie)
     private val lottieAnimation: LottieAnimationView? = itemView.findViewById(R.id.lottie)
 
-    override fun bind(model: ShopHeaderWidgetUiModel) {
+    override fun bind(shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
         playWidgetContainer?.layoutParams = RecyclerView.LayoutParams(0, 0)
         playWidgetContainer?.hide()
-        model.components.filterIsInstance<ShopHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
+        val modelComponent = shopHeaderWidgetUiModel.components.filterIsInstance<ShopHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
+        modelComponent?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             if (isShowPlayWidget(shopPageHeaderDataModel)) {
                 playWidgetContainer?.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
                 playWidgetContainer?.show()
@@ -50,7 +60,16 @@ class ShopHeaderPlayWidgetViewHolder(
                 if (shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
                 containerLottie?.setOnClickListener {
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                    listener.onStartLiveStreamingClicked()
+                    listener.onStartLiveStreamingClicked(
+                            modelComponent,
+                            shopHeaderWidgetUiModel
+                    )
+                }
+                playWidgetContainer?.addOnImpressionListener(modelComponent){
+                    listener.onImpressionPlayWidgetComponent(
+                            modelComponent,
+                            shopHeaderWidgetUiModel
+                    )
                 }
             } else {
                 playWidgetContainer?.layoutParams = RecyclerView.LayoutParams(0, 0)

@@ -4,10 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.SHOP_LOGO
@@ -28,10 +25,16 @@ class ShopHeaderBasicInfoWidgetViewHolder(
         val LAYOUT = R.layout.layout_shop_header_basic_info_widget
     }
 
-    interface Listener{
-        fun onShopNameClicked(appLink: String)
-        fun onShopBadgeClicked(appLink: String)
-        fun onShopChevronClicked(appLink: String)
+    interface Listener {
+        fun onShopBasicInfoWidgetComponentClicked(
+                componentModel: ShopHeaderBadgeTextValueComponentUiModel?,
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?
+        )
+
+        fun onImpressionShopBasicInfoWidgetComponent(
+                componentModel: ShopHeaderBadgeTextValueComponentUiModel?,
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?
+        )
     }
 
     private val shopLogoImageView: ImageView? = itemView.findViewById(R.id.image_shop_logo)
@@ -39,9 +42,10 @@ class ShopHeaderBasicInfoWidgetViewHolder(
     private val shopChevronImageView: ImageView? = itemView.findViewById(R.id.shop_page_chevron_shop_info)
     private val shopNameTextView: Typography? = itemView.findViewById(R.id.text_shop_name)
     private val shopBasicInfoAdditionalInfoTextView: Typography? = itemView.findViewById(R.id.text_shop_basic_info_additional_info)
-
+    private var shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel? = null
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
+        shopHeaderWidgetUiModel = model
         for (component in model.components) {
             when {
                 isMatchWidgetIdentifier(
@@ -65,7 +69,6 @@ class ShopHeaderBasicInfoWidgetViewHolder(
 
     private fun setShopNameAndInfoSection(component: ShopHeaderBadgeTextValueComponentUiModel?) {
         val badgeImageUrl = component?.text?.getOrNull(0)?.icon.orEmpty()
-        val appLink = component?.text?.getOrNull(0)?.textLink.orEmpty()
         val shopName = component?.text?.getOrNull(0)?.textHtml.orEmpty()
         val shopChevronImageUrl = component?.ctaIcon.orEmpty()
         val shopAdditionalInfo = component?.text?.getOrNull(1)?.textHtml.orEmpty()
@@ -73,23 +76,46 @@ class ShopHeaderBasicInfoWidgetViewHolder(
             if (badgeImageUrl.isNotEmpty()) {
                 show()
                 loadImage(badgeImageUrl)
-                setOnClickListener { shopHeaderBasicInfoWidgetListener.onShopBadgeClicked(appLink) }
+                setOnClickListener {
+                    shopHeaderBasicInfoWidgetListener.onShopBasicInfoWidgetComponentClicked(
+                            component,
+                            shopHeaderWidgetUiModel
+                    )
+                }
             } else {
                 hide()
             }
         }
         shopNameTextView?.apply {
             text = MethodChecker.fromHtml(shopName)
-            setOnClickListener { shopHeaderBasicInfoWidgetListener.onShopNameClicked(appLink) }
+            setOnClickListener {
+                shopHeaderBasicInfoWidgetListener.onShopBasicInfoWidgetComponentClicked(
+                        component,
+                        shopHeaderWidgetUiModel
+                )
+            }
         }
         shopBasicInfoAdditionalInfoTextView?.text = MethodChecker.fromHtml(shopAdditionalInfo)
         shopChevronImageView?.apply {
             if (shopChevronImageUrl.isNotEmpty()) {
                 show()
                 loadImage(shopChevronImageUrl)
-                setOnClickListener { shopHeaderBasicInfoWidgetListener.onShopChevronClicked(appLink) }
+                setOnClickListener {
+                    shopHeaderBasicInfoWidgetListener.onShopBasicInfoWidgetComponentClicked(
+                            component,
+                            shopHeaderWidgetUiModel
+                    )
+                }
             } else {
                 hide()
+            }
+        }
+        component?.let{
+            itemView.addOnImpressionListener(component){
+                shopHeaderBasicInfoWidgetListener.onImpressionShopBasicInfoWidgetComponent(
+                        it,
+                        shopHeaderWidgetUiModel
+                )
             }
         }
     }

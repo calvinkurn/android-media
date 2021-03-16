@@ -11,9 +11,13 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageOnlyComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 class ShopHeaderPerformanceWidgetAdapterTypeFactory(
-        private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener
+        private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+        private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
+        private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener
+
 ) :
         BaseAdapterTypeFactory(),
         ShopHeaderImageOnlyComponentTypeFactory,
@@ -23,9 +27,14 @@ class ShopHeaderPerformanceWidgetAdapterTypeFactory(
         return when (type) {
             ShopPerformanceWidgetBadgeTextValueComponentViewHolder.LAYOUT -> ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
                     parent,
+                    shopHeaderWidgetUiModel,
                     shopPerformanceWidgetBadgeTextValueListener
             )
-            ShopPerformanceWidgetImageOnlyComponentViewHolder.LAYOUT -> ShopPerformanceWidgetImageOnlyComponentViewHolder(parent)
+            ShopPerformanceWidgetImageOnlyComponentViewHolder.LAYOUT -> ShopPerformanceWidgetImageOnlyComponentViewHolder(
+                    parent,
+                    shopHeaderWidgetUiModel,
+                    shopPerformanceWidgetImageOnlyListener
+            )
             -1 -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

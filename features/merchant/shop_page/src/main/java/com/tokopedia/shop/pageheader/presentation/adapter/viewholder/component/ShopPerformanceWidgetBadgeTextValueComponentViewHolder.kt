@@ -4,16 +4,19 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
-    itemView: View,
-    private val listener: Listener
+        itemView: View,
+        private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+        private val listener: Listener
 ): AbstractViewHolder<ShopHeaderBadgeTextValueComponentUiModel>(itemView) {
 
     companion object{
@@ -21,7 +24,15 @@ class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
     }
 
     interface Listener{
-        fun onShopPerformanceWidgetBadgeTextValueItemClicked(appLink: String)
+        fun onShopPerformanceWidgetBadgeTextValueItemClicked(
+                componentModel: ShopHeaderBadgeTextValueComponentUiModel,
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+        )
+
+        fun onImpressionShopPerformanceWidgetBadgeTextValueItem(
+                componentModel: ShopHeaderBadgeTextValueComponentUiModel,
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+        )
     }
 
     private val textViewFirstLine: Typography? = itemView.findViewById(R.id.text_first_line)
@@ -44,7 +55,16 @@ class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
         }
         textViewSecondLine?.text = MethodChecker.fromHtml(textSecondLine)
         itemView.setOnClickListener {
-            listener.onShopPerformanceWidgetBadgeTextValueItemClicked(appLink)
+            listener.onShopPerformanceWidgetBadgeTextValueItemClicked(
+                    model,
+                    shopHeaderWidgetUiModel
+            )
+        }
+        itemView.addOnImpressionListener(model){
+            listener.onImpressionShopPerformanceWidgetBadgeTextValueItem(
+                    model,
+                    shopHeaderWidgetUiModel
+            )
         }
     }
 

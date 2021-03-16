@@ -1,7 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.adapter
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -13,7 +12,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderAc
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPlayWidgetButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.PLAY
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PLAY
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
 
 class ShopPageHeaderAdapter(
@@ -40,7 +39,7 @@ class ShopPageHeaderAdapter(
     }
 
     fun isPlayWidgetPlaceholderAvailable(): Boolean? {
-        return getWidgetUiModel(PLAY)?.getComponentUiModel<ShopHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY) != null
+        return getWidgetUiModel(SHOP_PLAY)?.getComponentUiModel<ShopHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY) != null
     }
 
 
@@ -93,7 +92,7 @@ class ShopPageHeaderAdapter(
     }
 
     fun setPlayWidgetData(shopPageHeaderDataModel: ShopPageHeaderDataModel) {
-        val widgetUiModel = getWidgetUiModel(PLAY)
+        val widgetUiModel = getWidgetUiModel(SHOP_PLAY)
         widgetUiModel?.getComponentUiModel<ShopHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY)?.let {
             it.shopPageHeaderDataModel = shopPageHeaderDataModel
             val playWidgetPosition = visitables.indexOf(widgetUiModel)

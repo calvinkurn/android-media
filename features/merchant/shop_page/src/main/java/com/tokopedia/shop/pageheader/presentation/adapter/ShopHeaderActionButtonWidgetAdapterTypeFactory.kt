@@ -7,26 +7,31 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderButtonComponentTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderActionButtonWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_CHAT
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_FOLLOW
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_SHOP_NOTES
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 class ShopHeaderActionButtonWidgetAdapterTypeFactory(
+        private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
         private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
         private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener
 ) : BaseAdapterTypeFactory(), ShopHeaderButtonComponentTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ShopActionButtonWidgetNoteButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetNoteButtonComponentViewHolder(parent)
+            ShopActionButtonWidgetNoteButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetNoteButtonComponentViewHolder(
+                    parent
+            )
             ShopActionButtonWidgetChatButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetChatButtonComponentViewHolder(
                     parent,
+                    shopHeaderWidgetUiModel,
                     shopActionButtonWidgetChatButtonComponentListener
             )
             ShopActionButtonWidgetFollowButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetFollowButtonComponentViewHolder(
                     parent,
+                    shopHeaderWidgetUiModel,
                     shopActionButtonWidgetFollowButtonComponentListener
             )
             else -> super.createViewHolder(parent, type)
