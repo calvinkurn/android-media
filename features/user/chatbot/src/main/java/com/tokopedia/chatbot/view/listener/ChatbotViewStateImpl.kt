@@ -145,11 +145,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
-        removeInvoiceCarousel(generatedInvoice)
+        removeInvoiceCarousel()
         super.onReceiveMessageEvent(generatedInvoice)
     }
 
-    private fun removeInvoiceCarousel(generatedInvoice: AttachInvoiceSentViewModel) {
+    private fun removeInvoiceCarousel() {
         var item: AttachInvoiceSelectionViewModel? = null
         for (it in adapter.list) {
             if (it is AttachInvoiceSelectionViewModel) {
@@ -304,6 +304,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun removeDummy(visitable: Visitable<*>) {
         getAdapter().removeDummy(visitable)
+    }
+
+    override fun hideInvoiceList() {
+        removeInvoiceCarousel()
     }
 
     override fun getAdapter(): ChatbotAdapter {

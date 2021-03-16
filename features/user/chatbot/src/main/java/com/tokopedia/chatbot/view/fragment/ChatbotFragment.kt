@@ -442,9 +442,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         sendEventForWelcomeMessage(visitable)
         manageActionBubble(visitable)
+        manageInvoiceList(visitable)
         mapMessageToList(visitable)
         getViewState().hideEmptyMessage(visitable)
         getViewState().onCheckToHideQuickReply(visitable)
+    }
+
+    private fun manageInvoiceList(visitable: Visitable<*>) {
+        if(visitable is MessageViewModel && visitable.isSender){
+            getViewState().hideInvoiceList()
+        }
     }
 
     private fun manageActionBubble(visitable: Visitable<*>) {

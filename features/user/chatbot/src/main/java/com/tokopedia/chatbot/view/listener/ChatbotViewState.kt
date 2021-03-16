@@ -63,4 +63,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun removeDummy(visitable: Visitable<*>)
 
+    fun hideInvoiceList()
+
 }
