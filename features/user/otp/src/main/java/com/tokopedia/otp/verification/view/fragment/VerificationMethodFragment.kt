@@ -62,6 +62,8 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
 
+    private var isMoreThanOneMethod: Boolean = true
+
     private val viewmodel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
     }
@@ -112,7 +114,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 if (modeList.modeText == OtpConstant.OtpMode.MISCALL) {
                     (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
                 } else {
-                    (activity as VerificationActivity).goToVerificationPage(modeList)
+                    (activity as VerificationActivity).goToVerificationPage(modeList, isMoreThanOneMethod)
                 }
             }
         })
@@ -147,6 +149,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun onSuccessGetVerificationMethod(): (OtpModeListData) -> Unit {
         return { otpModeListData ->
+            isMoreThanOneMethod = otpModeListData.modeList.size > 1
             if (otpModeListData.success && otpModeListData.modeList.isNotEmpty()) {
                 hideLoading()
 
@@ -189,7 +192,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
             (activity as VerificationActivity).goToOnboardingMiscallPage(modeListData)
         } else {
-            (activity as VerificationActivity).goToVerificationPage(modeListData)
+            (activity as VerificationActivity).goToVerificationPage(modeListData, isMoreThanOneMethod)
         }
     }
 
