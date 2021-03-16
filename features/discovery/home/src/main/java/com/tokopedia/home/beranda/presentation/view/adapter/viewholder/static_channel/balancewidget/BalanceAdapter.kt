@@ -51,6 +51,20 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         notifyDataSetChanged()
     }
 
+    fun getItemMap():  HomeBalanceModel {
+        return itemMap
+    }
+
+    fun getTokopointsDataPosition(): Int {
+        getItemMap().let {
+            val keys =  it.balanceDrawerItemModels.filterValues { model -> model.drawerItemType == TYPE_TOKOPOINT }.keys
+            if (keys.isNotEmpty()) {
+                return keys.first()
+            }
+        }
+        return -1
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_balance_widget, parent, false))
     }
