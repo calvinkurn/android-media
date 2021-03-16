@@ -263,3 +263,7 @@
 -keep class **.HanselDialog.*{*;}
 -keep class * implements io.hansel.**.* {*;}
 -keep class * extends io.hansel.**.* {*;}
+
+-keep class com.newrelic.** { *; }
+-dontwarn com.newrelic.**
+-keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod
