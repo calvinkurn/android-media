@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -16,9 +15,7 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
-import kotlinx.android.synthetic.main.shc_section_widget.view.*
 import kotlinx.android.synthetic.main.shc_widget_table.view.*
-import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 10/06/20
@@ -48,12 +45,7 @@ class TableViewHolder(
                 showErrorState()
                 listener.setOnErrorWidget(adapterPosition, element)
             }
-            else -> {
-                val renderTime = measureTimeMillis {
-                    setOnSuccess(element)
-                }
-                if (element.renderDuration == 0L) element.renderDuration = renderTime
-            }
+            else -> setOnSuccess(element)
         }
     }
 

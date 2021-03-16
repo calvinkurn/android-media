@@ -16,7 +16,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import kotlinx.android.synthetic.main.shc_carousel_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_carousel_widget_shimmering.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
-import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -46,12 +45,7 @@ class CarouselViewHolder(
                 setOnErrorState()
                 listener.setOnErrorWidget(adapterPosition, element)
             }
-            else -> {
-                val renderTime = measureTimeMillis {
-                    setOnSuccessState(element)
-                }
-                if (element.renderDuration == 0L) element.renderDuration = renderTime
-            }
+            else -> setOnSuccessState(element)
         }
     }
 

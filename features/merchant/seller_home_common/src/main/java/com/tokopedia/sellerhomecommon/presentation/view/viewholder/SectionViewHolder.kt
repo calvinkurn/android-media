@@ -14,7 +14,6 @@ import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_section_widget.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -30,26 +29,23 @@ class SectionViewHolder(
     }
 
     override fun bind(element: SectionWidgetUiModel) {
-        val renderTime = measureTimeMillis {
-            with(itemView) {
-                tvSectionTitle.text = element.title
-                tvSectionSubTitle.visibility = if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
-                tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
+        with(itemView) {
+            tvSectionTitle.text = element.title
+            tvSectionSubTitle.visibility = if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
+            tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
 
-                element.tooltip?.let { tooltip ->
-                    val shouldShowTooltip = tooltip.shouldShow && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
-                    if (shouldShowTooltip) {
-                        tvSectionTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
-                        tvSectionTitle.setOnClickListener {
-                            showSectionTooltip(element, tooltip)
-                        }
-                    } else {
-                        tvSectionTitle.clearUnifyDrawableEnd()
+            element.tooltip?.let { tooltip ->
+                val shouldShowTooltip = tooltip.shouldShow && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+                if (shouldShowTooltip) {
+                    tvSectionTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
+                    tvSectionTitle.setOnClickListener {
+                        showSectionTooltip(element, tooltip)
                     }
+                } else {
+                    tvSectionTitle.clearUnifyDrawableEnd()
                 }
             }
         }
-        if (element.renderDuration == 0L) element.renderDuration = renderTime
     }
 
     private fun showSectionTooltip(model: SectionWidgetUiModel, tooltip: TooltipUiModel) {

@@ -30,7 +30,6 @@ import kotlinx.android.synthetic.main.shc_partial_line_graph_state_empty.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_graph_loading_state.view.*
 import timber.log.Timber
-import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 27/10/20
@@ -66,12 +65,7 @@ class MultiLineGraphViewHolder(
         when {
             data == null -> setOnLoadingState()
             data.error.isNotBlank() -> setOnErrorState(element)
-            else -> {
-                val renderTime = measureTimeMillis {
-                    setOnSuccessState(element)
-                }
-                if (element.renderDuration == 0L) element.renderDuration = renderTime
-            }
+            else -> setOnSuccessState(element)
         }
     }
 

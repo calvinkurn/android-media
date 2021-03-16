@@ -614,7 +614,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
         (activity as? LoadTimeMonitoringActivity)?.loadTimeMonitoringListener?.onStopPltMonitoring()
-        SellerHomeNewRelic.sendSellerHomeNewRelicData(context, screenName, userSession.userId, adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>, performanceMonitoringSellerHomePlt)
+        SellerHomeNewRelic.sendSellerHomeNewRelicData(context, screenName, userSession.userId, performanceMonitoringSellerHomePlt)
     }
 
     @Suppress("UNCHECKED_CAST")

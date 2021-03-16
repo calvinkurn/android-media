@@ -22,8 +22,7 @@ data class TickerWidgetUiModel(
         override var isLoaded: Boolean = false,
         override var isLoading: Boolean = false,
         override var isFromCache: Boolean = false,
-        override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel(),
-        override var renderDuration: Long = 0
+        override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
 ) : BaseWidgetUiModel<TickerDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

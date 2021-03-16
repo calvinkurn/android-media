@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view
 import kotlinx.android.synthetic.main.shc_partial_progress_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_progress_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_shimmering_progress_widget.view.*
-import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -35,12 +34,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
                 onError(element)
                 listener.setOnErrorWidget(adapterPosition, element)
             }
-            else -> {
-                val renderTime = measureTimeMillis {
-                    onSuccessLoadData(element)
-                }
-                if (element.renderDuration == 0L) element.renderDuration = renderTime
-            }
+            else -> onSuccessLoadData(element)
         }
     }
 

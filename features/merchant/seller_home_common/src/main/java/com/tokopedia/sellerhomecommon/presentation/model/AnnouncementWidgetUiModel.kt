@@ -22,8 +22,7 @@ data class AnnouncementWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
-        override var emptyState: WidgetEmptyStateUiModel,
-        override var renderDuration: Long = 0
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<AnnouncementDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

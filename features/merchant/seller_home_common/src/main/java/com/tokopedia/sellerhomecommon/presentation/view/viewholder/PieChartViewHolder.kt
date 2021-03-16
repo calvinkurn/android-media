@@ -18,7 +18,6 @@ import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
 import kotlinx.android.synthetic.main.shc_pie_chart_widget.view.*
-import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 06/07/20
@@ -52,12 +51,7 @@ class PieChartViewHolder(
                 setOnError()
                 listener.setOnErrorWidget(adapterPosition, element)
             }
-            else -> {
-                val renderTime = measureTimeMillis {
-                    setOnSuccess(element)
-                }
-                if (element.renderDuration == 0L) element.renderDuration = renderTime
-            }
+            else -> setOnSuccess(element)
         }
     }
 

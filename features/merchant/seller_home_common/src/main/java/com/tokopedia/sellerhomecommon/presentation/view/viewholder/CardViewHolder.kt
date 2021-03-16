@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import kotlinx.android.synthetic.main.shc_card_widget.view.*
-import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -47,12 +46,9 @@ class CardViewHolder(
                 listener.setOnErrorWidget(adapterPosition, element)
             }
             else -> {
-                val renderTime = measureTimeMillis {
-                    showOnError(false)
-                    showShimmer(false)
-                    showViewComponent(element, true)
-                }
-                if (element.renderDuration == 0L) element.renderDuration = renderTime
+                showOnError(false)
+                showShimmer(false)
+                showViewComponent(element, true)
             }
         }
     }

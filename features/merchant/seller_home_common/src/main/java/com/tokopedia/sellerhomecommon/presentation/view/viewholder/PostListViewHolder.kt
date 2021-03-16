@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_shimmering_post_list_widget.view.*
-import kotlin.system.measureTimeMillis
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -54,12 +53,7 @@ class PostListViewHolder(
                 onError(postListWidgetUiModel.title)
                 listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel)
             }
-            else -> {
-                val renderTime = measureTimeMillis {
-                    onSuccessLoadData(postListWidgetUiModel)
-                }
-                if (postListWidgetUiModel.renderDuration == 0L) postListWidgetUiModel.renderDuration = renderTime
-            }
+            else -> onSuccessLoadData(postListWidgetUiModel)
         }
     }
 
