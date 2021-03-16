@@ -8,4 +8,5 @@
     <dimen name="height_seller_announce">28dp</dimen>
     <dimen name="width_card_recommendation_feature">180dp</dimen>
     <dimen name="height_card_recommendation_feature">140dp</dimen>
+    <dimen name="height_timer_new_seller">248dp</dimen>
 </resources>

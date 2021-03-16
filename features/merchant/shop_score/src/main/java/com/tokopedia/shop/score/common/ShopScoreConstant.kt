@@ -20,6 +20,9 @@ object ShopScoreConstant {
     const val SHOP_SCORE_NINETY = 90
     const val SHOP_SCORE_ONE_HUNDRED = 100
 
+    const val COUNT_DAYS_NEW_SELLER = 90
+    const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
+
     const val ORDER_SUCCESS_RATE = "Tingkat kesuksesan pesanan"
     const val CHAT_DISCUSSION_REPLY_SPEED = "Kecepatan membalas chat dan diskusi"
     const val CHAT_DISCUSSION_SPEED = "Tingkat membalas chat dan diskusi"

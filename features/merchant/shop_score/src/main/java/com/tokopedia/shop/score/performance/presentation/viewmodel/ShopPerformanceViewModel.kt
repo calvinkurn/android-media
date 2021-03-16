@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.score.common.domain.mapper.ShopScoreMapper
+import com.tokopedia.shop.score.performance.domain.mapper.ShopScoreMapper
 import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
 import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel

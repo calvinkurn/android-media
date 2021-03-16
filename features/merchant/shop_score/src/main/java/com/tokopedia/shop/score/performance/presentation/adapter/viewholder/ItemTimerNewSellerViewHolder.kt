@@ -2,8 +2,12 @@ package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant.BG_GREEN_TIMER
+import com.tokopedia.shop.score.common.ShopScoreConstant.BG_ORANGE_TIMER
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
+import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
 
 class ItemTimerNewSellerViewHolder(view: View): AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
@@ -13,6 +17,19 @@ class ItemTimerNewSellerViewHolder(view: View): AbstractViewHolder<ItemTimerNewS
 
     override fun bind(element: ItemTimerNewSellerUiModel?) {
         with(itemView) {
+            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER  else  BG_GREEN_TIMER)
+            timerNewSeller?.targetDate = element?.effectiveDate
+
+            tv_shop_performance_new_seller?.text = getString(R.string.title_shop_performance_become_existing_seller,
+                    element?.effectiveDateText.orEmpty())
+
+            ic_video_shop_performance_learn?.setOnClickListener {
+
+            }
+
+            tv_watch_video?.setOnClickListener {
+
+            }
 
         }
     }

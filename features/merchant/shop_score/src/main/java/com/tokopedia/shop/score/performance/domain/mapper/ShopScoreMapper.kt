@@ -1,10 +1,12 @@
-package com.tokopedia.shop.score.common.domain.mapper
+package com.tokopedia.shop.score.performance.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gm.common.constant.PATTERN_DATE_PARAM
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
+import com.tokopedia.shop.score.common.ShopScoreConstant.COUNT_DAYS_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.DOWN_POTENTIAL_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_BRONZE_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_DIAMOND_PM
@@ -23,6 +25,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.IC_TOP_ADS_FEATURE_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_VOUCHER_EXCLUSIVE_FEATURE_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SET_OPERATIONAL_HOUR_SHOP_URL
@@ -41,7 +44,6 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SEVENTY
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SEVENTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SIXTY
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SIXTY_NINE
-import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_TOTAL_LEVEL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ZERO
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_URL
@@ -50,6 +52,8 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER
 import com.tokopedia.shop.score.common.ShopScoreConstant.UP_POTENTIAL_PM
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class ShopScoreMapper @Inject constructor(private val userSession: UserSessionInterface,
@@ -113,6 +117,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     fun mapToShopPerformanceVisitableDummy(): List<BaseShopPerformance> {
         return mutableListOf<BaseShopPerformance>().apply {
+            add(mapToTimerNewSellerUiModel())
             add(mapToHeaderShopPerformance())
             add(mapToSectionPeriodDetailPerformanceUiModel())
             addAll(mapToItemDetailPerformanceUiModel())
@@ -121,8 +126,11 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 add(mapToTransitionPeriodReliefUiModel())
             }
             add(mapToCardPotentialBenefit())
-            add(mapToItemCurrentStatusRMUiModel())
-            add(mapToItemPotentialStatusPMUiModel(true))
+            if (!userSession.isShopOfficialStore && !userSession.isGoldMerchant) add(mapToItemCurrentStatusRMUiModel())
+            if (userSession.isGoldMerchant) {
+                add(mapToItemPotentialStatusPMUiModel(true))
+            }
+            //faq for communication period
             add(SectionFaqUiModel(mapToItemFaqUiModel()))
         }
     }
@@ -292,6 +300,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     fun mapToCardPotentialBenefit(): SectionPotentialPMBenefitUiModel {
+        //rm non elligible
         return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit())
     }
 
@@ -300,6 +309,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     fun mapToTransitionPeriodReliefUiModel(): TransitionPeriodReliefUiModel {
+        //power merchant only
         return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = "5 Mei 201", iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
     }
 
@@ -587,6 +597,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     private fun mapToItemPotentialStatusPMUiModel(statusActive: Boolean): ItemStatusPMUiModel {
+        //power merchant only
         val nextUpdate = "5 Juli 2021"
         val statusPM = "naik"
         val gradeName = "Gold"
@@ -628,6 +639,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     private fun mapToItemCurrentStatusRMUiModel(): ItemStatusRMUiModel {
+        //only regular merchant & elligible
         val updateDate = "29 Agustus 2021"
         val statusPM = "Gold"
         val bgPowerMerchant = when (statusPM) {
@@ -713,5 +725,26 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
+    private fun mapToTimerNewSellerUiModel(): ItemTimerNewSellerUiModel {
+        val ageSeller = 50
+        val nextSellerDays = COUNT_DAYS_NEW_SELLER - ageSeller
+        val isTenureDate = true
+
+        val effectiveDate = getNNextMonthTimeCalendar(nextSellerDays)
+        return ItemTimerNewSellerUiModel(effectiveDate = effectiveDate,
+                effectiveDateText = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER),
+                isTenureDate = isTenureDate)
+    }
+
+    private fun getNNextMonthTimeCalendar(nextMonth: Int): Calendar {
+        val date = Calendar.getInstance(Locale.getDefault())
+        date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + nextMonth)
+        return date
+    }
+
+    private fun format(timeMillis: Long, pattern: String, locale: Locale = Locale.getDefault()): String {
+        val sdf = SimpleDateFormat(pattern, locale)
+        return sdf.format(timeMillis)
+    }
 
 }
