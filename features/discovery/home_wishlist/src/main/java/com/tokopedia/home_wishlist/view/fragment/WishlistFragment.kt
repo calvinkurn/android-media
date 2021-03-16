@@ -62,6 +62,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
+import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
 import javax.inject.Inject
 
@@ -730,7 +731,9 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         }
         context?.also {
             ChooseAddressUtils.getLocalizingAddressData(it.applicationContext)?.run {
-                val wishlistAdditionalParamRequest = WishlistAdditionalParamRequest(district_id, city_id, lat, long, postal_code, address_id)
+                val wishlistAdditionalParamRequest = WishlistAdditionalParamRequest(district_id.toEmptyStringIfZero(), city_id.toEmptyStringIfZero(),
+                        lat.toEmptyStringIfZero(), long.toEmptyStringIfZero(),
+                        postal_code.toEmptyStringIfZero(), address_id.toEmptyStringIfZero())
                 additionalParamRequest = wishlistAdditionalParamRequest
                 return wishlistAdditionalParamRequest
             }

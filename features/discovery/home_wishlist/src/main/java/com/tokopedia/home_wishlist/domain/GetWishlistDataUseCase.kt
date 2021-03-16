@@ -10,12 +10,12 @@ import javax.inject.Inject
 class GetWishlistDataUseCase @Inject constructor(
         private val wishlistRepository: WishlistRepository) : UseCase<GetWishlistParameter, WishlistEntityData>() {
     override suspend fun getData(inputParameter: GetWishlistParameter): WishlistEntityData {
-        return wishlistRepository.getData(inputParameter.keyword, inputParameter.page)
+        return wishlistRepository.getData(inputParameter.keyword, inputParameter.page, inputParameter.additionalParams)
     }
 }
 
 data class GetWishlistParameter(
         val keyword: String = "",
         val page: Int = 1,
-        val additionalParam: WishlistAdditionalParamRequest = WishlistAdditionalParamRequest()
+        val additionalParams: WishlistAdditionalParamRequest = WishlistAdditionalParamRequest()
 )

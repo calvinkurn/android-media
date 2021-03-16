@@ -10,6 +10,7 @@ import com.tokopedia.usecase.UseCase
 import com.tokopedia.wishlist.common.R
 import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import com.tokopedia.wishlist.common.response.GetWishlistResponse
+import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -34,7 +35,9 @@ class GetWishlistUseCase @Inject constructor(private val context: Context) : Use
 
     override fun createObservable(requestParams: RequestParams): Observable<GetWishlistResponse> {
         ChooseAddressUtils.getLocalizingAddressData(context.applicationContext)?.apply {
-            requestParams.putObject(ADDITIONAL_PARAMS, WishlistAdditionalParamRequest(district_id, city_id, lat, long, postal_code, address_id))
+            requestParams.putObject(ADDITIONAL_PARAMS, WishlistAdditionalParamRequest(district_id.toEmptyStringIfZero(), city_id.toEmptyStringIfZero(),
+                    lat.toEmptyStringIfZero(), long.toEmptyStringIfZero(),
+                    postal_code.toEmptyStringIfZero(), address_id.toEmptyStringIfZero()))
         }
 
         val graphqlRequest = GraphqlRequest(
@@ -53,5 +56,4 @@ class GetWishlistUseCase @Inject constructor(private val context: Context) : Use
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
-
 }
