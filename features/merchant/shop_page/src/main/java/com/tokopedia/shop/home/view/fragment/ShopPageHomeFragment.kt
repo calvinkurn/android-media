@@ -749,7 +749,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeProductViewModel?.displayedPrice ?: "",
                 dataModelAtc?.quantity ?: 1,
                 shopName,
-                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                viewModel?.userId.orEmpty(),
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.name ?: "",
                 customDimensionShopPage

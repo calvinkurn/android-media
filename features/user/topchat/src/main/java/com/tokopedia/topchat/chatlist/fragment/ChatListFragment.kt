@@ -111,6 +111,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
     private var emptyUiModel: Visitable<*>? = null
+    private var menu: Menu? = null
     private lateinit var broadCastButton: FloatingActionButton
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -144,11 +145,14 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        if (GlobalConfig.isSellerApp()) {
-            inflater.inflate(R.menu.chat_options_menu_sellerapp, menu)
-        } else {
-            inflater.inflate(R.menu.chat_options_menu, menu)
+        if (chatItemListViewModel.isAdminHasAccess) {
+            if (GlobalConfig.isSellerApp()) {
+                inflater.inflate(R.menu.chat_options_menu_sellerapp, menu)
+            } else {
+                inflater.inflate(R.menu.chat_options_menu, menu)
+            }
         }
+        this.menu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -314,6 +318,23 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 }
             }
         })
+
+        chatItemListViewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (isEligible) {
+                            loadInitialData()
+                        } else {
+                            onChatAdminNoAccess()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetListError(result.throwable)
+                }
+            }
+        }
     }
 
     fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {
@@ -565,6 +586,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.broadCastButtonVisibility.removeObservers(this)
         chatItemListViewModel.broadCastButtonUrl.removeObservers(this)
         chatItemListViewModel.chatBannedSellerStatus.removeObservers(this)
+        chatItemListViewModel.isChatAdminEligible.removeObservers(this)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -687,6 +709,12 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         )
     }
 
+    override fun returnToSellerHome() {
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+        }
+    }
+
     private fun onSuccessUnpinChat(element: ItemChatListPojo, position: Int) {
         adapter?.unpinChatItem(
                 element,
@@ -731,6 +759,16 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
             Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun onChatAdminNoAccess() {
+        swipeToRefresh?.isEnabled = false
+        adapter?.showNoAccessView()
+        hideAllChatMenuItem()
+    }
+
+    private fun hideAllChatMenuItem() {
+        menu?.clear()
     }
 
     companion object {

@@ -4,11 +4,13 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import kotlinx.android.synthetic.main.item_seller_menu_order_section.view.*
 
@@ -48,12 +50,12 @@ class ShopOrderViewHolder(
 
     private fun setClickListeners() {
         itemView.cardNewOrder.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.SELLER_NEW_ORDER)
+            RouteManager.route(context, UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, AdminFeature.NEW_ORDER))
             sellerMenuTracker?.sendEventClickOrderNew()
         }
 
         itemView.cardReadyToShip.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
+            RouteManager.route(context, UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, AdminFeature.READY_TO_SHIP_ORDER))
             sellerMenuTracker?.sendEventClickOrderReadyToShip()
         }
     }
