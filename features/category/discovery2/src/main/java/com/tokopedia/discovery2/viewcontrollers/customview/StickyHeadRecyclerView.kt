@@ -20,7 +20,7 @@ class StickyHeadRecyclerView : ConstraintLayout {
     constructor(context: Context?, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
 
     private val headerRecyclerView: FrameLayout
-    internal val recyclerView: RecyclerView
+    private val recyclerView: RecyclerView
     private var headerItemDecoration: HeaderItemDecoration? = null
 
     init {
@@ -80,9 +80,5 @@ class StickyHeadRecyclerView : ConstraintLayout {
             (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.scrollToPositionWithOffset(position, 0)
 
         }
-    }
-
-    fun rebindStickyViewHolder() {
-        headerItemDecoration?.rebindStickyHeader()
     }
 }
