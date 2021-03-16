@@ -37,10 +37,11 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         //we must specify height for viewpager, so it can't scroll up anymore and create
         //sticky effect
 
-        // 1st dp8 comes from item decoration of parent recyclerview (HomeRevampRecyclerDecoration)
+        // 1st dp8 comes from N0 divider in home recommendation feed viewholder
         // 2nd dp8 comes from N50 divider in home recommendation feed viewholder
         // 3rd dp8 comes from N0 divider in home recommendation feed viewholder
         layoutParams.height = listener.windowHeight - listener.homeMainToolbarHeight +
+                context.resources.getDimensionPixelSize(R.dimen.dp_8) +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8) +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8) +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8)
