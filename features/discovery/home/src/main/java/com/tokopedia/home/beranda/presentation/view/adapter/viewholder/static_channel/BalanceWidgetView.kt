@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
+import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
  * Created by yfsx on 3/1/21.
@@ -71,4 +72,17 @@ class BalanceWidgetView: FrameLayout {
         return GridLayoutManager(itemView.context, spanCount)
     }
 
+    private fun getBalanceWidgetRecyclerView(): RecyclerView? {
+        return rvBalance
+    }
+
+    fun getTokopointsView(): View? {
+        val tokopointsPos = balanceAdapter?.getTokopointsDataPosition() ?: -1
+        if (tokopointsPos != -1) {
+            layoutManager?.let {
+                return it.getChildAt(tokopointsPos)
+            }
+        }
+        return null
+    }
 }
