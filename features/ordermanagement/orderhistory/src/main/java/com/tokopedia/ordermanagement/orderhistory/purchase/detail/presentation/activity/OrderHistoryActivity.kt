@@ -29,14 +29,6 @@ class OrderHistoryActivity : BaseSimpleActivity() {
     companion object {
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
         private const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
-        fun createInstance(context: Context?, orderId: String?, userMode: Int): Intent {
-            val intent = Intent(context, OrderHistoryActivity::class.java)
-            val bundle = Bundle()
-            bundle.putString(EXTRA_ORDER_ID, orderId)
-            bundle.putInt(EXTRA_USER_MODE, userMode)
-            intent.putExtras(bundle)
-            return intent
-        }
     }
 
     private var extraOrderId: String = ""
