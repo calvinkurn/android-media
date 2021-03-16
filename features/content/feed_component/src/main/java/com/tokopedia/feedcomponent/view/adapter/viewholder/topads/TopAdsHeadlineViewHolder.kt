@@ -13,6 +13,7 @@ import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
+const val TOPADS_HEADLINE_VALUE_SRC = "fav_product"
 class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface,
                                private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener {
 
@@ -39,7 +40,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
                 PARAM_EP to VALUE_EP,
                 PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
                 PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to VALUE_SRC,
+                PARAM_SRC to TOPADS_HEADLINE_VALUE_SRC,
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
                 PARAM_USER_ID to userSession.userId
         ))
@@ -53,7 +54,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun hideHeadlineView() {
-        topadsHeadlineView.showShimmerView()
+        topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.hide()
     }
 
