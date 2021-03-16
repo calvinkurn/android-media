@@ -42,10 +42,10 @@ abstract class BaseProductDetailScreenShotTest {
     @Test
     fun screenShot() {
         waitForData()
+        screenshotScreen(filePrefix(), "top screen")
         scrollToBottom() // trigger recom listener
         waitForData()
 
-        screenshotScreen(filePrefix(), "top screen")
         findViewAndScreenShot(com.tokopedia.product.detail.R.id.base_btn_action, filePrefix(), "button")
 
         findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, 1, filePrefix(), "content")
