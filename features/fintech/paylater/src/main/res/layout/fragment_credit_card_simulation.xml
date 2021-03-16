@@ -60,7 +60,8 @@
             app:layout_constraintBottom_toBottomOf="@id/tvAllInstallments"
             app:layout_constraintEnd_toEndOf="@id/tvAllInstallments"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvAllInstallments" />
+            app:layout_constraintTop_toTopOf="@+id/tvAllInstallments"
+            android:contentDescription="Offer Label" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvAllInstallments"
