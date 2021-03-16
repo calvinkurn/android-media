@@ -6,15 +6,20 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounter
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderData
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplate
 import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderCounterUseCase
+import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderListUseCase
 import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderTemplateUseCase
+import com.tokopedia.review.feature.reviewreminder.domain.ProductrevSendReminderUseCase
 import javax.inject.Inject
 
 class ReminderMessageViewModel @Inject constructor(
         dispatcherProvider: CoroutineDispatchers,
         private val productrevGetReminderCounterUseCase: ProductrevGetReminderCounterUseCase,
-        private val productrevGetReminderTemplateUseCase: ProductrevGetReminderTemplateUseCase
+        private val productrevGetReminderTemplateUseCase: ProductrevGetReminderTemplateUseCase,
+        private val productrevGetReminderListUseCase: ProductrevGetReminderListUseCase,
+        private val productrevSendReminderUseCase: ProductrevSendReminderUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val estimation = MutableLiveData<ProductrevGetReminderCounter>()
@@ -23,22 +28,40 @@ class ReminderMessageViewModel @Inject constructor(
     private val template = MutableLiveData<ProductrevGetReminderTemplate>()
     fun getTemplate(): LiveData<ProductrevGetReminderTemplate> = template
 
+    private val products = MutableLiveData<List<ProductrevGetReminderData>>()
+    fun getProducts(): LiveData<List<ProductrevGetReminderData>> = products
+
+    private val error = MutableLiveData<String>()
+    fun getError(): LiveData<String> = error
+
     fun fetchReminderCounter() {
         launchCatchError(block = {
             val responseWrapper = productrevGetReminderCounterUseCase.executeOnBackground()
             estimation.postValue(responseWrapper.productrevGetReminderCounter)
-        }, onError = {})
+        }, onError = { error.postValue(it.message) })
     }
 
     fun fetchReminderTemplate() {
         launchCatchError(block = {
             val responseWrapper = productrevGetReminderTemplateUseCase.executeOnBackground()
             template.postValue(responseWrapper.productrevGetReminderTemplate)
-        }, onError = {})
+        }, onError = { error.postValue(it.message) })
     }
 
-    fun fetchProductList(){
+    fun fetchProductList() {
+        launchCatchError(block = {
+            productrevGetReminderListUseCase.setParams(0, "0")
+            val responseWrapper = productrevGetReminderListUseCase.executeOnBackground()
+            products.postValue(responseWrapper.productrevGetReminderList.list)
+        }, onError = { error.postValue(it.message) })
+    }
 
+    fun sendReminder(template: String?) {
+        launchCatchError(block = {
+            productrevSendReminderUseCase.setParams(template ?: "")
+            val responseWrapper = productrevSendReminderUseCase.executeOnBackground()
+            responseWrapper.productrevSendReminder
+        }, onError = { error.postValue(it.message) })
     }
 
 }

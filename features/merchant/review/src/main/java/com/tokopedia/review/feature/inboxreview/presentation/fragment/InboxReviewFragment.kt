@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.*
@@ -130,6 +132,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         initSortFilterInboxReview()
         initRatingFilterList()
         setupMarginSortFilter()
+        setupViewInteraction()
     }
 
     override fun onResume() {
@@ -296,14 +299,22 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
+    private fun setupViewInteraction(){
+        buttonReviewReminder?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REMINDER)
+        }
+    }
+
     private fun observeInboxReviewCounter() {
         observe(inboxReviewViewModel.inboxReviewCounterText) {
             when (it) {
                 is Success -> {
                     setInboxReviewTabCounter(it.data)
+                    setButtonReviewReminder(it.data)
                 }
                 is Fail -> {
                     setInboxReviewTabCounter()
+                    setButtonReviewReminder()
                 }
             }
         }
@@ -324,6 +335,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 return
             }
         }
+    }
+
+    private fun setButtonReviewReminder(counter: Int = 0) {
+        if (counter > 0)
+            buttonReviewReminder?.text = getString(
+                    R.string.review_reminder_button_review_reminder_with_counter,
+                    counter
+            )
     }
 
     private fun observeInboxReview() {

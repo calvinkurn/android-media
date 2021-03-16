@@ -16,13 +16,14 @@ import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class EditMessageBottomSheet(
-        private val message: String?,
         private val onSave: (String) -> Unit
 ) : BottomSheetUnify() {
 
     companion object {
         const val TAG_BUYER = "@nama_pembeli"
     }
+
+    var message: String? = null
 
     private var isAddBuyerEnabled = true
 
@@ -58,40 +59,41 @@ class EditMessageBottomSheet(
 
     private fun initView() {
         setTitle(getString(R.string.review_reminder_edit_message))
-
-        textAreaInput?.setText(message)
     }
 
     private fun setupViewInteraction() {
-        textAreaInput?.addTextChangedListener(object : TextWatcher {
+        textAreaInput?.apply {
+            addTextChangedListener(object : TextWatcher {
 
-            val greenSpan = ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
-            var currentTagIndex = -1
-            var haveSpan = false
+                val greenSpan = ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                var currentTagIndex = -1
+                var haveSpan = false
 
-            override fun afterTextChanged(p0: Editable?) {
-                val tagIndex = p0?.indexOf(TAG_BUYER) ?: -1
-                if (currentTagIndex != tagIndex && tagIndex != -1) {
-                    p0?.setSpan(greenSpan, tagIndex, tagIndex + TAG_BUYER.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    currentTagIndex = tagIndex
-                    haveSpan = true
-                    enableAddLayout(false)
+                override fun afterTextChanged(p0: Editable?) {
+                    val tagIndex = p0?.indexOf(TAG_BUYER) ?: -1
+                    if (currentTagIndex != tagIndex && tagIndex != -1) {
+                        p0?.setSpan(greenSpan, tagIndex, tagIndex + TAG_BUYER.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        currentTagIndex = tagIndex
+                        haveSpan = true
+                        enableAddLayout(false)
+                    }
+                    if (haveSpan && tagIndex == -1) {
+                        p0?.removeSpan(greenSpan)
+                        currentTagIndex = tagIndex
+                        haveSpan = false
+                        enableAddLayout(true)
+                    }
                 }
-                if (haveSpan && tagIndex == -1) {
-                    p0?.removeSpan(greenSpan)
-                    currentTagIndex = tagIndex
-                    haveSpan = false
-                    enableAddLayout(true)
-                }
-            }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        })
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            })
+            setText(message ?: "")
+        }
 
         layoutAddBuyer?.setOnClickListener {
             if (isAddBuyerEnabled) {
-                addTagBuyer()
+                textAreaInput?.append(TAG_BUYER)
             }
         }
 
@@ -112,12 +114,4 @@ class EditMessageBottomSheet(
         }
         isAddBuyerEnabled = isEnabled
     }
-
-    private fun addTagBuyer() {
-        textAreaInput?.apply {
-            val newText = "$text$TAG_BUYER"
-            setText(newText)
-        }
-    }
-
 }

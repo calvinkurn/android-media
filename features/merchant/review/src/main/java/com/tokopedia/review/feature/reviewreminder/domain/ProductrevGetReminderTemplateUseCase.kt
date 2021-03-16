@@ -16,7 +16,7 @@ class ProductrevGetReminderTemplateUseCase @Inject constructor(
               productrevGetReminderTemplate {
                 template
               }
-            }Re
+            }
         """
     }
 

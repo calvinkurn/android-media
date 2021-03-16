@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderStats
@@ -26,6 +29,10 @@ class ReminderPerformanceFragment : BaseDaggerFragment() {
     private var textLastSent: Typography? = null
     private var textIncrementChat: Typography? = null
     private var textReviewPercentage: Typography? = null
+    private var layoutLastSent: View? = null
+    private var iconInformation: IconUnify? = null
+    private var coachMarkItems: ArrayList<CoachMark2Item>? = null
+    private var coachMarkInformation: CoachMark2? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +51,11 @@ class ReminderPerformanceFragment : BaseDaggerFragment() {
         textLastSent = view.findViewById(R.id.text_last_sent)
         textIncrementChat = view.findViewById(R.id.text_increment_chat)
         textReviewPercentage = view.findViewById(R.id.text_review_percentage)
+        layoutLastSent = view.findViewById(R.id.layout_last_sent)
+        iconInformation = view.findViewById(R.id.icon_information)
 
+        initView()
+        setupViewinteraction()
         observeViewModel()
         fetchData()
     }
@@ -60,6 +71,28 @@ class ReminderPerformanceFragment : BaseDaggerFragment() {
         component?.inject(this)
     }
 
+    private fun initView() {
+        coachMarkItems = arrayListOf(
+                CoachMark2Item(
+                        iconInformation as View,
+                        "",
+                        getString(R.string.review_reminder_performance_coachmark)
+                )
+        )
+        coachMarkInformation = CoachMark2(requireContext()).apply {
+            simpleCloseIcon?.visibility = View.GONE
+        }
+    }
+
+    private fun setupViewinteraction() {
+        iconInformation?.setOnClickListener {
+            coachMarkInformation?.run {
+                if (isShowing) dismiss()
+                else coachMarkItems?.let { showCoachMark(it) }
+            }
+        }
+    }
+
     private fun observeViewModel() {
         viewModel?.getReminderStats()?.observe(viewLifecycleOwner, observerReminderStats)
     }
@@ -67,9 +100,15 @@ class ReminderPerformanceFragment : BaseDaggerFragment() {
     private val observerReminderStats = Observer { productrevGetReminderStats: ProductrevGetReminderStats ->
         textPeriod?.text = productrevGetReminderStats.timeRange
         textNumberChat?.text = getString(R.string.review_reminder_postfix_chat, productrevGetReminderStats.totalReminderStats)
-        textLastSent?.text = productrevGetReminderStats.lastReminderTime
         textIncrementChat?.text = productrevGetReminderStats.lastReminderStats
         textReviewPercentage?.text = productrevGetReminderStats.reviewPercentage
+
+        productrevGetReminderStats.lastReminderTime.let {
+            if (it.isNotBlank()) {
+                textLastSent?.text = it
+                layoutLastSent?.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun fetchData() {

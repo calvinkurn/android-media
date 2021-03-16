@@ -88,11 +88,15 @@
                     app:typographyWeight="reguler" />
 
                 <com.tokopedia.iconunify.IconUnify
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:id="@+id/icon_information"
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_4"
                     app:icon_name="INFORMATION"
-                    app:layout_constraintBottom_toBottomOf="@id/text_last_sent"
-                    app:layout_constraintLeft_toRightOf="@id/text_last_sent" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/text_last_sent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.45" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_increment_chat"

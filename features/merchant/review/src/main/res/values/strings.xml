@@ -276,7 +276,7 @@
     <string name="review_reminder_tab_title_2">Performa</string>
     <string name="review_reminder_title">Pengingat Ulasan</string>
     <string name="review_reminder_ticker_title">Ada fitur baru, nih: Pengingat Ulasan</string>
-    <string name="review_reminder_ticker_description">Kini, kamu bisa ingatkan pembeli untuk kasih ulasan produk lewat Pengingat Ulasan.</string>
+    <string name="review_reminder_ticker_description"><![CDATA[Kini, kamu bisa ingatkan pembeli untuk kasih ulasan produk lewat <a href="(%1$s)">Pengingat Ulasan.</a>]]></string>
     <string name="review_reminder_description">Ingatkan pembeli untuk kasih ulasan melalui chat</string>
     <string name="review_reminder_title_message">Pesan Pengingat Ulasan</string>
     <string name="review_reminder_subtitle_message">Tampilan chat yang dilihat oleh pembeli</string>
@@ -293,8 +293,10 @@
     <string name="review_reminder_performance_title">Performa Bulanan Pengingat Ulasan</string>
     <string name="review_reminder_performance_description">Total pengingat berhasil terkirim</string>
     <string name="review_reminder_performance_incoming_review">Total ulasan masuk</string>
+    <string name="review_reminder_performance_coachmark">Bisa terjadi penyesuaian di total chat terkirim untuk menghindari spam ke pembeli.</string>
     <string name="review_reminder_postfix_chat">%1$d Chat</string>
     <string name="review_reminder_dialog_send_title">Kirim Pengingat Ulasan ini?</string>
+    <string name="review_reminder_dialog_description"><![CDATA[Estimasi terkirim ke:<br><br><b>%1$d Pembeli</b> (%2$d Produk)]]></string>
     <string name="review_reminder_dialog_send_button_primary">Kirim</string>
     <string name="review_reminder_dialog_send_button_secondary">Ubah Pesan</string>
     <string name="review_reminder_coachmark_1_title">Ingatkan pembeli untuk kasih ulasan melalui chat</string>
@@ -308,5 +310,12 @@
     <string name="review_reminder_edit_message_subtitle">Tulis chat Pengingat Ulasan versimu sendiri</string>
     <string name="review_reminder_edit_message_add_buyer">Tambah Nama Pembeli</string>
     <string name="review_reminder_edit_message_button_save">Simpan</string>
+    <string name="review_reminder_item_product_buyer">(%1$d pembeli)</string>
+    <string name="review_reminder_no_products">Belum ada produk yang bisa diulas</string>
+    <string name="review_reminder_how_to_title">Cara pakai pengingat ulasan</string>
+    <string name="review_reminder_snackbar_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
+    <string name="review_reminder_snackbar_sending">Chat sedang dikirim. Cek detail laporannya di tab Performa.</string>
+    <string name="review_reminder_button_review_reminder_with_counter">Kirim Pengingat Ulasan (%1$d)</string>
+    <string name="review_reminder_button_review_reminder">Kirim Pengingat Ulasan</string>
 
 </resources>
