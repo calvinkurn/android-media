@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -224,7 +225,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     memberLocalLoad?.hide()
                     memberCardView?.show()
 
-                    memberTitle?.setMargin(6, 0, 0,  0)
+                    val leftMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, resources.displayMetrics)
+                    memberTitle?.setMargin(leftMargin.toInt(), 0, 0,  0)
                     memberTitle?.text = it.data.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
                     memberIcon?.show()
                     memberIcon?.setImageUrl(it.data.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
