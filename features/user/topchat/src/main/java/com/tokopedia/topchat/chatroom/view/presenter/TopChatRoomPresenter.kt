@@ -802,15 +802,16 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun isEnableUploadImageService(): Boolean {
-        val result =  try {
-            if(remoteConfig == null) {
-                remoteConfig = FirebaseRemoteConfigImpl(view.context)
-            }
-            remoteConfig?.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)?: false
-        } catch (ex: Exception) {
-            false
-        }
-        return result
+//        val result =  try {
+//            if(remoteConfig == null) {
+//                remoteConfig = FirebaseRemoteConfigImpl(view.context)
+//            }
+//            remoteConfig?.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)?: false
+//        } catch (ex: Exception) {
+//            false
+//        }
+//        return result
+        return true
     }
 
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
