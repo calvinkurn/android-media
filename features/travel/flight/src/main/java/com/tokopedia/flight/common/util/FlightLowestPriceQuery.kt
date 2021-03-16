@@ -6,12 +6,14 @@ package com.tokopedia.flight.common.util
 
 object FlightLowestPriceQuery {
     val flightLowestPriceInput = """
-        query FlightLowestPrice(${'$'}data: FlightLowestPriceArgs!) {
+       query FlightLowestPrice(${'$'}data: FlightLowestPriceArgs!) {
 	        flightLowestPrice(input: ${'$'}data) {
 		        data {
 			    date
 			    airlinePrices {
                     airlineID
+                    airlineName
+                    logo
                     price
                     priceNumeric
 			    }

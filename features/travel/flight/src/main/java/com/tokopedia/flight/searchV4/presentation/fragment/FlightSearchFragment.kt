@@ -763,25 +763,16 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     private fun setItemPromoChipsActive(){
-        promoChipsWidget.setItemActive(flightSearchViewModel.filterModel.airlineList[0])
+        promoChipsWidget.setItemActive(flightSearchViewModel.filterModel.airlineList[QUICK_FILTER_NO_ADDITIONAL])
     }
 
     private fun initPromoChips(){
-        var idPromo: Int = 0
         flightSearchViewModel.promoData.observe(viewLifecycleOwner, {
             when(it){
                 is Success ->{
                     if (!it.data.dataPromoChips.isNullOrEmpty()) {
-                        when(isReturnTrip()){
-                            false -> {
-                                idPromo = 0
-                            }
-                            true -> {
-                                idPromo = 1
-                                promoChipsWidget.clearPromoList()
-                            }
-                        }
-                        promoChipsWidget.renderPromoList(it.data.dataPromoChips[idPromo].airlinePrices)
+                        if(isReturnTrip()) promoChipsWidget.clearPromoList()
+                        promoChipsWidget.renderPromoList(it.data.dataPromoChips[FLIGHT_PROMO_CHIPS_START_DATE].airlinePrices)
                     }else{
                         hidePromoChips()
                     }
@@ -827,6 +818,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val QUICK_FILTER_ADDITIONAL_TWO_ORDER = 2
         private const val QUICK_FILTER_ADDITIONAL_ONE_ORDER = 1
         private const val QUICK_FILTER_NO_ADDITIONAL = 0
+
+        private const val FLIGHT_PROMO_CHIPS_START_DATE = 0
 
         private const val FLIGHT_QUICK_FILTER = "Filter"
         private const val FLIGHT_QUICK_FILTER_DIRECT = "Langsung"

@@ -14,7 +14,7 @@ data class AirlinePrice(
         @Expose
         val logo: String = "",
 
-        @SerializedName("shortName")
+        @SerializedName("airlineName")
         @Expose
         val shortName: String = "",
 
