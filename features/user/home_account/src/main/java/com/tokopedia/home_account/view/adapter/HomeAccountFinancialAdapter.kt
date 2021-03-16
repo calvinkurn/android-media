@@ -4,12 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialItemViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialViewHolder
-import com.tokopedia.home_account.view.viewholder.ErrorItemViewHolder
 import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
 import java.util.*
 

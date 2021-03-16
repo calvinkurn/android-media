@@ -88,4 +88,6 @@
 
     <string name="new_home_account_local_load_title">Gagal memuat menu ini</string>
     <string name="new_home_account_local_load_desc">Klik untuk coba lagi.</string>
+
+    <string name="default_member_title">Rewards</string>
 </resources>

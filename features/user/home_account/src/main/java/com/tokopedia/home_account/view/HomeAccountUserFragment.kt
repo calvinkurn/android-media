@@ -71,6 +71,7 @@ import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -223,7 +224,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     memberLocalLoad?.hide()
                     memberCardView?.show()
 
+                    memberTitle?.setMargin(6, 0, 0,  0)
                     memberTitle?.text = it.data.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
+                    memberIcon?.show()
                     memberIcon?.setImageUrl(it.data.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
 
                     val mappedMember = mapper.mapMemberItemDataView(it.data)
