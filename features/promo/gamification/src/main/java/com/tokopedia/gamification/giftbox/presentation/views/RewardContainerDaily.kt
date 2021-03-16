@@ -25,6 +25,8 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecoration
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
+import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.image.ImageUtils
 import timber.log.Timber
@@ -119,7 +121,9 @@ open class RewardContainerDaily @JvmOverloads constructor(
         rvCoupons.adapter = couponAdapter
 
         userSession = UserSession(context)
-        imageCircleReward.setImageDrawable(null)
+        imageCircleReward.alpha = 0f
+        imageCircleReward.scaleX = 0f
+        imageCircleReward.scaleY = 0f
 
     }
 
@@ -184,7 +188,8 @@ open class RewardContainerDaily @JvmOverloads constructor(
     }
 
     open fun setFinalTranslationOfCirclesTap(giftBoxTop: Int) {
-
+        val translation = giftBoxTop - 100.toPx().toFloat()
+        imageCircleReward.translationY = translation
     }
 
     fun concentricCircleAnimation(smallImage: View, largeImage: View, giftboxTop: Int, isInfinite: Boolean): Animator {
