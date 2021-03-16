@@ -19,21 +19,16 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.seller.menu.common.analytics.*
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
+import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
@@ -51,9 +46,6 @@ import javax.inject.Inject
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), SettingTrackingListener, MenuSettingAdapter.Listener {
 
     companion object {
-        private const val REQUEST_CHANGE_PASSWORD = 123
-        private const val REQUEST_ADD_PASSWORD = 1234
-
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
         private const val URL_PLAY_STORE_HOST = "https://play.google.com/store/apps/details?id="
