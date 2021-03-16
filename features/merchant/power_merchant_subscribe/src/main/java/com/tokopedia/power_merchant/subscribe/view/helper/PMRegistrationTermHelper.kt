@@ -19,7 +19,7 @@ object PMRegistrationTermHelper {
     }
 
     private fun getFirstPmRegistrationTerm(context: Context, shopInfo: PMShopInfoUiModel): RegistrationTermUiModel {
-        val shopScoreResIcon: Int = if ((shopInfo.isNewSeller && shopInfo.hasActiveProduct) || shopInfo.isEligibleShopScore) {
+        val shopScoreResIcon: Int = if ((shopInfo.isNewSeller && shopInfo.hasActiveProduct) || (!shopInfo.isNewSeller && shopInfo.isEligibleShopScore)) {
             R.drawable.ic_pm_checked
         } else {
             R.drawable.ic_pm_not_checked

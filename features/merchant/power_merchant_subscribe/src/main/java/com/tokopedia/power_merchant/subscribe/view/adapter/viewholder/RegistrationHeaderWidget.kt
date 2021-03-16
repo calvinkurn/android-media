@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.KYCStatusId
+import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
@@ -27,14 +28,23 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
 
     private fun setupView(element: WidgetRegistrationHeaderUiModel) {
         with(itemView) {
+            val shopInfo = element.shopInfo
             viewPmHeaderBackground.setBackgroundResource(R.drawable.bg_pm_registration_header)
             imgPmHeaderImage.loadImageDrawable(R.drawable.img_pm_registration_header)
-            tvPmHeaderNewSellerLabel.visibility = if (element.shopInfo.isNewSeller) View.VISIBLE else View.GONE
-            tickerPmHeader.visibility = if (element.shopInfo.kycStatusId == KYCStatusId.PENDING && element.shopInfo.isEligibleShopScore) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            tvPmHeaderNewSellerLabel.visibility = if (shopInfo.isNewSeller) View.VISIBLE else View.GONE
+
+            setTickerVisibility(shopInfo)
+        }
+    }
+
+    private fun setTickerVisibility(shopInfo: PMShopInfoUiModel) {
+        val isEligibleShopScore = !shopInfo.isNewSeller && shopInfo.isEligibleShopScore
+        val hasActiveProduct = shopInfo.isNewSeller && shopInfo.hasActiveProduct
+        val isTickerVisible = shopInfo.kycStatusId == KYCStatusId.PENDING && (isEligibleShopScore || hasActiveProduct)
+        itemView.tickerPmHeader.visibility = if (isTickerVisible) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 

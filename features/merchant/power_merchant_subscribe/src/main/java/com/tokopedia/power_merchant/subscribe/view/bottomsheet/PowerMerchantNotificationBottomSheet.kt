@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import kotlinx.android.synthetic.main.bottom_sheet_pm_notification.view.*
 
@@ -31,9 +32,7 @@ class PowerMerchantNotificationBottomSheet : BaseBottomSheet() {
     }
 
     private var primaryBtnText: String? = null
-    private var secondaryBtnText: String? = null
     private var primaryBtnClickListener: (() -> Unit)? = null
-    private var secondaryBtnClickListener: (() -> Unit)? = null
 
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_power_merchant_notification
 
@@ -45,7 +44,7 @@ class PowerMerchantNotificationBottomSheet : BaseBottomSheet() {
         setupCTAButton()
 
         textTitle.text = title
-        textDescription.text = description
+        textDescription.text = description.parseAsHtml()
         image.loadImageWithoutPlaceholder(imageUrl)
     }
 

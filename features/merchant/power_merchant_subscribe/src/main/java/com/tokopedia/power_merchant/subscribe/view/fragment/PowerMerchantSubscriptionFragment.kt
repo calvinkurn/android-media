@@ -131,7 +131,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun setupFooterCta(shopInfo: PMShopInfoUiModel) = view?.run {
-        val needTnC = (!shopInfo.isKyc && shopInfo.isEligibleShopScore) || (shopInfo.isKyc && shopInfo.isEligibleShopScore)
+        val isEligibleShopScore = !shopInfo.isNewSeller && shopInfo.isEligibleShopScore
+        val hasActiveProduct = shopInfo.isNewSeller && shopInfo.hasActiveProduct
+        val needTnC = (!shopInfo.isKyc && (isEligibleShopScore || hasActiveProduct))
+                || (shopInfo.isKyc && (isEligibleShopScore || hasActiveProduct))
         if (shopInfo.kycStatusId == KYCStatusId.PENDING) {
             pmRegistrationFooterView.gone()
         } else {
@@ -161,26 +164,24 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun showRegistrationTermBottomSheet(shopInfo: PMShopInfoUiModel) {
         val isNewSeller = shopInfo.isNewSeller
-        val title = if (isNewSeller) {
-            getString(R.string.pm_bottom_sheet_active_product_title)
+        val title: String
+        val description: String
+        val ctaText: String
+        val illustrationUrl: String
+        val appLink: String
+
+        if (isNewSeller) {
+            title = getString(R.string.pm_bottom_sheet_active_product_title)
+            description = getString(R.string.pm_bottom_sheet_active_product_description)
+            ctaText = getString(R.string.pm_add_product)
+            illustrationUrl = Constant.ImageUrl.ADD_PRODUCT_BOTTOM_SHEET
+            appLink = ApplinkConst.SellerApp.PRODUCT_ADD
         } else {
-            getString(R.string.pm_bottom_sheet_shop_score_title)
-        }
-        val description = if (isNewSeller) {
-            getString(R.string.pm_bottom_sheet_active_product_description)
-        } else {
-            getString(R.string.pm_bottom_sheet_shop_score_description)
-        }
-        val illustrationUrl = if (isNewSeller) {
-            Constant.ImageUrl.ADD_PRODUCT_BOTTOM_SHEET
-        } else {
-            Constant.ImageUrl.SHOP_SCORE_BOTTOM_SHEET
-        }
-        val ctaText = getString(R.string.pm_learn_shop_performance)
-        val appLink = if (isNewSeller) {
-            ApplinkConst.SellerApp.PRODUCT_ADD
-        } else {
-            ApplinkConst.SHOP_SCORE_DETAIL
+            title = getString(R.string.pm_bottom_sheet_shop_score_title)
+            description = getString(R.string.pm_bottom_sheet_shop_score_description)
+            ctaText = getString(R.string.pm_learn_shop_performance)
+            illustrationUrl = Constant.ImageUrl.SHOP_SCORE_BOTTOM_SHEET
+            appLink = ApplinkConst.SHOP_SCORE_DETAIL
         }
 
         val shopScoreBottomSheet = PowerMerchantNotificationBottomSheet.createInstance(title, description, illustrationUrl)
