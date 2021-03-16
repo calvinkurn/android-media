@@ -201,6 +201,53 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvHotelSearchListTitle" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerEmptyResultState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl2"
+                    android:background="@color/Unify_N0"
+                    android:padding="@dimen/spacing_lvl4"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob"
+                    tools:visibility="visible">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivHotelSearchMapNoResult"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/tvHotelSearchMapNoResultSubtitle"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tvHotelSearchNoResultTitle" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvHotelSearchNoResultTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lvl2"
+                        android:text="@string/hotel_search_map_no_result_title"
+                        android:textColor="@color/Unify_N700_96"
+                        app:layout_constraintLeft_toRightOf="@id/ivHotelSearchMapNoResult"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="heading_4" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvHotelSearchMapNoResultSubtitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:text="@string/hotel_search_map_no_result_subtitle"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintLeft_toLeftOf="@id/tvHotelSearchNoResultTitle"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvHotelSearchNoResultTitle"
+                        app:typographyType="body_3" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
