@@ -26,7 +26,7 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
         private const val DESCRIPTION_LIMIT = 300
     }
 
-    private var adapter = ProductDetailInfoAdapter()
+    private var adapter = ProductDetailInfoAdapter(listener)
     private var rvProductDetail: RecyclerView? = itemView.findViewById(R.id.rv_product_detail_info)
 
     override fun bind(element: ProductDetailInfoDataModel) {
