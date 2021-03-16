@@ -27,7 +27,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
@@ -40,6 +39,7 @@ import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.util.GravitySnapHelper
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
+import com.tokopedia.home_wishlist.view.custom.CountDrawable
 import com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
 import com.tokopedia.home_wishlist.view.custom.SpaceBottomItemDecoration
@@ -119,7 +119,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        private const val COACH_MARK_TAG = "wishlist"
+        const val COACH_MARK_TAG = "wishlist"
         private const val REQUEST_FROM_PDP = 394
         private const val className = "com.tokopedia.home_wishlist.view.fragment.WishlistFragment"
         private const val CACHE_CART = "CART"
@@ -628,8 +628,8 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
     private fun showToaster(message: String, action: String = "", actionClick: (() -> Unit)? = null) {
         this.view?.let {
-            if (action.isNotEmpty()) Toaster.make(it, message, actionText = action, clickListener = View.OnClickListener { actionClick?.invoke() })
-            else Toaster.make(it, message)
+            if (action.isNotEmpty()) Toaster.build(it, message, actionText = action, clickListener = View.OnClickListener { actionClick?.invoke() }).show()
+            else Toaster.build(it, message).show()
         }
     }
 

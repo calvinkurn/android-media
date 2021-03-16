@@ -7,6 +7,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.CpmViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel
+import com.tokopedia.search.result.presentation.model.SeparatorViewModel
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -147,13 +148,16 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads in first page`() {
-        visitableList.size shouldBe 18
+        visitableList.size shouldBe 20
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0 || index == 14) {
                 visitable.shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
             }
-            else if (index == 1 || index == 15) {
+            else if (index == 15 || index == 17) {
+                visitable.shouldBeInstanceOf<SeparatorViewModel>()
+            }
+            else if (index == 1 || index == 16) {
                 visitable.shouldBeInstanceOf<CpmViewModel>()
             }
             else {
@@ -180,13 +184,16 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads after load more`() {
-        visitableList.size shouldBe 33
+        visitableList.size shouldBe 35
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0 || index == 14 || index == 27) {
                 visitable.shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
             }
-            else if (index == 1 || index == 28) {
+            else if (index == 28 || index == 30) {
+                visitable.shouldBeInstanceOf<SeparatorViewModel>()
+            }
+            else if (index == 1 || index == 29) {
                 visitable.shouldBeInstanceOf<CpmViewModel>()
             }
             else {

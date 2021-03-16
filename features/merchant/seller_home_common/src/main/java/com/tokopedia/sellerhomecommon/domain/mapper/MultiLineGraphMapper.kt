@@ -46,30 +46,60 @@ class MultiLineGraphMapper @Inject constructor() {
                                         yLabel = yAxis.yLabel.orEmpty()
                                 )
                             },
-                    linePeriod = LinePeriodUiModel(
-                            currentPeriod = it.line?.currentPeriode.orEmpty().map { period ->
-                                XYAxisUiModel(
-                                        yVal = period.yVal ?: 0f,
-                                        yLabel = period.yLabel.orEmpty(),
-                                        xLabel = period.xLabel.orEmpty()
-                                )
-                            },
-                            lastPeriod = it.line?.lastPeriode.orEmpty().map { period ->
-                                XYAxisUiModel(
-                                        yVal = period.yVal ?: 0f,
-                                        yLabel = period.yLabel.orEmpty(),
-                                        xLabel = period.xLabel.orEmpty()
-                                )
-                            }
-                    ),
+                    linePeriod = getLinePeriods(it),
                     isEmpty = isMetricEmpty(it.line)
             )
         }
+    }
+
+    private fun getLinePeriods(lineMetricModel: MultiTrendLineMetricModel): LinePeriodUiModel {
+        val empty = 0
+        val currentPeriodeAxisSize = lineMetricModel.line?.currentPeriode?.size ?: empty
+        val lastPeriodeAxisSize = lineMetricModel.line?.lastPeriode?.size ?: empty
+        val lowestSize = currentPeriodeAxisSize.coerceAtMost(lastPeriodeAxisSize)
+
+        val currentPeriode = if (lowestSize != empty) {
+            lineMetricModel.line?.currentPeriode.takeOrDefault(lowestSize)
+        } else {
+            lineMetricModel.line?.currentPeriode.orEmpty()
+        }
+
+        val lastPeriode = if (lowestSize != empty) {
+            lineMetricModel.line?.lastPeriode.takeOrDefault(lowestSize)
+        } else {
+            lineMetricModel.line?.lastPeriode.orEmpty()
+        }
+
+        val minValueOfY = 0f
+        return LinePeriodUiModel(
+                currentPeriod = currentPeriode.map { period ->
+                    XYAxisUiModel(
+                            yVal = period.yVal ?: minValueOfY,
+                            yLabel = period.yLabel.orEmpty(),
+                            xLabel = period.xLabel.orEmpty()
+                    )
+                },
+                lastPeriod = lastPeriode.map { period ->
+                    XYAxisUiModel(
+                            yVal = period.yVal ?: minValueOfY,
+                            yLabel = period.yLabel.orEmpty(),
+                            xLabel = period.xLabel.orEmpty()
+                    )
+                }
+        )
     }
 
     private fun isMetricEmpty(line: LineModel?): Boolean {
         val isCurrentPeriodEmpty = line?.currentPeriode?.sumBy { (it.yVal ?: 0f).toInt() } == 0
         val isLastPeriodEmpty = line?.lastPeriode?.sumBy { (it.yVal ?: 0f).toInt() } == 0
         return isCurrentPeriodEmpty && isLastPeriodEmpty
+    }
+
+    private fun <T> Iterable<T>?.takeOrDefault(take: Int): List<T> {
+        return try {
+            this?.take(take).orEmpty()
+        } catch (e: IllegalArgumentException) {
+            this?.toList().orEmpty()
+        }
     }
 }

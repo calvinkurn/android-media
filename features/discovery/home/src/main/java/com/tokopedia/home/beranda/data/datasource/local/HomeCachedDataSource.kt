@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.datasource.local
 
 import android.os.SystemClock
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
+import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeRoomData
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_GET_CACHED_DATA_SOURCE
@@ -13,6 +14,15 @@ import java.util.concurrent.TimeUnit
 class HomeCachedDataSource(
         private val homeDao: HomeDao) {
     private val timeout = TimeUnit.DAYS.toMillis(30)
+
+    suspend fun saveCachedAtf(items: List<AtfCacheEntity>) {
+        homeDao.deleteAtfTable()
+        homeDao.save(items)
+    }
+
+    fun getCachedAtfData(): List<AtfCacheEntity> {
+        return homeDao.getHomeDataObject()
+    }
 
     fun getCachedHomeData(): Flow<HomeData?> {
         BenchmarkHelper.beginSystraceSection(TRACE_GET_CACHED_DATA_SOURCE)

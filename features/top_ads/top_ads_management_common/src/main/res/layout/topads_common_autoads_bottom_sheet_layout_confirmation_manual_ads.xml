@@ -44,7 +44,6 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_24"
         android:gravity="center"
-        android:text="@string/topads_common_confirmation_switch_manual_description"
         app:layout_constraintBottom_toTopOf="@+id/btn_start_manual_ads"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -62,29 +61,28 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:text="@string/topads_common_gunakan_iklan_manual"
-        app:unifyButtonType="main"
         app:layout_constraintBottom_toTopOf="@id/cancel_btn_start_manual_ads"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtitle" />
+        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+        app:unifyButtonType="main" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/cancel_btn_start_manual_ads"
-        style="@style/Button.Submit.White"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_50"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:text="@string/topads_common_cancel_btn"
-        app:unifyButtonType="alternate"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/topads_common_confirmation_sheet_cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_start_manual_ads" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_start_manual_ads"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

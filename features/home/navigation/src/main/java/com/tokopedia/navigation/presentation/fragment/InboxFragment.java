@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -82,6 +83,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final int REQUEST_FROM_PDP = 138;
     private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
     private static final String AB_TEST_INBOX_KEY = "Inbox Talk Release";
+    private static final String PAGE_SOURCE_KEY = "pageSource";
+    private static final String PAGE_SOURCE = "review inbox";
 
     private static final String COMPONENT_NAME_TOP_ADS = "Inbox Recommendation Top Ads";
 
@@ -129,7 +132,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                     false);
             int position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1);
-            if(position < 0 || adapter.getList().size() < position) return;
+            if(position < 0 || adapter.getList().size() <= position) return;
 
             if(adapter.getList().get(position) instanceof  Recommendation){
                 Recommendation recommendation = (Recommendation) adapter.getList().get(position);
@@ -367,7 +370,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 }
                 break;
             case REVIEW_MENU:
-                RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
+                RouteManager.route(getActivity(), Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE).build().toString());
                 break;
             case HELP_MENU:
                 RouteManager.route(getActivity(),ApplinkConst.INBOX_TICKET);

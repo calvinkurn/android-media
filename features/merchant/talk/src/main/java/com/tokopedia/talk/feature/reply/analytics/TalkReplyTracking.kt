@@ -1,6 +1,5 @@
 package com.tokopedia.talk.feature.reply.analytics
 
-import android.os.Bundle
 import com.tokopedia.talk.common.analytics.TalkEventTracking
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTrackingConstants
@@ -17,7 +16,7 @@ object TalkReplyTracking {
 
     private fun getInboxType(inboxType: String): String {
         return when (inboxType) {
-            TalkInboxTab.SHOP_TAB -> {
+            TalkInboxTab.SHOP_OLD -> {
                 TalkInboxTrackingConstants.TAB_SELLER
             }
             TalkInboxTab.BUYER_TAB -> {
@@ -29,9 +28,9 @@ object TalkReplyTracking {
         }
     }
 
-    fun eventSendAnswer(userId: String, productId: String, talkId: String) {
+    fun eventSendAnswer(userId: String, productId: String, talkId: String, isProductCardShown: Boolean) {
         with(TalkReplyTrackingConstants) {
-            eventTalkReply(EVENT_ACTION_CLICK_SEND, String.format(EVENT_LABEL_CLICK_SEND, talkId), userId, productId)
+            eventTalkReply(EVENT_ACTION_CLICK_SEND, String.format(EVENT_LABEL_CLICK_SEND, talkId, if (isProductCardShown) INBOX_PAGE else PRODUCT_PAGE), userId, productId)
         }
     }
 

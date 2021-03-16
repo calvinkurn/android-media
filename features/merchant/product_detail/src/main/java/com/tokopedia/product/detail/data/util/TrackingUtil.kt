@@ -29,7 +29,7 @@ object TrackingUtil {
                 list.add(
                         DataLayer.mapOf(
                                 ProductTrackingConstant.Tracking.ID, shopId.toString(),
-                                ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductDetailTracking.PDP, position.toString(), viewModel.voucherName).joinToString(" - "),
+                                ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductTrackingConstant.Label.PDP, position.toString(), viewModel.voucherName).joinToString(" - "),
                                 ProductTrackingConstant.Tracking.PROMO_POSITION, position,
                                 ProductTrackingConstant.Tracking.PROMO_ID, viewModel.voucherId,
                                 ProductTrackingConstant.Tracking.PROMO_CODE, viewModel.voucherCode
@@ -52,7 +52,7 @@ object TrackingUtil {
         return vouchers.withIndex().filter { it.value.isAvailable() }.map {
             DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.ID, shopId,
-                    ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductDetailTracking.PDP, (position + it.index + 1).toString(), it.value.voucherName).joinToString(" - "),
+                    ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductTrackingConstant.Label.PDP, (position + it.index + 1).toString(), it.value.voucherName).joinToString(" - "),
                     ProductTrackingConstant.Tracking.PROMO_POSITION, (position + it.index + 1).toString(),
                     ProductTrackingConstant.Tracking.PROMO_ID, it.value.voucherId,
                     ProductTrackingConstant.Tracking.PROMO_CODE, it.value.voucherCode

@@ -36,6 +36,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
+import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
@@ -53,6 +56,7 @@ import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
+import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
@@ -129,6 +133,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private var activityShouldEnd: Boolean = true
     private var enableOvoRegister: Boolean = false
 
+    @Inject
+    lateinit var externalRegisterPreference: ExternalRegisterPreference
+
     @field:Named(SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -158,14 +165,16 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
+    private var isRegisterOvo = false
+
     private val draw: Drawable?
         get() {
             var drawable: TextDrawable? = null
-            if (activity != null) {
-                drawable = TextDrawable(activity!!)
-                drawable.text = resources.getString(R.string.login)
-                drawable.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                drawable.textSize = 14f
+            activity?.let {
+                drawable = TextDrawable(it)
+                drawable?.text = resources.getString(R.string.login)
+                drawable?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                drawable?.textSize = 14f
             }
             return drawable
         }
@@ -220,9 +229,18 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         userSession.logoutSession()
     }
 
+    fun checkForOvoResume(){
+        if(isRegisterOvo){
+            if(externalRegisterPreference.isNeedContinue()){
+                goToRegisterWithPhoneNumber(externalRegisterPreference.getPhone())
+                externalRegisterPreference.isNeedContinue(false)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-
+        checkForOvoResume()
         activity?.run {
             if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
                 setResult(Activity.RESULT_OK)
@@ -526,7 +544,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    fun doRegisterCheck(){
+    fun doRegisterCheck() {
         phoneNumber?.run {
             registerInitialViewModel.registerCheck(removeSymbolPhone(this))
         }
@@ -536,8 +554,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         activity?.let {
             ovoCreationAnalytics.trackViewOvoRegisterDialog()
             phoneNumber?.run {
-                OvoAccountDialog.showRegisterDialogUnify(it, this, object: BaseDialogConnectAccListener {
+                OvoAccountDialog.showRegisterDialogUnify(it, this, object : BaseDialogConnectAccListener {
                     override fun onDialogPositiveBtnClicked() {
+                        isRegisterOvo = true
                         ovoCreationAnalytics.trackClickCreateOvo()
                         goToOvoAddName(this@run)
                     }
@@ -556,8 +575,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     fun showConnectOvoDialog() {
         activity?.run {
             ovoCreationAnalytics.trackViewOvoConnectDialog()
-            OvoAccountDialog.showConnectDialogUnify(this, object: BaseDialogConnectAccListener {
+            OvoAccountDialog.showConnectDialogUnify(this, object : BaseDialogConnectAccListener {
                 override fun onDialogPositiveBtnClicked() {
+                    isRegisterOvo = true
                     ovoCreationAnalytics.trackClickConnectOvo()
                     goToOvoAddName(phoneNumber ?: "")
                 }
@@ -727,19 +747,21 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 listTickerInfo.forEach {
                     mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
                 }
-                val adapter = TickerPagerAdapter(activity!!, mockData)
-                adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
+                activity?.let {
+                    val adapter = TickerPagerAdapter(it, mockData)
+                    adapter.setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        }
 
-                    override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
-                    }
+                        override fun onDismiss() {
+                            registerAnalytics.trackClickCloseTickerButton()
+                        }
 
-                })
-                tickerAnnouncement.addPagerView(adapter, mockData)
+                    })
+                    tickerAnnouncement.addPagerView(adapter, mockData)
+                }
             } else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
@@ -772,10 +794,11 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
         when (registerCheckData.registerType) {
             PHONE_TYPE -> {
+                registerAnalytics.trackClickPhoneSignUpButton()
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
-                } else if(registerCheckData.isShowRegisterOvo && useOvoRegister()){
+                } else if (registerCheckData.isShowRegisterOvo && useOvoRegister()) {
                     registerInitialViewModel.checkHasOvoAccount(registerCheckData.view)
                 } else {
                     showProceedWithPhoneDialog(registerCheckData.view)
@@ -918,7 +941,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
-                val uuid = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 goToAddName(uuid)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity
                             .RESULT_CANCELED) {
@@ -932,8 +955,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
-                val accessToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                val phoneNumber = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
+                val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToChooseAccountPage(accessToken, phoneNumber)
 
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
@@ -985,12 +1008,11 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if(requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED){
+            } else if (requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED) {
                 phoneNumber?.run {
                     goToRegisterWithPhoneNumber(this)
                 }
-            }
-            else {
+            } else {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
@@ -1148,7 +1170,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 dialog.setPrimaryCTAClickListener {
                     registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                     dialog.dismiss()
-                    startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
+                    val intent = LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+                    startActivity(intent)
                     it.finish()
                 }
                 dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
@@ -1162,7 +1186,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun showRegisteredPhoneDialog(phone: String) {
-        registerAnalytics.trackClickPhoneSignUpButton()
         registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST)
         registerAnalytics.trackFailedClickPhoneSignUpButtonAlreadyRegistered()
         context?.let {
@@ -1191,7 +1214,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun goToLoginRegisteredPhoneNumber(phone: String) {
         phoneNumber = phone
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
+        val intent = goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
     }
 
@@ -1213,7 +1236,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -1224,7 +1247,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
-
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, true)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -1235,7 +1259,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
 
     private fun showProceedWithPhoneDialog(phone: String) {
-        registerAnalytics.trackClickPhoneSignUpButton()
         context?.let {
             activity?.runOnUiThread {
                 val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
@@ -1259,7 +1282,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun goToRegisterWithPhoneNumber(phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        val intent =  goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
+        val intent = goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
     }
 
@@ -1300,6 +1323,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             it.finish()
 
             saveFirstInstallTime()
+
+            SubmitDeviceWorker.scheduleWorker(requireContext(), true)
+            DataVisorWorker.scheduleWorker(requireContext(), true)
+            AppAuthWorker.scheduleWorker(it, true)
         }
     }
 

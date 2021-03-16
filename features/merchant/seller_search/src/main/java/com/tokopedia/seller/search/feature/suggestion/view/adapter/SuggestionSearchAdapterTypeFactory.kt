@@ -7,21 +7,36 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.*
 import com.tokopedia.seller.search.feature.suggestion.view.model.LoadingSearchModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.SellerSearchNoResultUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.*
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.HighlightSuggestionSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.DividerSellerSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.TitleHasMoreSellerSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.TitleHeaderSellerSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.faq.ItemFaqSearchViewHolder
+import com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightlights.HighlightSuggestionSearchViewHolder
+import com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightlights.TitleHighlightSuggestionSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.navigation.ItemNavigationSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.order.ItemOrderSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.product.ItemProductSearchViewHolder
 
-class SuggestionSearchAdapterTypeFactory(private val orderSearchListener: OrderSearchListener,
-                                         private val productSearchListener: ProductSearchListener,
-                                         private val navigationSearchListener: NavigationSearchListener,
-                                         private val faqSearchListener: FaqSearchListener) : BaseAdapterTypeFactory(), TypeFactorySuggestionSearchAdapter {
+class SuggestionSearchAdapterTypeFactory(
+        private val orderSearchListener: OrderSearchListener,
+        private val productSearchListener: ProductSearchListener,
+        private val navigationSearchListener: NavigationSearchListener,
+        private val faqSearchListener: FaqSearchListener,
+        private val highlightSuggestionSearchListener: HighlightSuggestionSearchListener
+) : BaseAdapterTypeFactory(), TypeFactorySuggestionSearchAdapter {
 
     override fun type(loadingModel: LoadingSearchModel): Int {
         return ShimmerLoadingViewHolder.LAYOUT
+    }
+
+    override fun type(itemTitleHighlightSuggestionSearchUiModel: ItemTitleHighlightSuggestionSearchUiModel): Int {
+        return TitleHighlightSuggestionSearchViewHolder.LAYOUT
+    }
+
+    override fun type(highlightSuggestionSearchUiModel: HighlightSuggestionSearchUiModel): Int {
+        return HighlightSuggestionSearchViewHolder.LAYOUT
     }
 
     override fun type(sellerSearchNoResultUiModel: SellerSearchNoResultUiModel): Int {
@@ -68,6 +83,8 @@ class SuggestionSearchAdapterTypeFactory(private val orderSearchListener: OrderS
             ItemFaqSearchViewHolder.LAYOUT -> ItemFaqSearchViewHolder(parent, faqSearchListener)
             ShimmerLoadingViewHolder.LAYOUT -> ShimmerLoadingViewHolder(parent)
             SellerSearchNoResultViewHolder.LAYOUT -> SellerSearchNoResultViewHolder(parent)
+            TitleHighlightSuggestionSearchViewHolder.LAYOUT -> TitleHighlightSuggestionSearchViewHolder(parent)
+            HighlightSuggestionSearchViewHolder.LAYOUT -> HighlightSuggestionSearchViewHolder(parent, highlightSuggestionSearchListener)
             else -> super.createViewHolder(parent, type)
         }
     }

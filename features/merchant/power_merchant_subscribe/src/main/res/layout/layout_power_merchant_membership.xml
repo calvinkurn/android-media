@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:orientation="vertical"
-        android:background="#f8fafc"
+        android:background="@color/Unify_N0"
         android:padding="@dimen/spacing_lvl4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,7 +31,7 @@
     
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textWarning"
-            android:textColor="@color/light_N700"
+            android:textColor="@color/Unify_N700"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -65,7 +65,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textStatusLabel"
         android:text="@string/power_merchant_status_label"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/power_merchant_horizontal_spacing_small"
@@ -79,7 +79,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textStatus"
         tools:text="Aktif"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
@@ -92,7 +92,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textPerformanceLabel"
         android:text="@string/power_merchant_shop_performance_label"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl5"
@@ -102,7 +102,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textShopScore"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
@@ -114,7 +114,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textShopMaxScore"
         android:text="@string/power_merchant_max_score"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
@@ -125,7 +125,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textShopScoreDescription"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
@@ -140,7 +140,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textShopScoreHint"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"

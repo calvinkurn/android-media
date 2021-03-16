@@ -93,7 +93,7 @@ public class Tabs extends TabLayout {
             this.setElevation(10);
             this.setBackgroundResource(R.color.Unify_N0);
         } else {
-            this.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            this.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
         }
     }
 

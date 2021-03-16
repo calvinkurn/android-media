@@ -646,7 +646,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setSpid(_orderShipment.getRealShipperProductId().toString())
             setCodFlag(false)
             setCornerFlag(false)
-            setIsFullfilment(false)
+            setIsFullfilment(orderShop.isFulfillment)
             setShopIdDimension(orderShop.shopId.toString())
             setShopNameDimension(orderShop.shopName)
             setShopTypeDimension(orderShop.isOfficial, orderShop.isGold)

@@ -4,19 +4,18 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
-import android.view.Display
-import android.view.WindowManager
+import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.FileUtil.writeBufferToFile
 import com.tokopedia.utils.file.FileUtil.writeStreamToFile
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import kotlin.jvm.Throws
 import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 /**
  * Utility collection for Image Processing
@@ -42,6 +41,9 @@ object ImageProcessingUtil {
     const val DEF_SMALL_HEIGHT = 816
 
     const val DEFAULT_DIRECTORY = "Tokopedia/"
+
+    private const val LOG_ERROR_TAG = "P1#IMAGE_UTIL#"
+    private const val LOG_ERROR_MAX_LIMIT = 1000
 
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int { // Raw height and width of image
         val height = options.outHeight
@@ -113,6 +115,7 @@ object ImageProcessingUtil {
             val exif = ExifInterface(path!!)
             exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
         } catch (e: Throwable) {
+            logError("getOrientation", e)
             ExifInterface.ORIENTATION_NORMAL
         }
     }
@@ -120,6 +123,7 @@ object ImageProcessingUtil {
     @JvmOverloads
     @JvmStatic
     fun trimBitmap(imagePath: String?, expectedRatio: Float, currentRatio: Float, needCheckRotate: Boolean,
+                   compressFormat: CompressFormat = imagePath.getCompressFormat(),
                    targetRelativeDirectory: String? = DEFAULT_DIRECTORY): String? {
         val bitmapToEdit: Bitmap = getBitmapFromPath(imagePath, DEF_WIDTH, DEF_HEIGHT, needCheckRotate)
                 ?: return null
@@ -146,7 +150,7 @@ object ImageProcessingUtil {
             val canvas = Canvas(outputBitmap)
             canvas.drawBitmap(bitmapToEdit, Rect(left, top, right, bottom),
                     Rect(0, 0, expectedWidth, expectedHeight), null)
-            val file = writeImageToTkpdPath(outputBitmap, imagePath.getCompressFormat(), targetRelativeDirectory)
+            val file = writeImageToTkpdPath(outputBitmap, compressFormat, targetRelativeDirectory)
             bitmapToEdit.recycle()
             outputBitmap.recycle()
             System.gc()
@@ -321,6 +325,7 @@ object ImageProcessingUtil {
             out.flush()
             out.close()
         } catch (e: Throwable) {
+            logError("writeToTkpdImage", e)
             return null
         }
         return file
@@ -435,7 +440,18 @@ object ImageProcessingUtil {
             System.gc()
             file?.absolutePath ?: imagePath
         } catch (e: Throwable) {
+            logError("resizeBitmap", e)
             imagePath
         }
+    }
+
+    private fun logError(logTitle: String, throwable: Throwable) {
+        val stacktrace = Log.getStackTraceString(throwable)
+        Timber.w("${LOG_ERROR_TAG}${logTitle};reason='${limitAndCleanString(throwable.message)
+        }';data='${limitAndCleanString(stacktrace)}'")
+    }
+
+    private fun limitAndCleanString(string: String?): String {
+        return string.orEmpty().replace("'", "").take(LOG_ERROR_MAX_LIMIT)
     }
 }

@@ -55,7 +55,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         setContentView(R.layout.topads_base_edit_activity_layout)
         renderTabAndViewPager()
         setupToolBar()
-        backArrow.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.toolbar_back_black))
+        backArrow.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.toolbar_back_black))
         backArrow.setOnClickListener {
             onBackPressed()
         }

@@ -32,7 +32,11 @@ data class HomeFlag(
 
     @SerializedName("flags")
     @Expose
-    var flags: List<Flags> = listOf()
+    var flags: MutableList<Flags> = mutableListOf()
+
+    fun addFlag(name: String, isActive: Boolean) {
+        flags.add(Flags(name, isActive))
+    }
 
     fun getFlag(type: TYPE): Boolean{
         return flags.find { it.name == type.toString() }?.isActive ?: false

@@ -24,8 +24,7 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         app:isInfinite="true"
-        app:autoScroll="false"
-        app:scrollInterval="100000000"
+        app:autoScroll="true"
         android:nestedScrollingEnabled="true"
         app:layout_constraintTop_toTopOf="parent" />
 

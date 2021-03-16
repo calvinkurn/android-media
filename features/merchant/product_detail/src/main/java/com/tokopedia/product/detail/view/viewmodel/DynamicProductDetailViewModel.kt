@@ -178,7 +178,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
-    var enableCaching: Boolean = true
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionType: Int = 0
@@ -798,20 +797,20 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private fun getProductInfoP2OtherAsync(productId: String, shopId: Int): Deferred<ProductInfoP2Other> {
-        return async {
+        return async(dispatcher.io) {
             getProductInfoP2OtherUseCase.get().executeOnBackground(GetProductInfoP2OtherUseCase.createParams(productId, shopId), forceRefresh)
         }
     }
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: String): Deferred<ProductInfoP2Login> {
-        return async {
+        return async(dispatcher.io)  {
             getProductInfoP2LoginUseCase.get().requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
             getProductInfoP2LoginUseCase.get().executeOnBackground()
         }
     }
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
-        return async {
+        return async(dispatcher.io)  {
             getProductInfoP2DataUseCase.get().executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, pdpSession, generatePdpSessionWithDeviceId()), forceRefresh)
         }
     }
@@ -833,8 +832,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
         getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId)
-        getPdpLayoutUseCase.get().forceRefresh = forceRefresh
-        getPdpLayoutUseCase.get().enableCaching = enableCaching
         return getPdpLayoutUseCase.get().executeOnBackground()
     }
 }

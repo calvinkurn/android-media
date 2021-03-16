@@ -1,0 +1,13 @@
+{
+  "readme": "Reminder Widget recharge close",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "homepage-digital",
+      "event": "clickHomepage",
+      "eventAction": "click close on digital bills",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+}}"
+    }
+  ]
+}

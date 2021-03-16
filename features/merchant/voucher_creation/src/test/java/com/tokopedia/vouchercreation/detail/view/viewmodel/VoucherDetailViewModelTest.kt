@@ -10,6 +10,7 @@ import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
+import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import io.mockk.MockKAnnotations
@@ -38,6 +39,9 @@ class VoucherDetailViewModelTest {
     lateinit var shopBasicDataUseCase: ShopBasicDataUseCase
 
     @RelaxedMockK
+    lateinit var getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase
+
+    @RelaxedMockK
     lateinit var cancelVoucherResultObserver: Observer<Result<Int>>
 
     @RelaxedMockK
@@ -55,7 +59,7 @@ class VoucherDetailViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        mViewModel = VoucherDetailViewModel(CoroutineTestDispatchersProvider, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase)
+        mViewModel = VoucherDetailViewModel(CoroutineTestDispatchersProvider, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase, getBroadCastMetaDataUseCase)
 
         with(mViewModel) {
             cancelVoucherResultLiveData.observeForever(cancelVoucherResultObserver)

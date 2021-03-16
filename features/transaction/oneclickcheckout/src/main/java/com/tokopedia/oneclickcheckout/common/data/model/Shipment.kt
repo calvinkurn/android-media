@@ -16,5 +16,7 @@ data class Shipment(
         @SerializedName("recommendation_sp_id")
         val recommendationSpId: Int = 0,
         @SerializedName("is_free_shipping_selected")
-        val isFreeShippingSelected: Boolean = false
+        val isFreeShippingSelected: Boolean = false,
+        @SerializedName("estimation")
+        val estimation: String = ""
 )

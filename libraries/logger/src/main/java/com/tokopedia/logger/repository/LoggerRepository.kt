@@ -1,7 +1,6 @@
 package com.tokopedia.logger.repository
 
 import com.tokopedia.encryption.security.BaseEncryptor
-import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
@@ -10,13 +9,10 @@ import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.TimberReportingTree
-import kotlinx.coroutines.delay
 import javax.crypto.SecretKey
 
 class LoggerRepository(private val logDao: LoggerDao,
-                       private val loggerCloudLogentriesDataSource: LoggerCloudDataSource<String, String>,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEvent>,
-                       private val logentriesToken: Array<String>,
                        private val scalyrConfigs: List<ScalyrConfig>,
                        private val encryptor: BaseEncryptor,
                        private val secretKey: SecretKey) : LoggerRepositoryContract {
@@ -52,32 +48,10 @@ class LoggerRepository(private val logDao: LoggerDao,
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
         val tokenIndex = priority-1
 
-        var scalyrSendSuccess = false
-        if (LogManager.scalyrEnabled) {
-            scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
+        val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
+        if (scalyrSendSuccess) {
+            deleteEntries(logs)
         }
-
-        if (LogManager.logentriesEnabled) {
-            for (log in logs) {
-                val success = sendLogentriesLogToServer(logentriesToken[tokenIndex], log)
-                if (LogManager.isPrimaryLogentries && success) {
-                    deleteEntry(log.timeStamp)
-                }
-                delay(100)
-            }
-        }
-
-        if (LogManager.isPrimaryScalyr) {
-            if (scalyrSendSuccess) {
-                deleteEntries(logs)
-            }
-        }
-    }
-
-    suspend fun sendLogentriesLogToServer(token: String, logger: Logger): Boolean {
-        val message = encryptor.decrypt(logger.message, secretKey)
-        val messageArray = listOf(truncate(message))
-        return loggerCloudLogentriesDataSource.sendLogToServer(token, messageArray)
     }
 
     suspend fun sendScalyrLogToServer(config: ScalyrConfig, logs: List<Logger>): Boolean {

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
@@ -38,7 +39,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
-        if(isMarkNotFraud) {
+        if (isMarkNotFraud) {
             threadListener.onUnmaskCommentOptionSelected(commentId)
         } else {
             threadListener.onDismissUnmaskCard(commentId)
@@ -52,15 +53,16 @@ class TalkReplyViewHolder(view: View,
             showDisplayName(userName, userId, isSeller, element.shopId)
             showDate(createTimeFormatted)
             showLabelWithCondition(isSeller, element.isMyQuestion)
-            showAnswer(content, state.isMasked, maskedContent, state.allowUnmask)
+            showAnswer(content, state.isMasked, element.isSellerView, maskedContent, state.allowUnmask)
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
-            showUnmaskCardWithCondition(state.allowUnmask, answerID)
+            showMaskingState(state.isMasked, state.allowUnmask, maskedContent, answerID)
+            showSmartReplyLabel(state.isAutoReplied)
         }
     }
 
     private fun showProfilePicture(userThumbNail: String, userId: String, isSeller: Boolean, shopId: String) {
-        if(userThumbNail.isNotEmpty()) {
+        if (userThumbNail.isNotEmpty()) {
             itemView.replyProfilePicture.apply {
                 loadImage(userThumbNail)
                 setOnClickListener {
@@ -74,9 +76,9 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
-        if(userName.isNotEmpty()) {
-            itemView.replyDisplayName.apply{
-                text = userName
+        if (userName.isNotEmpty()) {
+            itemView.replyDisplayName.apply {
+                text = HtmlCompat.fromHtml(userName, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
                 setOnClickListener {
                     threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
@@ -88,7 +90,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showDate(date: String) {
-        if(date.isNotEmpty()) {
+        if (date.isNotEmpty()) {
             itemView.replyDate.apply {
                 text = addBulletPointToDate(date)
                 show()
@@ -98,12 +100,11 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestion :Boolean) = with(itemView){
+    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestion: Boolean) = with(itemView) {
         when {
             isSeller -> {
                 replySellerLabel.text = context.getString(R.string.reading_seller_label)
                 replySellerLabel.setLabelType(GENERAL_LIGHT_GREEN)
-                replyDisplayName.hide()
                 replySellerLabel.show()
             }
             isMyQuestion -> {
@@ -121,16 +122,16 @@ class TalkReplyViewHolder(view: View,
         return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
-    private fun showAnswer(answer: String, isMasked: Boolean, maskedContent: String, allowUnmask: Boolean) {
-        if(isMasked) {
+    private fun showAnswer(answer: String, isMasked: Boolean, isSeller: Boolean, maskedContent: String, allowUnmask: Boolean) {
+        if (isMasked) {
             itemView.replyMessage.apply {
-                text = if(allowUnmask) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
+                text = if (allowUnmask || isSeller) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 show()
             }
             return
         }
-        if(answer.isNotEmpty()) {
+        if (answer.isNotEmpty()) {
             itemView.replyMessage.apply {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 text = HtmlLinkHelper(context, answer).spannedString
@@ -166,7 +167,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showAttachedProducts(attachedProducts: MutableList<AttachedProduct>) {
-        if(attachedProducts.isNotEmpty()) {
+        if (attachedProducts.isNotEmpty()) {
             val attachedProductAdapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
             attachedProducts.add(0, AttachedProduct())
             attachedProductAdapter.setData(attachedProducts)
@@ -180,7 +181,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showKebabWithConditions(commentId: String, allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {
-        if(allowReport || allowDelete){
+        if (allowReport || allowDelete) {
             itemView.replyKebab.apply {
                 setOnClickListener {
                     onKebabClickedListener.onKebabClicked(commentId, allowReport, allowDelete)
@@ -192,14 +193,38 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showUnmaskCardWithCondition(allowUnmask: Boolean, commentId: String) {
-        if(allowUnmask) {
-            itemView.replyCommentUnmaskCard.apply {
-                show()
-                setListener(this@TalkReplyViewHolder, commentId)
+    private fun showMaskingState(isMasked: Boolean, allowUnmask: Boolean, maskedContent: String, commentId: String) {
+        when {
+            isMasked && allowUnmask -> {
+                itemView.replyCommentUnmaskCard.apply {
+                    show()
+                    setListener(this@TalkReplyViewHolder, commentId)
+                }
+                itemView.replyCommentTicker.hide()
             }
-        } else {
-            itemView.replyCommentUnmaskCard.hide()
+            isMasked && !allowUnmask -> {
+                itemView.replyCommentTicker.apply {
+                    show()
+                    setTextDescription(maskedContent)
+                }
+                itemView.replyCommentUnmaskCard.hide()
+            }
+            else -> {
+                itemView.replyCommentUnmaskCard.hide()
+                itemView.replyCommentTicker.hide()
+            }
         }
+    }
+
+    private fun showSmartReplyLabel(isAutoReplied: Boolean) {
+        itemView.replySmartReplyLabel.apply {
+            setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N50))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            showWithCondition(isAutoReplied)
+        }
+    }
+
+    private fun getColorString(color: Int): String {
+        return "#${Integer.toHexString(ContextCompat.getColor(itemView.context, color))}"
     }
 }

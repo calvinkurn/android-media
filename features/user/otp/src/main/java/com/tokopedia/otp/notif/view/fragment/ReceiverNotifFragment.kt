@@ -23,6 +23,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.data.SignResult
 import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifData
+import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifExpData
 import com.tokopedia.otp.notif.view.activity.ResultNotifActivity
 import com.tokopedia.otp.notif.view.viewbinding.ReceiverNotifViewBinding
 import com.tokopedia.otp.notif.viewmodel.NotifViewModel
@@ -30,6 +31,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.PublicKey
@@ -48,6 +50,8 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     lateinit var loadingDialog: LoadingDialog
     @Inject
     lateinit var analytics: TrackingOtpUtil
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var deviceName: String = ""
     private var location: String = ""
@@ -82,6 +86,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initView()
+        verifyPushNotifExp()
     }
 
     override fun onBackPressed(): Boolean {
@@ -104,6 +109,12 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             when (it) {
                 is Success -> onSuccessVerifyPushNotif().invoke(it.data)
                 is Fail -> onFailedVerifyPushNotif().invoke(it.throwable)
+            }
+        })
+        viewModel.verifyPushNotifExpResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessVerifyPushNotifExp().invoke(it.data)
+                is Fail -> onFailedVerifyPushNotifExp().invoke(it.throwable)
             }
         })
     }
@@ -131,14 +142,55 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
+    private fun onSuccessVerifyPushNotifExp(): (VerifyPushNotifExpData) -> Unit {
+        return { verifyPushNotifExpData ->
+            dismissLoading()
+            if(verifyPushNotifExpData.imglink.isNotEmpty() &&
+                    verifyPushNotifExpData.messageTitle.isNotEmpty() &&
+                    verifyPushNotifExpData.messageBody.isNotEmpty() &&
+                    verifyPushNotifExpData.ctaType.isNotEmpty()) {
+                goToResultNotif(
+                        verifyPushNotifExpData.imglink,
+                        verifyPushNotifExpData.messageTitle,
+                        verifyPushNotifExpData.messageBody,
+                        verifyPushNotifExpData.ctaType,
+                        verifyPushNotifExpData.status
+                )
+            }
+        }
+    }
+
+    private fun onFailedVerifyPushNotifExp(): (Throwable) -> Unit {
+        return { throwable ->
+            dismissLoading()
+            throwable.printStackTrace()
+            LetUtil.ifLet(throwable.message, viewBound.containerView) { (message, containerView) ->
+                Toaster.make(containerView as View, message as String, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
+        }
+    }
+
+    private fun verifyPushNotifExp() {
+        showLoading()
+        var signResult = SignResult()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            signResult = signDataVerifyPushNotif(challengeCode, STATUS_CHECK)
+        }
+        viewModel.verifyPushNotifExp(challengeCode, signResult.signature, STATUS_CHECK)
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun signData(challangeCode: String, status: String): SignResult {
+    private fun signDataVerifyPushNotif(challangeCode: String, status: String): SignResult {
+        val datetime = (System.currentTimeMillis() / 1000).toString()
+        val data = challangeCode + status
+        return signData(data, datetime)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun signData(data: String, datetime: String): SignResult {
         val signResult = SignResult()
         try {
-            val datetime = (System.currentTimeMillis() / 1000).toString()
             signResult.datetime = datetime
-
-            val data = challangeCode + status
 
             val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEY_STORE).apply {
                 load(null)
@@ -160,7 +212,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             }
 
         } catch (e: Exception) {
-            throw RuntimeException(e)
+            e.printStackTrace()
         }
 
         return signResult
@@ -197,7 +249,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             showLoading()
             var signResult = SignResult()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                signResult = signData(challengeCode, STATUS_APPROVE)
+                signResult = signDataVerifyPushNotif(challengeCode, STATUS_APPROVE)
             }
             viewModel.verifyPushNotif(challengeCode, signResult.signature, STATUS_APPROVE)
         }
@@ -206,7 +258,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             showLoading()
             var signResult = SignResult()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                signResult = signData(challengeCode, STATUS_REJECT)
+                signResult = signDataVerifyPushNotif(challengeCode, STATUS_REJECT)
             }
             viewModel.verifyPushNotif(challengeCode, signResult.signature, STATUS_REJECT)
         }
@@ -228,6 +280,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
         const val STATUS_APPROVE = "approve"
         const val STATUS_REJECT = "reject"
+        const val STATUS_CHECK = "check"
 
         private const val KEY_PARAM_DEVICE_NAME = "device_name"
         private const val KEY_PARAM_LOCATION = "location"

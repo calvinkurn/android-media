@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.EmptyState xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/stockLocationInfo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:unifyEmptyStateCTAFullWidth="true"
+    app:unifyEmptyStateDescription="@string/bottom_sheet_stock_location_title"
+    app:unifyEmptyStatePrimaryCTAText="@string/bottom_sheet_stock_location_primary_cta"
+    app:unifyEmptyStateTitle="@string/bottom_sheet_stock_location_description"
+    app:unifyEmptyStateType="page" />

@@ -33,11 +33,11 @@ data class SomCourierList (
                 data class Shipment(
                         @SerializedName("shipping_max_add_fee")
                         @Expose
-                        val shippingMaxAddFee: Int = 0,
+                        val shippingMaxAddFee: String = "0",
 
                         @SerializedName("shipment_id")
                         @Expose
-                        val shipmentId: Int = 0,
+                        val shipmentId: String = "0",
 
                         @SerializedName("shipment_available")
                         @Expose

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -54,7 +53,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private var contentLayout: Group? = null
     private var globalError: GlobalError? = null
 
-    private var isNewLayout = false
+    private var isNewFlow = false
 
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
@@ -89,6 +88,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             if (parent.getShippingId() > 0) {
                 viewModel.selectedId = parent.getShippingId()
             }
+            isNewFlow = parent.isNewFlow()
         }
 
         viewModel.shippingDuration.observe(viewLifecycleOwner, {
@@ -97,7 +97,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                     swipeRefreshLayout?.isRefreshing = false
                     globalError?.gone()
                     contentLayout?.visible()
-                    adapter.renderData(it.data.services)
+                    adapter.renderData(it.data.services, isNewFlow)
                     validateButton()
                 }
 

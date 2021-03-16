@@ -110,28 +110,23 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Execute saveLocallyAttributes`() {
-        val debitInstantModel = mockk<DebitInstantModel>(relaxed = true)
         val debitInstandData = mockk<DebitInstantData>(relaxed = true)
+        val debitInstantModel = mockk<DebitInstantModel>(relaxed = true)
 
         every { debitInstandData.redirectUrl } returns "redirect"
         every { debitInstantModel.data } returns debitInstandData
 
         /* When */
-        val response = UserAccountDataModel(vccUserStatus = VccUserStatus().apply {
-            status = "status"
-            redirectionUrl = "http://redirect"
-        }, wallet = WalletModel().apply {
-            isLinked = true
-        }, profile = ProfileModel().apply {
-            isPhoneVerified = true
-        }, isAffiliate = true,
-        debitInstant = debitInstantModel)
+        val response = UserAccountDataModel(
+                wallet = WalletModel().apply { isLinked = true },
+                profile = ProfileModel().apply { isPhoneVerified = true },
+                isAffiliate = true,
+                debitInstant = debitInstantModel
+        )
 
         viewModel.saveLocallyAttributes(response)
+
         verify {
-            walletPref.saveWallet(response.wallet)
-            walletPref.tokoSwipeUrl = response.vccUserStatus.redirectionUrl
-            walletPref.saveVccUserStatus(response.vccUserStatus)
             userSession.setIsMSISDNVerified(response.profile.isPhoneVerified)
             userSession.setIsAffiliateStatus(response.isAffiliate)
         }
@@ -155,10 +150,6 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFirstRecommendation()
 
-        verify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
-
         val result = viewModel.firstRecommendationData.getOrAwaitValue()
         Assertions.assertThat(result).isEqualTo(Success(expectedResult))
     }
@@ -172,10 +163,6 @@ class HomeAccountUserViewModelTest {
         } returns expectedResult
 
         viewModel.getRecommendation(testPage)
-
-        verify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
 
         val result = viewModel.getRecommendationData.getOrAwaitValue()
         Assertions.assertThat(result).isEqualTo(Success(expectedResult.recommendationItemList))
@@ -203,10 +190,6 @@ class HomeAccountUserViewModelTest {
         } throws expectedResult
 
         viewModel.getRecommendation(testPage)
-
-        verify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
 
         val result = viewModel.getRecommendationData.getOrAwaitValue()
         Assertions.assertThat(result).isEqualTo(Fail(expectedResult))

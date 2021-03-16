@@ -18,5 +18,9 @@
             android:name=".environment.InstrumentationHomeTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
+        <activity
+            android:name=".environment.InstrumentationHomeRevampTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
     </application>
 </manifest>

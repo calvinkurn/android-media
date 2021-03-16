@@ -6,6 +6,10 @@ object GiftBoxTrackerConstants {
     const val EVENT_ACTION = "eventAction"
     const val EVENT_LABEL = "eventLabel"
     const val USER_ID = "userId"
+    const val BUSINESS_UNIT = "businessUnit"
+    const val CURRENT_SITE = "currentSite"
+    const val BGP_ENGAGEMENT = "bgp - engagement"
+    const val TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
 }
 
 object GiftBoxEvent {
@@ -37,6 +41,10 @@ object GiftBoxAction {
     const val CLICK_USE_COUPON = "click use coupon"
     const val CLICK_CHECK_REWARDS = "click check rewards"
     const val CLICK_HOMEPAGE_BUTTON = "click homepage button"
+    const val CLICK_INFO_BUTTON = "click info button"
+    const val CLICK_REWARD_DETAIL = "click reward detail"
+    const val CLICK_T_AND_C = "click t&c"
+    const val CLICK_PRODUCT_RECOM = "click product recommendation"
 }
 
 object GiftBoxLabel {

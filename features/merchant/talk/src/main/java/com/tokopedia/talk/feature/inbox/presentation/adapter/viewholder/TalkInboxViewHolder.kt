@@ -8,20 +8,20 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxOldUiModel
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk.R
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
 class TalkInboxViewHolder(
         view: View,
-        private val isSellerView: Boolean,
         private val talkInboxViewHolderListener: TalkInboxViewHolderListener
 ) : AbstractViewHolder<TalkInboxUiModel>(view) {
 
     companion object {
+        const val DELETED_PRODUCT_PLACEHOLDER = "https://ecs7.tokopedia.net/img/android/others/talk_reply_deleted_product_placeholder.png"
         val LAYOUT = R.layout.item_talk_inbox
     }
 
@@ -29,19 +29,23 @@ class TalkInboxViewHolder(
         with(element.inboxDetail) {
             setProductThumbnail(productThumbnail)
             setProductName(productName)
-            setQuestion(content, isMasked)
-            setNotification(isUnread)
+            setQuestion(content)
+            setNotification(if(element.isSellerView) state.isUnresponded else isUnread)
             setCountAndDate(totalAnswer, lastReplyTime)
-            itemView.addOnImpressionListener(ImpressHolder()) {
+            setAlertState(state.hasProblem, element.isSellerView)
+            itemView.addOnImpressionListener(element.impressHolder) {
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
+            }
+            itemView.setOnClickListener {
+                talkInboxViewHolderListener.onInboxItemClicked(element, null, adapterPosition)
             }
         }
     }
 
     private fun setProductThumbnail(productThumbnail: String) {
         with(itemView) {
-            if(productThumbnail.isEmpty()) {
-            itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
+            if (productThumbnail.isEmpty()) {
+                itemView.talkInboxProductThumbnail.setImageUrl(DELETED_PRODUCT_PLACEHOLDER)
                 talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 return
             }
@@ -54,21 +58,16 @@ class TalkInboxViewHolder(
         itemView.talkInboxProductName.text = productName
     }
 
-    private fun setQuestion(question: String, isMasked: Boolean) {
+    private fun setQuestion(question: String) {
         itemView.talkInboxMessage.apply {
             text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
-            if(isMasked) {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-                setWeight(Typography.REGULAR)
-            } else {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                setWeight(Typography.BOLD)
-            }
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            setWeight(Typography.BOLD)
         }
     }
 
     private fun setNotification(isUnread: Boolean) {
-        if(isUnread) {
+        if (isUnread) {
             itemView.talkInboxNotification.showWithCondition(isUnread)
         } else {
             itemView.talkInboxNotification.hide()
@@ -77,19 +76,12 @@ class TalkInboxViewHolder(
 
     private fun setCountAndDate(totalAnswer: Int, date: String) {
         with(itemView) {
-            when {
-                totalAnswer == 0 && isSellerView -> {
+            when (totalAnswer) {
+                0 -> {
                     talkInboxAnswerCount.apply {
                         text = context.getString(R.string.inbox_total_count_empty_seller)
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                        setWeight(Typography.BOLD)
-                    }
-                }
-                totalAnswer == 0 && !isSellerView -> {
-                    talkInboxAnswerCount.apply {
-                        text = context.getString(R.string.inbox_total_count_empty_buyer)
                         setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                        setWeight(Typography.REGULAR)
+                        setWeight(Typography.BOLD)
                     }
                 }
                 else -> {
@@ -100,9 +92,13 @@ class TalkInboxViewHolder(
                     }
                 }
             }
-            talkInboxDate.text = context.getString(R.string.inbox_date, date)
+            talkInboxDate.text = date
         }
 
+    }
+
+    private fun setAlertState(hasProblem: Boolean, isSellerView: Boolean) {
+        itemView.talkInboxAlertSignifier.showWithCondition(hasProblem && isSellerView)
     }
 
 }

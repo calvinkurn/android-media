@@ -56,7 +56,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
             kycVerified && shopScoreEligible -> {
                 val text = context.getString(R.string.power_merchant_full_eligibility_description)
                 val clickableText = context.getString(R.string.power_merchant_register_text)
-                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700)
+                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
 
                 createSpannableString(text, clickableText, clickableTextColor, true) {
                     goToTermsAndConditionPage(shopScore)
@@ -68,7 +68,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
             else -> {
                 val text = context.getString(R.string.power_merchant_shop_score_description)
                 val clickableText = context.getString(R.string.power_merchant_see_tips)
-                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500)
+                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
 
                 createSpannableString(text, clickableText, clickableTextColor) { goToLearMorePage() }
             }

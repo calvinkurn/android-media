@@ -150,9 +150,14 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
         `Given get dynamic filter model API will success`(slot(), dynamicFilterModel)
 
         `When open filter page`(mapParameter)
+        `When bottomsheet filter is dismissed`()
         `When open filter page`(mapParameter)
 
         `Then verify interactions open filter page second time after first time success`(dynamicFilterModel)
+    }
+
+    private fun `When bottomsheet filter is dismissed`() {
+        productListPresenter.onBottomSheetFilterDismissed()
     }
 
     private fun `Then verify interactions open filter page second time after first time success`(dynamicFilterModel: DynamicFilterModel) {
@@ -176,6 +181,7 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
         `Given get dynamic filter model API will fail and then success`(dynamicFilterModel)
 
         `When open filter page`(mapParameter)
+        `When bottomsheet filter is dismissed`()
         `When open filter page`(mapParameter)
 
         `Then verify interactions for open filter page second time after first time failed`(dynamicFilterModelSlot, dynamicFilterModel)
@@ -199,6 +205,28 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
             getDynamicFilterUseCase.execute(any(), any())
             productListView.setDynamicFilter(capture(dynamicFilterModelSlot))
 
+            productListView.sendTrackingOpenFilterPage()
+            productListView.openBottomSheetFilter(null)
+            getDynamicFilterUseCase.execute(any(), any())
+            productListView.setDynamicFilter(dynamicFilterModel)
+        }
+    }
+
+    @Test
+    fun `User cannot spam bottom sheet filter`() {
+        val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
+
+        `Given get dynamic filter model API will success`(slot(), dynamicFilterModel)
+
+        `When open filter page`(mapParameter)
+        `When open filter page`(mapParameter)
+
+        `Then verify interactions bottom sheet filter opened only once`(dynamicFilterModel)
+    }
+
+    private fun `Then verify interactions bottom sheet filter opened only once`(dynamicFilterModel: DynamicFilterModel) {
+        verify(exactly = 1) {
             productListView.sendTrackingOpenFilterPage()
             productListView.openBottomSheetFilter(null)
             getDynamicFilterUseCase.execute(any(), any())

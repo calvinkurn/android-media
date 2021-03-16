@@ -34,6 +34,8 @@ dependencies {
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.sellerHomeCommon)
     implementation project(rootProject.ext.features.sellerMenuCommon)
+    implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.reputationCommon)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -75,6 +77,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7

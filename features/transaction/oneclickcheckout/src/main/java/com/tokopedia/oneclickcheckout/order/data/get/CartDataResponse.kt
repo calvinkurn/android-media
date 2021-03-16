@@ -12,6 +12,8 @@ data class CartDataResponse(
         val product: ProductDataResponse = ProductDataResponse(),
         @SerializedName("shop")
         val shop: ShopDataResponse = ShopDataResponse(),
+        @SerializedName("warehouse")
+        val warehouse: WarehouseDataResponse = WarehouseDataResponse(),
         @SerializedName("cart_string")
         val cartString: String = "",
         @SerializedName("payment_profile")

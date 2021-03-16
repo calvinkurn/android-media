@@ -214,6 +214,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         viewBound.phoneInactive?.setOnClickListener {
             context?.let {
                 analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
+                analytics.trackClickInactivePhoneLink()
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
                 if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)

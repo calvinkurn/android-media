@@ -20,7 +20,7 @@
         android:id="@+id/product_detail_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:icon_color_light_disabled="@color/dark_N200"
+        app:icon_color_light_disabled="@color/Unify_N400"
         app:icon_name="CHEVRON_DOWN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -69,6 +69,8 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         imageBoxWhite = findViewById(R.id.image_box_white)
         imageBoxGlow = findViewById(R.id.image_box_glow)
         super.initViews()
+        clipChildren = false
+        clipToPadding = false
         val task = prepareLoaderLottieTask(Constants.CONFETTI_ZIP_FILE)
         if (task != null)
             addLottieAnimationToView(confettiView, task)

@@ -93,6 +93,17 @@
       "event": "clickShopPage",
       "userId": "{{.*}}",
       "shopId": "{{.*}}",
+      "eventAction": "click lihat performa - widget play",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "businessUnit": "{{.+}}",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "currentSite": "{{.+}}",
+      "event": "clickShopPage",
+      "userId": "{{.*}}",
+      "shopId": "{{.*}}",
       "eventAction": "click delete on bottom sheet - widget play",
       "sessionIris": "{{.+}}",
       "eventLabel":"{{.+}}"

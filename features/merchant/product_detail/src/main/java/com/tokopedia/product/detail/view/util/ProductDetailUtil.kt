@@ -108,8 +108,8 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
     return builder
 }
 
-internal fun Int.getRelativeDateByMinute(context: Context): String {
-    if (this == 0) return ""
+internal fun Long.getRelativeDateByMinute(context: Context): String {
+    if (this == 0L) return ""
 
     val minuteInput = this
     val minuteDivider = TimeUnit.HOURS.toMinutes(1)
@@ -128,8 +128,8 @@ internal fun Int.getRelativeDateByMinute(context: Context): String {
     }
 }
 
-internal fun Int.getRelativeDateByHours(context: Context): String {
-    if (this == 0) return ""
+internal fun Long.getRelativeDateByHours(context: Context): String {
+    if (this == 0L) return ""
 
     val hourInput = this
     val dayInHours = TimeUnit.DAYS.toHours(1)

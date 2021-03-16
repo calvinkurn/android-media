@@ -2,8 +2,6 @@
     <string name="app_name">Tokopedia Pro</string>
     <string name="lihat_smua_promo">Lihat Semua Promo</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
-
     <!-- Push Notif -->
     <string name="purchase_finish">Pesanan Selesai</string>
     <string name="purchase_confirm">Konfirmasi Pesanan</string>

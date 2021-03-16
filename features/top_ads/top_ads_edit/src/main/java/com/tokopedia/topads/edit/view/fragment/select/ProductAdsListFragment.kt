@@ -77,16 +77,16 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter = ProductListAdapter(ProductListAdapterTypeFactoryImpl(this::onProductListSelected))
     }
 
-    private fun getSelectedProduct(): MutableList<Int> {
-        var list = mutableListOf<Int>()
+    private fun getSelectedProduct(): MutableList<String> {
+        val list = mutableListOf<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productID)
         }
         return list
     }
 
-    private fun getSelectedList(): ArrayList<Int> {
-        var list = ArrayList<Int>()
+    private fun getSelectedList(): ArrayList<String> {
+        val list = ArrayList<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productID)
         }
@@ -103,7 +103,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun getSelectedPrice(): ArrayList<String> {
-        var list = ArrayList<String>()
+        val list = ArrayList<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productPrice)
         }
@@ -121,7 +121,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun getSelectedName(): ArrayList<String> {
-        var list = ArrayList<String>()
+        val list = ArrayList<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productName)
         }
@@ -138,7 +138,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun getSelectedImage(): ArrayList<String> {
-        var list = ArrayList<String>()
+        val list = ArrayList<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productImage)
         }
@@ -246,7 +246,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private fun getPassingIntent(): Intent {
         val returnIntent = Intent()
         returnIntent.putStringArrayListExtra(RESULT_PRICE, getSelectedPrice())
-        returnIntent.putIntegerArrayListExtra(RESULT_PROUCT, getSelectedList())
+        returnIntent.putStringArrayListExtra(RESULT_PROUCT, getSelectedList())
         returnIntent.putStringArrayListExtra(RESULT_NAME, getSelectedName())
         returnIntent.putStringArrayListExtra(RESULT_IMAGE, getSelectedImage())
         return returnIntent
@@ -319,12 +319,12 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         btn_next.isEnabled = false
         data.forEach { result ->
             if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
-                if (result.adID > 0 && !ifExists(result.productID)) {
+                if (result.adID.toFloat() > 0 && !ifExists(result.productID)) {
                     productListAdapter.items.add(ProductItemViewModel(result))
                 }
 
             } else {
-                if (result.adID == 0 && !ifExists(result.productID)) {
+                if (result.adID == "0" && !ifExists(result.productID)) {
                     productListAdapter.items.add(ProductItemViewModel(result))
                 }
             }
@@ -350,8 +350,8 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             recyclerviewScrollListener.updateStateAfterGetData()
     }
 
-    private fun ifExists(productID: Int): Boolean {
-        val existingIds = arguments?.getIntegerArrayList(EXISTING_IDS)
+    private fun ifExists(productID: String): Boolean {
+        val existingIds = arguments?.getStringArrayList(EXISTING_IDS)
         return existingIds?.find { id -> productID == id } != null
 
     }

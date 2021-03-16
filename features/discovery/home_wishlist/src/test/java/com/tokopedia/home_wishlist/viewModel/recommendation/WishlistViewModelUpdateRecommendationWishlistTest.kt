@@ -81,6 +81,9 @@ class WishlistViewModelUpdateRecommendationWishlistTest {
         // Update wishlist data in selected parent and child
         wishlistViewModel.updateRecommendationItemWishlist(33, parentPosition1, childPosition1, wishlistCurrentStateFor33)
         wishlistViewModel.updateRecommendationItemWishlist(55, parentPosition2, childPosition2, wishlistCurrentStateFor55)
+        wishlistViewModel.updateRecommendationItemWishlist(66, 4, childPosition2, wishlistCurrentStateFor55)
+        wishlistViewModel.updateRecommendationItemWishlist(66, -1, childPosition2, wishlistCurrentStateFor55)
+        wishlistViewModel.updateRecommendationItemWishlist(1, parentPosition1, childPosition2, wishlistCurrentStateFor55)
 
 
         // Expect product in parent position = 4 and child position = 2 updated with new wishlist status in wishlist data

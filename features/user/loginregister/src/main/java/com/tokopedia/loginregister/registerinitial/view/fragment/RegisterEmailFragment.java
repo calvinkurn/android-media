@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
@@ -17,6 +16,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -33,16 +33,12 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent;
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData;
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterUtil;
@@ -68,6 +64,9 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY;
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION;
+
 /**
  * @author by nisie on 10/25/18.
  */
@@ -81,12 +80,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     String NAME = "NAME";
     String PASSWORD = "PASSWORD";
     String EMAIL = "EMAIL";
-
-    String TERM_CONDITION = "Syarat dan Ketentuan";
-    String PRIVACY_POLICY = "Kebijakan Privasi";
-
-    String TERM_CONDITION_URL = "launch.TermPrivacy://parent?param=0";
-    String PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1";
 
     private static final String ALREADY_REGISTERED = "sudah terdaftar";
 
@@ -186,58 +179,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         }
 
         initObserver();
-
-        String sourceString = getActivity().getString(R.string.bottom_info_terms_and_privacy2);
-
-        SpannableString spannable = new SpannableString(sourceString);
-
-        ClickableSpan clickableSpanTermCondition = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View textView) {
-                registerAnalytics.trackClickTermConditionButton();
-                if(getActivity() != null){
-                    Intent intent = new Intent (Intent.ACTION_VIEW);
-                    intent.setData (Uri.parse(TERM_CONDITION_URL));
-                    getActivity().startActivity(intent);
-                }
-            }
-
-            @Override
-            public void updateDrawState(@NonNull TextPaint textPaint) {
-                super.updateDrawState(textPaint);
-                textPaint.setColor(MethodChecker.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
-            }
-        };
-
-        ClickableSpan clickableSpanPrivacyPolicy = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View textView) {
-                registerAnalytics.trackClickPrivacyPolicyButton();
-                if(getActivity() != null){
-                    Intent intent = new Intent (Intent.ACTION_VIEW);
-                    intent.setData (Uri.parse(PRIVACY_POLICY_URL));
-                    getActivity().startActivity(intent);
-                }
-            }
-
-            @Override
-            public void updateDrawState(@NonNull TextPaint textPaint) {
-                super.updateDrawState(textPaint);
-                textPaint.setColor(MethodChecker.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
-            }
-        };
-
-        spannable.setSpan(clickableSpanTermCondition, sourceString.indexOf(TERM_CONDITION),
-                sourceString.indexOf(TERM_CONDITION) + TERM_CONDITION.length(), 0);
-
-        spannable.setSpan(clickableSpanPrivacyPolicy, sourceString.indexOf(PRIVACY_POLICY),
-                sourceString.indexOf(PRIVACY_POLICY) + PRIVACY_POLICY.length(), 0);
-
-        registerNextTAndC.setText(spannable, TextView.BufferType.SPANNABLE);
-        registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
-
+        initTermPrivacyView();
         showPasswordHint();
-        showEmailHint();
         showNameHint();
     }
 
@@ -281,6 +224,38 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
                 }
             }
         });
+    }
+
+    private void initTermPrivacyView() {
+        if (getContext() != null) {
+            SpannableString termPrivacy = new SpannableString(getString(R.string.detail_term_and_privacy));
+            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0);
+            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0);
+            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0);
+            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0);
+
+            registerNextTAndC.setText(termPrivacy, TextView.BufferType.SPANNABLE);
+            registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
+            registerNextTAndC.setSelected(false);
+        }
+    }
+
+    private ClickableSpan termConditionClickAction() {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_TERM_AND_CONDITION));
+            }
+        };
+    }
+
+    private ClickableSpan privacyClickAction() {
+        return new ClickableSpan () {
+            @Override
+            public void onClick(@NonNull View widget) {
+                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_PRIVACY_POLICY));
+            }
+        };
     }
 
     private Spannable getSpannable(String sourceString, String hyperlinkString) {
@@ -373,20 +348,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperErrorNew(wrapper, null);
-                }
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                showPasswordHint();
-                if (s.length() == 0) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required));
-                } else if (wrapperPassword.getTextFieldInput().getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_minimal_password));
-                }
-
                 checkIsValidForm();
             }
         };
@@ -408,7 +374,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                showEmailHint();
                 if (s.length() == 0) {
                     setWrapperErrorNew(wrapper, getString(R.string.error_field_required));
                 } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(wrapperEmail.getTextFieldInput().getText().toString()).matches()) {
@@ -418,6 +383,18 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
                 checkIsValidForm();
             }
         };
+    }
+
+    private Boolean validatePasswordInput() {
+        if (wrapperPassword.getTextFieldInput().getText().length() == 0) {
+            setWrapperErrorNew(wrapperPassword, getString(R.string.error_field_required));
+            return false;
+        } else if (wrapperPassword.getTextFieldInput().getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
+            setWrapperErrorNew(wrapperPassword, getString(R.string.error_minimal_password));
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public List<String> getEmailListOfAccountsUserHasLoggedInto() {
@@ -448,13 +425,17 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     private void registerEmail(){
         showLoadingProgress();
-        registerAnalytics.trackClickSignUpButtonEmail();
-        registerInitialViewModel.registerRequest(
-                wrapperEmail.getTextFieldInput().getText().toString(),
-                wrapperPassword.getTextFieldInput().getText().toString(),
-                wrapperName.getTextFieldInput().getText().toString(),
-                token
-        );
+        if (validatePasswordInput()) {
+            registerAnalytics.trackClickSignUpButtonEmail();
+            registerInitialViewModel.registerRequest(
+                    wrapperEmail.getTextFieldInput().getText().toString(),
+                    wrapperPassword.getTextFieldInput().getText().toString(),
+                    wrapperName.getTextFieldInput().getText().toString(),
+                    token
+            );
+        } else {
+            dismissLoadingProgress();
+        }
     }
 
     boolean isCanRegister(String name, String email, String password) {
@@ -486,7 +467,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     }
 
     private void checkIsValidForm() {
-        if (isCanRegister(wrapperName.getTextFieldInput().getText().toString(), wrapperEmail.getTextFieldInput().getText().toString(), wrapperPassword.getTextFieldInput().getText().toString())) {
+        if (isCanRegister(
+                wrapperName.getTextFieldInput().getText().toString(),
+                wrapperEmail.getTextFieldInput().getText().toString(),
+                wrapperPassword.getTextFieldInput().getText().toString())) {
             setRegisterButtonEnabled();
         } else {
             setRegisterButtonDisabled();
@@ -506,19 +490,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         }
     }
 
-
-    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
-        wrapper.setHelperEnabled(false);
-        wrapper.setHelper(null);
-        if (s == null) {
-            wrapper.setError(null);
-            wrapper.setErrorEnabled(false);
-        } else {
-            wrapper.setErrorEnabled(true);
-            wrapper.setError(s);
-        }
-    }
-
     private void setWrapperErrorNew(TextFieldUnify wrapper, String s) {
         if (s == null) {
             wrapper.setMessage("");
@@ -534,14 +505,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         wrapper.setMessage(s);
     }
 
-    public void resetError() {
-        setWrapperErrorNew(wrapperName, null);
-        setWrapperErrorNew(wrapperEmail, null);
-        showPasswordHint();
-        showEmailHint();
-        showNameHint();
-    }
-
     public void showPasswordHint() {
         wrapperPassword.setError(false);
         wrapperPassword.setMessage(getResources().getString(R.string.minimal_8_character));
@@ -549,10 +512,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     public void showNameHint() {
         setWrapperHint(wrapperName, "  ");
-    }
-
-    public void showEmailHint() {
-        setWrapperHint(wrapperEmail, getResources().getString(R.string.send_verif_to_email));
     }
 
     public void setActionsEnabled(boolean isEnabled) {
@@ -571,20 +530,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
         progressBar.setVisibility(View.GONE);
-    }
-
-    public void goToAutomaticLogin() {
-        Intent intentLogin = LoginActivity.DeepLinkIntents.getAutomaticLogin(
-                getActivity(),
-                wrapperEmail.getTextFieldInput().getText().toString(),
-                wrapperPassword.getTextFieldInput().getText().toString(),
-                source
-        );
-        startActivityForResult(intentLogin, REQUEST_AUTO_LOGIN);
-    }
-
-    public void dropKeyboard() {
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
     public void onErrorRegister(String errorMessage) {
@@ -689,10 +634,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
-    }
-
-    public int getIsAutoVerify() {
-        return isEmailAddressFromDevice() ? 1 : 0;
     }
 
     private void onFailedRegisterEmail(String errorMessage){
