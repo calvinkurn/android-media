@@ -91,10 +91,6 @@ PopularCityAdapter.ActionListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDistrictRecommendationBinding.inflate(inflater, container, false)
         return binding.root
-//        rvChipsPopularCity = view.findViewById(R.id.rv_discom_chips_popular_city)
-//        rlCurrLocation = view.findViewById(R.id.rl_discom_current_location)
-//        dividerCurrLocation = view.findViewById(R.id.discom_current_location_divider)
-//        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
