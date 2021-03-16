@@ -21,7 +21,7 @@ import java.util.*
 
 class SettingTypeFragment : BaseDaggerFragment() {
 
-    private lateinit var rvSettingType: RecyclerView
+    private var rvSettingType: RecyclerView? = null
     private lateinit var settingTypeContract: SettingTypeContract
 
     interface SettingTypeContract {
@@ -68,13 +68,13 @@ class SettingTypeFragment : BaseDaggerFragment() {
     }
 
     private fun setupSettingTypes() {
-        with (rvSettingType) {
-            setHasFixedSize(true)
-            adapter = SettingTypeAdapter(
+        rvSettingType?.let {
+            it.setHasFixedSize(true)
+            it.adapter = SettingTypeAdapter(
                     SettingTypeDataView.createSettingTypes(),
                     settingTypeContract
             )
-            addItemDecoration(NotifSettingDividerDecoration(requireContext()))
+            it.addItemDecoration(NotifSettingDividerDecoration(requireContext()))
         }
     }
 
