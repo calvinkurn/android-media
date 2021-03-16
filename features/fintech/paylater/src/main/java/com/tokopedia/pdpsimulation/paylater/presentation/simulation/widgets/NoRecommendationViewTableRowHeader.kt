@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.helper.loadImageByDisplayMode
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
@@ -19,13 +20,9 @@ class NoRecommendationViewTableRowHeader(val context: Context, val layoutParams:
     fun initUI(simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View {
         val rowHeaderNoRecom = LayoutInflater.from(context).inflate(getLayout(), null)
         rowHeaderNoRecom.layoutParams = layoutParams
+
         val ivPayLaterPartner = rowHeaderNoRecom.findViewById<ImageView>(R.id.ivPaylaterPartner)
-        val imageUrl: String?
-        if (context.isDarkMode())
-            imageUrl = simulationDataItem.imgDarkUrl
-        else imageUrl = simulationDataItem.imgLightUrl
-        if (!imageUrl.isNullOrEmpty())
-            ivPayLaterPartner.loadImage(imageUrl)
+        ivPayLaterPartner.loadImageByDisplayMode(simulationDataItem.imgDarkUrl, simulationDataItem.imgLightUrl)
 
         if (showBackGround)
             rowHeaderNoRecom.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.helper.loadImageByDisplayMode
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
@@ -18,14 +19,9 @@ class RecommendationViewTableRowHeader(val context: Context, val layoutParams: V
     fun initUI(simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View {
         val recommendationView = LayoutInflater.from(context).inflate(getLayout(), null)
         recommendationView.layoutParams = layoutParams
-        val ivPayLaterPartner = recommendationView.findViewById<ImageView>(R.id.ivPaylaterPartner)
-        val imageUrl: String?
-        if (context.isDarkMode())
-            imageUrl = simulationDataItem.imgDarkUrl
-        else imageUrl = simulationDataItem.imgLightUrl
 
-        if (!imageUrl.isNullOrEmpty())
-            ivPayLaterPartner.loadImage(imageUrl)
+        val ivPayLaterPartner = recommendationView.findViewById<ImageView>(R.id.ivPaylaterPartner)
+        ivPayLaterPartner.loadImageByDisplayMode(simulationDataItem.imgDarkUrl, simulationDataItem.imgLightUrl)
 
         if (showBackGround)
             recommendationView.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_bg_grey_green_border)

@@ -6,27 +6,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.helper.loadImageByDisplayMode
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.base_payment_register_item.view.*
 
 class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) : RecyclerView.ViewHolder(view) {
 
     fun bindData(payLaterItemProductData: PayLaterItemProductData, payLaterApplicationDataForPartner: PayLaterApplicationDetail?) {
-        val imageUrl: String?
         view.apply {
             setOnClickListener { clickListener(payLaterItemProductData, payLaterApplicationDataForPartner) }
 
             ivPartnerLogo.layoutParams.height = context.dpToPx(18).toInt()
             ivPartnerLogo.layoutParams.width = context.dpToPx(48).toInt()
 
-            if (context.isDarkMode())
-                imageUrl = payLaterItemProductData.partnerImgDarkUrl
-            else imageUrl = payLaterItemProductData.partnerImgLightUrl
-            if (!imageUrl.isNullOrEmpty())
-                ivPartnerLogo.loadImage(imageUrl)
-
+            ivPartnerLogo.loadImageByDisplayMode(payLaterItemProductData.partnerImgDarkUrl, payLaterItemProductData.partnerImgLightUrl)
             tvTitlePaymentPartner.text = payLaterItemProductData.partnerName ?: ""
             setSubTitleContent(payLaterApplicationDataForPartner, this)
         }

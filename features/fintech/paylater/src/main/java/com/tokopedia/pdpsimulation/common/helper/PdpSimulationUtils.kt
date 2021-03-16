@@ -1,8 +1,12 @@
 package com.tokopedia.pdpsimulation.common.helper
 
+import android.widget.ImageView
 import androidx.viewpager.widget.ViewPager
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 sealed class PaymentMode
 object PayLater : PaymentMode()
@@ -31,4 +35,9 @@ fun Ticker.onLinkClickedEvent(action: (CharSequence) -> Unit) {
         override fun onDismiss() {
         }
     })
+}
+
+fun ImageView.loadImageByDisplayMode(darkImgUrl: String?, lightImgUrl: String?) {
+    val imageUrl = if (context.isDarkMode()) darkImgUrl else lightImgUrl
+    loadImage(imageUrl ?: "")
 }

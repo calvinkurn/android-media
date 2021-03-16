@@ -161,7 +161,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private fun renderTabAndViewPager() {
         setUpTabLayout()
         if (pagerAdapter == null)
-            pagerAdapter = PayLaterPagerAdapter(context!!, childFragmentManager, 0)
+            pagerAdapter = PayLaterPagerAdapter(requireContext(), childFragmentManager, 0)
         pagerAdapter?.setList(getFragments())
         payLaterViewPager.adapter = pagerAdapter
     }

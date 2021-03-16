@@ -15,6 +15,7 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics.Companion.PAY_LATER_REGISTER_ACTION
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics.Companion.PAY_LATER_USAGE_ACTION
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.helper.loadImageByDisplayMode
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
@@ -128,12 +129,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     }
 
     private fun setPartnerImage(data: PayLaterItemProductData) {
-        val imageUrl: String? = if (context.isDarkMode())
-            data.partnerImgDarkUrl
-        else data.partnerImgLightUrl
-
-        if (!imageUrl.isNullOrEmpty())
-            ivPaylaterPartner.loadImage(imageUrl)
+        ivPaylaterPartner.loadImageByDisplayMode(data.partnerImgDarkUrl, data.partnerImgLightUrl)
     }
 
     private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {
