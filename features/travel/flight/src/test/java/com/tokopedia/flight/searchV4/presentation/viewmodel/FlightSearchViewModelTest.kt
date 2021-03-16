@@ -10,6 +10,8 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.*
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.promo_chips.model.FlightLowestPrice
+import com.tokopedia.flight.promo_chips.usecase.FlightLowestPriceUseCase
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchErrorEntity
 import com.tokopedia.flight.searchV4.domain.*
@@ -50,6 +52,8 @@ class FlightSearchViewModelTest {
     private lateinit var flightSearchDeleteReturnDataUseCase: FlightSearchDeleteReturnDataUseCase
     @RelaxedMockK
     private lateinit var flightSearchStatisticUseCase: FlightSearchStatisticsUseCase
+    @RelaxedMockK
+    private lateinit var flightLowestPriceUseCase: FlightLowestPriceUseCase
     @RelaxedMockK
     private lateinit var flightSearchCache: FlightSearchCache
     private val userSession = mockk<UserSessionInterface>()
@@ -96,6 +100,7 @@ class FlightSearchViewModelTest {
                 flightSearchCombineUseCase,
                 travelTickerUseCase,
                 flightSearchStatisticUseCase,
+                flightLowestPriceUseCase,
                 flightAnalytics,
                 flightSearchCache,
                 userSession,
@@ -120,6 +125,7 @@ class FlightSearchViewModelTest {
                 flightSearchCombineUseCase,
                 travelTickerUseCase,
                 flightSearchStatisticUseCase,
+                flightLowestPriceUseCase,
                 flightAnalytics,
                 flightSearchCache,
                 mockk(),
@@ -951,6 +957,7 @@ class FlightSearchViewModelTest {
                 flightSearchCombineUseCase,
                 travelTickerUseCase,
                 flightSearchStatisticUseCase,
+                flightLowestPriceUseCase,
                 flightAnalytics,
                 flightSearchCache,
 		mockk(),
@@ -1090,5 +1097,88 @@ class FlightSearchViewModelTest {
             flightAnalytics.eventSearchDetailClick(journeyModel, adapterPosition)
             flightAnalytics.eventProductDetailImpression(journeyModel, adapterPosition)
         }
+    }
+
+    @Test
+    fun fetchPromoList_shouldReturnSuccessEmpty() {
+        // given
+        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS_EMPTY)
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+
+        // when
+        flightSearchViewModel.fetchPromoList(isReturnTrip = false)
+
+        // then
+        flightSearchViewModel.promoData.value is Success
+
+        flightSearchViewModel.promoData.value is Success
+        val promoData = (flightSearchViewModel.promoData.value as Success<FlightLowestPrice>).data.dataPromoChips
+        promoData.size shouldBe 0
+    }
+
+    @Test
+    fun fetchPromoList_oneWay_shouldReturnSuccessNotEmpty() {
+        // given
+        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS)
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+
+        // when
+        flightSearchViewModel.fetchPromoList(isReturnTrip = false)
+
+        // then
+        flightSearchViewModel.promoData.value is Success
+
+        flightSearchViewModel.promoData.value is Success
+        val promoData = (flightSearchViewModel.promoData.value as Success<FlightLowestPrice>).data.dataPromoChips
+        promoData.size shouldBe 1
+        promoData[0].date shouldBe PROMO_CHIPS.dataPromoChips[0].date
+        promoData[0].airlinePrices shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices
+        promoData[0].airlinePrices[0] shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        promoData[0].airlinePrices[0].airlineID shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices[0].airlineID
+    }
+
+    @Test
+    fun fetchPromoList_roundTrip_shouldReturnSuccessNotEmpty() {
+        // given
+        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS)
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+
+        // when
+        flightSearchViewModel.fetchPromoList(isReturnTrip = true)
+        
+        // then
+        flightSearchViewModel.promoData.value is Success
+        val promoData = (flightSearchViewModel.promoData.value as Success<FlightLowestPrice>).data.dataPromoChips
+        promoData.size shouldBe 1
+        promoData[0].date shouldBe PROMO_CHIPS.dataPromoChips[0].date
+        promoData[0].airlinePrices shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices
+        promoData[0].airlinePrices[0] shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        promoData[0].airlinePrices[0].airlineID shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices[0].airlineID
+    }
+
+    @Test
+    fun fetchPromoList_shouldReturnFail() {
+        // given
+        val fakeEntity = FlightSearchErrorEntity("1", "Error", "Error Dummy")
+        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } coAnswers {
+            throw FlightSearchThrowable().apply {
+                errorList = arrayListOf(fakeEntity)
+            }
+        }
+
+        // when
+        try {
+            flightSearchViewModel.fetchPromoList(isReturnTrip = true)
+        } catch (t: Throwable) {
+        }
+
+        // then
+        flightSearchViewModel.promoData.value is Fail
+        val errorList = ((flightSearchViewModel.promoData.value as Fail).throwable as FlightSearchThrowable).errorList
+
+        errorList.size shouldBe 1
+        errorList[0].id shouldBe fakeEntity.id
+        errorList[0].status shouldBe fakeEntity.status
+        errorList[0].title shouldBe fakeEntity.title
     }
 }
