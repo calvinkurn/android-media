@@ -1,8 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration
 
 import android.graphics.Rect
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 class HomeRevampRecyclerDecoration(private val spacing: Int) : RecyclerView.ItemDecoration() {
 
