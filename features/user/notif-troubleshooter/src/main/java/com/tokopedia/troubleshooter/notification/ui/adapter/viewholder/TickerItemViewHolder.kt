@@ -27,11 +27,11 @@ class TickerItemViewHolder(
         binding.btnActivation.setOnClickListener {
             when (element.type) {
                 is ConfigState.Device -> {
-                    context.gotoNotificationSetting()
+                    context?.gotoNotificationSetting()
                 }
                 is ConfigState.Notification -> {
                     val appLink = "$USER_NOTIFICATION_SETTING$PUSH_NOTIFICATION_NS_QUERY"
-                    context.startActivity(RouteManager.getIntent(context, appLink))
+                    context?.startActivity(RouteManager.getIntent(context, appLink))
                 }
                 is ConfigState.Ringtone -> {
                     context?.gotoAudioSetting()

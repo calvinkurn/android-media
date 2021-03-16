@@ -36,7 +36,7 @@ open class ConfigViewHolder(
         if (element.state == ConfigState.Ringtone) {
             binding.btnAction.show()
             binding.btnAction.setOnClickListener {
-                element.ringtone.let { listener.onRingtoneTest(it) }
+                element.ringtone?.let { listener.onRingtoneTest(it) }
             }
         } else {
             binding.btnAction.hide()
@@ -56,6 +56,7 @@ open class ConfigViewHolder(
             is StatusState.Warning -> {
                 visibility(R.drawable.ic_ts_notif_warning)
             }
+            else -> {}
         }
 
         binding.txtTitle.text = context.getString(message)
