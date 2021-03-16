@@ -395,6 +395,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 tokoBtnContainer.btnSecond.setOnClickListener {
                                     checkInternetOnButtonActionAndRedirect()
                                 }
+                            }else{
+                                tokoButtonContainer.btnSecond.visibility = View.GONE
                             }
 
                             handleRecomPage(it.data?.gamiCrack?.recommendation)
