@@ -29,7 +29,7 @@ class CustomChatbotChatLayout : FrameLayout {
     private var status: LinearLayout? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
-    private var info: TextView? = null
+    private var readMoreView: TextView? = null
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
     private var useMaxWidth = DEFAULT_USE_MAX_WIDTH
@@ -96,7 +96,7 @@ class CustomChatbotChatLayout : FrameLayout {
             status = it.findViewById(R.id.llStatus)
             checkMark = it.findViewById(R.id.ivCheckMark)
             hourTime = it.findViewById(R.id.tvTime)
-            info = it.findViewById(R.id.read_more_text)
+            readMoreView = it.findViewById(R.id.read_more_text)
         }
         initCheckMarkVisibility()
     }
@@ -120,14 +120,14 @@ class CustomChatbotChatLayout : FrameLayout {
 
         val messageLayout = message?.layoutParams as LayoutParams
         val statusLayout = status?.layoutParams as LayoutParams
-        val infoLayout = info?.layoutParams as LayoutParams
+        val infoLayout = readMoreView?.layoutParams as LayoutParams
 
         val maxWidth = totalWidth
         val availableWidth = totalWidth - paddingLeft - paddingRight
 
         measureChildWithMargins(message, widthMeasureSpec, 0, heightMeasureSpec, 0)
         measureChildWithMargins(status, widthMeasureSpec, 0, heightMeasureSpec, 0)
-        measureChildWithMargins(info, widthMeasureSpec, 0, heightMeasureSpec, 0)
+        measureChildWithMargins(readMoreView, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
         val messageWidth =
                 message!!.measuredWidth + messageLayout.leftMargin + messageLayout.rightMargin
@@ -138,9 +138,9 @@ class CustomChatbotChatLayout : FrameLayout {
         val statusHeight =
                 status!!.measuredHeight + statusLayout.topMargin + statusLayout.bottomMargin
         val infoWidth =
-                info!!.measuredWidth + infoLayout.leftMargin + infoLayout.rightMargin - messageWidth
+                readMoreView!!.measuredWidth + infoLayout.leftMargin + infoLayout.rightMargin - messageWidth
         val infoHeight =
-                info!!.measuredHeight + infoLayout.topMargin + infoLayout.bottomMargin
+                readMoreView!!.measuredHeight + infoLayout.topMargin + infoLayout.bottomMargin
 
         val messageLineCount = message!!.lineCount
         val lastLineWidth: Float = if (messageLineCount > 0) {
@@ -160,11 +160,11 @@ class CustomChatbotChatLayout : FrameLayout {
             isAddStatusHeight = true
         }
 
-        if (infoWidth > 0 && info?.isVisible == true) {
+        if (infoWidth > 0 && readMoreView?.isVisible == true) {
             totalWidth += infoWidth
         }
 
-        if (infoHeight > 0 && info?.isVisible == true && !isAddStatusHeight) {
+        if (infoHeight > 0 && readMoreView?.isVisible == true && !isAddStatusHeight) {
             totalHeight += infoHeight
         }
 
@@ -178,25 +178,25 @@ class CustomChatbotChatLayout : FrameLayout {
         super.onMeasure(widthSpec, heightSpec)
     }
 
-    fun setMessage(msg: String, isSender:Boolean) {
-        if (!isSender){
+    fun setMessage(msg: String, isSender: Boolean) {
+        if (!isSender) {
             message?.removeUnderLineFromLinkAndSetText(msg)
-            if (message!=null){
+            if (message != null) {
                 message!!.post {
                     if (message!!.lineCount >= EllipsizeMaker.MESSAGE_LINE_COUNT) {
                         message!!.maxLines = EllipsizeMaker.MESSAGE_LINE_COUNT
                         EllipsizeMaker.setTruncatedMsg(message!!, msg)
-                        info?.visibility = View.VISIBLE
-                        info?.setOnClickListener {
+                        readMoreView?.visibility = View.VISIBLE
+                        readMoreView?.setOnClickListener {
                             showFullMessage(msg)
                         }
 
                     } else {
-                        info?.visibility = View.GONE
+                        readMoreView?.visibility = View.GONE
                     }
                 }
             }
-        }else{
+        } else {
             message?.text = MethodChecker.fromHtml(msg)
         }
     }
@@ -204,7 +204,7 @@ class CustomChatbotChatLayout : FrameLayout {
     private fun showFullMessage(message: String) {
         this.message?.maxLines = Int.MAX_VALUE
         this.message?.removeUnderLineFromLinkAndSetText(message)
-        info?.visibility = View.GONE
+        readMoreView?.visibility = View.GONE
     }
 
     fun setHourTime(time: String) {
@@ -227,12 +227,12 @@ class CustomChatbotChatLayout : FrameLayout {
         message?.movementMethod = movementMethod
     }
 
-    fun hideInfo() {
-        info?.hide()
+    fun hideReadMoreView() {
+        readMoreView?.hide()
     }
 
-    fun showInfo() {
-        info?.show()
+    fun showReadMoreView() {
+        readMoreView?.show()
     }
 
     companion object {

@@ -40,5 +40,9 @@
     <string name="chatbot_penarikan_dana_empty_description">Kamu belum melakukan penarikan dana dalam 1 bulan terakhir.</string>
     <string name="chatbot_error_title">Oops, ada sedikit kendala</string>
     <string name="chatbot_error_description">Transaksimu belum bisa ditampilkan.</string>
+    <string name="chatbot_sender_info_prefix">chatbot_</string>
+    <string name="chatbot_action_bubble_text_color_prefix">#%s</string>
+    <string name="chatbot_retry_image_upload_bottom_sheet_title">Gambarmu gagal di-upload</string>
+    <string name="chatbot_your_picture_has_been_deleted">Gambarmu sudah dihapus.</string>
 
 </resources>

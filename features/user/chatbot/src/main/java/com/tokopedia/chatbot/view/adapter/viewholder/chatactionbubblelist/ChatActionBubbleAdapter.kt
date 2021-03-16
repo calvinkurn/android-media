@@ -10,6 +10,9 @@ import java.util.*
 /**
  * Created by Hendri on 18/07/18.
  */
+const val MORE_DETAILS_TEXT = "Selengkapnya"
+private const val HIDE_TEXT = "Sembunyikan"
+
 class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener) : RecyclerView.Adapter<BaseChatActionBubbleViewHolder>() {
     private val data = ArrayList<ChatActionBubbleViewModel>()
     private val dataPool = ArrayList<ChatActionBubbleViewModel>()
@@ -42,14 +45,14 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
     }
 
     private fun setListOnButtonCLick() {
-        if (data.last().text == "Selengkapnya") {
+        if (data.last().text == MORE_DETAILS_TEXT) {
             data.clear()
             data.addAll(dataPool)
-            data.add(ChatActionBubbleViewModel("Sembunyikan", bubbleType = 1))
+            data.add(ChatActionBubbleViewModel(HIDE_TEXT, bubbleType = 1))
         } else {
             data.clear()
             data.addAll(getFirstFive(dataPool))
-            data.add(ChatActionBubbleViewModel(text = "Selengkapnya", bubbleType = 1))
+            data.add(ChatActionBubbleViewModel(text = MORE_DETAILS_TEXT, bubbleType = 1))
         }
         notifyDataSetChanged()
 
@@ -75,7 +78,7 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
         dataPool.addAll(elements)
         if (elements.size > 5) {
             data.addAll(getFirstFive(elements))
-            data.add(ChatActionBubbleViewModel(text = "Selengkapnya", bubbleType = 1))
+            data.add(ChatActionBubbleViewModel(text = MORE_DETAILS_TEXT, bubbleType = 1))
 
         } else {
             data.addAll(elements)
@@ -85,7 +88,7 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
 
     private fun getFirstFive(elements: List<ChatActionBubbleViewModel>): Collection<ChatActionBubbleViewModel> {
         val list = mutableListOf<ChatActionBubbleViewModel>()
-        list.addAll(elements.subList(0,5))
+        list.addAll(elements.subList(0, 5))
         return list
     }
 

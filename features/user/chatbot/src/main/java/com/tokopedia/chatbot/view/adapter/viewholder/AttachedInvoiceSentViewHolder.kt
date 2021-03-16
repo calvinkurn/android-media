@@ -14,7 +14,6 @@ import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Label
@@ -34,7 +33,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     private val invoiceDate: TextView? = itemView.findViewById(R.id.tv_invoice_date)
     private val price: TextView? = itemView.findViewById(R.id.tv_price)
     private val pricePrefix: TextView? = itemView.findViewById(R.id.tv_price_prefix)
-    private val radiusInvoice: Float = itemView.context.resources.getDimension(R.dimen.dp_topchat_6)
+    private val radiusInvoice: Float = itemView.context.resources.getDimension(R.dimen.dp_chatbot_6)
 
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
@@ -45,8 +44,8 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
+            R.dimen.dp_chatbot_2,
+            R.dimen.dp_chatbot_1,
             Gravity.CENTER,
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
             getStrokeWidthSenderDimenRes()
@@ -115,7 +114,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     @DimenRes
     fun getStrokeWidthSenderDimenRes(): Int {
-        return R.dimen.dp_topchat_3
+        return R.dimen.dp_chatbot_3
     }
 
     companion object {

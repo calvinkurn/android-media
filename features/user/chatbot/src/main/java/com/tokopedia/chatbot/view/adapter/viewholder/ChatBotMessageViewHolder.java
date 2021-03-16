@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.view.adapter.viewholder;
 
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
@@ -38,15 +37,10 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
 
     @Override
     protected void setChatLeft(View chatBalloon) {
-
-        setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
-        chatBalloon.setBackground(view.getContext().getResources().getDrawable(R.drawable
-                .chatbot_left_bubble));
+        super.setChatLeft(chatBalloon);
         message.setLinkTextColor(MethodChecker.getColor(chatBalloon.getContext(), R.color.read_more_color));
-        message.setTextColor(MethodChecker.getColor(chatBalloon.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
-        if (htmlMessage != null) {
+        if (htmlMessage != null)
             ChatBotTextExtKt.removeUnderLineFromLinkAndSetText(message, htmlMessage);
-        }
         message.post(() -> {
             if (message.getLineCount() > MESSAGE_LINE_COUNT) {
                 message.setMaxLines(MESSAGE_LINE_COUNT);
@@ -58,10 +52,10 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
 
             } else {
                 mesageBottom.setVisibility(View.GONE);
-                MethodChecker.setBackground(chatBalloon, ContextCompat.getDrawable(itemView.getContext(),R.drawable.chatbot_left_bubble));
+                MethodChecker.setBackground(chatBalloon, ContextCompat.getDrawable(itemView.getContext(),com.tokopedia.chat_common.R.drawable.left_bubble));
             }
         });
-        chatStatus.setVisibility(View.GONE);
+
     }
 
     private void showFullMessage() {
@@ -82,22 +76,10 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
 
     @Override
     protected void setChatRight(View chatBalloon) {
-        setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
-        chatBalloon.setBackground(chatBalloon.getContext().getResources().getDrawable(R.drawable
-                .chatbot_right_bubble));
-        message.setTextColor(MethodChecker.getColor(chatBalloon.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
-        message.setLinkTextColor(MethodChecker.getColor(chatBalloon.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+        super.setChatRight(chatBalloon);
         message.setMaxLines(Integer.MAX_VALUE);
         mesageBottom.setVisibility(View.GONE);
-        chatStatus.setVisibility(View.VISIBLE);
-    }
 
-    private void setAlignParent(int alignment, View view) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
-        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-        params.addRule(alignment);
-        view.setLayoutParams(params);
     }
 
     @Override

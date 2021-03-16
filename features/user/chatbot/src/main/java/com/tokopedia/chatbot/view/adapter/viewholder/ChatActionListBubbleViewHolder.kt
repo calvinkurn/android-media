@@ -33,13 +33,13 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     private val bg = ViewUtil.generateBackgroundWithShadow(
             chatActionListSelectionContainer,
             com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            R.dimen.dp_topchat_0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
+            R.dimen.dp_chatbot_0,
+            R.dimen.dp_chatbot_20,
+            R.dimen.dp_chatbot_20,
+            R.dimen.dp_chatbot_20,
             com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
+            R.dimen.dp_chatbot_2,
+            R.dimen.dp_chatbot_1,
             Gravity.CENTER
     )
 
@@ -55,14 +55,14 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {
         super.bind(viewModel)
-        bindBackgroundrv()
+        bindActionBubbleBackground()
         ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
         model = viewModel
         adapter.setDataList(viewModel.chatActionList)
     }
 
-    private fun bindBackgroundrv() {
-        chatActionListSelectionContainer.setMybg(bg)
+    private fun bindActionBubbleBackground() {
+        chatActionListSelectionContainer.setActionBubbleBackground(bg)
     }
 
     override fun onChatActionSelected(selected: ChatActionBubbleViewModel) {
@@ -76,7 +76,7 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
         super.onViewRecycled()
     }
 
-    override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
+    override fun getCustomChatLayoutId(): Int = com.tokopedia.chatbot.R.id.customChatLayout
 
     companion object {
         @LayoutRes
@@ -84,7 +84,7 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     }
 }
 
-private fun View.setMybg(bg: Drawable?) {
+private fun View.setActionBubbleBackground(bg: Drawable?) {
     val pl = paddingLeft
     val pt = paddingTop
     val pr = paddingRight

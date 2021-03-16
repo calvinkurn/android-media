@@ -15,20 +15,20 @@ object ChatbotMessageViewHolderBinder {
 
     fun bindChatMessage(
             chat: String,
-            fxChat: CustomChatbotChatLayout?,
+            chatlayout: CustomChatbotChatLayout?,
             movementMethod: ChatLinkHandlerMovementMethod,
             isSender: Boolean = false
     ) {
-        fxChat?.setMessage(chat, isSender)
-        fxChat?.setMovementMethod(movementMethod)
+        chatlayout?.setMessage(chat, isSender)
+        chatlayout?.setMovementMethod(movementMethod)
     }
 
     fun bindHour(
             replyTime: String?,
-            fxChat: CustomChatbotChatLayout?
+            chatLayout: CustomChatbotChatLayout?
     ) {
         val hourTime = getHourTime(replyTime)
-        fxChat?.setHourTime(hourTime)
+        chatLayout?.setHourTime(hourTime)
     }
 
     fun bindHourTextView(

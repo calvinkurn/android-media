@@ -19,25 +19,26 @@ class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingCha
     private val bg = ViewUtil.generateBackgroundWithShadow(
             typingDotContainer,
             com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            R.dimen.dp_topchat_0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
+            R.dimen.dp_chatbot_0,
+            R.dimen.dp_chatbot_20,
+            R.dimen.dp_chatbot_20,
+            R.dimen.dp_chatbot_20,
             com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
+            R.dimen.dp_chatbot_2,
+            R.dimen.dp_chatbot_1,
             Gravity.CENTER
     )
+
     override fun bind(element: TypingChatModel) {
         bindBackground()
         ImageHandler.loadGif(logo, com.tokopedia.resources.common.R.drawable.typing_dots, com.tokopedia.resources.common.R.drawable.typing_dots)
     }
 
     private fun bindBackground() {
-        typingDotContainer.setMybg(bg)
+        typingDotContainer.setTypingBackground(bg)
     }
 
-    private fun View.setMybg(bg: Drawable?) {
+    private fun View.setTypingBackground(bg: Drawable?) {
         val pl = paddingLeft
         val pt = paddingTop
         val pr = paddingRight

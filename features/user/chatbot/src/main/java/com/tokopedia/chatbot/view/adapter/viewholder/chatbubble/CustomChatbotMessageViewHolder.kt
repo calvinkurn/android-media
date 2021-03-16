@@ -27,7 +27,6 @@ abstract class CustomChatbotMessageViewHolder(
 
     protected open val customChatLayout: CustomChatbotChatLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.customChatLayout)
     protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.cl_msg_container)
-    protected val bottomMarginOpposite: Float = getOppositeMargin(itemView?.context)
     private val movementMethod = ChatLinkHandlerMovementMethod(listener)
 
     override fun bind(message: MessageViewModel) {
@@ -45,11 +44,6 @@ abstract class CustomChatbotMessageViewHolder(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    fun getOppositeMargin(context: Context?): Float {
-        return context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                ?: 0f
     }
 
     override fun setHeaderDate(element: BaseChatViewModel?) {

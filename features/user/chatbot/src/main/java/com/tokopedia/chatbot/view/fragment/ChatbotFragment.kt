@@ -109,6 +109,7 @@ private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
 private const val FIRST_PAGE = 1
 private const val RESEND = 1
 private const val DELETE = 0
+private const val SEE_ALL_INVOICE_TEXT = "lihat_semua_transaksi"
 
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
@@ -244,19 +245,19 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val replyEditTextBg = ViewUtil.generateBackgroundWithShadow(
                 replyEditTextContainer,
                 com.tokopedia.unifyprinciples.R.color.Unify_N0,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_20,
+                R.dimen.dp_chatbot_20,
+                R.dimen.dp_chatbot_20,
+                R.dimen.dp_chatbot_20,
+                R.dimen.dp_chatbot_20,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-                R.dimen.dp_topchat_2,
-                R.dimen.dp_topchat_1,
+                R.dimen.dp_chatbot_2,
+                R.dimen.dp_chatbot_1,
                 Gravity.CENTER
         )
         val paddingStart = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt()
         val paddingEnd = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
-        val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
-        val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
+        val paddingTop = resources.getDimension(R.dimen.dp_chatbot_11).toInt()
+        val paddingBottom = resources.getDimension(R.dimen.dp_chatbot_10).toInt()
         replyEditTextContainer.background = replyEditTextBg
         replyEditTextContainer.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
@@ -684,7 +685,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
         chatbotAnalytics.eventClick(ACTION_ACTION_BUBBLE_CLICKED)
-        if (selected.action.equals("lihat_semua_transaksi", true)) {
+        if (selected.action.equals(SEE_ALL_INVOICE_TEXT, true)) {
             showSearchInvoiceScreen()
         } else {
             getViewState().hideActionBubble(model)
@@ -886,7 +887,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
 
         bottomSheetPage.apply {
-            setTitle("Gambarmu gagal di-upload")
+            setTitle(this@ChatbotFragment.context?.getString(R.string.chatbot_retry_image_upload_bottom_sheet_title)
+                    ?: "")
             showCloseIcon = false
             setChild(viewBottomSheetPage)
             showKnob = true
@@ -909,7 +911,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 DELETE -> {
                     removeDummy(element)
                     bottomSheetPage.dismiss()
-                    view?.let { Toaster.make(it, "Gambarmu sudah dihapus.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL) }
+                    view?.let {
+                        Toaster.make(it, context?.getString(R.string.chatbot_your_picture_has_been_deleted)
+                                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    }
                 }
             }
         }

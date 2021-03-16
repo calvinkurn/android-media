@@ -25,7 +25,7 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
     }
 
     private fun setLiveChatButtonAction(element: ChatActionBubbleViewModel) {
-        chatActionMessage.setTextColor(Color.parseColor(String.format("#%s", element.hexColor)))
+        chatActionMessage.setTextColor(Color.parseColor(String.format(itemView.context.getString(R.string.chatbot_action_bubble_text_color_prefix), element.hexColor)))
         customerCareImage.show()
         ImageHandler.LoadImage(customerCareImage, element.iconUrl)
     }

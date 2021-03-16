@@ -16,13 +16,13 @@ open class RightChatMessageViewHolder constructor(
     protected open val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
+            R.dimen.dp_chatbot_20,
+            R.dimen.dp_chatbot_0,
+            R.dimen.dp_chatbot_20,
+            R.dimen.dp_chatbot_20,
             com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
+            R.dimen.dp_chatbot_2,
+            R.dimen.dp_chatbot_1,
             Gravity.CENTER
     )
 

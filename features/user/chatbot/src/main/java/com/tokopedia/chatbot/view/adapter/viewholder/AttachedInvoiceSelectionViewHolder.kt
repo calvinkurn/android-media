@@ -132,6 +132,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
                 val labelType = getLabelType(statusId)
                 invoiceStatus.text = status
                 invoiceStatus.setLabelType(labelType)
+                invoiceStatus.show()
             } else {
                 invoiceStatus.invisible()
             }

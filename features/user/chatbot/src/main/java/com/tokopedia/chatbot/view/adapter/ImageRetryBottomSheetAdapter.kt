@@ -17,7 +17,6 @@ class ImageRetryBottomSheetAdapter(private val onBottomSheetItemClicked: (positi
             this.item.text = item
             itemView.setOnClickListener { onBottomSheetItemClicked(position) }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageRetryBottomSheetViewHoder {

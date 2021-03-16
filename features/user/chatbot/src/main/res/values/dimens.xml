@@ -2,12 +2,12 @@
 <resources>
     <dimen name="sp_9">9sp</dimen>
     <dimen name="dp_270">270dp</dimen>
-    <dimen name="dp_topchat_0">0dp</dimen>
-    <dimen name="dp_topchat_20">20dp</dimen>
-    <dimen name="dp_topchat_1">1dp</dimen>
-    <dimen name="dp_topchat_2">2dp</dimen>
-    <dimen name="dp_topchat_3">3dp</dimen>
-    <dimen name="dp_topchat_6">6dp</dimen>
-    <dimen name="dp_topchat_10">10dp</dimen>
-    <dimen name="dp_topchat_11">11dp</dimen>
+    <dimen name="dp_chatbot_0">0dp</dimen>
+    <dimen name="dp_chatbot_20">20dp</dimen>
+    <dimen name="dp_chatbot_1">1dp</dimen>
+    <dimen name="dp_chatbot_2">2dp</dimen>
+    <dimen name="dp_chatbot_3">3dp</dimen>
+    <dimen name="dp_chatbot_6">6dp</dimen>
+    <dimen name="dp_chatbot_10">10dp</dimen>
+    <dimen name="dp_chatbot_11">11dp</dimen>
 </resources>

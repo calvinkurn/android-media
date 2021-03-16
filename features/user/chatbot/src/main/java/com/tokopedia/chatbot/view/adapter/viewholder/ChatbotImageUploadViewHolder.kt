@@ -36,8 +36,8 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
+            R.dimen.dp_chatbot_2,
+            R.dimen.dp_chatbot_1,
             Gravity.CENTER,
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
             getStrokeWidthSenderDimenRes()
@@ -74,7 +74,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     }
 
     fun getStrokeWidthSenderDimenRes(): Int {
-        return R.dimen.dp_topchat_3
+        return R.dimen.dp_chatbot_3
     }
 
     fun LoadImage(imageview: ImageView, url: String?) {

@@ -18,7 +18,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
 /**
  * @author by nisie on 27/11/18.
  */
-interface ChatbotTypeFactory : AdapterTypeFactory{
+interface ChatbotTypeFactory : AdapterTypeFactory {
 
     fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int
 
