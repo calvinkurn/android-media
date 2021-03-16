@@ -72,6 +72,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     @Override
     public void registerActivityLifecycleCallbacks() {
+        super.registerActivityLifecycleCallbacks();
         registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
             @Override
             public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
