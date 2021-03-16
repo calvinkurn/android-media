@@ -48,9 +48,9 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     var phoneNumber: String? = ""
     var uuid: String? = ""
 
-    lateinit var bottomInfo: TextView
-    lateinit var progressBar: ProgressBar
-    lateinit var mainContent: View
+    private var bottomInfo: TextView? = null
+    private var progressBar: ProgressBar? = null
+    private var mainContent: View? = null
 
     private var isError = false
 
@@ -196,9 +196,9 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
             termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
 
-            bottomInfo.setText(termPrivacy, TextView.BufferType.SPANNABLE)
-            bottomInfo.movementMethod = LinkMovementMethod.getInstance()
-            bottomInfo.isSelected = false
+            bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+            bottomInfo?.movementMethod = LinkMovementMethod.getInstance()
+            bottomInfo?.isSelected = false
         }
     }
 
@@ -260,13 +260,13 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     }
 
     override fun showLoading() {
-        mainContent.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        mainContent?.visibility = View.GONE
+        progressBar?.visibility = View.VISIBLE
     }
 
     fun dismissLoading() {
-        mainContent.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        mainContent?.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
     }
 
     private class URLSpanNoUnderline(url: String) : URLSpan(url) {
