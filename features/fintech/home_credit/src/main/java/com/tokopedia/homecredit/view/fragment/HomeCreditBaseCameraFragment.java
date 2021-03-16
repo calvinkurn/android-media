@@ -33,6 +33,7 @@ import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.homecredit.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
