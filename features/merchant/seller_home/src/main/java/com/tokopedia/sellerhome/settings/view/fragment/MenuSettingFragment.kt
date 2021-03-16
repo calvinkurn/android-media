@@ -215,13 +215,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun addOrChangePassword() {
-        var intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.ADD_PASSWORD)
-        var requestCode = REQUEST_ADD_PASSWORD
-        if (userSession.hasPassword()) {
-            intent = RouteManager.getIntent(activity, ApplinkConst.CHANGE_PASSWORD)
-            requestCode = REQUEST_CHANGE_PASSWORD
-        }
-        startActivityForResult(intent, requestCode)
+        var intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.HAS_PASSWORD)
+        startActivity(intent)
     }
 
     private fun shareApplication() {
