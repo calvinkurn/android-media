@@ -361,9 +361,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     if (indexOfAnd > 0) {
                                         val array = benefitText[1].split("&")
                                         val sb = StringBuilder()
-                                        sb.append(array[0])
-                                        sb.append(" & ")
-                                        sb.append(array[1])
+                                        var i = 0
+                                        while(i<array.size){
+                                            sb.append(array[i])
+                                            if(i!=array.size-1) {
+                                                sb.append(" & ")
+                                            }
+                                            i+=1
+                                        }
                                         tvRewardSecondLine.text = sb.toString()
                                     } else {
                                         tvRewardSecondLine.text = benefitText[1]
@@ -373,7 +378,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
 
                             val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
-                            if (actionButtonList != null && actionButtonList.isNotEmpty()) {
+                            if (actionButtonList != null
+                                    && actionButtonList.isNotEmpty()
+                                    && !actionButtonList[0].type.isNullOrEmpty()
+                                    && actionButtonList[0].type == "redirect"
+                            ) {
                                 tokoBtnContainer.setSecondButtonText(actionButtonList[0].text)
                                 tokoBtnContainer.btnSecond.setOnClickListener {
                                     checkInternetOnButtonActionAndRedirect()
@@ -452,7 +461,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
         pdpGamificationView.errorListener = object : PdpErrorListener {
             override fun onError() {
-                setupBottomSheet(false)
+//                setupBottomSheet(false)
             }
 
         }

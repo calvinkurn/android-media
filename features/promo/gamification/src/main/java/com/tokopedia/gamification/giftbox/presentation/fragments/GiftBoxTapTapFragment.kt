@@ -43,6 +43,10 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Com
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.REWARD_POINT
 import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.CLOSE
 import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.OPEN
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType.Companion.CARD
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType.Companion.CATALOG
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType.Companion.IMAGE
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType.Companion.UNDEFINED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.FINISHED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.NOT_STARTED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.STARTED
@@ -1089,6 +1093,17 @@ annotation class BenefitType {
         const val OVO = "ovo_points"
         const val REWARD_POINT = "reward_point"
         const val COUPON_RP_0 = "coupon_rp0"
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(CARD, CATALOG, IMAGE, UNDEFINED)
+annotation class DisplayType {
+    companion object {
+        const val CARD = "card"
+        const val CATALOG = "catalog"
+        const val IMAGE = "image"
+        const val UNDEFINED = ""
     }
 }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.animation.*
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Handler
@@ -11,7 +12,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
@@ -20,9 +20,8 @@ import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.CouponType
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.data.entities.OvoListItem
-import com.tokopedia.gamification.giftbox.data.entities.RewardPoint
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
-import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecoration
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
@@ -67,6 +66,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
         isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     open fun initViews() {
         rvCoupons = findViewById(R.id.rv_coupons)
         imageCircleReward = findViewById(R.id.image_circle_reward)
@@ -119,6 +119,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
         rvCoupons.adapter = couponAdapter
 
         userSession = UserSession(context)
+        imageCircleReward.setImageDrawable(null)
 
     }
 
@@ -222,26 +223,25 @@ open class RewardContainerDaily @JvmOverloads constructor(
 
         rewardEntity.gamiCrack.benefits?.let {
             it.forEach { benefit ->
-                when (benefit.benefitType) {
-                    BenefitType.OVO -> {
+                when (benefit.displayType) {
+                    DisplayType.CARD -> {
                         hasCoupons = true
                         couponList.add(OvoListItem(benefit.imageUrl, benefit.text))
                         GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
                     }
-                    BenefitType.COUPON -> {
+                    DisplayType.CATALOG -> {
+                        hasCoupons = true
                         benefit.referenceID?.let {
                             GtmEvents.viewRewards(it.toString(), userSession?.userId)
                         }
                     }
-                    BenefitType.COUPON_RP_0 -> {
+                    DisplayType.IMAGE -> {
                         isRp0 = true
                         if(!benefit.imageUrl.isNullOrEmpty()){
                             ImageUtils.loadImage(imageCircleReward, benefit.imageUrl, isAnimate = false)
                         }
-                    }
-                    BenefitType.REWARD_POINT -> {
-                        hasCoupons = true
-                        couponList.add(RewardPoint(benefit.imageUrl, benefit.text))
+                        //todo Rahul remove later
+                        imageCircleReward.setImageResource(R.drawable.gf_rp_0_reward)
                     }
                 }
             }
