@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.data.mapper
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
@@ -125,7 +126,7 @@ class OfficialHomeMapper (
                     ))
                 }
             }
-            listOfficialStore.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel }
+            listOfficialStore.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel || it is HomeComponentVisitable }
             listOfficialStore.addAll(views)
             adapter?.submitList(listOfficialStore.toMutableList())
         }

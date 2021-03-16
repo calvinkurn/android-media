@@ -91,7 +91,6 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -596,7 +595,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginGoogleClick() {
-        activity?.run{
+        if (activity != null) {
             onDismissBottomSheet()
             activity?.applicationContext?.let { analytics.eventClickLoginGoogle(it) }
 
@@ -610,9 +609,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onLoginFacebookClick() {
-        onDismissBottomSheet()
-        activity?.applicationContext?.let { analytics.eventClickLoginFacebook(it) }
-        presenter.getFacebookCredential(this@LoginEmailPhoneFragment, callbackManager)
+        if (activity != null) {
+            onDismissBottomSheet()
+            analytics.eventClickLoginFacebook(requireActivity().applicationContext)
+            presenter.getFacebookCredential(this@LoginEmailPhoneFragment, callbackManager)
+        }
     }
 
     fun onDismissBottomSheet() {
@@ -771,12 +772,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         saveFirstInstallTime()
-
-        /*
-        * broadcast through AIDL service if user have login
-        * (send the flag into another app).
-        * */
-        context?.let { PushNotificationApi.bindService(it) }
     }
 
     override fun setLoginSuccessSellerApp() {
@@ -1217,9 +1212,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
-        activity?.run {
-            val intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+        if (activity != null){
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)

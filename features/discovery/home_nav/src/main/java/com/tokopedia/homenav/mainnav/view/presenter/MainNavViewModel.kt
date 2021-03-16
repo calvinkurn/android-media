@@ -23,7 +23,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.Event
 import com.tokopedia.homenav.mainnav.MainNavConst
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
@@ -439,6 +439,12 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    private fun getTotalOrderCount(notificationPojo: ShopData.NotificationPojo): Int {
+        return notificationPojo.sellerOrderStatus.newOrderCount
+                .plus(notificationPojo.sellerOrderStatus.readyToShipOrderCount)
+                .plus(notificationPojo.sellerOrderStatus.inResolution)
+    }
+
     fun refreshUserShopData() {
         val newAccountData = _mainNavListVisitable.find {
             it is AccountHeaderDataModel
@@ -460,22 +466,25 @@ class MainNavViewModel @Inject constructor(
                 }
                 val response = call.await()
                 val (adminRoleText, canGoToSellerAccount, isShopActive) = adminDataCall.await()
-                val result = (response.takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+                val result = (response.takeIf { it is Success } as? Success<ShopData>)?.data
                 result?.let {
                     accountModel.run {
                         val shopName: String
                         val shopId: String
                         val adminRole: String?
+                        val orderCount: Int
                         if (isShopActive) {
-                            shopName = it.info.shopName
-                            shopId = it.info.shopId
+                            shopName = it.userShopInfo.info.shopName
+                            shopId = it.userShopInfo.info.shopId
+                            orderCount = getTotalOrderCount(it.notifications)
                             adminRole = adminRoleText
                         } else {
                             shopName = ""
                             shopId = ""
                             adminRole = null
+                            orderCount = 0
                         }
-                        setUserShopName(shopName, shopId)
+                        setUserShopName(shopName, shopId, orderCount)
                         setAdminData(adminRole, canGoToSellerAccount)
                     }
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)

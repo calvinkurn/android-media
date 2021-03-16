@@ -1026,7 +1026,7 @@ class PlayViewModel @Inject constructor(
     private fun doOnForbidden() {
         destroy()
         stopPlayer()
-        hideInsets(isKeyboardHandled = false)
+        onKeyboardHidden()
     }
 
     private fun getPinnedModel(
