@@ -50,20 +50,6 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         adapter.renderList(dataCollection)
     }
 
-    fun clearPromoList(){
-        adapter.clearAllElements()
-    }
-
-    fun setItemActive(airlineID: String): Boolean{
-        listPromo.forEachIndexed { index, airlinePrice ->
-            if (airlineID == airlinePrice.airlineID){
-                adapter.setSelectedProduct(index)
-                return true
-            }
-        }
-        return false
-    }
-
     interface PromoChipsListener{
         fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int)
     }

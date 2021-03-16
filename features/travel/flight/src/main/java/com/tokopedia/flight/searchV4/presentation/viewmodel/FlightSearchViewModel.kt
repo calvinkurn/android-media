@@ -468,7 +468,7 @@ class FlightSearchViewModel @Inject constructor(
             }
 
     fun fetchPromoList(isReturnTrip: Boolean) {
-        val departureDate: String = flightSearchPassData.departureDate
+        val departureDate: String = flightSearchPassData.getDate(isReturnTrip)
         val returnDate: String = flightSearchPassData.getDate(isReturnTrip)
         val departureAirport = flightSearchPassData.getDepartureAirport(isReturnTrip)
         val arrivalAirport = flightSearchPassData.getArrivalAirport(isReturnTrip)

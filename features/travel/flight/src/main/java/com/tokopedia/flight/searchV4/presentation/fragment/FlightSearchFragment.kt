@@ -306,7 +306,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightFilterModel?.let {
             flightSearchViewModel.filterModel = it
         }
-        setItemPromoChipsActive()
         clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
@@ -762,16 +761,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         promoChipsWidget.show()
     }
 
-    private fun setItemPromoChipsActive(){
-        promoChipsWidget.setItemActive(flightSearchViewModel.filterModel.airlineList[QUICK_FILTER_NO_ADDITIONAL])
-    }
-
     private fun initPromoChips(){
         flightSearchViewModel.promoData.observe(viewLifecycleOwner, {
             when(it){
                 is Success ->{
                     if (!it.data.dataPromoChips.isNullOrEmpty()) {
-                        if(isReturnTrip()) promoChipsWidget.clearPromoList()
                         promoChipsWidget.renderPromoList(it.data.dataPromoChips[FLIGHT_PROMO_CHIPS_START_DATE].airlinePrices)
                     }else{
                         hidePromoChips()
