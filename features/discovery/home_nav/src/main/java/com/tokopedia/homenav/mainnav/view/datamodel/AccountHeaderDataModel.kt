@@ -58,19 +58,19 @@ data class AccountHeaderDataModel(
 
     fun copy(): AccountHeaderDataModel {
         return AccountHeaderDataModel(
-                id,
-                loginState,
-                userName,
-                userImage,
-                badge,
-                ovoSaldo,
-                ovoPoint,
-                saldo,
-                shopName,
-                shopId,
-                shopOrderCount,
-                shopNotifCount,
-                shopApplink
+                id = id,
+                loginState = loginState,
+                userName = userName,
+                userImage = userImage,
+                badge = badge,
+                ovoSaldo = ovoSaldo,
+                ovoPoint = ovoPoint,
+                saldo = saldo,
+                shopName = shopName,
+                shopId = shopId,
+                shopOrderCount = shopOrderCount,
+                shopNotifCount = shopNotifCount,
+                shopApplink = shopApplink
         )
     }
 
