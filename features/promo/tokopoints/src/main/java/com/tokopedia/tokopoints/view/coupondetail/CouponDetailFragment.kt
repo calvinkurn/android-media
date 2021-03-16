@@ -505,6 +505,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
 
     private fun setSwipeUi(swipeDetail: CouponSwipeDetail) = view?.apply {
+        ll_bottom_button?.show()
         layout_coupon_swipe.show()
         card_swipe?.apply {
             setTitle(swipeDetail.text)
