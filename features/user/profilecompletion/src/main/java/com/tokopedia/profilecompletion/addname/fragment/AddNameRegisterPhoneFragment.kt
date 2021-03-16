@@ -35,9 +35,9 @@ import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_name_register.*
 import javax.inject.Inject
 
 /**
@@ -51,6 +51,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     private var bottomInfo: TextView? = null
     private var progressBar: ProgressBar? = null
     private var mainContent: View? = null
+    private var textName: TextFieldUnify? = null
+    private var btnNext: UnifyButton? = null
 
     private var isError = false
 
@@ -101,6 +103,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         bottomInfo = view.findViewById(R.id.bottom_info)
         progressBar = view.findViewById(R.id.progress_bar)
         mainContent = view.findViewById(R.id.main_content)
+        textName = view.findViewById(R.id.et_name)
+        btnNext = view.findViewById(R.id.btn_continue)
         return view
     }
 
@@ -115,22 +119,20 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         presenter.attachView(this)
         setView()
         setViewListener()
-        disableButton(btn_continue)
+        btnNext?.let { disableButton(it) }
     }
 
-    protected fun setViewListener() {
-        et_name.textFieldInput.addTextChangedListener(object : TextWatcher {
+    private fun setViewListener() {
+        textName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                if (charSequence.length != 0) {
-                    enableButton(btn_continue)
-
+                if (charSequence.isNotEmpty()) {
+                    btnNext?.let { enableButton(it) }
                 } else {
-                    disableButton(btn_continue)
-
+                    btnNext?.let { disableButton(it) }
                 }
                 if (isError) {
                     hideValidationError()
@@ -142,20 +144,13 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             }
         })
 
-        btn_continue.setOnClickListener { onContinueClick() }
-        btn_continue.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
-            if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
-                onContinueClick()
-                return@OnEditorActionListener true
-            }
-            false
-        })
+        btnNext?.setOnClickListener { onContinueClick() }
     }
 
-    protected fun onContinueClick() {
+    private fun onContinueClick() {
         KeyboardHandler.DropKeyboard(activity, view)
         phoneNumber?.let{
-            registerPhoneAndName(et_name.textFieldInput.text.toString(), it)
+            registerPhoneAndName(textName?.textFieldInput?.text.toString(), it)
             analytics.trackClickFinishAddNameButton()
         }
     }
@@ -184,7 +179,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     }
 
     private fun setView() {
-        disableButton(btn_continue)
+        btnNext?.let { disableButton(it) }
         initTermPrivacyView()
     }
 
@@ -224,14 +219,14 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     private fun hideValidationError() {
         isError = false
-        et_name.setError(false)
-        et_name.setMessage("")
+        textName?.setError(false)
+        textName?.setMessage("")
     }
 
     private fun showValidationError(errorMessage: String) {
         isError = true
-        et_name.setError(true)
-        et_name.setMessage(errorMessage)
+        textName?.setError(true)
+        textName?.setMessage(errorMessage)
     }
 
     private fun enableButton(button: UnifyButton) {
@@ -242,23 +237,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         button.isEnabled = false
     }
 
-    fun stripUnderlines(textView: TextView) {
-        val s = SpannableString(textView.text)
-        val spans = s.getSpans(0, s.length, URLSpan::class.java)
-        for (sp in spans) {
-            var span = sp
-            val start = s.getSpanStart(span)
-            val end = s.getSpanEnd(span)
-            s.removeSpan(span)
-            span = URLSpanNoUnderline(span.url)
-            s.setSpan(span, start, end, 0)
-            context?.run {
-                s.setSpan(ForegroundColorSpan(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), start, end, 0)
-            }
-        }
-        textView.text = s
-    }
-
     override fun showLoading() {
         mainContent?.visibility = View.GONE
         progressBar?.visibility = View.VISIBLE
@@ -267,13 +245,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     fun dismissLoading() {
         mainContent?.visibility = View.VISIBLE
         progressBar?.visibility = View.GONE
-    }
-
-    private class URLSpanNoUnderline(url: String) : URLSpan(url) {
-        override fun updateDrawState(ds: TextPaint) {
-            super.updateDrawState(ds)
-            ds.isUnderlineText = false
-        }
     }
 
     override fun onErrorRegister(throwable: Throwable) {
