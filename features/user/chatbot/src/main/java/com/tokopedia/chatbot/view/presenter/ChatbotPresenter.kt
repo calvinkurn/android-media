@@ -22,6 +22,7 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
@@ -63,11 +64,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
-import rx.Observable
 import rx.Subscriber
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import java.util.Calendar
@@ -547,9 +544,10 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel {
-        val text = "Transaksi yang berkendala tidak ada di daftar pilihan."
-        val value = "Transaksi yang berkendala tidak ada di daftar pilihan."
-        val action = "transaction_not_listed"
+        val text = view.context?.getString(R.string.chatbot_text_for_no_transaction_found) ?: ""
+        val value = view.context?.getString(R.string.chatbot_text_for_no_transaction_found) ?: ""
+        val action = view.context?.getString(R.string.chatbot_action_text_for_no_transaction_found)
+                ?: ""
         return ChatActionBubbleViewModel(text, value, action)
     }
 }
