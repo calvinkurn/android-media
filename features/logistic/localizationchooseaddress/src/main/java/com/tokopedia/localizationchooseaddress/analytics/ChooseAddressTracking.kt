@@ -157,12 +157,12 @@ object ChooseAddressTracking : BaseTrackerConst() {
                 .build())
     }
 
-    fun onClickButtonPilihAlamat(userId: String, state: String) {
+    fun onClickButtonPilihAlamat(userId: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ADDRESS_LIST_PAGE)
                 .appendEventAction(CLICK_BUTTON_PILIH_ALAMAT)
-                .appendEventLabel(state)
+                .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
