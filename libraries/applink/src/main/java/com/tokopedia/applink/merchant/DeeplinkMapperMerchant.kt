@@ -22,10 +22,12 @@ object DeeplinkMapperMerchant {
     private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
+    private const val FOLLOWER_LIST_SEGMENT = "follower"
     private const val SHOP_PAGE_SEGMENT_SIZE = 1
     private const val SHOP_REVIEW_SEGMENT_SIZE = 2
     private const val SHOP_PRODUCT_SEGMENT_SIZE = 2
     private const val SHOP_FEED_SEGMENT_SIZE = 2
+    private const val SHOP_FOLLOWER_LIST_SEGMENT_SIZE = 2
     private const val PARAM_PRODUCT_ID = "productId"
     private const val PARAM_SELLER_TAB = "tab"
 
@@ -270,6 +272,24 @@ object DeeplinkMapperMerchant {
             val shopId = segments[0]
             return if (segments.size == SHOP_FEED_SEGMENT_SIZE) {
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId)
+            } else {
+                deeplink
+            }
+        }
+        return deeplink
+    }
+
+    fun isShopFollowerListDeeplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return deeplink.startsWithPattern(ApplinkConst.SHOP_FOLLOWER_LIST) && uri.lastPathSegment == FOLLOWER_LIST_SEGMENT
+    }
+
+    fun getRegisteredNavigationShopFollowerList(deeplink: String): String {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP_FOLLOWER_LIST)) {
+            val segments = Uri.parse(deeplink).pathSegments
+            val shopId = segments[0]
+            return if (segments.size == SHOP_FOLLOWER_LIST_SEGMENT_SIZE) {
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID, shopId)
             } else {
                 deeplink
             }

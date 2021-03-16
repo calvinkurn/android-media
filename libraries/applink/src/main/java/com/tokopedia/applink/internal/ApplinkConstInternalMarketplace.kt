@@ -315,6 +315,9 @@ object ApplinkConstInternalMarketplace {
     val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
 
     @JvmField
+    val SHOP_FAVOURITE_LIST_WITH_SHOP_ID = "$SHOP_PAGE_BASE/{shop_id}/shop-favourites"
+
+    @JvmField
     val ARGS_SHOP_ID = "ARGS_SHOP_ID"
 
     @JvmField
