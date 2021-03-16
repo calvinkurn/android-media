@@ -293,7 +293,7 @@ class ResourceDownloadManager private constructor() {
         completedTask.deferredImageView?.let {
             if (it.get() != null) {
                 it.get()?.mRemoteFileName = ""
-                it.get()?.completeUrl = ""
+                it.get()?.mCompleteUrl = ""
                 startDecoding(completedTask)
             } else {
                 handler.obtainMessage(TASK_COMPLETED, completedTask).sendToTarget()

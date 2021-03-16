@@ -100,19 +100,19 @@ data class PendingType(
 object ImageTypeMapper {
     fun getImageType(deferredImageView: DeferredImageView): RequestedResourceType {
         val fileName =
-                if (deferredImageView.completeUrl.isNotEmpty()) {
-                    val index = deferredImageView.completeUrl.lastIndexOf(URL_SEPARATOR)
+                if (deferredImageView.mCompleteUrl.isNotEmpty()) {
+                    val index = deferredImageView.mCompleteUrl.lastIndexOf(URL_SEPARATOR)
                     if (index != -1)
-                        deferredImageView.completeUrl.substring(
-                                deferredImageView.completeUrl.lastIndexOf(URL_SEPARATOR) + 1)
+                        deferredImageView.mCompleteUrl.substring(
+                                deferredImageView.mCompleteUrl.lastIndexOf(URL_SEPARATOR) + 1)
                     else
                         deferredImageView.mRemoteFileName
                 } else
                     deferredImageView.mRemoteFileName
         return when (deferredImageView.dpiSupportType) {
-            1 -> SingleDPIImageType(deferredImageView, fileName, deferredImageView.completeUrl)
-            2 -> NoDPIImageType(deferredImageView, fileName, deferredImageView.completeUrl)
-            else -> MultiDPIImageType(deferredImageView, fileName, deferredImageView.completeUrl)
+            1 -> SingleDPIImageType(deferredImageView, fileName, deferredImageView.mCompleteUrl)
+            2 -> NoDPIImageType(deferredImageView, fileName, deferredImageView.mCompleteUrl)
+            else -> MultiDPIImageType(deferredImageView, fileName, deferredImageView.mCompleteUrl)
         }
     }
 
