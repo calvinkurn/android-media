@@ -4,6 +4,7 @@ import android.location.Location
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.VisibleRegion
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -17,7 +18,8 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,15 +32,14 @@ class HotelSearchMapViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val dispatcher = TravelTestDispatcherProvider()
-    private lateinit var hotelSearchResultViewModel: HotelSearchMapViewModel
+    private lateinit var hotelSearchMapViewModel: HotelSearchMapViewModel
 
     private val travelTickerCoroutineUseCase = mockk<TravelTickerCoroutineUseCase>()
     private val searchPropertyUseCase = mockk<SearchPropertyUseCase>()
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
-        hotelSearchResultViewModel = HotelSearchMapViewModel(dispatcher, searchPropertyUseCase, travelTickerCoroutineUseCase)
+        hotelSearchMapViewModel = HotelSearchMapViewModel(dispatcher, searchPropertyUseCase, travelTickerCoroutineUseCase)
     }
 
     @Test
@@ -46,22 +47,22 @@ class HotelSearchMapViewModelTest {
         //when
 
         //then
-        assert(hotelSearchResultViewModel.selectedSort.name.isEmpty())
-        assert(hotelSearchResultViewModel.filter.price.maxPrice == 0)
-        assert(!hotelSearchResultViewModel.isFilter)
+        assert(hotelSearchMapViewModel.selectedSort.name.isEmpty())
+        assert(hotelSearchMapViewModel.filter.price.maxPrice == 0)
+        assert(!hotelSearchMapViewModel.isFilter)
     }
 
     @Test
     fun valueAssigned() {
         //when
-        hotelSearchResultViewModel.selectedSort = Sort(name = "AA")
-        hotelSearchResultViewModel.filter = Filter(Filter.FilterPrice(maxPrice = 100))
-        hotelSearchResultViewModel.isFilter = true
+        hotelSearchMapViewModel.selectedSort = Sort(name = "AA")
+        hotelSearchMapViewModel.filter = Filter(Filter.FilterPrice(maxPrice = 100))
+        hotelSearchMapViewModel.isFilter = true
 
         //then
-        assert(hotelSearchResultViewModel.selectedSort.name == "AA")
-        assert(hotelSearchResultViewModel.filter.price.maxPrice == 100)
-        assert(hotelSearchResultViewModel.isFilter)
+        assert(hotelSearchMapViewModel.selectedSort.name == "AA")
+        assert(hotelSearchMapViewModel.filter.price.maxPrice == 100)
+        assert(hotelSearchMapViewModel.isFilter)
     }
 
     @Test
@@ -79,18 +80,26 @@ class HotelSearchMapViewModelTest {
         val cityName = "lalala"
 
         //when
-        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
+        hotelSearchMapViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
                 , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
-        assert(hotelSearchResultViewModel.searchParam.location.cityID == destinationId)
-        assert(hotelSearchResultViewModel.searchParam.location.districtID == 0.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.latitude == latitude)
-        assert(hotelSearchResultViewModel.searchParam.location.longitude == longitude)
-        assert(hotelSearchResultViewModel.searchParam.checkIn == checkIn)
-        assert(hotelSearchResultViewModel.searchParam.checkOut == checkOut)
-        assert(hotelSearchResultViewModel.searchParam.room == totalRoom)
-        assert(hotelSearchResultViewModel.searchParam.guest.adult == totalAdult)
+        assert(hotelSearchMapViewModel.hotelSearchModel.id == destinationId)
+        assert(hotelSearchMapViewModel.hotelSearchModel.name == cityName)
+        assert(hotelSearchMapViewModel.hotelSearchModel.lat == latitude)
+        assert(hotelSearchMapViewModel.hotelSearchModel.long == longitude)
+        assert(hotelSearchMapViewModel.hotelSearchModel.checkIn == checkIn)
+        assert(hotelSearchMapViewModel.hotelSearchModel.checkOut == checkOut)
+        assert(hotelSearchMapViewModel.hotelSearchModel.room == totalRoom)
+        assert(hotelSearchMapViewModel.hotelSearchModel.adult == totalAdult)
+        assert(hotelSearchMapViewModel.searchParam.location.cityID == destinationId)
+        assert(hotelSearchMapViewModel.searchParam.location.districtID == 0.toLong())
+        assert(hotelSearchMapViewModel.searchParam.location.latitude == latitude)
+        assert(hotelSearchMapViewModel.searchParam.location.longitude == longitude)
+        assert(hotelSearchMapViewModel.searchParam.checkIn == checkIn)
+        assert(hotelSearchMapViewModel.searchParam.checkOut == checkOut)
+        assert(hotelSearchMapViewModel.searchParam.room == totalRoom)
+        assert(hotelSearchMapViewModel.searchParam.guest.adult == totalAdult)
     }
 
     @Test
@@ -108,18 +117,18 @@ class HotelSearchMapViewModelTest {
         val cityName = "lala"
 
         //when
-        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
+        hotelSearchMapViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName,
+                type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
-        assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.districtID == destinationId.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.latitude == latitude)
-        assert(hotelSearchResultViewModel.searchParam.location.longitude == longitude)
-        assert(hotelSearchResultViewModel.searchParam.checkIn == checkIn)
-        assert(hotelSearchResultViewModel.searchParam.checkOut == checkOut)
-        assert(hotelSearchResultViewModel.searchParam.room == totalRoom)
-        assert(hotelSearchResultViewModel.searchParam.guest.adult == totalAdult)
+        assert(hotelSearchMapViewModel.searchParam.location.cityID == 0.toLong())
+        assert(hotelSearchMapViewModel.searchParam.location.districtID == destinationId)
+        assert(hotelSearchMapViewModel.searchParam.location.latitude == latitude)
+        assert(hotelSearchMapViewModel.searchParam.location.longitude == longitude)
+        assert(hotelSearchMapViewModel.searchParam.checkIn == checkIn)
+        assert(hotelSearchMapViewModel.searchParam.checkOut == checkOut)
+        assert(hotelSearchMapViewModel.searchParam.room == totalRoom)
+        assert(hotelSearchMapViewModel.searchParam.guest.adult == totalAdult)
 
     }
 
@@ -138,19 +147,19 @@ class HotelSearchMapViewModelTest {
         val cityName = "name"
 
         //when
-        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
+        hotelSearchMapViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
                 , type, totalRoom, totalAdult, latitude, longitude, radius, ""))
 
         //then
-        assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.districtID == 0.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.regionID == destinationId.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.latitude == latitude)
-        assert(hotelSearchResultViewModel.searchParam.location.longitude == longitude)
-        assert(hotelSearchResultViewModel.searchParam.checkIn == checkIn)
-        assert(hotelSearchResultViewModel.searchParam.checkOut == checkOut)
-        assert(hotelSearchResultViewModel.searchParam.room == totalRoom)
-        assert(hotelSearchResultViewModel.searchParam.guest.adult == totalAdult)
+        assert(hotelSearchMapViewModel.searchParam.location.cityID == 0.toLong())
+        assert(hotelSearchMapViewModel.searchParam.location.districtID == 0.toLong())
+        assert(hotelSearchMapViewModel.searchParam.location.regionID == destinationId.toLong())
+        assert(hotelSearchMapViewModel.searchParam.location.latitude == latitude)
+        assert(hotelSearchMapViewModel.searchParam.location.longitude == longitude)
+        assert(hotelSearchMapViewModel.searchParam.checkIn == checkIn)
+        assert(hotelSearchMapViewModel.searchParam.checkOut == checkOut)
+        assert(hotelSearchMapViewModel.searchParam.room == totalRoom)
+        assert(hotelSearchMapViewModel.searchParam.guest.adult == totalAdult)
 
     }
 
@@ -169,20 +178,20 @@ class HotelSearchMapViewModelTest {
         val searchType = HotelTypeEnum.COORDINATE.value
 
         //when
-        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , "", totalRoom, totalAdult, latitude, longitude, radius,searchType, ""))
+        hotelSearchMapViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName,
+                "", totalRoom, totalAdult, latitude, longitude, radius, searchType, ""))
 
         //then
-        assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.districtID == 0.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.regionID == 0.toLong())
-        assert(hotelSearchResultViewModel.searchParam.location.latitude == latitude)
-        assert(hotelSearchResultViewModel.searchParam.location.longitude == longitude)
-        assert(hotelSearchResultViewModel.searchParam.checkIn == checkIn)
-        assert(hotelSearchResultViewModel.searchParam.checkOut == checkOut)
-        assert(hotelSearchResultViewModel.searchParam.room == totalRoom)
-        assert(hotelSearchResultViewModel.searchParam.guest.adult == totalAdult)
-        assert(hotelSearchResultViewModel.searchParam.location.searchType == searchType)
+        assert(hotelSearchMapViewModel.searchParam.location.cityID == 0.toLong())
+        assert(hotelSearchMapViewModel.searchParam.location.districtID == 0.toLong())
+        assert(hotelSearchMapViewModel.searchParam.location.regionID == 0.toLong())
+        assert(hotelSearchMapViewModel.searchParam.location.latitude == latitude)
+        assert(hotelSearchMapViewModel.searchParam.location.longitude == longitude)
+        assert(hotelSearchMapViewModel.searchParam.checkIn == checkIn)
+        assert(hotelSearchMapViewModel.searchParam.checkOut == checkOut)
+        assert(hotelSearchMapViewModel.searchParam.room == totalRoom)
+        assert(hotelSearchMapViewModel.searchParam.guest.adult == totalAdult)
+        assert(hotelSearchMapViewModel.searchParam.location.searchType == searchType)
 
     }
 
@@ -195,11 +204,11 @@ class HotelSearchMapViewModelTest {
         } returns Success(PropertySearch(properties))
 
         //when
-        hotelSearchResultViewModel.searchProperty(0, "")
+        hotelSearchMapViewModel.searchProperty(0, "")
 
         //then
-        assert(hotelSearchResultViewModel.liveSearchResult.value is Success)
-        assert((hotelSearchResultViewModel.liveSearchResult.value as Success).data.properties.isNotEmpty())
+        assert(hotelSearchMapViewModel.liveSearchResult.value is Success)
+        assert((hotelSearchMapViewModel.liveSearchResult.value as Success).data.properties.isNotEmpty())
     }
 
     @Test
@@ -210,10 +219,10 @@ class HotelSearchMapViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        hotelSearchResultViewModel.searchProperty(0, "")
+        hotelSearchMapViewModel.searchProperty(0, "")
 
         //then
-        assert(hotelSearchResultViewModel.liveSearchResult.value is Fail)
+        assert(hotelSearchMapViewModel.liveSearchResult.value is Fail)
     }
 
     @Test
@@ -222,15 +231,15 @@ class HotelSearchMapViewModelTest {
         val sort = Sort(name = "popularity")
 
         //when
-        hotelSearchResultViewModel.addSort(sort)
+        hotelSearchMapViewModel.addSort(sort)
 
         //then
-        assert(hotelSearchResultViewModel.searchParam.sort.popularity)
-        assert(!hotelSearchResultViewModel.searchParam.sort.price)
-        assert(!hotelSearchResultViewModel.searchParam.sort.ranking)
-        assert(!hotelSearchResultViewModel.searchParam.sort.star)
-        assert(!hotelSearchResultViewModel.searchParam.sort.reviewScore)
-        assert(hotelSearchResultViewModel.searchParam.sort.sortDir == "desc")
+        assert(hotelSearchMapViewModel.searchParam.sort.popularity)
+        assert(!hotelSearchMapViewModel.searchParam.sort.price)
+        assert(!hotelSearchMapViewModel.searchParam.sort.ranking)
+        assert(!hotelSearchMapViewModel.searchParam.sort.star)
+        assert(!hotelSearchMapViewModel.searchParam.sort.reviewScore)
+        assert(hotelSearchMapViewModel.searchParam.sort.sortDir == "desc")
     }
 
     @Test
@@ -239,15 +248,15 @@ class HotelSearchMapViewModelTest {
         val sort = Sort(name = "price")
 
         //when
-        hotelSearchResultViewModel.addSort(sort)
+        hotelSearchMapViewModel.addSort(sort)
 
         //then
-        assert(!hotelSearchResultViewModel.searchParam.sort.popularity)
-        assert(hotelSearchResultViewModel.searchParam.sort.price)
-        assert(!hotelSearchResultViewModel.searchParam.sort.ranking)
-        assert(!hotelSearchResultViewModel.searchParam.sort.star)
-        assert(!hotelSearchResultViewModel.searchParam.sort.reviewScore)
-        assert(hotelSearchResultViewModel.searchParam.sort.sortDir == "asc")
+        assert(!hotelSearchMapViewModel.searchParam.sort.popularity)
+        assert(hotelSearchMapViewModel.searchParam.sort.price)
+        assert(!hotelSearchMapViewModel.searchParam.sort.ranking)
+        assert(!hotelSearchMapViewModel.searchParam.sort.star)
+        assert(!hotelSearchMapViewModel.searchParam.sort.reviewScore)
+        assert(hotelSearchMapViewModel.searchParam.sort.sortDir == "asc")
     }
 
     @Test
@@ -256,15 +265,15 @@ class HotelSearchMapViewModelTest {
         val sort = Sort(name = "ranking")
 
         //when
-        hotelSearchResultViewModel.addSort(sort)
+        hotelSearchMapViewModel.addSort(sort)
 
         //then
-        assert(!hotelSearchResultViewModel.searchParam.sort.popularity)
-        assert(!hotelSearchResultViewModel.searchParam.sort.price)
-        assert(hotelSearchResultViewModel.searchParam.sort.ranking)
-        assert(!hotelSearchResultViewModel.searchParam.sort.star)
-        assert(!hotelSearchResultViewModel.searchParam.sort.reviewScore)
-        assert(hotelSearchResultViewModel.searchParam.sort.sortDir == "desc")
+        assert(!hotelSearchMapViewModel.searchParam.sort.popularity)
+        assert(!hotelSearchMapViewModel.searchParam.sort.price)
+        assert(hotelSearchMapViewModel.searchParam.sort.ranking)
+        assert(!hotelSearchMapViewModel.searchParam.sort.star)
+        assert(!hotelSearchMapViewModel.searchParam.sort.reviewScore)
+        assert(hotelSearchMapViewModel.searchParam.sort.sortDir == "desc")
     }
 
     @Test
@@ -273,15 +282,15 @@ class HotelSearchMapViewModelTest {
         val sort = Sort(name = "star")
 
         //when
-        hotelSearchResultViewModel.addSort(sort)
+        hotelSearchMapViewModel.addSort(sort)
 
         //then
-        assert(!hotelSearchResultViewModel.searchParam.sort.popularity)
-        assert(!hotelSearchResultViewModel.searchParam.sort.price)
-        assert(!hotelSearchResultViewModel.searchParam.sort.ranking)
-        assert(hotelSearchResultViewModel.searchParam.sort.star)
-        assert(!hotelSearchResultViewModel.searchParam.sort.reviewScore)
-        assert(hotelSearchResultViewModel.searchParam.sort.sortDir == "desc")
+        assert(!hotelSearchMapViewModel.searchParam.sort.popularity)
+        assert(!hotelSearchMapViewModel.searchParam.sort.price)
+        assert(!hotelSearchMapViewModel.searchParam.sort.ranking)
+        assert(hotelSearchMapViewModel.searchParam.sort.star)
+        assert(!hotelSearchMapViewModel.searchParam.sort.reviewScore)
+        assert(hotelSearchMapViewModel.searchParam.sort.sortDir == "desc")
     }
 
     @Test
@@ -290,15 +299,15 @@ class HotelSearchMapViewModelTest {
         val sort = Sort(name = "reviewscore")
 
         //when
-        hotelSearchResultViewModel.addSort(sort)
+        hotelSearchMapViewModel.addSort(sort)
 
         //then
-        assert(!hotelSearchResultViewModel.searchParam.sort.popularity)
-        assert(!hotelSearchResultViewModel.searchParam.sort.price)
-        assert(!hotelSearchResultViewModel.searchParam.sort.ranking)
-        assert(!hotelSearchResultViewModel.searchParam.sort.star)
-        assert(hotelSearchResultViewModel.searchParam.sort.reviewScore)
-        assert(hotelSearchResultViewModel.searchParam.sort.sortDir == "desc")
+        assert(!hotelSearchMapViewModel.searchParam.sort.popularity)
+        assert(!hotelSearchMapViewModel.searchParam.sort.price)
+        assert(!hotelSearchMapViewModel.searchParam.sort.ranking)
+        assert(!hotelSearchMapViewModel.searchParam.sort.star)
+        assert(hotelSearchMapViewModel.searchParam.sort.reviewScore)
+        assert(hotelSearchMapViewModel.searchParam.sort.sortDir == "desc")
     }
 
     @Test
@@ -307,15 +316,15 @@ class HotelSearchMapViewModelTest {
         val sort = Sort(name = "review")
 
         //when
-        hotelSearchResultViewModel.addSort(sort)
+        hotelSearchMapViewModel.addSort(sort)
 
         //then
-        assert(!hotelSearchResultViewModel.searchParam.sort.popularity)
-        assert(!hotelSearchResultViewModel.searchParam.sort.price)
-        assert(!hotelSearchResultViewModel.searchParam.sort.ranking)
-        assert(!hotelSearchResultViewModel.searchParam.sort.star)
-        assert(!hotelSearchResultViewModel.searchParam.sort.reviewScore)
-        assert(hotelSearchResultViewModel.searchParam.sort.sortDir == "desc")
+        assert(!hotelSearchMapViewModel.searchParam.sort.popularity)
+        assert(!hotelSearchMapViewModel.searchParam.sort.price)
+        assert(!hotelSearchMapViewModel.searchParam.sort.ranking)
+        assert(!hotelSearchMapViewModel.searchParam.sort.star)
+        assert(!hotelSearchMapViewModel.searchParam.sort.reviewScore)
+        assert(hotelSearchMapViewModel.searchParam.sort.sortDir == "desc")
     }
 
     @Test
@@ -325,58 +334,58 @@ class HotelSearchMapViewModelTest {
                 ParamFilterV2(name = "Filter 2"))
 
         //when
-        hotelSearchResultViewModel.addFilter(filter)
+        hotelSearchMapViewModel.addFilter(filter)
 
         //then
-        assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
+        assert(hotelSearchMapViewModel.getSelectedFilter().size == 1)
     }
 
     @Test
     fun addFilterWithQuickFilter_shouldUpdateFilterV2() {
         //given
-        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+        val quickFilters = listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
                 QuickFilter(name = "clean", values = listOf("clean")))
         val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_SELECTED),
                 SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
 
         //when
-        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+        hotelSearchMapViewModel.addFilter(quickFilters, sortFilterItems)
 
-        assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
+        assert(hotelSearchMapViewModel.getSelectedFilter().size == 1)
     }
 
     @Test
     fun addFilterWithQuickFilter_shouldUpdateFilterV2_2() {
         //given
         val selectedFilter = listOf(ParamFilterV2(name = "hygiene verified", values = mutableListOf("hygiene verified")))
-        hotelSearchResultViewModel.addFilter(selectedFilter)
+        hotelSearchMapViewModel.addFilter(selectedFilter)
 
-        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+        val quickFilters = listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
                 QuickFilter(name = "clean", values = listOf("clean")))
         val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_SELECTED),
                 SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
 
         //when
-        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+        hotelSearchMapViewModel.addFilter(quickFilters, sortFilterItems)
 
-        assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
+        assert(hotelSearchMapViewModel.getSelectedFilter().size == 1)
     }
 
     @Test
     fun addFilterWithQuickFilter_shouldUpdateFilterV2_3() {
         //given
         val selectedFilter = listOf(ParamFilterV2(name = "hygiene verified", values = mutableListOf("hygiene verified")))
-        hotelSearchResultViewModel.addFilter(selectedFilter)
+        hotelSearchMapViewModel.addFilter(selectedFilter)
 
-        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+        val quickFilters = listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
                 QuickFilter(name = "clean", values = listOf("clean")))
         val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL),
                 SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
 
         //when
-        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+        hotelSearchMapViewModel.addFilter(quickFilters, sortFilterItems)
 
-        assert(hotelSearchResultViewModel.getSelectedFilter().isEmpty())
+        assert(hotelSearchMapViewModel.getSelectedFilter().isEmpty())
     }
 
     @Test
@@ -391,10 +400,10 @@ class HotelSearchMapViewModelTest {
         } returns Success(response)
 
         //when
-        hotelSearchResultViewModel.fetchTickerData()
+        hotelSearchMapViewModel.fetchTickerData()
 
         //then
-        val actual = hotelSearchResultViewModel.tickerData.value
+        val actual = hotelSearchMapViewModel.tickerData.value
         assert(actual is Success)
         assert((actual as Success).data.title == title)
         assert(actual.data.message == message)
@@ -408,115 +417,141 @@ class HotelSearchMapViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        hotelSearchResultViewModel.fetchTickerData()
+        hotelSearchMapViewModel.fetchTickerData()
 
         //then
-        val actual = hotelSearchResultViewModel.tickerData.value
+        val actual = hotelSearchMapViewModel.tickerData.value
         assert(actual is Fail)
     }
 
     @Test
-    fun onGetLocation_shouldReturnFail(){
-        //given
-        val throwable = mockk<Throwable>()
-//        every { hotelSearchResultViewModel.onGetLocation() } returns (throwable) as Unit
-
-        //when
-        hotelSearchResultViewModel.onGetLocation()
-
-        //then
-        val actual = hotelSearchResultViewModel.latLong.value
-        assert(actual is Fail)
-    }
-
-    @Test
-    fun onGetLocation_shouldReturnSuccess(){
+    fun getMidPoint_shouldReturnSuccess() {
         //given
         val latitude = 3.0
         val longitude = 4.0
-        val callback: (DeviceLocation) -> Unit = mockk(relaxed = true)
-        callback.invoke(DeviceLocation(latitude,longitude))
-
-        every { hotelSearchResultViewModel.onGetLocation() } returns   callback
+        val latLong = LatLng(latitude, longitude)
 
         //when
-        hotelSearchResultViewModel.onGetLocation()
+        hotelSearchMapViewModel.getMidPoint(latLong)
 
         //then
-        val actual = hotelSearchResultViewModel.latLong.value
-        assert(actual is Success)
-        assert((actual as Success).data.second == longitude)
-        assert(actual.data.first == latitude)
-    }
-
-    @Test
-    fun getMidPoint_shouldReturnSuccess(){
-        //given
-        val latitude = 3.0
-        val longitude = 4.0
-        val latLong = LatLng(latitude,longitude)
-
-        //when
-        hotelSearchResultViewModel.getMidPoint(latLong)
-
-        //then
-        val actual = hotelSearchResultViewModel.screenMidPoint.value
+        val actual = hotelSearchMapViewModel.screenMidPoint.value
         assert(actual is Success)
         assert((actual as Success).data.longitude == latLong.longitude)
         assert(actual.data.latitude == latLong.latitude)
     }
 
     @Test
-    fun getMidPoint_shouldReturnFail(){
+    fun getMidPoint_shouldReturnFail() {
         //given
         val latitude = 0.0
         val longitude = 0.0
-        val latLong = LatLng(latitude,longitude)
+        val latLong = LatLng(latitude, longitude)
 
         //when
-        hotelSearchResultViewModel.getMidPoint(latLong)
+        hotelSearchMapViewModel.getMidPoint(latLong)
 
         //then
-        val actual = hotelSearchResultViewModel.screenMidPoint.value
+        val actual = hotelSearchMapViewModel.screenMidPoint.value
         assert(actual is Fail)
     }
 
     @Test
-    fun getVisibleRadius_positiveFlow(){
-        //given
+    fun getVisibleRadius_successToGetVisibleRadius() {
+        // given
+        val visibleRegion = VisibleRegion(
+                LatLng(0.0, 0.0),
+                LatLng(1.1, 1.1),
+                LatLng(2.2, 2.2),
+                LatLng(3.3, 3.3),
+                LatLngBounds(LatLng(0.0, 0.0), LatLng(4.4, 4.4))
+        )
         val googleMap = mockk<GoogleMap>()
-        val throwable = mockk<Throwable>()
-        val radius: Double = 30.9
-        try {
-            val visibleRegion: VisibleRegion = mockk()
-            val diagonalDistance = FloatArray(1)
+        val distances = FloatArray(1)
+        Location.distanceBetween(
+                2.2,
+                2.2,
+                1.1,
+                1.1,
+                distances
+        )
 
-            val farLeft = visibleRegion.farLeft
-            val nearRight = visibleRegion.nearRight
+        coEvery { googleMap.projection.visibleRegion } returns visibleRegion
 
-            Location.distanceBetween(
-                    farLeft.latitude,
-                    farLeft.longitude,
-                    nearRight.latitude,
-                    nearRight.longitude,
-                    diagonalDistance
-            )
-            //when
-            hotelSearchResultViewModel.getVisibleRadius(googleMap)
-            //then
-            val actual = hotelSearchResultViewModel.radius.value
-            assert(actual is Success)
-            assert((actual as Success).data == radius)
-        } catch (error: Throwable) {
-            //given
-            every { hotelSearchResultViewModel.getVisibleRadius(googleMap) } throws throwable
+        // when
+        hotelSearchMapViewModel.getVisibleRadius(googleMap)
 
-            //when
-            hotelSearchResultViewModel.getVisibleRadius(googleMap)
+        // then
+        assert(hotelSearchMapViewModel.radius.value is Success)
+        assert((hotelSearchMapViewModel.radius.value as Success).data == (distances[0] / 2).toDouble())
+    }
 
-            //then
-            val actual = hotelSearchResultViewModel.radius.value
-            assert(actual is Fail)
-        }
+    @Test
+    fun getVisibleRadius_failedToGetVisibleRadius() {
+        // given
+        val googleMap = mockk<GoogleMap>()
+        coEvery { googleMap.projection.visibleRegion } coAnswers { throw Throwable("Failed to get Visible Radius") }
+
+        // when
+        hotelSearchMapViewModel.getVisibleRadius(googleMap)
+
+        // then
+        assert(hotelSearchMapViewModel.radius.value is Fail)
+        assert((hotelSearchMapViewModel.radius.value as Fail).throwable.message == "Failed to get Visible Radius")
+    }
+
+    @Test
+    fun getFilterCount_whenNoFilterSelected_shouldReturnZero() {
+        // given
+
+
+        // when
+        val filterCount = hotelSearchMapViewModel.getFilterCount()
+
+        // then
+        assert(filterCount == 0)
+    }
+
+    @Test
+    fun getFilterCount_whenHaveFilterSelected_shouldReturnFilterCount() {
+        // given
+        val filter = listOf(
+                ParamFilterV2(name = "Filter 1", values = mutableListOf("aa", "bb"), ),
+                ParamFilterV2(name = "Price", values = mutableListOf("1.000")))
+        hotelSearchMapViewModel.addFilter(filter)
+
+        // when
+        val filterCount = hotelSearchMapViewModel.getFilterCount()
+
+        // then
+        assert(filterCount == 3)
+    }
+
+    @Test
+    fun onGetLocation_failedToGetLocation_LatLongShouldBeFail() {
+        // given
+        val deviceLocation = DeviceLocation(0.0, 0.0, 0)
+
+        // when
+        val onGetLocationFun = hotelSearchMapViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelSearchMapViewModel.latLong.value is Fail)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessAndContainsLatLong() {
+        // given
+        val deviceLocation = DeviceLocation(1.12345, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelSearchMapViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelSearchMapViewModel.latLong.value is Success)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.second == deviceLocation.latitude)
     }
 }
