@@ -18,6 +18,7 @@ data class AccountHeaderDataModel(
         var tierBadgeUrl: String = "",
         var shopName: String = "",
         var shopId: String = "",
+        var shopOrderCount: Int = 0,
         var shopNotifCount: String = "",
         var shopApplink: String = "",
         var adminRoleText: String? = null,
@@ -67,6 +68,7 @@ data class AccountHeaderDataModel(
                 saldo,
                 shopName,
                 shopId,
+                shopOrderCount,
                 shopNotifCount,
                 shopApplink
         )
@@ -103,9 +105,10 @@ data class AccountHeaderDataModel(
         this.isGetUserMembershipError = false
     }
 
-    fun setUserShopName(shopName: String = "", shopId: String = "", isError: Boolean = false, isLoading: Boolean = false) {
+    fun setUserShopName(shopName: String = "", shopId: String = "", shopOrderCount: Int, isError: Boolean = false, isLoading: Boolean = false) {
         this.shopName = shopName
         this.shopId = shopId
+        this.shopOrderCount = shopOrderCount
         this.isGetShopError = isError
         this.isGetShopLoading = isLoading
     }

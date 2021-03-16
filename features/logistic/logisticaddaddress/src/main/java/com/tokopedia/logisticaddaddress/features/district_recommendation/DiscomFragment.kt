@@ -21,13 +21,14 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.databinding.FragmentDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
@@ -41,14 +42,13 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), DiscomContract.View,
 PopularCityAdapter.ActionListener {
 
     private var mToken: Token? = null
-    private var swipeRefreshLayout: SwipeToRefresh? = null
-    private var tvMessage: TextView? = null
     private var analytics: ActionListener? = null
     private var llDiscomPopularCity: LinearLayout? = null
     private var rvChipsPopularCity: RecyclerView? = null
@@ -60,6 +60,8 @@ PopularCityAdapter.ActionListener {
     private var isLocalization: Boolean? = null
     private val REQUEST_LOCATION: Int = 288
     private var hasRequestedLocation: Boolean = false
+
+    private var binding by autoCleared<FragmentDistrictRecommendationBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -92,9 +94,12 @@ PopularCityAdapter.ActionListener {
         }
 
         if (isLocalization == true) permissionCheckerHelper = PermissionCheckerHelper()
+        binding.searchInputView.visibility = View.VISIBLE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentDistrictRecommendationBinding.inflate(inflater, container, false)
+        return binding.root
         val view = inflater.inflate(R.layout.fragment_district_recommendation, container, false)
         tvMessage = view.findViewById(R.id.tv_message)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
@@ -114,7 +119,7 @@ PopularCityAdapter.ActionListener {
             searchInputView.searchText = ""
             analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
-        swipeRefreshLayout!!.isEnabled = false
+        binding.swipeRefreshLayout.isEnabled = false
 
         if (isLocalization == true) {
             rlCurrLocation?.apply {
@@ -248,7 +253,7 @@ PopularCityAdapter.ActionListener {
     }
 
     override fun showEmpty() {
-        tvMessage!!.text = getString(R.string.message_search_address_no_result)
+        binding.tvMessage.text = getString(R.string.message_search_address_no_result)
         setSwipeRefreshSection(false)
     }
 
