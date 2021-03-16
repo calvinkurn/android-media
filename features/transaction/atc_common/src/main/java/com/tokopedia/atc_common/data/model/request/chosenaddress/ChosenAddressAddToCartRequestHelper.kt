@@ -25,12 +25,12 @@ class ChosenAddressAddToCartRequestHelper @Inject constructor(@ApplicationContex
 
     fun getChosenAddress(): ChosenAddressAddToCart? {
         ChooseAddressUtils.getLocalizingAddressData(getContext())?.let {
-            it.address_id = it.address_id.toZeroStringIfNullOrBlank()
-            it.district_id = it.district_id.toZeroStringIfNullOrBlank()
+            val addressId = it.address_id.toZeroStringIfNullOrBlank()
+            val districtId = it.district_id.toZeroStringIfNullOrBlank()
             return ChosenAddressAddToCart(
-                    mode = if (it.address_id.toLongOrZero() != 0L) ChosenAddressAddToCart.MODE_ADDRESS else if (it.district_id.toLongOrZero() != 0L) ChosenAddressAddToCart.MODE_SNIPPET else ChosenAddressAddToCart.MODE_EMPTY,
-                    addressId = it.address_id,
-                    districtId = it.district_id,
+                    mode = if (addressId.toLongOrZero() != 0L) ChosenAddressAddToCart.MODE_ADDRESS else if (districtId.toLongOrZero() != 0L) ChosenAddressAddToCart.MODE_SNIPPET else ChosenAddressAddToCart.MODE_EMPTY,
+                    addressId = addressId,
+                    districtId = districtId,
                     postalCode = it.postal_code,
                     geolocation = if (it.lat.isNotBlank() && it.long.isNotBlank()) it.lat + "," + it.long else ""
             )
