@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.gallery.widget;
+package com.tokopedia.imagepicker.common.widget;
 
 import android.content.Context;
 import android.text.format.DateUtils;
@@ -11,8 +11,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
+import com.tokopedia.imagepicker.common.R;
+import com.tokopedia.imagepicker.common.model.MediaItem;
 
 import java.util.ArrayList;
 
@@ -101,10 +101,10 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
 
     private void setVideoDuration() {
         if (mMedia.isVideo()) {
-            mVideoDuration.setVisibility(VISIBLE);
+            mVideoDuration.setVisibility(View.VISIBLE);
             mVideoDuration.setText(DateUtils.formatElapsedTime(mMedia.getDuration() / 1000));
         } else {
-            mVideoDuration.setVisibility(GONE);
+            mVideoDuration.setVisibility(View.GONE);
         }
     }
 

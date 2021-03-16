@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.main.adapter;
+package com.tokopedia.imagepicker.common.adapter;
 
 import android.database.Cursor;
 import android.provider.MediaStore;

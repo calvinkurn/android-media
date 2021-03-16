@@ -1,12 +1,13 @@
-package com.tokopedia.imagepicker.picker.gallery.model
+package com.tokopedia.imagepicker.common.model
 
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.tokopedia.utils.image.ImageProcessingUtil
+import java.io.File
 
 class MediaItem(val id: Long,
                 @Deprecated("should use content Uri instead")
@@ -29,11 +30,23 @@ class MediaItem(val id: Long,
         return _height;
     }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     private fun calculateWidthAndHeight(context: Context) {
         if (_width == 0L || _height == 0L) {
-            val widthHeight: Pair<Int, Int> = ImageProcessingUtil.getWidthAndHeight(context, contentUri)
+            val widthHeight: Pair<Int, Int> = getWidthAndHeight(File(contentUri.path))
             _width = widthHeight.first.toLong()
             _height = widthHeight.second.toLong()
+        }
+    }
+
+    private fun getWidthAndHeight(file: File): Pair<Int, Int> {
+        return try {
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(file.absolutePath, options)
+            options.outWidth to options.outHeight
+        } catch (e: Exception) {
+            0 to 0
         }
     }
 

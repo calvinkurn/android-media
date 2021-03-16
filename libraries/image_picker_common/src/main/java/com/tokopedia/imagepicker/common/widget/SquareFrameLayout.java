@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.gallery.widget;
+package com.tokopedia.imagepicker.common.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

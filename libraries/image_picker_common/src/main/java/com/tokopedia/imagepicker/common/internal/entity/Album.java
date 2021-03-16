@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.gallery.internal.entity;
+package com.tokopedia.imagepicker.common.internal.entity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
+import com.tokopedia.imagepicker.common.loader.AlbumLoader;
 
 public class Album implements Parcelable {
     public static final Creator<Album> CREATOR = new Creator<Album>() {

@@ -1,13 +1,13 @@
-package com.tokopedia.imagepicker.picker.gallery.model
+package com.tokopedia.imagepicker.common.model
 
 import android.content.Context
 import android.database.Cursor
 import android.database.CursorIndexOutOfBoundsException
 import android.net.Uri
 import android.os.Parcelable
-import com.tokopedia.imagepicker.R
-import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader
+import com.tokopedia.imagepicker.common.R
+import com.tokopedia.imagepicker.common.internal.entity.Album
+import com.tokopedia.imagepicker.common.loader.AlbumLoader
 import kotlinx.android.parcel.Parcelize
 
 /**

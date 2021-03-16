@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.gallery.loader;
+package com.tokopedia.imagepicker.common.loader;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.loader.content.CursorLoader;
 
 import com.tokopedia.imagepicker.common.GalleryType;
-import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
+import com.tokopedia.imagepicker.common.internal.entity.Album;
 
 /**
  * Created by hangnadi on 5/29/17.

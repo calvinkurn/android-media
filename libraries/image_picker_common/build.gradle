@@ -20,4 +20,7 @@ buildscript {
 
 dependencies {
 
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.networkDependencies.glide
 }

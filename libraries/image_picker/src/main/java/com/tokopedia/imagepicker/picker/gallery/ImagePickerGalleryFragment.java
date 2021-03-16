@@ -28,13 +28,13 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
-import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter;
-import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader;
-import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
+import com.tokopedia.imagepicker.common.adapter.AlbumMediaAdapter;
+import com.tokopedia.imagepicker.common.internal.entity.Album;
+import com.tokopedia.imagepicker.common.loader.AlbumLoader;
+import com.tokopedia.imagepicker.common.loader.AlbumMediaLoader;
+import com.tokopedia.imagepicker.common.model.AlbumItem;
+import com.tokopedia.imagepicker.common.model.MediaItem;
+import com.tokopedia.imagepicker.common.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 
 import java.io.File;
@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
-import static com.tokopedia.imagepicker.picker.gallery.model.AlbumItem.ALBUM_ID_ALL;
+import static com.tokopedia.imagepicker.common.model.AlbumItem.ALBUM_ID_ALL;
 
 /**
  * Created by hendry on 19/04/18.

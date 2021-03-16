@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.gallery.adapter;
+package com.tokopedia.imagepicker.common.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,10 +10,9 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.imagepicker.picker.gallery.widget.MediaGrid;
-import com.tokopedia.imagepicker.picker.main.adapter.RecyclerViewCursorAdapter;
+import com.tokopedia.imagepicker.common.R;
+import com.tokopedia.imagepicker.common.model.MediaItem;
+import com.tokopedia.imagepicker.common.widget.MediaGrid;
 
 import java.util.ArrayList;
 
@@ -96,7 +95,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
         final MediaItem item = MediaItem.valueOf(cursor);
         holder.mMediaGrid.preBindMedia(
                 new MediaGrid.PreBindInfo(getImageResize(holder.mMediaGrid.getContext()),
-                        0, R.drawable.error_drawable,
+                        0, com.tokopedia.abstraction.R.drawable.error_drawable,
                         holder
                 ));
         holder.mMediaGrid.bindMedia(item, selectionImagePathList);

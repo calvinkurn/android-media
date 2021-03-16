@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.picker.gallery.util;
+package com.tokopedia.imagepicker.common;
 
 import android.app.Activity;
 import android.content.ContentResolver;
