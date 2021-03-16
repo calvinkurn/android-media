@@ -110,7 +110,7 @@ object SharingUtil {
                             Socmed.INSTAGRAM -> {
                                 shareInstagramFeed(context, contentUri)
                             }
-                            Socmed.TWITTER -> {
+                            Socmed.TWITTER, Socmed.LINE -> {
                                 goToSocialMedia(socmed.packageString, context, contentUri, messageString)
                             }
                             else -> {
