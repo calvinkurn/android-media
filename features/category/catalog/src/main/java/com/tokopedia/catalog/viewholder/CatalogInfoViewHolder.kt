@@ -45,7 +45,7 @@ class CatalogInfoViewHolder(private val view: View,
                         val position = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
                         if (position != RecyclerView.NO_POSITION) {
                             imagesPageControl.setCurrentIndicator(position)
-                            if(lastPosition != position){
+                            if(lastPosition != position && position != 0){
                                 lastPosition = position
                                 catalogDetailListener.onImagesScrolled()
                             }

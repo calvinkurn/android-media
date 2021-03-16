@@ -2,13 +2,10 @@ package com.tokopedia.catalog.model.util
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
-import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerShareData
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 object CatalogUtil {
 
@@ -115,72 +112,4 @@ object CatalogUtil {
         }
         return label.removePrefix("&")
     }
-
-    /*
-
-    fun trackEventImpressionProductCard(catalogId : String, userId : String ,
-                                        item : CatalogProductItem,searchFilterMap : HashMap<String,String>?) {
-        val list = ArrayList<Map<String, Any>>()
-        val productMap = HashMap<String, Any>()
-        productMap[CatalogDetailAnalytics.KEYS.BRAND] = CatalogDetailAnalytics.KEYS.NONE_OTHER
-        productMap[CatalogDetailAnalytics.KEYS.CATEGORY] = item.categoryId
-        productMap[CatalogDetailAnalytics.KEYS.ID] = item.id
-        productMap[CatalogDetailAnalytics.KEYS.LIST] = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
-        productMap[CatalogDetailAnalytics.KEYS.NAME] = item.name
-        productMap[CatalogDetailAnalytics.KEYS.DIMENSION61] = getSortFilterAnalytics(searchFilterMap)
-        productMap[CatalogDetailAnalytics.KEYS.POSITION] = componentsItems.position + 1
-        productMap[CatalogDetailAnalytics.KEYS.PRICE] = item.priceString
-        productMap[CatalogDetailAnalytics.KEYS.VARIANT] = CatalogDetailAnalytics.KEYS.NONE_OTHER
-        list.add(productMap)
-
-        val eCommerce = mapOf(
-                CURRENCY_CODE to IDR,
-                CatalogDetailAnalytics.KEYS.IMPRESSION to list)
-        val map = HashMap<String,Any>()
-        map[CatalogDetailAnalytics.EventKeys.KEY_EVENT] = CatalogDetailAnalytics.EventKeys.EVENT_NAME_PRODUCT_VIEW
-        map[CatalogDetailAnalytics.EventKeys.KEY_EVENT_CATEGORY] = CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY
-        map[CatalogDetailAnalytics.EventKeys.KEY_EVENT_ACTION] = CatalogDetailAnalytics.ActionKeys.IMPRESSION_PRODUCT
-        map[CatalogDetailAnalytics.EventKeys.KEY_EVENT_LABEL] = catalogId
-        map[CatalogDetailAnalytics.EventKeys.KEY_ECOMMERCE] = eCommerce
-        map[CatalogDetailAnalytics.EventKeys.KEY_PRODUCT_ID] = item.id
-        map[CatalogDetailAnalytics.EventKeys.KEY_USER_ID] = userId
-        map[CatalogDetailAnalytics.EventKeys.KEY_BUSINESS_UNIT] = CatalogDetailAnalytics.EventKeys.BUSINESS_UNIT_VALUE
-        map[CatalogDetailAnalytics.EventKeys.KEY_CURRENT_SITE] = CatalogDetailAnalytics.EventKeys.CURRENT_SITE_VALUE
-        trackingQueue.putEETracking(map)
-    }
-
-    fun trackProductCardClick(componentsItems: ComponentsItem) {
-        if (!componentsItems.data.isNullOrEmpty()) {
-            var productCardItemList = ""
-
-            val list = ArrayList<Map<String, Any>>()
-            val productMap = HashMap<String, Any>()
-            productMap[CatalogDetailAnalytics.KEYS.BRAND] = CatalogDetailAnalytics.KEYS.NONE_OTHER
-            productMap[CatalogDetailAnalytics.KEYS.CATEGORY] = item.categoryId
-            productMap[CatalogDetailAnalytics.KEYS.ID] = item.id
-            productMap[CatalogDetailAnalytics.KEYS.LIST] = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
-            productMap[CatalogDetailAnalytics.KEYS.NAME] = item.name
-            productMap[CatalogDetailAnalytics.KEYS.DIMENSION61] = getSortFilterAnalytics(searchFilterMap)
-            productMap[CatalogDetailAnalytics.KEYS.POSITION] = componentsItems.position + 1
-            productMap[CatalogDetailAnalytics.KEYS.PRICE] = item.priceString
-            productMap[CatalogDetailAnalytics.KEYS.VARIANT] = CatalogDetailAnalytics.KEYS.NONE_OTHER
-            list.add(productMap)
-
-
-            val eCommerce = mapOf(
-                    CLICK to mapOf(
-                            ACTION_FIELD to mapOf(
-                                    LIST to productCardItemList
-                            ),
-                            PRODUCTS to list
-                    )
-            )
-            val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CATEGORY_CLICK_PRODUCT_LIST)
-            map[KEY_CAMPAIGN_CODE] = campaignCode
-            map[KEY_E_COMMERCE] = eCommerce
-            getTracker().sendEnhanceEcommerceEvent(map)
-        }
-    }
-
-     */
 }

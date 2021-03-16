@@ -85,7 +85,4 @@ class CatalogUseCaseModule {
             : RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
-
-    @Provides
-    fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 }

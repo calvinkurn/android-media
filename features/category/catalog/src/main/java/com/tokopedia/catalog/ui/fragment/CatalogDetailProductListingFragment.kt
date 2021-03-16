@@ -49,7 +49,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -59,10 +58,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
@@ -81,9 +77,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
     @Inject
     lateinit var addWishlistActionUseCase: AddWishListUseCase
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
 
     private lateinit var catalogComponent: CatalogComponent
 
@@ -155,7 +148,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun setUpAdapter() {
         catalogTypeFactory = CatalogTypeFactoryImpl(this)
-        productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this)
+        productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
         productNavListAdapter?.changeListView()
         if(viewModel.list.size == 0)
             productNavListAdapter?.addShimmer()
@@ -430,52 +423,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
-            val click = item.run {
-                val product = HashMap<String, String?>()
-                product[CatalogDetailAnalytics.KEYS.BRAND]= CatalogDetailAnalytics.KEYS.NONE_OTHER
-                product[CatalogDetailAnalytics.KEYS.BRAND]= categoryName
-                product[CatalogDetailAnalytics.KEYS.CATEGORY]= CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)
-                product[CatalogDetailAnalytics.KEYS.DIMENSION61]= id
-                product[CatalogDetailAnalytics.KEYS.LIST]= ""
-                product[CatalogDetailAnalytics.KEYS.NAME]= name
-                product[CatalogDetailAnalytics.KEYS.POSITION]= (adapterPosition + 1).toString()
-                product[CatalogDetailAnalytics.KEYS.PRICE]= priceString
-                product[CatalogDetailAnalytics.KEYS.VARIANT] = CatalogDetailAnalytics.KEYS.NONE_OTHER
-                val products = HashMap<String, List<Map<String, String?>>>()
-                products[CatalogDetailAnalytics.KEYS.PRODUCTS] = Arrays.asList<Map<String, String?>>(product)
-                val click = HashMap<String,Map<String, List<Map<String, String?>>>>()
-                click[CatalogDetailAnalytics.KEYS.CLICK] = products
-                click
-            }
-            CatalogDetailAnalytics.sendECommerceEvent(
-                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_PRODUCT_CLICK,
-                        CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                        CatalogDetailAnalytics.ActionKeys.CLICK_PRODUCT,
-                        catalogId,click,item.id,userSession.userId)
+            CatalogDetailAnalytics.trackProductCardClick(catalogId,userSession.userId,
+                    item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
         }
     }
 
     override fun onProductImpressed(item: CatalogProductItem, adapterPosition: Int) {
-        val products = item.run {
-            val product = HashMap<String, String?>()
-            product[CatalogDetailAnalytics.KEYS.BRAND]= CatalogDetailAnalytics.KEYS.NONE_OTHER
-            product[CatalogDetailAnalytics.KEYS.CATEGORY]= categoryName
-            product[CatalogDetailAnalytics.KEYS.DIMENSION61]= CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)
-            product[CatalogDetailAnalytics.KEYS.ID]= id
-            product[CatalogDetailAnalytics.KEYS.LIST]= ""
-            product[CatalogDetailAnalytics.KEYS.NAME]= name
-            product[CatalogDetailAnalytics.KEYS.POSITION]= (adapterPosition + 1).toString()
-            product[CatalogDetailAnalytics.KEYS.PRICE]= priceString
-            product[ CatalogDetailAnalytics.KEYS.VARIANT] = CatalogDetailAnalytics.KEYS.NONE_OTHER
-            val products = HashMap<String, List<Map<String, String?>>>()
-            products[CatalogDetailAnalytics.KEYS.IMPRESSION] = Arrays.asList<Map<String, String?>>(product)
-            products
-        }
-        CatalogDetailAnalytics.sendECommerceEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_PRODUCT_VIEW,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.IMPRESSION_PRODUCT,
-                catalogId,products,item.id,userSession.userId)
+        CatalogDetailAnalytics.trackEventImpressionProductCard(catalogId,userSession.userId,
+                item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
     }
 
     override fun onLongClick(item: CatalogProductItem, adapterPosition: Int) {

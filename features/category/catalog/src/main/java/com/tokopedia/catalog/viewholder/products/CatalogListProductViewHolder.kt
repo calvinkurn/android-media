@@ -52,8 +52,6 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
 
         showBadge(catalogProductItem)
         showTerjual(catalogProductItem)
-
-        catalogProductCardListener.onProductImpressed(catalogProductItem,adapterPosition)
     }
 
     private fun showTerjual(catalogProductItem: CatalogProductItem?){
