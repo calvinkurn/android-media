@@ -246,7 +246,14 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                 //uncomment when we use new tracker
                                 //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
-                            walletTopupAction = {},
+                            walletTopupAction = {
+                                if (RouteManager.isSupportApplink(itemView.context, element.applinkContainer)) {
+                                    OvoWidgetTracking.sendClickOnOVONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                    OvoWidgetTracking.eventTopUpOvo(listener?.userId)
+                                    val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkContainer)
+                                    itemView.context.startActivity(intentBalanceWallet)
+                                }
+                            },
                             walletOtherAction = {
                                 //handle click for type wallet other
                                 //handle click for type wallet other
