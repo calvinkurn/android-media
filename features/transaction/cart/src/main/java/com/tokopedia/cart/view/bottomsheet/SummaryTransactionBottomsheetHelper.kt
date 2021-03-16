@@ -120,7 +120,7 @@ private fun renderDiscount(cartListData: CartListData, binding: LayoutBottomshee
 private fun renderPriceTotal(binding: LayoutBottomsheetSummaryTransactionBinding, cartListData: CartListData) {
     binding.textPriceTotalTitle.apply {
         cartListData.shoppingSummaryData.totalWording.let {
-            text = it.replace("[0-9]".toRegex(), cartListData.shoppingSummaryData.qty)
+            text = it.replace("[0-9]+".toRegex(), cartListData.shoppingSummaryData.qty)
         }
     }
     binding.textPriceTotalValue.apply {

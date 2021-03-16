@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -25,6 +27,7 @@ import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -201,6 +204,14 @@ class ProductSheetViewComponent(
                 getString(R.string.play_product_updated),
                 type = Toaster.TYPE_NORMAL
         ).show()
+    }
+
+    /**
+     * Lifecycle Event
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        rootView.requestApplyInsetsWhenAttached()
     }
 
     companion object {
