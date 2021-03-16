@@ -95,6 +95,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var hasAskedPermission: Boolean = false
     //flag variable to differentiate setState from snippet or not
     private var isSnippetAddressFlow: Boolean = false
+    //flag variable to differentiate setState from address bottomsheet or not
+    private var isCardAddressClicked: Boolean = false
+    //flag variable to differentiate setState from address list or not
+    private var isAddressListFlow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,6 +163,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             postalCode = saveAddressDataModel.postalCode
                     )
                     isSnippetAddressFlow = false
+                    isAddressListFlow = false
                 }
             }
             REQUEST_CODE_GET_DISTRICT_RECOM -> {
@@ -177,6 +182,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             postalCode = ""
                     )
                     isSnippetAddressFlow = true
+                    isAddressListFlow = false
                 }
             }
             REQUEST_CODE_ADDRESS_LIST -> {
@@ -194,6 +200,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             postalCode = recipientAddress.postalCode
                     )
                     isSnippetAddressFlow = false
+                    isAddressListFlow = true
                 } else if (isFromANA == true) {
                     listener?.onAddressDataChanged()
                     dismissBottomSheet()
@@ -268,7 +275,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    ChooseAddressTracking.onClickAvailableAddress(userSession.userId, IS_SUCCESS)
+                    if (isCardAddressClicked) ChooseAddressTracking.onClickAvailableAddress(userSession.userId, IS_SUCCESS)
+                    else if (isAddressListFlow) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_SUCCESS)
                     val data = it.data
                     var localData = LocalCacheModel()
                     if (isSnippetAddressFlow) {
@@ -299,7 +307,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
 
                 is Fail -> {
-                    ChooseAddressTracking.onClickAvailableAddress(userSession.userId, IS_NOT_SUCCESS)
+                    if (isCardAddressClicked) ChooseAddressTracking.onClickAvailableAddress(userSession.userId, IS_NOT_SUCCESS)
+                    else if (isAddressListFlow) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_NOT_SUCCESS)
                     listener?.onLocalizingAddressServerDown()
                     dismissBottomSheet()
                 }
@@ -476,6 +485,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     override fun onItemClicked(address: ChosenAddressList) {
+        isCardAddressClicked = true
         viewModel.setStateChosenAddress(
                 status = address.status,
                 addressId = address.addressId,
