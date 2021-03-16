@@ -45,12 +45,7 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         val viewTreeObserver = emptySpace.viewTreeObserver
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            viewTreeObserver.removeGlobalOnLayoutListener(this)
-                        }
+                        viewTreeObserver.removeOnGlobalLayoutListener(this)
                         val layoutParams = emptySpace.layoutParams
                         setupHeight(isUserLogin, layoutParams)
                         emptySpace.layoutParams = layoutParams
