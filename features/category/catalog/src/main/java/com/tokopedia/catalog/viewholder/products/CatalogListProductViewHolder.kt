@@ -34,13 +34,20 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
         }
 
         if(catalogProductItem.freeOngkir.isActive){
+            itemView.image_ongir.show()
             itemView.image_ongir.loadImage(catalogProductItem.freeOngkir.imageUrl)
+        }else {
+            itemView.image_ongir.hide()
         }
 
         if(catalogProductItem.ratingAverage.isNotBlank()){
             itemView.rating_float.displayTextOrHide(catalogProductItem.ratingAverage)
             itemView.icon_rating.show()
             itemView.rating_line.show()
+        }else {
+            itemView.rating_float.hide()
+            itemView.icon_rating.hide()
+            itemView.rating_line.hide()
         }
 
         showBadge(catalogProductItem)
@@ -55,6 +62,8 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
             if (it.title.isNotBlank()){
                 itemView.sales_tv.show()
                 itemView.sales_tv.displayTextOrHide(it.title)
+            }else {
+                itemView.sales_tv.hide()
             }
         }
     }
@@ -65,6 +74,8 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
             if(!it.imageURL.isNullOrBlank()){
                 itemView.icon_shop_name.show()
                 itemView.icon_shop_name.loadImage(it.imageURL!!)
+            }else {
+                itemView.icon_shop_name.hide()
             }
         }
     }
