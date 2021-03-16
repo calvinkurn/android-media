@@ -72,7 +72,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -109,12 +108,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
     private val recyclerView: RecyclerView?
-        get() =
-            try {
-                super.getRecyclerView(view)
-            } catch (ex: Exception) {
-                null
-            }
+        get() = super.getRecyclerView(view)
 
     private var sellerHomeListener: Listener? = null
     private var menu: Menu? = null
