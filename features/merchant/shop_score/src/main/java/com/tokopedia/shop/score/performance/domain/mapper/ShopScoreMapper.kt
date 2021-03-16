@@ -2,12 +2,17 @@ package com.tokopedia.shop.score.performance.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.gm.common.constant.PATTERN_DATE_PARAM
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant.BROADCAST_CHAT_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
 import com.tokopedia.shop.score.common.ShopScoreConstant.COUNT_DAYS_NEW_SELLER
+import com.tokopedia.shop.score.common.ShopScoreConstant.DISCOUNT_SHOP_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.DOWN_POTENTIAL_PM
+import com.tokopedia.shop.score.common.ShopScoreConstant.FREE_SHIPPING_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_BRONZE_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_DIAMOND_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.GRADE_GOLD_PM
@@ -29,6 +34,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SET_OPERATIONAL_HOUR_SHOP_URL
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_ADMIN_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_EIGHTY
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_EIGHTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_FIFTY
@@ -45,6 +51,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SEVENTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SIXTY
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SIXTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ZERO
+import com.tokopedia.shop.score.common.ShopScoreConstant.SPECIAL_RELEASE_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.STILL_POTENTIAL_PM
@@ -117,7 +124,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     fun mapToShopPerformanceVisitableDummy(): List<BaseShopPerformance> {
         return mutableListOf<BaseShopPerformance>().apply {
-            add(mapToTimerNewSellerUiModel())
+            val isNewSeller = mapToTimerNewSellerUiModel().second
+            if (isNewSeller) add(mapToTimerNewSellerUiModel().first)
             add(mapToHeaderShopPerformance())
             add(mapToSectionPeriodDetailPerformanceUiModel())
             addAll(mapToItemDetailPerformanceUiModel())
@@ -324,19 +332,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_voucher_exclusive,
                                             descRecommendation = R.string.desc_recommendation_voucher_exclusive,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = ApplinkConstInternalSellerapp.CREATE_VOUCHER
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_free_shipping,
                                             descRecommendation = R.string.desc_recommendation_free_shipping,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = FREE_SHIPPING_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_top_ads,
                                             descRecommendation = R.string.desc_recommendation_top_ads,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = TOPADS_CREATE_ONBOARDING
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_TWO -> {
@@ -344,19 +352,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_top_ads,
                                             descRecommendation = R.string.desc_recommendation_top_ads,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = TOPADS_CREATE_ONBOARDING
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_free_shipping,
                                             descRecommendation = R.string.desc_recommendation_free_shipping,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = FREE_SHIPPING_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_broadcast_chat,
                                             descRecommendation = R.string.desc_recommendation_broadcast_chat,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_THREE -> {
@@ -364,19 +372,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_free_shipping,
                                             descRecommendation = R.string.desc_recommendation_free_shipping,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = FREE_SHIPPING_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_SPECIAL_DISCOUNT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_special_discount,
                                             descRecommendation = R.string.desc_recommendation_special_discount,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = DISCOUNT_SHOP_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_SPECIAL_RELEASE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_special_release,
                                             descRecommendation = R.string.desc_recommendation_special_release,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = SPECIAL_RELEASE_URL
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_FOUR -> {
@@ -384,19 +392,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_free_shipping,
                                             descRecommendation = R.string.desc_recommendation_free_shipping,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = FREE_SHIPPING_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_SPECIAL_RELEASE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_special_release,
                                             descRecommendation = R.string.desc_recommendation_special_release,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = SPECIAL_RELEASE_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_SPECIAL_DISCOUNT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_special_discount,
                                             descRecommendation = R.string.desc_recommendation_special_discount,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = DISCOUNT_SHOP_URL
                                     ))
                                 }
                             }
@@ -409,19 +417,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_voucher_exclusive,
                                             descRecommendation = R.string.desc_recommendation_voucher_exclusive,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = ApplinkConstInternalSellerapp.CREATE_VOUCHER
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_free_shipping,
                                             descRecommendation = R.string.desc_recommendation_free_shipping,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = FREE_SHIPPING_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_top_ads,
                                             descRecommendation = R.string.desc_recommendation_top_ads,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = TOPADS_CREATE_ONBOARDING
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_TWO -> {
@@ -429,19 +437,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_free_shipping,
                                             descRecommendation = R.string.desc_recommendation_free_shipping,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = FREE_SHIPPING_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_top_ads,
                                             descRecommendation = R.string.desc_recommendation_top_ads,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = TOPADS_CREATE_ONBOARDING
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_broadcast_chat,
                                             descRecommendation = R.string.desc_recommendation_broadcast_chat,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_THREE -> {
@@ -449,19 +457,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_free_shipping,
                                             descRecommendation = R.string.desc_recommendation_free_shipping,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = FREE_SHIPPING_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_SPECIAL_RELEASE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_special_release,
                                             descRecommendation = R.string.desc_recommendation_special_release,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = SPECIAL_RELEASE_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_ADMIN_FEATURE,
                                             titleRecommendation = R.string.title_recommendation_admin,
                                             descRecommendation = R.string.desc_recommendation_admin,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = SHOP_ADMIN_URL
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_FOUR -> {
@@ -469,19 +477,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_FREE_SHIPPING_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_free_shipping,
                                             descRecommendation = R.string.desc_recommendation_free_shipping,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = FREE_SHIPPING_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_SPECIAL_RELEASE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_special_release,
                                             descRecommendation = R.string.desc_recommendation_special_release,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = SPECIAL_RELEASE_URL
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_broadcast_chat,
                                             descRecommendation = R.string.desc_recommendation_broadcast_chat,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
                                     ))
                                 }
                             }
@@ -494,19 +502,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_voucher_exclusive,
                                             descRecommendation = R.string.desc_recommendation_voucher_exclusive,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = ApplinkConstInternalSellerapp.CREATE_VOUCHER
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_top_ads,
                                             descRecommendation = R.string.desc_recommendation_top_ads,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = TOPADS_CREATE_ONBOARDING
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_broadcast_chat,
                                             descRecommendation = R.string.desc_recommendation_broadcast_chat,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_TWO -> {
@@ -514,19 +522,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_voucher_exclusive,
                                             descRecommendation = R.string.desc_recommendation_voucher_exclusive,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = ApplinkConstInternalSellerapp.CREATE_VOUCHER
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_top_ads,
                                             descRecommendation = R.string.desc_recommendation_top_ads,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = TOPADS_CREATE_ONBOARDING
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_broadcast_chat,
                                             descRecommendation = R.string.desc_recommendation_broadcast_chat,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_THREE -> {
@@ -534,19 +542,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_VOUCHER_EXCLUSIVE_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_voucher_exclusive,
                                             descRecommendation = R.string.desc_recommendation_voucher_exclusive,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = ApplinkConstInternalSellerapp.CREATE_VOUCHER
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_TOP_ADS_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_top_ads,
                                             descRecommendation = R.string.desc_recommendation_top_ads,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = TOPADS_CREATE_ONBOARDING
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_broadcast_chat,
                                             descRecommendation = R.string.desc_recommendation_broadcast_chat,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
                                     ))
                                 }
                                 SHOP_SCORE_LEVEL_FOUR -> {
@@ -560,13 +568,13 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             iconRecommendationUrl = IC_BROADCAST_CHAT_FEATURE_URL,
                                             titleRecommendation = R.string.title_recommendation_broadcast_chat,
                                             descRecommendation = R.string.desc_recommendation_broadcast_chat,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
                                     ))
                                     add(SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
                                             iconRecommendationUrl = IC_ADMIN_FEATURE,
                                             titleRecommendation = R.string.title_recommendation_admin,
                                             descRecommendation = R.string.desc_recommendation_admin,
-                                            appLinkRecommendation = ""
+                                            appLinkRecommendation = SHOP_ADMIN_URL
                                     ))
                                 }
                             }
@@ -725,20 +733,23 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToTimerNewSellerUiModel(): ItemTimerNewSellerUiModel {
+    private fun mapToTimerNewSellerUiModel(): Pair<ItemTimerNewSellerUiModel, Boolean> {
         val ageSeller = 50
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - ageSeller
-        val isTenureDate = true
+        val isTenureDate = false
 
-        val effectiveDate = getNNextMonthTimeCalendar(nextSellerDays)
-        return ItemTimerNewSellerUiModel(effectiveDate = effectiveDate,
+        val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays)
+        return Pair(ItemTimerNewSellerUiModel(effectiveDate = effectiveDate,
                 effectiveDateText = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER),
-                isTenureDate = isTenureDate)
+                isTenureDate = isTenureDate), nextSellerDays > 0)
     }
 
-    private fun getNNextMonthTimeCalendar(nextMonth: Int): Calendar {
+    private fun getNNextDaysTimeCalendar(nextDays: Int): Calendar {
         val date = Calendar.getInstance(Locale.getDefault())
-        date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + nextMonth)
+        date.add(Calendar.DATE, nextDays + 1)
+        date.set(Calendar.HOUR_OF_DAY, 0)
+        date.set(Calendar.MINUTE, 0)
+        date.set(Calendar.SECOND, 0)
         return date
     }
 

@@ -113,7 +113,7 @@ class ShopPerformancePageFragment: BaseDaggerFragment(),
     }
 
     override fun onItemClickedRecommendationFeature(appLink: String) {
-        //TODO
+        RouteManager.route(requireContext(), appLink)
     }
 
     private fun goToPowerMerchantSubscribe() {

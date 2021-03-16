@@ -54,6 +54,12 @@ object ShopScoreConstant {
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
+    const val FREE_SHIPPING_URL = "https://m.tokopedia.com/bebas-ongkir"
+    const val SPECIAL_RELEASE_URL = "https://seller.tokopedia.com/rilisan-spesial"
+    const val SHOP_ADMIN_URL = "http://seller.tokopedia.com/shop/admin"
+    const val DISCOUNT_SHOP_URL = "https://seller.tokopedia.com/pengaturan-diskon"
+    const val BROADCAST_CHAT_URL = "https://m.tokopedia.com/broadcast-chat"
+
     const val PM_INACTIVE = "inactive"
     const val PM_ACTIVE = "active"
     const val UP_POTENTIAL_PM = "naik"
