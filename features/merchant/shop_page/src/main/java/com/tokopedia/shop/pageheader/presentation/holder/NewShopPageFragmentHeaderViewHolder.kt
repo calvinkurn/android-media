@@ -10,10 +10,14 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
@@ -31,6 +35,8 @@ import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.*
+import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.choose_address_widget
+import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.choosee_address_widget_bottom_shadow
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.tickerShopStatus
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
@@ -43,7 +49,8 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-                                          private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener
+                                          private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
+                                          private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener
 ) {
     private var isShopFavorite = false
 
@@ -63,9 +70,33 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 //        get() = view.shop_page_follow_unfollow_button.takeIf {
 //            isUsingNewNavigation()
 //        } ?: view.shop_page_follow_unfollow_button_old
+    private val chooseAddressWidget: ChooseAddressWidget?
+        get() = view.choose_address_widget
     private var coachMark: CoachMark2? = null
 
     private var shopPageHeaderAdapter: ShopPageHeaderAdapter? = null
+
+    fun updateChooseAddressWidget(){
+        chooseAddressWidget?.updateWidget()
+    }
+
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
+        chooseAddressWidget?.apply {
+            val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
+            val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+                    ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
+                    true
+            )
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
+                show()
+                bindChooseAddress(chooseAddressWidgetListener)
+                view.choosee_address_widget_bottom_shadow?.show()
+            } else {
+                view.choosee_address_widget_bottom_shadow?.hide()
+                hide()
+            }
+        }
+    }
 
     fun setShopHeaderWidgetData(listWidget: List<ShopHeaderWidgetUiModel>) {
         shopPageHeaderAdapter = ShopPageHeaderAdapter(ShopPageHeaderAdapterTypeFactory(
@@ -317,47 +348,72 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
             followStatusData: FollowStatus?,
             shopId: String,
             userId: String
-    ) {
+    ){
         val coachMarkList = arrayListOf<CoachMark2Item>().apply {
-            getShopFollowButtonCoachMarkItem(followStatusData)?.let {
+            getShopFollowButtonCoachMarkItem(followStatusData)?.let{
                 add(it)
             }
-//            getChooseAddressWidgetCoachMarkItem()?.let{
-//                add(it)
-//            }
+            getChooseAddressWidgetCoachMarkItem()?.let{
+                add(it)
+            }
         }
-        if (coachMarkList.isNotEmpty()) {
+        if(coachMarkList.isNotEmpty()){
             coachMark = CoachMark2(context)
             coachMark?.isOutsideTouchable = true
             coachMark?.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    checkCoachMarkImpression {
-                        listener.saveFirstTimeVisit()
-                        shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
-                    }
+                    checkCoachMarkImpression(
+                            onCoachMarkChooseAddressWidgetImpressed = {
+                                listener.saveFirstTimeVisit()
+                                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                            },
+                            onCoachMarkFollowButtonImpressed = {
+                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                            }
+                    )
                 }
             })
             coachMark?.showCoachMark(coachMarkList)
-            checkCoachMarkImpression {
-                listener.saveFirstTimeVisit()
-                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+            checkCoachMarkImpression(
+                    onCoachMarkChooseAddressWidgetImpressed = {
+                        listener.saveFirstTimeVisit()
+                        shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                    },
+                    onCoachMarkFollowButtonImpressed = {
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                    }
+            )
+        }
+    }
+
+    private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
+        val isCoachMarkAlreadyShown = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
+        return if (isCoachMarkAlreadyShown == false) {
+            chooseAddressWidget?.let {
+                CoachMark2Item(
+                        it,
+                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
+                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
+                )
             }
+        } else {
+            null
         }
     }
 
     private fun checkCoachMarkImpression(
-            onCoachMarkFollowButtonImpressed: () -> Unit
+            onCoachMarkFollowButtonImpressed: () -> Unit,
+            onCoachMarkChooseAddressWidgetImpressed: () -> Unit
     ) {
         coachMark?.coachMarkItem?.getOrNull(coachMark?.currentIndex.orZero())?.let {
             when (it.anchorView.id) {
-//                        chooseAddressWidget?.id -> {
-//                            ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
-//                        }
                 shopPageHeaderAdapter?.getFollowButtonView()?.id -> {
                     onCoachMarkFollowButtonImpressed.invoke()
                 }
-                else -> {
+                chooseAddressWidget?.id -> {
+                    onCoachMarkChooseAddressWidgetImpressed.invoke()
                 }
+                else -> {}
             }
         }
     }
