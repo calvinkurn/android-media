@@ -39,6 +39,7 @@ class TransactionInvoiceViewHolder(itemView: View, private val listener: Transac
             val labelType = getLabelType(invoice.statusId)
             tvStatus.text = invoice.status
             tvStatus.setLabelType(labelType)
+            tvStatus.show()
         } else {
             tvStatus.invisible()
         }
