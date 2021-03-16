@@ -1,6 +1,7 @@
 package com.tokopedia.test.application.util
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Handler
@@ -23,17 +24,17 @@ object ViewUtils {
      * Screenshot specific view
      */
     @JvmStatic
-    fun Activity.takeScreenShot(view: View?, fileName: String, dir: String = "") {
-        if (view != null) {
-            view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.Unify_N0))
+    fun View?.takeScreenShot(fileName: String, dir: String = "") {
+        if (this != null) {
+            this.setBackgroundColor(ContextCompat.getColor(this.context, R.color.Unify_N0))
             Handler(Looper.getMainLooper()).post {
                 val bitmap = Bitmap.createBitmap(
-                        view.width,
-                        view.height, Bitmap.Config.ARGB_8888
+                        this.width,
+                        this.height, Bitmap.Config.ARGB_8888
                 )
                 val canvas = Canvas(bitmap)
-                view.draw(canvas)
-                saveImage(this, dir, fileName, bitmap)
+                this.draw(canvas)
+                saveImage(this.context, dir, fileName, bitmap)
             }
         }
     }
@@ -51,12 +52,12 @@ object ViewUtils {
             )
             val canvas = Canvas(bitmap)
             view.draw(canvas)
-            saveImage(this, dir, fileName, bitmap)
+            saveImage(this.applicationContext, dir, fileName, bitmap)
         }
     }
 
-    fun saveImage(activity: Activity, dir: String, fileName: String, bitmap: Bitmap?) {
-        val path = activity.getExternalFilesDir(null)
+    fun saveImage(context: Context, dir: String, fileName: String, bitmap: Bitmap?) {
+        val path = context.getExternalFilesDir(null)
         val imageDir = File(path, dir)
 
         try {

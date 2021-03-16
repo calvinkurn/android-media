@@ -50,6 +50,13 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
             isAffiliate = false, trackerAttribution = "",
             trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")
 
+    fun getDiscussionPosition(): Int {
+        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
+        return fragment.productAdapter?.currentList?.indexOfFirst {
+            it.name() == "discussion_faq"
+        } ?: 0
+    }
+
     fun getLastPositionIndex(): Int {
         val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
         return fragment.productAdapter?.currentList?.indexOfFirst {

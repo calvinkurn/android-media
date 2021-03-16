@@ -11,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
@@ -110,11 +111,28 @@ object CommonActions {
         }
     }
 
-    fun findViewHolderAndScreenshot(recyclerViewId: Int, position: Int, screenShot: (View?) -> Unit) {
+    fun findViewAndScreenShot(viewId: Int, fileName: String, fileNamePostFix: String) {
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(viewId))).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = ViewMatchers.isAssignableFrom(View::class.java)
+
+            override fun getDescription(): String {
+                return "getting text from a View";
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                view.takeScreenShot("$fileName-$fileNamePostFix")
+            }
+        })
+    }
+
+    fun findViewHolderAndScreenshot(recyclerViewId: Int, position: Int, fileName: String, fileNamePostFix: String, shouldDelay: Boolean = false) {
         val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, screenShotChild { view->
-                    screenShot(view)
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, screenShotChild { view ->
+                    if (shouldDelay) {
+                        Thread.sleep(6000)
+                    }
+                    view.takeScreenShot("$fileName-$fileNamePostFix")
                 })
         )
     }
