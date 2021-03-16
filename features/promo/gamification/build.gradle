@@ -63,6 +63,7 @@ dependencies {
     implementation project(rootProject.ext.features.promoUiCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime

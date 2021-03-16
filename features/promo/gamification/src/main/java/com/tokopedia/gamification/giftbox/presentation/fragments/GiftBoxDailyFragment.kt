@@ -51,7 +51,7 @@ import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
@@ -83,6 +83,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var autoApplyMessage = ""
     var infoUrl: String? = null
     var backButton: BackButton? = null
+    val APPLNK_REWARD_HISTORY_KEY = "app_flag_gami_reward_history"
+    val APPLNK_HOME = "tokopedia://home"
 
     private val HTTP_STATUS_OK = "200"
 
@@ -224,6 +226,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
 
                             RewardContainer.RewardState.RP_0_ONLY -> {
+                                backButton = BackButton(requireContext().getString(R.string.gami_back_button_cancel),
+                                        null, true,
+                                        requireContext().getString(R.string.gami_back_button_message),
+                                        requireContext().getString(R.string.gami_back_button_title),
+                                        requireContext().getString(R.string.gami_back_button_ok))
+
                                 performRp0Animation(startDelay)
                             }
                         }
@@ -362,12 +370,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                         val array = benefitText[1].split("&")
                                         val sb = StringBuilder()
                                         var i = 0
-                                        while(i<array.size){
+                                        while (i < array.size) {
                                             sb.append(array[i])
-                                            if(i!=array.size-1) {
+                                            if (i != array.size - 1) {
                                                 sb.append(" & ")
                                             }
-                                            i+=1
+                                            i += 1
                                         }
                                         tvRewardSecondLine.text = sb.toString()
                                     } else {
@@ -855,7 +863,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     override fun getMenu() = if (infoUrl.isNullOrEmpty()) R.menu.gami_menu_share else R.menu.gami_menu_daily
 
-    private fun showBackDialog(backButton: BackButton) {
+    private fun showBackDialog(backButton: BackButton, appLinkForReward: String) {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
             dialog.setTitle(backButton.title)
@@ -863,20 +871,29 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 height = 180.toPx()
                 width = 180.toPx()
             }
-            dialog.dialogImageContainer.setBackgroundColor(ContextCompat.getColor(it,R.color.gf_black_transparent))
+            dialog.dialogImageContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.gf_black_transparent))
             dialog.dialogImageContainer.outlineProvider = null
             dialog.setImageDrawable(R.drawable.gami_exit_icon)
             dialog.setDescription(backButton.text)
             dialog.setPrimaryCTAText(backButton.yesText)
             dialog.setPrimaryCTAClickListener {
-                GtmGiftTapTap.clickContinueButton(userSession?.userId)
-                dialog.dismiss()
-                activity?.finish()
+                try {
+                    GtmGiftTapTap.clickContinueButton(userSession?.userId)
+                    dialog.dismiss()
+                    activity?.finish()
+                    RouteManager.route(context, appLinkForReward)
+                } catch (ex: Exception) {
+                }
             }
             dialog.setSecondaryCTAText(backButton.cancelText)
             dialog.setSecondaryCTAClickListener {
-                GtmGiftTapTap.clickExitButton(userSession?.userId)
-                dialog.dismiss()
+                try {
+                    GtmGiftTapTap.clickExitButton(userSession?.userId)
+                    dialog.dismiss()
+                    RouteManager.route(context, APPLNK_HOME)
+                } catch (ex: Exception) {
+                }
+
             }
             if (isTablet) {
                 val layoutParams = dialog.findViewById<View>(com.tokopedia.dialog.R.id.dialog_bg).layoutParams
@@ -886,20 +903,23 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun onBackPressed(): Boolean {
-        backButton = BackButton(requireContext().getString(R.string.gami_back_button_cancel),
-                null, true,
-                requireContext().getString(R.string.gami_back_button_message),
-                requireContext().getString(R.string.gami_back_button_title),
-                requireContext().getString(R.string.gami_back_button_ok))
-        if (hasWonRp0Reward() && backButton != null) {
-            showBackDialog(backButton!!)
-            return false
+    private fun getAppLinkForBackButtonDialog(): String? {
+        try {
+            val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
+            return remoteConfig.getString(APPLNK_REWARD_HISTORY_KEY, "")
+        } catch (e: Exception) {
+            return ""
         }
-        return true
     }
 
-    fun hasWonRp0Reward(): Boolean {
+    fun onBackPressed(): Boolean {
+        if (backButton != null) {
+            val appLinkForReward = getAppLinkForBackButtonDialog()
+            if (!appLinkForReward.isNullOrEmpty()) {
+                showBackDialog(backButton!!, appLinkForReward)
+                return false
+            }
+        }
         return true
     }
 }

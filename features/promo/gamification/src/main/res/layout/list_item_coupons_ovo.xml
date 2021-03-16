@@ -28,7 +28,7 @@
         android:id="@+id/appCompatImageView"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:translationX="8dp"
+        android:translationX="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline"
