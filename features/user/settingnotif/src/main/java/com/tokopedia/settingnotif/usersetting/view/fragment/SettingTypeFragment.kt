@@ -45,12 +45,16 @@ class SettingTypeFragment : BaseDaggerFragment() {
                 R.layout.fragment_setting_type,
                 container,
                 false
-        ).also {
-            bindView(it)
-            setupToolbar()
-            setupSettingTypes()
-            showShowCaseIfNeeded()
-        }
+        )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindView(view)
+
+        setupToolbar()
+        setupSettingTypes()
+        showShowCaseIfNeeded()
     }
 
     private fun bindView(view: View) {
