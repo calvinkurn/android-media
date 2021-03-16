@@ -244,9 +244,10 @@ open class RewardContainerDaily @JvmOverloads constructor(
                         isRp0 = true
                         if(!benefit.imageUrl.isNullOrEmpty()){
                             ImageUtils.loadImage(imageCircleReward, benefit.imageUrl, isAnimate = false)
+                        }else {
+                            //todo Rahul remove later
+                            imageCircleReward.setImageResource(R.drawable.gf_rp_0_reward)
                         }
-                        //todo Rahul remove later
-                        imageCircleReward.setImageResource(R.drawable.gf_rp_0_reward)
                     }
                 }
             }
