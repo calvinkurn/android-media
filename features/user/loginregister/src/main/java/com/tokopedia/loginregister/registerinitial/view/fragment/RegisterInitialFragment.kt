@@ -37,6 +37,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCES
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
@@ -543,7 +544,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    fun doRegisterCheck(){
+    fun doRegisterCheck() {
         phoneNumber?.run {
             registerInitialViewModel.registerCheck(removeSymbolPhone(this))
         }
@@ -553,7 +554,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         activity?.let {
             ovoCreationAnalytics.trackViewOvoRegisterDialog()
             phoneNumber?.run {
-                OvoAccountDialog.showRegisterDialogUnify(it, this, object: BaseDialogConnectAccListener {
+                OvoAccountDialog.showRegisterDialogUnify(it, this, object : BaseDialogConnectAccListener {
                     override fun onDialogPositiveBtnClicked() {
                         isRegisterOvo = true
                         ovoCreationAnalytics.trackClickCreateOvo()
@@ -574,7 +575,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     fun showConnectOvoDialog() {
         activity?.run {
             ovoCreationAnalytics.trackViewOvoConnectDialog()
-            OvoAccountDialog.showConnectDialogUnify(this, object: BaseDialogConnectAccListener {
+            OvoAccountDialog.showConnectDialogUnify(this, object : BaseDialogConnectAccListener {
                 override fun onDialogPositiveBtnClicked() {
                     isRegisterOvo = true
                     ovoCreationAnalytics.trackClickConnectOvo()
@@ -797,7 +798,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
-                } else if(registerCheckData.isShowRegisterOvo && useOvoRegister()){
+                } else if (registerCheckData.isShowRegisterOvo && useOvoRegister()) {
                     registerInitialViewModel.checkHasOvoAccount(registerCheckData.view)
                 } else {
                     showProceedWithPhoneDialog(registerCheckData.view)
@@ -1007,12 +1008,11 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if(requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED){
+            } else if (requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED) {
                 phoneNumber?.run {
                     goToRegisterWithPhoneNumber(this)
                 }
-            }
-            else {
+            } else {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
@@ -1214,7 +1214,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun goToLoginRegisteredPhoneNumber(phone: String) {
         phoneNumber = phone
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
+        val intent = goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
     }
 
@@ -1282,7 +1282,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun goToRegisterWithPhoneNumber(phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        val intent =  goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
+        val intent = goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
     }
 
@@ -1326,6 +1326,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(requireContext(), true)
+            AppAuthWorker.scheduleWorker(it, true)
         }
     }
 

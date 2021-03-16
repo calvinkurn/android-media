@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/swipe_refresh"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
+    android:enabled="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ScrollView
+            android:id="@+id/sv_edit_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="false"
+            android:background="@color/Unify_N0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:id="@+id/edit_shop_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_nama_lokasi_shop_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:hint="@string/et_nama_lokasi_label">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_nama_lokasi_shop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:inputType="text"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:maxLength="25"
+                        android:textColor="@color/Unify_N700_68"
+                        android:textSize="@dimen/sp_14"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_nama_lokasi_watcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/dp_2"
+                    android:paddingEnd="@dimen/dp_2"
+                    android:text=""
+                    android:layout_gravity="end"
+                    android:textColor="@color/Unify_N700_68"
+                    android:textSize="@dimen/sp_12" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_kota_kecamatan_shop_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:hint="@string/et_kota_kecamatan_label">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_kota_kecamatan_shop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:inputType="text"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/Unify_N700_68"
+                        android:textSize="@dimen/sp_14"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_kode_pos_shop_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:hint="@string/et_kode_pos_label">
+
+
+                    <AutoCompleteTextView
+                        android:id="@+id/et_kode_pos_shop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="1"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:textColor="@color/Unify_N700"
+                        android:textSize="@dimen/sp_14" />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_detail_alamat_shop_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:hint="@string/detail_alamat">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_detail_alamat_shop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLength="175"
+                        android:maxLines="1"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/Unify_N700_68"
+                        android:textSize="@dimen/sp_14"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_detail_alamat_helper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/dp_2"
+                    android:paddingEnd="@dimen/dp_2"
+                    android:text=""
+                    android:textColor="@color/Unify_R500"
+                    android:textSize="@dimen/sp_12" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_pinpoint_location"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyWeight="bold"
+                    android:layout_marginTop="@dimen/dp_24"
+                    app:typographyType="body_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_pinpoint_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/unify_space_8"
+                    android:textColor="@color/Unify_N700_68"
+                    android:text="@string/tv_pinpoint_desc"
+                    app:typographyType="body_3"/>
+
+                <include layout="@layout/item_open_maps_address" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_transaction_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:textColor="@color/Unify_N700_68"
+                    android:text="@string/tv_transaction_desc"
+                    app:typographyType="body_3"/>
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_save_warehouse"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_14"
+                    android:text="@string/save_changes"
+                    android:textStyle="bold"
+                    app:unifyButtonType="main"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
