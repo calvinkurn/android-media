@@ -119,7 +119,10 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
+                                    OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
+                                } else
+                                    OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
                             couponsAction = {
                                 //handle click for type coupon
@@ -131,7 +134,10 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
+                                    OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
+                                } else
+                                    OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
                             bboAction = {
                                 //handle click for type bbo
@@ -193,7 +199,10 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
+                                if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
+                                    OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
+                                } else
+                                    OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
                             couponsAction = {
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
@@ -203,7 +212,10 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
+                                if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
+                                    OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
+                                } else
+                                    OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
                             bboAction = {
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
@@ -320,8 +332,8 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         }
 
         companion object {
-
             private const val TITLE_HEADER_WEBSITE = "Tokopedia"
+            private const val KUPON_SAYA_URL_PATH = "kupon-saya"
         }
     }
 }
