@@ -59,7 +59,8 @@ class GetProductTagItemsUseCase @Inject constructor(
                   voucher_finish_time: VoucherFinishTime,
                   voucher_code: VoucherCode,
                   is_copyable: IsVoucherCopyable,
-                  is_highlighted: IsHighlighted
+                  is_highlighted: IsHighlighted,
+                  is_private: IsPrivate
                 }
                 config {
                   peek_product_count

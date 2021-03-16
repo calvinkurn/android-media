@@ -36,6 +36,8 @@ class Voucher (
         @SerializedName("is_copyable")
         val isCopyable: Boolean = false,
         @SerializedName("is_highlighted")
-        val isHighlighted: Boolean = false
+        val isHighlighted: Boolean = false,
+        @SerializedName("is_private")
+        val isPrivate: Boolean = false
 
 )
