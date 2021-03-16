@@ -3,6 +3,7 @@ package com.tokopedia.home_wishlist.domain
 import com.tokopedia.home_wishlist.base.UseCase
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
+import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import javax.inject.Inject
 
 
@@ -15,5 +16,6 @@ class GetWishlistDataUseCase @Inject constructor(
 
 data class GetWishlistParameter(
         val keyword: String = "",
-        val page: Int = 1
+        val page: Int = 1,
+        val additionalParam: WishlistAdditionalParamRequest = WishlistAdditionalParamRequest()
 )
