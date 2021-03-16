@@ -17,7 +17,6 @@ import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
-import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
@@ -29,6 +28,7 @@ import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelp
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
@@ -101,12 +101,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun fetchPageContent(data: PowerMerchantSettingInfoUiModel) {
         when (data.periodeType) {
-            PeriodType.TRANSITION_PERIOD -> observeShopInfoAndPMGradeBenefits()
-            PeriodType.FINAL_PERIOD -> renderDummyFinalPeriod()
+            PeriodType.TRANSITION_PERIOD -> observeTransitionPeriod()
+            PeriodType.FINAL_PERIOD -> observeFinalPeriodData()
         }
     }
 
-    private fun observeShopInfoAndPMGradeBenefits() {
+    private fun observeTransitionPeriod() {
         mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderRegistrationPM(it.data)
@@ -150,16 +150,31 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         pmRegistrationFooterView.setOnCtaClickListener {
             when {
-                shopInfo.isEligiblePm -> submitPMRegistration()
+                shopInfo.isEligiblePm -> submitPMRegistration(it)
                 !shopInfo.isKyc && ((!shopInfo.isNewSeller && shopInfo.isEligibleShopScore)
-                        || (shopInfo.isNewSeller && shopInfo.hasActiveProduct)) -> submitKYC()
+                        || (shopInfo.isNewSeller && shopInfo.hasActiveProduct)) -> submitKYC(it)
                 else -> showRegistrationTermBottomSheet(shopInfo)
             }
         }
     }
 
-    private fun submitKYC() {
+    private fun submitKYC(isTncChecked: Boolean) {
+        if (!isTncChecked) {
+            val message = getString(R.string.pm_tnc_agreement_error_message)
+            showErrorToaster(message)
+            return
+        }
+
         RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+    }
+
+    private fun showErrorToaster(message: String) {
+        view?.run {
+            val actionText = getString(R.string.power_merchant_ok_label)
+            Toaster.build(rvPmRegistration, message, Toaster.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR, actionText)
+                    .show()
+        }
     }
 
     private fun showRegistrationTermBottomSheet(shopInfo: PMShopInfoUiModel) {
@@ -198,15 +213,34 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private fun submitPMRegistration() {
+    private fun submitPMRegistration(isTncChecked: Boolean) {
+        if (!isTncChecked) {
+            val message = getString(R.string.pm_tnc_agreement_error_message)
+            showErrorToaster(message)
+            return
+        }
 
+        mViewModel.submitPMActivation()
     }
 
-    private fun renderDummyFinalPeriod() {
+    private fun observeFinalPeriodData() {
         view?.pmRegistrationFooterView?.gone()
+        mViewModel.PMFinalPeriod.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> renderPMActiveState(it.data)
+                is Fail -> {
+                    //show on failed
+                }
+            }
+        })
+    }
+
+    private fun renderPMActiveState(data: PMFinalPeriodUiModel) {
         val widgets = listOf(
                 //WidgetQuitSubmissionUiModel(),
-                WidgetShopGradeUiModel(),
+                WidgetShopGradeUiModel(
+
+                ),
                 WidgetDividerUiModel,
                 WidgetExpandableUiModel(
                         title = "Keuntungan PM Silver",

@@ -191,4 +191,5 @@
     <string name="pm_interested_to_register">Saya Tertarik Untuk Daftar</string>
     <string name="pm_verify_data_clickable">Verifikasi Data</string>
     <string name="pm_verify_again_clickable">Verifikasi Ulang</string>
+    <string name="pm_tnc_agreement_error_message">Kamu belum menyetujui S&amp;K yang berlaku.</string>
 </resources>
