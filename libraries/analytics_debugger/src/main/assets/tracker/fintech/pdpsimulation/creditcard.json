@@ -1,0 +1,76 @@
+{
+  "readme": "Fintech Credit Card Impression and Click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim cc - click tab",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "Fintech",
+      "currentSite": "tokopediafintech"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim cc - impression harga tidak sesuai cc",
+      "event": "viewFintechMicrositeIris",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "Fintech",
+      "currentSite": "tokopediafintech"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim cc - click buat kartu kredit",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "Fintech",
+      "currentSite": "tokopediafintech"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim cc - click bank in bank popup",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "Fintech",
+      "currentSite": "tokopediafintech"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim cc - click kartu in card popup",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "Fintech",
+      "currentSite": "tokopediafintech"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim cc - click lihat selengkapnya in bank popup",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "Fintech",
+      "currentSite": "tokopediafintech"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim cc - click lihat selengkapnya in card popup",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "Fintech",
+      "currentSite": "tokopediafintech"
+    }
+  ]
+}
