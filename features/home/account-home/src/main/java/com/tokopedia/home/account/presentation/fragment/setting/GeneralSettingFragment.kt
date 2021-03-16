@@ -191,7 +191,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true))
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_IMAGE_QUALITY,
-                getString(R.string.title_image_quality_setting), getString(R.string.subtitle_image_quality_setting)))
+                getString(R.string.image_quality_setting_screen), getString(R.string.image_quality_setting_title)))
 
         if (settingsPresenter.adultAgeVerified)
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,

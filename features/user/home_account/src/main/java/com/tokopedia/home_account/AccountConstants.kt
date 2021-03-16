@@ -156,6 +156,7 @@ object AccountConstants {
         const val SETTING_INSTANT_BUY = 45
         const val SETTING_APP_SETTING = 46
         const val SETTING_ABOUT_TOKOPEDIA = 47
+        const val SETTING_QUALITY_SETTING = 48
     }
 
     object KEY {

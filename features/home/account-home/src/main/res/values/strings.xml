@@ -164,8 +164,6 @@
 
     <string name="title_pm_card">Pengaturan Power Merchant</string>
     <string name="desc_pm_card">Kelola toko dengan fitur eksklusif</string>
-    <string name="title_image_quality_setting">Kualitas Gambar</string>
-    <string name="subtitle_image_quality_setting">Atur kualitas gambar yang kamu lihat</string>
 
     <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>
     <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
