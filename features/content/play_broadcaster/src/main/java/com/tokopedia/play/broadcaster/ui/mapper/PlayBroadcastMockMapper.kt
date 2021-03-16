@@ -117,7 +117,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return List(10) {
             PlayMetricUiModel(
                     iconUrl = "https://img.icons8.com/pastel-glyph/2x/shopping-cart--v2.png",
-                    spannedSentence = MethodChecker.fromHtml("Kamu <font color='#FF0000'><b>membeli</b> produk</font> ini yang keren banget itu loh waw yay astaga ini produk gila abis sih kerennya ampun dah"),
+                    spannedSentence = MethodChecker.fromHtml("Kamu <b>membeli</b> produk ini yang keren banget itu loh waw yay astaga ini produk gila abis sih kerennya ampun dah"),
                     type = "new_participant",
                     interval = 3000
             )
