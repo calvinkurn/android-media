@@ -140,7 +140,7 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun provideWebSocket(userSession: UserSessionInterface): PlayWebSocket {
         return PlayWebSocketImpl(
-                OkHttpClient.Builder().build(),
+                OkHttpClient.Builder(),
                 userSession
         )
     }

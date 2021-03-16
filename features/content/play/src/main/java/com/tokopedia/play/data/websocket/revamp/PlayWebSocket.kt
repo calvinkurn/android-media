@@ -1,6 +1,5 @@
 package com.tokopedia.play.data.websocket.revamp
 
-import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -8,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface PlayWebSocket {
 
-    fun listenAsFlow(): Flow<WebSocketResponse>
+    fun listenAsFlow(): Flow<WebSocketAction>
 
     fun send(message: String)
 

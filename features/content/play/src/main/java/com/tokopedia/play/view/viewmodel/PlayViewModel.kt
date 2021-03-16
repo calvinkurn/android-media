@@ -11,6 +11,8 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
+import com.tokopedia.play.data.websocket.revamp.WebSocketAction
+import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -35,10 +37,12 @@ import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
@@ -209,6 +213,8 @@ class PlayViewModel @Inject constructor(
 
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
+
+    private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
@@ -639,32 +645,33 @@ class PlayViewModel @Inject constructor(
     fun getVideoPlayer() = playVideoPlayer
 
     private fun startWebSocket(channelId: String) {
-        viewModelScope.launchCatchError(block = {
-            val socketCredential = withContext(dispatchers.io) {
-                return@withContext getSocketCredentialUseCase.executeOnBackground()
+        viewModelScope.launch {
+            val socketCredential = try {
+                withContext(dispatchers.io) {
+                    return@withContext getSocketCredentialUseCase.executeOnBackground()
+                }
+            } catch (e: Throwable) {
+                SocketCredential()
             }
+
+            socketJob = launch {
+                playChannelWebSocket.listenAsFlow()
+                        .flowOn(dispatchers.computation)
+                        .buffer()
+                        .collect {
+                            handleWebSocketResponse(it, channelId, socketCredential)
+                        }
+            }
+
             connectWebSocket(
                     channelId = channelId,
                     socketCredential = socketCredential
-            )
-        }) {
-            connectWebSocket(
-                    channelId = channelId,
-                    socketCredential = SocketCredential()
             )
         }
     }
 
     private fun connectWebSocket(channelId: String, socketCredential: SocketCredential) {
         playChannelWebSocket.connectSocket(channelId, socketCredential.gcToken)
-
-        viewModelScope.launch(dispatchers.immediate) {
-            playChannelWebSocket.listenAsFlow()
-                    .flowOn(dispatchers.io)
-                    .collect {
-                        handleWebSocketResponse(it, channelId)
-                    }
-        }
 
 //        playSocket.channelId = channelId
 //        playSocket.gcToken = socketCredential.gcToken
@@ -683,10 +690,12 @@ class PlayViewModel @Inject constructor(
 
     private fun stopWebSocket() {
         playSocket.destroy()
+        playChannelWebSocket.close()
     }
 
     private fun stopJob() {
         channelInfoJob?.cancel()
+        socketJob?.cancel()
     }
 
     /**
@@ -968,9 +977,16 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
-    private suspend fun handleWebSocketResponse(response: WebSocketResponse, channelId: String) {
-        val result = withContext(dispatchers.io) {
-            val socketMapper = PlaySocketMapper(response)
+    private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String, socketCredential: SocketCredential) {
+        when (response) {
+            is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message, channelId)
+            is WebSocketAction.Closed -> if (response.reason == WebSocketClosedReason.Error) connectWebSocket(channelId, socketCredential)
+        }
+    }
+
+    private suspend fun handleWebSocketMessage(message: WebSocketResponse, channelId: String) {
+        val result = withContext(dispatchers.computation) {
+            val socketMapper = PlaySocketMapper(message)
             socketMapper.mapping()
         }
         when (result) {
