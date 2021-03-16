@@ -39,5 +39,8 @@ data class DiscussionInboxDetail(
         val productThumbnail: String = "",
         @SerializedName("productURL")
         @Expose
-        val productUrl: String = ""
+        val productUrl: String = "",
+        @SerializedName("state")
+        @Expose
+        val state: TalkInboxState = TalkInboxState()
 )

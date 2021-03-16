@@ -113,8 +113,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     private fun initViews(view: View) {
         mItemDecoration = SpacesItemDecoration(0,
-                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_0),
-                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_0))
+                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0))
         if (view.recycler_view_coupons.itemDecorationCount > 0) {
             view.recycler_view_coupons.removeItemDecoration(mItemDecoration!!)
         }

@@ -6,6 +6,7 @@ package com.tokopedia.review.common.util
 
 object ReviewConstants {
     const val RESULT_INTENT_DETAIL = 772
+    const val RESULT_INTENT_REVIEW_REPLY = 896
 
     const val LAST_WEEK_KEY = "time=7d"
     const val LAST_MONTH_KEY = "time=30d"

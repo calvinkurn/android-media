@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,6 +48,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
     private TextView tvOrderPrioritas;
     private Typography tvShippingInformation;
     private Typography tvMvcError;
+    private ConstraintLayout layoutMvc;
     private Label labelCodAvailable;
 
     private int cartPosition;
@@ -65,6 +67,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
         tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
+        layoutMvc = itemView.findViewById(R.id.layout_mvc);
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
     }
 
@@ -78,6 +81,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
         }
 
         // OCC has no MVC
+        layoutMvc.setVisibility(View.GONE);
         tvMvcError.setVisibility(View.GONE);
 
         if (shippingDurationAdapterListener.isToogleYearEndPromotionOn() &&

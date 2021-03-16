@@ -17,10 +17,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TalkInboxViewModel @Inject constructor(
-    dispatcher: CoroutineDispatchers,
-    private val talkInboxListUseCase: TalkInboxListUseCase,
-    private val userSession: UserSessionInterface,
-    private val talkInboxTracking: TalkInboxTracking
+        dispatcher: CoroutineDispatchers,
+        private val talkInboxListUseCase: TalkInboxListUseCase,
+        private val userSession: UserSessionInterface,
+        private val talkInboxTracking: TalkInboxTracking
 ) : BaseViewModel(dispatcher.io) {
 
     private val _inboxList: MediatorLiveData<TalkInboxViewState<DiscussionInbox>> = MediatorLiveData()
@@ -28,7 +28,8 @@ class TalkInboxViewModel @Inject constructor(
         get() = _inboxList
 
     private var shopId: String = ""
-    private var unreadCount: Int = 0
+    private var unreadCount: Long = 0
+    private var unrespondedCount: Long = 0
     private var type: String = ""
     private var filter: TalkInboxFilter = TalkInboxFilter.TalkInboxNoFilter()
     private val page = MutableLiveData<Int>()
@@ -43,7 +44,11 @@ class TalkInboxViewModel @Inject constructor(
         return shopId
     }
 
-    fun getUnreadCount(): Int {
+    fun getUnrespondedCount(): Long {
+        return unrespondedCount
+    }
+
+    fun getUnreadCount(): Long {
         return unreadCount
     }
 
@@ -62,16 +67,20 @@ class TalkInboxViewModel @Inject constructor(
 
     fun setInboxType(inboxType: String) {
         this.type = inboxType
-        resetPage()
+        resetFilter()
     }
 
-    fun setFilter(selectedFilter: TalkInboxFilter) {
-        if(this.filter == selectedFilter) {
-            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), false, getShopId(), getUserId())
+    fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean, shouldTrack: Boolean) {
+        if (this.filter == selectedFilter) {
+            if(shouldTrack) {
+                sendFilterTracker(selectedFilter, isSellerView, false)
+            }
             resetFilter()
             return
         }
-        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), true, getShopId(), getUserId())
+        if(shouldTrack) {
+            sendFilterTracker(selectedFilter, isSellerView, true)
+        }
         this.filter = selectedFilter
         resetPage()
     }
@@ -84,22 +93,31 @@ class TalkInboxViewModel @Inject constructor(
         this.page.value = TalkConstants.DEFAULT_INITIAL_PAGE
     }
 
+    private fun sendFilterTracker(selectedFilter: TalkInboxFilter, isSellerView: Boolean, isActive: Boolean) {
+        if (isSellerView) {
+            talkInboxTracking.eventClickSellerFilter(userSession.shopId, userSession.userId, selectedFilter.filterParam, isActive, unrespondedCount)
+        } else {
+            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), unreadCount, false, getShopId(), getUserId())
+        }
+    }
+
     private fun resetFilter() {
         this.filter = TalkInboxFilter.TalkInboxNoFilter()
         resetPage()
     }
 
-    private fun getInboxList(page: Int = 0) {
+    private fun getInboxList(page: Int) {
         launchCatchError(block = {
             _inboxList.postValue(TalkInboxViewState.Loading(page))
             talkInboxListUseCase.setRequestParam(type, filter.filterParam, page)
             val response = talkInboxListUseCase.executeOnBackground()
             shopId = response.discussionInbox.shopID
-            unreadCount = if(type == TalkInboxTab.SHOP_TAB) {
+            unreadCount = if (type == TalkInboxTab.SHOP_OLD) {
                 response.discussionInbox.sellerUnread
             } else {
                 response.discussionInbox.buyerUnread
             }
+            unrespondedCount = response.discussionInbox.unrespondedTotal
             _inboxList.postValue(TalkInboxViewState.Success(response.discussionInbox, page, filter))
         }) {
             _inboxList.postValue(TalkInboxViewState.Fail(it, page))

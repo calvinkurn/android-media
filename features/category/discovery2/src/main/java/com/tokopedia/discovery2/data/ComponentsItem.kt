@@ -65,7 +65,7 @@ data class ComponentsItem(
         var couponAppliedClicked: Boolean = false,
         var position: Int = 0,
         var couponViewImpression: Boolean = false,
-        var design: String = "",
+        var design: String = "v1",
         val filterController: FilterController = FilterController(),
         var searchParameter: SearchParameter = SearchParameter(),
         var filters: ArrayList<Filter> = ArrayList(),
@@ -81,7 +81,7 @@ data class ComponentsItem(
         var tabName: String? = "",
         var isSticky : Boolean = false,
         var description : String? = "",
-        var showFilter: Boolean = true,) {
+        var showFilterCount: Boolean = true,) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

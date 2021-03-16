@@ -20,6 +20,8 @@ open class NotificationCancelManager: CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + jobs
 
+    fun cancel() = jobs.cancelChildren()
+
     fun isCancellable(activity: Activity): Boolean {
         return !TARGET_ACTIVITIES.singleOrNull {
             it == activity.javaClass.canonicalName
@@ -38,10 +40,6 @@ open class NotificationCancelManager: CoroutineScope {
         }
     }
 
-    fun cancel() {
-        jobs.cancelChildren()
-    }
-
     private fun cancellableItems(
             context: Context,
             remoteConfig: CMRemoteConfigUtils,
@@ -50,36 +48,48 @@ open class NotificationCancelManager: CoroutineScope {
         launch {
             val notifications = pushRepository(context).getNotification()
             withContext(Dispatchers.Main) {
-                val result = notifications
+                invoke(notifications
+                        .filter { it.campaignId != 0L }
                         .intersect(excludeIds(remoteConfig)) { notification, excludedItem ->
                             notification.campaignId == excludedItem.toLong()
                         }
-                invoke(result)
+                )
             }
         }
     }
 
     private fun excludeIds(remoteConfig: CMRemoteConfigUtils): List<String> {
         val campaignIds = remoteConfig.getStringRemoteConfig(CM_CAMPAIGN_ID_EXCLUDE_LIST)
-        return campaignIds.split(",").map { it.trim() }
+        return if (campaignIds.isNotEmpty()) {
+            campaignIds.split(",").map { it.trim() }
+        } else {
+            excludeIds
+        }
     }
 
     private fun cancelNotificationManager(context: Context, notificationId: Int) {
         NotificationManagerCompat.from(context).cancel(notificationId)
-        (context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?)?.let {
-            it.cancel(notificationId)
-        }
+        (context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?)?.cancel(notificationId)
     }
 
     companion object {
         /*
-        * TARGET_ACTIVITIES;
-        * the NotificationCancelManager only called in the specific current activity
-        * to preventing multiple called every another activity opened.
+        * The NotificationCancelManager only called in the specific current activity,
+        * to preventing multiple called in another activity opened we need to make a
+        * list of TARGET_ACTIVITIES to specify of main activity.
         * */
         val TARGET_ACTIVITIES = listOf(
                 "com.tokopedia.navigation.presentation.activity.MainParentActivity",
                 "com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
+        )
+
+        /*
+        * NotificationCancelManager will trigger every main activity opened,
+        * so there's case where remote config value didn't get the value well,
+        * so we need a internal exclude static items of campaignId.
+        * */
+        private val excludeIds = listOf(
+                "-1854" // OTP Push Notification
         )
     }
 

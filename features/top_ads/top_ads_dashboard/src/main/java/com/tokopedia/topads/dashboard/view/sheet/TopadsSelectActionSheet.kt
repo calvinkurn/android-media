@@ -49,7 +49,7 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
 
     private fun initView() {
         context?.let {
-            img_active.setImageDrawable(it.getResDrawable(R.drawable.topads_dash_green_dot))
+            img_active.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_green_dot))
             edit_img.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon))
             img_delete.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_delete))
             if (hideDisable) {
@@ -67,7 +67,7 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
             }
             if (activeStatus != ACTIVATED) {
                 txt_action_active.text = it.getString(R.string.topads_dash_aktifan)
-                img_active.setImageDrawable(it.getResDrawable(R.drawable.topads_dash_green_dot))
+                img_active.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_green_dot))
 
             } else {
                 txt_action_active.text = it.getString(R.string.topads_dash_nonaktifkan)

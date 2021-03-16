@@ -10,9 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import kotlinx.android.synthetic.main.topads_create_activity_success.*
 import kotlinx.android.synthetic.main.topads_create_bottom_sheet_insufficient_credit.*
-import kotlinx.android.synthetic.main.topads_create_bottom_sheet_insufficient_credit.ic_ilustration
 
 
 private const val CLICK_TAMBAH_KREDIT_TOPADS = "click-tambah kredit topads"
@@ -39,7 +37,7 @@ class NoCreditFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ic_ilustration.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_success))
+        ic_ilustration.setImageDrawable(view.context?.getResDrawable(R.drawable.ill_isi_kredit_topads))
         btn_topup.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TAMBAH_KREDIT_TOPADS, "")
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)

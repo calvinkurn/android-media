@@ -15,9 +15,10 @@ import com.tokopedia.review.feature.inbox.container.presentation.fragment.Review
 class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
     companion object {
-        fun createNewInstance(context: Context, tab: String?): Intent {
+        fun createNewInstance(context: Context, tab: String?, source: String?): Intent {
             val intent = Intent(context, ReviewInboxActivity::class.java)
             intent.putExtra(ReviewInboxConstants.PARAM_TAB, tab ?: "")
+            intent.putExtra(ReviewInboxConstants.PARAM_SOURCE, source ?: ReviewInboxConstants.DEFAULT_SOURCE)
             return intent
         }
     }
@@ -25,10 +26,11 @@ class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLis
     private var reviewInboxContainerFragment: ReviewInboxContainerFragment? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var tab: String = ""
+    private var source: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getArgumentsFromApplink()
-        reviewInboxContainerFragment = ReviewInboxContainerFragment.createNewInstance(tab)
+        reviewInboxContainerFragment = ReviewInboxContainerFragment.createNewInstance(tab, source)
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
     }
@@ -102,6 +104,7 @@ class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLis
 
     private fun getArgumentsFromApplink() {
         tab = intent?.getStringExtra(ReviewInboxConstants.PARAM_TAB) ?: ""
+        source = intent?.getStringExtra(ReviewInboxConstants.PARAM_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
     }
 
 }

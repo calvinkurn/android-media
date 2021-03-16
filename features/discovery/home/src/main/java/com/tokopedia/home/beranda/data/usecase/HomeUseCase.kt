@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.usecase
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -14,6 +15,7 @@ class HomeUseCase @Inject constructor(
 ) {
     fun getHomeData(): Flow<HomeDataModel?> = flow {
         var firstTimeDataHasBeenConsumed = false
+
         homeRepository.getHomeData().collect { data->
             if (!firstTimeDataHasBeenConsumed) {
                 //first time observe, get latest data from cache

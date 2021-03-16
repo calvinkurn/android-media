@@ -8,7 +8,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.unifycomponents.ImageUnify
 import kotlinx.android.synthetic.main.layout_shop_home_campaign_npl_tnc_item.view.*
 
 

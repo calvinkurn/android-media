@@ -32,4 +32,66 @@
     <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
     <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan SiCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
 
+
+    <!--Shop Edit Address-->
+    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
+    <string name="tv_pinpoint_location">Pinpoint Lokasi</string>
+    <string name="tv_pinpoint_desc">Tandai lokasi agar bisa gunakan layanan &lt;b&gt;Dijemput Kurir&lt;/b&gt;</string>
+    <string name="open_map">Buka Peta</string>
+    <string name="change_pinpoint">Ubah Pinpoint</string>
+    <string name="tv_transaction_desc">Transaksi yang sedang diproses akan menggunakan almaat lama. Alamat baru berlaku di transaksi berikutnya.</string>
+    <string name="save_changes">Simpan Perubahan</string>
+    <string name="pointer">Map Pointer</string>
+    <string name="et_nama_lokasi_label">Nama Lokasi</string>
+    <string name="et_kota_kecamatan_label">Kota atau Kecamatan</string>
+    <string name="et_kode_pos_label">Kode Pos</string>
+    <string name="detail_alamat">Detail Alamat</string>
+    <string name="detail_alamat_error_helper">Tulis alamat sesuai peta dan tambahkan detail (kompleks/blok/nomor). Lokasi peta: %1$s</string>
+    <string name="helper_shop_detail">Min. 20 Karakter. Harap tulis alamatmu lebih lengkap.</string>
+    <string name="save_edit_shop_success">Detail lokasi telah diubah</string>
+    <string name="txt_error_no_access">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
+    <string name="title_save_dialog">Kurir pilihanmu tidak tersedia di lokasi baru ini</string>
+    <string name="desc_save_dialog">Aktifkan kurir lainnya lewat Atur Pengiriman agar lokasi tokomu yang baru dapat melakukan pengiriman.</string>
+    <string name="primary_button_save_dialog">Simpan &amp; Atur Pengiriman</string>
+    <string name="secondary_button_save_dialog">Batalkan</string>
+
+    <!--Shipping Editor-->
+    <string name="title_shipping_editor">Pengiriman</string>
+    <string name="awb_otomatis_title">AWB Otomatis</string>
+    <string name="awb_otomatis_detail">Dengan fitur ini, resi pengiriman otomatis terisi dan penjual tidak perlu bayar ongkir ke kurir.</string>
+    <string name="non_tunai_title">Non Tunai</string>
+    <string name="non_tunai_detail">Penjual tidak perlu bayar ongkir ke kurir. Ongkir dipotong langsung dari saldo penjual saat barang sudah diterima pembeli.</string>
+    <string name="tv_detail_kurir">Kenali detail kurir pengiriman agar kamu bisa memilih yang terbaik untuk pembelimu. Selengkapnya</string>
+    <string name="ticker_dijemput_kurir">Semua kurir pada layanan dijemput kurir memiliki fitur:&lt;br/&gt;</string>
+    <string name="awb_otomatis_list">&lt;li&gt; AWB Otomatis. </string>
+    <string name="non_tunai_list"> &lt;li&gt; Non Tunai. </string>
+
+    <string name="ticker_dijemput_kurir_complete">Semua kurir pada layanan dijemput kurir memiliki fitur:&lt;br/&gt; &lt;ul&gt; &lt;li&gt; AWB Otomatis. &lt;a href="awb_otomatis"&gt;Selengkapnya&lt;/a&gt; &lt;br/&gt; &lt;li&gt; Non Tunai. &lt;a href="non_tunai"&gt;Selengkapnya&lt;/a&gt; &lt;/ul&gt; </string>
+    <string name="shipper_ticker_yellow">Kurir ini tidak tersedia di &lt;b>%d lokasimu.&lt;/b> &lt;a href="#"&gt; Lihat.&lt;/a&gt;</string>
+    <string name="shipper_ticker_red">Kurir ini tidak dapat diaktifkan sementara</string>
+    <string name="ticker_header_clicked">&lt;a href="#"&gt; Lihat Detail&lt;/a&gt;</string>
+    <string name="title_bottomsheet_courier_inactive">Kurir ini tidak tersedia di %d lokasi tokomu</string>
+    <string name="text_header_courier_not_covered">Kurir %1$s tidak tersedia di %2$d lokasi tokomu ini, sehingga kamu tidak bisa melakukan pengiriman dengan kurir tersebut dari lokasi di bawah.</string>
+    <string name="text_header_validate_courier_not_covered">Perubahan kurir akan membuat %d lokasi di bawah tidak memiliki kurir &amp; tidak dapat melakukan pengiriman. Lanjutkan?</string>
+    <string name="text_bo_link">&lt;a href="#"&gt; di sini.&lt;/a&gt;</string>
+    <string name="text_header_courier_not_covered_all">Kurir yang kamu pilih tidak tersedia di lokasi tokomu berikut. Aktifkan kurir lainnya agar seluruh lokasi tokomu dapat melakukan pengiriman</string>
+    <string name="button_activate">Tetap Aktifkan</string>
+    <string name="button_deactivate">Nonaktifkan</string>
+    <string name="button_save">Simpan</string>
+    <string name="button_cancel_reset"><![CDATA[Batalkan & Atur Ulang]]></string>
+    <string name="button_understand">Mengerti</string>
+    <string name="selengkapnya">Selengkapnya</string>
+    <string name="bottomsheet_inactive_title">Lokasi toko yang tidak memiliki kurir</string>
+    <string name="bottomsheet_validation_title">Yakin mau nonaktifkan</string>
+    <string name="batalkan_atur_ulang">Batalkan Atur Ulang</string>
+    <string name="simpan">Simpan</string>
+    <string name="tutup">Tutup</string>
+    <string name="layanan_pengiriman">Layanan Pengiriman</string>
+    <string name="dijemput_kurir">Dijemput Kurir</string>
+    <string name="dijemput_kurir_desc">Kurir akan menjemput pesanan di alamatmu untuk diantar ke pembeli</string>
+    <string name="antar_ke_gerai">Antar ke Gerai</string>
+    <string name="antar_ke_gerai_desc">Bawa pesanan ke gerai terdekat dan minta resi dari petugas</string>
+    <string name="detail_fitur">Detail Fitur</string>
+    <string name="shipper_detail_bottomsheet_title">Detail Kurir Pengiriman</string>
+
 </resources>

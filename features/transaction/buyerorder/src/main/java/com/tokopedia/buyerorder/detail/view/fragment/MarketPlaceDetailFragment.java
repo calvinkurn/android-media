@@ -93,6 +93,7 @@ import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.view.DoubleTextView;
@@ -773,7 +774,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         for (ActionButton actionButton : actionButtons) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
-            TextView textView = new TextView(getContext());
+            Typography textView = new Typography(getContext());
             textView.setText(actionButton.getLabel());
             textView.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
             textView.setTypeface(Typeface.DEFAULT_BOLD);
@@ -812,7 +813,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             actionBtnLayout.addView(textView);
             if (!stickyButtonAdded) {
                 //Cant add the same textview as it has a parent already so making a new instance of the textview and adding it for the sticky
-                TextView stickyTextView = new TextView(getContext());
+                Typography stickyTextView = new Typography(getContext());
                 stickyTextView.setText(actionButton.getLabel());
                 stickyTextView.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
                 stickyTextView.setTypeface(Typeface.DEFAULT_BOLD);
@@ -1243,7 +1244,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
         SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
         completeLabelShop.append(labelShop);
-        completeLabelShop.append(shopName);
+        completeLabelShop.append(MethodChecker.fromHtml(shopName));
         completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         shopInformationTitle.setText(completeLabelShop);
 
@@ -1257,7 +1258,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             RouteManager.route(getContext(), applink);
         });
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status, userSessionInterface.getUserId(), getArguments().getString(KEY_ORDER_ID)));
     }
 
     @Override
@@ -1313,7 +1314,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
-            long productId = 0;
+            String productId = "";
             int quantity = 0;
             int shopId = 0;
             String notes = "";

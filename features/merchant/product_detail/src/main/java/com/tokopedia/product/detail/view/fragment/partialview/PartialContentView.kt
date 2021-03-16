@@ -2,7 +2,8 @@ package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.Paint
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
@@ -11,7 +12,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isGivenDateIsBelowThan24H
 import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
@@ -35,7 +35,12 @@ class PartialContentView(private val view: View,
         product_name.text = MethodChecker.fromHtml(data.productName)
 
         img_free_ongkir.shouldShowWithAction(data.freeOngkir.isActive) {
-            ImageHandler.loadImageRounded2(context, img_free_ongkir, data.freeOngkir.imageURL)
+            Glide.with(view.context)
+                    .load(data.freeOngkir.imageURL)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
+                    .fitCenter()
+                    .into(view.img_free_ongkir)
         }
 
         text_cashback_green.shouldShowWithAction(data.cashbackPercentage > 0) {
@@ -45,13 +50,13 @@ class PartialContentView(private val view: View,
         when {
             isUpcomingNplType -> {
                 renderNplRibbon(upcomingNplData.ribbonCopy, upcomingNplData.startDate)
-                renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
+                renderCampaignInactiveNpl(data.price.priceFmt)
             }
             data.campaign.isActive -> {
                 renderCampaignActive(data.campaign, data.stockWording)
             }
             else -> {
-                renderCampaignInactive(data.price.value.getCurrencyFormatted())
+                renderCampaignInactive(data.price.priceFmt)
             }
         }
 
@@ -109,19 +114,19 @@ class PartialContentView(private val view: View,
     private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
         txt_main_price?.run {
             text = context.getString(R.string.template_price, "",
-                    campaign.discountedPrice.getCurrencyFormatted())
+                    campaign.discountedPriceFmt)
             show()
         }
 
         text_slash_price?.run {
             text = context.getString(R.string.template_price, "",
-                    campaign.originalPrice.getCurrencyFormatted())
+                    campaign.originalPriceFmt)
             paintFlags = text_slash_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             show()
         }
 
         text_discount_red?.run {
-            text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
+            text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.toString())
             show()
         }
         hideGimmick(campaign)

@@ -106,14 +106,19 @@
   <string name="text_success_description_single_account"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat e-mail ke alamat <b>%s</b> dan SMS ke nomor <b>%s</b>.]]></string>
   <string name="text_success_description_has_no_email"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor <b>%s</b>.]]></string>
   <string name="text_success_button">Ke Home</string>
+  <string name="text_success_ticker">Jangan pakai nomor HP ini di akun Tokopedia lainnya, biar nomor HP-mu berhasil diubah.</string>
   <string name="text_account_list_title">Mau ubah nomor HP di akun yang mana?</string>
-  
   <string name="error_new_phone_already_registered">Nomor HP sudah terdaftar di akun lain. Satu nomor HP hanya bisa digunakan pada satu akun.</string>
   <string name="error_input_another_phone">Nomor ini sudah terdaftar, masukkan nomor lainnya.</string>
-  
   <string name="text_update_dialog_title">Update aplikasimu, yuk!</string>
   <string name="text_update_dialog_description">Aplikasimu harus di-update dulu biar bisa pakai semua fitur Tokopedia.</string>
   <string name="text_update_cta_primary">Update Sekarang</string>
   <string name="text_update_cta_secondary">Batal</string>
+  <string name="image_preview">image preview</string>
+  <string name="button_flip_camera">button flip camera</string>
+  <string name="image_shutter_1">image shutter 1</string>
+  <string name="image_shutter_2">image shutter 2</string>
+  <string name="button_back">button back</string>
+
 
 </resources>

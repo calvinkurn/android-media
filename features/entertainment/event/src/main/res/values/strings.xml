@@ -46,6 +46,7 @@
     <string name="ent_pdp_ticket_belum_tersedia">Belum Tersedia</string>
     <string name="ent_pdp_ticket_telah_selesai">Penjualan Berakhir</string>
     <string name="ent_pdp_ticket_recommended">Cek Tanggal Lain</string>
+    <string name="ent_pdp_ticket_change_date">Ubah Tanggal</string>
     <string name="ent_pdp_ticket_sold_out">SUDAH HABIS</string>
     <string name="ent_pdp_date_txt">%s</string>
     <string name="ent_default_totalPrice">Rp0</string>
@@ -94,7 +95,7 @@
     <string name="ent_pdp_form_error_empty_value_msg">%s belum diisi</string>
     <string name="ent_pdp_form_error_regex_msg">%s belum sesuai format</string>
     <string name="ent_pdp_form_toaster_click_msg">Oke</string>
-    <string name="ent_pdo_form_date_picker_placeholder">dd/mm/yyyy</string>
+    <string name="ent_pdp_form_date_picker_placeholder">dd/mm/yyyy</string>
 
 
     <string name="ent_checkout_payment">Sedang diproses</string>
@@ -105,6 +106,7 @@
     <string name="ent_checkout_to_order_detail">%s?from_payment=true</string>
     <string name="ent_pdp_param_to_package">%s/%s?selectedDate=%s&amp;startDate=%s&amp;endDate=%s</string>
     <string name="ent_checkout_price_expand">Mulai dari \u0020</string>
+    <string name="ent_pdp_available_date_label">Tiket tersedia pada \u0020</string>
 
     <string name="ent_home_coachmark_title">Beli tiket kini lebih mudah!</string>
     <string name="ent_home_coachmark_subtitle">Cobain yuk, sekarang kamu dapat membeli paket lain bersamaan!</string>
@@ -121,7 +123,7 @@
     <string name="ent_bottomsheet_placeholder">Cari %s</string>
     <string name="ent_pdp_form_error_all_msg">%s belum diisi</string>
     <string name="ent_pdp_form_error_all_msg_fragment">%s yang Anda isi belum lengkap</string>
-
+    <string name="ent_event_pdp_ticket_recommendation_label">COBA CEK YANG INI JUGA, YUK!</string>
 
     <string name="ent_redeem_title">Redeem Your Ticket</string>
     <string name="ent_redeem_title_owner">Data Pemilik Tiket</string>

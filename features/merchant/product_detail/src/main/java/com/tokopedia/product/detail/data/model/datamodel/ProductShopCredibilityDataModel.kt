@@ -24,15 +24,12 @@ data class ProductShopCredibilityDataModel(
         var shopName: String = "",
         var shopAva: String = "",
         var shopLocation: String = "",
-        var shopActiveProduct: Int = 0,
-        var shopCreated: String = "",
 
         var isOs: Boolean = false,
         var isPm: Boolean = false,
-        var shopSpeed: Int = 0,
-        var shopChatSpeed: Int = 0,
-        var shopRating: Float = 0F,
         var isGoApotik: Boolean = false,
+
+        var infoShopData: List<ShopCredibilityUiData> = listOf(),
 
         //Favorite
         var enableButtonFavorite: Boolean = false,
@@ -49,7 +46,7 @@ data class ProductShopCredibilityDataModel(
         return typeFactory.type(this)
     }
 
-    fun getLastThreeHierarchyData(context: Context): List<ShopCredibilityUiData> {
+    fun getTwoShopInfoHieararchy(context: Context, shopSpeed: Long, shopChatSpeed: Long, shopActiveProduct: Long, shopCreated: String, shopRating: Float): List<ShopCredibilityUiData> {
         val createdDated = try {
             SimpleDateFormat("yyyy-MM-dd", getIdLocale()).parse(shopCreated).toFormattedString("MMM yyyy", getIdLocale())
         } catch (e: Throwable) {
@@ -73,12 +70,11 @@ data class ProductShopCredibilityDataModel(
         return if (newData is ProductShopCredibilityDataModel) {
             shopLocation == newData.shopLocation &&
                     shopAva == newData.shopAva
-                    && shopChatSpeed == newData.shopChatSpeed
                     && shopLastActive == newData.shopLastActive
-                    && shopRating == newData.shopRating
                     && isGoApotik == newData.isGoApotik
                     && isFavorite == newData.isFavorite
                     && enableButtonFavorite == newData.enableButtonFavorite
+                    && infoShopData.size == newData.infoShopData.size
         } else {
             false
         }
@@ -97,9 +93,9 @@ data class ProductShopCredibilityDataModel(
                 return null
             }
 
-            if (isFavorite != newData.isFavorite ) {
+            if (isFavorite != newData.isFavorite) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
-            } else if(enableButtonFavorite != enableButtonFavorite){
+            } else if (enableButtonFavorite != enableButtonFavorite) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
             }
             bundle

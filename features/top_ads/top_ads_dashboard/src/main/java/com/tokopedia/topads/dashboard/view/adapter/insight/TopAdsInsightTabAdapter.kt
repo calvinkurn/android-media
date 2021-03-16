@@ -43,8 +43,14 @@ class TopAdsInsightTabAdapter : RecyclerView.Adapter<TopAdsTabInsightViewHolder>
             tabMenus.add(String.format(resources.getString(R.string.topads_dash_keyword_count), countKey))
         notifyDataSetChanged()
     }
+
     fun getTab(): MutableList<String> {
         return tabMenus
+    }
+
+    fun setSelectedTitle(index:Int){
+        selectedTabPosition = index
+        notifyDataSetChanged()
     }
 
     override fun getItemCount() = tabMenus.size

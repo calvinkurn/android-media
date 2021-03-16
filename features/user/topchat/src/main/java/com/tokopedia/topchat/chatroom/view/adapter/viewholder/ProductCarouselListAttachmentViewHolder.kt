@@ -47,9 +47,6 @@ class ProductCarouselListAttachmentViewHolder constructor(
             DeferredAttachment.PAYLOAD_DEFERRED -> {
                 bind(carousel)
             }
-            is TopchatProductAttachmentViewHolder.OccState -> {
-                ProductCarouselListAttachmentViewHolderBinder.bindNewOccState(adapter, payload)
-            }
         }
     }
 

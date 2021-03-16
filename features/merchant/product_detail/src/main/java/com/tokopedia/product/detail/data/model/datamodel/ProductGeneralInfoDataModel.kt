@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductGeneralInfoDataModel(
@@ -12,7 +11,10 @@ data class ProductGeneralInfoDataModel(
         var title: String = "",
         var isApplink: Boolean = false,
         val parentIcon: String = "",
-        var data: List<Content> = listOf(Content())
+        var subtitle: String = "",
+
+        var additionalIcon: String = "",
+        var additionalDesc: String = ""
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -31,25 +33,19 @@ data class ProductGeneralInfoDataModel(
                     && title == newData.title
                     && isApplink == newData.isApplink
                     && parentIcon == newData.parentIcon
-                    && areContentTheSame(newData.data.firstOrNull())
+                    && subtitle == newData.subtitle
+                    && additionalIcon == newData.additionalIcon
+                    && additionalDesc == newData.additionalDesc
         } else {
             false
         }
     }
 
     override fun newInstance(): DynamicPdpDataModel {
-        return this.copy(data = data.map { it.copy() })
+        return this.copy()
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
-    }
-
-    private fun areContentTheSame(content: Content?): Boolean {
-        val currentContent = data.firstOrNull()
-        return currentContent?.applink == content?.applink
-                && currentContent?.icon == content?.icon
-                && currentContent?.subtitle == content?.subtitle
-                && currentContent?.title == content?.title
     }
 }

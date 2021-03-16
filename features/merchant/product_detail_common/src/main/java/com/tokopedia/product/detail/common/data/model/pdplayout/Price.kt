@@ -10,4 +10,6 @@ data class Price(
         val lastUpdateUnix: String = "",
         @SerializedName("value")
         val value: Int = 0
-)
+) {
+    var priceFmt: String = ""
+}

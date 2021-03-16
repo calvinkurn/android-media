@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.inboxreview
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewResponse
+import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewTabCounterResponse
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
 import com.tokopedia.review.utils.verifyCoroutineFailEquals
@@ -26,6 +27,19 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
             verifySuccessGetInboxReviewUseCaseCalled()
             Assert.assertTrue(viewModel.inboxReview.value is Success)
             Assert.assertNotNull(viewModel.inboxReview.value)
+        }
+    }
+
+    @Test
+    fun `when get counter inbox review should return success`() {
+        runBlocking {
+            onGetInboxReviewCounter_thenReturn()
+
+            viewModel.getInboxReviewCounter()
+
+            verifySuccessGetInboxReviewCounterUseCaseCalled()
+            Assert.assertTrue(viewModel.inboxReviewCounterText.value is Success)
+            Assert.assertNotNull(viewModel.inboxReviewCounterText.value)
         }
     }
 
@@ -321,6 +335,14 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
 
     private fun onGetInboxReview_thenReturn() {
         coEvery { getInboxReviewUseCase.executeOnBackground() } returns InboxReviewResponse.ProductGetInboxReviewByShop()
+    }
+
+    private fun onGetInboxReviewCounter_thenReturn() {
+        coEvery { getInboxReviewCounterUseCase.executeOnBackground() } returns InboxReviewTabCounterResponse()
+    }
+
+    private fun verifySuccessGetInboxReviewCounterUseCaseCalled() {
+        coVerify { getInboxReviewCounterUseCase.executeOnBackground() }
     }
 
     private fun verifySuccessGetInboxReviewUseCaseCalled() {

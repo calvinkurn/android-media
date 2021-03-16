@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
@@ -21,7 +22,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (keywordDataItem: KeywordDat
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
     private var minimumBid: Int = 0
-    private var maxBid: Int = 0
+    private var maxBid: String = "0"
     private var stateRestore: Boolean = false
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -59,7 +60,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (keywordDataItem: KeywordDat
             if (holder.adapterPosition != RecyclerView.NO_POSITION)
                 onCheck(items[holder.adapterPosition])
         }
-        setBidInfo(holder, items[holder.adapterPosition].bidSuggest)
+        setBidInfo(holder, items[holder.adapterPosition].bidSuggest.toIntOrZero())
     }
 
     private fun setBidInfo(holder: ViewHolder, bidSuggest: Int) {
@@ -68,7 +69,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (keywordDataItem: KeywordDat
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
-                items[holder.adapterPosition].bidSuggest = result
+                items[holder.adapterPosition].bidSuggest = result.toString()
                 when {
                     result < minimumBid -> {
                         holder.view.keywordBid.setError(true)
@@ -80,7 +81,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (keywordDataItem: KeywordDat
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_recom_bid), bidSuggest))
                         onBidChange(true, items[holder.adapterPosition])
                     }
-                    result > maxBid -> {
+                    result > maxBid.toDouble() -> {
                         holder.view.keywordBid.setError(true)
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_max_bid), maxBid))
                         onBidChange(false, items[holder.adapterPosition])
@@ -109,7 +110,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (keywordDataItem: KeywordDat
         notifyDataSetChanged()
     }
 
-    fun setMax(max: Int) {
+    fun setMax(max: String) {
         maxBid = max
         notifyDataSetChanged()
     }

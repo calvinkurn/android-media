@@ -78,30 +78,33 @@ open class BaseChatViewStateImpl(
                 scrollDownWhenInBottom()
             }
         }
-        replyWatcher = EventsWatcher.text(replyEditText)
 
-        replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
-
-        val onError = Action1<Throwable> { it.printStackTrace() }
-
-        replyIsTyping.subscribe(Action1 {
-            if (it && !isTyping) {
-                typingListener.onStartTyping()
-                isTyping = true
+        if (useDefaultReplyWatcher()) {
+            replyWatcher = EventsWatcher.text(replyEditText)
+            replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
+            val onError = Action1<Throwable> { it.printStackTrace() }
+            replyIsTyping.subscribe(Action1 {
+                if (it && !isTyping) {
+                    typingListener.onStartTyping()
+                    isTyping = true
+                }
+            }, onError)
+            val onChatDeBounceSubscriber = Action1<Boolean> {
+                typingListener.onStopTyping()
+                isTyping = false
             }
-        }, onError)
-
-        val onChatDeBounceSubscriber = Action1<Boolean> {
-            typingListener.onStopTyping()
-            isTyping = false
+            replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                    .skip(1)
+                    .subscribe(onChatDeBounceSubscriber, onError)
         }
-        replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                .skip(1)
-                .subscribe(onChatDeBounceSubscriber, onError)
 
 
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
         setupChatMenu()
+    }
+
+    protected open fun useDefaultReplyWatcher(): Boolean {
+        return true
     }
 
     protected open fun setupChatMenu() {
@@ -355,5 +358,4 @@ open class BaseChatViewStateImpl(
     open fun getAttachmentMenuId() = R.id.rv_attachment_menu
     open fun getRootViewId() = R.id.main
     open fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
-
 }

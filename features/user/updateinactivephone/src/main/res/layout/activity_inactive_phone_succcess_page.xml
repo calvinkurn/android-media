@@ -61,13 +61,28 @@
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"/>
   
+  <com.tokopedia.unifycomponents.ticker.Ticker
+    android:id="@+id/tickerInactivePhoneNumber"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/updateinactivephone_12dp"
+    android:layout_marginStart="@dimen/updateinactivephone_12dp"
+    android:visibility="visible"
+    app:descriptionText="@string/text_success_ticker"
+    app:tickerType="warning"
+    app:tickerShapeType="loose"
+    app:closeButtonVisibility="gone"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/textDescription" />
+  
   <com.tokopedia.unifycomponents.UnifyButton
     android:id="@+id/btnGotoHome"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_lvl4"
     android:text="@string/text_success_button"
-    app:layout_constraintTop_toBottomOf="@+id/textDescription"
+    app:layout_constraintTop_toBottomOf="@+id/tickerInactivePhoneNumber"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"/>
   

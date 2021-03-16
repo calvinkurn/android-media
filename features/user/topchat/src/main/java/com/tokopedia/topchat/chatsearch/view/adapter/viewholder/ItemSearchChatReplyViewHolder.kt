@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
-import com.tokopedia.topchat.common.util.ChatHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.time.TimeHelper
 
 class ItemSearchChatReplyViewHolder(
         itemView: View?,
@@ -31,6 +31,7 @@ class ItemSearchChatReplyViewHolder(
 
     interface Listener {
         fun getSearchKeyWord(): String
+        fun onChatReplyClick(element: ChatReplyUiModel)
     }
 
     override fun bind(element: ChatReplyUiModel) {
@@ -80,16 +81,12 @@ class ItemSearchChatReplyViewHolder(
 
     private fun bindTimeStamp(element: ChatReplyUiModel) {
         if (element.timeStamp.isEmpty()) return
-        time?.text = ChatHelper.convertToRelativeDate(element.timeStamp)
+        time?.text = TimeHelper.getRelativeTimeFromNow(element.timeStampMillis)
     }
 
     private fun bindClick(element: ChatReplyUiModel) {
         itemView.setOnClickListener {
-            val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
-            chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
-            chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_CREATE_TIME, element.modifiedTimeStamp)
-            chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, listener?.getSearchKeyWord())
-            it.context.startActivity(chatRoomIntent)
+            listener?.onChatReplyClick(element)
         }
     }
 

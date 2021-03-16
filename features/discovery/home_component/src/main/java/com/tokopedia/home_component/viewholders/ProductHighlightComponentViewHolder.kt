@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -19,7 +20,9 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.android.synthetic.main.layout_product_highlight.view.*
+import java.util.*
 
 class ProductHighlightComponentViewHolder(
         val view: View,
@@ -61,13 +64,30 @@ class ProductHighlightComponentViewHolder(
         if (dataModel.channelModel.channelHeader.expiredTime.isNotEmpty()) {
             val expiredTime = DateHelper.getExpiredTime(dataModel.channelModel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(dataModel.channelModel.channelConfig.serverTimeOffset, expiredTime)) {
-                itemView.deals_count_down.setup(
-                        dataModel.channelModel.channelConfig.serverTimeOffset,
-                        expiredTime
-                ){
-                    listener?.onChannelExpired(dataModel.channelModel, adapterPosition, dataModel)
+                itemView.deals_count_down?.run {
+                    val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_Static_White))}"
+                    timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
+                        TimerUnifySingle.VARIANT_ALTERNATE
+                    } else {
+                        TimerUnifySingle.VARIANT_MAIN
+                    }
+
+                    visibility = View.VISIBLE
+
+                    // calculate date diff
+                    targetDate = Calendar.getInstance().apply {
+                        val currentDate = Date()
+                        val currentMillisecond: Long = currentDate.time + dataModel.channelModel.channelConfig.serverTimeOffset
+                        val timeDiff = expiredTime.time - currentMillisecond
+                        add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
+                        add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
+                        add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
+                    }
+                    onFinish = {
+                        listener?.onChannelExpired(dataModel.channelModel, adapterPosition, dataModel)
+                    }
+
                 }
-                itemView.deals_count_down.visibility = View.VISIBLE
             }
         } else {
             itemView.deals_count_down.visibility = View.GONE
@@ -122,7 +142,7 @@ class ProductHighlightComponentViewHolder(
 
     private fun setDealsProductStockbar(soldPercentage: Int, label: String) {
         if (label.isNotEmpty()) {
-            itemView.deals_stockbar.progress = soldPercentage
+            itemView.deals_stockbar.setValue(soldPercentage)
             itemView.deals_stockbar_label.text = label
         } else {
             itemView.deals_stockbar.visibility = View.GONE

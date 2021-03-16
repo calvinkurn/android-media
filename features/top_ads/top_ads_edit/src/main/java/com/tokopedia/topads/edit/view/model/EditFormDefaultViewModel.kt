@@ -129,18 +129,12 @@ class EditFormDefaultViewModel @Inject constructor(
         getAdInfoUseCase.setParams(adId, userSession.shopId)
         getAdInfoUseCase.execute(
                 {
-                    onSuccessGroup(onSuccess)
+                    onSuccess(it.topAdsGetPromo.data)
                 },
                 {
                     it.printStackTrace()
                 }
         )
-    }
-
-    private fun onSuccessGroup(onSuccess: (List<SingleAd>) -> Unit): (SingleAdInFo) -> Unit {
-        return {
-            onSuccess(it.topAdsGetPromo.data)
-        }
     }
 
     public override fun onCleared() {

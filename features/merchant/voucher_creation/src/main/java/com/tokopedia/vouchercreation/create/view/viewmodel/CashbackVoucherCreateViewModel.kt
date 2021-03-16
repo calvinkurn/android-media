@@ -36,6 +36,9 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         private val getVoucherRecommendationUseCase: GetVoucherRecommendationUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    var isRupiahInputError = false
+    var isPercentageInputError = false
+
     private val mRupiahMaximumDiscountLiveData = MutableLiveData<Int>()
     private val mRupiahMinimumPurchaseLiveData = MutableLiveData<Int>()
     private val mRupiahVoucherQuotaLiveData = MutableLiveData<Int>()
@@ -341,6 +344,35 @@ class CashbackVoucherCreateViewModel @Inject constructor(
             }
             PromotionType.Cashback.Percentage.VoucherQuota -> {
                 mPercentageVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+        }
+    }
+
+    fun resetErrorPairList(cashbackType: CashbackType) {
+        val isError = false
+        val errorMessage = ""
+        when (cashbackType) {
+            CashbackType.Rupiah -> {
+                mRupiahMaximumDiscountErrorPairLiveData.value = Pair(isError, errorMessage)
+                mRupiahMinimumPurchaseErrorPairLiveData.value = Pair(isError, errorMessage)
+                mRupiahVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
+                mRupiahErrorPairList.value = arrayOf(
+                        mRupiahMaximumDiscountErrorPairLiveData.value,
+                        mRupiahMinimumPurchaseErrorPairLiveData.value,
+                        mRupiahVoucherQuotaErrorPairLiveData.value
+                )
+            }
+            CashbackType.Percentage -> {
+                mPercentageDiscountAmountErrorPairLiveData.value = Pair(isError, errorMessage)
+                mPercentageMaximumDiscountErrorPairLiveData.value = Pair(isError, errorMessage)
+                mPercentageMinimumPurchaseErrorPairLiveData.value = Pair(isError, errorMessage)
+                mPercentageVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
+                mPercentageErrorPairList.value = arrayOf(
+                        mPercentageDiscountAmountErrorPairLiveData.value,
+                        mPercentageMaximumDiscountErrorPairLiveData.value,
+                        mPercentageMinimumPurchaseErrorPairLiveData.value,
+                        mPercentageVoucherQuotaErrorPairLiveData.value
+                )
             }
         }
     }
