@@ -209,7 +209,6 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun onGoToProfile(reviewerId: String?, adapterPosition: Int) {
         RouteManager.route(context, ApplinkConst.PROFILE, reviewerId)
-//        startActivity(RouteManager.getIntent(activity, ApplinkConst.PROFILE, reviewerId))
     }
 
     override fun onGoToShopInfo(shopId: String?) {
@@ -271,7 +270,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         ratingProduct?.text = dataResponseReviewStarCount.ratingScore
         ratingProductStar?.rating = dataResponseReviewStarCount.ratingScore.toFloat()
         counterReview?.text = getString(R.string.product_review_counter_review_formatted, dataResponseReviewStarCount.getTotalReview())
-        for (detailReviewStarCount in dataResponseReviewStarCount.detail) {
+        for (detailReviewStarCount in dataResponseReviewStarCount.detail ?: emptyList()) {
             val percentageFloatReview = detailReviewStarCount.percentage.replace("%", "").replace(",", ".").toFloat()
             when (detailReviewStarCount.rate) {
                 RATING_5 -> {

@@ -50,6 +50,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
