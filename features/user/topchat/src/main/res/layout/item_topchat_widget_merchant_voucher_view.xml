@@ -100,7 +100,6 @@
                     android:paddingBottom="@dimen/spacing_lvl2"
                     android:text="@string/use_voucher"
                     android:textAllCaps="false"
-                    android:textColor="@color/text_color_voucher_button"
                     android:textSize="@dimen/fontSize_lvl2"
                     android:textStyle="bold" />
 
