@@ -76,6 +76,14 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                     view.topads_reward.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                         override fun onTopAdsImageViewClicked(applink: String?) {
                             RouteManager.route(view.context, applink)
+                            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                                    this::class.java.simpleName,
+                                    topadsBannerData.adClickUrl,
+                                    topadsBannerData.bannerId,
+                                    topadsBannerData.bannerName,
+                                    topadsBannerData.imageUrl,
+                                    ""
+                            )
                             sendBannerClick(content.sectionTitle)
                         }
                     })
