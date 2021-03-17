@@ -14,8 +14,7 @@ import javax.inject.Inject
 class GetShopLevelTooltipUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val shopScoreMapper: ShopScoreMapper
-) :
-        UseCase<ShopInfoLevelUiModel>() {
+) : UseCase<ShopInfoLevelUiModel>() {
 
     companion object {
         //need adjust type input
