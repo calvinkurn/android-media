@@ -11,6 +11,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -30,7 +31,7 @@ import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragme
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
@@ -70,6 +71,7 @@ class HotelSearchMapActivityTest {
 
     @Test
     fun validateSearchResultPageTracking() {
+        clickCoachMark()
         clickQuickFilterChips()
         clickOnSortAndFilter()
         clickOnChangeDestination()
@@ -80,13 +82,33 @@ class HotelSearchMapActivityTest {
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
     }
 
+    private fun clickCoachMark() {
+        Thread.sleep(3000)
+
+        try {
+            // if coachmark show, it will have 3 items
+            Espresso.onView(ViewMatchers.withText("Lanjut"))
+                    .inRoot(RootMatchers.isPlatformPopup())
+                    .perform(ViewActions.click())
+            Espresso.onView(ViewMatchers.withText("Lanjut"))
+                    .inRoot(RootMatchers.isPlatformPopup())
+                    .perform(ViewActions.click())
+            Espresso.onView(ViewMatchers.withText("Mengerti"))
+                    .inRoot(RootMatchers.isPlatformPopup())
+                    .perform(ViewActions.click())
+        } catch (t: Throwable) {
+            // do nothing because no more coachmark shown
+            t.printStackTrace()
+        }
+    }
+
     private fun validateHotelSearchPageTracking() {
         Thread.sleep(2000)
         assert(getHotelResultCount() > 1)
 
         Thread.sleep(3000)
         if (getHotelResultCount() > 0) {
-            Espresso.onView(ViewMatchers.withId(R.id.recycler_view)).perform(RecyclerViewActions
+            Espresso.onView(ViewMatchers.withId(R.id.rvVerticalPropertiesHotelSearchMap)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<SearchPropertyViewHolder>(0, ViewActions.click()))
         }
 
@@ -134,24 +156,24 @@ class HotelSearchMapActivityTest {
     }
 
     private fun getHotelResultCount(): Int {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView
+        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.rvVerticalPropertiesHotelSearchMap) as RecyclerView
         return recyclerView.adapter?.itemCount ?: 0
     }
 
     /**When marker clicked, scrollTo hotel position*/
-    private fun onMarkerClick(){
+    private fun onMarkerClick() {
         val mMarker = uiDevice.findObject(UiSelector().descriptionContains("Rp 4.172.597"))
         mMarker.click()
         Espresso.onView(ViewMatchers.withId(R.id.rvHorizontalPropertiesHotelSearchMap)).perform(RecyclerViewActions.scrollToPosition<SearchPropertyViewHolder>(0))
     }
 
     /**Get user current position*/
-    private fun getCurrentPosition(){
+    private fun getCurrentPosition() {
         Espresso.onView(ViewMatchers.withId(R.id.ivGetLocationHotelSearchMap)).perform(ViewActions.click())
     }
 
     /**Get user radius and screen mid point*/
-    private fun getRadiusAndMidScreenPoint(){
+    private fun getRadiusAndMidScreenPoint() {
         Espresso.onView(ViewMatchers.withId(R.id.btnGetRadiusHotelSearchMap)).perform(ViewActions.click())
     }
 
