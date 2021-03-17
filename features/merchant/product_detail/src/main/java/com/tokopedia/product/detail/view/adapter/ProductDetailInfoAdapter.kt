@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Yehezkiel on 01/02/21
@@ -50,6 +51,7 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
             //remove soon
             if (data.applink.isNotEmpty()) {
                 detailDesc?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                detailDesc?.setWeight(Typography.BOLD)
                 detailDesc?.setOnClickListener {
                     when {
                         data.applink.startsWith(categoryApplink) -> {
@@ -70,6 +72,7 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
                 }
             } else {
                 detailDesc?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                detailDesc?.setWeight(Typography.REGULAR)
                 detailDesc?.setOnClickListener(null)
             }
         }
