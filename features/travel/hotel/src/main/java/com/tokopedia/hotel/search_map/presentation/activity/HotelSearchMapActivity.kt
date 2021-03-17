@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
@@ -17,12 +17,12 @@ import com.tokopedia.hotel.search_map.di.DaggerHotelSearchMapComponent
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment
 
-class HotelSearchMapActivity : BaseSimpleActivity(), HasComponent<HotelSearchMapComponent> {
+class HotelSearchMapActivity : HotelBaseActivity(), HasComponent<HotelSearchMapComponent> {
 
     private var hotelSearchModel = HotelSearchModel()
     private var selectedParam = ParamFilterV2()
 
-    override fun getScreenName(): String = SEARCH_SCREEN_NAME
+    override fun getScreenName(): String = HotelSearchResultActivity.SEARCH_SCREEN_NAME
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
@@ -94,6 +94,8 @@ class HotelSearchMapActivity : BaseSimpleActivity(), HasComponent<HotelSearchMap
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
     }
+
+    override fun shouldShowOptionMenu(): Boolean = false
 
     override fun getNewFragment(): Fragment? =
             HotelSearchMapFragment.createInstance(hotelSearchModel, selectedParam)

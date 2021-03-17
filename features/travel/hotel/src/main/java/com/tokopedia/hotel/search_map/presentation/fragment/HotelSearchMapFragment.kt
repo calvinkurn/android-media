@@ -62,8 +62,8 @@ import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
-import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -321,6 +321,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onItemClicked(property: Property, position: Int) {
         with(hotelSearchMapViewModel.searchParam) {
+            trackingHotelUtil.chooseHotel(
+                    context,
+                    searchDestinationName,
+                    searchDestinationType,
+                    this,
+                    property,
+                    position,
+                    SEARCH_SCREEN_NAME)
+
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
                         checkIn, checkOut, property.id, room, guest.adult,
@@ -1058,9 +1067,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 permissionCheckerHelper,
                 fusedLocationClient,
                 requireActivity().applicationContext)
-            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    requireActivity().getString(R.string.hotel_destination_need_permission))
+        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                requireActivity().getString(R.string.hotel_destination_need_permission))
     }
 
     private fun setupFindWithMapButton() {
