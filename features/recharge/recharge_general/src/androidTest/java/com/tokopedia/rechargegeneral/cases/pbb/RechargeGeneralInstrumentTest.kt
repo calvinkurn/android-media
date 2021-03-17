@@ -141,7 +141,7 @@ class RechargeGeneralInstrumentTest {
 
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
-                        1, typeText("123456789")
+                        1, typeText("012445000")
                 )
         ).perform(closeSoftKeyboard())
         Thread.sleep(1000)
