@@ -411,7 +411,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         txtSnippet?.visible()
         buttonSnippet?.visible()
 
-        setTitle(BOTTOMSHEET_CHOOSE_ADDRESS_TITLE)
+        setTitle(getString(R.string.bottomsheet_choose_address_title))
         renderButton()
         setCloseClickListener {
             ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
@@ -480,7 +480,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val IS_LOCALIZATION = "is_localization"
         const val IS_SUCCESS = "success"
         const val IS_NOT_SUCCESS = "not success"
-        const val BOTTOMSHEET_CHOOSE_ADDRESS_TITLE = "Mau kirim belanjaan ke mana"
         const val REQUEST_CODE_ADD_ADDRESS = 199
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
