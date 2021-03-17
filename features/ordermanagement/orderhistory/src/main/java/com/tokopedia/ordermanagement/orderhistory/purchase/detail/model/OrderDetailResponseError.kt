@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Created by kris on 11/23/17. Tokopedia
  */
 data class OrderDetailResponseError(
-        @SerializedName("code:")
+        @SerializedName("code")
         @Expose
         var code: Int = 0,
 

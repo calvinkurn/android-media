@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class Data(
         @SerializedName("order_id")
         @Expose
-        var orderId: Int = 0,
+        var orderId: Long = 0,
 
         @SerializedName("order_status_code")
         @Expose

@@ -81,7 +81,7 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'seller'
+    artifactId = 'ordermanagementhistory'
     groupId = 'com.tokopedia.ordermanagement.orderhistory'
     versionName = "0.0.2"
     artifactName ="ordermanagement-orderhistory-release"

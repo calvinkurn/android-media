@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -92,7 +93,7 @@ class OrderHistoryActivity : BaseSimpleActivity() {
                 }
                 is OrderHistoryResult.OrderHistoryFail -> {
                     hideMainViewLoadingPage()
-                    onLoadError()
+                    onLoadError(it.throwable)
                 }
             }
         })
@@ -114,7 +115,8 @@ class OrderHistoryActivity : BaseSimpleActivity() {
         mainViewContainer?.visibility = View.VISIBLE
     }
 
-    private fun onLoadError() {
+    private fun onLoadError(throwable: Throwable) {
+        logExceptionToCrashlytics(throwable)
         NetworkErrorHelper.showEmptyState(this, mainView) {
             viewModel.getOrderHistory(extraOrderId, extraUserMode)
         }
@@ -123,5 +125,13 @@ class OrderHistoryActivity : BaseSimpleActivity() {
     private fun getDataFromIntent() {
         extraOrderId = intent.extras?.getString(EXTRA_ORDER_ID) ?: ""
         extraUserMode = intent.extras?.getInt(EXTRA_USER_MODE) ?: 0
+    }
+
+    private fun logExceptionToCrashlytics(t: Throwable) {
+        try {
+            FirebaseCrashlytics.getInstance().recordException(t)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
     }
 }
