@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.LineGraphDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel
@@ -33,7 +34,8 @@ class LineGraphMapper @Inject constructor() {
                                 yVal = xyModel.yVal.orZero()
                         )
                     },
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

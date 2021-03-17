@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.CarouselDataModel
 import com.tokopedia.sellerhomecommon.domain.model.CarouselItemModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
@@ -21,7 +22,8 @@ class CarouselMapper @Inject constructor() {
                         mapItemRemoteModelToItemUiModel(item)
                     },
                     error = it.errorMsg,
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget
             )
         }
     }

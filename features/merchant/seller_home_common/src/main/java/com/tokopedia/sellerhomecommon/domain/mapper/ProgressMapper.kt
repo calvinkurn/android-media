@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.ProgressDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
@@ -29,7 +30,8 @@ class ProgressMapper @Inject constructor() {
                     error = it.errorMessage.orEmpty(),
                     subtitle = it.subtitle.orEmpty(),
                     dataKey = it.dataKey.orEmpty(),
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

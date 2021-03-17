@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel
@@ -33,7 +34,8 @@ class TableMapper @Inject constructor() {
                     dataKey = it.dataKey,
                     error = it.errorMsg,
                     dataSet = getTableDataSet(it.data),
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

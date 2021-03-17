@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.PostDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostCtaDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
@@ -30,7 +31,8 @@ class PostMapper @Inject constructor() {
                             appLink = it.cta?.appLink.orEmpty()
                     ),
                     error = it.error.orEmpty(),
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }
