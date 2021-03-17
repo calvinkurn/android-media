@@ -85,7 +85,6 @@ PopularCityAdapter.ActionListener {
         }
 
         if (isLocalization == true) permissionCheckerHelper = PermissionCheckerHelper()
-        binding.searchInputView.visibility = View.VISIBLE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
