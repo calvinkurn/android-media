@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -79,7 +80,7 @@ class PlayParentViewModel constructor(
     private val mVideoStartMillis: Long?
         get() = handle[KEY_START_MILLIS]
 
-    private var mNextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId(
+    private var mNextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey = getNextChannelIdKey(
             channelId = startingChannelId ?: error("Channel ID must be provided"),
             source = source
     )
@@ -89,13 +90,26 @@ class PlayParentViewModel constructor(
         loadNextPage()
     }
 
-    fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId)
+    fun setNewChannelParams(bundle: Bundle) {
+        val channelId = bundle.get(PLAY_KEY_CHANNEL_ID) as? String
+
+        if (channelId != null) {
+            handle.set(PLAY_KEY_CHANNEL_ID, channelId)
+            handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
+            handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
+
+            mNextKey = getNextChannelIdKey(channelId, source)
+            loadNextPage()
+        }
+    }
+
+    fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel not found")
 
     fun setLatestChannelStorageData(
             channelId: String,
             data: PlayChannelData
     ) {
-        playChannelStateStorage.setData(channelId, data)
+        if (playChannelStateStorage.getData(channelId) != null) playChannelStateStorage.setData(channelId, data)
     }
 
     fun loadNextPage() {
@@ -106,6 +120,8 @@ class PlayParentViewModel constructor(
     }
 
     private fun getChannelDetailsWithRecom(nextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey) {
+        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId) playChannelStateStorage.clearData()
+
         _observableChannelIdsResult.value = PageResult.Loading(playChannelStateStorage.getChannelList())
 
         viewModelScope.launchCatchError(block = {
@@ -132,6 +148,11 @@ class PlayParentViewModel constructor(
             )
         })
     }
+
+    private fun getNextChannelIdKey(channelId: String, source: PlaySource) = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId(
+            channelId = channelId,
+            source = source
+    )
 
     companion object {
 

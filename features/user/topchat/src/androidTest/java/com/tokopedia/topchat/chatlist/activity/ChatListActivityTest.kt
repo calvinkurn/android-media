@@ -103,6 +103,7 @@ class ChatListActivityTest {
         userSession.shopNameStub = "Toko Rifqi"
         userSession.nameStub = "Rifqi MF"
         chatListUseCase.response = exEmptyChatListPojo
+        userSession.setIsShopOwner(true)
 
         // When
         activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)
@@ -127,6 +128,7 @@ class ChatListActivityTest {
         userSession.shopNameStub = "Toko Rifqi 123"
         userSession.nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(true)
 
         // When
         activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)

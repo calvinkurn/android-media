@@ -217,11 +217,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 })
         (et_first_name as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         (et_first_name as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
-
     }
 
     private fun onSubmitData() {
-        if (validateAllFields()) {
+        if(validateAllFields()) {
             passengerModel.passengerTitle = getPassengerTitle()
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
@@ -339,6 +338,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
                     FlightDateUtil.DEFAULT_FORMAT, passportExpiryDateStr)
             til_passport_expiration_date.textFieldInput.setText(passportExpiryDateStr)
+            validatePassportExpiredDate(true)
         })
     }
 
@@ -572,7 +572,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun showCalendarPickerDialog(selectedDate: Date, minDate: Date? = null, maxDate: Date, onDateSetListener: DatePickerDialog.OnDateSetListener) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(activity!!, onDateSetListener, calendar.get(Calendar.YEAR),
+        val datePicker = DatePickerDialog(requireActivity(), onDateSetListener, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
         if (minDate != null) datePicker1.minDate = minDate.time
@@ -820,6 +820,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
                 til_passport_no.setError(true)
                 false
+            } else if (isNeedPassport && getPassportNumber().length < 6) {
+                til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_min_length))
+                til_passport_no.setError(true)
+                false
             } else {
                 true
             }
@@ -836,8 +840,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             false
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
                         getPassportExpiryDate(), sixMonthFromDeparture)) {
-            til_passport_expiration_date.setMessage(getString(R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
-                    FlightDateUtil.dateToString(sixMonthFromDeparture, FlightDateUtil.DEFAULT_VIEW_FORMAT)))
+            til_passport_expiration_date.setMessage(getString(R.string.flight_passenger_passport_expired_date_less_than_6_month_error))
             til_passport_expiration_date.setError(true)
             false
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportMax20Years(
@@ -848,6 +851,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             til_passport_expiration_date.setError(true)
             false
         } else {
+            til_passport_expiration_date.setError(false)
             true
         }
     }
