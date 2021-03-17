@@ -9,6 +9,10 @@ import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
 import com.tokopedia.homenav.rule.TestDispatcherProvider
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
+import com.tokopedia.sessioncommon.data.profile.ShopData
+import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -26,7 +30,8 @@ fun createViewModel (
         getNavNotification: GetNavNotification? = null,
         getUohOrdersNavUseCase: GetUohOrdersNavUseCase? = null,
         getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null,
-        getShopInfoUseCase: GetShopInfoUseCase? = null
+        getShopInfoUseCase: GetShopInfoUseCase? = null,
+        accountAdminInfoUseCase: AccountAdminInfoUseCase? = null
 ): MainNavViewModel {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -59,6 +64,9 @@ fun createViewModel (
     val getShopInfoUseCaseMock = getOrUseDefault(getShopInfoUseCase) {
         coEvery { it.executeOnBackground() }.answers { Success((ShopInfoPojo.Response()).userShopInfo) }
     }
+    val accountAdminInfoUseCaseMock = getOrUseDefault(accountAdminInfoUseCase) {
+        coEvery { it.executeOnBackground() }.answers { Pair(AdminDataResponse(), ShopData()) }
+    }
 
     return MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
@@ -70,7 +78,8 @@ fun createViewModel (
             getProfileDataUseCase = getProfileDataUseCaseMock,
             getCategoryGroupUseCase = getBuListDataUseCaseMock,
             getProfileDataCacheUseCase = getProfileDataCacheUseCaseMock,
-            getShopInfoUseCase = getShopInfoUseCaseMock
+            getShopInfoUseCase = getShopInfoUseCaseMock,
+            accountAdminInfoUseCase = accountAdminInfoUseCaseMock
     )
 }
 

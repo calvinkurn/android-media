@@ -4,12 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Test
@@ -337,4 +339,36 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(validateProductVariantStockInputResult.headerPosition == 0)
         assert(generateVariantDetailInputModelResult.headerPosition == 0)
     }
+
+    @Test
+    fun `When setupMultiLocationValue, isMultiLocationShop will be true if all conditions met`() {
+        every { userSession.isMultiLocationShop } returns true
+        every { userSession.isShopAdmin } returns true
+
+        viewModel.setupMultiLocationValue()
+
+        assert(viewModel.isMultiLocationShop)
+    }
+
+    @Test
+    fun `When setupMultiLocationValue, isMultiLocationShop will be false if is not multi location shop`() {
+        every { userSession.isMultiLocationShop } returns false
+        every { userSession.isShopAdmin } returns true
+
+        viewModel.setupMultiLocationValue()
+
+        assert(!viewModel.isMultiLocationShop)
+    }
+
+    @Test
+    fun `When setupMultiLocationValue, isMultiLocationShop will be false if is not shop admin or shop owner`() {
+        every { userSession.isMultiLocationShop } returns true
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopAdmin } returns false
+
+        viewModel.setupMultiLocationValue()
+
+        assert(!viewModel.isMultiLocationShop)
+    }
+
 }

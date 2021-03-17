@@ -73,4 +73,9 @@ enum class ComponentNames(val componentName: String) {
     //Banned View
     BannedView("banned_view"),
 
+    //Play Widget View
+    DiscoPlayWidgetView("play_widget")
+
+
+
 }
