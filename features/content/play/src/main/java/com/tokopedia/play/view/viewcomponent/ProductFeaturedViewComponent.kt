@@ -49,8 +49,9 @@ class ProductFeaturedViewComponent(
     }
 
     fun showIfNotEmpty() {
-        if (adapter.itemCount == 0) hide()
-        else show()
+        if (adapter.itemCount != 0 &&
+                adapter.getItem(0) !is PlayProductUiModel.Placeholder) show()
+        else hide()
     }
 
     fun showPlaceholder() {

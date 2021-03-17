@@ -44,8 +44,9 @@ class PinnedVoucherViewComponent(
     }
 
     fun showIfNotEmpty() {
-        if (pinnedVoucherAdapter.itemCount == 0) hide()
-        else show()
+        if (pinnedVoucherAdapter.itemCount != 0
+                && pinnedVoucherAdapter.getItem(0) !is VoucherPlaceholderUiModel) show()
+        else hide()
     }
 
     fun showPlaceholder() {

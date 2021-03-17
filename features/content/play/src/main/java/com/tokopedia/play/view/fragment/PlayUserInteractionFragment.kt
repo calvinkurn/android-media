@@ -750,6 +750,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         productFeaturedView?.showPlaceholder()
                     }
                 }
+                is PlayResult.Failure -> {
+                    pinnedVoucherView?.hide()
+                    productFeaturedView?.hide()
+                }
             }
         })
     }
