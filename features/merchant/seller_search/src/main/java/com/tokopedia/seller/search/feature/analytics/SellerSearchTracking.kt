@@ -20,6 +20,7 @@ import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstan
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.IMPRESSION_EMPTY_RESULT
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.PHYSICAL_GOODS
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.SCREEN_NAME
+import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.SUGGESTED_SEARCH
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.TOKOPEDIA_SELLER
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.USER_ID
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTrackingConstant.VIEW_SEARCH_IRIS
@@ -139,6 +140,18 @@ object SellerSearchTracking {
                 CURRENT_SITE, TOKOPEDIA_SELLER,
                 USER_ID, userId,
                 BUSINESS_UNIT, PHYSICAL_GOODS
+        ))
+    }
+
+    fun clickOnItemSearchHighlights(userId: String) {
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                EVENT, CLICK_SEARCH,
+                EVENT_CATEGORY, GLOBAL_SEARCH,
+                EVENT_ACTION, SUGGESTED_SEARCH,
+                EVENT_LABEL, "",
+                BUSINESS_UNIT, PHYSICAL_GOODS,
+                CURRENT_SITE, TOKOPEDIA_SELLER,
+                USER_ID, userId
         ))
     }
 }

@@ -6,7 +6,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.ListView
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -67,6 +69,23 @@ internal fun ListItemUnify.setPrimarySelected(context: Context?, isChecked: Bool
     }
 }
 
+// set color to dark mode support
+internal fun ListItemUnify.setTextColorToUnify(context: Context) = let {
+    val unifyBlackColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+    it.listTitle?.setTextColor(unifyBlackColor)
+
+}
+
 internal fun ListItemUnify.getCategoryName() = run {
     listTitleText.replace(" / ", "/")
+}
+
+internal fun ListUnify.setToDisplayText(text: String, context: Context) = apply {
+    val selectedList = ArrayList<ListItemUnify>()
+    val selectedItemUnify = ListItemUnify(text, "")
+    selectedItemUnify.isBold = false
+    selectedList.add(selectedItemUnify)
+    setData(selectedList)
+    show()
+    onLoadFinish { selectedItemUnify.setTextColorToUnify(context) }
 }

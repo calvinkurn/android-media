@@ -6,7 +6,7 @@
     android:id="@+id/cl_toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/Neutral_N600"
+    tools:background="@color/play_dms_N600"
     >
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -15,7 +15,7 @@
         android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play_back_white"
+        app:srcCompat="@drawable/ic_play_close_white"
         />
 
     <LinearLayout
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintEnd_toStartOf="@id/v_separator"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -135,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/v_separator"
             app:layout_constraintTop_toTopOf="parent"

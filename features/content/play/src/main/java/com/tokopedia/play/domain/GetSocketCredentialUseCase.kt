@@ -1,18 +1,18 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.SocketCredential
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
 class GetSocketCredentialUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlRepository
-) : UseCase<SocketCredential>() {
+        private val graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<SocketCredential>(graphqlRepository) {
 
     private val query = """
         query GetSocketCredential{
@@ -26,11 +26,11 @@ class GetSocketCredentialUseCase @Inject constructor(
             }
           }
         }
-        """
+        """.trimIndent()
 
     override suspend fun executeOnBackground(): SocketCredential {
         val gqlRequest = GraphqlRequest(query, SocketCredential.Response::class.java, emptyMap())
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val error = gqlResponse.getError(SocketCredential.Response::class.java)

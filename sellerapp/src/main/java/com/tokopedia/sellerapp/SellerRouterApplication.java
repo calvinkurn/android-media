@@ -54,9 +54,9 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -95,6 +95,7 @@ import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
 import timber.log.Timber;
 
+import static com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 /**
@@ -112,9 +113,10 @@ public abstract class SellerRouterApplication extends MainApplication implements
         SellerHomeRouter,
         LoginRouter {
 
-    protected RemoteConfig remoteConfig;
     private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
+
+    protected RemoteConfig remoteConfig;
     protected CacheManager cacheManager;
 
     private DaggerGcmUpdateComponent.Builder daggerGcmUpdateBuilder;
@@ -167,6 +169,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
+        PushNotification.init(getApplicationContext());
+
         List<String> excludeScreenList = new ArrayList<>();
         excludeScreenList.add(Constants.SPLASH);
         excludeScreenList.add(Constants.DEEPLINK_ACTIVITY);
@@ -359,9 +363,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 }
                 newGcmUpdate(sessionRefresh);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
@@ -371,9 +373,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 if (!task.isSuccessful() || task.getResult() == null) {
                     try {
                         sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    } catch (IOException e) {}
                 } else {
                     fcmManager.get().onNewToken(task.getResult().getToken());
                 }
@@ -455,11 +455,12 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage, int orderType) {
+    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
+        bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
         return SomListFragment.newInstance(bundle);
     }
 
@@ -515,7 +516,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     private Boolean isOldGcmUpdate() {
-        return getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OLD_GCM_UPDATE, false);
+        return getBooleanRemoteConfig(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE, false);
     }
 
     private void injectGcmUpdateComponent() {

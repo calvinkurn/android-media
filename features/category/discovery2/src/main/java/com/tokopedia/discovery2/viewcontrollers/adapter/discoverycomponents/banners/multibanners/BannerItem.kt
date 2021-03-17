@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.unifycomponents.ImageUnify
 
 private const val VIEW_ID_CONSTANT = 100
@@ -50,7 +51,10 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
         }
         constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
         if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
-            (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile)
+            try {
+                if(context.isValidGlideContext())
+                    (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile)
+            } catch (e: Throwable) { }
         }
         constraintSet.applyTo(constraintLayout)
     }

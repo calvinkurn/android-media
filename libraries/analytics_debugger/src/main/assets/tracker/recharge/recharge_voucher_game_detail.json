@@ -1,0 +1,33 @@
+{
+  "readme": "Tracker Voucher Game, when user click on product card and info button",
+  "mode" : "exact",
+  "query": [
+    {
+      "eventCategory": "digital - homepage",
+      "item_list": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "click on product card",
+      "sessionIris": "{{.+}}",
+      "items": [
+        {
+          "item_id": "{{.+}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "item_name": "{{.+}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
+        }
+      ],
+      "eventLabel": "{{.* - .*}}"
+    },
+    {
+      "eventCategory": "digital - homepage",
+      "event": "clickHomepage",
+      "eventAction": "click info button on operator page",
+      "sessionIris": "{{.+}}",
+      "eventLabel": ""
+    }
+  ]
+}

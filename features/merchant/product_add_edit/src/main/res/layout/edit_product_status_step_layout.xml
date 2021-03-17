@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/spacing_lvl8">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_description"
@@ -21,7 +20,6 @@
         android:layout_width="@dimen/spacing_lvl8"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,13 +29,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_3"
         android:layout_marginEnd="@dimen/spacing_lvl5"
-        android:layout_marginRight="@dimen/spacing_lvl5"
         android:text="@string/label_product_status_description"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/fontSize_lvl2"
+        android:maxLines="2"
         app:layout_constraintEnd_toStartOf="@+id/su_product_status"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_product_description"
         app:typographyType="body_2" />
+
+    <View
+        android:id="@+id/view_spacing"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_status_description" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

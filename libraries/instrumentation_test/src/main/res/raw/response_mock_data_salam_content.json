@@ -1,15 +1,17 @@
-{
-  "data": {
-    "salamWidget": {
-      "ID": 3,
-      "mainText": "<b>Hi, Arifin!</b>",
-      "SubText": "Jumat adalah hari yang baik untuk sedekah. Yuk sedekahkan <b>Rp5.000</b> dari OVO kamu!",
-      "AppLink": "tokopedia://digital/cart?category_id=12&product_id=291&operator_id=144&client_number=",
-      "Link": "",
-      "IconURL": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_4f6c17e5-5434-4da0-9dc0-35ae1395570c.png",
-      "Title": "Yuk, berbagi setelah belanja!",
-      "BackgroundColor": "#92C5C8",
-      "ButtonText": "Berbagi Sekarang"
+[
+  {
+    "data": {
+      "salamWidget": {
+        "ID": 3,
+        "mainText": "<b>Hi, Arifin!</b>",
+        "SubText": "Jumat adalah hari yang baik untuk sedekah. Yuk sedekahkan <b>Rp5.000</b> dari OVO kamu!",
+        "AppLink": "tokopedia://digital/cart?category_id=12&product_id=291&operator_id=144&client_number=",
+        "Link": "www.tokopedia.com/digital/cart?category_id=12&product_id=291&operator_id=144&client_number=",
+        "IconURL": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_4f6c17e5-5434-4da0-9dc0-35ae1395570c.png",
+        "Title": "Yuk, berbagi setelah belanja!",
+        "BackgroundColor": "#92C5C8",
+        "ButtonText": "Berbagi Sekarang"
+      }
     }
   }
-}
+]

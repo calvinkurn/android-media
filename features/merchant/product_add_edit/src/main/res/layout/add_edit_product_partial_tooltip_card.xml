@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl7">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_tips_bulb"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
@@ -30,7 +30,7 @@
             android:layout_marginTop="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_11"
             android:text="@string/preview_label_add_product_variant_tips"
-            android:textColor="@color/container_help_text"
+            android:textColor="@color/Unify_N500"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 

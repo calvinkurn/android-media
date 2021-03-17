@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatlist.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -65,7 +64,6 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListWebSocketViewModel
 import com.tokopedia.topchat.chatlist.widget.FilterMenu
 import com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
-import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
@@ -116,7 +114,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var rvAdapter: ChatListAdapter? = null
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
-    private lateinit var broadCastButton: FloatingActionButton
+    private var broadCastButton: FloatingActionButton? = null
     private var containerListener: InboxFragmentContainer? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -136,7 +134,10 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             chatFilter?.reset()
             chatFilter?.onRoleChanged(isTabSeller())
             webSocket.onRoleChanged(role)
-            loadInitialData()
+            if (isResumed) {
+                loadInitialData()
+                setupSellerBroadcast()
+            }
         }
     }
 
@@ -222,6 +223,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             initView(it)
             setUpRecyclerView(it)
             setupObserver()
+            setupSellerBroadcastButtonObserver()
             setupSellerBroadcast()
             setupChatSellerBannedStatus()
             setupEmptyModel()
@@ -289,27 +291,29 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun setupSellerBroadcast() {
-        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
-        setupSellerBroadcastButton()
-        viewModel.loadChatBlastSellerMetaData()
+        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) {
+            broadCastButton?.hide()
+        } else {
+            viewModel.loadChatBlastSellerMetaData()
+        }
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
     }
 
-    private fun setupSellerBroadcastButton() {
+    private fun setupSellerBroadcastButtonObserver() {
         viewModel.broadCastButtonVisibility.observe(viewLifecycleOwner, Observer { visibility ->
             when (visibility) {
                 true -> {
-                    broadCastButton.show()
+                    broadCastButton?.show()
                 }
-                false -> broadCastButton.hide()
+                false -> broadCastButton?.hide()
             }
         })
         viewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
-            broadCastButton.setOnClickListener {
+            broadCastButton?.setOnClickListener {
                 if (isSellerMigrationEnabled(context)) {
                     val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
                     val webViewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
@@ -361,6 +365,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 is Success -> {
                     adapter?.deleteItem(itemPositionLongClicked, emptyUiModel)
                     decreaseNotificationCounter()
+                    showToaster(R.string.title_success_delete_chat)
                 }
                 is Fail -> view?.let {
                     Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -372,6 +377,22 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     chatFilter?.updateIsWhiteListTopBot(isWhiteListTopBot)
                 }
         )
+        viewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (isEligible) {
+                            loadInitialData()
+                        } else {
+                            onChatAdminNoAccess()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetListError(result.throwable)
+                }
+            }
+        }
     }
 
     private fun setupWebSocketObserver() {
@@ -585,7 +606,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             }.let { intent ->
-                startActivity(intent)
+                startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
             }
             it.overridePendingTransition(0, 0)
         }
@@ -615,28 +636,24 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == OPEN_DETAIL_MESSAGE) {
-            data?.extras?.let { extras ->
-                itemPositionLongClicked = extras.getInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, -1)
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        val moveToTop = extras.getBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP)
-                        if (moveToTop) {
-                            val lastItem = extras.getParcelable<ReplyParcelableModel>(TopChatInternalRouter.Companion.RESULT_LAST_ITEM)
-                            lastItem?.let {
-                                val replyTimeStamp = viewModel.getReplyTimeStampFrom(lastItem)
-                                val model = IncomingChatWebSocketModel(lastItem.messageId, lastItem.msg, replyTimeStamp)
-                                updateItemOnIndex(itemPositionLongClicked, model, ChatItemListViewHolder.STATE_CHAT_READ)
-                            }
-                        }
-                    }
-                    TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE -> {
-                        adapter?.deleteItem(itemPositionLongClicked, emptyUiModel)
-                        showToaster(R.string.title_success_delete_chat)
-                    }
+            val extras = data?.extras ?: return
+            val msgId = extras.getString(ApplinkConst.Chat.MESSAGE_ID, "") ?: ""
+            if (msgId.isEmpty()) return
+            when (resultCode) {
+                TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE -> {
+                    onReturnFromChatRoomChatDeleted(msgId)
                 }
-                Unit
             }
         }
+    }
+
+    private fun onReturnFromChatRoomChatDeleted(msgId: String) {
+        webSocket.deletePendingMsgWithId(msgId)
+        rvAdapter?.deleteItem(msgId)
+        if (isListEmpty) {
+            showEmpty()
+        }
+        showToaster(R.string.title_success_delete_chat)
     }
 
     override fun onDestroy() {
@@ -653,6 +670,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         viewModel.broadCastButtonVisibility.removeObservers(this)
         viewModel.broadCastButtonUrl.removeObservers(this)
         viewModel.chatBannedSellerStatus.removeObservers(this)
+        viewModel.isChatAdminEligible.removeObservers(this)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
@@ -791,6 +809,13 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
+
+    private fun onChatAdminNoAccess() {
+        swipeToRefresh?.isEnabled = false
+        adapter?.showNoAccessView()
+    }
+
+    override fun returnToSellerHome() {}
 
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324

@@ -86,6 +86,11 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
         return userSessionInterface.userId
     }
 
+    override fun getReviewCounterAbIsUnify(): Boolean {
+        // default red notif unify
+        return true
+    }
+
     private fun initRecyclerView(view: View) {
         view.recycler_view?.adapter = adapter
     }

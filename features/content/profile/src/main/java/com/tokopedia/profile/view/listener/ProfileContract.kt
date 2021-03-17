@@ -54,13 +54,9 @@ interface ProfileContract {
 
         fun getProfilePost(targetUserId: Int)
 
-        fun followKol(id: Int)
+        fun followKol(id: Int, isFollow:Boolean)
 
-        fun unfollowKol(id: Int)
-
-        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
-
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
+        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener, isLiked:Boolean)
 
         fun deletePost(id: Int, rowNumber: Int)
 

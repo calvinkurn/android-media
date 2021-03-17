@@ -216,6 +216,20 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
+    fun `null product info atc`(){
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_ERROR,
+                data = DataModel(
+                        success = 0
+                )
+        ))
+        viewModel.onAddToCart(ProductInfoDataModel())
+        Assert.assertTrue(viewModel.addToCartLiveData.value == null)
+    }
+
+    @Test
     fun `throw error atc`(){
         every {
             addToCartUseCase.createObservable(any())
@@ -236,6 +250,20 @@ class TestRecommendationPageViewModel {
         ))
         viewModel.onBuyNow(ProductInfoDataModel(productDetailData = ProductDetailData()))
         Assert.assertTrue(viewModel.buyNowLiveData.value?.status == Status.SUCCESS)
+    }
+
+    @Test
+    fun `null product info buy now`(){
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_ERROR,
+                data = DataModel(
+                        success = 0
+                )
+        ))
+        viewModel.onBuyNow(ProductInfoDataModel())
+        Assert.assertTrue(viewModel.addToCartLiveData.value == null)
     }
 
     @Test

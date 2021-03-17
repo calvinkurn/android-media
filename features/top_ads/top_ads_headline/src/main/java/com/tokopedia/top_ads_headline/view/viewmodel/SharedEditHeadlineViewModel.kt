@@ -42,8 +42,9 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     private fun getBidInfoDetail(headlineAdStepperModel: HeadlineAdStepperModel) {
         viewModelScope.launch {
-            val selectedProductIds: MutableList<Int>? = editHeadlineAdLiveData.value?.selectedProductIds
-                    ?: mutableListOf()
+            val selectedProductIds: List<Long>? = editHeadlineAdLiveData.value?.selectedProductIds?.map {
+                it.toLong()
+            }
             val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
             bidInfoUseCase.setParams(listOf(suggestions), HEADLINE, EDIT_HEADLINE_PAGE)
             bidInfoUseCase.executeQuerySafeMode({ result ->
@@ -111,7 +112,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     private fun setEditAdHeadlineData(ad: SingleAd): HeadlineAdStepperModel {
         val editHeadlineAdModel = HeadlineAdStepperModel()
-        editHeadlineAdModel.adBidPrice = ad.priceBid
+        editHeadlineAdModel.adBidPrice = ad.priceBid.toDouble()
         editHeadlineAdModel.dailyBudget = ad.priceDaily.toFloat()
         editHeadlineAdModel.startDate = "${ad.adStartDate} ${ad.adStartTime}"
         editHeadlineAdModel.endDate = "${ad.adEndDate} ${ad.adEndTime}"

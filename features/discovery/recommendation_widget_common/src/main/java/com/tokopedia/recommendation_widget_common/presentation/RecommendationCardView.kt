@@ -8,8 +8,11 @@ import android.content.Context
 import androidx.cardview.widget.CardView
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import android.widget.LinearLayout
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -28,11 +31,19 @@ open class RecommendationCardView : ProductCardView {
         private const val className: String = "com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView"
     }
 
+    protected var ratingContainer: LinearLayout? = null
+
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+
+    override fun init(attrs: AttributeSet?) {
+        super.init(attrs)
+
+        ratingContainer = findViewById(com.tokopedia.topads.sdk.R.id.rating_review_container)
+    }
 
     fun setRecommendationModel(item: RecommendationItem, trackingListener: TrackingListener) {
         setTitle(item.name)
@@ -95,7 +106,17 @@ open class RecommendationCardView : ProductCardView {
         ratingView.visibility = View.VISIBLE
         reviewCountView.visibility = View.VISIBLE
         if (ratingContainer != null) {
-            ratingContainer.visibility = View.VISIBLE
+            ratingContainer?.visibility = View.VISIBLE
+        }
+    }
+
+    open fun setBadges(urls: List<String?>) {
+        badgesContainerView.removeAllViews()
+        if (urls.isEmpty()) badgesContainerView.visibility = View.GONE
+        for (url in urls) {
+            val view = LayoutInflater.from(context).inflate(com.tokopedia.topads.sdk.R.layout.layout_badge, null)
+            ImageHandler.loadImageFitCenter(context, view.findViewById(R.id.badge), url)
+            badgesContainerView.addView(view)
         }
     }
 

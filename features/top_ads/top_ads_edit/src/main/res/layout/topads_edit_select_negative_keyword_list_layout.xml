@@ -67,12 +67,11 @@
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_edit_add_keyword_negative_item_layout" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/view2"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_6"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/topads_create_bg_shader_gray"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -71,13 +71,16 @@ class SummaryViewModelTest {
         val expected = 1000
         var actual = 0
         val response: GraphqlResponse = mockk(relaxed = true)
+        val successData: ResponseCreateGroup = mockk(relaxed = true)
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
         coEvery { repository.getReseponse(any(), any()) } returns response
         every { response.getError(ResponseCreateGroup::class.java) } returns listOf()
+        every { response.getData<ResponseCreateGroup>(ResponseCreateGroup::class.java) } returns successData
+        every { successData.topadsCreateGroupAds.errors } returns emptyList()
         viewModel.topAdsCreated(
                 hashMapOf(),
-                {actual = 1000},
+                { actual = 1000 },
                 onErrorGetAds = {}
         )
 

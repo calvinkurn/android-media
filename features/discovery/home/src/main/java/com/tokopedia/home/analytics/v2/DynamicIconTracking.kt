@@ -2,11 +2,9 @@ package com.tokopedia.home.analytics.v2
 
 
 import com.tokopedia.home_component.model.DynamicIconComponent
-import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
-import com.tokopedia.trackingoptimizer.TrackingQueue
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by Lukas on 1/15/21.
@@ -14,7 +12,7 @@ import java.util.HashMap
 object DynamicIconTracking : BaseTracking(){
     private const val DYNAMIC_ICON = "dynamic icon"
     private const val DYNAMIC_ICON_PROMOTION_NAME = "/ - p%s - dynamic icon"
-    fun sendDynamicIconImpress(trackingQueue: TrackingQueue, userId: String, dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int, type: Int){
+    fun sendDynamicIconImpress(userId: String, dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int, type: Int){
         val tracker = BaseTrackerBuilder().constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventAction = Action.IMPRESSION_ON.format(DYNAMIC_ICON),
@@ -34,7 +32,7 @@ object DynamicIconTracking : BaseTracking(){
         .appendCurrentSite(CurrentSite.DEFAULT)
         .appendUserId(userId)
         .build()
-        trackingQueue.putEETracking(tracker as HashMap<String, Any>)
+        getTracker().sendEnhanceEcommerceEvent(tracker as HashMap<String, Any>)
     }
 
     fun sendDynamicIconClick(userId: String, dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int, type: Int){

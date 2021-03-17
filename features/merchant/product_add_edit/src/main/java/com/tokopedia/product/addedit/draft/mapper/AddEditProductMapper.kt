@@ -54,7 +54,7 @@ object AddEditProductMapper {
 
     fun mapProductInputModelDetailToDraft(productInputModel: ProductInputModel): ProductDraft {
         val productDraft = ProductDraft()
-        productDraft.variantInputModel = mapProductInputModelToJsonString(productInputModel.variantInputModel)
+        productDraft.variantInputModel = mapObjectToJson(productInputModel.variantInputModel) ?: ""
         productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
         productDraft.detailInputModel.currentProductName = productInputModel.detailInputModel.currentProductName
@@ -105,7 +105,7 @@ object AddEditProductMapper {
     fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
         val productInputModel = ProductInputModel()
         if(productDraft.variantInputModel.isNotEmpty()) {
-            productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+            productInputModel.variantInputModel = mapJsonToObject(productDraft.variantInputModel, VariantInputModel::class.java)
         } else {
             productInputModel.variantInputModel = VariantInputModel()
         }
@@ -168,12 +168,16 @@ object AddEditProductMapper {
         )
     }
 
-    private fun mapProductInputModelToJsonString(productVariantInputModel: VariantInputModel): String {
-        return CacheUtil.convertModelToString(productVariantInputModel, object : TypeToken<VariantInputModel>() {}.type)
+    fun <T> mapObjectToJson(item: T?): String? {
+        return if (item != null) {
+            CacheUtil.convertModelToString(item, object : TypeToken<T>() {}.type)
+        } else {
+            null
+        }
     }
 
-    private fun mapJsonToProductInputModel(jsonData : String): VariantInputModel {
-        return CacheUtil.convertStringToModel(jsonData, VariantInputModel::class.java)
+    fun <T> mapJsonToObject(jsonData : String, itemClass: Class<T>): T {
+        return CacheUtil.convertStringToModel(jsonData, itemClass)
     }
 }
 

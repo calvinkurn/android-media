@@ -98,12 +98,11 @@ class ProductReviewOldViewHolder(val view: View, val listener: DynamicProductDet
                     txt_like_static_pdp.show()
                 }
 
-                if (reviews.first().productVariantReview.variantTitle.isNotEmpty()) {
+                if (reviews.first().variant.variantTitle.isNotEmpty()) {
                     txt_variant_review_pdp.show()
-                    txt_variant_review_pdp.text = reviews.first().productVariantReview.variantTitle
+                    txt_variant_review_pdp.text = reviews.first().variant.variantTitle
                 } else {
                     txt_variant_review_pdp.hide()
-
                 }
 
                 ImageHandler.loadImageRounded2(context, rating_review_pdp, RatingView.getRatingDrawable(reviewData.productRating), 0f)

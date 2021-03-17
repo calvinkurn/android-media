@@ -1,5 +1,6 @@
 {
   "readme": "Search Product Global Nav Widget Tracking",
+  "mode": "exact",
   "query" : [
     {
       "event": "select_content",

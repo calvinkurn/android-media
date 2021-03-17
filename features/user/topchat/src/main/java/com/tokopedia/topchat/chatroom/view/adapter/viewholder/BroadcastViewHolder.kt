@@ -20,7 +20,10 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.*
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ImageAnnouncementViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductCarouselListAttachmentViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -77,12 +80,6 @@ class BroadcastViewHolder constructor(
             DeferredAttachment.PAYLOAD_DEFERRED -> {
                 bindProductCarousel(element)
                 bindSingleProduct(element)
-            }
-            is TopchatProductAttachmentViewHolder.OccState -> {
-                ProductCarouselListAttachmentViewHolderBinder.bindNewOccState(adapterProductCarousel, payload)
-                element.singleProduct?.let {
-                    TopchatProductAttachmentViewHolderBinder.bindNewOccState(it, singleProduct)
-                }
             }
         }
     }

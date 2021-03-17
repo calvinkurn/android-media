@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconStcActionMenu"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/tvStcActionMenu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvStcActionMenu" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvStcActionMenu"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/shc_dimen_18dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iconStcActionMenu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        tools:text="Peljari Selengkapnya" />
+
+    <View
+        android:id="@+id/hotLineStcActionMenu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shc_dimen_1dp"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/shc_dimen_18dp"
+        android:background="@color/Unify_N75"
+        app:layout_constraintTop_toBottomOf="@+id/tvStcActionMenu" />
+</androidx.constraintlayout.widget.ConstraintLayout>

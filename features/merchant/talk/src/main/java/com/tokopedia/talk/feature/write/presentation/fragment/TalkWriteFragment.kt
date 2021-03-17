@@ -58,10 +58,10 @@ class TalkWriteFragment : BaseDaggerFragment(),
         const val KEY_SELECTED_CATEGORY = "selected_category"
 
         @JvmStatic
-        fun createNewInstance(productId: Int, isVariantSelected: Boolean, availableVariants: String): TalkWriteFragment {
+        fun createNewInstance(productId: String, isVariantSelected: Boolean, availableVariants: String): TalkWriteFragment {
             return TalkWriteFragment().apply {
                 arguments = Bundle()
-                arguments?.putInt(TalkConstants.PARAM_PRODUCT_ID, productId)
+                arguments?.putString(TalkConstants.PARAM_PRODUCT_ID, productId)
                 arguments?.putBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
                 arguments?.putString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
             }
@@ -214,7 +214,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
                 context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId.toString()))
                         .buildUpon()
-                        .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, viewModel.getProductId().toString())
+                        .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, viewModel.getProductId())
                         .appendQueryParameter(TalkConstants.PARAM_SHOP_ID, viewModel.shopId)
                         .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.WRITING_SOURCE)
                         .build().toString()
@@ -229,7 +229,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     private fun getDataFromArguments() {
         arguments?.let {
-            viewModel.setProductId(it.getInt(TalkConstants.PARAM_PRODUCT_ID))
+            viewModel.setProductId(it.getString(TalkConstants.PARAM_PRODUCT_ID) ?: "")
             viewModel.isVariantSelected = it.getBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED)
             viewModel.availableVariants = it.getString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, "0")
         }

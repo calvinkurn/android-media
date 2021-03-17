@@ -230,7 +230,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
         init {
             with(itemView.rv_uploaded_foto){
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6),
+                addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_6),
                         LinearLayoutManager.HORIZONTAL))
             }
         }

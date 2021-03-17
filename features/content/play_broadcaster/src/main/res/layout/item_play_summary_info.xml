@@ -10,7 +10,7 @@
     android:paddingEnd="@dimen/spacing_lvl4"
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl3"
-    tools:background="@color/Neutral_N700_68">
+    tools:background="@color/play_dms_broadcaster_background">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_item_play_summary_info_icon"
@@ -20,7 +20,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/Neutral_N700_96" />
+        tools:background="@color/Unify_N700_96" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_item_play_summary_description"
@@ -30,7 +30,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_item_play_summary_count_info"
         app:layout_constraintLeft_toRightOf="@id/iv_item_play_summary_info_icon"
@@ -46,7 +46,7 @@
         android:id="@+id/tv_item_play_summary_count_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
