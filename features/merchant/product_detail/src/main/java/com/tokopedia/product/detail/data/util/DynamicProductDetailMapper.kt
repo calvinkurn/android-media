@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.data.util
 
-import android.util.SparseArray
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -165,10 +164,11 @@ object DynamicProductDetailMapper {
                     campaignType = newCampaignData?.campaignType.toIntOrZero(), campaignTypeName = newCampaignData?.campaignTypeName,
                     startDate = newCampaignData?.startDate, endDateUnix = newCampaignData?.endDateUnix, stock = newCampaignData?.stock, isAppsOnly = newCampaignData?.isAppsOnly, applinks = newCampaignData?.applinks,
                     stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
-                    ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick)
+                    ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick,
+                    background = newCampaignData?.background ?: "", campaignIdentifier = newCampaignData?.campaignIdentifier ?: 0)
 
             val thematicCampaignData = it.thematicCampaign
-            val thematicCampaign: ThematicCampaign = ThematicCampaign(
+            val thematicCampaign = ThematicCampaign(
                     campaignName = thematicCampaignData?.campaignName,
                     icon = thematicCampaignData?.icon,
                     background = thematicCampaignData?.background,

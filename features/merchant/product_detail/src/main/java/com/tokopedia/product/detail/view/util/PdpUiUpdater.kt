@@ -365,6 +365,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateDataTradein(context, it.validateTradeIn)
             updateNotifyMeUpcoming(productId, it.upcomingCampaigns, thematicIdentifier, background, thematicCampaign)
+
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.run {
                     listOfReviews = it.helpfulReviews
@@ -378,7 +379,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     imageReviews = it.imageReviews?.imageReviewItems
                 }
             }
-            updateNotifyMeUpcoming(productId, it.upcomingCampaigns, thematicIdentifier, background, thematicCampaign)
         }
     }
 
@@ -420,7 +420,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        ?: "", selectedUpcoming?.campaignType ?: "",
                         selectedUpcoming?.startDate ?: "")
             }
         }
@@ -437,7 +437,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
                         selectedUpcoming?.startDate ?: "")
             }
         }

@@ -17,13 +17,12 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
     }
 
     override fun bind(element: ProductNotifyMeDataModel) {
-        if (element.campaignID.isNotEmpty() && !element.isUpcomingNplType()) {
-            itemView.layout_notify_me?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            itemView.layout_notify_me?.requestLayout()
+        if (element.campaignID.isNotEmpty()) {
+            showContainer()
             // render upcoming campaign ribbon
-            val campaignRibbon = itemView.layout_notify_me?.upcoming_campaign_ribbon
+            val campaignRibbon = itemView.upcoming_campaign_ribbon
             val trackDataModel = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
-            campaignRibbon?.renderUpComingCampaign(element)
+            campaignRibbon?.renderUpComingCampaignRibbon(element, element.upcomingNplData.upcomingType)
             campaignRibbon?.setDynamicProductDetailListener(listener)
             campaignRibbon?.setComponentTrackDataModel(trackDataModel)
         } else {
@@ -31,9 +30,14 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
         }
     }
 
-    private fun hideContainer() {
-        itemView.layout_notify_me?.layoutParams?.height = 0
-        itemView.layout_notify_me?.requestLayout()
+    private fun showContainer() = with(itemView) {
+        upcoming_campaign_ribbon?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        upcoming_campaign_ribbon?.requestLayout()
+    }
+
+    private fun hideContainer() = with(itemView){
+        upcoming_campaign_ribbon?.layoutParams?.height = 0
+        upcoming_campaign_ribbon?.requestLayout()
     }
 
     override fun bind(element: ProductNotifyMeDataModel?, payloads: MutableList<Any>) {
@@ -43,7 +47,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
         }
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_NOTIFY_ME -> {
-                val campaignRibbon = itemView.layout_notify_me?.upcoming_campaign_ribbon
+                val campaignRibbon = itemView.upcoming_campaign_ribbon
                 campaignRibbon?.updateRemindMeButton(listener, element)
             }
         }
