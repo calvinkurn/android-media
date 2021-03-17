@@ -19,12 +19,12 @@ class ChangePasswordV2UseCase @Inject constructor(
         }
     }
 
-    fun setParams(encode: String, new: String, confirmation: String, validationToken: String, hash: String){
+    fun setParams(new: String, confirmation: String, hash: String){
         params = mapOf(
-                PARAM_ENCODE to encode,
+                PARAM_ENCODE to PARAM_ENCODE,
                 PARAM_NEW_PASS to new,
                 PARAM_REPEAT_PASS to confirmation,
-                PARAM_VALIDATE_TOKEN to validationToken,
+                PARAM_VALIDATE_TOKEN to VALIDATION_TOKEN,
                 PARAM_HASH to hash
         )
     }
@@ -39,5 +39,6 @@ class ChangePasswordV2UseCase @Inject constructor(
         private const val PARAM_REPEAT_PASS = "repeat_password"
         private const val PARAM_VALIDATE_TOKEN = "validatetoken"
         private const val PARAM_HASH = "h"
+        private const val VALIDATION_TOKEN = "token"
     }
 }
