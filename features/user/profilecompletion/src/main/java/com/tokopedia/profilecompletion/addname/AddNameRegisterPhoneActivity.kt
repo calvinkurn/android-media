@@ -36,13 +36,13 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        rollanceType = RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_KEY, ROLLANCE_DEFAULT_VALUE)
+        rollanceType = RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_KEY)
         super.onCreate(savedInstanceState)
     }
 
     private fun checkUri(bundle: Bundle): Fragment {
         val uri = intent?.data
-        return if (uri?.lastPathSegment?.contains(PATH_CLEAN_VIEW) == true && !rollanceType.contentEquals(ROLLANCE_DEFAULT_VALUE)) {
+        return if (uri?.lastPathSegment?.contains(PATH_CLEAN_VIEW) == true && rollanceType.contains(ROLLANCE_KEY)) {
             AddNameRegisterPhoneCleanViewFragment.createInstance(bundle)
         } else {
             AddNameRegisterPhoneFragment.createInstance(bundle)
@@ -51,7 +51,6 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
 
     companion object {
         private const val ROLLANCE_KEY = "android_defername"
-        private const val ROLLANCE_DEFAULT_VALUE = ""
         private const val PATH_CLEAN_VIEW = "clean-view"
     }
 }
