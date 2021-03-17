@@ -45,7 +45,6 @@ import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkT
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_DESCRIPTION_CHAR
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_VIDEOS
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VALIDATE_REQUEST_DELAY
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VIDEO_REQUEST_DELAY
 import com.tokopedia.product.addedit.description.presentation.dialog.GiftingDescriptionBottomSheet
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -84,8 +83,12 @@ import kotlinx.android.synthetic.main.add_edit_product_no_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
 import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class AddEditProductDescriptionFragment:
         BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
         VideoLinkTypeFactory.VideoLinkListener,
@@ -148,7 +151,7 @@ class AddEditProductDescriptionFragment:
                 inputDescription = ""
                 getRecyclerView(view).post { adapter.notifyItemChanged(position) }
             }
-            getVideoYoutube(url, position)
+            getVideoYoutube(position, url)
         }
     }
 
@@ -446,18 +449,18 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun getVideoYoutube(url: String, index: Int) {
-        if (!(descriptionViewModel.isFetchingVideoData[index] ?: false)) {
+    @ExperimentalCoroutinesApi
+    @FlowPreview
+    private fun getVideoYoutube(index: Int, url: String) {
+        if (descriptionViewModel.isFetchingVideoData[index] != true) {
             descriptionViewModel.isFetchingVideoData[index] = true
-            view?.postDelayed({
-                if (descriptionViewModel.urlToFetch[index] == url) {
-                    descriptionViewModel.fetchedUrl[index] = url
-                    descriptionViewModel.getVideoYoutube(descriptionViewModel.fetchedUrl[index].orEmpty(), index)
-                } else {
-                    descriptionViewModel.isFetchingVideoData[index] = false
-                    getVideoYoutube(descriptionViewModel.urlToFetch[index].orEmpty(), index)
-                }
-            }, VIDEO_REQUEST_DELAY)
+            if (descriptionViewModel.urlToFetch[index] == url) {
+                descriptionViewModel.fetchedUrl[index] = url
+                descriptionViewModel.urlYoutubeChanged(index, descriptionViewModel.fetchedUrl[index].orEmpty())
+            } else {
+                descriptionViewModel.isFetchingVideoData[index] = false
+                getVideoYoutube(index, descriptionViewModel.urlToFetch[index].orEmpty())
+            }
         }
     }
 
@@ -558,7 +561,7 @@ class AddEditProductDescriptionFragment:
             }
             adapter.notifyItemChanged(position)
             if (isItemStillTheSame && descriptionViewModel.fetchedUrl[position] != descriptionViewModel.urlToFetch[position]) {
-                getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
+                getVideoYoutube(position, descriptionViewModel.urlToFetch[position].orEmpty())
             }
             refreshDuplicateVideo(position)
             updateSaveButtonStatus()
@@ -599,7 +602,7 @@ class AddEditProductDescriptionFragment:
         ResourceProvider(context).getDuplicateProductVideoErrorMessage()?.run {
             adapter.data.forEachIndexed { index, video ->
                 if (index != excludeIndex && video.errorMessage == this) {
-                    getVideoYoutube(video.inputUrl, index)
+                    getVideoYoutube(index, video.inputUrl)
                 }
             }
         }

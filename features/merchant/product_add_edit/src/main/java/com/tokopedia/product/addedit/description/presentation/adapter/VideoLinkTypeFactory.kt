@@ -1,14 +1,12 @@
 package com.tokopedia.product.addedit.description.presentation.adapter
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.util.replaceTextAndRestoreCursorPosition
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import kotlinx.android.synthetic.main.item_product_add_video.view.*
@@ -32,41 +30,20 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     class VideoLinkViewHolder(val view: View?, private val listener: VideoLinkListener?)
         : AbstractViewHolder<VideoLinkModel>(view) {
 
-        var isFirstLoaded = true
-
-        var textWatcher: TextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun afterTextChanged(editable: Editable) {
-                listener?.onTextChanged(editable.toString(), adapterPosition)
-            }
-        }
-
         override fun bind(element: VideoLinkModel) {
             itemView.textFieldUrl.textAreaInput.apply {
                 maxLines = 1
-                setSingleLine(true)
+                isSingleLine = true
             }
             itemView.textFieldUrl.apply {
                 isLabelStatic = false
                 textAreaLabel = getString(R.string.label_video_url_placeholder)
                 textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
             }
-            // Remove listener and set the text so it will not trigger textWatcher
-            if (isFirstLoaded) {
-                itemView.textFieldUrl.apply {
-                    textAreaInput.addTextChangedListener(textWatcher)
-                    if (element.inputUrl.isNotEmpty()) setText(element.inputUrl)
-                }
-                isFirstLoaded = false
-            } else {
-                itemView.textFieldUrl.apply {
-                    textAreaInput.removeTextChangedListener(textWatcher)
-                    replaceTextAndRestoreCursorPosition(element.inputUrl)
-                    textAreaInput.addTextChangedListener(textWatcher)
-                    requestFocus()
+            itemView.textFieldUrl.apply {
+                if (element.inputUrl.isNotEmpty()) setText(element.inputUrl)
+                textAreaInput.doAfterTextChanged {
+                    listener?.onTextChanged(it.toString(), adapterPosition)
                 }
             }
 
