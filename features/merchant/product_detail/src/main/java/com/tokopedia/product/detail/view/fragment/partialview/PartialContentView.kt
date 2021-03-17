@@ -51,13 +51,18 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
             isUpcomingNplType -> {
                 renderCampaignInactiveNpl(data.price.priceFmt)
             }
-            // campaign identifier = 0
-            data.campaign.campaignIdentifier == 0 -> {
+            // No campaign
+            data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN -> {
+                renderCampaignInactive(data.price.priceFmt)
+                campaign_ribbon.gone()
+            }
+            data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN -> {
+                campaignRibbon.renderOnGoingCampaign(data)
                 renderCampaignInactive(data.price.priceFmt)
             }
             else -> {
                 campaignRibbon.renderOnGoingCampaign(data)
-                renderCampaignActive(data.campaign, data.stockWording)
+                setTextCampaignActive(data.campaign)
             }
         }
 
@@ -93,16 +98,10 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         }
     }
 
-    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
-        setTextCampaignActive(campaign)
-        campaign_ribbon.show()
-    }
-
     private fun renderCampaignInactive(price: String) = with(view) {
         txt_main_price.text = price
         text_slash_price.gone()
         text_discount_red.gone()
-        campaign_ribbon.gone()
     }
 
     private fun renderCampaignInactiveNpl(price: String) = with(view) {

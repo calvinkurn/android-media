@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.annotation.IntDef
@@ -19,8 +18,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.isGivenDateIsBelowThan24H
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -48,12 +45,12 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         const val UPCOMING = 1
 
         // campaign types
-        private const val NO_CAMPAIGN = 0
+        const val NO_CAMPAIGN = 0
         private const val FLASH_SALE = 1
         private const val SLASH_PRICE = 2
         private const val NPL = 3
         private const val NEW_USER = 4
-        private const val THEMATIC_CAMPAIGN = 5
+        const val THEMATIC_CAMPAIGN = 5
 
         // time unit
         private const val ONE_SECOND = 1000L
@@ -83,11 +80,11 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     fun renderOnGoingCampaign(onGoingData: ProductContentMainData) {
+        this.show()
         when (onGoingData.campaign.campaignIdentifier) {
-            NO_CAMPAIGN or NPL -> this.hide()
-            FLASH_SALE -> renderFlashSaleCampaignRibbon(onGoingData = onGoingData)
+            NO_CAMPAIGN, NPL -> this.hide()
+            FLASH_SALE, NEW_USER -> renderFlashSaleCampaignRibbon(onGoingData = onGoingData)
             SLASH_PRICE -> renderSlashPriceCampaignRibbon(onGoingData = onGoingData)
-            NEW_USER -> renderNewUserCampaignRibbon(onGoingData = onGoingData)
             THEMATIC_CAMPAIGN -> renderThematicCampaignRibbon(onGoingData = onGoingData)
         }
     }
@@ -95,11 +92,9 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // FLASH SALE
     private fun renderFlashSaleCampaignRibbon(onGoingData: ProductContentMainData? = null) {
         onGoingData?.let {
-            val campaign = onGoingData.campaign
-            if (campaign.shouldShowRibbonCampaign) {
-                renderOnGoingCampaignRibbon(onGoingData)
-                showCampaignRibbonType2()
-            } else this.hide()
+            this.show()
+            renderOnGoingCampaignRibbon(onGoingData)
+            showCampaignRibbonType2()
         }
     }
 
@@ -123,29 +118,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             // show campaign ribbon type 3
             showCampaignRibbonType3()
         } else this.hide()
-    }
-
-    // NEW USER
-    private fun renderNewUserCampaignRibbon(onGoingData: ProductContentMainData) {
-        val campaign = onGoingData.campaign
-        val thematicCampaign = onGoingData.thematicCampaign
-        if (campaign.startDate.isGivenDateIsBelowThan24H()) {
-            renderOnGoingCampaignRibbon(onGoingData)
-            showCampaignRibbonType1()
-        } else {
-            // render campaign name
-            val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
-            tpg_campaign_name_s3.text = campaignName
-            // render campaign ribbon background
-            val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
-            val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-            campaign_ribbon_layout_s3.background = gradientDrawable
-            // hide irrelevant views
-            regulatory_info_layout_s3.hide()
-            tus_timer_view_s3.hide()
-            // show campaign ribbon type 3
-            showCampaignRibbonType3()
-        }
     }
 
     // THEMATIC ONLY
@@ -264,36 +236,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    private fun renderUpComingCountDownTimer(startDateData: String, timerView: TimerUnifySingle) {
-        try {
-            val now = System.currentTimeMillis()
-            val startTime = startDateData.toLongOrZero() * ONE_SECOND
-            val dayLeft = TimeUnit.MILLISECONDS.toDays(startTime - now)
-
-            this.show()
-            when {
-                dayLeft < 0 -> {
-                    this.hide()
-                }
-                dayLeft < 1 -> {
-                    timerView.onFinish = {
-                        listener?.refreshPage()
-                    }
-                    timerView.show()
-                    tv_start_in_s1.text = context.getString(R.string.notify_me_subtitle_main)
-                }
-                else -> {
-                    timerView.gone()
-                    tv_start_in_s1.text = HtmlLinkHelper(context,
-                            context.getString(R.string.notify_me_subtitle, dayLeft.toInt().toString())
-                    ).spannedString
-                }
-            }
-        } catch (ex: Exception) {
-            this.hide()
-        }
-    }
-
     fun updateRemindMeButton(listener: DynamicProductDetailListener, upComingData: ProductNotifyMeDataModel) {
         renderUpComingRemindMeButton(listener.isOwner(), upComingData, remind_me_button_s1)
     }
@@ -372,9 +314,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
 
         // set stock bar color
-        val fromColor = ContextCompat.getColor(context, R.color.product_detail_stock_bar_from_color)
-        val toColor = ContextCompat.getColor(context, R.color.product_detail_stock_bar_to_color)
-        stockProgressBar.progressBarColor = intArrayOf(fromColor, toColor)
+        val fromColor = ContextCompat.getColor(context, R.color.Unify_N700)
+        stockProgressBar.progressBarColor = intArrayOf(fromColor,fromColor)
 
         // percentage 100% = 1
         if (stockSoldPercentage != 1) {

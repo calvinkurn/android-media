@@ -96,7 +96,9 @@ object VariantMapper {
                 stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
                 isCheckImei = newData?.campaign?.isCheckImei ?: false,
                 isUsingOvo = newData?.campaign?.isUsingOvo ?: false,
-                hideGimmick = newData?.campaign?.hideGimmick ?: false
+                hideGimmick = newData?.campaign?.hideGimmick ?: false,
+                background = newData?.campaign?.background ?: "",
+                campaignIdentifier = newData?.campaign?.campaignIdentifier ?: 0
         )
 
         val newThematicCampaign = ThematicCampaign(

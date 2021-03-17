@@ -208,7 +208,13 @@ data class Campaign(
 
         @SerializedName("hideGimmick")
         @Expose
-        val hideGimmick: Boolean? = null
+        val hideGimmick: Boolean? = null,
+
+        @SerializedName("campaignIdentifier")
+        val campaignIdentifier: Int = 0,
+
+        @SerializedName("background")
+        val background: String = ""
 ) {
     val getStockPercentageInt: Int = stockSoldPercentage?.toInt() ?: 0
 

@@ -12,7 +12,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLay
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
-import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
@@ -252,6 +251,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           campaignID
                           campaignType
                           campaignTypeName
+                          campaignIdentifier
+                          background
                           discountPercentage
                           originalPrice
                           discountPrice

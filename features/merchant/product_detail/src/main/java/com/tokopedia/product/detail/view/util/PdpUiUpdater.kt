@@ -365,6 +365,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateDataTradein(context, it.validateTradeIn)
             updateNotifyMeUpcoming(productId, it.upcomingCampaigns, thematicIdentifier, background, thematicCampaign)
+
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.run {
                     listOfReviews = it.helpfulReviews
@@ -378,7 +379,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     imageReviews = it.imageReviews?.imageReviewItems
                 }
             }
-            updateNotifyMeUpcoming(productId, it.upcomingCampaigns, thematicIdentifier, background, thematicCampaign)
         }
     }
 
