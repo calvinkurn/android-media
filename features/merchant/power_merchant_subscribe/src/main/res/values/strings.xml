@@ -136,7 +136,6 @@
     <string name="pm_power_merchant_exclusive_features">Fitur Eksklusif Power Merchant</string>
     <string name="pm_bebas_ongkir_description">Proses pengiriman pesanan dengan layanan SiCepat dan Anteraja. S&amp;K berlaku.</string>
     <string name="pm_free_shipping_clickable_text">S&amp;K berlaku.</string>
-    <string name="pm_shop_score_member_hint"><![CDATA[Pertahankan skor performa toko <b>minimum %1$d poin</b> untuk tetap menjadi Power Merchant.]]></string>
     <string name="pm_label_next">Selanjutnya</string>
     <string name="pm_power_merchant_slider_title">Perubahan Power Merchant</string>
     <string name="pm_power_merchant_slider_footer_cta_text">Lebih lanjut tentang Performa Toko, di sini</string>
@@ -192,4 +191,8 @@
     <string name="pm_verify_data_clickable">Verifikasi Data</string>
     <string name="pm_verify_again_clickable">Verifikasi Ulang</string>
     <string name="pm_tnc_agreement_error_message">Kamu belum menyetujui S&amp;K yang berlaku.</string>
+    <string name="pm_benefit_shop_grade">Keuntungan PM %1$s</string>
+    <string name="pm_shop_performance_sum">Performa Toko : %1$d</string>
+    <string name="pm_shop_score_threshold_description"><![CDATA[Pertahankan skor performa toko <b>min %1$d poin</b> untuk tetap menjadi Power Merchant setelah %2$s.]]></string>
+    <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>Level %1$d</b> dan <b>skor min. %2$d</b> untuk naik jadi <b>PM %3$s</b> di periode update selanjutnya dan nikmati:]]></string>
 </resources>

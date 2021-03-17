@@ -29,8 +29,8 @@ class GetNextPMGradeWithBenefitUseCase @Inject constructor(
             val response = gqlResponse.getData<PMGradeBenefitInfoResponse>()
             val data = mapper.mapRemoteModelToUiModel(response.data)
             return NextPMGradeAndBenefitUiModel(
-                    nextPMGrade = data.currentPMGrade,
-                    nextPMBenefits = data.currentPMBenefits
+                    nextPMGrade = data.nextPMGrade,
+                    nextPMBenefits = data.nextPMBenefits
             )
         } else {
             throw MessageErrorException(errors.joinToString(" - ") { it.message })
@@ -59,7 +59,6 @@ class GetNextPMGradeWithBenefitUseCase @Inject constructor(
                 }
                 next_benefit_list {
                   benefit_name
-                  benefit_description
                   seq_num
                 }
               }

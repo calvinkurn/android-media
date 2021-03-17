@@ -7,7 +7,6 @@ package com.tokopedia.gm.common.data.source.local.model
 data class PMGradeBenefitUiModel(
         val categoryName: String = "",
         val benefitName: String = "",
-        val description: String = "",
         val sequenceNum: Int = 0,
         val appLink: String? = null,
         val iconUrl: String? = null,

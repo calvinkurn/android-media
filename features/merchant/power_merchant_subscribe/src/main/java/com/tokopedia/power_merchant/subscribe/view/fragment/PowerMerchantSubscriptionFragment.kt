@@ -18,9 +18,11 @@ import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.common.constant.ShopGrade
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PowerMerchantNotificationBottomSheet
@@ -56,6 +58,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
     }
 
+    private var shopSettingInfo: PowerMerchantSettingInfoUiModel? = null
     private val recyclerView: RecyclerView?
         get() = super.getRecyclerView(view)
 
@@ -100,9 +103,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun fetchPageContent(data: PowerMerchantSettingInfoUiModel) {
+        this.shopSettingInfo = data
         when (data.periodeType) {
             PeriodType.TRANSITION_PERIOD -> observeTransitionPeriod()
-            PeriodType.FINAL_PERIOD -> observeFinalPeriodData()
+            PeriodType.FINAL_PERIOD -> observeFinalPeriodData(data)
         }
     }
 
@@ -223,40 +227,73 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         mViewModel.submitPMActivation()
     }
 
-    private fun observeFinalPeriodData() {
+    private fun observeFinalPeriodData(pmSettingInfo: PowerMerchantSettingInfoUiModel) {
         view?.pmRegistrationFooterView?.gone()
-        mViewModel.PMFinalPeriod.observe(viewLifecycleOwner, Observer {
-            when(it) {
+        mViewModel.pmFinalPeriod.observe(viewLifecycleOwner, Observer {
+            when (it) {
                 is Success -> renderPMActiveState(it.data)
                 is Fail -> {
                     //show on failed
                 }
             }
         })
+        mViewModel.getFinalPeriodData()
     }
 
     private fun renderPMActiveState(data: PMFinalPeriodUiModel) {
-        val widgets = listOf(
-                //WidgetQuitSubmissionUiModel(),
-                WidgetShopGradeUiModel(
-
-                ),
-                WidgetDividerUiModel,
-                WidgetExpandableUiModel(
-                        title = "Keuntungan PM Silver",
-                        items = listOf(
-                                ExpandableSectionUiModel("PENGATURAN PRODUK"),
-                                ExpandableItemUiModel("Limit 2000 produk & 200 etalase", ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD),
-                                ExpandableItemUiModel("Limit 2000 produk & 200 etalase"),
-                                ExpandableSectionUiModel("PROMOSI PRODUK"),
-                                ExpandableItemUiModel("Gratis 200 kuota layanan Broadcast Chat", ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD),
-                                ExpandableItemUiModel("Promosikan toko dengan ekstra 5% kredit TopAds. Yuk, pasang iklan TopAds!", ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD)
-                        )
-                ),
-                WidgetDividerUiModel,
-                WidgetSingleCtaUiModel("Pelajari Selengkapnya Tentang Power Merchant", ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD)
-        )
+        val widgets = mutableListOf<BaseWidgetUiModel>()
+        widgets.add(getShopGradeWidgetData(data))
+        widgets.add(WidgetDividerUiModel)
+        widgets.add(getCurrentShopGradeBenefit(data))
+        widgets.add(WidgetDividerUiModel)
+        if (data.nextPMGrade != null) {
+            widgets.add(getNextShopGradeWidgetData(data))
+            widgets.add(WidgetDividerUiModel)
+        }
+        widgets.add(WidgetSingleCtaUiModel(getString(R.string.pm_pm_transition_period_learnmore), Constant.Url.POWER_MERCHANT_EDU))
         renderList(widgets)
+    }
+
+    private fun getNextShopGradeWidgetData(data: PMFinalPeriodUiModel): WidgetNextShopGradeUiModel {
+        val nextGrade = data.nextPMGrade
+        return WidgetNextShopGradeUiModel(
+                shopLevel = nextGrade?.shopLevel.orZero(),
+                shopScoreMin = nextGrade?.shopScoreMin.orZero(),
+                gradeName = nextGrade?.gradeName ?: ShopGrade.UNDEFINED,
+                gradeBadgeUrl = nextGrade?.imgBadgeUrl.orEmpty(),
+                benefitList = data.nextPMBenefits?.map { it.benefitName }.orEmpty()
+        )
+    }
+
+    private fun getCurrentShopGradeBenefit(data: PMFinalPeriodUiModel): WidgetExpandableUiModel {
+        val grade = data.currentPMGrade
+        val benefits = mutableListOf<BaseExpandableItemUiModel>()
+        data.currentPMBenefits?.forEach { benefit ->
+            if (!benefits.any { it.text == benefit.categoryName }) {
+                benefits.add(ExpandableSectionUiModel(benefit.categoryName))
+            }
+            if (benefit.benefitName.isNotBlank()) {
+                benefits.add(ExpandableItemUiModel(benefit.benefitName, benefit.appLink.orEmpty()))
+            }
+        }
+        return WidgetExpandableUiModel(
+                title = getString(R.string.pm_benefit_shop_grade, grade?.gradeName.orEmpty()),
+                items = benefits
+        )
+    }
+
+    private fun getShopGradeWidgetData(data: PMFinalPeriodUiModel): WidgetShopGradeUiModel {
+        val shopGrade = data.currentPMGrade
+        return WidgetShopGradeUiModel(
+                shopGrade = shopGrade?.gradeName.orEmpty(),
+                shopScore = shopGrade?.shopScore.orZero(),
+                threshold = 0,
+                shopLevel = shopGrade?.shopLevel ?: Constant.ShopLevel.UNDEFINED,
+                gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
+                gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
+                nextPmCalculationDate = data.nextMonthlyRefreshDate,
+                pmStatus = data.pmStatus
+        )
     }
 
     private fun getHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {

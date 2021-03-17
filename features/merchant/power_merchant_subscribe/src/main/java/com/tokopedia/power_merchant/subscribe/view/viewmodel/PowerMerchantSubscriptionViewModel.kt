@@ -24,16 +24,15 @@ import javax.inject.Inject
 class PowerMerchantSubscriptionViewModel @Inject constructor(
         private val getPMGradeWithBenefitAndShopInfoUseCase: Lazy<GetPMGradeBenefitAndShopInfoUseCase>,
         private val getPMFinalPeriodDataUseCase: Lazy<GetPMFinalPeriodDataUseCase>,
-        private val userSession: Lazy<UserSessionInterface>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    val PMFinalPeriod: LiveData<Result<PMFinalPeriodUiModel>>
-        get() = _PM_finalPeriod
+    val pmFinalPeriod: LiveData<Result<PMFinalPeriodUiModel>>
+        get() = _pmFinalPeriod
     val shopInfoAndPMGradeBenefits: LiveData<Result<PMGradeBenefitAndShopInfoUiModel>>
         get() = _pmGradeAndShopInfo
 
-    private val _PM_finalPeriod: MutableLiveData<Result<PMFinalPeriodUiModel>> = MutableLiveData()
+    private val _pmFinalPeriod: MutableLiveData<Result<PMFinalPeriodUiModel>> = MutableLiveData()
     private val _pmGradeAndShopInfo: MutableLiveData<Result<PMGradeBenefitAndShopInfoUiModel>> = MutableLiveData()
 
     fun getPMRegistrationData() {
@@ -47,14 +46,14 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         })
     }
 
-    fun getCurrentAndNextPMGradeAndBenefit() {
+    fun getFinalPeriodData() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getPMFinalPeriodDataUseCase.get().executeOnBackground()
             }
-            _PM_finalPeriod.value = Success(result)
+            _pmFinalPeriod.value = Success(result)
         }, onError = {
-            _PM_finalPeriod.value = Fail(it)
+            _pmFinalPeriod.value = Fail(it)
         })
     }
 

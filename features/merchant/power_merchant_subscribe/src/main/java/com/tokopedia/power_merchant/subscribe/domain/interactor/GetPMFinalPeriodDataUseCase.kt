@@ -12,12 +12,13 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 16/03/21
  */
 
-class GetPMFinalPeriodDataUseCase(
+class GetPMFinalPeriodDataUseCase @Inject constructor(
         private val getPMShopStatusUseCase: GetPMShopStatusUseCase,
         private val getCurrentPMGradeWithBenefitUseCase: GetCurrentPMGradeWithBenefitUseCase,
         private val getNextPMGradeWithBenefitUseCase: GetNextPMGradeWithBenefitUseCase,

@@ -23,4 +23,6 @@ interface WidgetAdapterFactory {
     fun type(model: WidgetExpandableUiModel): Int
 
     fun type(model: WidgetSingleCtaUiModel): Int
+
+    fun type(model: WidgetNextShopGradeUiModel): Int
 }

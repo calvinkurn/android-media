@@ -9,6 +9,7 @@ object Constant {
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-ui"
 
     object ShopLevel {
+        const val UNDEFINED = -1
         const val ONE = 1
         const val TWO = 2
         const val THREE = 3

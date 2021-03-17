@@ -65,7 +65,6 @@ class GetCurrentPMGradeWithBenefitUseCase @Inject constructor(
                 current_benefit_list {
                   benefit_category
                   benefit_name
-                  benefit_description
                   related_link_applink
                   seq_num
                 }

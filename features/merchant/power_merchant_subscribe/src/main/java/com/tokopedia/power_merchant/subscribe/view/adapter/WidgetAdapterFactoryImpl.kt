@@ -29,10 +29,13 @@ class WidgetAdapterFactoryImpl : BaseAdapterTypeFactory(), WidgetAdapterFactory 
 
     override fun type(model: WidgetSingleCtaUiModel): Int = SingleCtaWidget.RES_LAYOUT
 
+    override fun type(model: WidgetNextShopGradeUiModel): Int = NextShopGradeWidget.RES_LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent)
             QuitSubmissionWidget.RES_LAYOUT -> QuitSubmissionWidget(parent)
+            NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)
             ExpandableWidget.RES_LAYOUT -> ExpandableWidget(parent)
             ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(parent)

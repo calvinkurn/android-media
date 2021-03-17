@@ -72,10 +72,10 @@ data class NextPMGradeModel(
 )
 
 data class CurrentPmGradeModel(
-        @SerializedName("shop_level_actual")
-        val shopLevelActual: Int? = 0,
-        @SerializedName("shop_score_actual")
-        val shopScoreActual: Int? = 0,
+        @SerializedName("shop_level")
+        val shopLevel: Int? = 0,
+        @SerializedName("shop_score")
+        val shopScore: Int? = 0,
         @SerializedName("grade_name")
         val gradeName: String? = "",
         @SerializedName("image_badge_url")
@@ -89,8 +89,6 @@ data class PMGradeBenefitModel(
         val categoryName: String? = "",
         @SerializedName("benefit_name")
         val benefitName: String? = "",
-        @SerializedName("benefit_description")
-        val benefitDescription: String? = "",
         @SerializedName("related_link_applink")
         val appLink: String? = "",
         @SerializedName("seq_num")

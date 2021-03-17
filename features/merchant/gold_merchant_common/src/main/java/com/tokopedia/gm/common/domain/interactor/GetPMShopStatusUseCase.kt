@@ -8,12 +8,13 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 16/03/21
  */
 
-class GetPMShopStatusUseCase(
+class GetPMShopStatusUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PMShopStatusMapper
 ) : BaseGqlUseCase<PMShopStatusUiModel>() {

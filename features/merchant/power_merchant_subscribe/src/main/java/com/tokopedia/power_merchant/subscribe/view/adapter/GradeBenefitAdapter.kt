@@ -37,7 +37,7 @@ class GradeBenefitAdapter(
                 benefit.iconUrl?.let {
                     icPmBenefitItem.loadImageWithoutPlaceholder(it)
                 }
-                tvPmBenefitItem.text = benefit.description.parseAsHtml()
+                tvPmBenefitItem.text = benefit.benefitName.parseAsHtml()
             }
         }
     }

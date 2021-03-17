@@ -4,18 +4,15 @@ import com.tokopedia.power_merchant.subscribe.common.constant.ShopGrade
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
 /**
- * Created By @ilhamsuaib on 03/03/21
+ * Created By @ilhamsuaib on 17/03/21
  */
 
-class WidgetShopGradeUiModel(
-        @ShopGrade val shopGrade: String = ShopGrade.BRONZE,
-        val shopScore: Int = 0,
-        val threshold: Int = 0,
+data class WidgetNextShopGradeUiModel(
         val shopLevel: Int = 0,
-        val gradeBadgeImgUrl: String = "",
-        val gradeBackgroundUrl: String = "",
-        val nextPmCalculationDate: String = "",
-        val pmStatus: String = ""
+        val shopScoreMin: Int = 0,
+        @ShopGrade val gradeName: String = ShopGrade.UNDEFINED,
+        val gradeBadgeUrl: String = "",
+        val benefitList: List<String>
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
