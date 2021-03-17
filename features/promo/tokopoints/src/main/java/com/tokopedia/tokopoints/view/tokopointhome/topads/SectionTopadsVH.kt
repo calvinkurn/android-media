@@ -57,7 +57,8 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
         view.topads_reward.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
                 if (imageDataList.isNotEmpty()) {
-                    view.topads_reward.loadImage(imageDataList.last(), convertDpToPixel(10, view.context))
+                    val topadsBannerData = imageDataList.last()
+                    view.topads_reward.loadImage(topadsBannerData, convertDpToPixel(10, view.context))
                     containerTopads.displayedChild = 1
                     view.topads_reward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                         override fun onTopAdsImageViewImpression(viewUrl: String) {
@@ -65,9 +66,9 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                             TopAdsUrlHitter(packageName).hitImpressionUrl(
                                     view.context,
                                     viewUrl,
-                                    "",
-                                    "",
-                                    ""
+                                    topadsBannerData.bannerId,
+                                    topadsBannerData.bannerName,
+                                    topadsBannerData.imageUrl
                             )
                         }
                     })
