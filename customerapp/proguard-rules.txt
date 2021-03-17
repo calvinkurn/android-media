@@ -231,7 +231,7 @@
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 #topads
--keep class com.tokopedia.topads.dashboard.view.fragment.** { *; }
+-keep class com.tokopedia.topads.dashboard.view.fragment.** extends androidx.fragment.app.Fragment{}
 
 #Please refer to the link before manipulating this line https://help.branch.io/developers-hub/docs/android-basic-integration#proguard-settings
 -keep class com.google.android.gms.** { *; }

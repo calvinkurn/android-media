@@ -227,7 +227,7 @@
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 #topads
--keep class com.tokopedia.topads.dashboard.view.fragment.** { *; }
+-keep class com.tokopedia.topads.dashboard.view.fragment.** extends androidx.fragment.app.Fragment{}
 
 
 #dontwarn com.tokopedia
