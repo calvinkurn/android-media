@@ -70,7 +70,7 @@ class HotelSearchMapActivityTest {
     }
 
     @Test
-    fun validateSearchResultPageTracking() {
+    fun validateSearchMapPageTracking() {
         clickCoachMark()
         clickQuickFilterChips()
         clickOnSortAndFilter()
