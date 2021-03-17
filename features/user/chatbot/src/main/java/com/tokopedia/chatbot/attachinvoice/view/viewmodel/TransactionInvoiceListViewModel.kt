@@ -19,6 +19,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+private const val INVOICE_ERROR_URL = "https://images.tokopedia.net/img/android/res/singleDpi/transaction_invoice_error.png"
+private const val INVOICE_EMPTY_URL = "https://images.tokopedia.net/img/android/res/singleDpi/transaction_invoice_empty.png"
+
 class TransactionInvoiceListViewModel @Inject constructor(private val userSession: UserSessionInterface,
                                                           private val getFilteredInvoiceListUseCase: GetFilteredInvoiceListUseCase)
     : ViewModel() {
@@ -48,14 +51,14 @@ class TransactionInvoiceListViewModel @Inject constructor(private val userSessio
     private fun mapErrorResponse(): List<EmptyTransactionInvoiceUiModel> {
         val result = ArrayList<EmptyTransactionInvoiceUiModel>()
         result.add(EmptyTransactionInvoiceUiModel(R.string.chatbot_error_title, getDescriptionRes(""),
-                R.drawable.ic_transaction_invoice_error, true))
+                INVOICE_ERROR_URL, true))
         return result
     }
 
     private fun mapEmptyResponse(filteredEvent: String): ArrayList<EmptyTransactionInvoiceUiModel> {
         val result = ArrayList<EmptyTransactionInvoiceUiModel>()
         result.add(EmptyTransactionInvoiceUiModel(R.string.chatbot_empty_title, getDescriptionRes(filteredEvent),
-                R.drawable.ic_transaction_invoice_empty))
+                INVOICE_EMPTY_URL))
         return result
     }
 

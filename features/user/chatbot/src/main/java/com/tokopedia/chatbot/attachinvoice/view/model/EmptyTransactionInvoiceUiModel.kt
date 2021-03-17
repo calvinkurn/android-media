@@ -7,7 +7,7 @@ import com.tokopedia.chatbot.attachinvoice.view.adapter.TransactionInvoiceListAd
 
 data class EmptyTransactionInvoiceUiModel(@StringRes val title: Int,
                                           @StringRes val description: Int,
-                                          @DrawableRes val icon: Int, val showButton: Boolean = false)
+                                          val remoteUrl: String, val showButton: Boolean = false)
     : Visitable<TransactionInvoiceListAdapterTypeFactory> {
 
     override fun type(typeFactory: TransactionInvoiceListAdapterTypeFactory): Int {
