@@ -51,7 +51,7 @@ class ShopPerformanceViewModel @Inject constructor(
     fun getShopInfoLevel(level: Int) {
         launchCatchError(block = {
             //temporary dummy
-            _shopInfoLevel.value = Success(shopScoreMapper.mapToShoInfoLevelUiModel(level))
+            _shopInfoLevel.value = Success(shopScoreMapper.mapToShoInfoLevelUiModelDummy(level))
         }, onError = {
             _shopInfoLevel.postValue(Fail(it))
         })

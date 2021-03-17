@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.BROADCAST_CHAT_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED
@@ -57,6 +58,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_UR
 import com.tokopedia.shop.score.common.ShopScoreConstant.STILL_POTENTIAL_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER
 import com.tokopedia.shop.score.common.ShopScoreConstant.UP_POTENTIAL_PM
+import com.tokopedia.shop.score.performance.domain.model.ShopLevelTooltipResponse
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.SimpleDateFormat
@@ -247,15 +249,30 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return headerShopPerformanceUiModel
     }
 
-    fun mapToShoInfoLevelUiModel(level: Int): ShopInfoLevelUiModel {
+    //temporary dummy
+    fun mapToShoInfoLevelUiModelDummy(shopLevel: Int = 3): ShopInfoLevelUiModel {
         val shopInfoLevelUiModel = ShopInfoLevelUiModel()
-        //temporary dummy
         shopInfoLevelUiModel.shopIncome = "Rp4.000.000"
         shopInfoLevelUiModel.productSold = "5 produk"
         shopInfoLevelUiModel.periodDate = "1 APR - 1 OKT 2021"
         shopInfoLevelUiModel.nextUpdate = "15 Nov 2021"
 
-        shopInfoLevelUiModel.cardTooltipLevelList = mapToCardTooltipLevel(level)
+        shopInfoLevelUiModel.cardTooltipLevelList = mapToCardTooltipLevel(shopLevel)
+        return shopInfoLevelUiModel
+    }
+
+    //if ready staging
+    fun mapToShoInfoLevelUiModel(shopLevelTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result): ShopInfoLevelUiModel {
+        val shopInfoLevelUiModel = ShopInfoLevelUiModel()
+
+        with(shopInfoLevelUiModel) {
+            shopIncome = shopLevelTooltipResponse.niv?.toString().orEmpty()
+            productSold = shopLevelTooltipResponse.itemSold?.toString().orEmpty()
+            periodDate = shopLevelTooltipResponse.period.orEmpty()
+            nextUpdate = shopLevelTooltipResponse.nextUpdate.orEmpty()
+        }
+
+        shopInfoLevelUiModel.cardTooltipLevelList = mapToCardTooltipLevel(shopLevelTooltipResponse.shopLevel.orZero())
         return shopInfoLevelUiModel
     }
 

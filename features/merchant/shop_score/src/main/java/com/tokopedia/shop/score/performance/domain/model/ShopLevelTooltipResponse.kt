@@ -26,22 +26,19 @@ data class ShopLevelTooltipResponse(
         data class Result(
                 @Expose
                 @SerializedName("itemSold")
-                val itemSold: Int = 0,
+                val itemSold: Int? = 0,
                 @Expose
                 @SerializedName("nextUpdate")
-                val nextUpdate: String = "",
+                val nextUpdate: String? = "",
                 @Expose
                 @SerializedName("niv")
-                val niv: Int = 0,
+                val niv: Int? = 0,
                 @Expose
                 @SerializedName("period")
-                val period: String = "",
-                @Expose
-                @SerializedName("shopID")
-                val shopID: String = "",
+                val period: String? = "",
                 @Expose
                 @SerializedName("shopLevel")
-                val shopLevel: Int = 0
+                val shopLevel: Int? = 0
         )
     }
 }
