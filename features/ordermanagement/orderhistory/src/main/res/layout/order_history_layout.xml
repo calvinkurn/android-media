@@ -31,7 +31,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:padding="@dimen/dp_20"
                     android:text="Status Pemesanan"
                     android:textSize="@dimen/font_large"
@@ -40,13 +40,13 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/white_four" />
+                    android:background="@color/Unify_N100" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/order_history_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:padding="@dimen/dp_10" />
 
             </LinearLayout>

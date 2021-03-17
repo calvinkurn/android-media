@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/dp_20"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_10">
 
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:padding="@dimen/dp_10"
-        android:textColor="@color/medium_green"
+        android:textColor="@color/Unify_G400"
         tools:text="Pesanan Sedang Diproses" />
 
 </LinearLayout>
