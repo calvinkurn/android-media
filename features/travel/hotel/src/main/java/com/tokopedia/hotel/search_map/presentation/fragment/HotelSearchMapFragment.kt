@@ -220,6 +220,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         hotelSearchMapViewModel.liveSelectedFilter.observe(viewLifecycleOwner, Observer { (data, notifyUi) ->
             if (notifyUi) {
+                hideFindNearHereView()
                 showQuickFilterShimmering(true)
                 setupQuickFilterBaseOnSelectedFilter(data)
                 loadInitialData()
@@ -311,7 +312,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         allMarker.forEach {
             if (it.tag == marker.tag) {
                 cardListPosition = it.tag as Int
-                rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(cardListPosition)
+                rvHorizontalPropertiesHotelSearchMap.scrollToPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
             }
         }
