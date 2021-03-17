@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:srcCompat="@drawable/unify_globalerrors_connection"
-        android:layout_marginBottom="@dimen/margin_small"/>
+        android:layout_marginBottom="@dimen/margin_small"
+        tools:ignore="contentDescription"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/notification"
