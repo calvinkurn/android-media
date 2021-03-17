@@ -253,10 +253,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     }
 
-    private fun bindStickyViewHolder() {
-        recyclerView.rebindStickyViewHolder()
-    }
-
     private fun setUpObserver() {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -264,7 +260,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
-                        bindStickyViewHolder()
                         if (listComponent.isNullOrEmpty()) {
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
@@ -682,7 +677,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun onResume() {
         super.onResume()
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
