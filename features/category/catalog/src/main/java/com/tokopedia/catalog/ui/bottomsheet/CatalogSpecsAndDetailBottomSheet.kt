@@ -20,6 +20,7 @@ import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
 import com.tokopedia.catalog.ui.fragment.CatalogSpecsAndDetailFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_bottomsheet_catalog_specifications.*
 
 class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
@@ -96,6 +97,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         activity?.let {
             setTitle(it.resources.getString(R.string.catalog_detail_product))
+            val session = UserSession(it)
             val adapter = CatalogDetailsAndSpecsPagerAdapter(it, context, list)
             viewPager?.adapter = adapter
             if(tabLayout != null && viewPager != null){
@@ -118,13 +120,16 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                     CatalogDetailAnalytics.ActionKeys.CLICK_TAB_DESCRIPTION,
-                                    catalogId)
+                                    catalogId,session.userId)
+                            openPage = DESCRIPTION
                         } else if (position == PAGE_SPECIFICATIONS){
-                            CatalogDetailAnalytics.sendEvent(
-                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                                    CatalogDetailAnalytics.ActionKeys.CLICK_TAB_SPECIFICATIONS,
-                                    catalogId)
+                            if(openPage != SPECIFICATION) {
+                                CatalogDetailAnalytics.sendEvent(
+                                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                        CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                        CatalogDetailAnalytics.ActionKeys.CLICK_TAB_SPECIFICATIONS,
+                                        catalogId, session.userId)
+                            }
                         }
                     }
                 }
