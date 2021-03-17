@@ -1,21 +1,20 @@
 package com.tokopedia.sellerorder.detail
 
+import android.app.Application
 import android.content.Context
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.sellerorder.SomIdlingResource
-import com.tokopedia.sellerorder.common.presenter.model.Roles
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
-import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
 import org.junit.After
@@ -80,20 +79,19 @@ class SomDetailPltPerformanceTest {
     }
 
     private fun login() {
-        loginInstrumentationTestTopAdsUser()
+        InstrumentationAuthHelper.loginToAnUser(
+                InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
+                SomIdlingResource.idlingResource,
+                "try.sugiharto+02@tokopedia.com",
+                "tokopedia789"
+        )
     }
 
     private fun startSomDetailActivity() {
         activityRule.launchActivity(
                 SomDetailActivity.createIntent(
                         InstrumentationRegistry.getInstrumentation().targetContext,
-                        "688060798",
-                        SomGetUserRoleUiModel(listOf(
-                                Roles.MANAGE_SHOPSTATS,
-                                Roles.MANAGE_INBOX,
-                                Roles.MANAGE_TA,
-                                Roles.MANAGE_TX
-                        ))
+                        "738147040"
                 )
         )
     }
