@@ -92,7 +92,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // FLASH SALE
     private fun renderFlashSaleCampaignRibbon(onGoingData: ProductContentMainData? = null) {
         onGoingData?.let {
-            this.show()
             renderOnGoingCampaignRibbon(onGoingData)
             showCampaignRibbonType2()
         }
@@ -111,6 +110,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
             val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
             campaign_ribbon_layout_s3.background = gradientDrawable
+            // show count down wording
+            tpg_ends_in_s3.show()
             // render ongoing count down timer
             renderOnGoingCountDownTimer(campaign = campaign, timerView = tus_timer_view_s3)
             // hide irrelevant views
@@ -314,8 +315,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
 
         // set stock bar color
-        val fromColor = ContextCompat.getColor(context, R.color.Unify_N700)
-        stockProgressBar.progressBarColor = intArrayOf(fromColor,fromColor)
+        val barColor = ContextCompat.getColor(context, R.color.product_detail_stock_bar_to_color)
+        stockProgressBar.progressBarColor = intArrayOf(barColor, barColor)
 
         // percentage 100% = 1
         if (stockSoldPercentage != 1) {
@@ -353,9 +354,16 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun getGradientDrawableForBackGround(gradientHexCodes: String): GradientDrawable {
-        val gradientColors = gradientHexCodes.split(",")
-        val firstColor = Color.parseColor(gradientColors[0])
-        val secondColor = Color.parseColor(gradientColors[1])
-        return GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
+        return try {
+            val gradientColors = gradientHexCodes.split(",")
+            val firstColor = Color.parseColor(gradientColors[0])
+            val secondColor = Color.parseColor(gradientColors[1])
+            GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
+        } catch (ex: Exception) {
+            // TODO refactor the hardcoded gradient with default color
+            val firstColor = Color.parseColor("#00AA5B")
+            val secondColor = Color.parseColor("#008849")
+            GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
+        }
     }
 }

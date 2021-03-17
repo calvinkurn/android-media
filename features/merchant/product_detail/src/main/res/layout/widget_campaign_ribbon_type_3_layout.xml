@@ -27,6 +27,7 @@
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:adjustViewBounds="true"
+            android:background="@drawable/bg_logo_border"
             android:paddingTop="@dimen/pdp_dp_6"
             android:paddingBottom="@dimen/pdp_dp_6"
             android:scaleType="fitCenter"

@@ -28,6 +28,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:adjustViewBounds="true"
+            android:background="@drawable/bg_logo_border"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toEndOf="@+id/left_margin_view"
             app:layout_constraintTop_toTopOf="parent"
