@@ -46,6 +46,9 @@ class PageInfoPusherManager(val activity: Activity) {
     private fun handleConfig(config: JSONObject) {
         try {
             val className: String? = activity.javaClass.canonicalName
+            val id: String = config.optString("id")
+            val isHitGa: Boolean = config.optBoolean("hit_to_ga")
+            val isHitTimber: Boolean = config.optBoolean("hit_to_timber")
             val pages: String = config.optString("pages")
             val environment: String = config.optString("environment")
             val minAppVer: String = config.optString("min_app_ver_code")
@@ -69,18 +72,25 @@ class PageInfoPusherManager(val activity: Activity) {
             if ("all" != environment && GlobalConfig.isAllowDebuggingTools() && "dev" != environment) return
             if ("all" != environment && !GlobalConfig.isAllowDebuggingTools() && "prod" != environment) return
 
-            Timber.w("P1#DISPLAY_GENERAL_INFO#'" + className
-                    + "';dev='" + GlobalConfig.isAllowDebuggingTools()
-                    + "';ver='" + GlobalConfig.VERSION_NAME
-                    + "';manufacturer='" + android.os.Build.MANUFACTURER
-                    + "';model='" + android.os.Build.MODEL
-                    + "';os='" + android.os.Build.VERSION.SDK_INT.toString()
-                    + "';title='" + title + "'"
-                    + "';button_text='" + buttonText + "'"
-                    + "';action_applink='" + actionApplink + "'"
-                    + "';message='" + message + "'")
-
             showPopUp(message = message, title = title, buttonText = buttonText, actionApplink =  actionApplink)
+
+            if (isHitTimber) {
+                Timber.w("P1#DISPLAY_GENERAL_INFO#'" + className
+                        + "';id='" + id
+                        + "';dev='" + GlobalConfig.isAllowDebuggingTools()
+                        + "';ver='" + GlobalConfig.VERSION_NAME
+                        + "';manufacturer='" + android.os.Build.MANUFACTURER
+                        + "';model='" + android.os.Build.MODEL
+                        + "';os='" + android.os.Build.VERSION.SDK_INT.toString()
+                        + "';title='" + title + "'"
+                        + "';button_text='" + buttonText + "'"
+                        + "';action_applink='" + actionApplink + "'"
+                        + "';message='" + message + "'")
+            }
+
+            if (isHitGa) {
+                //will hit GA here
+            }
 
         } catch (e: java.lang.Exception) {
         }
