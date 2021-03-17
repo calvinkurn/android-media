@@ -196,6 +196,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var rv: RecyclerView? = null
     private var chatBackground: ImageView? = null
     private var textWatcher: MessageTextWatcher? = null
+    private var firstTimeOpen = true
 
     private var broadcastReceiver: BroadcastReceiver? = null
 
@@ -495,9 +496,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupFirstTimeOnly(chatRoom, chat)
         setupFirstPage(chatRoom, chat)
         fpm.stopTrace()
+        firstTimeOpen = false
+        setupDummyData()
+    }
+
+    private fun setupDummyData() {
         UploadImageChatService.dummyMap[messageId]?.let {
             for (dummy in it) {
                 addDummyMessage(dummy)
+            }
+        }
+    }
+
+    private fun removeDummyData() {
+        UploadImageChatService.dummyMap[messageId]?.let {
+            for (dummy in it) {
+                removeDummy(dummy)
             }
         }
     }
@@ -1029,6 +1043,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onReturnFromChooseImage(resultCode: Int, data: Intent?) {
+        viewState.hideAttachmentMenu()
         if (resultCode != RESULT_OK || data == null) {
             return
         }
@@ -1857,11 +1872,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onResume() {
         super.onResume()
         registerUploadImageReceiver()
+        if(!firstTimeOpen) {
+            setupDummyData()
+        }
     }
 
     override fun onPause() {
         super.onPause()
         unregisterUploadImageReceiver()
+        removeDummyData()
     }
 
     companion object {

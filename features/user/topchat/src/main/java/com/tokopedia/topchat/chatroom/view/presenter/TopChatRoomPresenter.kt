@@ -342,7 +342,6 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun startUploadImages(image: ImageUploadViewModel) {
         if(isEnableUploadImageService()) {
-            view?.addDummyMessage(image)
             UploadImageChatService.dummyMap[thisMessageId]?.add(image)
             UploadImageChatService.enqueueWork(view.context, image, thisMessageId)
         } else {
