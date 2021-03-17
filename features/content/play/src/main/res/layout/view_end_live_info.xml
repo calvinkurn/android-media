@@ -5,8 +5,8 @@
     android:id="@+id/cl_play_live_ended"
     android:layout_width="@dimen/layout_lvl0"
     android:layout_height="@dimen/layout_lvl0"
-    android:paddingBottom="@dimen/spacing_lvl4"
     android:background="@color/play_dms_video_background"
+    android:paddingBottom="@dimen/spacing_lvl4"
     tools:layout_height="match_parent"
     tools:layout_width="match_parent"
     >

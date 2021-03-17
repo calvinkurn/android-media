@@ -24,9 +24,8 @@
         app:titleTextAppearance="?titleTextAppearance"
         tools:targetApi="lollipop">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSave"
-            style="@style/TextView.Title.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -39,6 +38,9 @@
             android:paddingRight="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
             android:text="@string/label_save"
+            android:textColor="@color/g_500"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler"
             android:visibility="gone"
             tools:visibility="visible" />
     </androidx.appcompat.widget.Toolbar>
@@ -65,27 +67,23 @@
         app:ilv_drawable="@drawable/ic_calendar_grey"
         app:ilv_title="@string/date_end_shop_close" />
 
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/tilShopCloseNote"
-        style="@style/HintTextInputLayout"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfShopCloseNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:hint="@string/shop_close_note">
+        app:text_field_input_type="text"
+        app:text_field_label="@string/shop_close_note"
+        app:text_field_counter="@integer/max_slogan_char"/>
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etShopCloseNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textNoSuggestions|textMultiLine"
-            android:maxLength="@integer/max_slogan_char" />
-
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-    <TextView
-        style="@style/TextView.Micro.BlackDisabled"
+    <com.tokopedia.unifyprinciples.Typography
+        android:textColor="@color/font_black_disabled_38"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         android:layout_margin="@dimen/dp_16"
         android:text="@string/closed_note_information" />
 
