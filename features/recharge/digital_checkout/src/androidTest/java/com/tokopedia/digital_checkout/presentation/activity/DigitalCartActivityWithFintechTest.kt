@@ -189,12 +189,13 @@ class DigitalCartActivityWithFintechTest {
 
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
+
+        onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.500")))
         Thread.sleep(1000)
     }
 
     private fun validateCheckoutSummaryOnUi() {
-        onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
         onView(withId(R.id.tvCheckoutSummaryTitle)).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Subtotal Tagihan"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Yuk mulai nabung emas"))).check(doesNotExist())
