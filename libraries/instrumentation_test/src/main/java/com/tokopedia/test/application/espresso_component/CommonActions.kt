@@ -111,6 +111,21 @@ object CommonActions {
         }
     }
 
+    fun getAllViewsViewHolder(recyclerViewId: Int, totalSize:Int, listener: (View?, Int) -> Unit) {
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        (1..totalSize).forEach {
+            viewInteraction.perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(it, returnView { view ->
+                        if (view?.height != 0) {
+                            listener.invoke(view, it)
+                        }
+                    })
+            )
+        }
+    }
+
+
     fun findViewAndScreenShot(viewId: Int, fileName: String, fileNamePostFix: String) {
         Espresso.onView(Matchers.allOf(ViewMatchers.withId(viewId))).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(object : ViewAction {
             override fun getConstraints(): Matcher<View>? = ViewMatchers.isAssignableFrom(View::class.java)
@@ -138,6 +153,20 @@ object CommonActions {
     }
 
     private fun screenShotChild(listener: (View?) -> Unit): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String {
+                return "Click on a child view with specified id."
+            }
+
+            override fun perform(uiController: UiController?, view: View) {
+                listener.invoke(view)
+            }
+        }
+    }
+
+    private fun returnView(listener: (View?) -> Unit): ViewAction? {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View>? = null
 

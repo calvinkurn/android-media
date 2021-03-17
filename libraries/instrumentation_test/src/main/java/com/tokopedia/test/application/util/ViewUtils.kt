@@ -15,11 +15,11 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
+
 /**
  * Created by Yehezkiel on 29/11/20
  */
 object ViewUtils {
-
     /**
      * Screenshot specific view
      */
@@ -39,6 +39,46 @@ object ViewUtils {
         }
     }
 
+    fun mergeScreenShot(fileName: String, dir: String = "", views: List<View?>?) {
+        var context: Context? = null
+        var totalHeight = 0
+        var totalWidth = 0
+        var accumulateHeight = 0
+
+        views?.forEach {
+            val height = it?.height ?: 0
+            totalWidth = it?.width ?: 0
+            totalHeight += height
+        }
+
+        val combineBitmap = Bitmap.createBitmap(totalWidth, totalHeight + 200, Bitmap.Config.ARGB_8888)
+        val c = Canvas(combineBitmap)
+
+        views?.forEachIndexed { index, it ->
+            val view = it ?: return
+            context = view.context
+            Handler(Looper.getMainLooper()).post {
+                view.setBackgroundColor(ContextCompat.getColor(context!!, R.color.Unify_N0))
+                val bitmap = Bitmap.createBitmap(
+                        view.width,
+                        view.height, Bitmap.Config.ARGB_8888
+                )
+                val b1 = Canvas(bitmap)
+                view.draw(b1)
+                if (index == 0) {
+                    c.drawBitmap(bitmap, 0F,1F, null)
+                } else {
+                    c.drawBitmap(bitmap, 0F, accumulateHeight.toFloat(), null)
+                }
+                view?.invalidate()
+                accumulateHeight += view.height
+            }
+        }
+
+        saveImage(context, dir, fileName, combineBitmap)
+
+    }
+
     /**
      * Screenshot entire activity/fragment
      */
@@ -56,8 +96,8 @@ object ViewUtils {
         }
     }
 
-    fun saveImage(context: Context, dir: String, fileName: String, bitmap: Bitmap?) {
-        val path = context.getExternalFilesDir(null)
+    fun saveImage(context: Context?, dir: String, fileName: String, bitmap: Bitmap?) {
+        val path = context?.getExternalFilesDir(null)
         val imageDir = File(path, dir)
 
         try {

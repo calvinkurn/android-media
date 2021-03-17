@@ -3,6 +3,7 @@ package com.tokopedia.product.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
@@ -50,6 +51,11 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
             isAffiliate = false, trackerAttribution = "",
             trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")
 
+    fun getFragmentView(): View? {
+        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
+        return fragment.view
+    }
+
     fun getDiscussionPosition(): Int {
         val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
         return fragment.productAdapter?.currentList?.indexOfFirst {
@@ -62,5 +68,10 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
         return fragment.productAdapter?.currentList?.indexOfFirst {
             it.name() == "pdp_5"
         } ?: 0
+    }
+
+    fun getAdapterTotalSize(): Int {
+        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
+        return fragment.productAdapter?.currentList?.size ?: 0
     }
 }

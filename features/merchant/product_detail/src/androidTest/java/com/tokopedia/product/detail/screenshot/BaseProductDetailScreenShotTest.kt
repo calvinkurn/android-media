@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.screenshot
 
 import android.content.Context
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -11,12 +13,13 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.instrumentation.test.R
 import com.tokopedia.product.detail.ProductDetailActivityCommonTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.espresso_component.CommonActions.findViewAndScreenShot
-import com.tokopedia.test.application.espresso_component.CommonActions.findViewHolderAndScreenshot
+import com.tokopedia.test.application.espresso_component.CommonActions.getAllViewsViewHolder
 import com.tokopedia.test.application.util.InstrumentationMockHelper
+import com.tokopedia.test.application.util.ViewUtils
 import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.core.AllOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,20 +45,14 @@ abstract class BaseProductDetailScreenShotTest {
     @Test
     fun screenShot() {
         waitForData()
-        screenshotScreen(filePrefix(), "top screen")
         scrollToBottom() // trigger recom listener
-        waitForData()
+        scrollToTop()
 
-        findViewAndScreenShot(com.tokopedia.product.detail.R.id.base_btn_action, filePrefix(), "button")
-
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, 1, filePrefix(), "content")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, 2, filePrefix(), "social proof")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, 3, filePrefix(), "review")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, 4, filePrefix(), "variant")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, 5, filePrefix(), "info")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, 6, filePrefix(), "shop info")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activityCommonRule.activity.getDiscussionPosition(), filePrefix(), "discussion", true)
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activityCommonRule.activity.getLastPositionIndex(), filePrefix(), "recom", true)
+        val views: MutableList<View?> = mutableListOf()
+        getAllViewsViewHolder(com.tokopedia.product.detail.R.id.rv_pdp, activityCommonRule.activity.getAdapterTotalSize() - 1) { view, index ->
+            views.add(view)
+        }
+        ViewUtils.mergeScreenShot(filePrefix(), "test", views)
 
         activityCommonRule.activity.finishAndRemoveTask()
     }
@@ -68,8 +65,12 @@ abstract class BaseProductDetailScreenShotTest {
         Thread.sleep(5000)
     }
 
-    private fun screenshotScreen(filename: String, postfix: String) {
-        activityCommonRule.activity.takeScreenShot("$filename-$postfix")
+    private fun scrollToTop() {
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+                .perform(
+                        RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(ViewMatchers.withId(com.tokopedia.product.detail.R.id.product_detail_info_title))), ViewActions.scrollTo())
+                )
     }
 
     private fun scrollToBottom() {
