@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:gravity="center"
         android:text="@string/msg_under_maintenance" />
 
