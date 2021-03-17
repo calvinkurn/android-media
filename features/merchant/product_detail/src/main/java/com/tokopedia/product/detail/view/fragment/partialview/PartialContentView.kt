@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
-import com.tokopedia.product.detail.view.widget.CampaignRibbon.Companion.UPCOMING
 import kotlinx.android.synthetic.main.item_product_content.view.*
 
 /**

@@ -16,7 +16,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isGivenDateIsBelowThan24H
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -47,6 +46,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         const val UPCOMING = 1
 
         // campaign types
+        private const val NO_CAMPAIGN = 0
         private const val FLASH_SALE = 1
         private const val SLASH_PRICE = 2
         private const val NPL = 3
@@ -82,7 +82,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun renderOnGoingCampaign(onGoingData: ProductContentMainData) {
         when (onGoingData.campaign.campaignIdentifier) {
-            FLASH_SALE -> renderFlashSaleCampaignRibbon(campaignPeriod = ONGOING, onGoingData = onGoingData)
+            NO_CAMPAIGN -> this.hide()
+            FLASH_SALE -> renderFlashSaleCampaignRibbon(onGoingData = onGoingData)
             SLASH_PRICE -> renderSlashPriceCampaignRibbon(onGoingData = onGoingData)
             NPL -> renderNplCampaignRibbon(campaignPeriod = ONGOING, onGoingData = onGoingData)
             NEW_USER -> renderNewUserCampaignRibbon(onGoingData = onGoingData)
@@ -92,36 +93,27 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun renderUpComingCampaign(upComingData: ProductNotifyMeDataModel) {
         when (upComingData.campaignIdentifier) {
-            FLASH_SALE -> renderFlashSaleCampaignRibbon(campaignPeriod = UPCOMING, upComingData = upComingData)
-            NPL -> renderNplCampaignRibbon(campaignPeriod = ONGOING, upcomingData = upComingData)
+            NPL -> renderNplCampaignRibbon(campaignPeriod = UPCOMING, upcomingData = upComingData)
         }
     }
 
     // FLASH SALE
-    private fun renderFlashSaleCampaignRibbon(@CampaignPeriod campaignPeriod: Int,
-                                              onGoingData: ProductContentMainData? = null,
-                                              upComingData: ProductNotifyMeDataModel? = null) {
-        when (campaignPeriod) {
-            UPCOMING -> {
-                upComingData?.let {
-                    renderUpComingCampaignRibbon(upComingData)
-                    showCampaignRibbonType1()
-                }
-            }
-            ONGOING -> {
-                onGoingData?.let {
-                    renderOnGoingCampaignRibbon(onGoingData)
-                    showCampaignRibbonType2()
-                }
-            }
+    private fun renderFlashSaleCampaignRibbon(onGoingData: ProductContentMainData? = null) {
+        onGoingData?.let {
+            val campaign = onGoingData.campaign
+            if (campaign.shouldShowRibbonCampaign) {
+                renderOnGoingCampaignRibbon(onGoingData)
+                showCampaignRibbonType2()
+            } else this.hide()
         }
     }
 
     // SLASH PRICE - not eligible for thematic campaign
     private fun renderSlashPriceCampaignRibbon(onGoingData: ProductContentMainData) {
         val campaign = onGoingData.campaign
-        val thematicCampaign = onGoingData.thematicCampaign
-        if (campaign.startDate.isGivenDateIsBelowThan24H()) {
+        if (campaign.shouldShowRibbonCampaign) {
+            // thematic data
+            val thematicCampaign = onGoingData.thematicCampaign
             // render campaign name
             val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
             tpg_campaign_name_s3.text = campaignName
@@ -135,15 +127,13 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             regulatory_info_layout_s3.hide()
             // show campaign ribbon type 3
             showCampaignRibbonType3()
-        } else {
-            this.hide()
-        }
+        } else this.hide()
     }
 
     // NPL
-    fun renderNplCampaignRibbon(@CampaignPeriod campaignPeriod: Int,
-                                onGoingData: ProductContentMainData? = null,
-                                upcomingData: ProductNotifyMeDataModel? = null) {
+    private fun renderNplCampaignRibbon(@CampaignPeriod campaignPeriod: Int,
+                                        onGoingData: ProductContentMainData? = null,
+                                        upcomingData: ProductNotifyMeDataModel? = null) {
         when (campaignPeriod) {
             UPCOMING -> {
                 onGoingData?.let {
