@@ -363,11 +363,11 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
             coachMark?.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     checkCoachMarkImpression(
-                            onCoachMarkChooseAddressWidgetImpressed = {
+                            onCoachMarkFollowButtonImpressed = {
                                 listener.saveFirstTimeVisit()
                                 shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
                             },
-                            onCoachMarkFollowButtonImpressed = {
+                            onCoachMarkChooseAddressWidgetImpressed = {
                                 ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
                             }
                     )
@@ -375,11 +375,11 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
             })
             coachMark?.showCoachMark(coachMarkList)
             checkCoachMarkImpression(
-                    onCoachMarkChooseAddressWidgetImpressed = {
+                    onCoachMarkFollowButtonImpressed = {
                         listener.saveFirstTimeVisit()
                         shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
                     },
-                    onCoachMarkFollowButtonImpressed = {
+                    onCoachMarkChooseAddressWidgetImpressed = {
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
                     }
             )
