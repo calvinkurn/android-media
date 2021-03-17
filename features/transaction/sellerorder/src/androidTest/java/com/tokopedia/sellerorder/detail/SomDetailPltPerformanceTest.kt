@@ -10,6 +10,7 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.sellerorder.SomIdlingResource
+import com.tokopedia.sellerorder.Utils
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -70,21 +71,12 @@ class SomDetailPltPerformanceTest {
 
     @Test
     fun testPageLoadTimePerformance() {
-        login()
+        Utils.login()
         Espresso.onIdle() // wait for login to complete
         startSomDetailActivity()
         Espresso.onIdle() // wait for som order detail render process to complete
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
         activityRule.activity.finishAndRemoveTask()
-    }
-
-    private fun login() {
-        InstrumentationAuthHelper.loginToAnUser(
-                InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
-                SomIdlingResource.idlingResource,
-                "try.sugiharto+02@tokopedia.com",
-                "tokopedia789"
-        )
     }
 
     private fun startSomDetailActivity() {
