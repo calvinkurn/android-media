@@ -1,12 +1,14 @@
 package com.tokopedia.pageinfopusher
 
 import android.app.Activity
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.track.TrackApp
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -15,6 +17,12 @@ class PageInfoPusherManager(val activity: Activity) {
     val MAINAPP_GENERAL_INFO = "android_mainapp_general_info"
     val SELLERAPP_GENERAL_INFO = "android_sellerapp_general_info"
     val PRO_GENERAL_INFO = "android_pro_general_info"
+
+    val EVENT = "event"
+    val EVENT_CATEGORY = "eventCategory"
+    val EVENT_ACTION = "eventAction"
+    val EVENT_LABEL = "eventLabel"
+    val USER_ID = "userId"
 
     val remoteConfig : RemoteConfig
 
@@ -94,6 +102,18 @@ class PageInfoPusherManager(val activity: Activity) {
 
         } catch (e: java.lang.Exception) {
         }
+    }
+
+    private fun eventDisplayGeneralInfo(userId: String?) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, "",
+                        EVENT_CATEGORY, "",
+                        EVENT_ACTION, "",
+                        EVENT_LABEL, "",
+                        USER_ID, userId
+                )
+        )
     }
 
     private fun isEligibleForGeneralInfo(requirements: String, value: String?): Boolean {
