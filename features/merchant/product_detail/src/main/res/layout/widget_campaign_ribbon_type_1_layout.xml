@@ -26,7 +26,7 @@
             tools:ignore="MissingConstraints,RtlSymmetry"
             tools:text="Harga Spesial" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintRight_toRightOf="parent"
@@ -57,8 +57,6 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:layout_constraintLeft_toRightOf="@id/tv_start_in_s1"
             app:layout_constraintTop_toBottomOf="@id/tpg_campaign_name_s1"
-            app:timer_unify_single_showClockIcon="false"
-            app:timer_unify_single_type="auto"
             app:timer_unify_single_variant="alternate"
             tools:ignore="RtlSymmetry" />
 
@@ -69,12 +67,12 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            tools:text="@string/notify_me_subtitle_main"
             android:textColor="@color/Unify_N0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tpg_campaign_name_s1"
             app:typographyType="small"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            tools:text="@string/notify_me_subtitle_main" />
 
         <View
             android:layout_width="match_parent"
@@ -96,13 +94,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_regulatory_info_overlay"
-            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingStart="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
+            tools:ignore="RtlSymmetry"
             tools:text="Khusus pembayaran dengan OVO" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

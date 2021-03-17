@@ -21,15 +21,20 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iu_campaign_logo_s3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/spacing_lvl3"
+            android:adjustViewBounds="true"
+            android:paddingTop="@dimen/pdp_dp_6"
+            android:paddingBottom="@dimen/pdp_dp_6"
+            android:scaleType="fitCenter"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/left_margin_view"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_btn_play" />
+            tools:src="@drawable/ic_btn_play"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpg_campaign_name_s3"
@@ -44,26 +49,13 @@
             app:typographyType="heading_5"
             tools:ignore="MissingConstraints,RtlSymmetry" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/transparent_asset_small"
             tools:ignore="MissingConstraints" />
-
-        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-            android:id="@+id/tus_timer_view_s3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:timer_unify_single_showClockIcon="false"
-            app:timer_unify_single_type="auto"
-            app:timer_unify_single_variant="alternate"
-            tools:ignore="RtlSymmetry" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpg_ends_in_s3"
@@ -72,11 +64,28 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:text="@string/label_ends_in"
             android:textColor="@color/Unify_N0"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/tus_timer_view_s3"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/tus_timer_view_s3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:timer_unify_single_showClockIcon="false"
+            app:timer_unify_single_type="auto"
+            app:timer_unify_single_variant="alternate"
+            tools:ignore="RtlSymmetry"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

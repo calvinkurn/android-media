@@ -11,4 +11,7 @@
     <color name="product_detail_dms_discount_red_background">#FFEAEF</color>
 
     <color name="product_detail_dms_tradein_blue">#32afff</color>
+    
+    <color name="product_detail_stock_bar_from_color">#80FFFFFF</color>
+    <color name="product_detail_stock_bar_to_color">#FFFFFF</color>
 </resources>

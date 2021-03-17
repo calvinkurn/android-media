@@ -21,12 +21,14 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iu_campaign_logo_s2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/pdp_dp_40"
+            android:layout_height="@dimen/pdp_dp_40"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             app:layout_constraintStart_toEndOf="@+id/left_margin_view"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_btn_play" />
@@ -46,12 +48,13 @@
 
         <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/pbu_stock_bar_s2"
-            android:layout_width="72dp"
-            android:layout_height="4dp"
+            android:layout_width="@dimen/pdp_dp_96"
+            android:layout_height="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            app:layout_constraintLeft_toRightOf="@id/iu_campaign_logo_s2"
-            app:layout_constraintTop_toBottomOf="@id/tpg_campaign_name_s2" />
+            android:layout_marginTop="@dimen/pdp_dp_9"
+            android:layout_marginBottom="@dimen/pdp_dp_15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/iu_campaign_logo_s2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgp_sold_out_wording_s2"
@@ -70,20 +73,36 @@
             android:id="@+id/tgp_stock_wording_s2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/pdp_dp_9"
+            android:layout_marginBottom="@dimen/pdp_dp_10"
             android:text="Lagi diminati"
             android:textColor="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="@id/pbu_stock_bar_s2"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/pbu_stock_bar_s2"
-            app:layout_constraintTop_toTopOf="@id/pbu_stock_bar_s2"
             app:typographyType="small" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/transparent_asset_big"
+            tools:ignore="MissingConstraints" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgp_count_down_wording_s2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pdp_dp_10"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl1"
+            android:text="@string/label_ends_in"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintBottom_toTopOf="@id/tus_timer_view_s2"
+            app:layout_constraintLeft_toLeftOf="@id/tus_timer_view_s2"
+            app:layout_constraintRight_toRightOf="@id/tus_timer_view_s2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small"
             tools:ignore="MissingConstraints" />
 
         <com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -94,25 +113,8 @@
             android:layout_marginBottom="@dimen/pdp_dp_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:timer_unify_single_showClockIcon="false"
-            app:timer_unify_single_type="auto"
             app:timer_unify_single_variant="alternate"
             tools:ignore="RtlSymmetry" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tgp_count_down_wording_s2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pdp_dp_10"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:text="@string/label_ends_in"
-            android:textColor="@color/Unify_N0"
-            app:layout_constraintBottom_toTopOf="@id/tus_timer_view_s2"
-            app:layout_constraintLeft_toLeftOf="@id/tus_timer_view_s2"
-            app:layout_constraintRight_toRightOf="@id/tus_timer_view_s2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small"
-            tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

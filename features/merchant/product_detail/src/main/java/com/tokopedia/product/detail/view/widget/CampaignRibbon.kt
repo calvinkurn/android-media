@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.ImageView
 import androidx.annotation.IntDef
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -195,8 +196,10 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         } else iu_campaign_logo_s3.hide()
         // render campaign name
         tpg_campaign_name_s3.text = thematicCampaign.campaignName
+        // hide irrelevant views
+        regulatory_info_layout_s3.hide()
         // show campaign ribbon type 3
-        showCampaignRibbonType2()
+        showCampaignRibbonType3()
     }
 
     //==========================================================================================================================================
@@ -249,28 +252,28 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
                                                 ribbonCopy: String,
                                                 timerView: TimerUnifySingle,
                                                 timerWordingView: Typography) {
-        if (startDateData.isGivenDateIsBelowThan24H()) {
-            try {
-                val now = System.currentTimeMillis()
-                val startTime = startDateData.toLongOrZero() * ONE_SECOND
-                val startDate = Date(startTime)
+        try {
+            val now = System.currentTimeMillis()
+            val startTime = startDateData.toLongOrZero() * ONE_SECOND
+            val startDate = Date(startTime)
+            val calendar = Calendar.getInstance()
+            calendar.time = startDate
+            timerView.targetDate = calendar
+            timerView.isShowClockIcon = false
 
-                if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
-                    timerView.show()
-                    timerView.onFinish = {
-                        listener?.refreshPage()
-                    }
-                    this.rootView.show()
-                } else {
-                    timerView.hide()
-                    timerWordingView.gone()
+            // less then 24 hours campaign period
+            if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
+                timerView.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                timerView.onFinish = {
+                    listener?.refreshPage()
                 }
-            } catch (e: Throwable) {
-                this.rootView.hide()
+            } else {
+                timerView.timerFormat = TimerUnifySingle.FORMAT_DAY
             }
-        } else {
             timerWordingView.text = MethodChecker.fromHtml(ribbonCopy)
-            timerView.hide()
+            timerView.show()
+        } catch (e: Throwable) {
+            this.rootView.hide()
         }
     }
 
@@ -359,6 +362,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
             iu_campaign_logo_s2.loadImage(thematicCampaign.icon)
+            iu_campaign_logo_s2.scaleType = ImageView.ScaleType.FIT_CENTER
             iu_campaign_logo_s2.show()
         } else iu_campaign_logo_s2.hide()
 
@@ -417,6 +421,12 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             stockProgressBar.hide()
             return
         }
+
+        // set stock bar color
+        val fromColor = ContextCompat.getColor(context, R.color.product_detail_stock_bar_from_color)
+        val toColor = ContextCompat.getColor(context, R.color.product_detail_stock_bar_to_color)
+        stockProgressBar.progressBarColor = intArrayOf(fromColor, toColor)
+
         // percentage 100% = 1
         if (stockSoldPercentage != 1) {
             stockProgressBar.setValue(stockSoldPercentage)
@@ -431,21 +441,22 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
+            val calendar = Calendar.getInstance()
+            calendar.time = endDate
+            timerView.targetDate = calendar
+            timerView.isShowClockIcon = false
 
+            // less then 24 hours campaign period
             if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
-                timerView.show()
-                val calendar = Calendar.getInstance()
-                calendar.time = endDate
-                timerView.targetDate = calendar
+                timerView.timerFormat = TimerUnifySingle.FORMAT_HOUR
                 timerView.onFinish = {
                     callback?.onOnGoingCampaignEnded(campaign)
                     listener?.showAlertCampaignEnded()
                 }
-                this.show()
             } else {
-                tgp_count_down_wording_s2.hide()
-                timerView.hide()
+                timerView.timerFormat = TimerUnifySingle.FORMAT_DAY
             }
+            timerView.show()
         } catch (ex: Exception) {
             this.hide()
         }

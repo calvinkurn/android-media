@@ -57,12 +57,13 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
                 )
                 renderCampaignInactiveNpl(data.price.priceFmt)
             }
-            data.campaign.isActive -> {
-                campaignRibbon.renderOnGoingCampaign(data)
-                renderCampaignActive(data.campaign, data.stockWording)
+            // campaign identifier = 0
+            data.campaign.campaignIdentifier == 0 -> {
+                renderCampaignInactive(data.price.priceFmt)
             }
             else -> {
-                renderCampaignInactive(data.price.priceFmt)
+                campaignRibbon.renderOnGoingCampaign(data)
+                renderCampaignActive(data.campaign, data.stockWording)
             }
         }
 
