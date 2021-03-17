@@ -90,7 +90,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 }
             })
         }) {
-            Timber.e("P2#BRIZZI#ERROR_FAILED_REFRESH_TOKEN")
+            Timber.e("P2#BRIZZI#ERROR_FAILED_REFRESH_TOKEN#${NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN}")
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN)
         }
     }
@@ -131,7 +131,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 cardIsNotBrizzi.postValue(true)
             }
             else -> {
-                Timber.e("P2#BRIZZI#ERROR_CARD_MESSAGE#${brizziException.errorCode}")
+                Timber.e("P2#BRIZZI#ERROR_CARD_MESSAGE#${NfcCardErrorTypeDef.FAILED_READ_CARD}")
                 errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
             }
         }
