@@ -26,6 +26,7 @@ import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGen
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
@@ -82,7 +83,7 @@ class RechargeGeneralInstrumentTest {
         onView(withText("PBB Kota Cilegon")).check(matches(isDisplayed()))
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed()))
         onView(withText("Bayar PBB Tahun")).check(matches(isDisplayed()))
-        onView(withText("Nomor Objek Pajak")).check(matches(isDisplayed()))
+        onView(withText("Nomor Telepon")).check(matches(isDisplayed()))
     }
 
     fun validate_select_operator_cluster() {
@@ -126,11 +127,35 @@ class RechargeGeneralInstrumentTest {
     }
 
     fun validate_manual_input() {
-        onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
+        onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed()))
+        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
+
+        onView(withId(R.id.rv_digital_product)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
-                        1, typeText(VALID_INPUT_NUMBER)
+                        1, typeText("0812")
                 )
         ).perform(closeSoftKeyboard())
+        Thread.sleep(1000)
+        onView(withText(R.string.input_error_message))
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+        onView(withId(R.id.rv_digital_product)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
+                        1, typeText("3456")
+                )
+        ).perform(closeSoftKeyboard())
+        validate_enquiry_button_enabled_after_delayed()
+
+        onView(withId(R.id.rv_digital_product)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
+                        1, typeText("7891")
+                )
+        ).perform(closeSoftKeyboard())
+        validate_enquiry_button_enabled_after_delayed()
+    }
+
+    fun validate_enquiry_button_enabled_after_delayed() {
+        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
         Thread.sleep(1000)
         onView(withId(R.id.recharge_general_enquiry_button)).check(matches(isEnabled()))
     }
@@ -145,7 +170,7 @@ class RechargeGeneralInstrumentTest {
         onView(withText("Banten")).check(matches(isDisplayed()))
         onView(withText("PBB Kab. Tangerang")).check(matches(isDisplayed()))
         onView(withText("2017")).check(matches(isDisplayed()))
-        onView(withText("123456789012445000")).check(matches(isDisplayed()))
+        onView(withText("081234567891")).check(matches(isDisplayed()))
     }
 
     fun validate_promo() {
@@ -163,7 +188,6 @@ class RechargeGeneralInstrumentTest {
     }
 
     companion object {
-        private const val VALID_INPUT_NUMBER = "123456789012445111"
         private const val ANALYTIC_VALIDATOR_QUERY = "tracker/recharge/recharge_general_template_test.json"
     }
 }
