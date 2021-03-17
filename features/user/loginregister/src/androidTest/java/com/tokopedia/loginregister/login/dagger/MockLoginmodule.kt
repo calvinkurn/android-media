@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.login.di.LoginModule
 import com.tokopedia.loginregister.login.stub.MockCryptography

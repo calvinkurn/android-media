@@ -106,7 +106,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.5'
     unifyPrinciplesVersion = '1.3.5'
-    unifyComponentsVersion = '1.1.60'
+    unifyComponentsVersion = '1.1.61'
     unifyCoachMarkVersion = '1.2.10'
     unifyCalendarVersion = '1.1.2'
     unifyBannerVersion = '1.0.4'
@@ -264,6 +264,7 @@ ext {
             exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleExtensionsVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
+            lifeCycleCommon       : "androidx.lifecycle:lifecycle-common-java8:$lifeCycleVersion",
             lifecycleRuntimeKtx   : "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
             liveDataKtx           : "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion",
