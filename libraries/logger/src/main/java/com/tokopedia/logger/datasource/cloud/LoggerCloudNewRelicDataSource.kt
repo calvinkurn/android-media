@@ -1,10 +1,6 @@
 package com.tokopedia.logger.datasource.cloud
 
 import com.google.gson.Gson
-import com.tokopedia.logger.model.scalyr.ScalyrBody
-import com.tokopedia.logger.model.scalyr.ScalyrConfig
-import com.tokopedia.logger.model.scalyr.ScalyrEvent
-import com.tokopedia.logger.model.scalyr.ScalyrSessionInfo
 import com.tokopedia.logger.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,16 +8,15 @@ import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class LoggerCloudScalyrDataSource: LoggerCloudDataSource {
-    companion object {
-        private val gson = Gson()
-    }
+class LoggerCloudNewRelicDataSource: LoggerCloudNewRelicImpl {
 
-    override suspend fun sendLogToServer(config: ScalyrConfig, eventList: List<ScalyrEvent>): Boolean {
+    private val gson = Gson()
+
+    override suspend fun sendToLogServer(message: String): Boolean {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         withContext(Dispatchers.IO) {
             try {
-                errCode = openURL(config, eventList)
+                errCode = openURL(message)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -29,22 +24,20 @@ class LoggerCloudScalyrDataSource: LoggerCloudDataSource {
         return errCode == Constants.RESPONSE_SUCCESS_CODE
     }
 
-    private fun openURL(config: ScalyrConfig, scalyrEventList: List<ScalyrEvent>): Int {
+    private fun openURL(message: String): Int {
         var urlConnection: HttpURLConnection? = null
         val url: URL
 
         var responseCode = Constants.LOG_DEFAULT_ERROR_CODE
 
         try {
-            val scalyrBody = ScalyrBody(config.token, config.session,
-                ScalyrSessionInfo(config.serverHost, config.parser),
-                scalyrEventList)
-            url = URL(Constants.SCALYR_SERVER_URL)
+            url = URL(Constants.NEW_RELIC_SERVER_URL)
             urlConnection = url.openConnection() as HttpURLConnection
             urlConnection.requestMethod = Constants.METHOD_POST
+            urlConnection.setRequestProperty("Api-Key", Constants.NEW_RELIC_API_KEY)
             urlConnection.doOutput = true
             val wr = DataOutputStream(urlConnection.outputStream)
-            wr.writeBytes(gson.toJson(scalyrBody))
+            wr.writeBytes(gson.toJson(message))
             wr.flush()
             wr.close()
 
@@ -56,5 +49,6 @@ class LoggerCloudScalyrDataSource: LoggerCloudDataSource {
             return responseCode
         }
     }
+
 
 }

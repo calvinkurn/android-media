@@ -23,21 +23,7 @@ data class ScalyrSessionInfo(
         val serverHost: String,
         @SerializedName("parser")
         @Expose
-        val parser: String,
-
-        //need adjust, convert to json
-        @SerializedName("packageName")
-        @Expose
-        val packageName: String,
-        @SerializedName("installer")
-        @Expose
-        val installer: String,
-        @SerializedName("debug")
-        @Expose
-        val debug: Boolean,
-        @SerializedName("priority")
-        @Expose
-        val priority: Int)
+        val parser: String)
 
 data class ScalyrEvent(
         @SerializedName("ts")

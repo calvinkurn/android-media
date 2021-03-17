@@ -12,6 +12,8 @@ class Constants {
 
         const val MAX_BUFFER = 3900
         const val SCALYR_SERVER_URL = "https://app.scalyr.com/addEvents"
+        const val NEW_RELIC_SERVER_URL = "https://insights-collector.newrelic.com/v1/accounts/2565133/events"
+        const val NEW_RELIC_API_KEY = "NRII-Gb14CG6Z9DzGN-9uKm4254N9Lr8pN81Y"
         const val ENCRYPTION_KEY = "q(e#%Gf@oi>lkB~h"
         const val DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss:SSS"
 
@@ -24,7 +26,7 @@ class Constants {
 
         const val CLIENT_SCALYR = "scalyr"
 
-        const val SCALYR_SUCCESS_CODE = 200
+        const val RESPONSE_SUCCESS_CODE = 200
         const val LOG_DEFAULT_ERROR_CODE = 404
 
         const val METHOD_POST = "POST"

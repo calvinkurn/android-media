@@ -12,7 +12,7 @@ import com.tokopedia.logger.utils.TimberReportingTree
 import javax.crypto.SecretKey
 
 class LoggerRepository(private val logDao: LoggerDao,
-                       private val loggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEvent>,
+                       private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
                        private val scalyrConfigs: List<ScalyrConfig>,
                        private val encryptor: BaseEncryptor,
                        private val secretKey: SecretKey) : LoggerRepositoryContract {

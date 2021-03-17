@@ -53,7 +53,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
                 val priorityTag = it.postPriority
                 val classLine = tag ?: ""
                 val messageJson = messageData ?: mapOf()
-                val processedMessage = getMessage(tagKey, timeStamp, classLine, messageJson)
+                val processedMessage = getMessage(tagKey, timeStamp, classLine, priority, messageJson)
                 LogManager.log(processedMessage, timeStamp, priorityTag, priority)
             }
         })
@@ -72,8 +72,14 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         return SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US).format(Date(timeStamp))
     }
 
-    private fun getMessage(tag: String, timeStamp: Long, classLine: String, message: Map<String, String>): String {
+    private fun getMessage(tag: String, timeStamp: Long, classLine: String, priority: String, message: Map<String, String>): String {
         val mapMessage = mutableMapOf<String, String>()
+        val tokenIndex = when (priority) {
+            P1 -> Constants.SEVERITY_HIGH - 1
+            P2 -> Constants.SEVERITY_MEDIUM - 1
+            else -> -1
+        }
+        val scalyrConfig = LogManager.scalyrConfigList.getOrNull(tokenIndex)
         with(mapMessage) {
             put("tag", tag)
             put("timestamp", timeStamp.toString())
@@ -85,6 +91,10 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             put("os", Build.VERSION.RELEASE)
             put("device", Build.MODEL)
             put("cls", classLine)
+            put("packageName", scalyrConfig?.packageName.orEmpty())
+            put("installer", scalyrConfig?.installer.orEmpty())
+            put("debug", scalyrConfig?.debug.toString())
+            put("priority", scalyrConfig?.priority.toString())
             putAll(message)
         }
 
