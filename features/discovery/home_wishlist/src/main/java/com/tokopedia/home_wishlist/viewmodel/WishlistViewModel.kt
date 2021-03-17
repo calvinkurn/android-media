@@ -7,7 +7,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
 import com.tokopedia.home_wishlist.model.action.*
@@ -54,7 +54,7 @@ import kotlin.coroutines.CoroutineContext
 open class WishlistViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getWishlistUseCase: GetWishlistDataUseCase,
-        private val wishlistCoroutineDispatcherProvider: WishlistDispatcherProvider,
+        private val wishlistCoroutineDispatcherProvider: CoroutineDispatchers,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val addToCartUseCase: AddToCartUseCase,
@@ -68,7 +68,7 @@ open class WishlistViewModel @Inject constructor(
     private val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = wishlistCoroutineDispatcherProvider.ui() + masterJob
+        get() = wishlistCoroutineDispatcherProvider.main + masterJob
 
     private var tempSelectedProductIdInPdp: Int? = null
     private var tempSelectedPositionInPdp: Int? = null
@@ -126,7 +126,7 @@ open class WishlistViewModel @Inject constructor(
         keywordSearch = keyword
         currentPage = 1
 
-        launchCatchError(wishlistCoroutineDispatcherProvider.ui(), block = {
+        launchCatchError(wishlistCoroutineDispatcherProvider.main, block = {
             val data = getWishlistUseCase.getData(
                     GetWishlistParameter(keyword, currentPage))
             if (!data.isSuccess) {
@@ -171,7 +171,7 @@ open class WishlistViewModel @Inject constructor(
         wishlistData.value = wishlistData.value.copy().combineVisitable(listOf(LoadMoreDataModel()))
         currentPage++
 
-        launchCatchError(wishlistCoroutineDispatcherProvider.ui(), block = {
+        launchCatchError(wishlistCoroutineDispatcherProvider.main, block = {
             val data = getWishlistUseCase.getData(GetWishlistParameter(keywordSearch, currentPage))
             if (!data.isSuccess || data.items.isEmpty()) {
                 wishlistData.value = removeLoadMore()
@@ -334,7 +334,7 @@ open class WishlistViewModel @Inject constructor(
      * @return List of WishlistDataModel
      */
     private suspend fun getRecommendationWishlist(wishlistVisitable: List<WishlistDataModel>, page: Int, productIds: List<String>): List<WishlistDataModel> =
-            withContext(wishlistCoroutineDispatcherProvider.io()){
+            withContext(wishlistCoroutineDispatcherProvider.io){
                 try{
                     val recommendationData = getRecommendationUseCase.getData(
                             GetRecommendationRequestParam(
@@ -363,7 +363,7 @@ open class WishlistViewModel @Inject constructor(
      * Void [getTopAdsBannerData]
      */
     private suspend fun getTopAdsBannerData(wishlistVisitable: List<WishlistDataModel>, currentPage: Int, productIds: List<String>): List<WishlistDataModel>{
-        return withContext(wishlistCoroutineDispatcherProvider.io()){
+        return withContext(wishlistCoroutineDispatcherProvider.io){
             try{
                 if(wishlistVisitable.isNotEmpty()) {
                     val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage

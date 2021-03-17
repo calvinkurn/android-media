@@ -1,5 +1,7 @@
 package com.tokopedia.homenav.mainnav.interactor
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
@@ -8,11 +10,9 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
-import com.tokopedia.homenav.rule.TestDispatcherProvider
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -24,7 +24,7 @@ fun createViewModel (
         getProfileDataUseCase: GetProfileDataUseCase? = null,
         getProfileDataCacheUseCase: GetProfileDataCacheUseCase? = null,
         getBuListUseCase: GetCategoryGroupUseCase? = null,
-        dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         userSession: UserSessionInterface? = null,
         clientMenuGenerator: ClientMenuGenerator? = null,
         getNavNotification: GetNavNotification? = null,
