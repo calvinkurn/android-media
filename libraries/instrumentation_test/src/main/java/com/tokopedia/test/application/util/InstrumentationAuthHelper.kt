@@ -38,7 +38,7 @@ object InstrumentationAuthHelper {
         userSession {
             userId = "24095631"
             email = "jaka.pitana+akuntestprod@tokopedia.com"
-            accessTokenBearer = "S+OeQ5iIylKzG5yhqVBuyrhK2SzFxnfmqNrHvUdEZWs9FNDGkCd4ZQ7g8UtSuXJo"
+            accessTokenBearer = "SKHPkiHiIE75+ZfNvZxlob5LCwzqSrTQ6gCh9ZTK/3sQzeQ2hqB56z9vwAG2Ky0W"
         }
     }
 

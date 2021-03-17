@@ -13,7 +13,6 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -49,7 +48,6 @@ abstract class ShopPageProductListViewModelTestFixture {
     @RelaxedMockK
     lateinit var getShopProductUseCase: GqlGetShopProductUseCase
     @RelaxedMockK
-    @ShopProductGetHighlightProductQualifier
     lateinit var getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>
     @RelaxedMockK
     lateinit var deleteShopInfoUseCase: DeleteShopInfoCacheUseCase

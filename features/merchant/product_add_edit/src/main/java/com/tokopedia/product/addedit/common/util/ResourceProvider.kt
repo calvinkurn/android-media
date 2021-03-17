@@ -86,8 +86,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_empty_product_stock)
     }
 
-    fun getMinLimitProductStockErrorMessage(): String? {
-        return getString(R.string.error_minimum_stock_quantity_is_one)
+    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String? {
+        return try {
+            context?.getString(R.string.error_minimum_stock_quantity, minStock)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
     }
 
     fun getMaxLimitProductStockErrorMessage(): String? {
@@ -182,6 +186,16 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         } catch (e: Resources.NotFoundException) {
             ""
         }
+    }
+
+    // admin multi location string properties
+
+    fun getAddProductMultiLocationMessage(): String? {
+        return getString(R.string.message_add_product_stock_only_main_location)
+    }
+
+    fun getEditProductMultiLocationMessage(): String? {
+        return getString(R.string.message_edit_product_stock_only_main_location)
     }
 
     // Network errors
