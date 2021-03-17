@@ -147,9 +147,9 @@ class ChangePasswordFragment : BaseDaggerFragment() {
             when (it) {
                 LiveDataValidateResult.VALID -> {
                     if(isUseEncryption()){
-                        viewModel.submitChangePasswordV2("encode", newPassword, confirmationPassword, "token")
+                        viewModel.submitChangePasswordV2(newPassword, confirmationPassword)
                     } else{
-                        viewModel.submitChangePassword("encode", newPassword, confirmationPassword, "token")
+                        viewModel.submitChangePassword(newPassword, confirmationPassword)
                     }
                 }
                 LiveDataValidateResult.INVALID_LENGTH -> {
