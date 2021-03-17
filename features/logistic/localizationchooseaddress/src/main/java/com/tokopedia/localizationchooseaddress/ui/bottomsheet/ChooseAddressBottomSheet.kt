@@ -224,7 +224,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         val view = View.inflate(context, R.layout.bottomsheet_choose_address, null)
         setupView(view)
         setChild(view)
-        setCloseClickListener { dismissBottomSheet() }
+        setCloseClickListener {
+            ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
+            dismissBottomSheet()
+        }
         setOnDismissListener {
             listener?.onDismissChooseAddressBottomSheet()
         }
@@ -408,9 +411,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         txtSnippet?.visible()
         buttonSnippet?.visible()
 
-        setTitle("Mau kirim belanjaan ke mana")
+        setTitle(getString(R.string.bottomsheet_choose_address_title))
         renderButton()
         setCloseClickListener {
+            ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
             dismissBottomSheet()
         }
     }
