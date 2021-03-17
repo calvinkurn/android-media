@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductrevGetReminderCounterResponseWrapper(
-        @SerializedName("productre")
+        @SerializedName("productrevGetReminderCounter")
         @Expose
         val productrevGetReminderCounter: ProductrevGetReminderCounter = ProductrevGetReminderCounter()
 )

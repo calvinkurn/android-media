@@ -128,6 +128,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         observeInboxReviewCounter()
         observeInboxReview()
         observeFeedbackInboxReview()
+        observeReviewReminderEstimation()
         initTickerInboxReview()
         initSortFilterInboxReview()
         initRatingFilterList()
@@ -138,6 +139,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     override fun onResume() {
         super.onResume()
         inboxReviewViewModel.getInboxReviewCounter()
+        inboxReviewViewModel.fetchReminderCounter()
         InboxReviewTracking.openScreenInboxReview(inboxReviewViewModel.userSession.shopId.orEmpty(),
                 inboxReviewViewModel.userSession.userId.orEmpty())
     }
@@ -310,15 +312,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             when (it) {
                 is Success -> {
                     setInboxReviewTabCounter(it.data)
-                    setButtonReviewReminder(it.data)
                 }
                 is Fail -> {
                     setInboxReviewTabCounter()
-                    setButtonReviewReminder()
                 }
             }
         }
         inboxReviewViewModel.getInboxReviewCounter()
+        inboxReviewViewModel.fetchReminderCounter()
     }
 
     private fun setInboxReviewTabCounter(counter: Int = 0) {
@@ -370,6 +371,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     onErrorGetInboxReviewData()
                 }
             }
+        }
+    }
+
+    private fun observeReviewReminderEstimation(){
+        observe(inboxReviewViewModel.getEstimation()){
+            setButtonReviewReminder(it.totalBuyer)
         }
     }
 

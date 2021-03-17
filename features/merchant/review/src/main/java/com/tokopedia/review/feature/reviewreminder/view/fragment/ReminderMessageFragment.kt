@@ -242,5 +242,9 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         }
     }
 
-    private val observerError = Observer<String> { errorSnackbar?.show() }
+    private val observerError = Observer<String> {
+        errorSnackbar?.run {
+            if (isVisible) show()
+        }
+    }
 }

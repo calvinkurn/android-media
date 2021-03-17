@@ -7,7 +7,7 @@ data class ProductrevGetReminderCounter(
         @SerializedName("totalProduct")
         @Expose
         val totalProduct: Int = 0,
-        @SerializedName("")
+        @SerializedName("totalBuyer")
         @Expose
         val totalBuyer: Int = 0,
         @SerializedName("isWhitelisted")

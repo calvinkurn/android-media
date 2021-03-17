@@ -19,7 +19,7 @@ data class ProductrevGetReminderData(
         @SerializedName("ratingCount")
         @Expose
         val ratingCount: Int = 0,
-        @SerializedName("")
+        @SerializedName("buyerCount")
         @Expose
         val buyerCount: Int = 0
 )
