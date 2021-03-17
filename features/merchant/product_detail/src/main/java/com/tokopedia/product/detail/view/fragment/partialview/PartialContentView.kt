@@ -50,6 +50,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         when {
             isUpcomingNplType -> {
                 renderCampaignInactiveNpl(data.price.priceFmt)
+                campaignRibbon.hide()
             }
             // No campaign
             data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN -> {

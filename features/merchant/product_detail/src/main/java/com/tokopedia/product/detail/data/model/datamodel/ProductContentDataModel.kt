@@ -2,13 +2,13 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.IsFreeOngkir
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.widget.CampaignRibbon
 
 /**
  * Created by Yehezkiel on 06/05/20
@@ -32,12 +32,12 @@ data class ProductContentDataModel(
 
     override fun type(): String = type
 
-    fun isUpcomingNplType(): Boolean {
-        return upcomingNplData.upcomingType.isNotEmpty() && upcomingNplData.upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true)
+    fun isNpl(): Boolean {
+        return upcomingNplData.upcomingType.isNotEmpty()
     }
 
     fun showTradeIn(): Boolean {
-        return shouldShowTradein && data?.campaign?.shouldShowRibbonCampaign == false && !isUpcomingNplType()
+        return shouldShowTradein && data?.campaign?.shouldShowRibbonCampaign == false && data?.campaign?.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN
     }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
