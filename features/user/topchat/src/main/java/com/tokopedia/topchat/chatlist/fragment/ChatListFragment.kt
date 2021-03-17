@@ -236,13 +236,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     private fun setupSellerBroadcast() {
-        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
+        if (!isTabSeller()) return
         setupSellerBroadcastButton()
         chatItemListViewModel.loadChatBlastSellerMetaData()
-    }
-
-    private fun isSellerBroadcastRemoteConfigOn(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
     }
 
     private fun setupSellerBroadcastButton() {
@@ -254,24 +250,25 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 false -> broadCastButton.hide()
             }
         })
-        chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
-            if (url.isNullOrEmpty()) return@Observer
+        chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { applink ->
+            if (applink.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
                 if(isSellerMigrationEnabled(context)) {
                     val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
-                    val webViewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
                     val intent = context?.let { context ->
                         SellerMigrationActivity.createIntent(
                                 context = context,
                                 featureName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT,
                                 screenName = screenName,
-                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, webViewUrl)
+                                appLinks = arrayListOf(
+                                        ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, applink
+                                )
                         )
                     }
                     startActivity(intent)
                 } else {
                     chatListAnalytics.eventClickBroadcastButton()
-                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+                    RouteManager.route(context, applink)
                 }
             }
         })
