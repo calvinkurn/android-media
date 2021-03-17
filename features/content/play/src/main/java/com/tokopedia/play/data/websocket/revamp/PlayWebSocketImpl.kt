@@ -64,11 +64,14 @@ class PlayWebSocketImpl(
     }
 
     override fun connect(url: String) {
+        close()
         client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
     }
 
     override fun close() {
-        mWebSocket?.close(1000, "Closing Socket")
+        try {
+            mWebSocket?.close(1000, "Closing Socket")
+        } catch (e: Throwable) { }
     }
 
     override fun listenAsFlow(): Flow<WebSocketAction> {
