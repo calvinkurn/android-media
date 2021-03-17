@@ -2,8 +2,6 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment
 
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.View
@@ -11,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -64,19 +63,22 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     }
 
     private fun getBackgroundDrawable(hexColor: String): Drawable? {
-        val backgroundDrawable = ContextCompat.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.topchat_circle_color_variant_indicator)
-
-        if (isWhiteColor(hexColor)) {
-            applyStrokeTo(backgroundDrawable)
-            return backgroundDrawable
+        val intColor = Color.parseColor(hexColor)
+        val backgroundDrawable = ContextCompat.getDrawable(
+                itemView.context,
+                com.tokopedia.chat_common.R.drawable.topchat_circle_color_variant_indicator
+        )?.mutate()
+        if (backgroundDrawable is GradientDrawable) {
+            backgroundDrawable.setColor(intColor)
         }
-
-        backgroundDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.SRC_ATOP)
+        if (isWhiteColor(intColor)) {
+            applyStrokeTo(backgroundDrawable)
+        }
         return backgroundDrawable
     }
 
-    private fun isWhiteColor(hexColor: String): Boolean {
-        return hexColor == "#ffffff" || hexColor == "#fff"
+    private fun isWhiteColor(color: Int): Boolean {
+        return ColorUtils.calculateLuminance(color) > 0.90
     }
 
     private fun applyStrokeTo(backgroundDrawable: Drawable?) {
