@@ -51,6 +51,20 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         notifyDataSetChanged()
     }
 
+    fun getItemMap():  HomeBalanceModel {
+        return itemMap
+    }
+
+    fun getTokopointsDataPosition(): Int {
+        getItemMap().let {
+            val keys =  it.balanceDrawerItemModels.filterValues { model -> model.drawerItemType == TYPE_TOKOPOINT }.keys
+            if (keys.isNotEmpty()) {
+                return keys.first()
+            }
+        }
+        return -1
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_balance_widget, parent, false))
     }
@@ -111,6 +125,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             },
                             rewardsAction = {
                                 //handle click for type rewards
+                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -119,10 +134,16 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
+                                    OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
+                                } else
+                                    OvoWidgetTracking.sendTokopointTrackerClick()
+                                    //uncomment when we use new tracker
+                                    //OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
                             couponsAction = {
                                 //handle click for type coupon
+                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -131,7 +152,12 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
+                                    OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
+                                } else
+                                    OvoWidgetTracking.sendTokopointTrackerClick()
+                                    //uncomment when we use new tracker
+                                    //OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
                             bboAction = {
                                 //handle click for type bbo
@@ -143,7 +169,9 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
+                                //uncomment when we use new tracker
+                                //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
                             },
                             walletTopupAction = {
                                 //handle click for type wallet topup
@@ -185,6 +213,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                 }
                             },
                             rewardsAction = {
+                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -193,8 +222,15 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
+                                if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
+                                    OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
+                                } else
+                                    OvoWidgetTracking.sendTokopointTrackerClick()
+                                    //uncomment when we use new tracker
+                                    //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                            },
                             couponsAction = {
+                                OvoWidgetTracking.eventUserProfileTokopoints()
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
                                         element.redirectUrl,
@@ -203,7 +239,13 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnCouponOrRewardsNewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
+                                if (element.redirectUrl.contains(KUPON_SAYA_URL_PATH)) {
+                                    OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
+                                } else
+                                    OvoWidgetTracking.sendTokopointTrackerClick()
+                                    //uncomment when we use new tracker
+                                    //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                            },
                             bboAction = {
                                 listener?.actionTokoPointClicked(
                                         element.applinkContainer,
@@ -213,8 +255,19 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")},
-                            walletTopupAction = {},
+
+                                OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
+                                //uncomment when we use new tracker
+                                //OvoWidgetTracking.sendClickOnBBONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                            },
+                            walletTopupAction = {
+                                if (RouteManager.isSupportApplink(itemView.context, element.applinkContainer)) {
+                                    OvoWidgetTracking.sendClickOnOVONewTokopointsWidget(isOvoAvailable, listener?.userId ?: "")
+                                    OvoWidgetTracking.eventTopUpOvo(listener?.userId)
+                                    val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkContainer)
+                                    itemView.context.startActivity(intentBalanceWallet)
+                                }
+                            },
                             walletOtherAction = {
                                 //handle click for type wallet other
                                 //handle click for type wallet other
@@ -320,8 +373,8 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         }
 
         companion object {
-
             private const val TITLE_HEADER_WEBSITE = "Tokopedia"
+            private const val KUPON_SAYA_URL_PATH = "kupon-saya"
         }
     }
 }
