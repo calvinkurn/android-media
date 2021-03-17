@@ -294,7 +294,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (activity != null) GraphqlClient.init(activity!!)
+        if (activity != null) GraphqlClient.init(requireActivity())
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
         super.onCreate(savedInstanceState)
         activity?.run {
@@ -827,20 +827,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun registerNewFeedReceiver() {
-        if (activity != null && activity!!.applicationContext != null) {
+        if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_FEED)
 
             LocalBroadcastManager
-                    .getInstance(activity!!.applicationContext)
+                    .getInstance(requireActivity().applicationContext)
                     .registerReceiver(newFeedReceiver, intentFilter)
         }
     }
 
     private fun unRegisterNewFeedReceiver() {
-        if (activity != null && activity!!.applicationContext != null) {
+        if (activity != null && requireActivity().applicationContext != null) {
             LocalBroadcastManager
-                    .getInstance(activity!!.applicationContext)
+                    .getInstance(requireActivity().applicationContext)
                     .unregisterReceiver(newFeedReceiver)
         }
     }
@@ -1037,7 +1037,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            activity!!.startActivityForResult(intent, REQUEST_LOGIN)
+            requireActivity().startActivityForResult(intent, REQUEST_LOGIN)
         }
     }
 
@@ -1905,7 +1905,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun goToProductDetail(productId: String) {
         if (activity != null) {
-            activity!!.startActivity(getProductIntent(productId))
+            requireActivity().startActivity(getProductIntent(productId))
         }
     }
 
@@ -1921,7 +1921,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun goToShopPage(shopId: String) {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP, shopId)
-            activity!!.startActivity(intent)
+            requireActivity().startActivity(intent)
         }
     }
 
