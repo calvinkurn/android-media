@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pusher
+package com.tokopedia.play.broadcaster.pusher.config
 
 import android.content.Context
 import com.alivc.live.pusher.*
@@ -8,7 +8,7 @@ import java.io.File
 /**
  * Created by mzennis on 15/03/21.
  */
-class DefaultApsaraLivePusherConfig(context: Context) : AlivcLivePushConfig() {
+class DefaultApsaraLivePusherConfig(context: Context) : ApsaraLivePusherConfig() {
 
     init {
         setCameraType(AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
@@ -22,13 +22,13 @@ class DefaultApsaraLivePusherConfig(context: Context) : AlivcLivePushConfig() {
         previewDisplayMode = AlivcPreviewDisplayMode.ALIVC_LIVE_PUSHER_PREVIEW_ASPECT_FILL
 
         // max resolution
-        setResolution(AlivcResolutionEnum.RESOLUTION_720P)
+        resolution = AlivcResolutionEnum.RESOLUTION_720P
 
         // max fps
         setFps(AlivcFpsEnum.FPS_30)
 
         // configure mirroring
-        setPushMirror(this.getCameraTypeEnum() == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
+        isPushMirror = this.getCameraTypeEnum() == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT
 
         //  the resolution-first mode in which the stream ingest SDK sets the bitrate to prioritize the resolution of video streams.
         qualityMode = AlivcQualityModeEnum.QM_RESOLUTION_FIRST
@@ -36,10 +36,5 @@ class DefaultApsaraLivePusherConfig(context: Context) : AlivcLivePushConfig() {
         isEnableAutoResolution = true
         pausePushImage = context.filesDir.path.toString() + File.separator + "sample_pause_push_image.png"
         networkPoorPushImage = context.filesDir.path.toString() + File.separator + "sample_pause_push_image.png"
-    }
-
-    fun getCameraTypeEnum(): AlivcLivePushCameraTypeEnum {
-        return if (cameraType == 0) AlivcLivePushCameraTypeEnum.CAMERA_TYPE_BACK else
-            AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT
     }
 }

@@ -7,6 +7,8 @@ import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
 import com.alivc.live.pusher.*
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.play.broadcaster.pusher.config.ApsaraLivePusherConfig
+import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import java.io.File
 import java.util.regex.Pattern
@@ -219,7 +221,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
 
         override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
             // Indicates that a reconnection is successful.
-            mApsaraLivePusherStatus = ApsaraLivePusherState.Live
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Start
             mApsaraLivePusherInfoListener?.onRecovered()
         }
 
@@ -244,12 +246,12 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         }
 
         override fun onPushStarted(pusher: AlivcLivePusher?) {
-            mApsaraLivePusherStatus = ApsaraLivePusherState.Live
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Start
             mApsaraLivePusherInfoListener?.onStarted()
         }
 
         override fun onPushPauesed(pusher: AlivcLivePusher?) {
-            if (mApsaraLivePusherStatus !is ApsaraLivePusherState.Live) return
+            if (mApsaraLivePusherStatus !is ApsaraLivePusherState.Start) return
 
             mApsaraLivePusherStatus = ApsaraLivePusherState.Pause
             mApsaraLivePusherInfoListener?.onPaused()
@@ -258,7 +260,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         override fun onPushResumed(pusher: AlivcLivePusher?) {
             if (mApsaraLivePusherStatus !is ApsaraLivePusherState.Pause) return
 
-            mApsaraLivePusherStatus = ApsaraLivePusherState.Live
+            mApsaraLivePusherStatus = ApsaraLivePusherState.Start
             mApsaraLivePusherInfoListener?.onResumed()
         }
 

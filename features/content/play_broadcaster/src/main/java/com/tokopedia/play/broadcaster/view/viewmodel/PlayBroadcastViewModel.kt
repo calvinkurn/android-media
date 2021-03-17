@@ -10,10 +10,7 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.pusher.PlayPusher
-import com.tokopedia.play.broadcaster.pusher.PlayPusherInfoListener
-import com.tokopedia.play.broadcaster.pusher.PlayPusherTimerListener
-import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
+import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
@@ -38,10 +35,10 @@ import javax.inject.Inject
  * Created by mzennis on 24/05/20.
  */
 class PlayBroadcastViewModel @Inject constructor(
+        livePusherBuilder: ApsaraLivePusherWrapper.Builder,
         private val mDataStore: PlayBroadcastDataStore,
         private val hydraConfigStore: HydraConfigStore,
         private val sharedPref: HydraSharedPreferences,
-        private val playPusher: PlayPusher,
         private val getConfigurationUseCase: GetConfigurationUseCase,
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
@@ -112,6 +109,8 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLiveDurationState = MutableLiveData<LivePusherTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
 
+    private val livePusher = livePusherBuilder.build()
+
     private var isManualStartTimer = false
 
     init {
@@ -156,12 +155,12 @@ class PlayBroadcastViewModel @Inject constructor(
             setScheduleConfig(configUiModel.scheduleConfig)
 
             // configure live streaming duration
-            if (configUiModel.channelType == ChannelType.Pause)
-                playPusher.setStreamDuration(configUiModel.remainingTime)
-            else playPusher.setStreamDuration(configUiModel.durationConfig.duration)
-
-            playPusher.setMaxStreamDuration(configUiModel.durationConfig.duration)
-            playPusher.setMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
+//            if (configUiModel.channelType == ChannelType.Pause)
+//                pusherWrapper.setStreamDuration(configUiModel.remainingTime)
+//            else pusherWrapper.setStreamDuration(configUiModel.durationConfig.duration)
+//
+//            pusherWrapper.setMaxStreamDuration(configUiModel.durationConfig.duration)
+//            pusherWrapper.setMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
 
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
@@ -228,100 +227,99 @@ class PlayBroadcastViewModel @Inject constructor(
     /**
      * Apsara integration
      */
-    fun initPushStream() {
-        playPusher.init()
-        playPusher.setPlayPusherInfoListener(object : PlayPusherInfoListener {
-            override fun onStarted() {
-                scope.launchCatchError(block = {
-                    updateChannelStatus(PlayChannelStatusType.Live)
-                    _observableLivePusherState.value = LivePusherState.Started
-                    if (!isManualStartTimer) playPusher.startTimer()
-                    startWebSocket()
-                }) {
-                    _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
-                        startPushStream()
-                    })
-                    playPusher.stopPush()
-                    playPusher.pauseTimer()
-                }
-            }
-
-            override fun onResumed() {
-                scope.launchCatchError(block = {
-                    updateChannelStatus(PlayChannelStatusType.Live)
-                    _observableLivePusherState.value = LivePusherState.Started
-                    playPusher.resumeTimer()
-                }) {
-                    _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
-                        _observableLivePusherState.value = LivePusherState.Connecting
-                        resumePushStream()
-                    })
-                    playPusher.stopPush()
-                    playPusher.pauseTimer()
-                }
-            }
-
-            override fun onPaused() {
-                scope.launchCatchError(block = {
-                    updateChannelStatus(PlayChannelStatusType.Pause)
-                }) {
-                }
-            }
-
-            override fun onRecovered() {
-                autoReconnectPushStream()
-            }
-
-            override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
-               val liveErrorStatus =  when (errorStatus) {
-                   ApsaraLivePusherErrorStatus.NetworkPoor -> LivePusherErrorStatus.NetworkPoor
-                   ApsaraLivePusherErrorStatus.NetworkLoss,
-                   ApsaraLivePusherErrorStatus.ReconnectFailed -> LivePusherErrorStatus.NetworkLoss
-                   ApsaraLivePusherErrorStatus.ConnectFailed -> LivePusherErrorStatus.ConnectFailed {
-                       reconnectPushStream()
-                   }
-                   ApsaraLivePusherErrorStatus.SystemError -> LivePusherErrorStatus.UnRecoverable {
-                       playPusher.restartPush()
-                   }
-               }
-                _observableLivePusherState.value = LivePusherState.Error(liveErrorStatus)
-            }
-
-        })
-        playPusher.setPlayPusherTimerListener(object : PlayPusherTimerListener {
-            override fun onCountDownActive(timeLeft: String) {
-                _observableLiveDurationState.value = LivePusherTimerState.Active(timeLeft)
-            }
-
-            override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-                _observableLiveDurationState.value = LivePusherTimerState.AlmostFinish(minutesUntilFinished)
-            }
-
-            override fun onCountDownFinish() {
-                val event = _observableEvent.value
-                if (event == null || (!event.freeze && !event.banned)) {
-                    _observableLiveDurationState.value = LivePusherTimerState.Finish
-                    stopPushStream()
-                }
-            }
-
-            override fun onReachMaximumPauseDuration() {
-                stopPushStream()
-            }
-
-        })
-    }
+//    fun initPushStream() {
+//        livePusher.setPlayPusherInfoListener(object : PlayPusherInfoListener {
+//            override fun onStarted() {
+//                scope.launchCatchError(block = {
+//                    updateChannelStatus(PlayChannelStatusType.Live)
+//                    _observableLivePusherState.value = LivePusherState.Started
+//                    if (!isManualStartTimer) livePusher.startTimer()
+//                    startWebSocket()
+//                }) {
+//                    _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
+//                        startPushStream()
+//                    })
+//                    livePusher.stopPush()
+//                    livePusher.pauseTimer()
+//                }
+//            }
+//
+//            override fun onResumed() {
+//                scope.launchCatchError(block = {
+//                    updateChannelStatus(PlayChannelStatusType.Live)
+//                    _observableLivePusherState.value = LivePusherState.Started
+//                    livePusher.resumeTimer()
+//                }) {
+//                    _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
+//                        _observableLivePusherState.value = LivePusherState.Connecting
+//                        resumePushStream()
+//                    })
+//                    livePusher.stopPush()
+//                    livePusher.pauseTimer()
+//                }
+//            }
+//
+//            override fun onPaused() {
+//                scope.launchCatchError(block = {
+//                    updateChannelStatus(PlayChannelStatusType.Pause)
+//                }) {
+//                }
+//            }
+//
+//            override fun onRecovered() {
+//                autoReconnectPushStream()
+//            }
+//
+//            override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
+//               val liveErrorStatus =  when (errorStatus) {
+//                   ApsaraLivePusherErrorStatus.NetworkPoor -> LivePusherErrorStatus.NetworkPoor
+//                   ApsaraLivePusherErrorStatus.NetworkLoss,
+//                   ApsaraLivePusherErrorStatus.ReconnectFailed -> LivePusherErrorStatus.NetworkLoss
+//                   ApsaraLivePusherErrorStatus.ConnectFailed -> LivePusherErrorStatus.ConnectFailed {
+//                       reconnectPushStream()
+//                   }
+//                   ApsaraLivePusherErrorStatus.SystemError -> LivePusherErrorStatus.UnRecoverable {
+//                       livePusher.restartPush()
+//                   }
+//               }
+//                _observableLivePusherState.value = LivePusherState.Error(liveErrorStatus)
+//            }
+//
+//        })
+//        livePusher.setPlayPusherTimerListener(object : PlayPusherTimerListener {
+//            override fun onCountDownActive(timeLeft: String) {
+//                _observableLiveDurationState.value = LivePusherTimerState.Active(timeLeft)
+//            }
+//
+//            override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
+//                _observableLiveDurationState.value = LivePusherTimerState.AlmostFinish(minutesUntilFinished)
+//            }
+//
+//            override fun onCountDownFinish() {
+//                val event = _observableEvent.value
+//                if (event == null || (!event.freeze && !event.banned)) {
+//                    _observableLiveDurationState.value = LivePusherTimerState.Finish
+//                    stopPushStream()
+//                }
+//            }
+//
+//            override fun onReachMaximumPauseDuration() {
+//                stopPushStream()
+//            }
+//
+//        })
+//    }
 
     fun switchCamera() {
-        playPusher.switchCamera()
+        livePusher.switchCamera()
     }
 
     fun startPreview(surfaceView: SurfaceView) {
-        playPusher.startPreview(surfaceView)
+        livePusher.startPreview(surfaceView)
     }
 
     fun stopPreview() {
-        playPusher.stopPreview()
+        livePusher.stopPreview()
     }
 
     fun setFirstTimeLiveStreaming() {
@@ -330,82 +328,82 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun startPushStream(manualStartTimer: Boolean = false) {
         _observableLivePusherState.value = LivePusherState.Connecting
-        playPusher.startPush(ingestUrl)
+        livePusher.start(ingestUrl)
         this.isManualStartTimer = manualStartTimer
     }
 
-    private fun reconnectPushStream() {
-        _observableLivePusherState.value = LivePusherState.Connecting
-        scope.launch {
-            val err = getChannelDetail()
-            if (err == null) {
-                playPusher.startPush(ingestUrl)
-            } else {
-                _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
-                    reconnectPushStream()
-                })
-            }
-        }
-    }
+//    private fun reconnectPushStream() {
+//        _observableLivePusherState.value = LivePusherState.Connecting
+//        scope.launch {
+//            val err = getChannelDetail()
+//            if (err == null) {
+//                livePusher.start(ingestUrl)
+//            } else {
+//                _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
+//                    reconnectPushStream()
+//                })
+//            }
+//        }
+//    }
 
-    private fun autoReconnectPushStream() {
-        _observableLivePusherState.value = LivePusherState.Connecting
-        scope.launch {
-            val err = getChannelDetail()
-            if (err == null && _observableChannelInfo.value is NetworkResult.Success) {
-                val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
-                when (channelInfo.status) {
-                    PlayChannelStatusType.Pause -> {
-                        pausePushStream()
-                        playPusher.pauseTimer()
-                        _observableLivePusherState.value = LivePusherState.Paused
-                    }
-                    PlayChannelStatusType.Live ->  _observableLivePusherState.value = LivePusherState.Recovered
-                    else -> stopPushStream(shouldNavigate = true)
-                }
-            } else {
-                _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
-                    autoReconnectPushStream()
-                })
-            }
-        }
-    }
+//    private fun autoReconnectPushStream() {
+//        _observableLivePusherState.value = LivePusherState.Connecting
+//        scope.launch {
+//            val err = getChannelDetail()
+//            if (err == null && _observableChannelInfo.value is NetworkResult.Success) {
+//                val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
+//                when (channelInfo.status) {
+//                    PlayChannelStatusType.Pause -> {
+//                        pausePushStream()
+//                        livePusher.pauseTimer()
+//                        _observableLivePusherState.value = LivePusherState.Paused
+//                    }
+//                    PlayChannelStatusType.Live ->  _observableLivePusherState.value = LivePusherState.Recovered
+//                    else -> stopPushStream(shouldNavigate = true)
+//                }
+//            } else {
+//                _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
+//                    autoReconnectPushStream()
+//                })
+//            }
+//        }
+//    }
 
     fun startTimer() {
         scope.launch {
             delay(1000)
-            playPusher.startTimer()
+//            livePusher.startTimer()
         }
     }
 
     fun resumePushStream() {
-        playPusher.resumePush()
+        livePusher.resume()
     }
 
     fun pausePushStream() {
-        playPusher.pausePush()
+        livePusher.pause()
     }
 
     fun stopPushStream(shouldNavigate: Boolean = false) {
-        scope.launchCatchError(block = {
-            withContext(dispatcher.io) {
-                playSocket.destroy()
-                playPusher.stopTimer()
-                playPusher.stopPush()
-                playPusher.stopPreview()
-                updateChannelStatus(PlayChannelStatusType.Stop)
-                playPusher.destroy()
-            }
-            _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
-        }) {
-            _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
-        }
+//        scope.launchCatchError(block = {
+//            withContext(dispatcher.io) {
+//                playSocket.destroy()
+//                livePusher.stopTimer()
+//                livePusher.stopPush()
+//                livePusher.stopPreview()
+//                updateChannelStatus(PlayChannelStatusType.Stop)
+//                livePusher.destroy()
+//            }
+//            _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
+//        }) {
+//            _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
+//        }
     }
 
     fun destroyPushStream() {
-        playPusher.stopPush()
-        playPusher.destroy()
-        playSocket.destroy()
+//        livePusher.stopPush()
+//        livePusher.destroy()
+//        playSocket.destroy()
     }
 
     fun setChannelId(channelId: String) {
@@ -501,7 +499,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun restartLiveDuration(duration: LiveDuration) {
         scope.launchCatchError(block = {
             val remainingDuration = duration.remaining*1000
-            playPusher.restartStreamDuration(durationInMillis = remainingDuration)
+//            livePusher.restartStreamDuration(durationInMillis = remainingDuration)
         }) { }
     }
 

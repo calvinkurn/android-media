@@ -124,7 +124,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             requestPermission()
         }
 
-        initPushStream()
+//        initPushStream()
         setupContent()
         initView()
         setupView()
@@ -223,9 +223,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
-    private fun initPushStream() {
-        viewModel.initPushStream()
-    }
+//    private fun initPushStream() {
+//        viewModel.initPushStream()
+//    }
 
     private fun setFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
