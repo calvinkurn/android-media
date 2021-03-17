@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.centralizedpromo.di.CentralizedPromoViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
+import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
@@ -44,4 +45,9 @@ abstract class SellerHomeViewModelModule {
     @IntoMap
     @ViewModelKey(SellerReviewViewModel::class)
     abstract fun provideSellerReviewViewModel(otherMenuViewModel: SellerReviewViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MenuSettingViewModel::class)
+    abstract fun provideMenuSettingViewModel(menuSettingViewModel: MenuSettingViewModel): ViewModel
 }

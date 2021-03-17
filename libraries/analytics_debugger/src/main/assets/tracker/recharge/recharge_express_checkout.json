@@ -17,24 +17,6 @@
       "sessionIris": "{{.*}}"
     },
     {
-      "event": "add_to_cart",
-      "eventCategory": "digital - homepage",
-      "eventAction": "click beli",
-      "eventLabel": "{{.* - .* - .*}}",
-      "sessionIris": "{{.*}}",
-      "items": [
-        {
-          "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d*E\\d}}",
-          "item_variant": "none/other",
-          "quantity": "{{\\d+(.\\d+)?}}",
-          "item_id": "{{\\d+}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}"
-        }
-      ]
-    },
-    {
       "event": "begin_checkout",
       "eventCategory": "digital - checkout",
       "eventAction": "view checkout",
