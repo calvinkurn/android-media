@@ -23,7 +23,7 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
             }
 
             override fun onLocalizingAddressUpdatedFromBackground() {
-
+                // No-op
             }
 
             override fun onLocalizingAddressServerDown() {
