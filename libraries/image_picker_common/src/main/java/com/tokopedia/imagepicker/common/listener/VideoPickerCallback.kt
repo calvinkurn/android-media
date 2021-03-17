@@ -1,6 +1,4 @@
-package com.tokopedia.videorecorder.main
-
-import com.tokopedia.videorecorder.main.state.StateRecorder
+package com.tokopedia.imagepicker.common.listener
 
 /**
  * Created by isfaaghyth on 01/03/19.

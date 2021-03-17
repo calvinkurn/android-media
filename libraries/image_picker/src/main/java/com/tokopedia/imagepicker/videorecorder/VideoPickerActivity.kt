@@ -1,4 +1,4 @@
-package com.tokopedia.videorecorder.main
+package com.tokopedia.imagepicker.videorecorder
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,6 +15,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.common.GalleryType
+import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
+import com.tokopedia.imagepicker.common.listener.VideoPickerListener
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.common.model.MediaItem
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -35,7 +37,7 @@ import java.util.*
  */
 open class VideoPickerActivity : BaseSimpleActivity(),
         VideoPickerCallback,
-        ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
+        ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener, VideoPickerListener{
 
     companion object {
         //video recorder const
@@ -221,7 +223,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         vpVideoPicker.currentItem = index
     }
 
-    protected open fun onVideoDoneClicked() {
+    override fun onVideoDoneClicked() {
         onFinishPicked(videoPath)
     }
 

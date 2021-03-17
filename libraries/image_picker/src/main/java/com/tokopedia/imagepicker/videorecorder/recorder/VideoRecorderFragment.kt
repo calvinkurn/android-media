@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.R
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.videorecorder.main.VideoPickerCallback
+import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
 import com.tokopedia.videorecorder.main.state.StateRecorder
 import com.tokopedia.videorecorder.utils.*
 import com.tokopedia.videorecorder.utils.hide

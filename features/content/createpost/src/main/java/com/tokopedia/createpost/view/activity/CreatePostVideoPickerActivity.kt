@@ -1,16 +1,19 @@
 package com.tokopedia.createpost.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.videorecorder.main.VideoPickerActivity
+import com.tokopedia.imagepicker.common.listener.VideoPickerListener
 
 /**
  * Created by isfaaghyth on 20/03/19.
  * github: @isfaaghyth
  */
-class CreatePostVideoPickerActivity: VideoPickerActivity() {
+class CreatePostVideoPickerActivity: BaseSimpleActivity(), VideoPickerListener, VideoPickerCallback {
 
     override fun onVideoDoneClicked() {
         val isImageExist = intent?.getBooleanExtra(IMAGE_EXIST, false)?: false
@@ -24,6 +27,7 @@ class CreatePostVideoPickerActivity: VideoPickerActivity() {
             dialog.setBtnOk(getString(R.string.cp_continue))
             dialog.setOnOkClickListener{
                 dialog.dismiss()
+                // TODO: harusnya ini panggil onFinishPicked, tp bingung file nya dari mana
                 super.onVideoDoneClicked()
             }
             dialog.setOnCancelClickListener{
@@ -32,6 +36,7 @@ class CreatePostVideoPickerActivity: VideoPickerActivity() {
             dialog.setCancelable(true)
             dialog.show()
         } else {
+            // TODO: harusnya ini panggil onFinishPicked, tp bingung file nya dari mana
             super.onVideoDoneClicked()
         }
     }
@@ -44,5 +49,17 @@ class CreatePostVideoPickerActivity: VideoPickerActivity() {
             return intent
         }
     }
+
+    private fun onFinishPicked(file: String) {
+        val videos = arrayListOf<String>()
+        videos.add(file)
+
+        val intent = Intent()
+        intent.putStringArrayListExtra(VIDEOS_RESULT, videos)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    override fun getNewFragment(): Fragment? = null
 
 }
