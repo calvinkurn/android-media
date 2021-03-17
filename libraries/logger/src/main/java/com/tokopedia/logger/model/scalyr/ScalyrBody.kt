@@ -24,6 +24,8 @@ data class ScalyrSessionInfo(
         @SerializedName("parser")
         @Expose
         val parser: String,
+
+        //need adjust, convert to json
         @SerializedName("packageName")
         @Expose
         val packageName: String,

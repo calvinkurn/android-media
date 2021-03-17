@@ -49,6 +49,7 @@ class LoggerRepository(private val logDao: LoggerDao,
         val tokenIndex = priority-1
 
         val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
+        // val newRelicSendSuccess
         if (scalyrSendSuccess) {
             deleteEntries(logs)
         }
