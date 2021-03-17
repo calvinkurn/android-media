@@ -181,6 +181,9 @@
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 -dontwarn kotlinx.coroutines.flow.**inlined**
 
+#-- tradein
+-keep class com.tokopedia.tradein.view.viewcontrollers.fragment.** { *; }
+
 # -- Unit Test
 -dontnote junit.framework.**
 -dontnote junit.runner.**

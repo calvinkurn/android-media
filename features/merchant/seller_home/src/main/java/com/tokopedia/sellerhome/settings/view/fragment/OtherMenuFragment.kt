@@ -34,12 +34,14 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
@@ -207,7 +209,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
-        settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
+        if (settingShopInfoImpressionTrackable is StatisticMenuItemUiModel) {
+            sendEventImpressionStatisticMenuItem(userSession.userId)
+        } else {
+            settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -312,11 +318,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun populateAdapterData() {
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_shop_statistic),
-                        null,
-                        ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC,
+                StatisticMenuItemUiModel(
+                        title = resources.getString(R.string.setting_menu_statistic),
+                        clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
                         iconUnify = IconUnify.GRAPH),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_ads_and_shop_promotion),
@@ -355,7 +359,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
                         iconUnify = IconUnify.FINANCE
                 ) {
-                    RouteManager.route(context,ApplinkConst.LAYANAN_FINANSIAL)
+                    RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
                 },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_seller_education_center),
@@ -422,14 +426,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun View.showToasterError(errorMessage: String) {
-        Toaster.make(this,
+        Toaster.build(this,
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                resources.getString(R.string.setting_toaster_error_retry),
-                View.OnClickListener {
-                    retryFetchAfterError()
-                })
+                resources.getString(R.string.setting_toaster_error_retry)
+        ) {
+            retryFetchAfterError()
+        }.show()
     }
 
     private fun setupView(view: View) {

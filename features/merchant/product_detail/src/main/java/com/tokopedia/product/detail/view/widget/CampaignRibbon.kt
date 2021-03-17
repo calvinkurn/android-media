@@ -93,6 +93,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     fun renderUpComingCampaign(upComingData: ProductNotifyMeDataModel) {
         when (upComingData.campaignIdentifier) {
             FLASH_SALE -> renderFlashSaleCampaignRibbon(campaignPeriod = UPCOMING, upComingData = upComingData)
+            NPL -> renderNplCampaignRibbon(campaignPeriod = ONGOING, upcomingData = upComingData)
         }
     }
 
@@ -142,11 +143,11 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // NPL
     fun renderNplCampaignRibbon(@CampaignPeriod campaignPeriod: Int,
                                 onGoingData: ProductContentMainData? = null,
-                                upcomingNplData: UpcomingNplDataModel? = null) {
+                                upcomingData: ProductNotifyMeDataModel? = null) {
         when (campaignPeriod) {
             UPCOMING -> {
                 onGoingData?.let {
-                    renderUpComingNplCampaignRibbon(onGoingData, upcomingNplData)
+                    renderUpComingNplCampaignRibbon(onGoingData, upcomingData)
                     showCampaignRibbonType1()
                 }
             }
@@ -225,7 +226,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         campaign_ribbon_type_3.show()
     }
 
-    private fun renderUpComingNplCampaignRibbon(onGoingData: ProductContentMainData, upcomingNplData: UpcomingNplDataModel?) {
+    private fun renderUpComingNplCampaignRibbon(onGoingData: ProductContentMainData, upcomingData: ProductNotifyMeDataModel?) {
         val campaign = onGoingData.campaign
         // render campaign ribbon background
         val gradientDrawable = context.getDrawable(R.drawable.bg_gradient_default_npl)
@@ -234,10 +235,10 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val campaignName = campaign.campaignTypeName
         tpg_campaign_name_s1.text = if (campaignName.isNotBlank()) campaignName else context.getString(R.string.notify_me_title)
         // count down timer
-        upcomingNplData?.let {
+        upcomingData?.let {
             renderUpComingNplCountDownTimer(
                     it.startDate,
-                    it.ribbonCopy,
+                    it.upcomingNplData.ribbonCopy,
                     tus_timer_view_s1,
                     tv_start_in_s1
             )

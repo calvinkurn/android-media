@@ -46,7 +46,7 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             anchorViewId1 = a.getResourceId(R.styleable.TicketView_tv_anchor1, NO_VALUE)
             anchorViewId2 = a.getResourceId(R.styleable.TicketView_tv_anchor2, NO_VALUE)
             circleSpace = a.getDimension(R.styleable.TicketView_tv_circleSpace, getDp(15f).toFloat())
-            dashColor = a.getColor(R.styleable.TicketView_tv_dashColor, Color.parseColor("#0085be"))
+            dashColor = a.getColor(R.styleable.TicketView_tv_dashColor, Color.parseColor("#00000000"))
             dashSize = a.getDimension(R.styleable.TicketView_tv_dashSize, getDp(1.5f).toFloat())
         } finally {
             a.recycle()

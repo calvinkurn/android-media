@@ -36,18 +36,12 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
             return Result.failure()
         }
         return withContext(Dispatchers.IO) {
-            var result = Result.success()
+            var result: Result
             try {
                 useCase.setParams(insertDeviceInfoPayloadCreator.create())
-                useCase.execute(
-                        onSuccess = {
-                            result = Result.success()
-                            setSuccessSubmitDevice()
-                        },
-                        onError = {
-                            result = Result.retry()
-                        }
-                )
+                useCase.executeOnBackground()
+                result = Result.success()
+                setSuccessSubmitDevice()
             } catch (e: Exception) {
                 result = Result.retry()
             }

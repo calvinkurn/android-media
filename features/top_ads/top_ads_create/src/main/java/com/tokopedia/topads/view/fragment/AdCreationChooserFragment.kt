@@ -118,7 +118,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 val image = this.findViewById<ImageUnify>(R.id.top_corner_icon1)
                 image.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_ic_thumb_up))
                 val topCorner = this.findViewById<ImageUnify>(R.id.top_corner_bg1)
-                topCorner.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_bg_top_corner))
+                topCorner.setImageResource(R.drawable.topads_create_bg_top_corner)
 
                 val icon2 = this.findViewById<ImageUnify>(R.id.icon2)
                 val icon3 = this.findViewById<ImageUnify>(R.id.icon3)
@@ -144,7 +144,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 val image = this.findViewById<ImageUnify>(R.id.top_corner_icon2)
                 image.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_ic_gear))
                 val topCorner = this.findViewById<ImageUnify>(R.id.top_corner_bg2)
-                topCorner.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_bg_top_corner))
+                topCorner.setImageResource(R.drawable.topads_create_bg_top_corner)
 
                 val icon6 = this.findViewById<ImageUnify>(R.id.icon6)
                 val icon7 = this.findViewById<ImageUnify>(R.id.icon7)

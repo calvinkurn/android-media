@@ -7,6 +7,7 @@ import androidx.collection.ArrayMap
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -27,6 +28,7 @@ import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -61,9 +63,12 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -714,6 +719,35 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun getBackground() {
         chatBackgroundUseCase.getBackground(
                 ::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground
+        )
+    }
+
+    override fun addProductToCart(
+            requestParams: RequestParams,
+            onSuccessAddToCart: (data: DataModel) -> Unit,
+            onError: (msg: String) -> Unit
+    ) {
+        launchCatchError(
+                dispatchers.IO,
+                block = {
+                    val atcResponse = addToCartUseCase.createObservable(requestParams)
+                            .toBlocking()
+                            .single().data
+                    withContext(dispatchers.Main) {
+                        if (atcResponse.success == 1) {
+                            onSuccessAddToCart(atcResponse)
+                        } else {
+                            onError(atcResponse.message.getOrNull(0) ?: "")
+                        }
+                    }
+                },
+                onError = {
+                    withContext(dispatchers.Main) {
+                        it.message?.let { errorMsg ->
+                            onError(errorMsg)
+                        }
+                    }
+                }
         )
     }
 

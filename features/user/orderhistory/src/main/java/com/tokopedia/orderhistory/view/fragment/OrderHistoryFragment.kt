@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.analytic.OrderHistoryAnalytic
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
@@ -26,11 +28,10 @@ import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactory
 import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactoryImpl
 import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
 import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryViewModel
-import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -119,34 +120,34 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun onClickBuyAgain(product: Product) {
-        if (usePdp()) {
-            goToPdp(product.productId)
-        } else {
-            goToOldNormalCheckout(product)
+        val buyParam = getAtcBuyParam(product)
+        viewModel.addProductToCart(buyParam, {
+            analytic.trackSuccessDoBuy(product, it)
+            RouteManager.route(context, ApplinkConst.CART)
+        }, { msg ->
+            showErrorMessage(msg)
+        })
+    }
+
+    private fun getAtcBuyParam(product: Product): RequestParams {
+        val addToCartRequestParams = AddToCartRequestParams(
+                productId = product.productId.toLong(),
+                shopId = product.shopId.toInt(),
+                quantity = product.minOrder,
+                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_TOPCHAT
+        )
+        return RequestParams.create().apply {
+            putObject(
+                    AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                    addToCartRequestParams
+            )
         }
     }
 
-    private fun goToOldNormalCheckout(product: Product) {
-        val quantity = product.minOrder
-        val atcAndBuyAction = ATC_ONLY
-        val needRefresh = true
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shopId)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, product.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
-            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, product.categoryId)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, product.categoryId)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, product.name)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, product.priceInt.toFloat())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, product.buyEventAction)
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, "/chat - buy again")
+    private fun showErrorMessage(msg: String) {
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
-        startActivityForResult(intent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
     override fun onClickAddToWishList(product: Product) {
@@ -217,19 +218,6 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     private fun goToCheckoutPage() {
         RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
-    }
-
-    private fun usePdp(): Boolean {
-        return remoteConfig?.getBoolean(RemoteConfigKey.USE_PDP_FOR_OLD_NORMAL_CHECKOUT) ?: false
-    }
-
-    private fun goToPdp(productId: String?) {
-        if (productId == null) return
-        RouteManager.route(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId
-        )
     }
 
     companion object {
