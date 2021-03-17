@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
-import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.common.const.MetricsType
 import com.tokopedia.sellerhomecommon.domain.model.LineModel
 import com.tokopedia.sellerhomecommon.domain.model.MultiTrendLineMetricModel

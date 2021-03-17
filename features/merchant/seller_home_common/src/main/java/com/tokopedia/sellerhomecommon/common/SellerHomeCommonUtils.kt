@@ -22,6 +22,4 @@ object SellerHomeCommonUtils {
         }
         return containedUrls
     }
-
-    fun Boolean?.orFalse(): Boolean = this ?: false
 }

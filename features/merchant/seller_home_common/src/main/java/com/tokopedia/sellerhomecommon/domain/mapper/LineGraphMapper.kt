@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.LineGraphDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel

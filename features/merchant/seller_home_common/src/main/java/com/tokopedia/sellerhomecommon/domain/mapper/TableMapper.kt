@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
-import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel

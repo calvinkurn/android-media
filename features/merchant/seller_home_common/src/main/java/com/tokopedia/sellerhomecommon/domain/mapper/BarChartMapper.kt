@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.charts.common.ChartColor
-import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.BarChartMetricModel
 import com.tokopedia.sellerhomecommon.domain.model.BarChartValueModel
 import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel

@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
-import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.ChartSummaryModel
 import com.tokopedia.sellerhomecommon.domain.model.PieChartItemModel
 import com.tokopedia.sellerhomecommon.domain.model.PieChartWidgetDataModel

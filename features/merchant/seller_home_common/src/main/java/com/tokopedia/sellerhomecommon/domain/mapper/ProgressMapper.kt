@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.ProgressDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget

@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.CarouselDataModel
 import com.tokopedia.sellerhomecommon.domain.model.CarouselItemModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
