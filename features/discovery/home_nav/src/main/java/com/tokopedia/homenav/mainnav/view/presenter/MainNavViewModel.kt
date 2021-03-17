@@ -63,6 +63,7 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_HOME_BACK_SEPARATOR = 1
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
         private const val INDEX_DEFAULT_BU_POSITION = 1
+        private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
 
         private const val SOURCE = "dave_home_nav"
     }
@@ -151,8 +152,8 @@ class MainNavViewModel @Inject constructor(
         } else {
             initialList.add(AccountHeaderDataModel(loginState = getLoginState()))
         }
-        initialList.add(InitialShimmerDataModel())
         initialList.addTransactionMenu()
+        initialList.add(InitialShimmerDataModel())
         initialList.addUserMenu()
         return initialList
     }
@@ -216,7 +217,9 @@ class MainNavViewModel @Inject constructor(
                     it is InitialShimmerDataModel
                 }
                 shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                addWidgetList(result, findBuStartIndexPosition())
+                findBuStartIndexPosition()?.let {
+                    addWidgetList(result, it)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -236,9 +239,12 @@ class MainNavViewModel @Inject constructor(
                     it is InitialShimmerDataModel
                 }
                 shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                if (findExistingEndBuIndexPosition() == null) {
-                    addWidgetList(result, findBuStartIndexPosition())
+                findBuStartIndexPosition()?.let {
+                    if (findExistingEndBuIndexPosition() == null) {
+                        addWidgetList(result, it)
+                    }
                 }
+
                 onlyForNonLoggedInUser {
                     delay(1000)
                     _allProcessFinished.postValue(Event(true))
@@ -248,7 +254,9 @@ class MainNavViewModel @Inject constructor(
                 //then error state is not needed
                 val isBuExist = findExistingEndBuIndexPosition()
                 if (isBuExist == null) {
-                    updateWidget(ErrorStateBuDataModel(), findBuStartIndexPosition())
+                    findBuStartIndexPosition()?.let {
+                        updateWidget(ErrorStateBuDataModel(), it)
+                    }
                 }
 
                 val buShimmering = _mainNavListVisitable.find {
@@ -317,11 +325,13 @@ class MainNavViewModel @Inject constructor(
     }
 
     fun refreshBuListdata() {
-        updateWidget(InitialShimmerDataModel(), findBuStartIndexPosition())
-        launchCatchError(coroutineContext, block = {
-            getBuListMenu()
-        }) {
+        findBuStartIndexPosition()?.let {
+            updateWidget(InitialShimmerDataModel(), it)
+            launchCatchError(coroutineContext, block = {
+                getBuListMenu()
+            }) {
 
+            }
         }
     }
 
@@ -385,8 +395,6 @@ class MainNavViewModel @Inject constructor(
                     it.getMenu(menuId = ID_RECENT_VIEW, sectionId = MainNavConst.Section.USER_MENU),
                     it.getMenu(menuId = ID_SUBSCRIPTION, sectionId = MainNavConst.Section.USER_MENU)
             )
-            val showOpenShopTicker = userSession.get().isLoggedIn && !userSession.get().hasShop()
-            if (showOpenShopTicker) firstSectionList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
             firstSectionList.add(SeparatorDataModel())
 
             val complainNotification = if (navNotification.unreadCountComplain.isMoreThanZero())
@@ -408,12 +416,14 @@ class MainNavViewModel @Inject constructor(
 
     private fun buildTransactionMenuList(): List<Visitable<*>> {
         clientMenuGenerator.get()?.let {
-            return mutableListOf(
+            val transactionDataList: MutableList<Visitable<*>> = mutableListOf(
                     SeparatorDataModel(),
                     it.getMenu(ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(ID_TICKET, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(ID_REVIEW, sectionId = MainNavConst.Section.ORDER)
-            )
+                    it.getMenu(ID_REVIEW, sectionId = MainNavConst.Section.ORDER))
+            val showOpenShopTicker = userSession.get().isLoggedIn && !userSession.get().hasShop()
+            if (showOpenShopTicker) transactionDataList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
+            return transactionDataList
         }
         return listOf()
     }
@@ -575,14 +585,31 @@ class MainNavViewModel @Inject constructor(
         return null
     }
 
+
+    //all transaction menu start index should after back home button or position 1
     fun findAllTransactionModelPosition(): Int? {
+        val findHomeMenu = _mainNavListVisitable.find {
+            it is HomeNavMenuDataModel && it.id == ID_HOME
+        }
+        findHomeMenu?.let{
+            //if home menu is exist, then the position of all transaction menu is after home menu
+            return _mainNavListVisitable.indexOf(it) + 1
+        }
+        return INDEX_DEFAULT_ALL_TRANSACTION
+    }
+
+    fun findAllTransactionModelEndPosition(): Int? {
+        val findHomeMenu = _mainNavListVisitable.find {
+            it is HomeNavMenuDataModel && it.id == ID_HOME
+        }
         val findAllTransactionMenu = _mainNavListVisitable.find {
             it is HomeNavMenuDataModel && it.id == ID_ALL_TRANSACTION
         }
-        findAllTransactionMenu?.let{
-            return _mainNavListVisitable.indexOf(it)
+        findHomeMenu?.let{
+            //if home menu is exist, then the position of all transaction menu is after home menu
+            return _mainNavListVisitable.indexOf(it) + 1
         }
-        return null
+        return INDEX_DEFAULT_ALL_TRANSACTION
     }
 
     fun findHeaderModelPosition(): Int? {
@@ -595,16 +622,14 @@ class MainNavViewModel @Inject constructor(
         return null
     }
 
-    //bu menu start index should after back home button or position 1
-    private fun findBuStartIndexPosition(): Int {
-        val findHomeMenu = _mainNavListVisitable.find {
-            it is HomeNavMenuDataModel && it.id == ID_HOME
+    private fun findBuStartIndexPosition(): Int? {
+        val findHomeMenu = _mainNavListVisitable.firstOrNull {
+            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.BU_ICON
         }
         findHomeMenu?.let{
-            //if home menu is exist, then the position of bu menu is after home menu
-            return _mainNavListVisitable.indexOf(it)+1
+            return _mainNavListVisitable.indexOf(it)
         }
-        return INDEX_DEFAULT_BU_POSITION
+        return null
     }
 
     private fun findExistingEndBuIndexPosition(): Int? {
@@ -612,8 +637,7 @@ class MainNavViewModel @Inject constructor(
             it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.BU_ICON
         }
         findHomeMenu?.let{
-            //if home menu is exist, then the position of bu menu is after home menu
-            return _mainNavListVisitable.indexOf(it)+1
+            return _mainNavListVisitable.indexOf(it)
         }
         return null
     }
