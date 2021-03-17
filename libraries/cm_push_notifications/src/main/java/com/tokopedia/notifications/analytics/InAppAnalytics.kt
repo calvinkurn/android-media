@@ -69,7 +69,7 @@ object InAppAnalytics {
                 KEY_EVENT to KEY_PROMO_CLICK,
                 KEY_EVENT_CATEGORY to CATEGORY,
                 KEY_EVENT_ACTION to ACTION_CLICK,
-                KEY_EVENT_LABEL to "${data.getCampaignId()} - ${data.getCampaignUserToken()} ${if (data.campaignCode.isNotEmpty())
+                KEY_EVENT_LABEL to "${data.getCampaignId()} - ${data.getCampaignUserToken()} ${if (data.campaignCode != null && data.campaignCode.isNotEmpty())
                     " - ${data.campaignCode}" else "" }",
                 KEY_ECOMMERCE to mapOf(
                         KEY_PROMO_CLICK to mapOf(
