@@ -88,7 +88,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
-    private val labelEmptyStockColor = "#AD31353B"
     private val bottomMarginOpposite = getOppositeMargin(context).toInt()
 
     constructor(context: Context?) : super(context) {
@@ -422,7 +421,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 show()
                 setText(R.string.title_topchat_pre_order)
                 unlockFeature = true
-                setLabelType(labelEmptyStockColor)
+                setLabelType(getEmptyStockLabelBg())
             } else {
                 hide()
             }
@@ -435,13 +434,17 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 show()
                 setText(R.string.title_topchat_empty_stock)
                 unlockFeature = true
-                setLabelType(labelEmptyStockColor)
+                setLabelType(getEmptyStockLabelBg())
             } else {
                 if (!product.isPreOrder) {
                     hide()
                 }
             }
         }
+    }
+
+    private fun getEmptyStockLabelBg(): String {
+        return resources.getString(R.string.topchat_dms_hex_empty_stock_color_bg)
     }
 
     private fun hideFooter() {
