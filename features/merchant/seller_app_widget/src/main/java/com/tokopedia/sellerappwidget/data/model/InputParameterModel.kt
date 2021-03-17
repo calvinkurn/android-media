@@ -23,7 +23,7 @@ data class InputParameterModel(
         @SerializedName("is_mobile")
         val isMobile: Boolean = true,
         @SerializedName("next_order_id")
-        val nextOrderId: String = "0",
+        val nextOrderId: Int = 0,
         @SerializedName("lang")
         val lang: String = "id",
         @SerializedName("page")
