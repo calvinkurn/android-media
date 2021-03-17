@@ -65,7 +65,7 @@ object NewShopPageHeaderMapper {
             shopPageHeaderLayoutResponseData: ShopPageHeaderLayoutResponse
     ): List<ShopHeaderWidgetUiModel> {
         return mutableListOf<ShopHeaderWidgetUiModel>().apply {
-            headerComponentPosition = 1
+            headerComponentPosition = 0
             shopPageHeaderLayoutResponseData.shopPageGetHeaderLayout.widgets.forEach { widgetResponseData ->
                 add(mapShopHeaderWidget(widgetResponseData))
             }
@@ -80,8 +80,8 @@ object NewShopPageHeaderMapper {
                 widgetResponseData.name,
                 widgetResponseData.type,
                 mutableListOf<BaseShopHeaderComponentUiModel>().apply {
-                    widgetResponseData.listComponent.forEach { componentResponseData ->
-                        if(!widgetResponseData.type.equals(SHOP_BASIC_INFO, true)){
+                    widgetResponseData.listComponent.forEachIndexed { index, componentResponseData ->
+                        if(shouldIncrementHeaderComponentPosition(widgetResponseData, index)){
                             headerComponentPosition++
                         }
                         mapShopHeaderComponent(headerComponentPosition, componentResponseData)?.let {
@@ -90,6 +90,17 @@ object NewShopPageHeaderMapper {
                     }
                 }
         )
+    }
+
+    private fun shouldIncrementHeaderComponentPosition(
+            widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget,
+            index: Int
+    ): Boolean {
+        return if (widgetResponseData.type.equals(SHOP_BASIC_INFO, true)) {
+            index < 1
+        } else {
+            true
+        }
     }
 
     private fun mapShopHeaderComponent(
