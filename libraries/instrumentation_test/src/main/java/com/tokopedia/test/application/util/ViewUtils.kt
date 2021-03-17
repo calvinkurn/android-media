@@ -51,26 +51,34 @@ object ViewUtils {
             totalHeight += height
         }
 
-        val combineBitmap = Bitmap.createBitmap(totalWidth, totalHeight + 200, Bitmap.Config.ARGB_8888)
+        val combineBitmap = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888)
         val c = Canvas(combineBitmap)
 
         views?.forEachIndexed { index, it ->
             val view = it ?: return
             context = view.context
             Handler(Looper.getMainLooper()).post {
-                view.setBackgroundColor(ContextCompat.getColor(context!!, R.color.Unify_N0))
                 val bitmap = Bitmap.createBitmap(
                         view.width,
                         view.height, Bitmap.Config.ARGB_8888
                 )
                 val b1 = Canvas(bitmap)
+
+                val bgDrawable = view.background
+                if (bgDrawable != null) {
+                    //has background drawable, then draw it on the canvas
+                    bgDrawable.draw(b1)
+                } else {
+                    //does not have background drawable, then draw white background on the canvas
+                    b1.drawColor(ContextCompat.getColor(context!!, R.color.Unify_N0))
+                }
                 view.draw(b1)
+
                 if (index == 0) {
-                    c.drawBitmap(bitmap, 0F,1F, null)
+                    c.drawBitmap(bitmap, 0F, 0F, null)
                 } else {
                     c.drawBitmap(bitmap, 0F, accumulateHeight.toFloat(), null)
                 }
-                view?.invalidate()
                 accumulateHeight += view.height
             }
         }
