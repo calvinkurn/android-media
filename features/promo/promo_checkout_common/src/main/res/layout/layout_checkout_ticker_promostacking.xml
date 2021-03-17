@@ -26,8 +26,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_10"
-                app:srcCompat="@drawable/ic_kupon_telur"
-                tools:ignore="contentDescription" />
+                app:srcCompat="@drawable/ic_kupon_telur" />
 
             <ImageView
                 android:id="@+id/bg_button_coupon"
@@ -37,8 +36,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/bg_button_promostacking"
-                tools:ignore="contentDescription" />
+                app:srcCompat="@drawable/bg_button_promostacking" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/title_button_coupon"
@@ -69,6 +67,7 @@
                 android:id="@+id/counter_coupons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_3"
                 android:paddingLeft="@dimen/dp_3"
@@ -79,7 +78,7 @@
 
             </LinearLayout>
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/title_action_coupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -90,7 +89,6 @@
             android:layout_marginRight="@dimen/dp_10"
             android:text="Cek"
             android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_3"
             android:visibility="gone" />
 
         </RelativeLayout>
@@ -128,8 +126,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/background_checkout_ticker_active_up"
-                        tools:ignore="contentDescription" />
+                        app:srcCompat="@drawable/background_checkout_ticker_active_up" />
 
                     <ImageView
                         android:id="@+id/bg_active_down"
@@ -142,8 +139,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/background_checkout_ticker_active_down"
-                        tools:ignore="contentDescription" />
+                        app:srcCompat="@drawable/background_checkout_ticker_active_down" />
 
                     <ImageView
                         android:id="@+id/imageCloseGlobal"
@@ -156,8 +152,7 @@
                         android:paddingLeft="@dimen/dp_4"
                         android:paddingBottom="@dimen/dp_4"
                         android:scaleType="center"
-                        app:srcCompat="@drawable/ic_close_promo_checkout"
-                        tools:ignore="contentDescription" />
+                        app:srcCompat="@drawable/ic_close_promo_checkout" />
 
                     <LinearLayout
                         android:id="@+id/layout_content"

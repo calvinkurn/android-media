@@ -169,7 +169,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderLabelDetailPayment"
         app:layout_constraintLeft_toRightOf="@id/tgFlightOrderLabelDetailPayment"
         app:layout_constraintTop_toTopOf="@id/tgFlightOrderLabelDetailPayment"
-        app:icon_name="CHEVRON_UP"
+        app:icon_name="CHEVRON_DOWN"
         app:icon_color_light_enable="@color/Unify_G500"
         app:icon_color_night_enable="@color/Unify_G500"/>
 

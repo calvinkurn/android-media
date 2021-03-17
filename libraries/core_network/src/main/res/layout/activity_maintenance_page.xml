@@ -18,11 +18,11 @@
         app:srcCompat="@drawable/unify_globalerrors_connection"
         android:layout_marginBottom="@dimen/margin_small"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        app:typographyType="heading_5"
         android:textColor="@color/Unify_N700"
         android:gravity="center"
         android:text="@string/msg_under_maintenance" />
