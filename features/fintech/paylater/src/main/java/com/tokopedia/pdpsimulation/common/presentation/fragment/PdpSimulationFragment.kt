@@ -159,11 +159,13 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun renderTabAndViewPager() {
-        setUpTabLayout()
-        if (pagerAdapter == null)
-            pagerAdapter = PayLaterPagerAdapter(requireContext(), childFragmentManager, 0)
-        pagerAdapter?.setList(getFragments())
-        payLaterViewPager.adapter = pagerAdapter
+        context?.let {
+            setUpTabLayout()
+            if (pagerAdapter == null)
+                pagerAdapter = PayLaterPagerAdapter(it, childFragmentManager, 0)
+            pagerAdapter?.setList(getFragments())
+            payLaterViewPager.adapter = pagerAdapter
+        }
     }
 
     private fun setUpTabLayout() {
