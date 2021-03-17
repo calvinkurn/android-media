@@ -54,13 +54,13 @@ class ChangePasswordViewModel @Inject constructor(
         }
     }
 
-    fun submitChangePasswordV2(encode: String, new: String, confirmation: String, validationToken: String){
+    fun submitChangePasswordV2(new: String, confirmation: String){
         launchCatchError(coroutineContext, {
             val result = generatePublicKeyUseCase.executeOnBackground()
             if(result.keyData.hash.isNotEmpty()) {
                 val encryptedPassword = RsaUtils.encrypt(new, result.keyData.key.decodeBase64(), true)
                 val encryptedConfirmationPass = RsaUtils.encrypt(confirmation, result.keyData.key.decodeBase64(), true)
-                changePasswordV2UseCase.setParams(encode, new = encryptedPassword, confirmation = encryptedConfirmationPass, validationToken, hash = result.keyData.hash)
+                changePasswordV2UseCase.setParams(new = encryptedPassword, confirmation = encryptedConfirmationPass, hash = result.keyData.hash)
                 val changePassResponse = changePasswordV2UseCase.executeOnBackground()
                 _response.postValue(Success(changePassResponse.changePassword))
             }else {
@@ -71,8 +71,8 @@ class ChangePasswordViewModel @Inject constructor(
         })
     }
 
-    fun submitChangePassword(encode: String, new: String, confirmation: String, validationToken: String) {
-        usecase.params = createRequestParams(ChangePasswordRequestModel(encode, new, confirmation, validationToken))
+    fun submitChangePassword(new: String, confirmation: String) {
+        usecase.params = createRequestParams(ChangePasswordRequestModel(newPassword = new, repeatPassword = confirmation))
         usecase.submit(onSuccess = {
             _response.postValue(Success(it.changePassword))
         }, onError = {
