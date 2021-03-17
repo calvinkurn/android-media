@@ -1,6 +1,7 @@
 package com.tokopedia.pageinfopusher
 
 import android.app.Activity
+import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -98,6 +99,7 @@ class PageInfoPusherManager(val activity: Activity) {
 
             if (isHitGa) {
                 //will hit GA here
+                Log.d(className, "hitting to GA")
             }
 
         } catch (e: java.lang.Exception) {
