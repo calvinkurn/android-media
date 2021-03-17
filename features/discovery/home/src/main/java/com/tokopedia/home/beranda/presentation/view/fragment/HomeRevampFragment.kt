@@ -314,7 +314,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
-    private var isLightThemeStatusBar = true
+    private var isLightThemeStatusBar = false
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
     private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
@@ -380,7 +380,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
-        requestStatusBarDark()
     }
 
     private fun createDaggerComponent(){
@@ -396,16 +395,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         else{
             initHomePageFlows()
         }
-    }
-
-    private fun requestStatusBarDark() {
-        isLightThemeStatusBar = false
-        mainParentStatusBarListener?.requestStatusBarDark()
-    }
-
-    private fun requestStatusBarLight() {
-        isLightThemeStatusBar = true
-        mainParentStatusBarListener?.requestStatusBarLight()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1364,11 +1353,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
                 FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
             }
-            if (offsetAlpha >= 150) {
-                if (isLightThemeStatusBar) requestStatusBarDark()
-            } else {
-                if (!isLightThemeStatusBar) requestStatusBarLight()
-            }
         }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
@@ -2079,6 +2063,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onDynamicChannelRetryClicked() {
         getHomeViewModel().onDynamicChannelRetryClicked()
+    }
+
+    override fun isNewNavigation(): Boolean {
+        return isNavRevamp()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
