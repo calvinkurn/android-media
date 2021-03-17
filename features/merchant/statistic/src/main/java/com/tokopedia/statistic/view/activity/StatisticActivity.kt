@@ -186,6 +186,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun setupTabs() {
         viewPagerAdapter?.let { adapter ->
+            if (adapter.titles.isNotEmpty()) {
+                tabStatistic.tabLayout.removeAllTabs()
+            }
             adapter.titles.forEach { title ->
                 val tab = tabStatistic.addNewTab(title)
                 sendTabImpressionEvent(tab.view, title)

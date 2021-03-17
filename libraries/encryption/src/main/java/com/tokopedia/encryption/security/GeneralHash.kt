@@ -1,7 +1,6 @@
 package com.tokopedia.encryption.security
 
 import android.util.Base64
-import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 
 fun String.md5(): String {
@@ -14,6 +13,16 @@ fun String.sha256(): String {
 
 fun String.toBase64():String {
     return toBase64(this, Base64.NO_WRAP)
+}
+
+fun String.decodeBase64(): String {
+    return try {
+        val data: ByteArray = Base64.decode(this, Base64.DEFAULT)
+        String(data)
+    }catch (e: Exception){
+        e.printStackTrace()
+        this
+    }
 }
 
 private fun hashString(input: String, algorithm: String): String {

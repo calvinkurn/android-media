@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 class ProductManageFilterTab(
     private val sortFilterTab: SortFilter,
-    private val onClickMoreFilter: (FilterTabUiModel) -> Unit,
+    private val onClickMoreFilter: () -> Unit,
     private val onClickFilterTab: (FilterTabUiModel) -> Unit
 ) {
 
@@ -29,7 +29,7 @@ class ProductManageFilterTab(
     fun show(data: GetFilterTabResult) {
         val tabs = data.tabs
         updateTabs(tabs)
-        setOnClickMoreFilter(tabs)
+        setOnClickMoreFilter()
         changeTabSortFilterText()
     }
 
@@ -78,7 +78,7 @@ class ProductManageFilterTab(
             }
         }
         changeTabSortFilterText()
-
+        setOnClickMoreFilter()
     }
 
     fun getSelectedFilter(): ProductStatus? {
@@ -145,14 +145,9 @@ class ProductManageFilterTab(
         onClickFilterTab(tab)
     }
 
-    private fun setOnClickMoreFilter(tabs: List<FilterTabUiModel>) {
-        tabs.firstOrNull()?.let { clickMoreFilterTab(it) }
-    }
-
-    private fun clickMoreFilterTab(tab: FilterTabUiModel) {
-        val moreFilterTab = sortFilterTab.sortFilterPrefix
-        moreFilterTab.setOnClickListener {
-            onClickMoreFilter(tab)
+    private fun setOnClickMoreFilter() {
+        sortFilterTab.sortFilterPrefix.setOnClickListener {
+            onClickMoreFilter()
         }
     }
 
