@@ -10,6 +10,8 @@ import com.tokopedia.seller.action.common.analytics.SellerActionAnalyticsImpl
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcher
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.seller.action.common.presentation.presenter.SellerActionPresenter
+import com.tokopedia.seller.action.common.provider.SellerActionProvider
+import com.tokopedia.seller.action.common.provider.SellerActionProviderImpl
 import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -43,7 +45,12 @@ class SellerActionModule {
 
     @SellerActionScope
     @Provides
+    fun providerSellerActionProvider(): SellerActionProvider = SellerActionProviderImpl()
+
+    @SellerActionScope
+    @Provides
     fun providePresenter(sliceMainOrderListUseCase: SliceMainOrderListUseCase,
-                         dispatcher: SellerActionDispatcherProvider): SellerActionPresenter = SellerActionPresenter(sliceMainOrderListUseCase, dispatcher)
+                         dispatcher: SellerActionDispatcherProvider,
+                         provider: SellerActionProvider): SellerActionPresenter = SellerActionPresenter(sliceMainOrderListUseCase, dispatcher, provider)
 
 }
