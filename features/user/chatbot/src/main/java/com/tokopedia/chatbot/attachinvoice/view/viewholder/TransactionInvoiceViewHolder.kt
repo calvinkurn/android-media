@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -46,9 +47,13 @@ class TransactionInvoiceViewHolder(itemView: View, private val listener: Transac
     }
 
     private fun setPrice(totalAmount: String?) {
-        if (!totalAmount.isNullOrEmpty()) {
+        if (totalAmount.isNullOrEmpty()) {
+            tvPricePrefix.hide()
+            tvPrice.hide()
+        }else{
             tvPricePrefix.show()
             tvPrice.text = totalAmount
+            tvPrice.show()
         }
     }
 

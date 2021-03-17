@@ -105,7 +105,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_desc"
             app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="body_3"
-            android:text="Total:"
+            android:text="@string/chatbot_total_text"
             tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
