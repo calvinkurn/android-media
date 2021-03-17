@@ -11,7 +11,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
@@ -49,8 +49,8 @@ import javax.inject.Inject
 
 class FlightBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                  private val travelTickerUseCase: TravelTickerCoroutineUseCase,
-                                                 private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+                                                 private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     private val _flightCartResult = MutableLiveData<Result<FlightCartViewEntity>>() //journey, insurance option, luggage option and meal option
     val flightCartResult: LiveData<Result<FlightCartViewEntity>>
@@ -116,7 +116,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun fetchTickerData() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.BOOK)
             mutableTickerData.postValue(tickerData)
         }
@@ -126,7 +126,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 verifyQuery: String = "", checkVoucherQuery: String = "", isRefreshCart: Boolean = false) {
         val params = mapOf(PARAM_CART_ID to cartId)
         launchCatchError(block = {
-            val data = withContext(dispatcherProvider.ui()) {
+            val data = withContext(dispatcherProvider.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCart.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCart.Response>().flightCart
@@ -185,7 +185,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
         val params = mapOf(PARAM_VERIFY_CART to bookingVerifyParam)
 
-        launchCatchError(context = dispatcherProvider.ui(), block = {
+        launchCatchError(context = dispatcherProvider.main, block = {
             val graphqlRequest = GraphqlRequest(query, FlightVerify.Response::class.java, params)
             val flightVerifyData = graphqlRepository.getReseponse(listOf(graphqlRequest))
                     .getSuccessData<FlightVerify.Response>().flightVerify
@@ -226,8 +226,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val addToCartParam = createAddToCartParam(idempotencyKey)
         val param = mapOf(PARAM_ATC to addToCartParam)
         //if add to cart success -> proceed to getCart with the id.
-        launchCatchError(context = dispatcherProvider.ui(), block = {
-            val addToCartData = withContext(dispatcherProvider.ui()) {
+        launchCatchError(context = dispatcherProvider.main, block = {
+            val addToCartData = withContext(dispatcherProvider.main) {
                 val graphqlRequest = GraphqlRequest(query, FlightAddToCartData.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightAddToCartData.Response>()
@@ -244,7 +244,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun getProfile(rawQuery: String) {
         launchCatchError(block = {
-            val profileInfo = withContext(dispatcherProvider.ui()) {
+            val profileInfo = withContext(dispatcherProvider.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, ProfilePojo::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<ProfilePojo>().profileInfo
@@ -259,7 +259,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun onCancelAppliedVoucher(rawQuery: String) {
         launchCatchError(block = {
-            withContext(dispatcherProvider.ui()) {
+            withContext(dispatcherProvider.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCancelVoucher>()
@@ -591,7 +591,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val flightPromoViewEntity = (flightPromoResult.value as FlightPromoViewEntity)
         val params = mapOf(PARAM_CART_ID to cartId, PARAM_VOUCHER_CODE to flightPromoViewEntity.promoData.promoCode)
         try {
-            val voucher = withContext(dispatcherProvider.ui()) {
+            val voucher = withContext(dispatcherProvider.main) {
                 val graphqlRequest = GraphqlRequest(query, FlightVoucher.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightVoucher.Response>().flightVoucher
@@ -653,7 +653,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val param = mapOf(PARAM_ATC to addToCartParam)
         //if add to cart success -> proceed to getCart with the id.
         launchCatchError(block = {
-            val addToCartData = withContext(dispatcherProvider.ui()) {
+            val addToCartData = withContext(dispatcherProvider.main) {
                 val graphqlRequest = GraphqlRequest(query, FlightAddToCartData.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightAddToCartData.Response>()
@@ -690,7 +690,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val params = mapOf(PARAM_VERIFY_CART to checkoutParam)
 
         launchCatchError(block = {
-            val checkOutData = withContext(dispatcherProvider.ui()) {
+            val checkOutData = withContext(dispatcherProvider.main) {
                 val graphqlRequest = GraphqlRequest(query, FlightCheckoutData.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCheckoutData.Response>().flightCheckout

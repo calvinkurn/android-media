@@ -5,7 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.*
 import com.tokopedia.flight.searchV4.domain.FlightSearchCountUseCase
@@ -24,8 +24,8 @@ import javax.inject.Inject
 class FlightFilterViewModel @Inject constructor(
         private val flightSearchCountUseCase: FlightSearchCountUseCase,
         private val flightSearchStatisticUseCase: FlightSearchStatisticsUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     private val mutableSelectedSort = MutableLiveData<Int>()
     val selectedSort: LiveData<Int>
@@ -116,7 +116,7 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     private fun getStatistics() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             filterModel.value?.let {
                 mutableStatisticModel.postValue(flightSearchStatisticUseCase.execute(it))
             }
@@ -124,7 +124,7 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     private fun getFlightCount() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             filterModel.value?.run {
                 mediatorFlightCount.postValue(flightSearchCountUseCase.execute(filterModel.value!!))
             }
