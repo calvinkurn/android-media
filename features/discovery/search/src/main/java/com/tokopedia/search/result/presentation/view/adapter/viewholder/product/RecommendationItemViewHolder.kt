@@ -29,7 +29,7 @@ class RecommendationItemViewHolder (
     override fun bind(recommendationItemViewModel: RecommendationItemViewModel) {
         val view = productCardView ?: return
         val recommendationItem = recommendationItemViewModel.recommendationItem
-        view.setProductModel(recommendationItem.toProductCardModel())
+        view.setProductModel(recommendationItem.toProductCardModel(hasThreeDots = true))
 
         view.setOnClickListener {
             listener.onProductClick(recommendationItem, "", adapterPosition)
