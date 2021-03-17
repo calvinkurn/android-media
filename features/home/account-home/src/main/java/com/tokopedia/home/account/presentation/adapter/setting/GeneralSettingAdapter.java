@@ -152,7 +152,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             String mediaTitle = itemView
                     .getContext()
                     .getResources()
-                    .getString(R.string.title_image_quality_setting);
+                    .getString(R.string.image_quality_setting_screen);
             int boxColor = -1;
 
             if (title.equals(notificationTitle)) {
