@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
+
 buildscript {
     repositories {
         mavenCentral()
@@ -14,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'global_config'
     groupId = 'com.tokopedia.config'
-    versionName = "norman-xxx"
+    versionName = "norman-xxx2"
     artifactName = "global_config-release"
 }
 
