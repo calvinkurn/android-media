@@ -324,6 +324,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 is Success -> {
                     result.data.let { isEligible ->
                         if (isEligible) {
+                            showOrHideChatMenuItem(true)
                             loadInitialData()
                         } else {
                             onChatAdminNoAccess()
