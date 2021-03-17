@@ -226,6 +226,8 @@
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
+#topads
+-keep class com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 
 #dontwarn com.tokopedia
 -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
