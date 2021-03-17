@@ -68,6 +68,17 @@ class ProductSheetViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
+    private val voucherScrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            val layoutManager = recyclerView.layoutManager
+            if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
+                    layoutManager is LinearLayoutManager) {
+                val llManager = layoutManager as LinearLayoutManager
+                listener.onVoucherScrolled(this@ProductSheetViewComponent, llManager.findLastVisibleItemPosition())
+            }
+        }
+    }
+
     init {
         findViewById<ImageView>(R.id.iv_sheet_close)
                 .setOnClickListener {
@@ -87,17 +98,7 @@ class ProductSheetViewComponent(
             addItemDecoration(MerchantVoucherItemDecoration(rvVoucherList.context))
         }
 
-        rvVoucherList.apply {
-            addOnScrollListener(object: RecyclerView.OnScrollListener(){
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
-                            layoutManager is LinearLayoutManager) {
-                        val llManager = layoutManager as LinearLayoutManager
-                        listener.onVoucherScrolled(this@ProductSheetViewComponent, llManager.findLastVisibleItemPosition())
-                    }
-                }
-            })
-        }
+        rvVoucherList.addOnScrollListener(voucherScrollListener)
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
 
@@ -212,6 +213,11 @@ class ProductSheetViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         rootView.requestApplyInsetsWhenAttached()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        rvVoucherList.removeOnScrollListener(voucherScrollListener)
     }
 
     companion object {
