@@ -60,23 +60,15 @@
           {
             "param_name": "",
             "name": "client_number",
-            "text": "Nomor Telepon",
+            "text": "Nomor Objek Pajak",
             "style": "input_numeric",
             "placeholder": "",
-            "help": "Nomor Telepon Harus Diisi",
+            "help": "Nomor Objek Pajak harus 18 digit",
             "data_collections": [],
             "validations": [
               {
-                "rule": "^[0-9]*$",
-                "title": "Numeric"
-              },
-              {
-                "rule": "^[0-9]+$",
-                "title": "Nomor harus diisi"
-              },
-              {
-                "rule": "^\\d{8,13}$",
-                "title": "Length 8 to 13"
+                "rule": "^\\d{18}$",
+                "title": "Exact 18 Digit"
               }
             ]
           },
