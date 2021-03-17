@@ -50,7 +50,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
     val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()
 
-    private val videoYoutubeStateFlow = MutableStateFlow(Pair(0, ""))
+    private val videoYoutubeStateFlow = MutableLiveData<Pair<Int, String>>()
 
     var isFetchingVideoData: MutableMap<Int, Boolean> = mutableMapOf()
     var urlToFetch: MutableMap<Int, String> = mutableMapOf()
@@ -88,6 +88,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private fun initVideoYoutube() = launch {
         videoYoutubeStateFlow
+                .asFlow()
                 .debounce(VIDEO_DEBOUNCE_TIME)
                 .filter {
                     return@filter it.second.isNotBlank()
