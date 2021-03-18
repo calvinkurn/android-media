@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/subtitleFilled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 />
         </RelativeLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/valueFilled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,17 +47,14 @@
             android:textSize="@dimen/fontSize_lvl4"
             android:visibility="gone"/>
     </LinearLayout>
-
-    <TextView
+  
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btnEdit"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="@string/change_setting_profile"
-        android:textColor="@color/Unify_G500"
         android:paddingLeft="@dimen/spacing_lvl3"
         android:paddingStart="@dimen/spacing_lvl3"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textStyle="bold"
         android:visibility="gone"
-        android:gravity="bottom" />
+        android:gravity="bottom"
+        app:icon_name="EDIT" />
 </LinearLayout>
