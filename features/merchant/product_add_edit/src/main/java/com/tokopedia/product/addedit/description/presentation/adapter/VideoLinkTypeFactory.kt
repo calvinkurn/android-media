@@ -44,14 +44,13 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
             }
             itemView.textFieldUrl.apply {
-                // add web prefix for url non-prefix (got from BE)
-                if (element.inputUrl.isNotBlank() && !element.inputUrl.startsWith(WEB_PREFIX_HTTPS)) {
-                    setText("$WEB_PREFIX_HTTPS${element.inputUrl}")
-                } else {
-                    setText(element.inputUrl)
-                }
-                // hit gql for the first time
+                setText(element.inputUrl)
                 if (isFirstLoaded && element.inputUrl.isNotBlank()) {
+                    // add web prefix for url non-prefix (got from BE)
+                    if (!element.inputUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                        setText("$WEB_PREFIX_HTTPS${element.inputUrl}")
+                    }
+                    // hit gql for the first time
                     listener?.onTextChanged(textAreaInput.text.toString(), adapterPosition)
                     isFirstLoaded = false
                 }
