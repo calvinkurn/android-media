@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhome.common
 
+import android.content.Context
 import android.content.Intent
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
@@ -12,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 object DeepLinkHandler {
 
-    fun handleAppLink(
+    fun handleAppLink(context: Context,
             intent: Intent?,
             callback: (page: PageFragment) -> Unit
     ) {
@@ -68,6 +70,10 @@ object DeepLinkHandler {
 
             //Seller Home
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME) -> {
+                callback(PageFragment(FragmentType.HOME))
+            }
+
+            else -> if (!RouteManager.route(context, data)) {
                 callback(PageFragment(FragmentType.HOME))
             }
         }
