@@ -25,7 +25,7 @@ data class Benefits(
         @SerializedName("text") val text: String,
         @SerializedName("color") val color: String?,
         @SerializedName("imageURL") val imageUrl: String?,
-        @SerializedName("benefitType") val benefitType: String,
+        @SerializedName("benefitType") val benefitType: String?,
         @SerializedName("displayType") val displayType: String?,
         @SerializedName("isBigPrize") val isBigPrize: Boolean,
         @SerializedName("isAutoApply") val isAutoApply: Boolean,

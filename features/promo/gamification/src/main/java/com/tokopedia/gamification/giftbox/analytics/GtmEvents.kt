@@ -114,7 +114,7 @@ object GtmEvents {
     //11
     fun clickReminderButton(userId: String?, label: String?) {
         val map = mutableMapOf<String, Any>()
-        if(!label.isNullOrEmpty()) {
+        if (!label.isNullOrEmpty()) {
             map[GiftBoxTrackerConstants.EVENT_LABEL] = label
         }
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -251,6 +251,101 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_PRODUCT_RECOM
         map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
         map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun clickProductRecomItem(userId: String?, productId: String,
+                              recommendationType: String,
+                              productPositionIndex:Int,
+                              productBrand:String,
+                              itemCategory:String,
+                              productName:String,
+                              productVariant:String,
+                              productPrice:String
+    ) {
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.SELECT_CONTENT
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_PRODUCT
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = productId
+        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
+        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
+        val loginText = if (userId.isNullOrEmpty()) {
+            "nonlogin"
+        } else {
+            "login"
+        }
+        //todo add few more
+        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText- rekomendasi untuk anda "
+        map[GiftBoxTrackerConstants.ITEMS] = getItemsMap(productId,
+                recommendationType,
+                productPositionIndex,
+                productBrand,
+                itemCategory,
+                productName,
+                productVariant,
+                productPrice)
+
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
+
+    private fun getItemsMap(productId: String,
+                            recommendationType: String,
+                            productPositionIndex:Int,
+                            productBrand:String,
+                            itemCategory:String,
+                            productName:String,
+                            productVariant:String,
+                            productPrice:String):Map<String,Any>{
+
+        val itemsMap = mutableMapOf<String, Any>()
+        itemsMap["index"] = productPositionIndex
+        itemsMap["item_brand"] = productBrand
+        itemsMap["item_category"] = itemCategory
+        itemsMap["item_id"] = productId
+        itemsMap["item_name"] = productName
+        itemsMap["item_variant"] = productVariant
+        itemsMap["price"] = productPrice
+        return itemsMap
+    }
+
+    fun impressionProductRecomItem(userId: String?,productId: String,
+                                   recommendationType: String,
+                                   productPositionIndex:Int,
+                                   productBrand:String,
+                                   itemCategory:String,
+                                   productName:String,
+                                   productVariant:String,
+                                   productPrice:String) {
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_ITEM_LIST
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_PRODUCT
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = productId
+        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
+        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
+        val loginText = if (userId.isNullOrEmpty()) {
+            "nonlogin"
+        } else {
+            "login"
+        }
+        //todo add few more
+        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText- rekomendasi untuk anda "
+        map[GiftBoxTrackerConstants.ITEMS] = getItemsMap(productId,
+                recommendationType,
+                productPositionIndex,
+                productBrand,
+                itemCategory,
+                productName,
+                productVariant,
+                productPrice)
+
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }

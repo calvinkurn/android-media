@@ -10,11 +10,15 @@ object GiftBoxTrackerConstants {
     const val CURRENT_SITE = "currentSite"
     const val BGP_ENGAGEMENT = "bgp - engagement"
     const val TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
+    const val ITEM_LIST = "item_list"
+    const val ITEMS = "items"
 }
 
 object GiftBoxEvent {
     const val CLICK_PRESENT = "clickPresent"
     const val VIEW_PRESENT_IRIS = "viewPresentIris"
+    const val SELECT_CONTENT = "select_content"
+    const val VIEW_ITEM_LIST = "view_item_list"
 }
 
 object GiftBoxCategory {
@@ -45,6 +49,8 @@ object GiftBoxAction {
     const val CLICK_REWARD_DETAIL = "click reward detail"
     const val CLICK_T_AND_C = "click t&c"
     const val CLICK_PRODUCT_RECOM = "click product recommendation"
+    const val CLICK_PRODUCT = "click product"
+    const val VIEW_PRODUCT = "view product"
 }
 
 object GiftBoxLabel {
