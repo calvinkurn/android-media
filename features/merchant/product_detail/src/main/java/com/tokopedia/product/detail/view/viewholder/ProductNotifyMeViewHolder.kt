@@ -22,9 +22,9 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             // render upcoming campaign ribbon
             val campaignRibbon = itemView.upcoming_campaign_ribbon
             val trackDataModel = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
-            campaignRibbon?.renderUpComingCampaignRibbon(element, element.upcomingNplData.upcomingType)
             campaignRibbon?.setDynamicProductDetailListener(listener)
             campaignRibbon?.setComponentTrackDataModel(trackDataModel)
+            campaignRibbon?.renderUpComingCampaignRibbon(element, element.upcomingNplData.upcomingType)
         } else {
             hideContainer()
         }
@@ -48,7 +48,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_NOTIFY_ME -> {
                 val campaignRibbon = itemView.upcoming_campaign_ribbon
-                campaignRibbon?.updateRemindMeButton(listener, element)
+                campaignRibbon?.updateRemindMeButton(listener, element, element.campaignType)
             }
         }
     }
