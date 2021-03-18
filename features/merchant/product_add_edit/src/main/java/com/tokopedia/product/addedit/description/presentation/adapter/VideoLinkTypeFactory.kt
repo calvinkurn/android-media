@@ -52,14 +52,14 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                     }
                     // hit gql for the first time
                     listener?.onTextChanged(textAreaInput.text.toString(), adapterPosition)
-                    isFirstLoaded = false
-                }
-                textAreaInput.let {
-                    // set cursor at the end of the text
-                    it.setSelection(element.inputUrl.length)
-                    it.doAfterTextChanged { editable ->
+                    // hit gql after text changed
+                    textAreaInput.doAfterTextChanged { editable ->
                         listener?.onTextChanged(editable.toString(), adapterPosition)
                     }
+                    isFirstLoaded = false
+                } else {
+                    // set cursor at the end of the text
+                    textAreaInput.setSelection(element.inputUrl.length)
                 }
             }
 

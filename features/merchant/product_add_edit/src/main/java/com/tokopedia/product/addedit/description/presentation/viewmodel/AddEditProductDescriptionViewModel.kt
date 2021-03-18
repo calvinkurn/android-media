@@ -149,10 +149,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         videoYoutubeStateFlow.value = Pair(position, url)
     }
 
-    fun resetYoutubeStateFlow() {
-        videoYoutubeStateFlow.resetReplayCache()
-    }
-
     fun updateProductInputModel(productInputModel: ProductInputModel) {
         _productInputModel.value = productInputModel
     }
