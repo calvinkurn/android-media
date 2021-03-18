@@ -16,7 +16,7 @@ buildscript {
 project.ext {
     artifactId = 'url'
     groupId = 'com.tokopedia.url'
-    versionName = "1.0.9"
+    versionName = "1.0.10"
     artifactName = "url-debug"
 }
 

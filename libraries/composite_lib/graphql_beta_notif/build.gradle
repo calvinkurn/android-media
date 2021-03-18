@@ -15,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'beta.notif'
     groupId = 'com.tokopedia.graphql'
-    versionName = "0.0.8"
+    versionName = "0.0.9"
     artifactName = "graphql_beta_notif-debug"
 }
 

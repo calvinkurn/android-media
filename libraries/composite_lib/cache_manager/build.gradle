@@ -15,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'
-    versionName = "2.24.4"
+    versionName = "2.24.5"
     artifactName = "cache_manager-debug"
 }
 
