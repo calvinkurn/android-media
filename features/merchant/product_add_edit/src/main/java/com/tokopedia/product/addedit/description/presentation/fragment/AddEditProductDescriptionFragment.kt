@@ -527,6 +527,9 @@ class AddEditProductDescriptionFragment:
 
     private fun displayErrorOnSelectedVideo(index: Int) {
         adapter.data.getOrNull(index)?.apply {
+            inputTitle = ""
+            inputDescription = ""
+            inputImage = ""
             errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
         }
     }
