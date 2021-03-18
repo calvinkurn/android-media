@@ -99,7 +99,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
                     val position = model.first
                     getYoutubeDataFlow(position, url)
                             .catch {
-                                _videoYoutubeNew.value = Pair(position, Fail(it))
+                                _videoYoutubeNew.postValue(Pair(position, Fail(it)))
                             }
                 }
                 .flowOn(coroutineDispatcher.io)
