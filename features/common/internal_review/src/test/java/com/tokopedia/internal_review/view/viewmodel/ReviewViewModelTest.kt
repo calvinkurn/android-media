@@ -1,6 +1,8 @@
 package com.tokopedia.internal_review.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.internal_review.domain.usecase.SendReviewUseCase
+import com.tokopedia.internal_review.view.model.SendReviewParam
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -30,13 +32,13 @@ class ReviewViewModelTest {
     @RelaxedMockK
     lateinit var sendReviewUseCase: SendReviewUseCase
 
-    private lateinit var viewModel: SellerReviewViewModel
+    private lateinit var viewModel: ReviewViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
 
-        viewModel = SellerReviewViewModel({ sendReviewUseCase }, coroutineTestRule.dispatchers)
+        viewModel = ReviewViewModel( sendReviewUseCase, coroutineTestRule.dispatchers)
     }
 
     @Test
