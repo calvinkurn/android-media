@@ -37,6 +37,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerVi
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import java.util.*
 
 /**
@@ -90,6 +91,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     }
 
     override fun type(bestSellerDataModel: BestSellerDataModel): Int {
+        return BestSellerViewHolder.LAYOUT
+    }
+
+    override fun type(comparisonListModel: ComparisonListModel): Int {
         return BestSellerViewHolder.LAYOUT
     }
 
