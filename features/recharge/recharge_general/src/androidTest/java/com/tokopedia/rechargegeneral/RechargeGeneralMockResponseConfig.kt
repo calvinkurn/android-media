@@ -16,6 +16,9 @@ class RechargeGeneralMockResponseConfig(
         const val KEY_QUERY_OPERATOR_SELECT_GROUP = "rechargeCatalogOperatorSelectGroup"
         const val KEY_QUERY_CATALOG_DYNAMIC_INPUT = "rechargeCatalogDynamicInput"
         const val KEY_QUERY_CATALOG_PLUGIN = "rechargeCatalogPlugin"
+
+        const val KEY_CONTAIN_OPERATOR_ID_TAGIHAN_LISTRIK = "\"operator\": \"18\""
+        const val KEY_CONTAIN_OPERATOR_ID_TOKEN_LISTRIK= "\"operator\": \"6\""
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -55,8 +58,12 @@ class RechargeGeneralMockResponseConfig(
                 InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_operator_select_group_listrik),
                 FIND_BY_CONTAINS)
         addMockResponse(
-                KEY_QUERY_CATALOG_DYNAMIC_INPUT,
-                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik),
+                KEY_CONTAIN_OPERATOR_ID_TOKEN_LISTRIK,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_token),
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_CONTAIN_OPERATOR_ID_TAGIHAN_LISTRIK,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_tagihan),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_QUERY_MENU_DETAIL,

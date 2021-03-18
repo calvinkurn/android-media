@@ -5,14 +5,18 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -30,6 +34,8 @@ import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
 import com.tokopedia.rechargegeneral.cases.pbb.RechargeGeneralLoginInstrumentTest
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralInputViewHolder
+import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralProductSelectViewHolder
+import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -67,11 +73,8 @@ class RechargeGeneralLoginInstrumentTest {
 
     @Test
     fun validate_login() {
-        Thread.sleep(3000)
-
-        stubSearchNumber()
-        Thread.sleep(3000)
         validate_favorite_number()
+        validate_select_product_token()
         validate_promo()
 
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
@@ -94,23 +97,55 @@ class RechargeGeneralLoginInstrumentTest {
     }
 
     private fun validate_favorite_number() {
-        onView(withId(R.id.rv_digital_product)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
+        // Choose existing favorite number
+        onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
-                        0, ViewActions.click()
+                        0, click()
                 )
         )
-        Thread.sleep(2000)
-        onView(withId(R.id.recharge_general_enquiry_button)).check(ViewAssertions.matches(ViewMatchers.isEnabled()))
+        Thread.sleep(1000)
+        onView(withText("08121111111"))
+                .check(matches(isDisplayed()))
+                .perform(click())
+        Thread.sleep(1000)
+        onView(withText("08121111111")).check(matches(isDisplayed()))
+        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(ViewMatchers.isEnabled()))
+
+        // Stub manual typed number
+        stubSearchNumber()
+        Thread.sleep(3000)
+        onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
+                        0, click()
+                )
+        )
+        onView(withText("12345678910")).check(matches(isDisplayed()))
+    }
+
+    fun validate_select_product_token() {
+        onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectViewHolder>(
+                        1, click()
+                )
+        )
+        Thread.sleep(1000)
+        onView(withId(R.id.rv_product_select_dropdown)).check(matches(isDisplayed())).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectBottomSheet.DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>(
+                        1, click()
+                )
+        )
+        Thread.sleep(1000)
+        onView(withText("Rp 50.000")).check(matches(isDisplayed()))
     }
 
     private fun validate_promo() {
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText("Promo"))).perform(ViewActions.click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(ViewActions.click())
         Thread.sleep(1000)
-        onView(withId(R.id.promo_list_widget)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.promo_list_widget)).check(matches(isDisplayed()))
         onView(AllOf.allOf(
                 withId(R.id.recycler_view_menu_component),
-                ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.promo_list_widget))
-        )).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
+                ViewMatchers.isDescendantOfA(withId(R.id.promo_list_widget))
+        )).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
                         0, CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
                 )

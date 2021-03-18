@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
@@ -32,6 +33,7 @@ import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.AdditionalMatchers.not
 
 class RechargeGeneralInstrumentTest {
 
@@ -64,9 +66,11 @@ class RechargeGeneralInstrumentTest {
     @Test
     fun validate_non_login() {
         validate_init_state()
-        validate_select_operator()
-        validate_select_product()
-        validate_manual_input()
+        validate_select_operator_token()
+        validate_select_product_token()
+        validate_manual_input_token()
+        select_operator_tagihan()
+        validate_manual_input_tagihan()
     }
 
     fun validate_init_state() {
@@ -77,24 +81,24 @@ class RechargeGeneralInstrumentTest {
         onView(withText("Nominal")).check(matches(isDisplayed()))
     }
 
-    fun validate_select_operator() {
+    fun validate_select_operator_token() {
         onView(withId(R.id.operator_select)).perform(click())
         onView(withText("Token Listrik")).check(matches(isDisplayed()))
         onView(withText("Tagihan Listrik")).check(matches(isDisplayed()))
         onView(withText("PLN Non-Taglis")).check(matches(isDisplayed()))
 
         Thread.sleep(1000)
-        onView(ViewMatchers.withId(R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
+        onView(withId(R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
-                        1, click()
+                        0, click()
                 )
         )
-        onView(withText("Tagihan Listrik")).check(matches(isDisplayed()))
+        onView(withText("Token Listrik")).check(matches(isDisplayed()))
     }
 
-    fun validate_manual_input() {
+    fun validate_manual_input_token() {
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed()))
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(CoreMatchers.not(ViewMatchers.isEnabled())))
+        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
 
 
         onView(withId(R.id.rv_digital_product)).perform(
@@ -125,7 +129,7 @@ class RechargeGeneralInstrumentTest {
         validate_enquiry_button_enabled_after_delayed()
     }
 
-    fun validate_select_product() {
+    fun validate_select_product_token() {
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectViewHolder>(
                         1, click()
@@ -141,11 +145,35 @@ class RechargeGeneralInstrumentTest {
         onView(withText("Rp 50.000")).check(matches(isDisplayed()))
     }
 
-
     fun validate_enquiry_button_enabled_after_delayed() {
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(CoreMatchers.not(ViewMatchers.isEnabled())))
+        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
         Thread.sleep(1000)
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(ViewMatchers.isEnabled()))
+        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(isEnabled()))
     }
 
+
+    fun select_operator_tagihan() {
+        onView(withId(R.id.operator_select)).perform(click())
+        onView(withText("Token Listrik")).check(matches(isDisplayed()))
+        onView(withText("Tagihan Listrik")).check(matches(isDisplayed()))
+        onView(withText("PLN Non-Taglis")).check(matches(isDisplayed()))
+        onView(withId(R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
+                RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
+                        1, click()
+                )
+        )
+        onView(withText("Tagihan Listrik")).check(matches(isDisplayed()))
+    }
+
+    fun validate_manual_input_tagihan() {
+        onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed()))
+        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
+
+        onView(withId(R.id.rv_digital_product)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
+                        0, ViewActions.typeText("1234567890")
+                )
+        ).perform(ViewActions.closeSoftKeyboard())
+        validate_enquiry_button_enabled_after_delayed()
+    }
 }
