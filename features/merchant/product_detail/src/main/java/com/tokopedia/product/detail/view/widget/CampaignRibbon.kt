@@ -217,12 +217,12 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         when (upComingData.notifyMe) {
             true -> {
                 remindMeButton.text = context.getString(R.string.notify_me_active)
-                remindMeButton.setTextColor(ContextCompat.getColor(context, R.color.Unify_N100))
+                remindMeButton.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
                 remindMeButton.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_active)
             }
             false -> {
                 remindMeButton.text = context.getString(R.string.notify_me_inactive)
-                remindMeButton.setTextColor(ContextCompat.getColor(context, R.color.Unify_Static_White))
+                remindMeButton.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                 remindMeButton.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_inactive)
             }
         }
