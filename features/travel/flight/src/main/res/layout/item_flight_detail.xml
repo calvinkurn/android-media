@@ -161,6 +161,7 @@
 
         <LinearLayout
             android:id="@+id/container_arrival_info"
+            android:baselineAligned="false"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl5"
