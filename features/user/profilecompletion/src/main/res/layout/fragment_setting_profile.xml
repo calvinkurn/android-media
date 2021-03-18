@@ -24,8 +24,7 @@
                     android:id="@+id/headerPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    />
+                    android:scaleType="fitXY" />
 
                 <RelativeLayout
                     android:layout_width="90dp"
@@ -53,6 +52,20 @@
                         android:background="@drawable/rounded_bg_icon_with_shadow"/>
                 </RelativeLayout>
             </RelativeLayout>
+  
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_default_name_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/layout_lvl2"
+                app:descriptionText="Ubah nama profil sesuai nama aslimu, untuk kemudahan bertransaski!"
+                app:closeButtonVisibility="gone"
+                app:tickerType="warning"
+                app:tickerShapeType="full"
+                app:layout_constraintTop_toBottomOf="@id/headerContainer"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,7 +74,7 @@
                 android:paddingBottom="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
-                app:layout_constraintTop_toBottomOf="@+id/headerContainer">
+                app:layout_constraintTop_toBottomOf="@+id/ticker_default_name_warning">
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/name"

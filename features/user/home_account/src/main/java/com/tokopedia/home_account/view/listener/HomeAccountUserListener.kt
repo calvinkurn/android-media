@@ -22,6 +22,7 @@ interface HomeAccountUserListener {
     fun onItemViewBinded(position: Int, itemView: View, data: Any)
     fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter)
     fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter)
+    fun onIconWarningClicked()
 
     fun onFinancialErrorClicked()
     fun onMemberErrorClicked()

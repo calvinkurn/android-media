@@ -21,6 +21,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
@@ -73,6 +74,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     lateinit var overlayView: View
     lateinit var tickerPhoneVerification: Ticker
+    private var tickerAddNameWarning: Ticker? = null
 
     private var chancesChangeName = "0"
 
@@ -81,6 +83,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         val view = inflater.inflate(R.layout.fragment_setting_profile, container, false)
         overlayView = view.findViewById(R.id.overlay_view)
         tickerPhoneVerification = view.findViewById(R.id.ticker_phone_verification)
+        tickerAddNameWarning = view.findViewById(R.id.ticker_default_name_warning)
         return view
     }
 
@@ -359,6 +362,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 }
         )
 
+        loadTickerAddNameVisibility(profileCompletionData)
+
         if (profileCompletionData.birthDay.isEmpty()) {
             bod.showEmpty(
                     getString(R.string.subtitle_bod_setting_profile),
@@ -551,6 +556,14 @@ class SettingProfileFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun loadTickerAddNameVisibility(profileCompletionData: ProfileCompletionData) {
+        if (profileCompletionData.fullName.contains(DEFAULT_NAME)) {
+            tickerAddNameWarning?.show()
+        } else {
+            tickerAddNameWarning?.show()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         profileInfoViewModel.userProfileInfo.removeObservers(this)
@@ -600,6 +613,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REMOTE_KEY_CHANGE_NAME = "android_customer_change_public_name"
 
         const val HEADER_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/bg_setting_profile_header.png"
+
+        private const val DEFAULT_NAME = "Toppers-"
 
         fun createInstance(bundle: Bundle): SettingProfileFragment {
             val fragment = SettingProfileFragment()

@@ -79,12 +79,14 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
+import kotlinx.android.synthetic.main.layout_bottom_sheet_add_name.view.*
 import javax.inject.Inject
 
 /**
@@ -464,6 +466,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
+    }
+
+    override fun onIconWarningClicked() {
+        showBottomSheetAddName()
     }
 
     override fun onEditProfileClicked() {
@@ -1020,6 +1026,26 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                         RouteManager.route(activity, ApplinkConst.WISHLIST)
                     }
             )
+        }
+    }
+
+    private fun showBottomSheetAddName() {
+        activity?.let {
+            val bottomSheet = BottomSheetUnify()
+            val addNameLayout = View.inflate(context, R.layout.layout_bottom_sheet_add_name, null)
+            addNameLayout?.layout_bottom_sheet_add_name_button?.setOnClickListener {
+                // goto add name / profile
+            }
+
+            bottomSheet.setTitle("")
+            bottomSheet.setChild(addNameLayout)
+            bottomSheet.clearAction()
+            bottomSheet.setCloseClickListener {
+                bottomSheet.dismiss()
+            }
+            childFragmentManager.run {
+                bottomSheet.show(this, "bottom sheet add name")
+            }
         }
     }
 
