@@ -10,11 +10,11 @@ import com.tokopedia.troubleshooter.notification.databinding.ItemLayoutTickerBin
 import com.tokopedia.troubleshooter.notification.ui.adapter.TickerAdapter
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TickerItemFactory
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TickerViewHolder(view: View): AbstractViewHolder<TickerUIView>(view) {
 
-    private val binding by viewBinding(ItemLayoutTickerBinding::bind)
+    private val binding: ItemLayoutTickerBinding by viewBinding()
     private val context by lazy { itemView.context }
     private var adapter: TickerAdapter? = null
 

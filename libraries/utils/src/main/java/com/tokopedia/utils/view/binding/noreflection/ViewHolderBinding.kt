@@ -6,22 +6,22 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
-fun <VH : ViewHolder, T : ViewBinding> VH.viewBinding(viewBinder: (VH) -> T): ViewBindingProperty<VH, T> {
+fun <V : ViewHolder, T : ViewBinding> ViewHolder.viewBinding(viewBinder: (V) -> T): ViewBindingProperty<V, T> {
     return LazyViewBindingProperty(viewBinder)
 }
 
-inline fun <VH : ViewHolder, T : ViewBinding> VH.viewBinding(
+inline fun <V : ViewHolder, T : ViewBinding> ViewHolder.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
-        crossinline viewProvider: (VH) -> View = ViewHolder::itemView,
-): ViewBindingProperty<VH, T> {
-    return LazyViewBindingProperty { viewHolder: VH -> viewProvider(viewHolder).let(viewBindingFactory) }
+        crossinline viewProvider: (V) -> View = ViewHolder::itemView,
+): ViewBindingProperty<V, T> {
+    return LazyViewBindingProperty { viewHolder: V -> viewProvider(viewHolder).let(viewBindingFactory) }
 }
 
-inline fun <VH : ViewHolder, T : ViewBinding> VH.viewBinding(
+inline fun <V : ViewHolder, T : ViewBinding> ViewHolder.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
         @IdRes viewBindingRootId: Int,
-): ViewBindingProperty<VH, T> {
-    return LazyViewBindingProperty { viewHolder: VH ->
+): ViewBindingProperty<V, T> {
+    return LazyViewBindingProperty { viewHolder: V ->
         viewBindingFactory(viewHolder.itemView.requireViewByIdCompat(viewBindingRootId))
     }
 }

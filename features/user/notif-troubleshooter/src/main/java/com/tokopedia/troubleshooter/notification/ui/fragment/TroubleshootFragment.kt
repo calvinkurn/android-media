@@ -47,7 +47,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
@@ -57,8 +57,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: TroubleshootViewModel
-
-    private val binding by viewBinding(FragmentNotifTroubleshooterBinding::bind)
+    private val binding: FragmentNotifTroubleshooterBinding by viewBinding()
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this, this))

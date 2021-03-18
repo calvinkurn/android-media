@@ -14,14 +14,14 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
 import com.tokopedia.troubleshooter.notification.util.gotoDeviceSettings
 import com.tokopedia.troubleshooter.notification.util.setCustomSpan
 import com.tokopedia.unifyprinciples.R.color.Unify_G500
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class FooterViewHolder(
         private val listener: FooterListener,
         view: View
 ): AbstractViewHolder<FooterUIView>(view) {
 
-    private val binding by viewBinding(ItemFooterMessageBinding::bind)
+    private val binding: ItemFooterMessageBinding by viewBinding()
     private val context by lazy { itemView.context }
 
     override fun bind(element: FooterUIView?) {
