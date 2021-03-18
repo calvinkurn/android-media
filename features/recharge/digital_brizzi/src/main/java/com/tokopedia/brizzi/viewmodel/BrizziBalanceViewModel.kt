@@ -150,7 +150,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                 if (inquiryIdBrizzi > -1) {
                     balanceInquiry.attributesEmoneyInquiry?.let {
-                        Timber.d("P2#BRIZZI#SUCCESS_GET_BALANCE#${it.cardNumber}, ${it.lastBalance.toDouble()}")
+                        Timber.d("P2#BRIZZI#SUCCESS_UPDATE_BALANCE#${it.cardNumber}, ${it.lastBalance.toDouble()}")
                         logBrizzi(inquiryIdBrizzi, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
                     }
                 }
