@@ -11,13 +11,14 @@ import com.tokopedia.utils.view.binding.internal.findRootView
 import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
 @RestrictTo(LIBRARY)
-private class ActivityViewBindingProperty<in A : ComponentActivity, out T : ViewBinding>(
-        viewBinder: (A) -> T
+private class ActivityViewBindingProperty<in A : ComponentActivity, T : ViewBinding?>(
+        viewBinder: (A) -> T?
 ) : LifecycleViewBindingProperty<A, T>(viewBinder) {
 
     override fun getLifecycleOwner(thisRef: A): LifecycleOwner {
         return thisRef
     }
+
 }
 
 @JvmName("viewBindingActivity")

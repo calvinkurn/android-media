@@ -12,14 +12,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-interface ViewBindingProperty<in R : Any, out T : ViewBinding> : ReadOnlyProperty<R, T> {
+interface ViewBindingProperty<in R : Any, T : ViewBinding?> : ReadWriteProperty<R, T?> {
     @MainThread fun clear()
 }
 
 @RestrictTo(LIBRARY_GROUP)
-open class LazyViewBindingProperty<in R : Any, out T : ViewBinding>(
+open class LazyViewBindingProperty<in R : Any, T : ViewBinding>(
         protected val viewBinder: (R) -> T
 ) : ViewBindingProperty<R, T> {
 
@@ -33,14 +34,18 @@ open class LazyViewBindingProperty<in R : Any, out T : ViewBinding>(
         }
     }
 
+    override fun setValue(thisRef: R, property: KProperty<*>, value: T?) {
+        viewBinding = value
+    }
+
     @MainThread override fun clear() {
         viewBinding = null
     }
 }
 
 @RestrictTo(LIBRARY_GROUP)
-abstract class LifecycleViewBindingProperty<in R : Any, out T : ViewBinding>(
-        private val viewBinder: (R) -> T
+abstract class LifecycleViewBindingProperty<in R : Any, T : ViewBinding?>(
+        private val viewBinder: (R) -> T?
 ) : ViewBindingProperty<R, T> {
 
     private var viewBinding: T? = null
@@ -49,11 +54,12 @@ abstract class LifecycleViewBindingProperty<in R : Any, out T : ViewBinding>(
 
     @MainThread
     @SuppressLint("LogNotTimber")
-    override fun getValue(thisRef: R, property: KProperty<*>): T {
+    override fun getValue(thisRef: R, property: KProperty<*>): T? {
         viewBinding?.let { return it }
 
         val lifecycle = getLifecycleOwner(thisRef).lifecycle
         val viewBinding = viewBinder(thisRef)
+
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.DESTROYED)) {
             /*
             * We can access to ViewBinding after Fragment.onDestroyView(),
@@ -67,11 +73,20 @@ abstract class LifecycleViewBindingProperty<in R : Any, out T : ViewBinding>(
             lifecycle.addObserver(ClearOnDestroyLifecycleObserver())
             this.viewBinding = viewBinding
         }
+
+
+
         return viewBinding
     }
 
+    override fun setValue(thisRef: R, property: KProperty<*>, value: T?) {
+        viewBinding = value
+    }
+
     @MainThread override fun clear() {
-        mainHandler.post { viewBinding = null }
+        mainHandler.post {
+            viewBinding = null
+        }
     }
 
     private inner class ClearOnDestroyLifecycleObserver : DefaultLifecycleObserver {

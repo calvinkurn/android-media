@@ -106,6 +106,6 @@ internal class BindViewBinding<out T : ViewBinding>(viewBindingClass: Class<T>) 
 
     @Suppress("UNCHECKED_CAST")
     fun bind(view: View): T {
-        return bindViewBinding.invoke(null, view) as T
+        return bindViewBinding(null, view) as T
     }
 }
