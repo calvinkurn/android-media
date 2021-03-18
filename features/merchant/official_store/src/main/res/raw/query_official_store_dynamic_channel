@@ -1,6 +1,6 @@
-query dynamicHomeChannel($type: String) {
+query dynamicHomeChannel($type: String, $location: String) {
     dynamicHomeChannel {
-        channels(type: $type) {
+        channels(type: $type, location: $location) {
             id
             name
             layout
