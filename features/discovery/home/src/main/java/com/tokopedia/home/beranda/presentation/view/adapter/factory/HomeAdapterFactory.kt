@@ -38,6 +38,8 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.Reco
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetDataModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetViewHolder
 import java.util.*
 
 /**
@@ -94,8 +96,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return BestSellerViewHolder.LAYOUT
     }
 
-    override fun type(comparisonListModel: ComparisonListModel): Int {
-        return BestSellerViewHolder.LAYOUT
+    override fun type(comparisonWidgetDataModel: ComparisonWidgetDataModel): Int {
+        return ComparisonWidgetViewHolder.LAYOUT
     }
 
     override fun type(tickerDataModel: TickerDataModel): Int {
@@ -429,6 +431,9 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             legoSixAutoListener,
                             homeComponentListener,
                             parentRecycledViewPool)
+            ComparisonWidgetViewHolder.LAYOUT -> viewHolder = ComparisonWidgetViewHolder(
+                    view
+            )
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
