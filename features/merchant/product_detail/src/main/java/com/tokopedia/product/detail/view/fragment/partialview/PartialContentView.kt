@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
-import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
@@ -24,8 +23,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
     }
 
     fun renderData(data: ProductContentMainData,
-                   isUpcomingNplType: Boolean,
-                   upcomingNplData: UpcomingNplDataModel) = with(view) {
+                   isUpcomingNplType: Boolean) = with(view) {
         txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
         product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         product_name.text = MethodChecker.fromHtml(data.productName)
@@ -49,13 +47,17 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
 
         when {
             isUpcomingNplType -> {
-                renderCampaignInactiveNpl(data.price.priceFmt)
+                if (data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN || data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN) {
+                    renderCampaignInactiveNpl(data.price.priceFmt)
+                } else {
+                    setTextCampaignActive(data.campaign)
+                }
                 campaignRibbon.hide()
             }
             // no campaign
             data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN -> {
                 renderCampaignInactive(data.price.priceFmt)
-                campaign_ribbon.gone()
+                campaign_ribbon.hide()
             }
             // thematic only
             data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN -> {

@@ -26,7 +26,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -83,7 +82,6 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatus
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
@@ -1263,14 +1261,12 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeUpcoming(
                 productId = selectedChild?.productId.toString(),
-                upcomingData = viewModel.p2Data.value?.upcomingCampaigns,
-                campaignIdentifier = updatedDynamicProductInfo?.data?.campaign?.campaignIdentifier ?: 0,
-                background = updatedDynamicProductInfo?.data?.campaign?.background ?: "",
-                thematicCampaign = updatedDynamicProductInfo?.data?.thematicCampaign ?: ThematicCampaign())
+                upcomingData = viewModel.p2Data.value?.upcomingCampaigns)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
+        val isUpcomingType = viewModel.p2Data.value?.upcomingCampaigns?.get(selectedChild?.productId.toString())?.isUpcomingNplType() ?: false
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
-                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
+                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0, isUpcomingType)
 
         /*
             If the p2 data is empty, dont update the button
@@ -1730,9 +1726,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 context = context,
                 p2Data = it,
                 productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
-                thematicIdentifier =  viewModel.getDynamicProductInfoP1?.data?.campaign?.campaignIdentifier ?: 0,
-                background = viewModel.getDynamicProductInfoP1?.data?.campaign?.background ?: "",
-                thematicCampaign = viewModel.getDynamicProductInfoP1?.data?.thematicCampaign ?: ThematicCampaign(),
                 isProductWarehouse = viewModel.getDynamicProductInfoP1?.basic?.isWarehouse() ?: false,
                 isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 isOutOfStock = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)

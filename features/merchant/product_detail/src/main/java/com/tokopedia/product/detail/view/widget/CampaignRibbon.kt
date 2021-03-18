@@ -82,8 +82,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     fun renderOnGoingCampaign(onGoingData: ProductContentMainData) {
         this.show()
         when (onGoingData.campaign.campaignIdentifier) {
-            NO_CAMPAIGN, NPL -> this.hide()
-            FLASH_SALE, NEW_USER -> renderFlashSaleCampaignRibbon(onGoingData = onGoingData)
+            NO_CAMPAIGN -> this.hide()
+            FLASH_SALE, NEW_USER, NPL -> renderFlashSaleCampaignRibbon(onGoingData = onGoingData)
             SLASH_PRICE -> renderSlashPriceCampaignRibbon(onGoingData = onGoingData)
             THEMATIC_CAMPAIGN -> renderThematicCampaignRibbon(onGoingData = onGoingData)
         }
@@ -109,13 +109,14 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             // render campaign ribbon background
             val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
             val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-            campaign_ribbon_layout_s3.background = gradientDrawable
+            campaign_ribbon_type_3?.background = gradientDrawable
             // show count down wording
             tpg_ends_in_s3.show()
             // render ongoing count down timer
             renderOnGoingCountDownTimer(campaign = campaign, timerView = tus_timer_view_s3)
             // hide irrelevant views
-            regulatory_info_layout_s3.hide()
+            tgp_regulatory_info_s3?.hide()
+            iu_campaign_logo_s3?.hide()
             // show campaign ribbon type 3
             showCampaignRibbonType3()
         } else this.hide()
@@ -126,7 +127,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
         if (thematicCampaign.background.isNotBlank()) {
-            campaign_ribbon_layout_s3.background = getGradientDrawableForBackGround(thematicCampaign.background)
+            campaign_ribbon_type_3?.background = getGradientDrawableForBackGround(thematicCampaign.background)
         }
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
@@ -136,7 +137,9 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render campaign name
         tpg_campaign_name_s3.text = thematicCampaign.campaignName
         // hide irrelevant views
-        regulatory_info_layout_s3.hide()
+        tgp_regulatory_info_s3?.hide()
+        tpg_ends_in_s3?.hide()
+        tus_timer_view_s3?.hide()
         // show campaign ribbon type 3
         showCampaignRibbonType3()
     }
@@ -166,14 +169,13 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun renderUpComingCampaignRibbon(upcomingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
         showCampaignRibbonType1()
-        if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
-            remind_me_button_s1?.hide()
+        val gradientDrawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
+            context.getDrawable(R.drawable.bg_gradient_default_npl)
         } else {
-            remind_me_button_s1?.show()
+            context.getDrawable(R.drawable.bg_gradient_default_flash_sale_by_seller)
         }
 
         // render campaign ribbon background
-        val gradientDrawable = context.getDrawable(R.drawable.bg_gradient_default_npl)
         gradientDrawable?.run { campaign_ribbon_layout_s1.background = gradientDrawable }
         // render campaign name
         val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
@@ -185,6 +187,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
                     tus_timer_view_s1
             )
         }
+        updateRemindMeButton(listener, upcomingData, upcomingIdentifier)
         // hide regulatory info
         regulatory_info_layout_s1.hide()
     }
@@ -217,8 +220,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun renderUpComingRemindMeButton(isOwner: Boolean,
                                              upComingData: ProductNotifyMeDataModel,
-                                             remindMeButton: Typography) {
-        remindMeButton.showWithCondition(isOwner)
+                                             remindMeButton: Typography, upcomingIdentifier: String) {
+        remindMeButton.showWithCondition(!isOwner && upcomingIdentifier != ProductUpcomingTypeDef.UPCOMING_NPL)
         when (upComingData.notifyMe) {
             true -> {
                 remindMeButton.text = context.getString(R.string.notify_me_active)
@@ -237,8 +240,11 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    fun updateRemindMeButton(listener: DynamicProductDetailListener, upComingData: ProductNotifyMeDataModel) {
-        renderUpComingRemindMeButton(listener.isOwner(), upComingData, remind_me_button_s1)
+    fun updateRemindMeButton(listener: DynamicProductDetailListener?, upComingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
+        upComingData?.let {
+            renderUpComingRemindMeButton(listener?.isOwner()
+                    ?: false, upComingData, remind_me_button_s1, upcomingIdentifier)
+        }
     }
 
     private fun renderOnGoingCampaignRibbon(onGoingData: ProductContentMainData) {
@@ -249,7 +255,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render campaign ribbon background
         val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
         val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-        campaign_ribbon_layout_s2.background = gradientDrawable
+        campaign_ribbon_type_2?.background = gradientDrawable
 
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
@@ -279,10 +285,9 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render regulatory info
         if (campaign.paymentInfoWording.isNotBlank()) {
             tgp_regulatory_info_s2.text = campaign.paymentInfoWording
-            regulatory_info_layout_s2.background = gradientDrawable
-            regulatory_info_layout_s2.show()
+            tgp_regulatory_info_s2?.show()
         } else {
-            regulatory_info_layout_s2.hide()
+            tgp_regulatory_info_s2?.hide()
         }
     }
 
@@ -356,8 +361,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun getGradientDrawableForBackGround(gradientHexCodes: String): GradientDrawable {
         return try {
             val gradientColors = gradientHexCodes.split(",")
-            val firstColor = Color.parseColor(gradientColors[0])
-            val secondColor = Color.parseColor(gradientColors[1])
+            val firstColor = Color.parseColor(if (gradientColors[0].contains("#")) gradientColors[0] else "#${gradientColors[0]}")
+            val secondColor = Color.parseColor(if (gradientColors[1].contains("#")) gradientColors[1] else "#${gradientColors[1]}")
             GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
         } catch (ex: Exception) {
             // TODO refactor the hardcoded gradient with default color

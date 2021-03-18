@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/campaign_ribbon_layout_s2_container"
+    android:background="@drawable/bg_gradient_default_flash_sale"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -9,7 +11,7 @@
         android:id="@+id/campaign_ribbon_layout_s2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_gradient_default_flash_sale"
+        android:paddingBottom="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -18,7 +20,7 @@
             android:layout_width="@dimen/spacing_lvl3"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -32,6 +34,7 @@
             android:scaleType="fitCenter"
             app:layout_constraintStart_toEndOf="@+id/left_margin_view"
             app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone"
             tools:src="@drawable/ic_btn_play" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -53,8 +56,7 @@
             android:layout_height="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/pdp_dp_9"
-            android:layout_marginBottom="@dimen/pdp_dp_15"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tpg_campaign_name_s2"
             app:layout_constraintLeft_toRightOf="@id/iu_campaign_logo_s2" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -75,10 +77,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/pdp_dp_9"
-            android:layout_marginBottom="@dimen/pdp_dp_10"
-            android:text="Lagi diminati"
+            tools:text="Lagi diminati"
             android:textColor="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/pbu_stock_bar_s2"
+            app:layout_constraintBottom_toBottomOf="@+id/pbu_stock_bar_s2"
             app:layout_constraintLeft_toRightOf="@id/pbu_stock_bar_s2"
             app:typographyType="small" />
 
@@ -95,13 +97,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pdp_dp_10"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="@dimen/spacing_lvl1"
             android:text="@string/label_ends_in"
             android:textColor="@color/Unify_N0"
-            app:layout_constraintBottom_toTopOf="@id/tus_timer_view_s2"
-            app:layout_constraintLeft_toLeftOf="@id/tus_timer_view_s2"
-            app:layout_constraintRight_toRightOf="@id/tus_timer_view_s2"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
             tools:ignore="MissingConstraints" />
@@ -110,38 +110,27 @@
             android:id="@+id/tus_timer_view_s2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/pdp_dp_10"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tgp_count_down_wording_s2"
+            app:layout_constraintEnd_toEndOf="@+id/tgp_count_down_wording_s2"
+            app:layout_constraintStart_toStartOf="@+id/tgp_count_down_wording_s2"
             app:timer_unify_single_variant="alternate"
             tools:ignore="RtlSymmetry" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/regulatory_info_layout_s2"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgp_regulatory_info_s2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_gradient_default_flash_sale"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:background="@drawable/bg_regulatory_info_overlay"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingBottom="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/campaign_ribbon_layout_s2">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tgp_regulatory_info_s2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_regulatory_info_overlay"
-            android:paddingStart="@dimen/spacing_lvl4"
-            android:paddingTop="@dimen/spacing_lvl2"
-            android:paddingBottom="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small"
-            tools:ignore="RtlSymmetry"
-            tools:text="Khusus pembayaran dengan OVO" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/campaign_ribbon_layout_s2"
+        app:typographyType="small"
+        tools:ignore="RtlSymmetry"
+        tools:text="Khusus pembayaran dengan OVO" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

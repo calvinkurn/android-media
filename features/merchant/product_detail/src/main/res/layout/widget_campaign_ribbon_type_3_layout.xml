@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_gradient_default_flash_sale">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/campaign_ribbon_layout_s3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_gradient_default_flash_sale"
+        android:paddingBottom="6dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -26,8 +27,10 @@
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="6dp"
             android:adjustViewBounds="true"
             android:background="@drawable/bg_logo_border"
+            android:padding="2dp"
             android:paddingTop="@dimen/pdp_dp_6"
             android:paddingBottom="@dimen/pdp_dp_6"
             android:scaleType="fitCenter"
@@ -42,13 +45,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:text="Harga Diskon"
             android:textColor="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/iu_campaign_logo_s3"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iu_campaign_logo_s3"
             app:typographyType="heading_5"
-            tools:ignore="MissingConstraints,RtlSymmetry" />
+            tools:text="Harga Diskon" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
@@ -90,29 +92,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/regulatory_info_layout_s3"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgp_regulatory_info_s3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_gradient_default_flash_sale"
+        android:background="@drawable/bg_regulatory_info_overlay"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingBottom="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/campaign_ribbon_layout_s3">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tgp_regulatory_info_s3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_regulatory_info_overlay"
-            android:paddingStart="@dimen/spacing_lvl4"
-            android:paddingTop="@dimen/spacing_lvl2"
-            android:paddingBottom="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small"
-            tools:ignore="RtlSymmetry"
-            tools:text="Khusus pembayaran dengan OVO" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/campaign_ribbon_layout_s3"
+        app:typographyType="small"
+        tools:ignore="RtlSymmetry"
+        tools:text="Khusus pembayaran dengan OVO" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

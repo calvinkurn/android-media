@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
-import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -284,9 +283,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateDataP2(context: Context?,
                      p2Data: ProductInfoP2UiData,
                      productId: String,
-                     thematicIdentifier: Int,
-                     background: String,
-                     thematicCampaign: ThematicCampaign,
                      isProductWarehouse: Boolean,
                      isProductInCampaign: Boolean,
                      isOutOfStock: Boolean) {
@@ -307,6 +303,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 tickerInfoMap?.run {
                     statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo.copy() else null
                     closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo.copy() else null
+                    isUpcomingType = it.upcomingCampaigns[productId]?.isUpcomingNplType() ?: false
                     this.isProductWarehouse = isProductWarehouse
                     this.isProductInCampaign = isProductInCampaign
                     this.isOutOfStock = isOutOfStock
@@ -364,7 +361,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateDataTradein(context, it.validateTradeIn)
-            updateNotifyMeUpcoming(productId, it.upcomingCampaigns, thematicIdentifier, background, thematicCampaign)
+            updateNotifyMeUpcoming(productId, it.upcomingCampaigns)
 
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.run {
@@ -411,11 +408,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateNotifyMeUpcoming(productId: String,
-                               upcomingData: Map<String,
-                               ProductUpcomingData>?,
-                               campaignIdentifier: Int,
-                               background: String,
-                               thematicCampaign: ThematicCampaign) {
+                               upcomingData: Map<String, ProductUpcomingData>?) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
@@ -431,9 +424,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 campaignID = selectedUpcoming?.campaignId ?: ""
                 campaignType = selectedUpcoming?.campaignType ?: ""
                 campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
-                this.campaignIdentifier = campaignIdentifier
-                this.background = background
-                this.thematicCampaign = thematicCampaign
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
@@ -563,12 +553,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
+    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, isUpcomingType:Boolean) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 this.isProductWarehouse = isProductWarehouse
                 this.isProductInCampaign = isProductInCampaign
                 this.isOutOfStock = isOutOfStock
+                this.isUpcomingType = isUpcomingType
             }
         }
     }
