@@ -11,7 +11,7 @@
         android:id="@+id/campaign_ribbon_layout_s2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
+        android:paddingBottom="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -114,7 +114,7 @@
             app:layout_constraintEnd_toEndOf="@+id/tgp_count_down_wording_s2"
             app:layout_constraintStart_toStartOf="@+id/tgp_count_down_wording_s2"
             app:timer_unify_single_variant="alternate"
-            tools:ignore="RtlSymmetry" />
+            android:layout_marginTop="2dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
