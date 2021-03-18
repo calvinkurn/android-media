@@ -48,7 +48,7 @@ object ShopUtil {
     fun isUsingNewShopPageHeader(): Boolean {
         val shopHeaderType = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
                 AB_TEST_NEW_SHOP_HEADER_KEY,
-                AB_TEST_NEW_SHOP_HEADER_OLD_VALUE
+                AB_TEST_NEW_SHOP_HEADER_NEW_VALUE
         )
         return shopHeaderType.equals(AB_TEST_NEW_SHOP_HEADER_NEW_VALUE, true)
     }
