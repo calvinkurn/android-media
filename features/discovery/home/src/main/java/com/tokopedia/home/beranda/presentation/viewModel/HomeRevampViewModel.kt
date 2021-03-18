@@ -1629,13 +1629,8 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private suspend fun getTokopointBalanceContent(): TokopointsDrawerListHomeData? {
-        try {
-            val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
-            return tokopointsDrawerListHome
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return null
+        val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+        return tokopointsDrawerListHome
     }
 
     private suspend fun getWalletBalanceContent(): HomeHeaderWalletAction? {
