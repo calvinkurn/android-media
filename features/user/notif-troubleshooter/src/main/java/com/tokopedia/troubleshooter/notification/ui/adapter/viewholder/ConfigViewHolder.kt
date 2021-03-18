@@ -19,13 +19,13 @@ open class ConfigViewHolder(
         view: View
 ): AbstractViewHolder<ConfigUIView>(view) {
 
-    private val binding: ItemNotificationConfigBinding by viewBinding()
+    private val binding: ItemNotificationConfigBinding? by viewBinding()
     private val context by lazy { itemView.context }
 
     override fun bind(element: ConfigUIView?) {
         if (element == null) return
-        binding.txtTitle.text = context.getString(element.title)
-        binding.pgLoader.show()
+        binding?.txtTitle?.text = context.getString(element.title)
+        binding?.pgLoader?.show()
 
         viewState(element)
     }
@@ -34,12 +34,12 @@ open class ConfigViewHolder(
         troubleshootStatus(element)
 
         if (element.state == ConfigState.Ringtone) {
-            binding.btnAction.show()
-            binding.btnAction.setOnClickListener {
+            binding?.btnAction?.show()
+            binding?.btnAction?.setOnClickListener {
                 element.ringtone?.let { listener.onRingtoneTest(it) }
             }
         } else {
-            binding.btnAction.hide()
+            binding?.btnAction?.hide()
         }
     }
 
@@ -59,13 +59,13 @@ open class ConfigViewHolder(
             else -> {}
         }
 
-        binding.txtTitle.text = context.getString(message)
+        binding?.txtTitle?.text = context.getString(message)
     }
 
     private fun visibility(resource: Int) {
-        binding.imgStatus.setImageDrawable(drawable(context, resource))
-        binding.imgStatus.show()
-        binding.pgLoader.hide()
+        binding?.imgStatus?.setImageDrawable(drawable(context, resource))
+        binding?.imgStatus?.show()
+        binding?.pgLoader?.hide()
     }
 
     companion object {

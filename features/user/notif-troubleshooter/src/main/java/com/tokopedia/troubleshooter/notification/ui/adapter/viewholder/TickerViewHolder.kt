@@ -14,7 +14,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class TickerViewHolder(view: View): AbstractViewHolder<TickerUIView>(view) {
 
-    private val binding: ItemLayoutTickerBinding by viewBinding()
+    private val binding: ItemLayoutTickerBinding? by viewBinding()
     private val context by lazy { itemView.context }
     private var adapter: TickerAdapter? = null
 
@@ -23,15 +23,15 @@ class TickerViewHolder(view: View): AbstractViewHolder<TickerUIView>(view) {
 
         if (adapter == null) {
             adapter = TickerAdapter(TickerItemFactory())
-            binding.lstTicker.layoutManager = LinearLayoutManager(context)
-            binding.lstTicker.adapter = adapter
+            binding?.lstTicker?.layoutManager = LinearLayoutManager(context)
+            binding?.lstTicker?.adapter = adapter
         }
 
         if (element.tickers.isNotEmpty()) {
-            binding.txtTitle.show()
+            binding?.txtTitle?.show()
         }
 
-        binding.txtTitle.text = context.getString(R.string.notif_ticker_title)
+        binding?.txtTitle?.text = context.getString(R.string.notif_ticker_title)
         adapter?.addTickers(element.tickers)
     }
 

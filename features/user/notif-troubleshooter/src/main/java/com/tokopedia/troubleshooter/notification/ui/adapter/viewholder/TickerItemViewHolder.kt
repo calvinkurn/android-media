@@ -17,14 +17,14 @@ class TickerItemViewHolder(
         view: View
 ): AbstractViewHolder<TickerItemUIView>(view) {
 
-    private val binding: ItemNotificationTickerBinding by viewBinding()
+    private val binding: ItemNotificationTickerBinding? by viewBinding()
     private val context by lazy { itemView.context }
 
     override fun bind(element: TickerItemUIView?) {
         if (element == null) return
-        binding.txtDescription.text = element.message
-        binding.btnActivation.text = element.buttonText
-        binding.btnActivation.setOnClickListener {
+        binding?.txtDescription?.text = element.message
+        binding?.btnActivation?.text = element.buttonText
+        binding?.btnActivation?.setOnClickListener {
             when (element.type) {
                 is ConfigState.Device -> {
                     context?.gotoNotificationSetting()
