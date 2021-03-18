@@ -247,6 +247,8 @@ class PlayUserInteractionFragment @Inject constructor(
         dynamicLayoutManager = null
         chatListHeightManager = null
 
+        cancelAllAnimations()
+
         super.onDestroyView()
         job.cancelChildren()
     }
