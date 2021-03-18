@@ -6,7 +6,6 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ImageView
-import androidx.annotation.IntDef
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -21,7 +20,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.activity_image_preview_pdp.view.*
 import kotlinx.android.synthetic.main.widget_campaign_ribbon_layout.view.*
 import kotlinx.android.synthetic.main.widget_campaign_ribbon_type_1_layout.view.*
 import kotlinx.android.synthetic.main.widget_campaign_ribbon_type_2_layout.view.*
@@ -37,13 +35,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     companion object {
-
-        @IntDef(ONGOING, UPCOMING)
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class CampaignPeriod
-
-        const val ONGOING = 0
-        const val UPCOMING = 1
 
         // campaign types
         const val NO_CAMPAIGN = 0
@@ -109,7 +100,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             tpg_campaign_name_s3.text = campaignName
             // render campaign ribbon background
             val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
-            val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
+            val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes, SLASH_PRICE)
             campaign_ribbon_type_3?.background = gradientDrawable
             // show count down wording
             tpg_ends_in_s3.show()
@@ -359,16 +350,22 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    private fun getGradientDrawableForBackGround(gradientHexCodes: String): GradientDrawable {
+    private fun getGradientDrawableForBackGround(gradientHexCodes: String, campaignTypes: Int = FLASH_SALE): GradientDrawable {
         return try {
             val gradientColors = gradientHexCodes.split(",")
             val firstColor = Color.parseColor(if (gradientColors[0].contains("#")) gradientColors[0] else "#${gradientColors[0]}")
             val secondColor = Color.parseColor(if (gradientColors[1].contains("#")) gradientColors[1] else "#${gradientColors[1]}")
             GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
         } catch (ex: Exception) {
-            // TODO refactor the hardcoded gradient with default color
-            val firstColor = Color.parseColor("#00AA5B")
-            val secondColor = Color.parseColor("#008849")
+            // return default gradient when the color parsing process is failed
+            var firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_to_green_gradient_color)
+            var secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_from_green_gradient_color)
+            when (campaignTypes) {
+                SLASH_PRICE -> {
+                    firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_to_red_gradient_color)
+                    secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_from_red_gradient_color)
+                }
+            }
             GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
         }
     }
