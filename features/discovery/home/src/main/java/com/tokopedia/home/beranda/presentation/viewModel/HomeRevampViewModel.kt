@@ -1588,7 +1588,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             tokopointContent?.let {
-                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContent)
+                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = getTokopointBalanceContent())
             }
 
             newUpdateHeaderViewModel(homeBalanceModel)
