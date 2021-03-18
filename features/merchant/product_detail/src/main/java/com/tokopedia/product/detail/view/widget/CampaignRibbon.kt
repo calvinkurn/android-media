@@ -47,10 +47,10 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
         // campaign types
         const val NO_CAMPAIGN = 0
-        private const val FLASH_SALE = 1
-        private const val SLASH_PRICE = 2
-        private const val NPL = 3
-        private const val NEW_USER = 4
+        const val FLASH_SALE = 1
+        const val SLASH_PRICE = 2
+        const val NPL = 3
+        const val NEW_USER = 4
         const val THEMATIC_CAMPAIGN = 5
 
         // time unit

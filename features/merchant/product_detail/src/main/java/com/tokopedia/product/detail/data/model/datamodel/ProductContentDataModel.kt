@@ -37,7 +37,16 @@ data class ProductContentDataModel(
     }
 
     fun showTradeIn(): Boolean {
-        return shouldShowTradein && data?.campaign?.shouldShowRibbonCampaign == false && data?.campaign?.campaignIdentifier != CampaignRibbon.THEMATIC_CAMPAIGN
+        return shouldShowTradein && !campaignWillShowRibbon()
+    }
+
+    private fun campaignWillShowRibbon(): Boolean {
+        val identifier = data?.campaign?.campaignIdentifier ?: return false
+        return when (identifier) {
+            CampaignRibbon.FLASH_SALE, CampaignRibbon.NEW_USER, CampaignRibbon.NPL, CampaignRibbon.THEMATIC_CAMPAIGN -> true
+            CampaignRibbon.SLASH_PRICE -> data?.campaign?.shouldShowRibbonCampaign == true // if ribbon slash price appear, return true
+            else -> false
+        }
     }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
