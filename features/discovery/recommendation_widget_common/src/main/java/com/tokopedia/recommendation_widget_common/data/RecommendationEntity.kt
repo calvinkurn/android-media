@@ -88,7 +88,7 @@ class RecommendationEntity {
 
         class SpecificationsLabels {
             @SerializedName("key")
-            val key: String = "",
+            val key: String = ""
             @SerializedName("value")
             val value: String = ""
         }

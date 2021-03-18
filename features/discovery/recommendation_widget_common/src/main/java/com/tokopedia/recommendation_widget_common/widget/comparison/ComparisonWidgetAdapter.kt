@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
 import kotlinx.android.synthetic.main.item_comparison_widget.view.*
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 
-class ComparisonWidgetAdapter(var comparisonListModel: ComparisonListModel): RecyclerView.Adapter<ComparisonWidgetViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonWidgetViewHolder {
+class ComparisonWidgetAdapter(var comparisonListModel: ComparisonListModel): RecyclerView.Adapter<ComparisonWidgetItemViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonWidgetItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comparison_widget, parent, false)
 
         val productCardView = view.productCardView
@@ -15,7 +16,7 @@ class ComparisonWidgetAdapter(var comparisonListModel: ComparisonListModel): Rec
         layoutParams.height = comparisonListModel.comparisonWidgetConfig.productCardHeight
         productCardView.layoutParams = layoutParams
 
-        return ComparisonWidgetViewHolder(view)
+        return ComparisonWidgetItemViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -27,7 +28,7 @@ class ComparisonWidgetAdapter(var comparisonListModel: ComparisonListModel): Rec
         return position
     }
 
-    override fun onBindViewHolder(holder: ComparisonWidgetViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ComparisonWidgetItemViewHolder, position: Int) {
         if (position < comparisonListModel.comparisonData.size) {
             holder.bind(comparisonListModel.comparisonData[position])
         }
