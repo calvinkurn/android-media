@@ -6,6 +6,7 @@ package com.tokopedia.play.broadcaster.pusher.state
  */
 sealed class ApsaraLivePusherState {
     object Idle : ApsaraLivePusherState()
+    object Connecting : ApsaraLivePusherState()
     object Start : ApsaraLivePusherState()
     object Resume : ApsaraLivePusherState()
     object Pause : ApsaraLivePusherState()

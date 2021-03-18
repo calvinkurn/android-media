@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.SurfaceView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusher
-import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
 import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -51,7 +50,7 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
         scope.launchCatchError(block = {
             mApsaraLivePusher.startPush(ingestUrl)
         }) {
-            mPlayPusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ConnectFailed)
+//            mPlayPusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ConnectFailed)
         }
     }
 
@@ -178,9 +177,9 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
             }
         }
 
-        override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
+        override fun onError() {
            scope.launch {
-               mPlayPusherInfoListener?.onError(errorStatus)
+               mPlayPusherInfoListener?.onError()
            }
         }
     }

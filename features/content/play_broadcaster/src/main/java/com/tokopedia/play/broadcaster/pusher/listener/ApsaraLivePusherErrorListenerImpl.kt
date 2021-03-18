@@ -3,28 +3,29 @@ package com.tokopedia.play.broadcaster.pusher.listener
 import com.alivc.live.pusher.AlivcLivePushError
 import com.alivc.live.pusher.AlivcLivePushErrorListener
 import com.alivc.live.pusher.AlivcLivePusher
-import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper.Companion.PLAY_PUSHER_ERROR_SYSTEM_ERROR
+import com.tokopedia.play.broadcaster.pusher.exception.ApsaraFatalException
+import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
 
 
 /**
  * Created by mzennis on 16/03/21.
  */
 class ApsaraLivePusherErrorListenerImpl(
-        private val listener: ApsaraLivePusherWrapper.Listener?
+        private val livePusherStateProcessor: ApsaraLivePusherStateProcessor
 ) : AlivcLivePushErrorListener {
 
     override fun onSystemError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
-        listener?.onError(
+        livePusherStateProcessor.onError(
                 PLAY_PUSHER_ERROR_SYSTEM_ERROR,
-                IllegalStateException("System Error")
+                ApsaraFatalException("Something went wrong, please restart application")
         )
     }
 
     override fun onSDKError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
-        listener?.onError(
+        livePusherStateProcessor.onError(
                 PLAY_PUSHER_ERROR_SYSTEM_ERROR,
-                IllegalStateException("on SDK Error")
+                ApsaraFatalException("Something went wrong, please restart application")
         )
     }
 }

@@ -8,13 +8,14 @@ import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper.Companion.P
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper.Companion.PLAY_PUSHER_ERROR_NETWORK_POOR
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper.Companion.PLAY_PUSHER_ERROR_RECONNECTION_FAILED
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
+import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
 
 
 /**
  * Created by mzennis on 16/03/21.
  */
 class ApsaraLivePusherNetworkListenerImpl(
-        private val listener: ApsaraLivePusherWrapper.Listener?
+        private val livePusherStateProcessor: ApsaraLivePusherStateProcessor
 ) : AlivcLivePushNetworkListener {
 
     override fun onNetworkRecovery(pusher: AlivcLivePusher?) {
@@ -25,35 +26,35 @@ class ApsaraLivePusherNetworkListenerImpl(
     }
 
     override fun onReconnectFail(pusher: AlivcLivePusher?) {
-        listener?.onError(
+        livePusherStateProcessor.onError(
                 PLAY_PUSHER_ERROR_RECONNECTION_FAILED,
                 IllegalStateException("Reconnect Failed")
         )
     }
 
     override fun onConnectionLost(pusher: AlivcLivePusher?) {
-        listener?.onError(
+        livePusherStateProcessor.onError(
                 PLAY_PUSHER_ERROR_NETWORK_LOSS,
                 IllegalStateException("Connection Loss")
         )
     }
 
     override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
-        listener?.onError(
+        livePusherStateProcessor.onError(
                 PLAY_PUSHER_ERROR_NETWORK_LOSS,
                 IllegalStateException("Send Data Timeout")
         )
     }
 
     override fun onConnectFail(pusher: AlivcLivePusher?) {
-        listener?.onError(
+        livePusherStateProcessor.onError(
                 PLAY_PUSHER_ERROR_CONNECTION_FAILED,
                 IllegalStateException("Connect Failed")
         )
     }
 
     override fun onPacketsLost(pusher: AlivcLivePusher?) {
-        listener?.onError(
+        livePusherStateProcessor.onError(
                 PLAY_PUSHER_ERROR_NETWORK_LOSS,
                 IllegalStateException("Packets Failed")
         )
@@ -64,7 +65,7 @@ class ApsaraLivePusherNetworkListenerImpl(
     }
 
     override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
-        listener?.onConnectionStateChanged(ApsaraLivePusherState.Recovered)
+        livePusherStateProcessor.onStateChanged(ApsaraLivePusherState.Recovered)
     }
 
     override fun onPushURLAuthenticationOverdue(pusher: AlivcLivePusher?): String {
@@ -72,7 +73,7 @@ class ApsaraLivePusherNetworkListenerImpl(
     }
 
     override fun onNetworkPoor(pusher: AlivcLivePusher?) {
-        listener?.onError(
+        livePusherStateProcessor.onError(
                 PLAY_PUSHER_ERROR_NETWORK_POOR,
                 IllegalStateException("Network Poor")
         )

@@ -2,15 +2,15 @@ package com.tokopedia.play.broadcaster.pusher.listener
 
 import com.alivc.live.pusher.AlivcLivePushInfoListener
 import com.alivc.live.pusher.AlivcLivePusher
-import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
+import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
 
 
 /**
  * Created by mzennis on 16/03/21.
  */
 class ApsaraLivePushInfoListenerImpl(
-        private val listener: ApsaraLivePusherWrapper.Listener?
+        private val livePusherStateProcessor: ApsaraLivePusherStateProcessor
 ) : AlivcLivePushInfoListener {
 
     override fun onPreviewStarted(pusher: AlivcLivePusher?) {
@@ -22,23 +22,23 @@ class ApsaraLivePushInfoListenerImpl(
     }
 
     override fun onPushStarted(pusher: AlivcLivePusher?) {
-        listener?.onConnectionStateChanged(ApsaraLivePusherState.Start)
+        livePusherStateProcessor.onStateChanged(ApsaraLivePusherState.Start)
     }
 
     override fun onPushPauesed(pusher: AlivcLivePusher?) {
-        listener?.onConnectionStateChanged(ApsaraLivePusherState.Pause)
+        livePusherStateProcessor.onStateChanged(ApsaraLivePusherState.Pause)
     }
 
     override fun onPushResumed(pusher: AlivcLivePusher?) {
-        listener?.onConnectionStateChanged(ApsaraLivePusherState.Resume)
+        livePusherStateProcessor.onStateChanged(ApsaraLivePusherState.Resume)
     }
 
     override fun onPushStoped(pusher: AlivcLivePusher?) {
-        listener?.onConnectionStateChanged(ApsaraLivePusherState.Stop)
+        livePusherStateProcessor.onStateChanged(ApsaraLivePusherState.Stop)
     }
 
     override fun onPushRestarted(pusher: AlivcLivePusher?) {
-        listener?.onConnectionStateChanged(ApsaraLivePusherState.Restart)
+        livePusherStateProcessor.onStateChanged(ApsaraLivePusherState.Restart)
     }
 
     override fun onFirstFramePreviewed(pusher: AlivcLivePusher?) {

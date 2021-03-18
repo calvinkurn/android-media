@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pusher.timer
+package com.tokopedia.play.broadcaster.util.timer
 
 import android.os.Handler
 import android.os.Message
@@ -29,7 +29,7 @@ import android.os.SystemClock
  * [.onTick] takes an amount of time to execute that is significant
  * compared to the countdown interval.
  */
-abstract class PlayCountDownTimer
+abstract class CountDownTimer
 /**
  * @param millisInFuture The number of millis in the future from the call
  * to [.start] until the countdown is done and [.onFinish]
@@ -65,7 +65,7 @@ abstract class PlayCountDownTimer
      * Start the countdown.
      */
     @Synchronized
-    fun start(): PlayCountDownTimer {
+    fun start(): CountDownTimer {
         if (mMillisInFuture <= 0) {
             onFinish()
             return this
@@ -111,7 +111,7 @@ abstract class PlayCountDownTimer
     // handles counting down
     private val mHandler: Handler = object : Handler() {
         override fun handleMessage(msg: Message) {
-            synchronized(this@PlayCountDownTimer) {
+            synchronized(this@CountDownTimer) {
                 if (!mPaused) {
                     val millisLeft = mStopTimeInFuture - SystemClock.elapsedRealtime()
                     if (millisLeft < 0) {

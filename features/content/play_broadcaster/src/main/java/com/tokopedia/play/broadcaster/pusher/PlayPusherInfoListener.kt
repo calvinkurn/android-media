@@ -1,7 +1,5 @@
 package com.tokopedia.play.broadcaster.pusher
 
-import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
-
 
 /**
  * Created by mzennis on 22/09/20.
@@ -28,7 +26,7 @@ interface PlayPusherInfoListener {
         // optional body
     }
 
-    fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
+    fun onError() {
         // optional body
     }
 }

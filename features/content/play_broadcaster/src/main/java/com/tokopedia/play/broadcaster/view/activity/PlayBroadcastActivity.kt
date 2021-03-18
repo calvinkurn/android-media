@@ -124,7 +124,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             requestPermission()
         }
 
-//        initPushStream()
         setupContent()
         initView()
         setupView()
@@ -142,22 +141,14 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         super.onResume()
         setLayoutFullScreen()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.resumePushStream()
     }
 
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.pausePushStream()
-    }
-
-    override fun onStop() {
-        viewModel.pausePushStream()
-        super.onStop()
     }
 
     override fun onDestroy() {
-        viewModel.destroyPushStream()
         super.onDestroy()
         job.cancelChildren()
     }
@@ -222,10 +213,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
-
-//    private fun initPushStream() {
-//        viewModel.initPushStream()
-//    }
 
     private fun setFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
@@ -496,48 +483,48 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun startPageMonitoring() {
-        pageMonitoring = PageLoadTimePerformanceCallback(
-                PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
-                PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
-                PLAY_BROADCASTER_TRACE_RENDER_PAGE
-        )
-        pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
-        starPrepareMonitoring()
+//        pageMonitoring = PageLoadTimePerformanceCallback(
+//                PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
+//                PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
+//                PLAY_BROADCASTER_TRACE_RENDER_PAGE
+//        )
+//        pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
+//        starPrepareMonitoring()
     }
 
     private fun starPrepareMonitoring() {
-        pageMonitoring.startPreparePagePerformanceMonitoring()
+//        pageMonitoring.startPreparePagePerformanceMonitoring()
     }
 
     private fun stopPrepareMonitoring() {
-        pageMonitoring.stopPreparePagePerformanceMonitoring()
+//        pageMonitoring.stopPreparePagePerformanceMonitoring()
     }
 
     private fun startNetworkMonitoring() {
-        stopPrepareMonitoring()
-        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+//        stopPrepareMonitoring()
+//        pageMonitoring.startNetworkRequestPerformanceMonitoring()
     }
 
     private fun stopNetworkMonitoring() {
-        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+//        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
     }
 
     private fun startRenderMonitoring() {
-        stopNetworkMonitoring()
-        pageMonitoring.startRenderPerformanceMonitoring()
+//        stopNetworkMonitoring()
+//        pageMonitoring.startRenderPerformanceMonitoring()
     }
 
     private fun stopRenderMonitoring() {
-        pageMonitoring.stopRenderPerformanceMonitoring()
+//        pageMonitoring.stopRenderPerformanceMonitoring()
     }
 
     private fun stopPageMonitoring() {
-        stopRenderMonitoring()
-        pageMonitoring.stopMonitoring()
+//        stopRenderMonitoring()
+//        pageMonitoring.stopMonitoring()
     }
 
     private fun invalidatePerformanceData() {
-        pageMonitoring.invalidate()
+//        pageMonitoring.invalidate()
     }
 
     @TestOnly

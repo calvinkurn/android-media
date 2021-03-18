@@ -11,5 +11,5 @@ interface ApsaraLivePusherInfoListener {
     fun onStop()
     fun onRestarted()
     fun onRecovered()
-    fun onError(errorStatus: ApsaraLivePusherErrorStatus)
+    fun onError()
 }

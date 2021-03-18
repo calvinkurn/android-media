@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.tokopedia.play.broadcaster.pusher.PlayPusherTimerListener
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
+import com.tokopedia.play.broadcaster.util.timer.CountDownTimer
 import kotlin.math.max
 
 
@@ -28,7 +29,7 @@ class PlayPusherTimer(val context: Context,
     private var mDuration: Long = 0L
     private var mRemainingMillis: Long = 0L
 
-    private var mCountDownTimer: PlayCountDownTimer? = null
+    private var mCountDownTimer: CountDownTimer? = null
     private var mLocalStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun start() {
@@ -86,8 +87,8 @@ class PlayPusherTimer(val context: Context,
         this.mRemainingMillis = mDuration
     }
 
-    private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {
-        return object : PlayCountDownTimer(liveStreamDuration, DEFAULT_INTERVAL) {
+    private fun getCountDownTimer(liveStreamDuration: Long): CountDownTimer {
+        return object : CountDownTimer(liveStreamDuration, DEFAULT_INTERVAL) {
             override fun onFinish() {
                 callback?.onCountDownFinish()
             }

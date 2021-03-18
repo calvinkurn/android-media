@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.LifecycleOwner
 import com.alivc.live.pusher.*
 import com.tokopedia.play.broadcaster.pusher.config.ApsaraLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.config.DefaultApsaraLivePusherConfig
@@ -12,6 +13,9 @@ import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePushInfoListener
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherErrorListenerImpl
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherNetworkListenerImpl
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
+import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
+import com.tokopedia.play.broadcaster.util.PlayLivePusherObserver
+import java.util.concurrent.ConcurrentLinkedQueue
 
 
 /**
@@ -19,12 +23,17 @@ import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
  */
 class ApsaraLivePusherWrapper private constructor(
         private val context: Context,
+        private val lifecycleOwner: LifecycleOwner,
         private val pusherConfig: ApsaraLivePusherConfig
 ) {
 
-    class Builder(context: Context) {
+    class Builder(
+            context: Context,
+            lifecycleOwner: LifecycleOwner
+    ) {
 
         private val mContext: Context = context.applicationContext
+        private val mLifecycleOwner: LifecycleOwner = lifecycleOwner
         private var mApsaraLivePushConfig: ApsaraLivePusherConfig? = null
 
         fun setPushConfig(pushConfig: ApsaraLivePusherConfig): Builder {
@@ -33,20 +42,34 @@ class ApsaraLivePusherWrapper private constructor(
         }
 
         fun build(): ApsaraLivePusherWrapper {
-            return ApsaraLivePusherWrapper(mContext, mApsaraLivePushConfig ?: DefaultApsaraLivePusherConfig(mContext))
+            return ApsaraLivePusherWrapper(
+                    context = mContext,
+                    lifecycleOwner = mLifecycleOwner,
+                    pusherConfig = mApsaraLivePushConfig ?: DefaultApsaraLivePusherConfig(mContext)
+            )
         }
 
     }
 
     private var aliVcLivePusher: AlivcLivePusher? = null
 
-    private var listener: Listener? = null
+    private val livePusherStateProcessor = object : ApsaraLivePusherStateProcessor {
+        override fun onStateChanged(state: ApsaraLivePusherState) {
+            broadcastStateToListeners(state)
+        }
+
+        override fun onError(code: Int, throwable: Throwable) {
+            broadcastErrorToListeners(code, throwable)
+        }
+    }
+
+    private val aliVcLivePushInfoListener: AlivcLivePushInfoListener = ApsaraLivePushInfoListenerImpl(livePusherStateProcessor)
+    private val alivcLivePushNetworkListener: AlivcLivePushNetworkListener = ApsaraLivePusherNetworkListenerImpl(livePusherStateProcessor)
+    private val alivcLivePushErrorListener: AlivcLivePushErrorListener = ApsaraLivePusherErrorListenerImpl(livePusherStateProcessor)
+
+    private var listeners: ConcurrentLinkedQueue<Listener> = ConcurrentLinkedQueue()
 
     private var ingestUrl: String = ""
-
-    private val aliVcLivePushInfoListener: AlivcLivePushInfoListener = ApsaraLivePushInfoListenerImpl(listener)
-    private val alivcLivePushNetworkListener: AlivcLivePushNetworkListener = ApsaraLivePusherNetworkListenerImpl(listener)
-    private val alivcLivePushErrorListener: AlivcLivePushErrorListener = ApsaraLivePusherErrorListenerImpl(listener)
 
     init {
         if (aliVcLivePusher != null) {
@@ -60,11 +83,17 @@ class ApsaraLivePusherWrapper private constructor(
             aliVcLivePusher?.setLivePushNetworkListener(alivcLivePushNetworkListener)
             aliVcLivePusher?.setLivePushErrorListener(alivcLivePushErrorListener)
             aliVcLivePusher?.setAudioDenoise(true)
+
+            configureLifecycleObserver()
         }
     }
 
-    fun setListener(listener: Listener) {
-        this.listener = listener
+    fun addListener(listener: Listener) {
+        this.listeners.add(listener)
+    }
+
+    fun removeListener(listener: Listener) {
+        this.listeners.remove(listener)
     }
 
     fun startPreview(surfaceView: SurfaceView) {
@@ -72,7 +101,7 @@ class ApsaraLivePusherWrapper private constructor(
                         context,
                         Manifest.permission.CAMERA
                 ) == PackageManager.PERMISSION_DENIED) {
-            listener?.onError(PLAY_PUSHER_ERROR_SYSTEM_ERROR, IllegalStateException("Camera permission denied"))
+            broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, IllegalStateException("We need camera permission to continue live streaming"))
             return
         }
 
@@ -97,11 +126,14 @@ class ApsaraLivePusherWrapper private constructor(
             this.ingestUrl = ingestUrl
         }
         if (ingestUrl.isEmpty() || ingestUrl.isBlank()) {
-            listener?.onError(PLAY_PUSHER_ERROR_SYSTEM_ERROR, IllegalArgumentException("ingestUrl must not be empty"))
+            broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, IllegalArgumentException("ingestUrl must not be empty"))
             return
         }
 
-        safeAction { aliVcLivePusher?.startPushAysnc(ingestUrl) }
+        safeAction {
+            broadcastStateToListeners(ApsaraLivePusherState.Connecting)
+            aliVcLivePusher?.startPushAysnc(ingestUrl)
+        }
     }
 
     fun restart() {
@@ -132,15 +164,28 @@ class ApsaraLivePusherWrapper private constructor(
         try {
             onAction()
         } catch (exception: Exception) {
-            listener?.onError(PLAY_PUSHER_ERROR_SYSTEM_ERROR, exception)
+            // ignored because sometimes it's an unnecessary error, ex. status error current state init
+            // broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, exception)
         } catch (error: Error) {
-            listener?.onError(PLAY_PUSHER_ERROR_SYSTEM_ERROR, error)
+            broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, error)
         }
+    }
+
+    private fun configureLifecycleObserver() {
+        lifecycleOwner.lifecycle.addObserver(PlayLivePusherObserver(this))
+    }
+
+    private fun broadcastStateToListeners(state: ApsaraLivePusherState) {
+        listeners.forEach { it.onStateChanged(state) }
+    }
+
+    private fun broadcastErrorToListeners(code: Int, throwable: Throwable) {
+        listeners.forEach { it.onError(code, throwable) }
     }
 
     interface Listener {
 
-        fun onConnectionStateChanged(state: ApsaraLivePusherState)
+        fun onStateChanged(state: ApsaraLivePusherState)
         fun onError(code: Int, throwable: Throwable)
     }
 
