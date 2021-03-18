@@ -11,13 +11,13 @@ import com.tokopedia.troubleshooter.notification.ui.state.ConfigState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.util.gotoAudioSetting
 import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 class TickerItemViewHolder(
         view: View
 ): AbstractViewHolder<TickerItemUIView>(view) {
 
-    private val binding: ItemNotificationTickerBinding by viewBinding()
+    private val binding by viewBinding(ItemNotificationTickerBinding::bind)
     private val context by lazy { itemView.context }
 
     override fun bind(element: TickerItemUIView?) {

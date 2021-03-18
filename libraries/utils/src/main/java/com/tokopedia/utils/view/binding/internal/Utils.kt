@@ -20,18 +20,22 @@ inline fun <V : View> Activity.requireViewByIdCompat(@IdRes id: Int): V {
 
 fun findRootView(activity: Activity): View {
     val contentView = activity.findViewById<ViewGroup>(android.R.id.content)
-    checkNotNull(contentView) { "Activity has no content view" }
+    checkNotNull(contentView)
     return when (contentView.childCount) {
         1 -> contentView.getChildAt(0)
-        0 -> error("Content view has no children. Provide root view explicitly")
-        else -> error("More than one child view found in Activity content view")
+        0 -> error("Please provide root view explicitly")
+        else -> error("More than one child view found in the content view")
     }
 }
 
 fun DialogFragment.getRootView(viewBindingRootId: Int): View {
-    val dialog = checkNotNull(dialog) {
-        "DialogFragment doesn't have dialog. Use viewBinding delegate after onCreateDialog"
+    val dialog = checkNotNull(dialog)
+    val window = checkNotNull(dialog.window)
+    return with(window.decorView) {
+        if (viewBindingRootId != 0) {
+            requireViewByIdCompat(viewBindingRootId)
+        } else {
+            this
+        }
     }
-    val window = checkNotNull(dialog.window) { "Fragment's Dialog has no window" }
-    return with(window.decorView) { if (viewBindingRootId != 0) requireViewByIdCompat(viewBindingRootId) else this }
 }

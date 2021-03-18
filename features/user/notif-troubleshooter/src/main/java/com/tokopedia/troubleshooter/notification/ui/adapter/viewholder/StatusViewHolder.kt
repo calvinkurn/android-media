@@ -10,13 +10,14 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.databinding.ItemNotificationStatusBinding
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusUIView
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class StatusViewHolder(
         view: View
 ): AbstractViewHolder<StatusUIView>(view) {
 
-    private val binding: ItemNotificationStatusBinding by viewBinding()
+    private val binding by viewBinding(ItemNotificationStatusBinding::bind)
     private val context by lazy { itemView.context }
 
     override fun bind(element: StatusUIView?) {

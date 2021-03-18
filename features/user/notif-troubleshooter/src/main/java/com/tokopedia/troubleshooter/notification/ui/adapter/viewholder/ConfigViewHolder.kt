@@ -11,7 +11,7 @@ import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.state.ConfigState
 import com.tokopedia.troubleshooter.notification.ui.state.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
 
 open class ConfigViewHolder(
@@ -19,7 +19,7 @@ open class ConfigViewHolder(
         view: View
 ): AbstractViewHolder<ConfigUIView>(view) {
 
-    private val binding: ItemNotificationConfigBinding by viewBinding()
+    private val binding by viewBinding(ItemNotificationConfigBinding::bind)
     private val context by lazy { itemView.context }
 
     override fun bind(element: ConfigUIView?) {
