@@ -1,7 +1,7 @@
-package com.tokopedia.developer_options.drawonpicture.presentation.viewmodel
+package com.tokopedia.feedback_form.drawonpicture.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.developer_options.drawonpicture.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -14,7 +14,7 @@ class DrawOnPictureViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val testDispatcherProvider = TestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: DrawOnPictureViewModel
 
