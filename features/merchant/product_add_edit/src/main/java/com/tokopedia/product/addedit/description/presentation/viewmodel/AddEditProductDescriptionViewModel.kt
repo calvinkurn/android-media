@@ -17,7 +17,7 @@ import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.ENABLED_HAMPERS_CATEGORY_ID
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VIDEO_DEBOUNCE_TIME
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.INPUT_DEBOUNCE
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -94,7 +94,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
                 .filter {
                     return@filter it.first >= 0 && it.second.isNotBlank()
                 }
-                .debounce(VIDEO_DEBOUNCE_TIME)
+                .debounce(INPUT_DEBOUNCE)
                 .flatMapLatest { model ->
                     val url = model.second
                     val position = model.first
