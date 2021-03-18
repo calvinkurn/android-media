@@ -64,7 +64,6 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.invalidateInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -118,7 +117,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
-    private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -500,7 +498,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
-        observeOnboarding()
         observeChannelInfo()
         observeQuickReply()
         observeToolbarInfo()
@@ -734,12 +731,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeShareInfo() {
         playViewModel.observableShareInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setShareInfo(it)
-        })
-    }
-
-    private fun observeOnboarding() {
-        playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape) onboardingView?.showAnimated()
         })
     }
 
