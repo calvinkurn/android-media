@@ -2,6 +2,7 @@ package com.tokopedia.digital_checkout.utils.analytics
 
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -56,6 +57,56 @@ class DigitalAnalytics {
                 TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
                 TrackAppUtils.EVENT_ACTION, actionValue,
                 TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
+                DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+                DigitalCheckoutTrackingConst.Label.USER_ID, userId
+        ))
+    }
+
+    fun eventTebusMurahImpression(fintechProduct: FintechProduct, position: Int, userId: String) {
+
+        val fintechProductList: MutableList<Any> = ArrayList()
+        fintechProductList.add(constructFintechProduct(fintechProduct, position))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.PRODUCT_VIEW,
+                TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.IMPRESSION_TEBUS_MURAH_ICON,
+                TrackAppUtils.EVENT_LABEL, "",
+                DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+                BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
+                DigitalCheckoutTrackingConst.CurrencyCode.KEY, DigitalCheckoutTrackingConst.CurrencyCode.IDR,
+                DigitalCheckoutTrackingConst.Label.IMPRESSIONS, DataLayer.listOf(*fintechProductList.toTypedArray())),
+                DigitalCheckoutTrackingConst.Label.USER_ID, userId
+        ))
+    }
+
+    fun eventTebusMurahChecked(fintechProduct: FintechProduct, position: Int, userId: String) {
+        val fintechProductList: MutableList<Any> = ArrayList()
+        fintechProductList.add(constructFintechProduct(fintechProduct, position))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.PRODUCT_CLICK,
+                TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.CLICK_TEBUS_MURAH_ICON,
+                TrackAppUtils.EVENT_LABEL, "${fintechProduct.transactionType} - ${fintechProduct.info.title}",
+                DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+                BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
+                DigitalCheckoutTrackingConst.Label.CLICK, DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
+                DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - tebus murah",
+                        DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*fintechProductList.toTypedArray())))),
+                DigitalCheckoutTrackingConst.Label.USER_ID, userId
+        ))
+    }
+
+    fun eventTebusMurahUnchecked(fintechProduct: FintechProduct, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.UNCHECK_TEBUS_MURAH_ICON,
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", fintechProduct.transactionType, fintechProduct.info.title),
                 DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
@@ -162,6 +213,30 @@ class DigitalAnalytics {
         )
     }
 
+    fun eventProceedCheckoutTebusMurah(fintechProduct: FintechProduct, userId: String) {
+        val fintechProductList: MutableList<Any> = ArrayList()
+        fintechProductList.add(constructFintechProductOnCheckout(fintechProduct))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CHECKOUT,
+                        TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+                        TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.CLICK_PROCEED_PAYMENT_TEBUS_MURAH,
+                        TrackAppUtils.EVENT_LABEL, "${fintechProduct.transactionType} - ${fintechProduct.info.title}",
+                        DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+                        DigitalCheckoutTrackingConst.Label.USER_ID, userId,
+                        BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
+                        DigitalCheckoutTrackingConst.Event.CHECKOUT, DataLayer.mapOf(
+                        DigitalCheckoutTrackingConst.Label.ACTION_FIELD, DataLayer.mapOf(
+                        DigitalCheckoutTrackingConst.Label.STEP, "2",
+                        DigitalCheckoutTrackingConst.Label.OPTION, DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2_TEBUS_MURAH),
+                        DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(
+                        *fintechProductList.toTypedArray())))
+                )
+        )
+    }
+
     private fun constructProductEnhanceEcommerce(cartDigitalInfoData: CartDigitalInfoData,
                                                  productName: String): Map<String?, Any?> {
         var productId = DigitalCheckoutTrackingConst.Value.NONE
@@ -181,6 +256,36 @@ class DigitalAnalytics {
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_ID, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_NAME, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_TYPE, DigitalCheckoutTrackingConst.Value.NONE
+        )
+    }
+
+    private fun constructFintechProduct(fintechProduct: FintechProduct, position: Int): Map<String?, Any?> {
+        return DataLayer.mapOf(
+                //will be fill with operator_name
+                DigitalCheckoutTrackingConst.Product.KEY_BRAND, "",
+                DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, fintechProduct.transactionType,
+                DigitalCheckoutTrackingConst.Product.KEY_ID, fintechProduct.tierId,
+                DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - tebus murah",
+                DigitalCheckoutTrackingConst.Product.KEY_NAME, fintechProduct.info.title,
+                DigitalCheckoutTrackingConst.Product.KEY_POSITION, position,
+                DigitalCheckoutTrackingConst.Product.KEY_PRICE, fintechProduct.fintechAmount,
+                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, fintechProduct.fintechPartnerAmount,
+        )
+    }
+
+    private fun constructFintechProductOnCheckout(fintechProduct: FintechProduct): Map<String?, Any?> {
+        return DataLayer.mapOf(
+                //will be fill with operator_name
+                DigitalCheckoutTrackingConst.Product.KEY_BRAND, "",
+                DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, fintechProduct.transactionType,
+                DigitalCheckoutTrackingConst.Product.KEY_ID, fintechProduct.tierId,
+                DigitalCheckoutTrackingConst.Product.KEY_NAME, fintechProduct.info.title,
+                DigitalCheckoutTrackingConst.Product.KEY_PRICE, fintechProduct.fintechAmount,
+                DigitalCheckoutTrackingConst.Product.KEY_QUANTITY, "1",
+                DigitalCheckoutTrackingConst.Product.KEY_SHOP_ID, DigitalCheckoutTrackingConst.Value.NONE,
+                DigitalCheckoutTrackingConst.Product.KEY_SHOP_NAME, DigitalCheckoutTrackingConst.Value.NONE,
+                DigitalCheckoutTrackingConst.Product.KEY_SHOP_TYPE, DigitalCheckoutTrackingConst.Value.NONE,
+                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, fintechProduct.fintechPartnerAmount,
         )
     }
 

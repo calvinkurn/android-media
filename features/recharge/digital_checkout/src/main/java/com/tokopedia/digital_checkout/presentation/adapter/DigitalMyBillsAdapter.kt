@@ -40,7 +40,7 @@ class DigitalMyBillsAdapter(private val crossSellingType: Int,
         if (holder.itemViewType == SUBSCRIPTION_VIEWTYPE) {
             holder.bindSubscription(subscriptions[position], crossSellingType)
         } else {
-            holder.bindFintechProduct(fintechProducts[position - subscriptions.size])
+            holder.bindFintechProduct(fintechProducts[position - subscriptions.size], position - subscriptions.size)
         }
     }
 

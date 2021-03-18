@@ -438,6 +438,15 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
         viewModel.onSubscriptionChecked(isChecked)
     }
 
+    override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
+        digitalAnalytics.eventTebusMurahImpression(fintechProduct, position, userSession.userId)
+    }
+
+    override fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean) {
+        if (isChecked) digitalAnalytics.eventTebusMurahChecked(fintechProduct, position, userSession.userId)
+        else digitalAnalytics.eventTebusMurahUnchecked(fintechProduct, userSession.userId)
+    }
+
     override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
         if (fintechProduct.transactionType == TRANSACTION_TYPE_PROTECTION) {
             digitalAnalytics.eventClickProtection(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
