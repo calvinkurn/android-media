@@ -264,7 +264,8 @@ object GtmEvents {
                               itemCategory:String,
                               productName:String,
                               productVariant:String,
-                              productPrice:String
+                              productPrice:String,
+                              isTopAds:Boolean
     ) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.SELECT_CONTENT
@@ -273,15 +274,13 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT_LABEL] = productId
         map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
         map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
-        val loginText = if (userId.isNullOrEmpty()) {
+        val loginText:String = if (userId.isNullOrEmpty()) {
             "nonlogin"
         } else {
             "login"
         }
-        //todo add few more
-        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText- rekomendasi untuk anda "
+        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
         map[GiftBoxTrackerConstants.ITEMS] = getItemsMap(productId,
-                recommendationType,
                 productPositionIndex,
                 productBrand,
                 itemCategory,
@@ -296,7 +295,6 @@ object GtmEvents {
     }
 
     private fun getItemsMap(productId: String,
-                            recommendationType: String,
                             productPositionIndex:Int,
                             productBrand:String,
                             itemCategory:String,
@@ -322,7 +320,8 @@ object GtmEvents {
                                    itemCategory:String,
                                    productName:String,
                                    productVariant:String,
-                                   productPrice:String) {
+                                   productPrice:String,
+                                   isTopAds:Boolean) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_ITEM_LIST
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
@@ -335,10 +334,9 @@ object GtmEvents {
         } else {
             "login"
         }
-        //todo add few more
-        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText- rekomendasi untuk anda "
+
+        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
         map[GiftBoxTrackerConstants.ITEMS] = getItemsMap(productId,
-                recommendationType,
                 productPositionIndex,
                 productBrand,
                 itemCategory,
