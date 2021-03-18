@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.viewpager.widget.PagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.VALUE_PEMBELIAN
@@ -79,6 +80,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         tabsUnify.addNewTab(TITLE_SALES)
         tabsUnify.addNewTab(TITLE_WITHDRAWING_FUNDS)
         tabsUnify.setupWithViewPager(touchViewPager)
+        tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
