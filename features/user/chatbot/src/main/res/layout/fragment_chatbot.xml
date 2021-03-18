@@ -34,7 +34,8 @@
             <ImageView
                 android:id="@+id/rep_icon"
                 android:layout_width="@dimen/dp_15"
-                android:layout_height="@dimen/dp_15" />
+                android:layout_height="@dimen/dp_15"
+                android:contentDescription="@null"/>
 
             <TextView
                 android:id="@+id/rep_rating"
@@ -192,6 +193,7 @@
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
                         android:padding="@dimen/dp_8"
+                        android:contentDescription="@null"
                         app:srcCompat="@drawable/ic_add_attachment_chatbot" />
                 </FrameLayout>
             </RelativeLayout>

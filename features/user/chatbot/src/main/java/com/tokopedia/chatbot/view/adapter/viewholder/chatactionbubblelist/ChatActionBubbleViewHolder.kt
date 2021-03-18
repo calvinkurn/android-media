@@ -17,7 +17,6 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
 
     override fun bind(element: ChatActionBubbleViewModel, onSelect: (Int) -> Unit) {
         chatActionMessage.text = element.text
-        chatActionMessage.setTextColor(R.color.chatbot_color_option_list_text)
         chatActionMessage.setTextColor(MethodChecker.getColor(itemView.context , (R.color.chatbot_color_option_list_text)))
         customerCareImage.hide()
         if (element.iconUrl.isNotEmpty()) {
