@@ -6,20 +6,21 @@ import android.text.StaticLayout
 
 import android.text.TextPaint
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
 import com.tokopedia.recommendation_widget_common.widget.comparison.ResponseMockData
 
 object SpecsMapper {
     fun mapToSpecsListModel(
-            responseMockData: ResponseMockData,
+            recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
             parentInEdgeStart: Boolean = false,
             parentInEdgeEnd: Boolean = false,
             context: Context,
             specsConfig: SpecsConfig
     ): SpecsListModel {
-        val listSpecsModel = responseMockData.list.withIndex().map {
+        val listSpecsModel = recommendationSpecificationLabels.withIndex().map {
             SpecsModel(
-                specsTitle = it.value.first,
-                specsSummary = it.value.second,
+                specsTitle = it.value.specTitle,
+                specsSummary = it.value.specSummary,
                 bgDrawableRef = getDrawableBasedOnParentPosition(
                     parentInEdgeStart,
                     parentInEdgeEnd

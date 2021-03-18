@@ -84,7 +84,16 @@ data class SingleProductRecommendationEntity (
         @SerializedName("minOrder")
         val minOrder: Int = 0,
         @SerializedName("labelgroup")
-        val labelGroups: List<LabelGroup> = listOf()
+        val labelGroups: List<LabelGroup> = listOf(),
+        @SerializedName("specificationsLabels")
+        val specificationsLabels: List<SpecificationsLabels> = listOf(),
+    )
+
+    data class SpecificationsLabels (
+            @SerializedName("key")
+            val key: String = "",
+            @SerializedName("value")
+            val value: String = ""
     )
 
     data class LabelGroup (
@@ -102,7 +111,11 @@ data class SingleProductRecommendationEntity (
         @SerializedName("name")
         val name: String = "",
         @SerializedName("city")
-        val city: String =""
+        val city: String ="",
+        @SerializedName("isGold")
+        var isGold: Boolean ?= false,
+        @SerializedName("isOfficial")
+        var isOfficial: Boolean ?= false
     )
 
     data class Badges(
