@@ -113,7 +113,6 @@ class AddEditProductDescriptionFragment:
     override fun getAdapterTypeFactory(): VideoLinkTypeFactory {
         val videoLinkTypeFactory = VideoLinkTypeFactory()
         videoLinkTypeFactory.setVideoLinkListener(this)
-
         return videoLinkTypeFactory
     }
 
@@ -126,8 +125,6 @@ class AddEditProductDescriptionFragment:
         adapter.data[position] = VideoLinkModel()
         adapter.data.removeAt(position)
         adapter.notifyItemRemoved(position)
-        // after remove the item we should trigger flow with empty string so distincUntilChanged will work properly
-        descriptionViewModel.urlYoutubeChanged(position, "")
         textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
         updateSaveButtonStatus()
     }
