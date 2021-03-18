@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.activity_image_preview_pdp.view.*
 import kotlinx.android.synthetic.main.widget_campaign_ribbon_layout.view.*
 import kotlinx.android.synthetic.main.widget_campaign_ribbon_type_1_layout.view.*
 import kotlinx.android.synthetic.main.widget_campaign_ribbon_type_2_layout.view.*
@@ -313,11 +314,11 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             stockProgressBar.hide()
             return
         }
-
-        // set stock bar color
-        val barColor = ContextCompat.getColor(context, R.color.product_detail_stock_bar_to_color)
-        stockProgressBar.progressBarColor = intArrayOf(barColor, barColor)
-
+        // set track color
+        stockProgressBar.trackDrawable.setColor(ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_track_color))
+        // set progressbar color gradient, if using 1 color then set the same color amount
+        val stockBarColor = ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_progress_color)
+        stockProgressBar.progressBarColor = intArrayOf(stockBarColor, stockBarColor)
         // percentage 100% = 1
         if (stockSoldPercentage != 1) {
             stockProgressBar.setValue(stockSoldPercentage)
