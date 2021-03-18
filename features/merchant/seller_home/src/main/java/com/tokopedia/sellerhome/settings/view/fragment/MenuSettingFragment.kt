@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.internal_review.common.SellerReviewUtils
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.seller.menu.common.analytics.*

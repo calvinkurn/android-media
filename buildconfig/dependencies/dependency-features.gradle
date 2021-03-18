@@ -10,6 +10,7 @@ ext {
             developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
             feedbackForm                    : ":features:common:feedback_form",
+            internalReview                  : ":features:common:internal_review",
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",

@@ -43,8 +43,4 @@ interface SellerHomeComponent {
 
     fun inject(freeShippingBottomSheet: SettingsFreeShippingBottomSheet)
     fun inject(firstVoucherBottomSheetFragment: FirstVoucherBottomSheetFragment)
-
-    fun inject(ratingBottomSheet: RatingBottomSheet)
-    fun inject(feedbackBottomSheet: FeedbackBottomSheet)
-    fun inject(thankYouBottomSheet: ThankYouBottomSheet)
 }

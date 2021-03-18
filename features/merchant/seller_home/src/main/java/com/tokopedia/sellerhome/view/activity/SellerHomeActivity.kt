@@ -24,6 +24,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.internal_review.common.SellerReviewHelper
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -48,7 +49,6 @@ import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
-import com.tokopedia.sellerreview.common.SellerReviewHelper
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
