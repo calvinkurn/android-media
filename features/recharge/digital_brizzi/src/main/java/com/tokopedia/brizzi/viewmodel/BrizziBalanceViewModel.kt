@@ -68,7 +68,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             brizziInstance.getBalanceInquiry(intent, object : Callback {
                 override fun OnFailure(brizziException: BrizziException?) {
                     brizziException?.let {
-                        Timber.e("P2#BRIZZI#ERROR_ON_FAILURE#${it}")
                         handleError(it)
                     }
                 }
@@ -81,7 +80,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                         balanceInquiry.attributesEmoneyInquiry?.let { attributes ->
                             if (attributes.pendingBalance == 0) {
-                                Timber.d("P2#BRIZZI#SUCCESS_GET_ISSUER_ID#$ISSUER_ID_BRIZZI")
+                                Timber.d("P2#BRIZZI#SUCCESS_GET_BALANCE#$balanceInquiry")
                                 emoneyInquiry.postValue(balanceInquiry)
                             } else {
                                 writeBalanceToCard(intent, rawLogBrizzi, brizziInstance)
@@ -132,7 +131,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 cardIsNotBrizzi.postValue(true)
             }
             else -> {
-                Timber.e("P2#BRIZZI#ERROR_CARD_MESSAGE#${NfcCardErrorTypeDef.FAILED_READ_CARD}")
+                Timber.e("P2#BRIZZI#ERROR_CHECK_ON_FAILURE#${brizziException}")
                 errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
             }
         }
@@ -142,7 +141,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
         brizziInstance.doUpdateBalance(intent, System.currentTimeMillis().toString(), object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
                 brizziException?.let {
-                    Timber.e("P2#BRIZZI#ERROR_ON_FAILURE#${it}")
                     handleError(it)
                 }
             }
