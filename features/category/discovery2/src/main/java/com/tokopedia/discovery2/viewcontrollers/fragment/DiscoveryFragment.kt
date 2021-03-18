@@ -833,6 +833,10 @@ class DiscoveryFragment :
         return Constant.ChooseAddressGTMSSource.HOST_SOURCE
     }
 
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+    }
+
     override fun onLocalizingAddressLoginSuccess() {
     }
 

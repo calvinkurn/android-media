@@ -45,6 +45,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     companion object {
         const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
         const val TAG_USP_BOTTOM_SHEET = "TAG_USP_BOTTOM_SHEET"
+        const val SOURCE = "product detail page"
     }
 
     @Inject
@@ -196,6 +197,8 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun getLocalizingAddressHostFragment(): Fragment = this
 
     override fun getLocalizingAddressHostSourceData(): String = KEY_PRODUCT_DETAIL
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
 
     override fun onLocalizingAddressLoginSuccess() {
     }
