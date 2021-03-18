@@ -68,6 +68,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             brizziInstance.getBalanceInquiry(intent, object : Callback {
                 override fun OnFailure(brizziException: BrizziException?) {
                     brizziException?.let {
+                        Timber.e("P2#BRIZZI#ERROR_ON_FAILURE#${it}")
                         handleError(it)
                     }
                 }
@@ -141,6 +142,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
         brizziInstance.doUpdateBalance(intent, System.currentTimeMillis().toString(), object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
                 brizziException?.let {
+                    Timber.e("P2#BRIZZI#ERROR_ON_FAILURE#${it}")
                     handleError(it)
                 }
             }
