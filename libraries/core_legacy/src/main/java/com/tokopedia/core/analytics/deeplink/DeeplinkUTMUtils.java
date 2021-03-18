@@ -125,7 +125,7 @@ public class DeeplinkUTMUtils {
 
                 if (host == null) host = "";
 
-                if (host.equalsIgnoreCase("m-tokopedia-com.cdn.ampproject.org")) {
+                if (host.contains("tokopedia-com.cdn.ampproject.org")) {
 
                     campaign.setUtmSource("amp");
                     campaign.setUtmMedium("organic");
