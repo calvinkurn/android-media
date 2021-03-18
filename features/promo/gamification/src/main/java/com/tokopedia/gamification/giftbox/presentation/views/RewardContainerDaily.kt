@@ -232,18 +232,19 @@ open class RewardContainerDaily @JvmOverloads constructor(
                     DisplayType.CARD -> {
                         hasCoupons = true
                         couponList.add(OvoListItem(benefit.imageUrl, benefit.text))
-                        GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
+                        GtmEvents.viewRewardsPoints(benefit.benefitType, benefit.text, userSession?.userId)
                     }
                     DisplayType.CATALOG -> {
                         hasCoupons = true
-                        benefit.referenceID?.let {
-                            GtmEvents.viewRewards(it.toString(), userSession?.userId)
+                        benefit.referenceID?.let {refId->
+                            GtmEvents.viewRewards(benefit.benefitType,refId, userSession?.userId)
                         }
                     }
                     DisplayType.IMAGE -> {
                         isRp0 = true
                         if(!benefit.imageUrl.isNullOrEmpty()){
                             ImageUtils.loadImage(imageCircleReward, benefit.imageUrl, isAnimate = false)
+                            GtmEvents.viewRewards(benefit.benefitType,benefit.text, userSession?.userId)
                         }
                     }
                 }

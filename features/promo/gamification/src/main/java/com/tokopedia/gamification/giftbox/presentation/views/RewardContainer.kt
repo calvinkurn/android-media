@@ -106,11 +106,11 @@ class RewardContainer @JvmOverloads constructor(
                     if (!benefit.color.isNullOrEmpty()) {
                         tvSmallReward.setTextColor(Color.parseColor(benefit.color))
                     }
-                    GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
+                    GtmEvents.viewRewardsPoints(benefit.benefitType, benefit.text, userSession?.userId)
                     iconUrl = benefit.imageUrl
                 } else if (benefit.benefitType == BenefitType.COUPON) {
                     benefit.referenceID?.let {
-                        GtmEvents.viewRewards(it.toString(), userSession?.userId)
+                        GtmEvents.viewRewards(benefit.benefitType, it.toString(), userSession?.userId)
                     }
                 }
             }

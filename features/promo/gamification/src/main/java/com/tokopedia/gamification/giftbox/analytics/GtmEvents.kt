@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.giftbox.analytics
 
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -72,13 +73,17 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //8
-    fun viewRewards(catalogId: String, userId: String?) {
+    //8 && 13
+    fun viewRewards(benefitType: String?,catalogId: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_REWARDS
-        map[GiftBoxTrackerConstants.EVENT_LABEL] = "coupon - $catalogId"
+        var eventLabelPrefix = "coupon"
+        if(benefitType!=null && benefitType == BenefitType.COUPON_RP_0){
+            eventLabelPrefix = "produk gratis"
+        }
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = "$eventLabelPrefix - $catalogId"
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -86,12 +91,16 @@ object GtmEvents {
     }
 
     //9
-    fun viewRewardsPoints(pointsAmount: String, userId: String?) {
+    fun viewRewardsPoints(@BenefitType benefitType: String? ,pointsAmount: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_REWARDS
-        map[GiftBoxTrackerConstants.EVENT_LABEL] = "points - $pointsAmount"
+        var eventLabelPrefix = "points"
+        if(benefitType!=null && benefitType == BenefitType.REWARD_POINT){
+            eventLabelPrefix = "tokopoints"
+        }
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = "$eventLabelPrefix - $pointsAmount"
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
