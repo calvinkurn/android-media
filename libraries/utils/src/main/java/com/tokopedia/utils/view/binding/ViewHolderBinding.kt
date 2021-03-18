@@ -6,19 +6,9 @@ import com.tokopedia.utils.view.binding.internal.ViewBindingCache
 import com.tokopedia.utils.view.binding.noreflection.ViewBindingProperty
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
-/**
- * Create new [ViewBinding] associated with the [ViewHolder]
- *
- * @param T Class of expected [ViewBinding] result class
- */
 @JvmName("viewBindingFragment")
 public inline fun <reified T : ViewBinding> ViewHolder.viewBinding() = viewBinding(T::class.java)
 
-/**
- * Create new [ViewBinding] associated with the [ViewHolder]
- *
- * @param viewBindingClass Class of expected [ViewBinding] result class
- */
 @JvmName("viewBindingFragment")
 public fun <T : ViewBinding> ViewHolder.viewBinding(
         viewBindingClass: Class<T>,

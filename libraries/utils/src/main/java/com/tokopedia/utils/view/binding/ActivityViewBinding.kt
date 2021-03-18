@@ -11,22 +11,10 @@ import com.tokopedia.utils.view.binding.internal.findRootView
 import com.tokopedia.utils.view.binding.noreflection.ViewBindingProperty
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
-/**
- * Create new [ViewBinding] associated with the [Activity][ComponentActivity]
- *
- * @param T Class of expected [ViewBinding] result class
- * @param viewBindingRootId Root view's id that will be used as root for the view binding
- */
 @JvmName("viewBindingActivity")
 public inline fun <reified T : ViewBinding> ComponentActivity.viewBinding(@IdRes viewBindingRootId: Int) =
         viewBinding(T::class.java, viewBindingRootId)
 
-/**
- * Create new [ViewBinding] associated with the [Activity][ComponentActivity]
- *
- * @param viewBindingClass Class of expected [ViewBinding] result class
- * @param viewBindingRootId Root view's id that will be used as root for the view binding
- */
 @JvmName("viewBindingActivity")
 public fun <T : ViewBinding> ComponentActivity.viewBinding(
         viewBindingClass: Class<T>,
@@ -38,12 +26,6 @@ public fun <T : ViewBinding> ComponentActivity.viewBinding(
     }
 }
 
-/**
- * Create new [ViewBinding] associated with the [Activity]
- *
- * @param viewBindingClass Class of expected [ViewBinding] result class
- * @param rootViewProvider Provider of root view for the [ViewBinding] from the [Activity][this]
- */
 @JvmName("viewBindingActivity")
 public fun <T : ViewBinding> ComponentActivity.viewBinding(
         viewBindingClass: Class<T>,
@@ -52,12 +34,6 @@ public fun <T : ViewBinding> ComponentActivity.viewBinding(
     return viewBinding { activity -> ViewBindingCache.getBind(viewBindingClass).bind(rootViewProvider(activity)) }
 }
 
-/**
- * Create new [ViewBinding] associated with the [Activity][ComponentActivity].
- * You need to set [ViewBinding.getRoot] as content view using [Activity.setContentView].
- *
- * @param T Class of expected [ViewBinding] result class
- */
 @JvmName("inflateViewBindingActivity")
 public inline fun <reified T : ViewBinding> ComponentActivity.viewBinding(
         createMethod: CreateMethod = CreateMethod.BIND

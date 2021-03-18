@@ -37,11 +37,6 @@ public fun <T : ViewBinding> Fragment.viewBinding(
     }
 }
 
-/**
- * Create new [ViewBinding] associated with the [Fragment]
- *
- * @param T Class of expected [ViewBinding] result class
- */
 @JvmName("viewBindingFragment")
 public inline fun <reified T : ViewBinding> Fragment.viewBinding(
         createMethod: CreateMethod = CreateMethod.BIND
@@ -49,11 +44,6 @@ public inline fun <reified T : ViewBinding> Fragment.viewBinding(
     return viewBinding(T::class.java, createMethod)
 }
 
-/**
- * Create new [ViewBinding] associated with the [Fragment]
- *
- * @param viewBindingClass Class of expected [ViewBinding] result class
- */
 @JvmName("viewBindingFragment")
 public fun <T : ViewBinding> Fragment.viewBinding(
         viewBindingClass: Class<T>,

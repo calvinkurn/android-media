@@ -4,27 +4,20 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.annotation.RestrictTo
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.DialogFragment
 
 @Suppress("NOTHING_TO_INLINE")
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 inline fun <V : View> View.requireViewByIdCompat(@IdRes id: Int): V {
     return ViewCompat.requireViewById(this, id)
 }
 
 @Suppress("NOTHING_TO_INLINE")
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 inline fun <V : View> Activity.requireViewByIdCompat(@IdRes id: Int): V {
     return ActivityCompat.requireViewById(this, id)
 }
 
-/**
- * Utility to find root view for ViewBinding in Activity
- */
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 fun findRootView(activity: Activity): View {
     val contentView = activity.findViewById<ViewGroup>(android.R.id.content)
     checkNotNull(contentView) { "Activity has no content view" }
@@ -35,7 +28,6 @@ fun findRootView(activity: Activity): View {
     }
 }
 
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 fun DialogFragment.getRootView(viewBindingRootId: Int): View {
     val dialog = checkNotNull(dialog) {
         "DialogFragment doesn't have dialog. Use viewBinding delegate after onCreateDialog"

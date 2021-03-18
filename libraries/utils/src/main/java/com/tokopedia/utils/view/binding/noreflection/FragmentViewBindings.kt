@@ -39,9 +39,6 @@ private class FragmentViewBindingProperty<in F : Fragment, out T : ViewBinding>(
     }
 }
 
-/**
- * Create new [ViewBinding] associated with the [Fragment]
- */
 @Suppress("UNCHECKED_CAST")
 @JvmName("viewBindingFragment")
 public fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
@@ -51,12 +48,6 @@ public fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
     return FragmentViewBindingProperty(viewBinder)
 }
 
-/**
- * Create new [ViewBinding] associated with the [Fragment]
- *
- * @param vbFactory Function that create new instance of [ViewBinding]. `MyViewBinding::bind` can be used
- * @param viewProvider Provide a [View] from the Fragment. By default call [Fragment.requireView]
- */
 @JvmName("viewBindingFragment")
 public inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         crossinline vbFactory: (View) -> T,
@@ -65,12 +56,6 @@ public inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
     return viewBinding { fragment: F -> vbFactory(viewProvider(fragment)) }
 }
 
-/**
- * Create new [ViewBinding] associated with the [Fragment]
- *
- * @param vbFactory Function that create new instance of [ViewBinding]. `MyViewBinding::bind` can be used
- * @param viewBindingRootId Root view's id that will be used as root for the view binding
- */
 @Suppress("UNCHECKED_CAST")
 @JvmName("viewBindingFragment")
 public inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
