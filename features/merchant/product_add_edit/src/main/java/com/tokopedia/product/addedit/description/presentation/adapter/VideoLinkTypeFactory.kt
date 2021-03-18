@@ -41,9 +41,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
             }
             itemView.textFieldUrl.apply {
-                if (element.inputUrl.isNotEmpty()) {
-                    setText(element.inputUrl)
-                }
+                setText(element.inputUrl)
                 textAreaInput.let {
                     it.setSelection(element.inputUrl.length)
                     it.doAfterTextChanged { editable ->
