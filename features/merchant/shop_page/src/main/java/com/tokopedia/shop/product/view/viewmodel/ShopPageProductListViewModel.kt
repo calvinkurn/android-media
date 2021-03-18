@@ -27,7 +27,6 @@ import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
-import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -49,7 +48,6 @@ class ShopPageProductListViewModel @Inject constructor(
         private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val getShopProductUseCase: GqlGetShopProductUseCase,
-        @ShopProductGetHighlightProductQualifier
         private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
         private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
         private val dispatcherProvider: CoroutineDispatchers,
