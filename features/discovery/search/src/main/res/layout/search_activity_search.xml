@@ -80,7 +80,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textColor="@color/Unify_N700_96"
-                android:textColorHint="@android:color/darker_gray"
+                android:textColorHint="@color/Unify_N200"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/action_up_btn"
                 app:layout_constraintRight_toLeftOf="@id/search_home_button"
