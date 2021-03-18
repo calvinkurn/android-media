@@ -819,6 +819,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 if (widget is W) {
                     if (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())) {
                         newWidgetList.removeAt(index)
+                        removeEmptySections(newWidgetList, index)
                     } else {
                         val copiedWidget = widget.copy()
                         copiedWidget.data = widgetData
@@ -835,6 +836,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 requestVisibleWidgetsData()
             }
         }
+    }
+
+    private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {
+        if (newWidgetList.getOrNull(removedWidgetIndex - 1) is SectionWidgetUiModel) newWidgetList.removeAt(removedWidgetIndex - 1)
     }
 
     @Suppress("UNCHECKED_CAST")
