@@ -57,7 +57,6 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         const val EXTRA_PRODUCT_ID = "product_id"
         private const val EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST"
         private const val EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION"
-        private const val EXTRA_PRODUCT_ID_IMAGE = "EXTRA_PRODUCT_ID"
 
         fun getInstance(productId: String): ReviewProductFragment {
             val reviewProductFragment = ReviewProductFragment()
@@ -193,7 +192,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         val bundle = Bundle()
         bundle.putStringArray(EXTRA_IMAGE_URL_LIST, listLocation.toTypedArray())
         bundle.putInt(EXTRA_DEFAULT_POSITION, position)
-        bundle.putString(EXTRA_PRODUCT_ID_IMAGE, elementProductId)
+        bundle.putString(EXTRA_PRODUCT_ID, elementProductId)
         RouteManager.route(
                 context,
                 bundle,
