@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import kotlinx.android.synthetic.main.item_product_add_video.view.*
@@ -41,6 +42,9 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
             }
             itemView.textFieldUrl.apply {
+                if (element.inputUrl.isNotBlank()) {
+                    setText(WEB_PREFIX_HTTPS + element.inputUrl)
+                }
                 setText(element.inputUrl)
                 textAreaInput.let {
                     it.setSelection(element.inputUrl.length)

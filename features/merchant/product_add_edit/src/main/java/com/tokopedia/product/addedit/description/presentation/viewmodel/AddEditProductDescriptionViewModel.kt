@@ -7,9 +7,12 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FULL_YOUTUBE_URL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTP
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTUBE_URL
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTU_BE_URL
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
@@ -133,9 +136,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
             val uri = Uri.parse(webVideoUrl)
             when (uri.host) {
-                "youtu.be" -> uri.lastPathSegment
-                "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
-                "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                YOUTU_BE_URL -> uri.lastPathSegment
+                YOUTUBE_URL -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                FULL_YOUTUBE_URL -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 else -> throw MessageErrorException("")
             }
         } catch (e: NullPointerException) {

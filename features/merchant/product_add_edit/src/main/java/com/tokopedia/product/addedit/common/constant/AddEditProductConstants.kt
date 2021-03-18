@@ -16,6 +16,9 @@ object AddEditProductConstants {
     const val WEB_PREFIX_HTTP = "http://"
     const val WEB_PREFIX_HTTPS = "https://"
     const val GQL_ERROR_SUBSTRING = "gql.tokopedia.com"
+    const val YOUTU_BE_URL = "youtu.be"
+    const val YOUTUBE_URL = "youtube.com"
+    const val FULL_YOUTUBE_URL = "www.youtube.com"
 
     const val PHOTO_TIPS_URL_1 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png"
     const val PHOTO_TIPS_URL_2 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png"

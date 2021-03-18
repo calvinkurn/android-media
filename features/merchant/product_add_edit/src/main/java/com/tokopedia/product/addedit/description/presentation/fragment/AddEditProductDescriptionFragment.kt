@@ -421,9 +421,6 @@ class AddEditProductDescriptionFragment:
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
     }
 
-    private fun addEmptyVideoUrl() {
-    }
-
     @ExperimentalCoroutinesApi
     @FlowPreview
     private fun getVideoYoutube(index: Int, url: String) {
