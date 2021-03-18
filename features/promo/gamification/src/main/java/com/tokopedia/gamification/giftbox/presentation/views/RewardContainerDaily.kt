@@ -188,7 +188,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
     }
 
     open fun setFinalTranslationOfCirclesTap(giftBoxTop: Int) {
-        val translation = giftBoxTop - 100.toPx().toFloat()
+        val translation = giftBoxTop - 124.toPx().toFloat()
         imageCircleReward.translationY = translation
     }
 
