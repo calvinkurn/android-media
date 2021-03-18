@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.internal_review.R
 import com.tokopedia.internal_review.analytics.SellerReviewTracking
@@ -99,7 +100,7 @@ class FeedbackBottomSheet(tracker: SellerReviewTracking,
     }
 
     private fun observeReviewState() {
-        mViewModel.reviewStatus.observe(viewLifecycleOwner) {
+        mViewModel.reviewStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSubmitted?.invoke()
@@ -107,7 +108,7 @@ class FeedbackBottomSheet(tracker: SellerReviewTracking,
                 }
                 is Fail -> setOnError(it.throwable)
             }
-        }
+        })
     }
 
     private fun setOnError(throwable: Throwable) {

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -96,7 +97,7 @@ class RatingBottomSheet(tracker: SellerReviewTracking,
     }
 
     private fun observeReviewState() {
-        mViewModel.reviewStatus.observe(viewLifecycleOwner) {
+        mViewModel.reviewStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSubmitted?.invoke(givenRating)
@@ -104,7 +105,7 @@ class RatingBottomSheet(tracker: SellerReviewTracking,
                 }
                 is Fail -> setOnError(it.throwable)
             }
-        }
+        })
     }
 
     private fun setOnError(throwable: Throwable) {
