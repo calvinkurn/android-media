@@ -1,0 +1,74 @@
+[
+  {
+    "data": {
+      "productrevShopRatingAggregate": {
+        "data": [
+          {
+            "product": {
+              "productID": 1573272100,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/31/3980bca7-5728-46fa-8648-31a72656ada0.jpg",
+              "productName": "PrOduc7 73571n6 6un03n9"
+            },
+            "rating": 4.25,
+            "reviewCount": 4
+          },
+          {
+            "product": {
+              "productID": 1589818378,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/8/9b614e27-6a2b-4971-bc00-5a95f56b6b47.jpg",
+              "productName": "Pr0duct t3st1ing VINYL var1an"
+            },
+            "rating": 4,
+            "reviewCount": 2
+          },
+          {
+            "product": {
+              "productID": 1316955768,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/c50a712b-bb43-45c8-ad83-485cb44bed54.jpg",
+              "productName": "Pr0duct T3st1n6 R4ns3l"
+            },
+            "rating": 5,
+            "reviewCount": 1
+          },
+          {
+            "product": {
+              "productID": 1316004648,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/d8239c39-0805-4c2f-a332-d62643ee3121.jpg",
+              "productName": "Pr0duk T3st1n6 S3r4g4m K4ry4w4n"
+            },
+            "rating": 4,
+            "reviewCount": 1
+          },
+          {
+            "product": {
+              "productID": 1316910490,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/ecb22e6d-b169-457b-beba-1faa9ab53db4.jpg",
+              "productName": "Pr0duct t3st1n6 bl0us3"
+            },
+            "rating": 4,
+            "reviewCount": 1
+          },
+          {
+            "product": {
+              "productID": 1319718684,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/6/87667c38-c855-4106-9091-7ba2eeec547b.jpg",
+              "productName": "Pr0duct T3st1n6 T4s M1n1"
+            },
+            "rating": 5,
+            "reviewCount": 1
+          },
+          {
+            "product": {
+              "productID": 1319727341,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/6/4fb27d24-3123-4c71-a4f2-1308336b5fdd.jpg",
+              "productName": "Pr0duct T3st1n6 C4s3 L4pt0p"
+            },
+            "rating": 4,
+            "reviewCount": 1
+          }
+        ],
+        "hasNext": false
+      }
+    }
+  }
+]

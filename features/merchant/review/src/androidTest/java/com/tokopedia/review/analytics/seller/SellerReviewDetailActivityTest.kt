@@ -1,13 +1,12 @@
 package com.tokopedia.review.analytics.seller
 
 import android.app.Activity
+import android.app.Application
 import android.app.Instrumentation
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -18,13 +17,11 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.coachmark.CoachMark
-import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.review.R
+import com.tokopedia.review.analytics.common.actionTest
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.adapter.SortListAdapter
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
@@ -63,7 +60,7 @@ class SellerReviewDetailActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            userLogin()
+            login()
         }
 
         override fun afterActivityLaunched() {
@@ -227,37 +224,16 @@ class SellerReviewDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun userLogin() {
-        val activityRuleLogin = ActivityTestRule(LoginActivity::class.java, false, false)
-        val bundle = Bundle()
-        bundle.putBoolean(LoginEmailPhoneFragment.IS_AUTO_FILL, true)
-        bundle.putString(LoginEmailPhoneFragment.AUTO_FILL_EMAIL, EMAIL_LOGIN)
-        val intent = Intent(targetContext, LoginActivity::class.java)
-        intent.putExtras(bundle)
-        activityRuleLogin.launchActivity(intent)
-
-        onView(withId(com.tokopedia.loginregister.R.id.register_btn)).perform(click())
-
-        waitForLoading()
-
-        onView(withId(com.tokopedia.loginregister.R.id.wrapper_password)).perform(click())
-
-        onView(withId(com.tokopedia.loginregister.R.id.password))
-                .perform(ViewActions.typeText(PASSWORD_LOGIN))
-
-        onView(withId(com.tokopedia.loginregister.R.id.password))
-                .check(matches(withText(PASSWORD_LOGIN)))
-
-        onView(withId(com.tokopedia.loginregister.R.id.register_btn))
-                .perform(click())
-    }
-
     private fun waitForLoading() {
         Thread.sleep(3000)
     }
 
     private fun waitForTrackerSent() {
         Thread.sleep(5000)
+    }
+
+    private fun login() {
+        InstrumentationAuthHelper.loginToAnUser(targetContext.applicationContext as Application)
     }
 
     companion object {
@@ -267,8 +243,6 @@ class SellerReviewDetailActivityTest {
         const val TAG_OPTION_FEEDBACK = "Menu"
         const val TAG_SORT_FILTER = "Filter"
         const val TIME_ONE_YEAR = "1 Tahun Terakhir"
-        const val EMAIL_LOGIN = "transaction.team+seller01@tokopedia.com"
-        const val PASSWORD_LOGIN = "123toped789"
         const val EDIT_PRODUCT_PATH = "tracker/merchant/review/seller/review_detail_click_dot_edit_product.json"
         const val FILTER_TIME_PATH = "tracker/merchant/review/seller/review_detail_click_filter_time.json"
         const val FILTER_STAR_PATH = "tracker/merchant/review/seller/review_detail_click_filter_star.json"
