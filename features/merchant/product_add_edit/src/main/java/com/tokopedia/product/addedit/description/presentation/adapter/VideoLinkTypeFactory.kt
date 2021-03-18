@@ -44,8 +44,9 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             itemView.textFieldUrl.apply {
                 if (element.inputUrl.isNotBlank()) {
                     setText(WEB_PREFIX_HTTPS + element.inputUrl)
+                } else {
+                    setText(element.inputUrl)
                 }
-                setText(element.inputUrl)
                 textAreaInput.let {
                     it.setSelection(element.inputUrl.length)
                     it.doAfterTextChanged { editable ->
