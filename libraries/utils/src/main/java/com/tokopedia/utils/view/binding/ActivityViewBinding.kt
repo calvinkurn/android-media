@@ -42,9 +42,11 @@ inline fun <reified T : ViewBinding> ComponentActivity.viewBinding(
 fun <T : ViewBinding> ComponentActivity.viewBinding(
         viewBindingClass: Class<T>,
         createMethod: CreateMethod = CreateMethod.BIND
-): ViewBindingProperty<ComponentActivity, T> = when (createMethod) {
-    CreateMethod.BIND -> viewBinding(viewBindingClass, ::findRootView)
-    CreateMethod.INFLATE -> viewBinding {
-        ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false)
+): ViewBindingProperty<ComponentActivity, T> {
+    return when (createMethod) {
+        CreateMethod.BIND -> viewBinding(viewBindingClass, ::findRootView)
+        CreateMethod.INFLATE -> viewBinding {
+            ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false)
+        }
     }
 }

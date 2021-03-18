@@ -9,23 +9,6 @@ import androidx.viewbinding.ViewBinding
 import com.tokopedia.utils.view.binding.internal.getRootView
 import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
-private class DialogFragmentViewBindingProperty<in F : DialogFragment, out T : ViewBinding>(
-        viewBinder: (F) -> T
-) : LifecycleViewBindingProperty<F, T>(viewBinder) {
-
-    override fun getLifecycleOwner(thisRef: F): LifecycleOwner {
-        return if (thisRef.showsDialog) {
-            thisRef
-        } else {
-            try {
-                thisRef.viewLifecycleOwner
-            } catch (ignored: IllegalStateException) {
-                error("TkpdViewBinding: Fragment does not have view associated with it or the view has been destroyed")
-            }
-        }
-    }
-}
-
 private class FragmentViewBindingProperty<in F : Fragment, out T : ViewBinding>(
         viewBinder: (F) -> T
 ) : LifecycleViewBindingProperty<F, T>(viewBinder) {

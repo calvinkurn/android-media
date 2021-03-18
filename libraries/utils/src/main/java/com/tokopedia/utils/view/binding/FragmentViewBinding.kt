@@ -48,11 +48,13 @@ inline fun <reified T : ViewBinding> Fragment.viewBinding(
 fun <T : ViewBinding> Fragment.viewBinding(
         viewBindingClass: Class<T>,
         createMethod: CreateMethod = CreateMethod.BIND
-): ViewBindingProperty<Fragment, T> = when (createMethod) {
-    CreateMethod.BIND -> viewBinding {
-        ViewBindingCache.getBind(viewBindingClass).bind(requireView())
-    }
-    CreateMethod.INFLATE -> viewBinding {
-        ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false)
+): ViewBindingProperty<Fragment, T> {
+    return when (createMethod) {
+        CreateMethod.BIND -> viewBinding {
+            ViewBindingCache.getBind(viewBindingClass).bind(requireView())
+        }
+        CreateMethod.INFLATE -> viewBinding {
+            ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false)
+        }
     }
 }

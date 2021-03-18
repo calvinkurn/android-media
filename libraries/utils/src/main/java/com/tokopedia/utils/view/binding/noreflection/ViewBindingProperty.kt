@@ -54,7 +54,7 @@ abstract class LifecycleViewBindingProperty<in R : Any, out T : ViewBinding>(
 
         val lifecycle = getLifecycleOwner(thisRef).lifecycle
         val viewBinding = viewBinder(thisRef)
-        if (lifecycle.currentState == Lifecycle.State.DESTROYED) {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.DESTROYED)) {
             /*
             * We can access to ViewBinding after Fragment.onDestroyView(),
             * but don't save it to prevent memory leak
