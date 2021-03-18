@@ -31,6 +31,8 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     class VideoLinkViewHolder(val view: View?, private val listener: VideoLinkListener?)
         : AbstractViewHolder<VideoLinkModel>(view) {
 
+        var isFirstLoaded = true
+
         override fun bind(element: VideoLinkModel) {
             itemView.textFieldUrl.textAreaInput.apply {
                 maxLines = 1
@@ -42,12 +44,19 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
             }
             itemView.textFieldUrl.apply {
-                if (element.inputUrl.isNotBlank()) {
-                    setText(WEB_PREFIX_HTTPS + element.inputUrl)
+                // add web prefix for url non-prefix (got from BE)
+                if (element.inputUrl.isNotBlank() && !element.inputUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                    setText("$WEB_PREFIX_HTTPS${element.inputUrl}")
                 } else {
                     setText(element.inputUrl)
                 }
+                // hit gql for the first time
+                if (isFirstLoaded && element.inputUrl.isNotBlank()) {
+                    listener?.onTextChanged(textAreaInput.text.toString(), adapterPosition)
+                    isFirstLoaded = false
+                }
                 textAreaInput.let {
+                    // set cursor at the end of the text
                     it.setSelection(element.inputUrl.length)
                     it.doAfterTextChanged { editable ->
                         listener?.onTextChanged(editable.toString(), adapterPosition)
