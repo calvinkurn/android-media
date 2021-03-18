@@ -1,3 +1,6 @@
+@file:Suppress("RedundantVisibilityModifier", "unused")
+@file:JvmName("ReflectionActivityViewBinding")
+
 package com.tokopedia.utils.view.binding
 
 import android.view.View

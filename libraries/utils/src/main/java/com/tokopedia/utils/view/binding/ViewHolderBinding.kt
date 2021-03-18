@@ -1,3 +1,6 @@
+@file:Suppress("RedundantVisibilityModifier", "unused")
+@file:JvmName("ReflectionViewHolderBinding")
+
 package com.tokopedia.utils.view.binding
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder

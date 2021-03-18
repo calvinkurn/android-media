@@ -1,3 +1,5 @@
+@file:Suppress("RedundantVisibilityModifier")
+
 package com.tokopedia.utils.view.binding.noreflection
 
 import android.annotation.SuppressLint

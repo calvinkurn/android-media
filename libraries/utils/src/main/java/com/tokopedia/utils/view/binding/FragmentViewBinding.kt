@@ -1,3 +1,6 @@
+@file:Suppress("RedundantVisibilityModifier", "unused")
+@file:JvmName("ReflectionFragmentViewBinding")
+
 package com.tokopedia.utils.view.binding
 
 import androidx.annotation.IdRes

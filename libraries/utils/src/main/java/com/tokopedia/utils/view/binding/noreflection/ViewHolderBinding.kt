@@ -1,3 +1,6 @@
+@file:Suppress("unused")
+@file:JvmName("ViewHolderBinding")
+
 package com.tokopedia.utils.view.binding.noreflection
 
 import android.view.View

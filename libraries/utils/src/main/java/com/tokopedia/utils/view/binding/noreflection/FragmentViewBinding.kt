@@ -1,3 +1,6 @@
+@file:Suppress("RedundantVisibilityModifier", "unused")
+@file:JvmName("FragmentViewBinding")
+
 package com.tokopedia.utils.view.binding.noreflection
 
 import android.view.View
