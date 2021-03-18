@@ -114,8 +114,11 @@ PopularCityAdapter.ActionListener {
             binding.discomCurrentLocationDivider.visibility = View.VISIBLE
             binding.llDiscomPopularCity.visibility = View.VISIBLE
             fusedLocationClient = FusedLocationProviderClient(requireActivity())
-            searchInputView.setOnClickListener {
-                ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
+            searchInputView.searchTextView.apply {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
+                }
+                setOnClickListener { ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId) }
             }
 
             val cityList = resources.getStringArray(R.array.cityList)
