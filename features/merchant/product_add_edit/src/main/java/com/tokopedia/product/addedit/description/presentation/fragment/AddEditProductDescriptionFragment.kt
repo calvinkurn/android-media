@@ -541,6 +541,7 @@ class AddEditProductDescriptionFragment:
                     AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
                 }
             }
+            adapter.notifyItemChanged(position)
             updateSaveButtonStatus()
         }
     }
