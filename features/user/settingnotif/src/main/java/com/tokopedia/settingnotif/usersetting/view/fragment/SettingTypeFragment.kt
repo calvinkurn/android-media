@@ -22,7 +22,7 @@ import java.util.*
 
 class SettingTypeFragment : BaseDaggerFragment() {
 
-    private lateinit var rvSettingType: RecyclerView
+    private var rvSettingType: RecyclerView? = null
     private lateinit var settingTypeContract: SettingTypeContract
 
     interface SettingTypeContract {
@@ -46,12 +46,16 @@ class SettingTypeFragment : BaseDaggerFragment() {
                 R.layout.fragment_setting_type,
                 container,
                 false
-        ).also {
-            bindView(it)
-            setupToolbar()
-            setupSettingTypes()
-            showShowCaseIfNeeded()
-        }
+        )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindView(view)
+
+        setupToolbar()
+        setupSettingTypes()
+        showShowCaseIfNeeded()
     }
 
     private fun bindView(view: View) {
@@ -65,13 +69,13 @@ class SettingTypeFragment : BaseDaggerFragment() {
     }
 
     private fun setupSettingTypes() {
-        with (rvSettingType) {
-            setHasFixedSize(true)
-            adapter = SettingTypeAdapter(
+        rvSettingType?.let {
+            it.setHasFixedSize(true)
+            it.adapter = SettingTypeAdapter(
                     SettingTypeDataView.createSettingTypes(),
                     settingTypeContract
             )
-            addItemDecoration(NotifSettingDividerDecoration(requireContext()))
+            it.addItemDecoration(NotifSettingDividerDecoration(requireContext()))
         }
     }
 

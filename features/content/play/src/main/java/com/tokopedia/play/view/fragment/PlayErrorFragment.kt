@@ -83,10 +83,10 @@ class PlayErrorFragment @Inject constructor(
         imgBack.setOnClickListener { activity?.onBackPressed() }
 
         globalError.errorTitle.setTextColor(
-                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         )
         globalError.errorDescription.setTextColor(
-                MethodChecker.getColor(requireContext(), R.color.play_error_text_color)
+                MethodChecker.getColor(requireContext(), R.color.play_dms_error_text_color)
         )
     }
 
