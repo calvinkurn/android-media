@@ -2,7 +2,6 @@ package com.tokopedia.internal_review.common
 
 import android.content.Context
 import android.content.SharedPreferences
-import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 09/02/21

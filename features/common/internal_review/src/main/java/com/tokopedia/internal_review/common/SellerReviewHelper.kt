@@ -84,7 +84,7 @@ class SellerReviewHelper constructor(
         resetQuotaCheck()
 
         val ratingBottomSheet = (fm.findFragmentByTag(RatingBottomSheet.TAG) as? RatingBottomSheet)
-                ?: RatingBottomSheet.createInstance()
+                ?: RatingBottomSheet.createInstance(context)
 
         ratingBottomSheet.setOnDestroyListener {
             popupAlreadyShown = false
@@ -113,23 +113,23 @@ class SellerReviewHelper constructor(
         if (fm.isStateSaved || !SellerReviewUtils.getConnectionStatus(context)) return
 
         val feedbackBottomSheet = (fm.findFragmentByTag(FeedbackBottomSheet.TAG) as? FeedbackBottomSheet)
-                ?: FeedbackBottomSheet.createInstance(rating)
+                ?: FeedbackBottomSheet.createInstance(context, rating)
 
         feedbackBottomSheet.setOnSubmittedListener {
             handler.postDelayed({
-                showTankYouBottomSheet(fm)
+                showTankYouBottomSheet(context, fm)
             }, POPUP_DELAY)
         }
 
         showBottomSheet(fm, feedbackBottomSheet)
     }
 
-    private fun showTankYouBottomSheet(fm: FragmentManager) {
+    private fun showTankYouBottomSheet(context: Context, fm: FragmentManager) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
         if (fm.isStateSaved) return
 
         val thankYouBottomSheet = (fm.findFragmentByTag(ThankYouBottomSheet.TAG) as? ThankYouBottomSheet)
-                ?: ThankYouBottomSheet.createInstance()
+                ?: ThankYouBottomSheet.createInstance(context)
 
         showBottomSheet(fm, thankYouBottomSheet)
     }
@@ -158,7 +158,7 @@ class SellerReviewHelper constructor(
     private fun rateOnPlayStore(context: Context, fm: FragmentManager) {
         RouteManager.route(context, SELLER_APP_ON_GOOGLE_PLAY)
         handler.postDelayed({
-            showTankYouBottomSheet(fm)
+            showTankYouBottomSheet(context, fm)
         }, POPUP_DELAY)
     }
 

@@ -1,7 +1,6 @@
 package com.tokopedia.internal_review.common
 
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 05/02/21

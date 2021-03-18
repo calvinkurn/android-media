@@ -10,14 +10,12 @@ import com.tokopedia.internal_review.view.model.SendReviewParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import dagger.Lazy
-import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 28/01/21
  */
-class SellerReviewViewModel @Inject constructor(
-        private val reviewUseCase: Lazy<SendReviewUseCase>,
+class SellerReviewViewModel constructor(
+        private val reviewUseCase: SendReviewUseCase,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -27,8 +25,8 @@ class SellerReviewViewModel @Inject constructor(
 
     fun submitReview(param: SendReviewParam) {
         launchCatchError(block = {
-            reviewUseCase.get().params = SendReviewUseCase.createParams(param)
-            val result = reviewUseCase.get().executeOnBackground()
+            reviewUseCase.params = SendReviewUseCase.createParams(param)
+            val result = reviewUseCase.executeOnBackground()
             _reviewStatus.postValue(Success(result))
         }, onError = {
             _reviewStatus.postValue(Fail(it))

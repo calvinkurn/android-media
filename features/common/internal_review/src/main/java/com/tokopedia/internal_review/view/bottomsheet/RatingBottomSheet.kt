@@ -1,5 +1,6 @@
 package com.tokopedia.internal_review.view.bottomsheet
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +10,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.internal_review.R
+import com.tokopedia.internal_review.analytics.SellerReviewTracking
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.internal_review.common.Const
 import com.tokopedia.internal_review.common.SellerReviewUtils
+import com.tokopedia.internal_review.factory.createReviewRatingBottomSheet
+import com.tokopedia.internal_review.factory.createReviewViewModel
 import com.tokopedia.internal_review.view.viewmodel.SellerReviewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sir_rating_bottom_sheet.view.*
 import java.net.UnknownHostException
 
@@ -22,23 +27,22 @@ import java.net.UnknownHostException
  * Created By @ilhamsuaib on 20/01/21
  */
 
-class RatingBottomSheet : BaseBottomSheet() {
+class RatingBottomSheet(tracker: SellerReviewTracking,
+                        userSession: UserSessionInterface) : BaseBottomSheet(tracker, userSession) {
 
     companion object {
         const val TAG = "SirRatingBottomSheet"
         private const val PAGE_NAME = "popup rating"
 
-        fun createInstance(): RatingBottomSheet {
-            return RatingBottomSheet().apply {
+        fun createInstance(context: Context): RatingBottomSheet {
+            return createReviewRatingBottomSheet(context).apply {
                 showCloseIcon = false
                 showHeader = false
             }
         }
     }
 
-    private val mViewModel: SellerReviewViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(SellerReviewViewModel::class.java)
-    }
+    private val mViewModel = createReviewViewModel(this)
     private var ratingStatus: Array<String>? = null
     private var onSubmitted: ((Int) -> Unit)? = null
     private var givenRating = 0

@@ -12,6 +12,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.R
 import com.tokopedia.internal_review.analytics.SellerReviewTracking
 import com.tokopedia.internal_review.common.Const
+import com.tokopedia.internal_review.factory.createReviewTracking
 import com.tokopedia.internal_review.view.model.SendReviewParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -22,13 +23,8 @@ import java.net.UnknownHostException
  * Created By @ilhamsuaib on 22/01/21
  */
 
-abstract class BaseBottomSheet : BottomSheetUnify() {
-
-    lateinit var tracker: SellerReviewTracking
-
-    lateinit var userSession: UserSessionInterface
-
-    lateinit var viewModelFactory: ViewModelFactory
+abstract class BaseBottomSheet constructor(val tracker: SellerReviewTracking,
+                                           val userSession: UserSessionInterface) : BottomSheetUnify() {
 
     private var onDestroyCallback: (() -> Unit)? = null
     protected var childView: View? = null
