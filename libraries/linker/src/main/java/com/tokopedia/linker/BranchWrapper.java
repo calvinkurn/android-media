@@ -434,9 +434,11 @@ public class BranchWrapper implements WrapperInterface {
 
 
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
-
-        if (LinkerUtils.APP_OPEN_FROM_BRANCH_LINK) {
-
+        if(context==null) return;
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT) &&
+                remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK) &&
+                LinkerUtils.APP_OPEN_FROM_BRANCH_LINK) {
             String utmSource;
             String utmCampaign;
             String utmMedium;
@@ -452,15 +454,14 @@ public class BranchWrapper implements WrapperInterface {
                 utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
             }
             sendCampaignTOGTM(context, utmSource, utmCampaign, utmMedium, utmTerm);
+
         }
     }
 
 
     private void sendCampaignTOGTM(Context context, String utmSource,String utmCampaign,String utmMedium,String utmTerm){
         if(context==null) return;
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT) &&
-                !(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
+        if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
             param.put(LinkerConstants.SCREEN_NAME, "Deeplink Page");
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
