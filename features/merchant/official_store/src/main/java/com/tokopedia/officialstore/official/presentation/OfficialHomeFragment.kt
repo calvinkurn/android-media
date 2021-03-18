@@ -55,6 +55,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAda
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
@@ -166,6 +167,7 @@ class OfficialHomeFragment :
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
+                OSMixTopComponentCallback(this),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter

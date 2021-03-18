@@ -14,32 +14,32 @@ object OfficialStoreDynamicChannelComponentMapper {
                 layout = channel.layout,
                 verticalPosition = verticalPosition,
                 channelHeader = ChannelHeader(
-                        channel.header?.id.toString(),
-                        channel.header?.name?:"",
+                        channel.header?.id?.toString() ?: "",
+                        channel.header?.name ?: "",
                         "",
-                        channel.header?.expiredTime?:"",
+                        channel.header?.expiredTime ?: "",
                         channel.header?.serverTime?:0,
-                        channel.header?.applink?:"",
-                        channel.header?.url?:"",
-                        channel.header?.backColor?:"",
-                        channel.header?.backImage?:"",
+                        channel.header?.applink ?: "",
+                        channel.header?.url ?: "",
+                        channel.header?.backColor ?: "",
+                        channel.header?.backImage ?: "",
                         ""
                 ),
                 channelBanner = ChannelBanner(
-                        id = channel.banner?.id.toString(),
-                        title = channel.banner?.title?:"",
-                        description = channel.banner?.description?:"",
-                        backColor = channel.banner?.backColor?:"",
-                        url = channel.banner?.url?:"",
-                        applink = channel.banner?.applink?:"",
-                        textColor = channel.banner?.textColor?:"",
-                        imageUrl = channel.banner?.imageUrl?:"",
-                        attribution = channel.banner?.attribution?:"",
+                        id = channel.banner?.id?.toString() ?: "",
+                        title = channel.banner?.title ?: "",
+                        description = channel.banner?.description ?: "",
+                        backColor = channel.banner?.backColor ?: "",
+                        url = channel.banner?.url ?: "",
+                        applink = channel.banner?.applink ?: "",
+                        textColor = channel.banner?.textColor ?: "",
+                        imageUrl = channel.banner?.imageUrl ?: "",
+                        attribution = channel.banner?.attribution ?: "",
                         cta = ChannelCtaData(
-                                channel.banner?.cta?.type?:"",
-                                channel.banner?.cta?.mode?:"",
-                                channel.banner?.cta?.text?:"",
-                                channel.banner?.cta?.couponCode?:""
+                                channel.banner?.cta?.type ?: "",
+                                channel.banner?.cta?.mode ?: "",
+                                channel.banner?.cta?.text ?: "",
+                                channel.banner?.cta?.couponCode ?: ""
                         ),
                         gradientColor = channel.banner?.gradientColor?: arrayListOf()
                 ),
@@ -56,32 +56,33 @@ object OfficialStoreDynamicChannelComponentMapper {
                         categoryPersona = channel.categoryPersona,
                         campaignId = channel.campaignID.toString()
                 ),
-                channelGrids = channel.grids?.map {
+                channelGrids = channel.grids.map {
                     ChannelGrid(
-                            id = it?.id.toString(),
-                            price = it?.price.toString(),
-                            imageUrl = it?.imageUrl?:"",
-                            name = it?.name?:"",
-                            applink = it?.applink?:"",
-                            discount = it?.discount?:"",
-                            slashedPrice = it?.slashedPrice?:"",
-                            label = it?.label?:"",
-                            soldPercentage = it?.soldPercentage?.toInt()?:0,
-                            attribution = it?.attribution?:"",
-                            impression = it?.impression?:"",
-                            cashback = it?.cashback?:"",
-                            productClickUrl = it?.productClickUrl?:"",
-                            isFreeOngkirActive = it?.freeOngkir?.isActive?:false,
-                            labelGroup = it?.labelGroup?.map { label ->
+                            id = it.id.toString(),
+                            price = it.price,
+                            imageUrl = it.imageUrl,
+                            name = it.name,
+                            applink = it.applink,
+                            discount = it.discount,
+                            slashedPrice = it.slashedPrice,
+                            label = it.label,
+                            soldPercentage = it.soldPercentage.toInt(),
+                            attribution = it.attribution,
+                            impression = it.impression,
+                            cashback = it.cashback,
+                            productClickUrl = it.productClickUrl,
+                            isFreeOngkirActive = it.freeOngkir?.isActive ?:false,
+                            freeOngkirImageUrl = it.freeOngkir?.imageUrl ?: "",
+                            labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
                                         title = label.title,
                                         position = label.position,
                                         type = label.type,
                                         url = label.imageUrl
                                 )
-                            }?: listOf()
+                            }
                     )
-                }?: listOf()
+                }
         )
     }
 }
