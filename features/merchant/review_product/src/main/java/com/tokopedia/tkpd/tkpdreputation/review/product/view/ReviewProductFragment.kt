@@ -178,7 +178,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
     }
 
     override fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload>?, element: ReviewProductModelContent?) {
-        val listLocation = mutableListOf<String>()
+        val listLocation = ArrayList<String>()
         val listDesc = mutableListOf<String>()
         if (list != null) {
             for (image in list) {
@@ -190,7 +190,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         val elementProductId = element?.productId
 
         val bundle = Bundle()
-        bundle.putStringArray(EXTRA_IMAGE_URL_LIST, listLocation.toTypedArray())
+        bundle.putStringArrayList(EXTRA_IMAGE_URL_LIST, listLocation)
         bundle.putInt(EXTRA_DEFAULT_POSITION, position)
         bundle.putString(EXTRA_PRODUCT_ID, elementProductId)
         RouteManager.route(
