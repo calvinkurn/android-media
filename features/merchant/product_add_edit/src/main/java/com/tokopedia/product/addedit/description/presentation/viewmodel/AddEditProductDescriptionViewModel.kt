@@ -52,7 +52,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private val videoYoutubeFlow = MutableLiveData<Pair<Int, String>>()
 
-    var isFetchingVideoData: MutableMap<Int, Boolean> = mutableMapOf()
     var urlToFetch: MutableMap<Int, String> = mutableMapOf()
     var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
 

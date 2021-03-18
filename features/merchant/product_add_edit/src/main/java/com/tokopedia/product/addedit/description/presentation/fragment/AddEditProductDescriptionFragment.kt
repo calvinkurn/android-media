@@ -125,19 +125,7 @@ class AddEditProductDescriptionFragment:
         }
         adapter.data.removeAt(position)
         adapter.notifyItemRemoved(position)
-        with(descriptionViewModel) {
-            for (i in position until adapter.dataSize) {
-                adapter.data.getOrNull(i)?.run {
-                    isFetchingVideoData[i] = false
-                    urlToFetch[i] = inputUrl
-                    if (fetchedUrl[i + 1].orEmpty() != inputUrl) {
-                        onTextChanged(urlToFetch[i].orEmpty(), i)
-                    }
-                }
-            }
-        }
-        textViewAddVideo.visibility =
-                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
         updateSaveButtonStatus()
     }
 
@@ -561,16 +549,6 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun refreshDuplicateVideo(excludeIndex: Int) {
-        ResourceProvider(context).getDuplicateProductVideoErrorMessage()?.run {
-            adapter.data.forEachIndexed { index, video ->
-                if (index != excludeIndex && video.errorMessage == this) {
-                    getVideoYoutube(index, video.inputUrl)
-                }
-            }
-        }
-    }
-
     private fun validateDescriptionText(it: String) {
         view?.postDelayed({
             descriptionViewModel.validateProductDescriptionInput(it)
@@ -692,11 +670,7 @@ class AddEditProductDescriptionFragment:
         val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
         videoLinkModels.add(VideoLinkModel())
         super.renderList(videoLinkModels)
-        descriptionViewModel.isFetchingVideoData[adapter.dataSize - 1] = false
-        descriptionViewModel.fetchedUrl[adapter.dataSize - 1] = ""
-
-        textViewAddVideo.visibility =
-                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     private fun showVariantDialog() {

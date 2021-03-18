@@ -41,9 +41,14 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
             }
             itemView.textFieldUrl.apply {
-                if (element.inputUrl.isNotEmpty()) setText(element.inputUrl)
-                textAreaInput.doAfterTextChanged {
-                    listener?.onTextChanged(it.toString(), adapterPosition)
+                if (element.inputUrl.isNotEmpty()) {
+                    setText(element.inputUrl)
+                }
+                textAreaInput.let {
+                    it.setSelection(element.inputUrl.length)
+                    it.doAfterTextChanged { editable ->
+                        listener?.onTextChanged(editable.toString(), adapterPosition)
+                    }
                 }
             }
 
@@ -74,7 +79,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 tvVideoTitle.text = inputTitle
                 tvVideoSubtitle.text = inputDescription
 
-                if (errorMessage.isNotEmpty() && !textFieldUrl.textAreaInput.text.isBlank()) {
+                if (errorMessage.isNotEmpty() && textFieldUrl.textAreaInput.text.isNotBlank()) {
                     textFieldUrl.isError = true
                     textFieldUrl.textAreaMessage = errorMessage
                 } else {
