@@ -291,6 +291,8 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType) {
+        itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
+
         itemView.findViewById<AppCompatImageView>(R.id.iv_other_menu_thematic)?.let { thematicIv ->
             val illustrationUrl = FastingPeriodUtil.getThematicIllustrationUrl(shopType)
             ImageHandler.loadImageWithoutPlaceholderAndError(thematicIv, illustrationUrl)
@@ -298,7 +300,6 @@ class OtherMenuViewHolder(private val itemView: View,
 
 //        Revert to these code lines after Ramadhan thematic campaign finished
 
-//        itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
 //        itemView.shopStatusHeaderIcon?.run {
 //            if (shopType !is RegularMerchant) {
 //                visibility = View.VISIBLE
