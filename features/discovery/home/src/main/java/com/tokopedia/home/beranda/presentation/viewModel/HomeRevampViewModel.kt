@@ -1546,21 +1546,19 @@ open class HomeRevampViewModel @Inject constructor(
         }
 
         launchCatchError(coroutineContext, block = {
-            val tokopointContentDefered = async { getTokopointBalanceContent() }
-            val walletContentDefered = async { getWalletBalanceContent() }
 
             var walletContent: HomeHeaderWalletAction? = null
             var tokopointContent: TokopointsDrawerListHomeData? = null
             var pendingCashback: PendingCashback? = null
 
             try {
-                walletContent = walletContentDefered.await()
+                walletContent = getWalletBalanceContent()
             } catch (e: Exception) {
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
             }
 
             try {
-                tokopointContent = tokopointContentDefered.await()
+                tokopointContent = getTokopointBalanceContent()
             } catch (e: Exception) {
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
             }
@@ -1590,7 +1588,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             tokopointContent?.let {
-                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContentDefered.await())
+                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContent)
             }
 
             newUpdateHeaderViewModel(homeBalanceModel)
@@ -1631,8 +1629,13 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private suspend fun getTokopointBalanceContent(): TokopointsDrawerListHomeData? {
-        val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
-        return tokopointsDrawerListHome
+        try {
+            val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+            return tokopointsDrawerListHome
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     private suspend fun getWalletBalanceContent(): HomeHeaderWalletAction? {
