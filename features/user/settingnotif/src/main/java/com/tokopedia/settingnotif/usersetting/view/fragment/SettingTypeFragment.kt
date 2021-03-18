@@ -23,7 +23,7 @@ import java.util.*
 class SettingTypeFragment : BaseDaggerFragment() {
 
     private var rvSettingType: RecyclerView? = null
-    private lateinit var settingTypeContract: SettingTypeContract
+    private var settingTypeContract: SettingTypeContract? = null
 
     interface SettingTypeContract {
         fun openSettingField(settingType: SettingTypeDataView)
