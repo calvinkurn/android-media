@@ -123,4 +123,6 @@
         \n3. Sentuh dan tahan nomor IMEI hingga tersalin.</string>
     <string name="tradein_imei_title">Masukkan no. IMEI</string>
     <string name="tradein_imei_di_pengaturan">IMEI di pengaturan</string>
+    <string name="tradein_sid">Session id</string>
+    <string name="tradein_sid_desc">kode ini dapat berubah sewaktu waktu</string>
 </resources>
