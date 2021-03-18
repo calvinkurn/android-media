@@ -61,7 +61,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                     if (element.inputUrl.isNotEmpty()) {
                         setText(element.inputUrl)
                     }
-                    if (!element.inputUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                    if (!element.inputUrl.startsWith(WEB_PREFIX_HTTPS) && element.inputUrl.isNotBlank()) {
                         setText("$WEB_PREFIX_HTTPS${element.inputUrl}")
                     }
                 }
