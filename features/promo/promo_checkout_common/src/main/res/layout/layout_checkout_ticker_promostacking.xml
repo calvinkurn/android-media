@@ -171,7 +171,7 @@
                         android:paddingTop="@dimen/dp_10"
                         android:paddingBottom="@dimen/dp_10">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/titleCouponGlobal"
                             style="@style/TextView.Micro11.FontMedium.Bold"
                             android:textColor="@color/Unify_N700_96"
@@ -182,7 +182,7 @@
                             android:textSize="@dimen/sp_13"
                             tools:text="Kupon Gratis Ongkir JT Rp 50000" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/descCouponGlobal"
                             style="@style/TextView.Micro11.FontMedium.BlackDisabled"
                             android:textColor="@color/Unify_N700_68"
