@@ -4,7 +4,9 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -57,7 +59,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: TroubleshootViewModel
-    private val binding: FragmentNotifTroubleshooterBinding by viewBinding()
+    private var _binding: FragmentNotifTroubleshooterBinding? = null
+    private val binding: FragmentNotifTroubleshooterBinding get() = _binding!!
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
@@ -70,6 +73,15 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 viewModelFactory
         ).get(TroubleshootViewModel::class.java)
         lifecycle.addObserver(viewModel)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentNotifTroubleshooterBinding.inflate(
+                inflater,
+                container,
+                false
+        )
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -95,6 +107,11 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     override fun onResume() {
         super.onResume()
         viewModel.removeTickers()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initView() {
