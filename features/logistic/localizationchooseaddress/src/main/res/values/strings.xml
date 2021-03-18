@@ -4,7 +4,7 @@
     <string name="txt_label_default">Pilih alamat pengiriman</string>
 
     <string name="coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
-    <string name="coachmark_desc">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu</string>
+    <string name="coachmark_desc">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
     <string name="address_title">Rumah</string>
     <string name="main_address_label">Utama</string>
     <string name="receiver_name">Regi</string>
