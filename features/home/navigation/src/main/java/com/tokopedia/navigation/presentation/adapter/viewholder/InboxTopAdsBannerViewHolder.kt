@@ -74,7 +74,7 @@ class InboxTopAdsBannerViewHolder constructor(
 
         const val SOURCE = "5"
         const val ADS_COUNT = 1
-        const val DIMEN_ID = 4
+        const val DIMEN_ID = 3
 
         @JvmStatic
         val PAYLOAD_UPDATE_AD = "payload_update_ad"
