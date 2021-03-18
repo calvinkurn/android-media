@@ -1,5 +1,7 @@
 package com.tokopedia.imagepicker.common.listener
 
+import com.tokopedia.imagepicker.common.state.StateRecorder
+
 /**
  * Created by isfaaghyth on 01/03/19.
  * github: @isfaaghyth

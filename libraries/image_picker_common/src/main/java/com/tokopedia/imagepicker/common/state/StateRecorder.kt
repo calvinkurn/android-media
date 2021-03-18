@@ -1,4 +1,4 @@
-package com.tokopedia.videorecorder.main.state
+package com.tokopedia.imagepicker.common.state
 
 /**
  * Created by isfaaghyth on 10/04/19.

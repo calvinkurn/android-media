@@ -23,7 +23,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
-import com.tokopedia.videorecorder.main.state.StateRecorder
+import com.tokopedia.imagepicker.common.state.StateRecorder
 import com.tokopedia.videorecorder.utils.*
 import com.tokopedia.videorecorder.utils.show
 import kotlinx.android.synthetic.main.activity_video_picker.*

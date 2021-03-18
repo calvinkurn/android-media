@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.R
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
-import com.tokopedia.videorecorder.main.state.StateRecorder
+import com.tokopedia.imagepicker.common.state.StateRecorder
 import com.tokopedia.videorecorder.utils.*
 import com.tokopedia.videorecorder.utils.hide
 import com.tokopedia.videorecorder.utils.show
