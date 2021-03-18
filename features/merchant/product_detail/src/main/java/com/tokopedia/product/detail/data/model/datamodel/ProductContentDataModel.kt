@@ -37,7 +37,7 @@ data class ProductContentDataModel(
     }
 
     fun showTradeIn(): Boolean {
-        return shouldShowTradein && data?.campaign?.shouldShowRibbonCampaign == false && data?.campaign?.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN
+        return shouldShowTradein && data?.campaign?.shouldShowRibbonCampaign == false && data?.campaign?.campaignIdentifier != CampaignRibbon.THEMATIC_CAMPAIGN
     }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

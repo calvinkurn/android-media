@@ -7,6 +7,7 @@
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_204">204dp</dimen>
     <dimen name="product_detail_dp_88">88dp</dimen>
+    <dimen name="pdp_dp_1">1dp</dimen>
     <dimen name="pdp_dp_3">3dp</dimen>
     <dimen name="pdp_dp_6">6dp</dimen>
     <dimen name="pdp_dp_9">9dp</dimen>
