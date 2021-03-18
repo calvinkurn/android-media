@@ -48,7 +48,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val descriptionValidationMessage: LiveData<String> get() = _descriptionValidationMessage
 
     private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
-    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()
+    val videoYoutube: LiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = _videoYoutubeNew
 
     private val videoYoutubeStateFlow = MutableLiveData<Pair<Int, String>>()
 
@@ -89,10 +89,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private fun initVideoYoutube() = launch {
         videoYoutubeStateFlow
                 .asFlow()
-                .debounce(VIDEO_DEBOUNCE_TIME)
                 .filter {
                     return@filter it.second.isNotBlank()
                 }
+                .debounce(VIDEO_DEBOUNCE_TIME)
                 .distinctUntilChanged()
                 .flatMapLatest { model ->
                     val url = model.second
