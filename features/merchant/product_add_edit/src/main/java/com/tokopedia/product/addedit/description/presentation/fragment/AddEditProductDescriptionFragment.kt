@@ -339,7 +339,8 @@ class AddEditProductDescriptionFragment:
                 } else {
                     ProductAddDescriptionTracking.clickAddVideoLink(shopId)
                 }
-                addEmptyVideoUrl()
+                adapter.data.add(VideoLinkModel())
+                adapter.notifyDataSetChanged()
             }
         }
 
@@ -421,14 +422,6 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun addEmptyVideoUrl() {
-        val lastData = adapter.data.lastOrNull()
-        if (lastData == null) {
-            loadData(adapter.dataSize + 1)
-        } else {
-            if (lastData.inputUrl.isNotEmpty()) {
-                loadData(adapter.dataSize + 1)
-            }
-        }
     }
 
     @ExperimentalCoroutinesApi
