@@ -449,9 +449,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         errorLayout?.visible()
         imageError?.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_service_error) })
         setTitle("")
+        listener?.onLocalizingAddressServerDown()
         setCloseClickListener {
             ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
-            listener?.onLocalizingAddressServerDown()
             dismissBottomSheet()
         }
     }
