@@ -57,8 +57,8 @@ class RechargeGeneralLoginInstrumentTest {
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, RechargeGeneralActivity::class.java).apply {
-            putExtra(RechargeGeneralActivity.PARAM_MENU_ID, 127)
-            putExtra(RechargeGeneralActivity.PARAM_CATEGORY_ID, 22)
+            putExtra(RechargeGeneralActivity.PARAM_MENU_ID, 113)
+            putExtra(RechargeGeneralActivity.PARAM_CATEGORY_ID, 3)
         }
         mActivityRule.launchActivity(intent)
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
