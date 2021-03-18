@@ -43,6 +43,7 @@ internal abstract class InflateViewBinding<out T : ViewBinding>(
 
 @Suppress("FunctionName")
 internal fun <T : ViewBinding> InflateViewBinding(viewBindingClass: Class<T>): InflateViewBinding<T> {
+    // for reflection purpose
     val methodName = "inflate"
 
     return try {
@@ -95,11 +96,16 @@ internal class CombineInflateViewBinding<out T : ViewBinding>(
 }
 
 internal class BindViewBinding<out T : ViewBinding>(viewBindingClass: Class<T>) {
+    // for reflection purpose
+    private val methodName = "bind"
 
-    private val bindViewBinding = viewBindingClass.getMethod("bind", View::class.java)
+    private val bindViewBinding = viewBindingClass.getMethod(
+            methodName,
+            View::class.java
+    )
 
     @Suppress("UNCHECKED_CAST")
     fun bind(view: View): T {
-        return bindViewBinding(null, view) as T
+        return bindViewBinding.invoke(null, view) as T
     }
 }
