@@ -82,7 +82,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
     var infoUrl: String? = null
-    var backButton: BackButton? = null
+    var backButtonData: BackButton? = null
     val APPLNK_REWARD_HISTORY_KEY = "app_flag_gami_reward_history"
     val APPLNK_HOME = "tokopedia://home"
 
@@ -226,7 +226,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
 
                             RewardContainer.RewardState.RP_0_ONLY -> {
-                                backButton = BackButton(requireContext().getString(R.string.gami_back_button_cancel),
+                                backButtonData = BackButton(requireContext().getString(R.string.gami_back_button_cancel),
                                         null, true,
                                         requireContext().getString(R.string.gami_back_button_message),
                                         requireContext().getString(R.string.gami_back_button_title),
@@ -880,9 +880,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             dialog.setPrimaryCTAText(backButton.yesText)
             dialog.setPrimaryCTAClickListener {
                 try {
-                    GtmGiftTapTap.clickContinueButton(userSession?.userId)
                     dialog.dismiss()
-                    activity?.finish()
+                    backButtonData = null
                     RouteManager.route(context, appLinkForReward)
                 } catch (ex: Exception) {
                 }
@@ -890,7 +889,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             dialog.setSecondaryCTAText(backButton.cancelText)
             dialog.setSecondaryCTAClickListener {
                 try {
-                    GtmGiftTapTap.clickExitButton(userSession?.userId)
                     dialog.dismiss()
                     RouteManager.route(context, APPLNK_HOME)
                 } catch (ex: Exception) {
@@ -915,10 +913,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun onBackPressed(): Boolean {
-        if (backButton != null) {
+        if (backButtonData != null) {
             val appLinkForReward = getAppLinkForBackButtonDialog()
             if (!appLinkForReward.isNullOrEmpty()) {
-                showBackDialog(backButton!!, appLinkForReward)
+                showBackDialog(backButtonData!!, appLinkForReward)
                 return false
             }
         }
