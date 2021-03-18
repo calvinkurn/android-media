@@ -36,7 +36,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl1"
             android:layout_marginRight="@dimen/spacing_lvl1"
-            tools:srcCompat="@drawable/ic_chat_read" />
+            tools:srcCompat="@drawable/ic_chat_read"
+            android:contentDescription="@null"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTime"

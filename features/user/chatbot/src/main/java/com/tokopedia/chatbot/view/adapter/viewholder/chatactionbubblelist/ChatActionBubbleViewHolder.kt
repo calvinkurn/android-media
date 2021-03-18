@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,6 +18,7 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
     override fun bind(element: ChatActionBubbleViewModel, onSelect: (Int) -> Unit) {
         chatActionMessage.text = element.text
         chatActionMessage.setTextColor(R.color.chatbot_color_option_list_text)
+        chatActionMessage.setTextColor(MethodChecker.getColor(itemView.context , (R.color.chatbot_color_option_list_text)))
         customerCareImage.hide()
         if (element.iconUrl.isNotEmpty()) {
             setLiveChatButtonAction(element)

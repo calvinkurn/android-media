@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="@id/helpfull_question_option"
         app:layout_constraintBottom_toBottomOf="@id/helpfull_question_option"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:contentDescription="@null"
         tools:src="@drawable/rating_active_5"
         tools:visibility="visible"/>
 

@@ -28,8 +28,7 @@
         android:src="@drawable/ic_arrow_down"
         app:layout_constraintLeft_toRightOf="@id/read_more_options"
         app:layout_constraintTop_toTopOf="@id/read_more_options"
-        app:layout_constraintBottom_toBottomOf="@id/read_more_options"/>
-
-
+        app:layout_constraintBottom_toBottomOf="@id/read_more_options"
+        android:contentDescription="@null"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

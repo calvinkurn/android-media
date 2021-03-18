@@ -142,7 +142,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_chatbot_send" />
+                    app:srcCompat="@drawable/ic_chatbot_send"
+                    android:contentDescription="@null"/>
 
                 <LinearLayout
                     android:id="@+id/new_comment_container"
@@ -256,7 +257,7 @@
         android:descendantFocusability="beforeDescendants"
         android:scrollbars="vertical" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -266,7 +267,8 @@
         android:gravity="center_horizontal"
         android:padding="@dimen/dp_5"
         android:singleLine="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:typographyType="body_3" />
 
     <LinearLayout
         android:id="@+id/notifier"
