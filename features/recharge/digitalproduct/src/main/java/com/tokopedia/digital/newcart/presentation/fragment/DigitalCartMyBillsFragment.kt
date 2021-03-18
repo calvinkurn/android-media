@@ -52,6 +52,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
         inputPriceHolderView = view.findViewById<InputPriceHolderView>(R.id.input_price_holder_view)
         mybillSubscription = view.findViewById(R.id.subscription_mybill)
         mybillEgold = view.findViewById(R.id.egold_mybill)
+        emptyState = view.findViewById(R.id.empty_state)
 
         mybillEgold.setOnMoreInfoClickedListener(this)
     }

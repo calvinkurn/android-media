@@ -226,7 +226,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onInputPriceByUserFilled(long paymentAmount) {
         checkoutHolderView.renderCheckout(paymentAmount);
         checkoutDataParameterBuilder.transactionAmount(paymentAmount);
-        presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked(), paymentAmount);
+        presenter.updateTotalPriceWithFintechAmount(isEgoldChecked(), paymentAmount);
     }
 
     @Override
@@ -575,12 +575,14 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public Boolean isEgoldChecked() {
-        return mybillEgold.isChecked();
+        if (mybillEgold != null) {
+            return mybillEgold.isChecked();
+        } else return false;
     }
 
     @Override
     public void renderMyBillsEgoldView(FintechProduct fintechProduct) {
-        if (fintechProduct != null) {
+        if (fintechProduct != null && mybillEgold != null) {
             mybillEgold.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                 presenter.onEgoldCheckedListener(isChecked, inputPriceHolderView.getPriceInput());
             });
@@ -602,7 +604,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             }
             mybillEgold.setVisibility(View.VISIBLE);
         } else {
-            mybillEgold.setVisibility(View.GONE);
+            if (mybillEgold != null) mybillEgold.setVisibility(View.GONE);
         }
     }
 
@@ -634,7 +636,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
 
     public void updateTotalPriceWithFintechAmount() {
-        if (mybillEgold.getVisibility() == View.VISIBLE) {
+        if (mybillEgold != null && mybillEgold.getVisibility() == View.VISIBLE) {
             presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked(), inputPriceHolderView.getPriceInput());
         }
     }
