@@ -29,17 +29,17 @@ fun <A : ComponentActivity, T : ViewBinding> viewBinding(
 
 @JvmName("viewBindingActivity")
 inline fun <A : ComponentActivity, T : ViewBinding> viewBinding(
-        crossinline vbFactory: (View) -> T,
+        crossinline viewBindingFactory: (View) -> T,
         crossinline viewProvider: (A) -> View = ::findRootView
 ): ViewBindingProperty<A, T> {
-    return viewBinding { activity -> vbFactory(viewProvider(activity)) }
+    return viewBinding { activity -> viewBindingFactory(viewProvider(activity)) }
 }
 
 @Suppress("unused")
 @JvmName("viewBindingActivity")
 inline fun <T : ViewBinding> ComponentActivity.viewBinding(
-        crossinline vbFactory: (View) -> T,
+        crossinline viewBindingFactory: (View) -> T,
         @IdRes viewBindingRootId: Int
 ): ViewBindingProperty<ComponentActivity, T> {
-    return viewBinding { activity -> vbFactory(activity.requireViewByIdCompat(viewBindingRootId)) }
+    return viewBinding { activity -> viewBindingFactory(activity.requireViewByIdCompat(viewBindingRootId)) }
 }

@@ -50,26 +50,26 @@ fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
 
 @JvmName("viewBindingFragment")
 inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
-        crossinline vbFactory: (View) -> T,
+        crossinline viewBindingFactory: (View) -> T,
         crossinline viewProvider: (F) -> View = Fragment::requireView
 ): ViewBindingProperty<F, T> {
-    return viewBinding { fragment: F -> vbFactory(viewProvider(fragment)) }
+    return viewBinding { fragment: F -> viewBindingFactory(viewProvider(fragment)) }
 }
 
 @Suppress("UNCHECKED_CAST")
 @JvmName("viewBindingFragment")
 inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
-        crossinline vbFactory: (View) -> T,
+        crossinline viewBindingFactory: (View) -> T,
         @IdRes viewBindingRootId: Int
 ): ViewBindingProperty<F, T> {
     return when (this) {
         is DialogFragment -> {
-            viewBinding<DialogFragment, T>(vbFactory) { fragment ->
+            viewBinding<DialogFragment, T>(viewBindingFactory) { fragment ->
                 fragment.getRootView(viewBindingRootId)
             } as ViewBindingProperty<F, T>
         }
         else -> {
-            viewBinding(vbFactory) { fragment: F ->
+            viewBinding(viewBindingFactory) { fragment: F ->
                 fragment.requireView().requireViewByIdCompat(viewBindingRootId)
             }
         }

@@ -11,17 +11,17 @@ fun <VH : ViewHolder, T : ViewBinding> VH.viewBinding(viewBinder: (VH) -> T): Vi
 }
 
 inline fun <VH : ViewHolder, T : ViewBinding> VH.viewBinding(
-        crossinline vbFactory: (View) -> T,
+        crossinline viewBindingFactory: (View) -> T,
         crossinline viewProvider: (VH) -> View = ViewHolder::itemView,
 ): ViewBindingProperty<VH, T> {
-    return LazyViewBindingProperty { viewHolder: VH -> viewProvider(viewHolder).let(vbFactory) }
+    return LazyViewBindingProperty { viewHolder: VH -> viewProvider(viewHolder).let(viewBindingFactory) }
 }
 
 inline fun <VH : ViewHolder, T : ViewBinding> VH.viewBinding(
-        crossinline vbFactory: (View) -> T,
+        crossinline viewBindingFactory: (View) -> T,
         @IdRes viewBindingRootId: Int,
 ): ViewBindingProperty<VH, T> {
     return LazyViewBindingProperty { viewHolder: VH ->
-        vbFactory(viewHolder.itemView.requireViewByIdCompat(viewBindingRootId))
+        viewBindingFactory(viewHolder.itemView.requireViewByIdCompat(viewBindingRootId))
     }
 }
