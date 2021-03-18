@@ -33,7 +33,6 @@ object ProductDetailUtil {
 
     private const val MAX_CHAR_OLD = 150
     private const val MAX_CHAR = 140
-    private const val MORE_DESCRIPTION_OLD = "<font color='#42b549'>Selengkapnya</font>"
     private const val ALLOW_CLICK = true
 
     fun reviewDescFormatterOld(context: Context, review: String): Pair<CharSequence?, Boolean> {

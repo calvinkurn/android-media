@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:contentDescription="@null"
         android:layout_marginTop="@dimen/review_image_slider_item_image_view_vertical_spacing"
         android:layout_marginBottom="@dimen/review_image_slider_item_image_view_vertical_spacing"/>
 
