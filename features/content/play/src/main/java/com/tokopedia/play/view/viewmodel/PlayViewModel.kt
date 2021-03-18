@@ -357,7 +357,7 @@ class PlayViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
-        destroy()
+        stopWebSocket()
         if (!pipState.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
@@ -672,20 +672,6 @@ class PlayViewModel @Inject constructor(
 
     private fun connectWebSocket(channelId: String, socketCredential: SocketCredential) {
         playChannelWebSocket.connectSocket(channelId, socketCredential.gcToken)
-
-//        playSocket.channelId = channelId
-//        playSocket.gcToken = socketCredential.gcToken
-//        playSocket.settings = socketCredential.setting
-//        playSocket.connect(onMessageReceived = { response ->
-//            viewModelScope.launch {
-//                handleWebSocketResponse(response, channelId)
-//            }
-//        }, onReconnect = {
-//            _observableSocketInfo.value = PlaySocketInfo.Reconnect
-//        }, onError = {
-//            _observableSocketInfo.value = PlaySocketInfo.Error(it)
-//            connectWebSocket(channelId, socketCredential)
-//        })
     }
 
     private fun stopWebSocket() {
@@ -869,10 +855,6 @@ class PlayViewModel @Inject constructor(
     /**
      * Private Method
      */
-    private fun destroy() {
-        playSocket.destroy()
-    }
-
     private fun setNewChat(chat: PlayChatUiModel) {
         val currentChatList = _observableChatList.value ?: mutableListOf()
         currentChatList.add(chat)
@@ -958,7 +940,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun doOnForbidden() {
-        destroy()
+        stopWebSocket()
         stopPlayer()
         onKeyboardHidden()
     }

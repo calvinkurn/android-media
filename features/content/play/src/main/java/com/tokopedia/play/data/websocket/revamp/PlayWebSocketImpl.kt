@@ -6,6 +6,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.DEFAULT_PING
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.flow.*
 import okhttp3.*
@@ -23,7 +24,7 @@ class PlayWebSocketImpl(
     private val client: OkHttpClient
 
     init {
-        clientBuilder.pingInterval(5000, TimeUnit.MILLISECONDS)
+        clientBuilder.pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
         client = clientBuilder.build()
     }
 
