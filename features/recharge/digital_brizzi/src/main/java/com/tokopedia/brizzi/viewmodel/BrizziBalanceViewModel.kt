@@ -131,7 +131,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 cardIsNotBrizzi.postValue(true)
             }
             else -> {
-                Timber.e("P2#BRIZZI#ERROR_CHECK_ON_FAILURE#${brizziException}")
+                Timber.e("P2#BRIZZI#ERROR_DEFAULT#${brizziException}")
                 errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
             }
         }
