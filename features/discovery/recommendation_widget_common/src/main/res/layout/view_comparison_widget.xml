@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/comparison_widget_container"
+    android:animateLayoutChanges="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="16dp"
+    >
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_comparison_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <FrameLayout
+        android:id="@+id/btn_container"
+        android:background="@drawable/bg_button_comparison_widget"
+        android:layout_marginTop="-60dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <Button
+            android:layout_gravity="bottom"
+            android:layout_margin="16dp"
+            android:id="@+id/btn_collapse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lihat selengkapnya" />
+    </FrameLayout>
+</LinearLayout>
