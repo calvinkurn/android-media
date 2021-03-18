@@ -34,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.Behavior.DragCallback
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -289,6 +290,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
     }
 
+    private fun removeAnimation(canDrag: Boolean){
+        val params: CoordinatorLayout.LayoutParams = appBarHotelSearchMap.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = AppBarLayout.Behavior()
+        behavior.setDragCallback(object : DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean = canDrag
+        })
+        params.behavior = behavior
+    }
+
     override fun onMapReady(map: GoogleMap) {
         this.googleMap = map
         setGoogleMap()
@@ -298,14 +308,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         GlobalScope.launch(Dispatchers.Main) {
             delay(DELAY_BUTTON_RADIUS)
             showFindNearHereView()
-            showCardListView()
+            removeAnimation(true)
         }
     }
 
     override fun onCameraMove() {
         hideFindNearHereView()
-        hideCardListView()
         googleMap.setOnCameraIdleListener(this)
+        removeAnimation(false)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
