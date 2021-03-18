@@ -29,11 +29,11 @@ import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGen
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.AdditionalMatchers.not
 
 class RechargeGeneralInstrumentTest {
 
