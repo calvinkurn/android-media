@@ -22,7 +22,7 @@ class AttachInvoiceModule constructor(val context: Context) {
     }
 
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSession(): UserSessionInterface = UserSession(context)
 
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
