@@ -16,7 +16,7 @@ project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'
     versionName = "2.24.4"
-    artifactName = "cache_manager"
+    artifactName = "cache_manager-debug"
 }
 
 
