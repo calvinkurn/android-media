@@ -53,7 +53,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
     val videoYoutube: LiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = _videoYoutubeNew
 
-    private val videoYoutubeStateFlow = MutableStateFlow(Pair(-1, ""))
+    private val videoYoutubeFlow = MutableLiveData<Pair<Int, String>>()
 
     var urlToFetch: MutableMap<Int, String> = mutableMapOf()
     var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
@@ -89,9 +89,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     private fun initVideoYoutube() = launch {
-        videoYoutubeStateFlow
+        videoYoutubeFlow
+                .asFlow()
                 .filter {
-                    return@filter it.first >= 0 && it.second.isNotBlank()
+                    return@filter it.second.isNotBlank()
                 }
                 .debounce(VIDEO_DEBOUNCE_TIME)
                 .distinctUntilChanged()
@@ -146,11 +147,11 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     fun urlYoutubeChanged(position: Int, url: String) {
-        videoYoutubeStateFlow.value = Pair(position, url)
+        videoYoutubeFlow.value = Pair(position, url)
     }
 
-    fun resetYoutubeStateFlow() {
-        videoYoutubeStateFlow.resetReplayCache()
+    fun resetYoutubeFlow() {
+        videoYoutubeFlow.value = null
     }
 
     fun updateProductInputModel(productInputModel: ProductInputModel) {
