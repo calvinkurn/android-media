@@ -22,6 +22,8 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetDataModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetMapper
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.math.roundToLong
@@ -466,6 +468,23 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 cardModel = mapToCardModel(data)
                 filterData = mapToAnnotateChip(data)
             }
+        }
+    }
+
+    fun updateComparisonDataModel(context: Context, data: RecommendationWidget) {
+        val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
+        if (recomModel != null) {
+            updateData(data.pageName) {
+                (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.run {
+                    recommendationWidget = data
+                }
+            }
+        } else {
+            mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
+                    "",
+                    data.pageName,
+                    data
+            )
         }
     }
 

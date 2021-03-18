@@ -16,6 +16,8 @@ class ComparisonWidgetAdapter(var comparisonListModel: ComparisonListModel): Rec
         layoutParams.height = comparisonListModel.comparisonWidgetConfig.productCardHeight
         productCardView.layoutParams = layoutParams
 
+        view.productCardView.applyCarousel()
+
         return ComparisonWidgetItemViewHolder(view)
     }
 

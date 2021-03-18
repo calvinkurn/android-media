@@ -83,8 +83,8 @@ class RecommendationEntity {
         var badges: List<Badges>? = listOf()
         @SerializedName("minOrder")
         var minOrder: Int? = 0
-        @SerializedName("specificationsLabels")
-        val specificationsLabels: List<SingleProductRecommendationEntity.SpecificationsLabels> = listOf()
+        @SerializedName("specificationLabels")
+        val specificationsLabels: List<SpecificationsLabels> = listOf()
 
         class SpecificationsLabels {
             @SerializedName("key")

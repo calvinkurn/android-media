@@ -37,54 +37,6 @@ object SpecsMapper {
         )
     }
 
-    private fun buildSpecsConfig(listSpecsModel: List<SpecsModel>, context: Context): SpecsConfig {
-        val text =
-            findMaxSummaryText(
-                listSpecsModel
-            )
-
-        val textSizeHeight = context.resources.getDimensionPixelSize(R.dimen.comparison_summary_text_height)
-        var comparisonWidth = context.resources.getDimensionPixelSize(R.dimen.comparison_specs_content_width)
-        //substract with margin start and end
-        comparisonWidth -= context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_start)
-        comparisonWidth -= context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_end)
-
-        val measuredSummaryHeight =
-            measureSummaryTextHeight(
-                text,
-                textSizeHeight.toFloat(),
-                comparisonWidth
-            )
-
-        //initial height for overall specs content, start from title height
-        var specsHeight = context.resources.getDimensionPixelSize(R.dimen.comparison_title_text_height)
-        //add room for margin top
-        specsHeight += context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_top)
-        //add room for margin bottom
-        specsHeight += context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_top)
-        //add measured summary height
-        specsHeight += measuredSummaryHeight
-
-        return SpecsConfig(
-            heightPositionMap = mutableMapOf(Pair(0, specsHeight))
-        )
-    }
-
-    private fun findMaxSummaryText(
-        listSpecsModel: List<SpecsModel>
-    ): String {
-        var text = ""
-        var maxSummaryChar = 0
-        listSpecsModel.forEach {
-            val summaryChar = it.specsSummary.count()
-            if (maxSummaryChar < summaryChar) {
-                maxSummaryChar = summaryChar
-                text = it.specsSummary
-            }
-        }
-        return text
-    }
-
     fun getColorBasedOnPosition(position: Int): Int {
         return if (position % 2 == 0) {
             R.color.Unify_N50
@@ -105,15 +57,16 @@ object SpecsMapper {
     fun measureSummaryTextHeight(
         text: CharSequence?,
         textSize: Float,
-        textWidth: Int
+        textWidth: Int,
+        context: Context
     ): Int {
         val myTextPaint = TextPaint()
         myTextPaint.isAntiAlias = true
         // this is how you would convert sp to pixels based on screen density
-        //myTextPaint.setTextSize(16 * context.getResources().getDisplayMetrics().density);
+//        myTextPaint.setTextSize(textSize * context.getResources().getDisplayMetrics().density);
         myTextPaint.textSize = textSize
         val alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
-        val spacingMultiplier = 1f
+        val spacingMultiplier = 1.0f
         val myStaticLayout = StaticLayout(
             text,
             myTextPaint,

@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.util.throwIfNull
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import rx.functions.Func1
 
@@ -109,7 +110,13 @@ class RecommendationEntityMapper : Func1<List<RecommendationEntity.Recomendation
                     data.freeOngkirInformation?.imageUrl?:"",
                     labelGroupList,
                     data.shop?.isGold ?: false,
-                    data.shop?.isOfficial ?: false
+                    data.shop?.isOfficial ?: false,
+                    specs = data.specificationsLabels.map {
+                        RecommendationSpecificationLabels(
+                                specTitle = it.key,
+                                specSummary = it.value
+                        )
+                    }
             )
 
         }

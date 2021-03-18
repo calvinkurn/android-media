@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
+    android:layout_width="@dimen/comparison_specs_content_width"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <View
+    <com.tokopedia.productcard.ProductCardGridView
         android:id="@+id/productCardView"
         android:layout_gravity="center_horizontal"
-        android:layout_width="120dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:background="@android:color/holo_purple"
+        android:layout_width="@dimen/comparison_widget_product_card_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_16"
         />
 
     <com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsView
         android:id="@+id/specsView"
-        android:layout_width="@dimen/comparison_specs_content_width"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

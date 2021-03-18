@@ -1,9 +1,11 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison.specs
 
+import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.recommendation_widget_common.R
 import kotlinx.android.synthetic.main.item_spec.view.*
 
 class SpecsItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {

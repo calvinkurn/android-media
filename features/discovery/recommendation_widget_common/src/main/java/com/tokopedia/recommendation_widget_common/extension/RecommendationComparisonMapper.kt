@@ -9,9 +9,10 @@ object RecommendationComparisonMapper {
     fun mapRecommendationToComparisonWidgetModel(
             recommendationWidget: RecommendationWidget,
             context: Context,
-    ): ComparisonListModel {
-        return ComparisonWidgetMapper.mapToComparisonWidgetModel(
-                recommendationWidget, context
-        )
+    ): ComparisonListModel? {
+//        return ComparisonWidgetMapper.mapToComparisonWidgetModel(
+//                recommendationWidget, context
+//        )
+        return null
     }
 }

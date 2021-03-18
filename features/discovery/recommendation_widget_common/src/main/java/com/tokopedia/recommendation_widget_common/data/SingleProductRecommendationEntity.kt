@@ -85,7 +85,7 @@ data class SingleProductRecommendationEntity (
         val minOrder: Int = 0,
         @SerializedName("labelgroup")
         val labelGroups: List<LabelGroup> = listOf(),
-        @SerializedName("specificationsLabels")
+        @SerializedName("specificationLabels")
         val specificationsLabels: List<SpecificationsLabels> = listOf(),
     )
 

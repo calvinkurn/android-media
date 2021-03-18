@@ -12,6 +12,6 @@ class ComparisonWidgetViewHolder(val view: View): AbstractViewHolder<ComparisonW
     }
 
     companion object{
-        val LAYOUT = R.layout.best_seller_view_holder
+        val LAYOUT = R.layout.view_holder_comparison_widget
     }
 }

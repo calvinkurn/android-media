@@ -1,24 +1,35 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison
 
 import android.content.Context
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsConfig
 import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsMapper
+import kotlinx.coroutines.Dispatchers
 
 object ComparisonWidgetMapper {
-    fun mapToComparisonWidgetModel(
+    suspend fun mapToComparisonWidgetModel(
         recommendationWidget: RecommendationWidget,
         context: Context
     ): ComparisonListModel {
-        val productCardHeight = 500
-
         val recommendationItems = recommendationWidget.recommendationItemList
         val specsConfig = buildSpecsConfig(recommendationItems, context)
+        val listOfProductCardModel = recommendationItems.map {
+            it.toProductCardModel()
+        }
+        val productCardHeight = listOfProductCardModel.getMaxHeightForGridView(
+                context,
+                Dispatchers.IO,
+                context.resources.getDimensionPixelSize(R.dimen.comparison_widget_product_card_width)
+        )
         val collapsedHeight = productCardHeight + getCollapsedSpecsHeight(specsConfig.heightPositionMap)
         return ComparisonListModel(
+                seeMoreApplink = recommendationWidget.seeMoreAppLink,
+                headerTitle = recommendationWidget.title,
             comparisonData = recommendationItems.withIndex().map {
                 val isEdgeStart = it.index == 0
                 val isEdgeEnd = it.index == (recommendationItems.size - 1)
@@ -37,7 +48,8 @@ object ComparisonWidgetMapper {
     }
 
     private fun getCollapsedSpecsHeight(heightPositionMap: MutableMap<Int, Int>): Int {
-        val maxCalculatedData = if (heightPositionMap.size >= 3) 3 else heightPositionMap.size
+        //2 is number visible of specs height on collapsed state
+        val maxCalculatedData = if (heightPositionMap.size >= 2) 2 else heightPositionMap.size
         var height = 0
         for (i in 0..maxCalculatedData) {
             height += heightPositionMap[i]?:0
@@ -61,7 +73,8 @@ object ComparisonWidgetMapper {
                 SpecsMapper.measureSummaryTextHeight(
                     text,
                     textSizeHeight.toFloat(),
-                    comparisonWidth
+                    comparisonWidth,
+                        context
                 )
 
             //initial height for overall specs content, start from title height

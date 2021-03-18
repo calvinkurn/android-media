@@ -1446,8 +1446,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                pdpUiUpdater?.updateRecommendationData(it.data)
+                if (it.data.layoutType == "Comparison-Widget") {
+                    pdpUiUpdater?.updateComparisonDataModel(requireContext(), it.data)
                     updateUi()
+                } else {
+                    pdpUiUpdater?.updateRecommendationData(it.data)
+                    updateUi()
+                }
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
