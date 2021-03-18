@@ -23,8 +23,8 @@ fun findRootView(activity: Activity): View {
     checkNotNull(contentView)
     return when (contentView.childCount) {
         1 -> contentView.getChildAt(0)
-        0 -> error("Please provide root view explicitly")
-        else -> error("More than one child view found in the content view")
+        0 -> error("TkpdViewBinding: Please provide the root view explicitly")
+        else -> error("TkpdViewBinding: More than one child view found in the content view")
     }
 }
 

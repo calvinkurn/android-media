@@ -15,33 +15,31 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 interface ViewBindingProperty<in R : Any, out T : ViewBinding> : ReadOnlyProperty<R, T> {
-    @MainThread
-    fun clear()
+    @MainThread fun clear()
 }
 
 @RestrictTo(LIBRARY_GROUP)
-public open class LazyViewBindingProperty<in R : Any, out T : ViewBinding>(
+open class LazyViewBindingProperty<in R : Any, out T : ViewBinding>(
         protected val viewBinder: (R) -> T
 ) : ViewBindingProperty<R, T> {
 
     protected var viewBinding: Any? = null
 
-    @Suppress("UNCHECKED_CAST")
     @MainThread
-    public override fun getValue(thisRef: R, property: KProperty<*>): T {
+    @Suppress("UNCHECKED_CAST")
+    override fun getValue(thisRef: R, property: KProperty<*>): T {
         return viewBinding as? T ?: viewBinder(thisRef).also { viewBinding ->
             this.viewBinding = viewBinding
         }
     }
 
-    @MainThread
-    public override fun clear() {
+    @MainThread override fun clear() {
         viewBinding = null
     }
 }
 
 @RestrictTo(LIBRARY_GROUP)
-public abstract class LifecycleViewBindingProperty<in R : Any, out T : ViewBinding>(
+abstract class LifecycleViewBindingProperty<in R : Any, out T : ViewBinding>(
         private val viewBinder: (R) -> T
 ) : ViewBindingProperty<R, T> {
 
@@ -49,19 +47,22 @@ public abstract class LifecycleViewBindingProperty<in R : Any, out T : ViewBindi
 
     protected abstract fun getLifecycleOwner(thisRef: R): LifecycleOwner
 
-    @SuppressLint("LogNotTimber")
     @MainThread
-    public override fun getValue(thisRef: R, property: KProperty<*>): T {
+    @SuppressLint("LogNotTimber")
+    override fun getValue(thisRef: R, property: KProperty<*>): T {
         viewBinding?.let { return it }
 
         val lifecycle = getLifecycleOwner(thisRef).lifecycle
         val viewBinding = viewBinder(thisRef)
         if (lifecycle.currentState == Lifecycle.State.DESTROYED) {
+            /*
+            * We can access to ViewBinding after Fragment.onDestroyView(),
+            * but don't save it to prevent memory leak
+            * */
             Log.w(
-                    TAG, "Access to viewBinding after Lifecycle is destroyed or hasn't created yet. " +
+                    TAG, "TkpdViewBinding: Access to viewBinding after Lifecycle is destroyed or hasn't created yet. " +
                     "The instance of viewBinding will be not cached."
             )
-            // We can access to ViewBinding after Fragment.onDestroyView(), but don't save it to prevent memory leak
         } else {
             lifecycle.addObserver(ClearOnDestroyLifecycleObserver())
             this.viewBinding = viewBinding
@@ -69,19 +70,15 @@ public abstract class LifecycleViewBindingProperty<in R : Any, out T : ViewBindi
         return viewBinding
     }
 
-    @MainThread
-    public override fun clear() {
+    @MainThread override fun clear() {
         mainHandler.post { viewBinding = null }
     }
 
     private inner class ClearOnDestroyLifecycleObserver : DefaultLifecycleObserver {
-
-        @MainThread
-        override fun onDestroy(owner: LifecycleOwner): Unit = clear()
+        @MainThread override fun onDestroy(owner: LifecycleOwner): Unit = clear()
     }
 
     private companion object {
-
         private val mainHandler = Handler(Looper.getMainLooper())
     }
 }

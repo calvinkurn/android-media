@@ -20,7 +20,7 @@ private class DialogFragmentViewBindingProperty<in F : DialogFragment, out T : V
             try {
                 thisRef.viewLifecycleOwner
             } catch (ignored: IllegalStateException) {
-                error("Fragment doesn't have view associated with it or the view has been destroyed")
+                error("TkpdViewBinding: Fragment does not have view associated with it or the view has been destroyed")
             }
         }
     }
@@ -34,14 +34,14 @@ private class FragmentViewBindingProperty<in F : Fragment, out T : ViewBinding>(
         try {
             return thisRef.viewLifecycleOwner
         } catch (ignored: IllegalStateException) {
-            error("Fragment doesn't have view associated with it or the view has been destroyed")
+            error("TkpdViewBinding: Fragment does not have view associated with it or the view has been destroyed")
         }
     }
 }
 
 @Suppress("UNCHECKED_CAST")
 @JvmName("viewBindingFragment")
-public fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
+fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         viewBinder: (F) -> T
 ): ViewBindingProperty<F, T> {
     // TODO: for DialogFragment, use DialogFragmentViewBindingProperty instead
@@ -49,7 +49,7 @@ public fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
 }
 
 @JvmName("viewBindingFragment")
-public inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
+inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         crossinline vbFactory: (View) -> T,
         crossinline viewProvider: (F) -> View = Fragment::requireView
 ): ViewBindingProperty<F, T> {
@@ -58,7 +58,7 @@ public inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
 
 @Suppress("UNCHECKED_CAST")
 @JvmName("viewBindingFragment")
-public inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
+inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         crossinline vbFactory: (View) -> T,
         @IdRes viewBindingRootId: Int
 ): ViewBindingProperty<F, T> {

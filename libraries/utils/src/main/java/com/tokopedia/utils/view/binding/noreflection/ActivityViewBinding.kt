@@ -21,14 +21,14 @@ private class ActivityViewBindingProperty<in A : ComponentActivity, out T : View
 }
 
 @JvmName("viewBindingActivity")
-public fun <A : ComponentActivity, T : ViewBinding> ComponentActivity.viewBinding(
+fun <A : ComponentActivity, T : ViewBinding> viewBinding(
         viewBinder: (A) -> T
 ): ViewBindingProperty<A, T> {
     return ActivityViewBindingProperty(viewBinder)
 }
 
 @JvmName("viewBindingActivity")
-public inline fun <A : ComponentActivity, T : ViewBinding> ComponentActivity.viewBinding(
+inline fun <A : ComponentActivity, T : ViewBinding> viewBinding(
         crossinline vbFactory: (View) -> T,
         crossinline viewProvider: (A) -> View = ::findRootView
 ): ViewBindingProperty<A, T> {
@@ -37,7 +37,7 @@ public inline fun <A : ComponentActivity, T : ViewBinding> ComponentActivity.vie
 
 @Suppress("unused")
 @JvmName("viewBindingActivity")
-public inline fun <T : ViewBinding> ComponentActivity.viewBinding(
+inline fun <T : ViewBinding> ComponentActivity.viewBinding(
         crossinline vbFactory: (View) -> T,
         @IdRes viewBindingRootId: Int
 ): ViewBindingProperty<ComponentActivity, T> {

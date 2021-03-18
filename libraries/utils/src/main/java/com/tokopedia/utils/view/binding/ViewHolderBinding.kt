@@ -7,10 +7,10 @@ import com.tokopedia.utils.view.binding.noreflection.ViewBindingProperty
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 @JvmName("viewBindingFragment")
-public inline fun <reified T : ViewBinding> ViewHolder.viewBinding() = viewBinding(T::class.java)
+inline fun <reified T : ViewBinding> ViewHolder.viewBinding() = viewBinding(T::class.java)
 
 @JvmName("viewBindingFragment")
-public fun <T : ViewBinding> ViewHolder.viewBinding(
+fun <T : ViewBinding> ViewHolder.viewBinding(
         viewBindingClass: Class<T>,
 ): ViewBindingProperty<ViewHolder, T> {
     return viewBinding { ViewBindingCache.getBind(viewBindingClass).bind(itemView) }

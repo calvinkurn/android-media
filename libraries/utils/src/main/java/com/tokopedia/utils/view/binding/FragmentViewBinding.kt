@@ -11,14 +11,14 @@ import com.tokopedia.utils.view.binding.noreflection.ViewBindingProperty
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 @JvmName("viewBindingFragment")
-public inline fun <reified T : ViewBinding> Fragment.viewBinding(
+inline fun <reified T : ViewBinding> Fragment.viewBinding(
         @IdRes viewBindingRootId: Int
 ): ViewBindingProperty<Fragment, T> {
     return viewBinding(T::class.java, viewBindingRootId)
 }
 
 @JvmName("viewBindingFragment")
-public fun <T : ViewBinding> Fragment.viewBinding(
+fun <T : ViewBinding> Fragment.viewBinding(
         viewBindingClass: Class<T>,
         @IdRes viewBindingRootId: Int
 ): ViewBindingProperty<Fragment, T> {
@@ -38,14 +38,14 @@ public fun <T : ViewBinding> Fragment.viewBinding(
 }
 
 @JvmName("viewBindingFragment")
-public inline fun <reified T : ViewBinding> Fragment.viewBinding(
+inline fun <reified T : ViewBinding> Fragment.viewBinding(
         createMethod: CreateMethod = CreateMethod.BIND
 ): ViewBindingProperty<Fragment, T> {
     return viewBinding(T::class.java, createMethod)
 }
 
 @JvmName("viewBindingFragment")
-public fun <T : ViewBinding> Fragment.viewBinding(
+fun <T : ViewBinding> Fragment.viewBinding(
         viewBindingClass: Class<T>,
         createMethod: CreateMethod = CreateMethod.BIND
 ): ViewBindingProperty<Fragment, T> = when (createMethod) {

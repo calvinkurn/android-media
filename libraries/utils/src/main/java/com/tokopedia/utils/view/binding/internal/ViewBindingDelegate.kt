@@ -32,24 +32,40 @@ internal abstract class InflateViewBinding<out T : ViewBinding>(
 ) {
 
     @Suppress("UNCHECKED_CAST")
-    abstract fun inflate(layoutInflater: LayoutInflater, parent: ViewGroup?, attachToParent: Boolean): T
+    abstract fun inflate(
+            layoutInflater: LayoutInflater,
+            parent: ViewGroup?,
+            attachToParent: Boolean
+    ): T
+
 }
 
 
 @Suppress("FunctionName")
 internal fun <T : ViewBinding> InflateViewBinding(viewBindingClass: Class<T>): InflateViewBinding<T> {
+    val methodName = "inflate"
+
     return try {
         val method = viewBindingClass.getMethod(
-                "inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java
+                methodName,
+                LayoutInflater::class.java,
+                ViewGroup::class.java,
+                Boolean::class.java
         )
-        FullInflateViewBinding(method)
+
+        InflationOfViewBinding(method)
     } catch (e: NoSuchMethodException) {
-        val method = viewBindingClass.getMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java)
-        MergeInflateViewBinding(method)
+        val method = viewBindingClass.getMethod(
+                methodName,
+                LayoutInflater::class.java,
+                ViewGroup::class.java
+        )
+
+        CombineInflateViewBinding(method)
     }
 }
 
-internal class FullInflateViewBinding<out T : ViewBinding>(
+internal class InflationOfViewBinding<out T : ViewBinding>(
         private val inflateViewBinding: Method
 ) : InflateViewBinding<T>(inflateViewBinding) {
 
@@ -59,15 +75,21 @@ internal class FullInflateViewBinding<out T : ViewBinding>(
     }
 }
 
-internal class MergeInflateViewBinding<out T : ViewBinding>(
+internal class CombineInflateViewBinding<out T : ViewBinding>(
         private val inflateViewBinding: Method
 ) : InflateViewBinding<T>(inflateViewBinding) {
 
     @Suppress("UNCHECKED_CAST")
-    override fun inflate(layoutInflater: LayoutInflater, parent: ViewGroup?, attachToParent: Boolean): T {
+    override fun inflate(
+            layoutInflater:
+            LayoutInflater,
+            parent: ViewGroup?,
+            attachToParent: Boolean
+    ): T {
         require(attachToParent) {
-            "${InflateViewBinding::class.java.simpleName} supports inflate only with attachToParent=true"
+            "TkpdViewBinding: ${InflateViewBinding::class.java.simpleName} supports inflate only the attachToParent is true"
         }
+
         return inflateViewBinding(null, layoutInflater, parent) as T
     }
 }
