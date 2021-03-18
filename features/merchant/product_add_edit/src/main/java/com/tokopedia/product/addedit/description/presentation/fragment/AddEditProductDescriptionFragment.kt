@@ -142,17 +142,8 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onTextChanged(url: String, position: Int) {
-        adapter.data.getOrNull(position)?.run {
-            inputUrl = url
-            descriptionViewModel.urlToFetch[position] = url
-            if (inputImage.isNotEmpty() || inputTitle.isNotEmpty() || inputDescription.isNotEmpty()) {
-                inputImage = ""
-                inputTitle = ""
-                inputDescription = ""
-                getRecyclerView(view).post { adapter.notifyItemChanged(position) }
-            }
-            getVideoYoutube(position, url)
-        }
+        descriptionViewModel.urlToFetch[position] = url
+        getVideoYoutube(position, url)
     }
 
     override fun onThumbnailClicked(url: String) {
@@ -452,16 +443,7 @@ class AddEditProductDescriptionFragment:
     @ExperimentalCoroutinesApi
     @FlowPreview
     private fun getVideoYoutube(index: Int, url: String) {
-        if (descriptionViewModel.isFetchingVideoData[index] != true) {
-            descriptionViewModel.isFetchingVideoData[index] = true
-            if (descriptionViewModel.urlToFetch[index] == url) {
-                descriptionViewModel.fetchedUrl[index] = url
-                descriptionViewModel.urlYoutubeChanged(index, descriptionViewModel.fetchedUrl[index].orEmpty())
-            } else {
-                descriptionViewModel.isFetchingVideoData[index] = false
-                getVideoYoutube(index, descriptionViewModel.urlToFetch[index].orEmpty())
-            }
-        }
+        descriptionViewModel.urlYoutubeChanged(index, url)
     }
 
     private fun onFragmentResult() {
@@ -542,7 +524,6 @@ class AddEditProductDescriptionFragment:
         descriptionViewModel.videoYoutube.observe(viewLifecycleOwner) { result ->
             val position = result.first
             val isItemStillTheSame: Boolean
-            descriptionViewModel.isFetchingVideoData[position] = false
             isItemStillTheSame = when (val requestResult = result.second) {
                 is Success -> {
                     val id = requestResult.data.id
