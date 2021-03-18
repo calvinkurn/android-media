@@ -123,6 +123,7 @@ class AddEditProductDescriptionFragment:
         } else {
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
         }
+        adapter.data[position] = VideoLinkModel()
         adapter.data.removeAt(position)
         adapter.notifyItemRemoved(position)
         textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
