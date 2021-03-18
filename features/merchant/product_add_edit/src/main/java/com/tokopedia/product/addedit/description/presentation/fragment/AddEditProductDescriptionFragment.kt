@@ -556,7 +556,7 @@ class AddEditProductDescriptionFragment:
 
     private fun applyEditMode() {
         val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
-        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList ?: emptyList()
+        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.toMutableList() ?: emptyList()
 
         textFieldDescription?.setText(description)
         if (videoLinks.isNotEmpty()) {
