@@ -1,6 +1,7 @@
 package com.tokopedia.core;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -14,7 +15,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
+import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -28,6 +35,7 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -165,6 +173,10 @@ public class SplashScreen extends AppCompatActivity {
 
     @NotNull
     private boolean getBranchDefferedDeeplink() {
+        if(SplashScreen.this.getIntent().getData()!= null && SplashScreen.this.getIntent().getData().toString().contains("tokopedia.link/")){
+            LinkerUtils.APP_OPEN_FROM_BRANCH_LINK = true;
+            processUTM(this.getIntent().getData());
+        }
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setClientId(TrackingUtils.getClientID(SplashScreen.this));
         linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
@@ -213,5 +225,23 @@ public class SplashScreen extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         getBranchDefferedDeeplink();
+    }
+
+    public void processUTM( Uri applink) {
+        if (DeeplinkUTMUtils.isValidCampaignUrl(applink)) {
+            sendCampaignGTM(SplashScreen.this, applink.toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER);
+        }
+    }
+    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
+        campaign.setScreenName(screenName);
+        UnifyTracking.eventCampaign(activity, campaign);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CAMPAIGN,
+                AppEventTracking.Category.CAMPAIGN,
+                AppEventTracking.Action.DEEPLINK,
+                campaignUri
+        ).getEvent());
+
     }
 }

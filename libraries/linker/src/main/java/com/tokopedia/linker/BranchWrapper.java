@@ -434,21 +434,25 @@ public class BranchWrapper implements WrapperInterface {
 
 
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
-        String utmSource;
-        String utmCampaign;
-        String utmMedium;
-        String utmTerm = null;
-        utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
-        if(!TextUtils.isEmpty(utmSource)){
-            utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
-            utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
-            utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
-        }else{
-            utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
-            utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
-            utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
+
+        if (LinkerUtils.APP_OPEN_FROM_BRANCH_LINK) {
+
+            String utmSource;
+            String utmCampaign;
+            String utmMedium;
+            String utmTerm = null;
+            utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
+            if (!TextUtils.isEmpty(utmSource)) {
+                utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
+                utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
+                utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
+            } else {
+                utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
+                utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
+                utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
+            }
+            sendCampaignTOGTM(context, utmSource, utmCampaign, utmMedium, utmTerm);
         }
-        sendCampaignTOGTM(context,utmSource,utmCampaign,utmMedium, utmTerm);
     }
 
 
