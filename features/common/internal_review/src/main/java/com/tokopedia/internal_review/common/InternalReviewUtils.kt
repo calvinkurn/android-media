@@ -13,7 +13,7 @@ import java.util.*
  * Created By @ilhamsuaib on 03/02/21
  */
 
-object SellerReviewUtils {
+object InternalReviewUtils {
 
     fun saveFlagHasOpenedReviewApp(context: Context?, userId: String) {
         context?.let {

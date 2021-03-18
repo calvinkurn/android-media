@@ -7,17 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.internal_review.R
 import com.tokopedia.internal_review.analytics.SellerReviewTracking
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.internal_review.common.Const
-import com.tokopedia.internal_review.common.SellerReviewUtils
+import com.tokopedia.internal_review.common.InternalReviewUtils
 import com.tokopedia.internal_review.factory.createReviewRatingBottomSheet
 import com.tokopedia.internal_review.factory.createReviewViewModel
-import com.tokopedia.internal_review.view.viewmodel.SellerReviewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -126,7 +123,7 @@ class RatingBottomSheet(tracker: SellerReviewTracking,
      * or open feedback bottom sheet if else
      * */
     private fun submitRating() = childView?.run {
-        val isConnected = SellerReviewUtils.getConnectionStatus(requireContext())
+        val isConnected = InternalReviewUtils.getConnectionStatus(requireContext())
         if (!isConnected) {
             setOnError(UnknownHostException())
             return@run

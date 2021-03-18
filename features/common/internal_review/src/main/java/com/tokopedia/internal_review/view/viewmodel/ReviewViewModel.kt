@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 /**
  * Created By @ilhamsuaib on 28/01/21
  */
-class SellerReviewViewModel constructor(
+class ReviewViewModel constructor(
         private val reviewUseCase: SendReviewUseCase,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {

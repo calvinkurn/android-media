@@ -21,7 +21,7 @@ import org.junit.Test
  */
 
 @ExperimentalCoroutinesApi
-class SellerReviewViewModelTest {
+class ReviewViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()

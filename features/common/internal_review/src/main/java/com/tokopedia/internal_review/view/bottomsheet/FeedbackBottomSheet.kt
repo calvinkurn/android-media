@@ -7,15 +7,13 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.internal_review.R
 import com.tokopedia.internal_review.analytics.SellerReviewTracking
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.internal_review.common.Const
-import com.tokopedia.internal_review.common.SellerReviewUtils
+import com.tokopedia.internal_review.common.InternalReviewUtils
 import com.tokopedia.internal_review.factory.createReviewFeedbackBottomSheet
 import com.tokopedia.internal_review.factory.createReviewViewModel
-import com.tokopedia.internal_review.view.viewmodel.SellerReviewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -126,9 +124,9 @@ class FeedbackBottomSheet(tracker: SellerReviewTracking,
     }
 
     private fun setOnSubmitClicked() = childView?.run {
-        SellerReviewUtils.dismissSoftKeyboard(this@FeedbackBottomSheet)
+        InternalReviewUtils.dismissSoftKeyboard(this@FeedbackBottomSheet)
 
-        val isConnected = SellerReviewUtils.getConnectionStatus(requireContext())
+        val isConnected = InternalReviewUtils.getConnectionStatus(requireContext())
         if (!isConnected) {
             setOnError(UnknownHostException())
             return@run

@@ -23,7 +23,7 @@ import kotlin.math.absoluteValue
 
 //PRD : https://tokopedia.atlassian.net/wiki/spaces/MT/pages/1077608743/PRD+Internal+Review+Loop+Seller+App
 
-class SellerReviewHelper constructor(
+class InternalReviewHelper constructor(
         private val cacheHandler: SellerReviewCacheHandler,
         private val userSession: UserSessionInterface,
         private val remoteConfig: SellerAppReviewRemoteConfig,
@@ -47,7 +47,7 @@ class SellerReviewHelper constructor(
      * */
     suspend fun checkForReview(context: Context, fm: FragmentManager) {
         val isEnabled = remoteConfig.isSellerReviewEnabled()
-        if (!isEnabled || popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
+        if (!isEnabled || popupAlreadyShown || !InternalReviewUtils.getConnectionStatus(context)) return
 
         try {
             val hasAddedProduct = cacheHandler.getBoolean(getUniqueKey(Const.SharedPrefKey.KEY_HAS_ADDED_PRODUCT), false)
@@ -77,7 +77,7 @@ class SellerReviewHelper constructor(
 
     private suspend fun showInAppReviewBottomSheet(context: Context, fm: FragmentManager) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
-        if (fm.isStateSaved || popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
+        if (fm.isStateSaved || popupAlreadyShown || !InternalReviewUtils.getConnectionStatus(context)) return
 
         popupAlreadyShown = true
 
@@ -110,7 +110,7 @@ class SellerReviewHelper constructor(
 
     private fun showFeedBackBottomSheet(context: Context, fm: FragmentManager, rating: Int) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
-        if (fm.isStateSaved || !SellerReviewUtils.getConnectionStatus(context)) return
+        if (fm.isStateSaved || !InternalReviewUtils.getConnectionStatus(context)) return
 
         val feedbackBottomSheet = (fm.findFragmentByTag(FeedbackBottomSheet.TAG) as? FeedbackBottomSheet)
                 ?: FeedbackBottomSheet.createInstance(context, rating)
@@ -191,6 +191,6 @@ class SellerReviewHelper constructor(
     }
 
     private fun getUniqueKey(key: String): String {
-        return SellerReviewUtils.getUniqueKey(key, userSession.userId)
+        return InternalReviewUtils.getUniqueKey(key, userSession.userId)
     }
 }

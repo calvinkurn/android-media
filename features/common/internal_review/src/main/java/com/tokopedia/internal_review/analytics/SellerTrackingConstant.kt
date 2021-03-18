@@ -4,7 +4,7 @@ package com.tokopedia.internal_review.analytics
  * Created By @ilhamsuaib on 02/02/21
  */
 
-object TrackingConstant {
+object SellerTrackingConstant {
 
     object Key {
         const val BUSINESS_UNIT = "businessUnit"
