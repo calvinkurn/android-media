@@ -1048,7 +1048,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun goToAddName(uuid: String) {
         if (activity != null) {
             val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
-            val intent = RouteManager.getIntent(getContext(), applink)
+            val intent = RouteManager.getIntent(requireContext(), applink)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
             startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)

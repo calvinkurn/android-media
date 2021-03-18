@@ -42,7 +42,8 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
 
     private fun checkUri(bundle: Bundle): Fragment {
         val uri = intent?.data
-        return if (uri?.lastPathSegment?.contains(PATH_CLEAN_VIEW) == true && rollanceType.contains(ROLLANCE_KEY)) {
+//        return if (uri?.lastPathSegment?.contains(PATH_CLEAN_VIEW) == true && rollanceType.contains(ROLLANCE_KEY)) {
+        return if (uri?.lastPathSegment?.contains(PATH_CLEAN_VIEW) == true ) {
             AddNameRegisterPhoneCleanViewFragment.createInstance(bundle)
         } else {
             AddNameRegisterPhoneFragment.createInstance(bundle)
