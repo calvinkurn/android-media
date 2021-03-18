@@ -34,8 +34,7 @@
                 android:gravity="center"
                 android:visibility="gone"
                 app:labelType="general_light_green"
-                app:labelTitle="\u2713  Terverifikasi"
-                />
+                app:labelTitle="\u2713  Terverifikasi" />
         </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -48,13 +47,16 @@
             android:visibility="gone"/>
     </LinearLayout>
   
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnEdit"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:text="@string/change_setting_profile"
+        android:textColor="@color/Unify_G500"
         android:paddingLeft="@dimen/spacing_lvl3"
         android:paddingStart="@dimen/spacing_lvl3"
+        android:textSize="@dimen/fontSize_lvl3"
+        android:textStyle="bold"
         android:visibility="gone"
-        android:gravity="bottom"
-        app:icon_name="EDIT" />
+        android:gravity="bottom" />
 </LinearLayout>

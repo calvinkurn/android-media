@@ -53,7 +53,7 @@ class CustomFieldSettingProfile : LinearLayout {
     private val valueEmpty: EditText by lazy { view.valueEmpty }
     private val valueFilled: Typography by lazy { view.valueFilled }
     private val verified: Label by lazy { view.verified }
-    private val btnEdit: IconUnify by lazy { view.btnEdit }
+    private val btnEdit: Typography by lazy { view.btnEdit }
     private val btnAdd: IconUnify by lazy { view.btnAdd }
     private val message: Typography by lazy { view.message }
 
