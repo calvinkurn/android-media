@@ -9,21 +9,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N0
-import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N0_68
-import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N700_96
+import com.tokopedia.settingnotif.usersetting.util.CacheManager.KEY_ONBOARDING
+import com.tokopedia.settingnotif.usersetting.util.CacheManager.getCacheBoolean
+import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveCacheBoolean
 import com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
-import com.tokopedia.showcase.*
 import java.util.*
 
 class SettingTypeFragment : BaseDaggerFragment() {
 
     private var rvSettingType: RecyclerView? = null
     private var settingTypeContract: SettingTypeContract? = null
+
+    private var coachMark: CoachMark2? = null
 
     interface SettingTypeContract {
         fun openSettingField(settingType: SettingTypeDataView)
@@ -84,39 +87,30 @@ class SettingTypeFragment : BaseDaggerFragment() {
         activity?.intent?.data?.let {
             skipShowCase = it.getQueryParameter(UserNotificationSettingActivity.PUSH_NOTIFICATION_PAGE) != null
         }
-        val tag = javaClass.name + BROADCAST_MESSAGE
-        val hasBeenShown = ShowCasePreference.hasShown(context, tag)
+        val hasBeenShown = getCacheBoolean(context, KEY_ONBOARDING)
         if (hasBeenShown || skipShowCase) return
-        showShowCase(tag)
+
+        showShowCase()
     }
 
-    private fun showShowCase(tag: String) {
-        val dialog = generateShowCaseDialog()
-        val showCaseList = generateShowCaseList()
-        dialog.show(activity, tag, showCaseList)
+    private fun showShowCase() {
+        context?.let {
+            coachMark = CoachMark2(it)
+            coachMark?.showCoachMark(generateShowCaseList())
+            coachMark?.onFinishListener = { saveCacheBoolean(it, KEY_ONBOARDING, true) }
+            coachMark?.onDismissListener = { saveCacheBoolean(it, KEY_ONBOARDING, true) }
+        }
     }
 
-    private fun generateShowCaseDialog(): ShowCaseDialog {
-        return ShowCaseBuilder()
-                .backgroundContentColorRes(Unify_N700_96)
-                .shadowColorRes(Unify_N0_68)
-                .textColorRes(Unify_N0)
-                .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2)
-                .titleTextSizeRes(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-                .clickable(true)
-                .useArrow(true)
-                .build()
-    }
-
-    private fun generateShowCaseList(): ArrayList<ShowCaseObject> {
+    private fun generateShowCaseList(): ArrayList<CoachMark2Item> {
         return arrayListOf(generateShowCaseSettingObject())
     }
 
-    private fun generateShowCaseSettingObject(): ShowCaseObject {
+    private fun generateShowCaseSettingObject(): CoachMark2Item {
         val title = getString(R.string.title_show_case_setting_type)
         val description = getString(R.string.description_show_case_setting_type)
-        val position = ShowCaseContentPosition.BOTTOM
-        return ShowCaseObject(rvSettingType, title, description, position)
+        val position = CoachMark2.POSITION_BOTTOM
+        return CoachMark2Item(rvSettingType!!, title, description, position)
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_title)
