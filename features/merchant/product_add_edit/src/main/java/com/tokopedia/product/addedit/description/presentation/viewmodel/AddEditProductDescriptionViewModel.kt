@@ -95,6 +95,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
                     return@filter it.second.isNotBlank()
                 }
                 .debounce(VIDEO_DEBOUNCE_TIME)
+                .distinctUntilChanged()
                 .flatMapLatest { model ->
                     val url = model.second
                     val position = model.first
