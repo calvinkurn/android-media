@@ -1013,12 +1013,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewModel.updatePromoListAfterClickPromoHeader(element)
     }
 
-    override fun onClickPromoListItem(element: PromoListItemUiModel) {
+    override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
         viewModel.updatePromoListAfterClickPromoItem(element)
         renderStickyPromoHeader(recyclerView)
 
         // dismiss coachmark if user click promo with coachmark
         if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] is PromoListItemUiModel &&
+                promoWithCoachMarkIndex == position &&
                 (adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel).id == element.id &&
                 ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
             promoCoachMark.dismissCoachMark()
