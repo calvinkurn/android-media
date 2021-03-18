@@ -1,9 +1,7 @@
-package com.tokopedia.sellerreview.view.viewmodel
+package com.tokopedia.internal_review.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerreview.domain.usecase.SendReviewUseCase
-import com.tokopedia.sellerreview.view.model.SendReviewParam
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

@@ -1,9 +1,9 @@
-package com.tokopedia.sellerreview.domain.usecase
+package com.tokopedia.internal_review.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.internal_review.data.remotemodel.ReviewResponseModel
+import com.tokopedia.internal_review.utils.TestHelper
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.utils.TestHelper
-import com.tokopedia.sellerreview.data.remotemodel.ReviewResponseModel
 import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
