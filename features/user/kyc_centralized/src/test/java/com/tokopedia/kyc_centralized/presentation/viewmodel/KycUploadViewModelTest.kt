@@ -14,7 +14,7 @@ import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import util.TestAppDispatchProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import kotlin.test.assertFailsWith
 
 class KycUploadViewModelTest {
@@ -33,7 +33,7 @@ class KycUploadViewModelTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = KycUploadViewModel(useCase, TestAppDispatchProvider)
+        viewModel = KycUploadViewModel(useCase, CoroutineTestDispatchersProvider)
     }
 
     @Test

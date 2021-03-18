@@ -12,7 +12,7 @@ import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase
 import com.tokopedia.notifcenter.domain.SingleNotificationUpdateUseCase
-import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -32,8 +32,8 @@ class NotificationUpdateViewModel @Inject constructor(
         private val productStockHandlerUseCase: ProductStockHandlerUseCase,
         private val singleNotificationUpdateUseCase: SingleNotificationUpdateUseCase,
         private var notificationMapper: GetNotificationUpdateMapper,
-        dispatcher: DispatcherProvider
-) : BaseViewModel(dispatcher.io()), NotificationUpdateContract {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io), NotificationUpdateContract {
 
     private val _productStockHandler = MutableLiveData<NotificationItemViewBean>()
     val productStockHandler: LiveData<NotificationItemViewBean>
