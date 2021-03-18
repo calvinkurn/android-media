@@ -61,8 +61,6 @@ subprojects {
         resolutionStrategy {
             dependencySubstitution {
                 force "androidx.appcompat:appcompat:${supportLibraryVersion}"
-                substitute module('com.tokopedia.config:global_config') with module('com.tokopedia.config:global_config:norman-xxx2')
-                substitute module('com.tokopedia.authentication:authentication') with module('com.tokopedia.authentication:authentication:1.0.19')
                 substitute module('com.squareup.okhttp3:okhttp') with module(rootProject.ext.networkDependencies.okHttp)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-common') with module("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}")
