@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.domain.model
+package com.tokopedia.topads.sdk.domain.model
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.topads.sdk.domain.model.CpmModel

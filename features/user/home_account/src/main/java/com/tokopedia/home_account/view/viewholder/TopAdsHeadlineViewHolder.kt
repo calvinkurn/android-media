@@ -1,32 +1,26 @@
-package com.tokopedia.feedcomponent.view.adapter.viewholder.topads
+package com.tokopedia.home_account.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.home_account.R
+import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
-const val TOPADS_HEADLINE_VALUE_SRC = "fav_product"
-class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface,
-                               private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener {
+const val TOPADS_HEADLINE_VALUE_SRC = "account"
+class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface) : BaseViewHolder(view) {
 
     private val topadsHeadlineView: TopAdsHeadlineView = view.findViewById(R.id.topads_headline_view)
     private var topadsHeadlineUiModel: TopadsHeadlineUiModel? = null
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_topads_headline_feed
-    }
-
-    init {
-        topadsHeadlineView.setFollowBtnClickListener(this)
+        val LAYOUT = R.layout.item_topads_headline
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
@@ -58,7 +52,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         topadsHeadlineView.hide()
     }
 
-    override fun bind(element: TopadsHeadlineUiModel?) {
+    fun bind(element: TopadsHeadlineUiModel?) {
         topadsHeadlineUiModel = element
         hideHeadlineView()
         topadsHeadlineUiModel?.run {
@@ -74,14 +68,6 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
         topadsHeadlineView.displayAds(cpmModel)
-    }
-
-    interface TopAdsHeadlineListener {
-        fun onFollowClick(positionInFeed: Int, shopId: String)
-    }
-
-    override fun onFollowClick(shopId: String) {
-        topAdsHeadlineListener?.onFollowClick(adapterPosition, shopId)
     }
 
 }
