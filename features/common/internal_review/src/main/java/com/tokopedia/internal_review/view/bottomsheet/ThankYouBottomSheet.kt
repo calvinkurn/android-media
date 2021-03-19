@@ -3,7 +3,7 @@ package com.tokopedia.internal_review.view.bottomsheet
 import android.content.Context
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.internal_review.R
-import com.tokopedia.internal_review.analytics.SellerReviewTracking
+import com.tokopedia.internal_review.analytics.ReviewTracking
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.internal_review.common.Const
 import com.tokopedia.internal_review.factory.createReviewThankyouBottomSheet
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.sir_thank_you_bottom_sheet.view.*
  * Created By @ilhamsuaib on 22/01/21
  */
 
-class ThankYouBottomSheet(tracker: SellerReviewTracking,
+class ThankYouBottomSheet(tracker: ReviewTracking,
                           userSession: UserSessionInterface) : BaseBottomSheet(tracker, userSession) {
 
     companion object {

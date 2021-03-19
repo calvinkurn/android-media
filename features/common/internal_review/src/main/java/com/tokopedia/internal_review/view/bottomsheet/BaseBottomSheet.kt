@@ -7,12 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.R
-import com.tokopedia.internal_review.analytics.SellerReviewTracking
+import com.tokopedia.internal_review.analytics.ReviewTracking
 import com.tokopedia.internal_review.common.Const
-import com.tokopedia.internal_review.factory.createReviewTracking
 import com.tokopedia.internal_review.view.model.SendReviewParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -23,7 +21,7 @@ import java.net.UnknownHostException
  * Created By @ilhamsuaib on 22/01/21
  */
 
-abstract class BaseBottomSheet constructor(val tracker: SellerReviewTracking,
+abstract class BaseBottomSheet constructor(val tracker: ReviewTracking,
                                            val userSession: UserSessionInterface) : BottomSheetUnify() {
 
     private var onDestroyCallback: (() -> Unit)? = null

@@ -29,5 +29,6 @@ object Const {
 
     object RemoteConfigKey {
         const val SELLERAPP_IN_APP_REVIEW = "android_sellerapp_seller_inapp_review"
+        const val CUSTOMERAPP_INTERNAL_REVIEW = "android_customerapp_internal_review"
     }
 }

@@ -26,13 +26,14 @@ import kotlin.math.absoluteValue
 class InternalReviewHelper constructor(
         private val cacheHandler: SellerReviewCacheHandler,
         private val userSession: UserSessionInterface,
-        private val remoteConfig: SellerAppReviewRemoteConfig,
+        private val remoteConfig: ReviewRemoteConfig,
         private val dispatchers: CoroutineDispatchers
 ) {
 
     companion object {
         private const val POPUP_DELAY = 500L
         private const val SELLER_APP_ON_GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=com.tokopedia.sellerapp"
+        private const val CUSTOMER_APP_ON_GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd"
         private const val MIN_STARS_TO_RATE_ON_PLAYSTORE = 4
         private const val REVIEW_PERIOD_IN_DAYS = 30
     }
@@ -45,8 +46,8 @@ class InternalReviewHelper constructor(
      * the seller has done one of the 3 journeys (added product, posted feed or replied 5 chats)
      * and never seen the bottom sheet before within last 30 days
      * */
-    suspend fun checkForReview(context: Context, fm: FragmentManager) {
-        val isEnabled = remoteConfig.isSellerReviewEnabled()
+    suspend fun checkForSellerReview(context: Context, fm: FragmentManager) {
+        val isEnabled = remoteConfig.isReviewEnabled()
         if (!isEnabled || popupAlreadyShown || !InternalReviewUtils.getConnectionStatus(context)) return
 
         try {
@@ -66,6 +67,25 @@ class InternalReviewHelper constructor(
         }
     }
 
+    suspend fun checkForCustomerReview(context: Context?, fm: FragmentManager, fallback : () -> Unit) {
+        try {
+            val isEnabled = remoteConfig.isReviewEnabled()
+            if (context == null || !isEnabled || !canShowPopup() || popupAlreadyShown || !InternalReviewUtils.getConnectionStatus(context)) {
+                withContext(dispatchers.main) {
+                    fallback()
+                }
+                return
+            }
+
+            withContext(dispatchers.main) {
+                showInAppReviewBottomSheet(context, fm, fallback)
+            }
+        } catch (e: Exception) {
+            Timber.w(e)
+            fallback()
+        }
+    }
+
     /**
      * we can only show the popup on prod signed apk or app review debugging is enabled
      * */
@@ -75,13 +95,18 @@ class InternalReviewHelper constructor(
         return !isAllowDebuggingTools || appReviewDebugEnabled
     }
 
-    private suspend fun showInAppReviewBottomSheet(context: Context, fm: FragmentManager) {
+    private suspend fun showInAppReviewBottomSheet(context: Context, fm: FragmentManager, fallback : (() -> Unit)? = null) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
-        if (fm.isStateSaved || popupAlreadyShown || !InternalReviewUtils.getConnectionStatus(context)) return
+        if (fm.isStateSaved || popupAlreadyShown || !InternalReviewUtils.getConnectionStatus(context)) {
+            fallback?.invoke()
+            return
+        }
 
         popupAlreadyShown = true
 
-        resetQuotaCheck()
+        if (GlobalConfig.isSellerApp()) {
+            resetQuotaCheck()
+        }
 
         val ratingBottomSheet = (fm.findFragmentByTag(RatingBottomSheet.TAG) as? RatingBottomSheet)
                 ?: RatingBottomSheet.createInstance(context)
@@ -156,10 +181,14 @@ class InternalReviewHelper constructor(
     }
 
     private fun rateOnPlayStore(context: Context, fm: FragmentManager) {
-        RouteManager.route(context, SELLER_APP_ON_GOOGLE_PLAY)
+        RouteManager.route(context, getPlayStoreLink())
         handler.postDelayed({
             showTankYouBottomSheet(context, fm)
         }, POPUP_DELAY)
+    }
+
+    private fun getPlayStoreLink() : String {
+        return if (GlobalConfig.isSellerApp()) SELLER_APP_ON_GOOGLE_PLAY else CUSTOMER_APP_ON_GOOGLE_PLAY
     }
 
     /**

@@ -8,7 +8,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.tokopedia.internal_review.R
-import com.tokopedia.internal_review.analytics.SellerReviewTracking
+import com.tokopedia.internal_review.analytics.ReviewTracking
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.internal_review.common.Const
 import com.tokopedia.internal_review.common.InternalReviewUtils
@@ -24,7 +24,7 @@ import java.net.UnknownHostException
  * Created By @ilhamsuaib on 22/01/21
  */
 
-class FeedbackBottomSheet(tracker: SellerReviewTracking,
+class FeedbackBottomSheet(tracker: ReviewTracking,
                           userSession: UserSessionInterface) : BaseBottomSheet(tracker, userSession) {
 
     companion object {

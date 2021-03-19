@@ -73,7 +73,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
 
-    var sellerReviewHelper: InternalReviewHelper = createReviewHelper(this)
+    var sellerReviewHelper: InternalReviewHelper? = createReviewHelper(this)
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -466,7 +466,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun checkForSellerAppReview(pageType: Int) {
         if (pageType == FragmentType.HOME) {
             lifecycleScope.launch(Dispatchers.IO) {
-                sellerReviewHelper.checkForReview(this@SellerHomeActivity, supportFragmentManager)
+                sellerReviewHelper?.checkForSellerReview(this@SellerHomeActivity, supportFragmentManager)
             }
         }
     }

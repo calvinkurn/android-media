@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.internal_review.R
-import com.tokopedia.internal_review.analytics.SellerReviewTracking
+import com.tokopedia.internal_review.analytics.ReviewTracking
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.internal_review.common.Const
 import com.tokopedia.internal_review.common.InternalReviewUtils
@@ -25,7 +25,7 @@ import java.net.UnknownHostException
  * Created By @ilhamsuaib on 20/01/21
  */
 
-class RatingBottomSheet(tracker: SellerReviewTracking,
+class RatingBottomSheet(tracker: ReviewTracking,
                         userSession: UserSessionInterface) : BaseBottomSheet(tracker, userSession) {
 
     companion object {

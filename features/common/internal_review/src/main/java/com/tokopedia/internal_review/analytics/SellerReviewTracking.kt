@@ -10,24 +10,24 @@ import com.tokopedia.user.session.UserSessionInterface
 
 //data layer : https://mynakama.tokopedia.com/datatracker/requestdetail/350
 
-class SellerReviewTracking constructor(private val userSession: UserSessionInterface) {
+class SellerReviewTracking constructor(private val userSession: UserSessionInterface) : ReviewTracking {
 
-    fun sendClickDismissBottomSheetEvent(pageName: String) {
+    override fun sendClickDismissBottomSheetEvent(pageName: String) {
         val map = createMap(SellerTrackingConstant.Event.CLICK_SELLER_REVIEW, SellerTrackingConstant.Action.CLICK_CLOSE_POP_UP, pageName)
         sendEvent(map)
     }
 
-    fun sendImpressionNoNetworkEvent(pageName: String) {
+    override fun sendImpressionNoNetworkEvent(pageName: String) {
         val map = createMap(SellerTrackingConstant.Event.VIEW_SELLER_REVIEW_IRIS, SellerTrackingConstant.Action.IMPRESSION_NO_NETWORK, pageName)
         sendEvent(map)
     }
 
-    fun sendImpressionErrorStateEvent(pageName: String) {
+    override fun sendImpressionErrorStateEvent(pageName: String) {
         val map = createMap(SellerTrackingConstant.Event.VIEW_SELLER_REVIEW_IRIS, SellerTrackingConstant.Action.IMPRESSION_ERROR_STATE, pageName)
         sendEvent(map)
     }
 
-    fun sendImpressionLoadingStateEvent(pageName: String) {
+    override fun sendImpressionLoadingStateEvent(pageName: String) {
         val map = createMap(SellerTrackingConstant.Event.VIEW_SELLER_REVIEW_IRIS, SellerTrackingConstant.Action.IMPRESSION_LOADING_STATE, pageName)
         sendEvent(map)
     }
