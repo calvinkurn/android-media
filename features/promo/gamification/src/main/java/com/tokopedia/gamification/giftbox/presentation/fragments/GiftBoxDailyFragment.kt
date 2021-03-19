@@ -884,6 +884,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     dialog.dismiss()
                     backButtonData = null
                     RouteManager.route(context, appLinkForReward)
+                    GtmEvents.clickGreenCtaOnBackButtonDialog(userSession?.userId)
                 } catch (ex: Exception) {
                 }
             }
@@ -892,6 +893,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 try {
                     dialog.dismiss()
                     RouteManager.route(context, APPLNK_HOME)
+                    GtmEvents.clickCancelCtaOnBackButtonDialog(userSession?.userId)
                 } catch (ex: Exception) {
                 }
 
@@ -901,6 +903,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 layoutParams.width = (giftBoxDailyView.width - giftBoxDailyView.width * 0.3).toInt()
             }
             dialog.show()
+            GtmEvents.impressionRpZeroDialog(userSession?.userId)
         }
     }
 
