@@ -97,6 +97,7 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var shopId: String
     private var isFragmentVisible = false
+    private var videoList: List<VideoLinkModel>? = null
 
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -122,7 +123,6 @@ class AddEditProductDescriptionFragment:
         } else {
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
         }
-        adapter.data[position] = VideoLinkModel()
         adapter.data.removeAt(position)
         adapter.notifyItemRemoved(position)
         textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
@@ -184,6 +184,7 @@ class AddEditProductDescriptionFragment:
                 descriptionViewModel.isAddMode = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java, false) ?: false
                 descriptionViewModel.isDraftMode = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
                 descriptionViewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
+                videoList = productInputModel.descriptionInputModel.videoLinkList
             }
             if (descriptionViewModel.isAddMode) {
                 ProductAddDescriptionTracking.trackScreen()
@@ -340,6 +341,7 @@ class AddEditProductDescriptionFragment:
                 }
                 adapter.data.add(VideoLinkModel())
                 adapter.notifyDataSetChanged()
+                textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
             }
         }
 
@@ -560,9 +562,8 @@ class AddEditProductDescriptionFragment:
 
         textFieldDescription?.setText(description)
         if (videoLinks.isNotEmpty()) {
-            super.clearAllData()
             super.renderList(videoLinks)
-
+            textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
             // start network monitoring when videoLinks is not empty
             startNetworkRequestPerformanceMonitoring()
         } else {
@@ -660,10 +661,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun loadData(page: Int) {
-        val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
-        videoLinkModels.add(VideoLinkModel())
-        super.renderList(videoLinkModels)
-        textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        super.renderList(mutableListOf(VideoLinkModel()))
     }
 
     private fun showVariantDialog() {
@@ -727,6 +725,10 @@ class AddEditProductDescriptionFragment:
 
     private fun setFragmentResultWithBundle(requestKey: String, dataBackPressed: Int = DESCRIPTION_DATA) {
         arguments?.let {
+            videoList?.run {
+                descriptionViewModel.productInputModel.value?.descriptionInputModel?.videoLinkList = this
+            }
+
             val cacheManagerId = AddEditProductShipmentFragmentArgs.fromBundle(it).cacheManagerId
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel.value)
 
