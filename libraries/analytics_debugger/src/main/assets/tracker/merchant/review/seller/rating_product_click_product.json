@@ -3,14 +3,14 @@
   "mode": "exact",
   "query": [
     {
-      "event" : "clickReview",
-      "eventCategory" : "ulasan - rating produk",
-      "eventAction" : "click - product on rating product",
-      "eventLabel" : "{{productId:\\d{1,}}}",
-      "position" : "{{\\d{1,};}}",
-      "shopId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
-      "screenName": "rating produk"
+      "eventCategory": "ulasan - rating produk",
+      "shopId": "{{.+}}",
+      "screenName": "rating produk",
+      "position": "{{.+}}",
+      "event": "clickReview",
+      "eventAction": "click - product on rating product",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
     }
   ]
 }
