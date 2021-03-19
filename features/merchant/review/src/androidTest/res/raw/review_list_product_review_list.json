@@ -1,6 +1,16 @@
 [
   {
     "data": {
+      "productrevGetProductRatingOverallByShop": {
+        "filterBy": "time=7d",
+        "productCount": 1,
+        "rating": 5,
+        "reviewCount": 2
+      }
+    }
+  },
+  {
+    "data": {
       "productrevShopRatingAggregate": {
         "data": [
           {

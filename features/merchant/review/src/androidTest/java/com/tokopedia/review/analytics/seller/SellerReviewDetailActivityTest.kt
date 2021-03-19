@@ -19,7 +19,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.analytics.common.actionTest
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
@@ -60,6 +62,7 @@ class SellerReviewDetailActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setAppToSellerApp()
             login()
         }
 
@@ -233,7 +236,12 @@ class SellerReviewDetailActivityTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginToAnUser(targetContext.applicationContext as Application)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+    }
+
+    private fun setAppToSellerApp() {
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP
     }
 
     companion object {
