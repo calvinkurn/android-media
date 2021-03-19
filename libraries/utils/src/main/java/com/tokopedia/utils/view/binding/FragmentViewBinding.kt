@@ -7,6 +7,7 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.tokopedia.utils.view.binding.internal.MethodType
 import com.tokopedia.utils.view.binding.internal.ViewBindingCache
 import com.tokopedia.utils.view.binding.internal.getRootView
 import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
@@ -42,21 +43,21 @@ fun <T : ViewBinding> Fragment.viewBinding(
 
 @JvmName("viewBindingFragment")
 inline fun <reified T : ViewBinding> Fragment.viewBinding(
-        createMethod: CreateMethod = CreateMethod.BIND
+        methodType: MethodType = MethodType.Bind
 ): ViewBindingProperty<Fragment, T> {
-    return viewBinding(T::class.java, createMethod)
+    return viewBinding(T::class.java, methodType)
 }
 
 @JvmName("viewBindingFragment")
 fun <T : ViewBinding> Fragment.viewBinding(
         viewBindingClass: Class<T>,
-        createMethod: CreateMethod = CreateMethod.BIND
+        methodType: MethodType = MethodType.Bind
 ): ViewBindingProperty<Fragment, T> {
-    return when (createMethod) {
-        CreateMethod.BIND -> viewBinding {
+    return when (methodType) {
+        MethodType.Bind -> viewBinding {
             ViewBindingCache.getBind(viewBindingClass).bind(requireView())
         }
-        CreateMethod.INFLATE -> viewBinding {
+        MethodType.Inflate -> viewBinding {
             ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false)
         }
     }

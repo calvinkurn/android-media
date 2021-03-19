@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.IdRes
 import androidx.core.app.ActivityCompat
 import androidx.viewbinding.ViewBinding
+import com.tokopedia.utils.view.binding.internal.MethodType
 import com.tokopedia.utils.view.binding.internal.ViewBindingCache
 import com.tokopedia.utils.view.binding.internal.findRootView
 import com.tokopedia.utils.view.binding.noreflection.ViewBindingProperty
@@ -38,17 +39,17 @@ fun <T : ViewBinding> ComponentActivity.viewBinding(
 
 @JvmName("inflateViewBindingActivity")
 inline fun <reified T : ViewBinding> ComponentActivity.viewBinding(
-        createMethod: CreateMethod = CreateMethod.BIND
-) = viewBinding(T::class.java, createMethod)
+        methodType: MethodType = MethodType.Bind
+) = viewBinding(T::class.java, methodType)
 
 @JvmName("inflateViewBindingActivity")
 fun <T : ViewBinding> ComponentActivity.viewBinding(
         viewBindingClass: Class<T>,
-        createMethod: CreateMethod = CreateMethod.BIND
+        methodType: MethodType = MethodType.Bind
 ): ViewBindingProperty<ComponentActivity, T> {
-    return when (createMethod) {
-        CreateMethod.BIND -> viewBinding(viewBindingClass, ::findRootView)
-        CreateMethod.INFLATE -> viewBinding {
+    return when (methodType) {
+        MethodType.Bind -> viewBinding(viewBindingClass, ::findRootView)
+        MethodType.Inflate -> viewBinding {
             ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false)
         }
     }
