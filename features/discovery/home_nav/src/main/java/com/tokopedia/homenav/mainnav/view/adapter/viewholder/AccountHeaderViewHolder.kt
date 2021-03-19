@@ -150,7 +150,10 @@ class AccountHeaderViewHolder(itemView: View,
             usrOvoBadgeShimmer.gone()
             tvOvo.visible()
             usrOvoBadge.visible()
-            if (element.isGetOvoError && element.isGetSaldoError) {
+            if (element.isTokopointExternalAmountError){
+                tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
+                usrOvoBadge.clearImage()
+            }else if (element.isGetOvoError && element.isGetSaldoError) {
                 tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
                 usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
             } else if (element.isGetOvoError && !element.isGetSaldoError) {
