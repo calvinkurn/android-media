@@ -5,11 +5,11 @@
     android:id="@+id/button_shop_follow"
     android:layout_width="10dp"
     android:gravity="center"
-    android:layout_height="@dimen/dp_24"
+    android:layout_height="wrap_content"
     app:layout_flexGrow="1"
     android:background="@color/blue_30"
     tools:text="Follow"
-    app:unifyButtonSize="small"
+    app:unifyButtonSize="micro"
     app:unifyButtonType="main"
     app:unifyButtonVariant="ghost"
     tools:visibility="visible" />
