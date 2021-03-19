@@ -42,6 +42,15 @@
         app:typographyWeight="bold"
         tools:text="RP2323234423" />
 
+    <LinearLayout
+        android:id="@+id/llContainerFeeDetail"
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvInvoiceTotalBill"
+        android:layout_height="wrap_content"/>
+<!--
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceServiceTax"
@@ -51,7 +60,7 @@
         android:text="@string/thank_invoice_service_fee"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvInvoiceTotalBill"
+        app:layout_constraintTop_toBottomOf="@id/llContainerFeeDetail"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -67,5 +76,6 @@
         app:typographyType="body_3"
         tools:text="RP2323234423" />
 
+-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
