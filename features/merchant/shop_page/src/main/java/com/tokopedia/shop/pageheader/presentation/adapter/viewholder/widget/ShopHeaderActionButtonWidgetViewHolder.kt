@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.*
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
-import com.tokopedia.shop.pageheader.presentation.MarginItemDecorationShopPage
+import com.tokopedia.shop.pageheader.presentation.ShopPageActionButtonWidgetMarginItemDivider
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopActionButtonWidgetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderActionButtonWidgetAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
@@ -38,7 +38,7 @@ class ShopHeaderActionButtonWidgetViewHolder(
             val manager= FlexboxLayoutManager(itemView.context)
             layoutManager = manager
             if (itemDecorationCount == 0)
-                addItemDecoration(MarginItemDecorationShopPage())
+                addItemDecoration(ShopPageActionButtonWidgetMarginItemDivider())
         }
         shopActionButtonWidgetAdapter?.addComponents(model.components)
     }
