@@ -13,10 +13,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.common.GalleryType
 import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
-import com.tokopedia.imagepicker.common.listener.VideoPickerListener
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.common.model.MediaItem
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -37,12 +37,13 @@ import java.util.*
  */
 open class VideoPickerActivity : BaseSimpleActivity(),
         VideoPickerCallback,
-        ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener, VideoPickerListener{
+        ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
     companion object {
         //video recorder const
         const val VIDEOS_RESULT = "video_result"
         const val VIDEO_MAX_SIZE = 100000L //100 mb
+        private const val IMAGE_EXIST = "image_exist"
 
         //flag
         var isVideoSourcePicker = false
@@ -223,8 +224,28 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         vpVideoPicker.currentItem = index
     }
 
-    override fun onVideoDoneClicked() {
-        onFinishPicked(videoPath)
+    private fun onVideoDoneClicked() {
+        val isImageExist = intent?.getBooleanExtra(IMAGE_EXIST, false)?: false
+
+        if (isImageExist) {
+            val dialog = Dialog(this, Dialog.Type.PROMINANCE)
+            dialog.setTitle(getString(R.string.cp_title_update_post))
+            dialog.setDesc(
+                    getString(R.string.cp_message_update_choosen_video))
+            dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
+            dialog.setBtnOk(getString(R.string.cp_continue))
+            dialog.setOnOkClickListener{
+                dialog.dismiss()
+                onFinishPicked(videoPath)
+            }
+            dialog.setOnCancelClickListener{
+                dialog.dismiss()
+            }
+            dialog.setCancelable(true)
+            dialog.show()
+        } else {
+            onFinishPicked(videoPath)
+        }
     }
 
     private fun onFinishPicked(file: String) {

@@ -69,4 +69,8 @@
     <string name="vidpick_progress_loader">Loading…</string>
     <string name="vidpick_permission">Aplikasi ini membutuhkan izin untuk menambah video. Anda bisa memberikan izin melalui pengaturan.</string>
     <string name="vidpick_permission_denied">Maaf, anda harus mengizinkan akses.</string>
+
+    <string name="cp_title_update_post">Update Post</string>
+    <string name="cp_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="cp_continue">Lanjutkan</string>
 </resources>
