@@ -91,6 +91,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         }
                     }
                     is Fail -> {
+                        buttonChooseAddress?.let {
+                            Toaster.build(it, context.getString(R.string.toaster_failed_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
                         chooseAddressWidgetListener?.onLocalizingAddressServerDown()
                     }
                 }
@@ -117,6 +120,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                         }
                     }
                     is Fail -> {
+                        buttonChooseAddress?.let {
+                            Toaster.build(it, context.getString(R.string.toaster_failed_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
                         chooseAddressWidgetListener?.onLocalizingAddressServerDown()
                     }
                 }
@@ -177,6 +183,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     override fun onLocalizingAddressServerDown() {
+        buttonChooseAddress?.let {
+            Toaster.build(it, context.getString(R.string.toaster_failed_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
         chooseAddressWidgetListener?.onLocalizingAddressServerDown()
     }
 
