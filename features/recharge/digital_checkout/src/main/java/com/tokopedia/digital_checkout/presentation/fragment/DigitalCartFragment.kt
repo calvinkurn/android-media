@@ -45,9 +45,7 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -66,6 +64,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
 import javax.inject.Inject
+
 
 /**
  * @author by jessica on 07/01/21
@@ -216,18 +215,18 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     private fun observePromoData() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
             viewModel.applyPromoData(it)
-            checkoutBottomViewWidget.promoButtonDescription = getPromoData().description
+            digitalPromoBtnView.desc = getPromoData().description
             if (getPromoData().description.isEmpty()) {
                 renderDefaultEmptyPromoView()
             } else {
-                checkoutBottomViewWidget.promoButtonTitle = getPromoData().title
+                digitalPromoBtnView.title = getPromoData().title
             }
-            checkoutBottomViewWidget.promoButtonState = getPromoData().state.mapToStatePromoCheckout()
+            digitalPromoBtnView.state = getPromoData().state.mapToStatePromoCheckout()
 
             when (getPromoData().state) {
                 TickerCheckoutView.State.ACTIVE -> {
                     cartDetailInfoAdapter.isExpanded = true
-                    checkoutBottomViewWidget.promoButtonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
+                    digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
                 }
                 TickerCheckoutView.State.FAILED -> cartDetailInfoAdapter.isExpanded = true
                 else -> {
@@ -237,8 +236,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     }
 
     private fun renderDefaultEmptyPromoView() {
-        checkoutBottomViewWidget.promoButtonTitle = getString(R.string.digital_checkout_promo_title)
-        checkoutBottomViewWidget.promoButtonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
+        digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
+        digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
     }
 
     private fun showContent() {
@@ -264,12 +263,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
         cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo)
 
         if (cartInfo.attributes.isEnableVoucher) {
-            checkoutBottomViewWidget.promoButtonVisibility = View.VISIBLE
-        } else checkoutBottomViewWidget.promoButtonVisibility = View.GONE
+            digitalPromoBtnView.show()
+        } else digitalPromoBtnView.hide()
 
         if (!digitalSubscriptionParams.isSubscribed) {
             renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
         }
+
+        dg_checkout_layout.minHeight = getScreenHeight() - getToolBarHeight()
     }
 
     private fun getDigitalIdentifierParam(): RequestBodyIdentifier = DeviceUtil.getDigitalIdentifierParam(requireActivity())
@@ -331,19 +332,17 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     private fun showPromoTicker() {
         renderDefaultEmptyPromoView()
 
-        checkoutBottomViewWidget.setDigitalPromoButtonListener {
-            onClickUsePromo()
-        }
+        digitalPromoBtnView.setOnClickListener { onClickUsePromo() }
 
-        checkoutBottomViewWidget.setButtonChevronIconListener {
-            if (checkoutBottomViewWidget.promoButtonDescription.isNotEmpty()) {
-                checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.LOADING
+        digitalPromoBtnView.setListenerChevronIcon {
+            if (digitalPromoBtnView.desc.isNotEmpty()) {
+                digitalPromoBtnView.state = ButtonPromoCheckoutView.State.LOADING
                 onResetPromoDiscount()
             } else {
                 onClickUsePromo()
             }
         }
-        checkoutBottomViewWidget.promoButtonVisibility = View.VISIBLE
+        digitalPromoBtnView.show()
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
@@ -574,6 +573,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     private fun getPriceInput(): Double? {
         return if (inputPriceHolderView.getPriceInput() == null) return null
         else inputPriceHolderView.getPriceInput()?.toDouble()
+    }
+
+    fun getToolBarHeight(): Int {
+        val attrs = intArrayOf(android.R.attr.actionBarSize)
+        val ta = requireContext().obtainStyledAttributes(attrs)
+        val toolBarHeight = ta.getDimensionPixelSize(0, -1)
+        ta.recycle()
+        return toolBarHeight
     }
 
     companion object {
