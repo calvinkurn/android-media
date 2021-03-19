@@ -109,11 +109,18 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun initView() {
         setTitle()
+        setBackground()
         setMethodListAdapter()
     }
 
     private fun setTitle() {
         (activity as VerificationActivity).title = TITLE
+    }
+
+    private fun setBackground() {
+        context?.let {
+            viewBound.parentContainerView?.setBackgroundColor(ContextCompat.getColor(it, R.color.Unify_N0))
+        }
     }
 
     private fun setMethodListAdapter() {

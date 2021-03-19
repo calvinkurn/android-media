@@ -21,6 +21,7 @@ class VerificationMethodViewBinding @Inject constructor() : BaseOtpViewBinding()
 
     override val layoutResId: Int = R.layout.fragment_verification_method
 
+    var parentContainerView: View? = null
     var containerView: View? = null
     var title: Typography? = null
     var subtitle: Typography? = null
@@ -33,6 +34,7 @@ class VerificationMethodViewBinding @Inject constructor() : BaseOtpViewBinding()
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
+                parentContainerView = findViewById(R.id.parent_container)
                 containerView = findViewById(R.id.container)
                 title = findViewById(R.id.title)
                 subtitle = findViewById(R.id.subtitle)
