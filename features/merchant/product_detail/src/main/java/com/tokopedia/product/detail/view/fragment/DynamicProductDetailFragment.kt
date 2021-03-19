@@ -1970,6 +1970,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun openShipmentBottomSheetWhenError(): Boolean {
+        if (!viewModel.isNewShipment) return false //we dont want to block user by this bottom sheet if rollence turn off
         context?.let {
             val rates = viewModel.getP2RatesEstimateByProductId()
             val bottomSheetData = viewModel.getP2RatesBottomSheetData()
