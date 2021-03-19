@@ -632,11 +632,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             globalError.setActionClickListener(new Function1<View, Unit>() {
                 @Override
                 public Unit invoke(View view) {
-                    BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) getActivity();
-                    if (activity!= null) {
-                        activity.setWebViewTitle("");
-                    }
-                    globalError.setVisibility(View.GONE);
                     reloadPage();
                     return Unit.INSTANCE;
                 }
@@ -860,6 +855,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     public void reloadPage() {
+        BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) getActivity();
+        if (activity!= null) {
+            activity.setWebViewTitle("");
+        }
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        globalError.setVisibility(View.GONE);
         webView.reload();
     }
 
