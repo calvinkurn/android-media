@@ -264,6 +264,7 @@ class ShopPageHomeModule {
                     position
                     type
                     title
+                    url
                   }
                 }
                 totalData
