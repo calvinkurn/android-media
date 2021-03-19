@@ -123,6 +123,10 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     }
     config_flag
     config_list
+    fee_details{
+        name
+        amount
+    }
   }
 }
 
