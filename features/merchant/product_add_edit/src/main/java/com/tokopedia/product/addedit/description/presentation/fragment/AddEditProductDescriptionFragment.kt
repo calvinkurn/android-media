@@ -97,7 +97,7 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var shopId: String
     private var isFragmentVisible = false
-    private var videoList: List<VideoLinkModel>? = null
+    private var videoList: MutableList<VideoLinkModel> = mutableListOf()
 
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -184,7 +184,7 @@ class AddEditProductDescriptionFragment:
                 descriptionViewModel.isAddMode = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java, false) ?: false
                 descriptionViewModel.isDraftMode = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
                 descriptionViewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
-                videoList = productInputModel.descriptionInputModel.videoLinkList
+                videoList.addAll(productInputModel.descriptionInputModel.videoLinkList)
             }
             if (descriptionViewModel.isAddMode) {
                 ProductAddDescriptionTracking.trackScreen()
@@ -446,6 +446,7 @@ class AddEditProductDescriptionFragment:
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
+            descriptionViewModel.productInputModel.value?.descriptionInputModel?.videoLinkList = videoList
             setFragmentResultWithBundle(REQUEST_KEY_DESCRIPTION)
         }
     }
@@ -725,10 +726,6 @@ class AddEditProductDescriptionFragment:
 
     private fun setFragmentResultWithBundle(requestKey: String, dataBackPressed: Int = DESCRIPTION_DATA) {
         arguments?.let {
-            videoList?.run {
-                descriptionViewModel.productInputModel.value?.descriptionInputModel?.videoLinkList = this
-            }
-
             val cacheManagerId = AddEditProductShipmentFragmentArgs.fromBundle(it).cacheManagerId
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel.value)
 
