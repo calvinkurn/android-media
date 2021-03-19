@@ -623,6 +623,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void onWebPageReceivedError(String failingUrl, int errorCode, String description, String webUrl) {
         progressBar.setVisibility(View.GONE);
+        webView.clearView();
         Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
                 failingUrl, errorCode, description, webUrl);
         if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
@@ -631,7 +632,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             globalError.setActionClickListener(new Function1<View, Unit>() {
                 @Override
                 public Unit invoke(View view) {
-                    swipeRefreshLayout.setVisibility(View.VISIBLE);
+                    BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) getActivity();
+                    if (activity!= null) {
+                        activity.setWebViewTitle("");
+                    }
                     globalError.setVisibility(View.GONE);
                     reloadPage();
                     return Unit.INSTANCE;
