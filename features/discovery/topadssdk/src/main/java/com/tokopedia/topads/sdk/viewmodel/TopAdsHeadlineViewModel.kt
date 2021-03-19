@@ -1,13 +1,12 @@
-package com.tokopedia.feedcomponent.viewmodel
+package com.tokopedia.topads.sdk.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.feedcomponent.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 
 
 class TopAdsHeadlineViewModel : ViewModel() {

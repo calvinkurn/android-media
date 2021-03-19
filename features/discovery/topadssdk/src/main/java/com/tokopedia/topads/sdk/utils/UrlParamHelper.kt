@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.util.util
+package com.tokopedia.topads.sdk.utils
 
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
