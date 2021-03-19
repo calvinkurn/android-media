@@ -252,4 +252,15 @@ class SellerHomeViewModel @Inject constructor(
             _shopLocation.value = Fail(it)
         })
     }
+
+    fun getKetupatLottieJson() {
+        launchCatchError(block = {
+            val result: Success<String> = Success(withContext(dispatcher.io) {
+                return@withContext ramadhanKetupatUseCase.get().executeOnBackground()
+            })
+            _ramadhanKetupatJsonData.value = result
+        }, onError = {
+            _ramadhanKetupatJsonData.value = Fail(it)
+        })
+    }
 }

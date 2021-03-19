@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.fragment
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -155,6 +156,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         observeWidgetLayoutLiveData()
         observeShopLocationLiveData()
+        observeRamadhanKetupatLiveData()
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(sellerHomeViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.progressWidgetData, WidgetType.PROGRESS)
@@ -303,6 +305,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sahGlobalError.gone()
         sellerHomeViewModel.getWidgetLayout()
         sellerHomeViewModel.getTicker()
+        sellerHomeViewModel.getKetupatLottieJson()
     }
 
     override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl {
@@ -752,6 +755,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         })
         sellerHomeViewModel.getTicker()
+    }
+
+    private fun observeRamadhanKetupatLiveData() {
+        sellerHomeViewModel.ramadhanKetupatJsonData.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    // TODO: Show lottie iv
+                }
+                is Fail -> {
+                    // TODO: determine how to do
+                }
+            }
+        }
     }
 
     private fun setViewBackground() = view?.run {
