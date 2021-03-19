@@ -87,19 +87,20 @@ data class AccountHeaderDataModel(
         this.ovoSaldo = ovo
         this.ovoPoint = point
         this.isGetOvoError = false
+        this.isTokopointExternalAmountError = false
     }
 
     fun setSaldoData(saldo: String) {
         this.saldo = saldo
         this.isGetSaldoError = false
+        this.isTokopointExternalAmountError = false
     }
 
     fun setTokopointData(amount: String, point: String, badge: String){
         this.tokopointPointAmount = point
         this.tokopointExternalAmount = amount
         this.tokopointBadgeUrl = badge
-        this.isGetSaldoError = false
-        this.isGetOvoError = false
+        this.isTokopointExternalAmountError = false
     }
 
     fun setUserBadge(badge: String) {
