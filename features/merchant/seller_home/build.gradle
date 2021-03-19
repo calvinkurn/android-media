@@ -50,6 +50,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
@@ -124,6 +125,12 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.dbDependencies.sqliteFramework
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
 }
 
 project.ext {
