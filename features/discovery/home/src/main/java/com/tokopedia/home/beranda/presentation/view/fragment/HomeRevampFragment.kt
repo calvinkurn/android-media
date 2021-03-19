@@ -883,8 +883,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
 
         //TODO: Register remote config to turn off and on new balance widget
-        val showNewBalanceWidget = true
-        getHomeViewModel().setNewBalanceWidget(showNewBalanceWidget)
+        getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
@@ -1765,6 +1764,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_ONBOARDING_NAVIGATION, true)
+    }
+
+    private fun remoteConfigIsNewBalanceWidget(): Boolean {
+        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
     }
 
     private fun needToShowGeolocationComponent() {
