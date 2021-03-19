@@ -13,7 +13,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
-import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -86,9 +85,7 @@ abstract class LifecycleViewBindingProperty<in R : Any, T : ViewBinding?>(
     }
 
     @MainThread override fun clear() {
-        mainHandler.post {
-            viewBinding = null
-        }
+        viewBinding = null
     }
 
     private inner class ClearOnDestroyLifecycleObserver : DefaultLifecycleObserver {
