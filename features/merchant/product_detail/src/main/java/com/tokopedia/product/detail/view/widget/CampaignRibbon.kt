@@ -45,6 +45,32 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         private const val ONE_SECOND = 1000L
     }
 
+    // upcoming components - structure type 1
+    private val campaignRibbonLayout1: View? = findViewById(R.id.campaign_ribbon_type_1)
+    private val campaignNameViews1: Typography? = findViewById(R.id.tpg_campaign_name_s1)
+    private val timerView1: TimerUnifySingle? = findViewById(R.id.tus_timer_view_s1)
+    private val regulatoryInfoView1: Typography? = findViewById(R.id.regulatory_info_layout_s1)
+    private val remindMeButton1: Typography? = findViewById(R.id.remind_me_button_s1)
+
+    // ongoing components - structure type 2
+    private val campaignRibbonLayout2: View? = findViewById(R.id.campaign_ribbon_type_2)
+    private val campaignLogoView2: ImageView? = findViewById(R.id.iu_campaign_logo_s2)
+    private val campaignNameView2: Typography? = findViewById(R.id.tpg_campaign_name_s2)
+    private val timerView2: TimerUnifySingle? = findViewById(R.id.tus_timer_view_s2)
+    private val stockWordingView2: Typography? = findViewById(R.id.tgp_stock_wording_s2)
+    private val stockSoldOutView2: Typography? = findViewById(R.id.tgp_sold_out_wording_s2)
+    private val stockBarView2: ProgressBarUnify? = findViewById(R.id.pbu_stock_bar_s2)
+    private val regulatoryInfoView2: Typography? = findViewById(R.id.tgp_regulatory_info_s2)
+
+    // slash price / thematic only components - structure type 3
+    private val campaignRibbonLayout3: View? = findViewById(R.id.campaign_ribbon_type_3)
+    private val campaignLogoView3: ImageView? = findViewById(R.id.iu_campaign_logo_s3)
+    private val campaignNameViews3: Typography? = findViewById(R.id.tpg_campaign_name_s3)
+    private val timerView3: TimerUnifySingle? = findViewById(R.id.tus_timer_view_s3)
+    private val endsInWordingView3: Typography? = findViewById(R.id.tpg_ends_in_s3)
+    private val regulatoryInfo3: Typography? = findViewById(R.id.tgp_regulatory_info_s3)
+
+    // listeners , callback properties
     private var callback: CampaignCountDownCallback? = null
     private var listener: DynamicProductDetailListener? = null
     private var trackDataModel: ComponentTrackDataModel? = null
@@ -94,21 +120,20 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             val thematicCampaign = onGoingData.thematicCampaign
             // render campaign name
             val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
-            val campaignNameView = this.findViewById<Typography>(R.id.tpg_campaign_name_s3)
-            campaignNameView.text = campaignName
+            campaignNameViews3?.text = campaignName
             // render campaign ribbon background
             val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
             val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes, SLASH_PRICE)
-            val campaignRibbonLayout = findViewById<View>(R.id.campaign_ribbon_type_3)
-            campaignRibbonLayout?.background = gradientDrawable
+            campaignRibbonLayout3?.background = gradientDrawable
             // show count down wording
-            findViewById<Typography>(R.id.tpg_ends_in_s3).show()
+            endsInWordingView3?.show()
             // render ongoing count down timer
-            val timerView = findViewById<TimerUnifySingle>(R.id.tus_timer_view_s3)
-            renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView)
+            timerView3?.run {
+                renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView3)
+            }
             // hide irrelevant views
-            findViewById<Typography>(R.id.tgp_regulatory_info_s3)?.hide()
-            findViewById<ImageView>(R.id.iu_campaign_logo_s3)?.hide()
+            regulatoryInfo3?.hide()
+            campaignLogoView3?.hide()
             // show campaign ribbon type 3
             showCampaignRibbonType3()
         } else this.hide()
@@ -119,45 +144,42 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
         if (thematicCampaign.background.isNotBlank()) {
-            val campaignRibbonLayout = findViewById<View>(R.id.campaign_ribbon_type_3)
-            campaignRibbonLayout?.background = getGradientDrawableForBackGround(thematicCampaign.background)
+            campaignRibbonLayout3?.background = getGradientDrawableForBackGround(thematicCampaign.background)
         }
         // render campaign logo
-        val campaignLogoView = findViewById<ImageView>(R.id.iu_campaign_logo_s3)
         if (thematicCampaign.icon.isNotBlank()) {
-            campaignLogoView.loadImage(thematicCampaign.icon)
-            campaignLogoView.show()
-        } else campaignLogoView.hide()
+            campaignLogoView3?.loadImage(thematicCampaign.icon)
+            campaignLogoView3?.show()
+        } else campaignLogoView3?.hide()
         // render campaign name
-        val campaignNameView = this.findViewById<Typography>(R.id.tpg_campaign_name_s3)
-        campaignNameView.text = thematicCampaign.campaignName
+        campaignNameViews3?.text = thematicCampaign.campaignName
         // hide irrelevant views
-        findViewById<Typography>(R.id.tgp_regulatory_info_s3)?.hide()
-        findViewById<Typography>(R.id.tpg_ends_in_s3)?.hide()
-        findViewById<TimerUnifySingle>(R.id.tus_timer_view_s3)?.hide()
+        regulatoryInfo3?.hide()
+        endsInWordingView3?.hide()
+        timerView3?.hide()
         // show campaign ribbon type 3
         showCampaignRibbonType3()
     }
 
     // show upcoming structure
     private fun showCampaignRibbonType1() {
-        findViewById<View>(R.id.campaign_ribbon_type_1).show()
-        findViewById<View>(R.id.campaign_ribbon_type_2).hide()
-        findViewById<View>(R.id.campaign_ribbon_type_3).hide()
+        campaignRibbonLayout1?.show()
+        campaignRibbonLayout2?.hide()
+        campaignRibbonLayout3?.hide()
     }
 
     // show ongoing structure
     private fun showCampaignRibbonType2() {
-        findViewById<View>(R.id.campaign_ribbon_type_1).hide()
-        findViewById<View>(R.id.campaign_ribbon_type_2).show()
-        findViewById<View>(R.id.campaign_ribbon_type_3).hide()
+        campaignRibbonLayout1?.hide()
+        campaignRibbonLayout2?.show()
+        campaignRibbonLayout3?.hide()
     }
 
     // show thematic only, new user, slash price structure
     private fun showCampaignRibbonType3() {
-        findViewById<View>(R.id.campaign_ribbon_type_1).hide()
-        findViewById<View>(R.id.campaign_ribbon_type_2).hide()
-        findViewById<View>(R.id.campaign_ribbon_type_3).show()
+        campaignRibbonLayout1?.hide()
+        campaignRibbonLayout2?.hide()
+        campaignRibbonLayout3?.show()
     }
 
     // UPCOMING CAMPAIGN -  use campaign ribbon structure type 1
@@ -169,23 +191,23 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             context.getDrawable(R.drawable.bg_gradient_default_flash_sale_by_seller)
         }
         // render campaign ribbon background
-        val campaignRibbonLayout = findViewById<View>(R.id.campaign_ribbon_type_1)
-        gradientDrawable?.run { campaignRibbonLayout.background = gradientDrawable }
+        gradientDrawable?.run { campaignRibbonLayout1?.background = gradientDrawable }
         // render campaign name
-        val campaignNameView = findViewById<Typography>(R.id.tpg_campaign_name_s1)
         val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
-        campaignNameView.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
+        campaignNameViews1?.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
         // count down timer
-        val timerView = findViewById<TimerUnifySingle>(R.id.tus_timer_view_s1)
-        upcomingData?.let {
-            renderUpComingNplCountDownTimer(
-                    it.startDate,
-                    timerView
-            )
+        upcomingData?.let { data ->
+            timerView1?.let {
+                renderUpComingNplCountDownTimer(
+                        data.startDate,
+                        timerView1
+                )
+            }
         }
+        // update remind me button
         updateRemindMeButton(listener, upcomingData, upcomingIdentifier)
         // hide regulatory info
-        findViewById<Typography>(R.id.regulatory_info_layout_s1).hide()
+        regulatoryInfoView1?.hide()
     }
 
     private fun renderUpComingNplCountDownTimer(startDateData: String,
@@ -237,103 +259,91 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     fun updateRemindMeButton(listener: DynamicProductDetailListener?, upComingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
-        val remindMeButton = findViewById<Typography>(R.id.remind_me_button_s1)
         upComingData?.let {
-            renderUpComingRemindMeButton(listener?.isOwner()
-                    ?: false, upComingData, remindMeButton, upcomingIdentifier)
+            remindMeButton1?.let {
+                renderUpComingRemindMeButton(listener?.isOwner()
+                        ?: false, upComingData, remindMeButton1, upcomingIdentifier)
+            }
         }
     }
 
     // ONGOING CAMPAIGN - use campaign ribbon structure type 2 -
     private fun renderOnGoingCampaignRibbon(onGoingData: ProductContentMainData) {
-
         val campaign = onGoingData.campaign
         val thematicCampaign = onGoingData.thematicCampaign
-
         // render campaign ribbon background
         val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
         val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-        val campaignRibbonLayout = findViewById<View>(R.id.campaign_ribbon_type_2)
-        campaignRibbonLayout?.background = gradientDrawable
-
+        campaignRibbonLayout2?.background = gradientDrawable
         // render campaign logo
-        val campaignLogoView = findViewById<ImageView>(R.id.iu_campaign_logo_s2)
         if (thematicCampaign.icon.isNotBlank()) {
-            campaignLogoView.loadImage(thematicCampaign.icon)
-            campaignLogoView.show()
-        } else campaignLogoView.hide()
-
+            campaignLogoView2?.loadImage(thematicCampaign.icon)
+            campaignLogoView2?.show()
+        } else campaignLogoView2?.hide()
         // render campaign name
-        val campaignNameView = findViewById<Typography>(R.id.tpg_campaign_name_s2)
         val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
-        campaignNameView.text = campaignName
-
+        campaignNameView2?.text = campaignName
         // render ongoing count down
-        val timerView = findViewById<TimerUnifySingle>(R.id.tus_timer_view_s2)
-        renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView)
+        timerView2?.let { renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView2) }
 
         // render stock wording
-        val stockWordingView = findViewById<Typography>(R.id.tgp_stock_wording_s2)
-        val stockSoldOutView = findViewById<Typography>(R.id.tgp_sold_out_wording_s2)
         val isStockWordingRendered = renderStockWording(
                 stockSoldPercentage = campaign.stockSoldPercentage,
                 stockWording = onGoingData.stockWording,
-                stockTypography = stockWordingView,
-                soldOutTypography = stockSoldOutView
+                stockTypography = stockWordingView2,
+                soldOutTypography = stockSoldOutView2
         )
 
         // render stock bar
-        val stockBarView = findViewById<ProgressBarUnify>(R.id.pbu_stock_bar_s2)
-        renderStockBar(isStockWordingRendered, campaign.stockSoldPercentage, stockBarView)
+        renderStockBar(isStockWordingRendered, campaign.stockSoldPercentage, stockBarView2)
 
         // render regulatory info
-        val regulatoryInfoView = findViewById<Typography>(R.id.tgp_regulatory_info_s2)
         if (campaign.paymentInfoWording.isNotBlank()) {
-            regulatoryInfoView.text = campaign.paymentInfoWording
-            regulatoryInfoView?.show()
+            regulatoryInfoView2?.text = campaign.paymentInfoWording
+            regulatoryInfoView2?.show()
         } else {
-            regulatoryInfoView?.hide()
+            regulatoryInfoView2?.hide()
         }
     }
 
     private fun renderStockWording(stockSoldPercentage: Int,
                                    stockWording: String,
-                                   stockTypography: Typography,
-                                   soldOutTypography: Typography): Boolean {
+                                   stockTypography: Typography?,
+                                   soldOutTypography: Typography?): Boolean {
         return try {
             val styledStockWording = MethodChecker.fromHtml(stockWording)
             if (stockSoldPercentage == 1) {
-                soldOutTypography.text = styledStockWording
-                soldOutTypography.show()
+                soldOutTypography?.text = styledStockWording
+                soldOutTypography?.show()
             } else {
-                stockTypography.text = styledStockWording
+                stockTypography?.text = styledStockWording
             }
             true
         } catch (ex: Exception) {
-            stockTypography.hide()
-            soldOutTypography.hide()
+            stockTypography?.hide()
+            soldOutTypography?.hide()
             false
         }
     }
 
     private fun renderStockBar(isStockWordingRendered: Boolean,
                                stockSoldPercentage: Int,
-                               stockProgressBar: ProgressBarUnify) {
+                               stockProgressBar: ProgressBarUnify?) {
         if (!isStockWordingRendered) {
-            stockProgressBar.hide()
+            stockProgressBar?.hide()
             return
         }
         // set track color
-        stockProgressBar.trackDrawable.setColor(ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_track_color))
+        stockProgressBar?.trackDrawable?.setColor(ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_track_color))
         // set progressbar color gradient, if using 1 color then set the same color amount
         val stockBarColor = ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_progress_color)
-        stockProgressBar.progressBarColor = intArrayOf(stockBarColor, stockBarColor)
+        stockProgressBar?.progressBarColor = intArrayOf(stockBarColor, stockBarColor)
         // percentage 100% = 1
         if (stockSoldPercentage != 1) {
-            stockProgressBar.setValue(stockSoldPercentage)
-            stockProgressBar.show()
+            stockProgressBar?.setValue(stockSoldPercentage)
+            stockProgressBar?.show()
         } else {
-            stockProgressBar.hide()
+            stockProgressBar?.hide()
         }
     }
 
