@@ -308,14 +308,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         GlobalScope.launch(Dispatchers.Main) {
             delay(DELAY_BUTTON_RADIUS)
             showFindNearHereView()
-            removeAnimation(true)
         }
     }
 
     override fun onCameraMove() {
         hideFindNearHereView()
         googleMap.setOnCameraIdleListener(this)
-        removeAnimation(false)
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -607,7 +605,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.setOnCameraMoveListener(this)
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnMapClickListener {
-                // do nothing
+                removeAnimation(false)
             }
         }
     }
