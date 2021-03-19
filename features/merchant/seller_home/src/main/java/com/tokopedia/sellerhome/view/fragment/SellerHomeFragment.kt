@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.view.fragment
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.*
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -93,6 +92,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val ERROR_LAYOUT = "Error get layout data."
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
+        private const val ERROR_THEMATIC = "Error get thematic illustration."
         private const val TOAST_DURATION = 5000L
 
         private const val MIN_LOTTIE_ANIM_SPEED = 0f
@@ -577,7 +577,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onDownloadAnimationFailed(ex: Throwable) {
-        // TODO: Log to crashlytics
+        logToCrashlytics(ex, ERROR_THEMATIC)
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {

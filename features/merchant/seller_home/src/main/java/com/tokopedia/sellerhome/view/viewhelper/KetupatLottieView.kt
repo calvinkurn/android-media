@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.viewhelper
 import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.sellerhome.common.constant.RamadhanThematicUrl
