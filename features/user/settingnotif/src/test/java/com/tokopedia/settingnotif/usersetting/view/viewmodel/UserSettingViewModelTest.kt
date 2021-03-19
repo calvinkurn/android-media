@@ -9,7 +9,7 @@ import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSe
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingStatus
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
-import com.tokopedia.settingnotif.usersetting.util.dispatcher.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState
 import com.tokopedia.settingnotif.util.isEqualsTo
