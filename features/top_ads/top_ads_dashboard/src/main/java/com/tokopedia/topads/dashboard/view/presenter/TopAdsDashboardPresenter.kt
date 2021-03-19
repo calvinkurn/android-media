@@ -542,16 +542,24 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun editBudgetThroughInsight(productData: MutableList<GroupEditInput.Group.AdOperationsItem>?, groupData: HashMap<String, Any?>?, onSuccess: ((FinalAdResponse.TopadsManageGroupAds)) -> Unit, onError: ((String)) -> Unit) {
-        topAdsEditUseCase.setParam(productData, groupData)
-        topAdsEditUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.topadsManageGroupAds)
-                },
-                {
-                    onError(it.message ?: "")
-                    Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_EDIT_RECOM_BUDGET#%s", it.localizedMessage)
-                }
-        )
+        val params = topAdsEditUseCase.setParam(productData, groupData)
+        topAdsEditUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_EDIT_RECOM_BUDGET#%s", e?.localizedMessage)
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<FinalAdResponse>
+                response?.data?.topadsManageGroupAds?.let { onSuccess(it) }
+            }
+        })
     }
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
@@ -613,7 +621,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         topAdsInsightUseCase.unsubscribe()
         budgetRecomUseCase.cancelJobs()
         validGroupUseCase.cancelJobs()
-        topAdsEditUseCase.cancelJobs()
+        topAdsEditUseCase.unsubscribe()
         productRecomUseCase.cancelJobs()
         createGroupUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
