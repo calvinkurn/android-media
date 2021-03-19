@@ -177,11 +177,7 @@ fun EditText.setTextFieldColor(@ColorRes color: Int) {
                     color
             ), PorterDuff.Mode.SRC_ATOP)
 
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-        background = drawable
-    } else {
-        setBackgroundDrawable(drawable)
-    }
+    background = drawable
 }
 
 fun Fragment.cleanBackstack() {
