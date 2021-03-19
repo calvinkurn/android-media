@@ -2,6 +2,7 @@ package com.tokopedia.homenav.mainnav.data.mapper
 
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
+import com.tokopedia.homenav.common.util.isABNewTokopoint
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
@@ -61,6 +62,10 @@ class AccountHeaderMapper(
                             isError = false,
                             isLoading = false
                     )
+                }
+                // extra case when tokopoint null and ab is false
+                if(!isABNewTokopoint() && tokopointsStatusFilteredPojo == null && data.isTokopointExternalAmountError){
+                    data.isTokopointExternalAmountError = false
                 }
                 data.isCacheData = isCache
                 accountModel = data
