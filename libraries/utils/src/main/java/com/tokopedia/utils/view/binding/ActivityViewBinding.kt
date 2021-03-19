@@ -1,5 +1,5 @@
-@file:Suppress("RedundantVisibilityModifier", "unused")
 @file:JvmName("ReflectionActivityViewBinding")
+@file:Suppress("RedundantVisibilityModifier", "unused")
 
 package com.tokopedia.utils.view.binding
 

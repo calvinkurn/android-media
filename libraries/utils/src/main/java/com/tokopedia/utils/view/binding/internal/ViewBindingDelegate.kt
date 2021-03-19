@@ -3,8 +3,6 @@ package com.tokopedia.utils.view.binding.internal
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RestrictTo
-import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.viewbinding.ViewBinding
 import java.lang.reflect.Method
 
@@ -29,7 +27,6 @@ object ViewBindingCache {
     }
 }
 
-@RestrictTo(LIBRARY)
 internal abstract class InflateViewBinding<out T : ViewBinding>(
         private val inflateViewBinding: Method
 ) {
@@ -43,7 +40,6 @@ internal abstract class InflateViewBinding<out T : ViewBinding>(
 
 }
 
-@RestrictTo(LIBRARY)
 @Suppress("FunctionName")
 internal fun <T : ViewBinding> InflateViewBinding(viewBindingClass: Class<T>): InflateViewBinding<T> {
     // for reflection purpose
@@ -69,7 +65,6 @@ internal fun <T : ViewBinding> InflateViewBinding(viewBindingClass: Class<T>): I
     }
 }
 
-@RestrictTo(LIBRARY)
 internal class InflationOfViewBinding<out T : ViewBinding>(
         private val inflateViewBinding: Method
 ) : InflateViewBinding<T>(inflateViewBinding) {
@@ -80,7 +75,6 @@ internal class InflationOfViewBinding<out T : ViewBinding>(
     }
 }
 
-@RestrictTo(LIBRARY)
 internal class CombineInflateViewBinding<out T : ViewBinding>(
         private val inflateViewBinding: Method
 ) : InflateViewBinding<T>(inflateViewBinding) {
@@ -100,7 +94,6 @@ internal class CombineInflateViewBinding<out T : ViewBinding>(
     }
 }
 
-@RestrictTo(LIBRARY)
 internal class BindViewBinding<out T : ViewBinding>(viewBindingClass: Class<T>) {
     // for reflection purpose
     private val methodName = "bind"

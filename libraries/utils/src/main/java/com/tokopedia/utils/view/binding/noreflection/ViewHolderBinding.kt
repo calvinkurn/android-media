@@ -1,5 +1,5 @@
-@file:Suppress("unused")
 @file:JvmName("ViewHolderBinding")
+@file:Suppress("unused")
 
 package com.tokopedia.utils.view.binding.noreflection
 

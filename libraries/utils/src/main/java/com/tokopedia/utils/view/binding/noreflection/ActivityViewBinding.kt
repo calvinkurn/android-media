@@ -1,19 +1,16 @@
-@file:Suppress("RedundantVisibilityModifier", "unused")
 @file:JvmName("ActivityViewBinding")
+@file:Suppress("RedundantVisibilityModifier", "unused")
 
 package com.tokopedia.utils.view.binding.noreflection
 
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.annotation.IdRes
-import androidx.annotation.RestrictTo
-import androidx.annotation.RestrictTo.Scope.LIBRARY
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.utils.view.binding.internal.findRootView
 import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
-@RestrictTo(LIBRARY)
 private class ActivityViewBindingProperty<in A : ComponentActivity, T : ViewBinding?>(
         viewBinder: (A) -> T?
 ) : LifecycleViewBindingProperty<A, T>(viewBinder) {
