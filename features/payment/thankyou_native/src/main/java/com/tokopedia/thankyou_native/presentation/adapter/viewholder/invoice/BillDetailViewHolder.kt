@@ -40,7 +40,7 @@ class BillDetailViewHolder(val view: View) : AbstractViewHolder<TotalFee>(view) 
             val feeDetailTitle = feeDetailView.findViewById<TextView>(R.id.tvInvoicePaymentModeName)
             feeDetailTitle.text = feeDetail.feeTitle
             feeDetailView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
-                    .text = getString(R.string.thankyou_rp_without_space, feeDetail.feeAmountStr)
+                    .text = feeDetail.feeAmountStr
             llContainer.addView(feeDetailView)
         }
     }
