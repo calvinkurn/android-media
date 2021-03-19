@@ -43,7 +43,6 @@ data class HomeBalanceModel (
 
         private const val HASH_CODE = 39
 
-        const val IMG_DEFAULT_TOKOPOINTS = "https://images.tokopedia.net/img/img/phoenix/tokopoints.png"
         const val ERROR_TITLE = "Gagal Memuat"
         const val ERROR_SUBTITLE = "Coba Lagi"
     }
@@ -139,7 +138,7 @@ data class HomeBalanceModel (
     private fun getDefaultBBOErrorState(): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
                 drawerItemType = TYPE_FREE_ONGKIR,
-                defaultIconRes = R.drawable.ic_bbo,
+                defaultIconRes = R.drawable.ic_new_bbo,
                 balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
                 balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
         )
@@ -148,7 +147,7 @@ data class HomeBalanceModel (
     private fun getDefaultTokopointsErrorState(): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
                 drawerItemType = TYPE_TOKOPOINT,
-                iconImageUrl = IMG_DEFAULT_TOKOPOINTS,
+                defaultIconRes = R.drawable.ic_new_tokopoints,
                 balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
                 balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
         )
@@ -157,7 +156,7 @@ data class HomeBalanceModel (
     private fun getDefaultCouponsRewardsErrorState(): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
                 drawerItemType = TYPE_REWARDS,
-                defaultIconRes = R.drawable.ic_product_fintech_tokopoint_normal_24,
+                defaultIconRes = R.drawable.ic_new_points,
                 balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
                 balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
         )
