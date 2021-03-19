@@ -8,18 +8,14 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
 import kotlinx.android.synthetic.main.view_comparison_widget.view.*
 
 class ComparisonWidgetView: FrameLayout {
 
     private var adapter: ComparisonWidgetAdapter? = null
-    private val masterJob = SupervisorJob()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: ComparisonWidgetViewModel
-
     constructor(context: Context) : super(context) { }
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) { }
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { }
