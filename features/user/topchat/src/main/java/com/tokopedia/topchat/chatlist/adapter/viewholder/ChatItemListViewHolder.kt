@@ -36,7 +36,7 @@ import com.tokopedia.utils.time.TimeHelper
 /**
  * @author : Steven 2019-08-07
  */
-class ChatItemListViewHolder(
+class ChatItemListViewHolder constructor(
         itemView: View,
         var listener: ChatListItemListener
 ) : AbstractViewHolder<ItemChatListPojo>(itemView) {
