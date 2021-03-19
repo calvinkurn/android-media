@@ -113,16 +113,16 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             getView().hideCartView();
             getView().showFullPageLoading();
             getView().startPerfomanceMonitoringTrace();
-            if (getView().getCartPassData().getNeedGetCart()) {
+            if (getView().getCartPassData().isFromPDP()) {
                 RequestParams requestParams = digitalGetCartUseCase.createRequestParams(
                         getView().getCartPassData().getCategoryId(),
                         userSession.getUserId(),
                         userSession.getDeviceId());
-                digitalGetCartUseCase.execute(requestParams, getSubscriberCart());
+                digitalGetCartUseCase.execute(requestParams, getSubscriberCart(false));
             } else {
                 RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
                         getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
-                digitalAddToCartUseCase.execute(requestParams, getSubscriberCart());
+                digitalAddToCartUseCase.execute(requestParams, getSubscriberCart(true));
             }
         }
     }
@@ -185,7 +185,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         return requestBodyAtcDigital;
     }
 
-    private Subscriber<Map<Type, RestResponse>> getSubscriberCart() {
+    private Subscriber<Map<Type, RestResponse>> getSubscriberCart(Boolean isAddToCart) {
         return new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -215,7 +215,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
 
-                digitalAnalytics.eventAddToCart(cartDigitalInfoData, getView().getCartPassData().getSource());
+                if (isAddToCart) {
+                    digitalAnalytics.eventAddToCart(cartDigitalInfoData, getView().getCartPassData().getSource(),
+                            userSession.getUserId());
+                }
                 digitalAnalytics.eventCheckout(cartDigitalInfoData);
 
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {

@@ -101,7 +101,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
     // cache in 10 minutes
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
-                              filterData: ArrayList<HashMap<String, Any>>?) {
+                              filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0) {
         launchCatchError(block = {
             _loadingProductList.postValue(true)
             val mapParam = HashMap<String, Any>()
@@ -123,6 +123,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                 _productList.postValue(Fail(MessageErrorException()))
             } else {
                 _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
+                setFavNumberSelected(TopupBillsFavNumberItem(productId = autoSelectProductId.toString()))
             }
         }) {
             _loadingProductList.postValue(false)

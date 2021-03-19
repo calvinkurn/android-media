@@ -11,7 +11,7 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.matchers.hasTotalItemOf
+import com.tokopedia.topchat.assertion.hasTotalItemOf
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
@@ -103,6 +103,7 @@ class ChatListActivityTest {
         userSession.shopNameStub = "Toko Rifqi"
         userSession.nameStub = "Rifqi MF"
         chatListUseCase.response = exEmptyChatListPojo
+        userSession.setIsShopOwner(true)
 
         // When
         activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)
@@ -127,6 +128,7 @@ class ChatListActivityTest {
         userSession.shopNameStub = "Toko Rifqi 123"
         userSession.nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(true)
 
         // When
         activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)

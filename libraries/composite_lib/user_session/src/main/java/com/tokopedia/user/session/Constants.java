@@ -49,6 +49,11 @@ public class Constants {
     public static final String  ADVERTISINGID = "JVqg72pOPdZ8rcOuCiOKeQ==";
     public static final String  KEY_ADVERTISINGID = "7a6fMifPnFC/l6bzt+AK9lLgP9BoWgwi0VEzhh+PudE=";
 
+    public static final String  IS_SHOP_OWNER = "kzzwryxlOw1iN7yqZ3cwVg==";
+    public static final String  IS_SHOP_ADMIN = "6W/GVmMZSorCl4oatSQ9Gw==";
+    public static final String  IS_LOCATION_ADMIN = "I6jXWcJRGWq3uxGiYLqd8VPnmekehHZdKD7ksokMDyE=";
+    public static final String  IS_MULTI_LOCATION_SHOP = "hmKZUu/rDGDsf9XE7c+tRzElw5TtmTFzAhUc/O3L9Is=";
+
     /**
      * Twitter Prefs
      */
@@ -66,7 +71,8 @@ public class Constants {
             TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_SHOULD_POST, GTM_LOGIN_ID,
             TEMP_USER_ID, GCM_ID, IS_AFFILIATE, IS_FIRST_TIME_USER_NEW_ONBOARDING,
             UUID_KEY, LOGIN_UUID_KEY, GCM_ID_TIMESTAMP, IS_SHOP_OFFICIAL_STORE,
-            ANDROID_ID, KEY_ANDROID_ID, ADVERTISINGID, KEY_ADVERTISINGID
+            ANDROID_ID, KEY_ANDROID_ID, ADVERTISINGID, KEY_ADVERTISINGID, IS_SHOP_OWNER,
+            IS_SHOP_ADMIN, IS_LOCATION_ADMIN, IS_MULTI_LOCATION_SHOP
     };
 
     public static final String[] newKeys = {
