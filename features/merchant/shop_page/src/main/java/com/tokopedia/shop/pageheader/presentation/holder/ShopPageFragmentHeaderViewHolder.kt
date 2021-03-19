@@ -229,7 +229,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
         val isCoachMarkAlreadyShown = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
-        return if (isCoachMarkAlreadyShown == false) {
+        return if (isCoachMarkAlreadyShown == false && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let {
                 CoachMark2Item(
                         it,
