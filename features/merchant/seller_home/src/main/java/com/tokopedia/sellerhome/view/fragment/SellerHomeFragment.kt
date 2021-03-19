@@ -106,6 +106,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Inject
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
+    @Inject
+    lateinit var newRelic: SellerHomeNewRelic
+
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
@@ -614,7 +617,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
         (activity as? LoadTimeMonitoringActivity)?.loadTimeMonitoringListener?.onStopPltMonitoring()
-        SellerHomeNewRelic.sendSellerHomeNewRelicData(context, screenName, userSession.userId, performanceMonitoringSellerHomePlt)
+        newRelic.sendSellerHomeNewRelicData(context, screenName, userSession.userId, performanceMonitoringSellerHomePlt)
     }
 
     @Suppress("UNCHECKED_CAST")
