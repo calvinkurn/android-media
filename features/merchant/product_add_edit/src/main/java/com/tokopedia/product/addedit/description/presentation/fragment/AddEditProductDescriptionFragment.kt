@@ -97,7 +97,6 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var shopId: String
     private var isFragmentVisible = false
-    private var videoList: MutableList<VideoLinkModel> = mutableListOf()
 
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -179,12 +178,11 @@ class AddEditProductDescriptionFragment:
 
             cacheManagerId.run {
                 val productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
-                descriptionViewModel.updateProductInputModel(productInputModel.copy())
+                descriptionViewModel.updateProductInputModel(productInputModel)
                 descriptionViewModel.isEditMode = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java, false) ?: false
                 descriptionViewModel.isAddMode = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java, false) ?: false
                 descriptionViewModel.isDraftMode = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
                 descriptionViewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
-                videoList.addAll(productInputModel.copy().descriptionInputModel.videoLinkList)
             }
             if (descriptionViewModel.isAddMode) {
                 ProductAddDescriptionTracking.trackScreen()
@@ -446,7 +444,6 @@ class AddEditProductDescriptionFragment:
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
-            descriptionViewModel.productInputModel.value?.descriptionInputModel?.videoLinkList = videoList
             setFragmentResultWithBundle(REQUEST_KEY_DESCRIPTION)
         }
     }
