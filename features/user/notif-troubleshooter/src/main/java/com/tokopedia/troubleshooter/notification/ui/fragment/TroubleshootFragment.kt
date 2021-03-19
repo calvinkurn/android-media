@@ -49,7 +49,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
@@ -59,7 +59,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: TroubleshootViewModel
-    private val binding: FragmentNotifTroubleshooterBinding? by viewBinding()
+    private val binding by viewBinding(FragmentNotifTroubleshooterBinding::bind)
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
@@ -69,9 +69,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
-        return binding?.root!!
-    }
+    ): View? = inflater.inflate(R.layout.fragment_notif_troubleshooter, container, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
