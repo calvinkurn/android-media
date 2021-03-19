@@ -233,7 +233,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             dialog.setDesc(
                     getString(R.string.cp_message_update_choosen_video))
             dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
-            dialog.setBtnOk(getString(R.string.cp_continue))
+            dialog.setBtnOk(getString(com.tokopedia.imagepicker.common.R.string.cp_continue))
             dialog.setOnOkClickListener{
                 dialog.dismiss()
                 onFinishPicked(videoPath)
