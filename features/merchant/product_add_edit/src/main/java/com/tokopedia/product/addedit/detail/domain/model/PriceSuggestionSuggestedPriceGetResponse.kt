@@ -1,8 +1,8 @@
 package com.tokopedia.product.addedit.detail.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.lang.Double
 
 data class PriceSuggestionSuggestedPriceGetResponse (
         @SerializedName("PriceSuggestionSuggestedPriceGet")
@@ -13,17 +13,18 @@ data class PriceSuggestionSuggestedPriceGetResponse (
 data class PriceSuggestionSuggestedPriceGet (
         @SerializedName("suggestedPrice")
         @Expose
-        val suggestedPrice: Double = Double(0.0),
+        val suggestedPrice: Double = 0.0,
 
         @SerializedName("suggestedPriceMax")
         @Expose
-        val suggestedPriceMax: Double = Double(0.0),
+        val suggestedPriceMax: Double = 0.0,
 
         @SerializedName("suggestedPriceMin")
         @Expose
-        val suggestedPriceMin: Double = Double(0.0),
+        val suggestedPriceMin: Double = 0.0,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        val price: Double = Double(0.0)
+        val price: Double = 0.0
 )
