@@ -29,8 +29,10 @@ class AddToCartDoneAddedProductViewHolder(
                 addToCartDoneAddedProductListener.onButtonGoToCartClicked()
             }
             element.bebasOngkirUrl?.let {
-                free_ongkir_image.show()
-                free_ongkir_image?.setImageUrl(it)
+                if(it.isNotEmpty()) {
+                    free_ongkir_image.show()
+                    free_ongkir_image?.setImageUrl(it)
+                }
             }
         }
     }
