@@ -78,6 +78,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.digitalBrizzi)
     implementation project(rootProject.ext.features.smartBills)
+    implementation project(rootProject.ext.features.digitalCheckout)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
@@ -124,6 +125,7 @@ dependencies {
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.hotel)
+    implementation project(rootProject.ext.features.travel_slice)
 
     //User
     implementation project(rootProject.ext.features.settingnotif)
@@ -146,4 +148,7 @@ dependencies {
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.buyerorder)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
 }

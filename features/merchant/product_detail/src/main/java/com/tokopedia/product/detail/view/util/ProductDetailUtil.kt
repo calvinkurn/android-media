@@ -33,15 +33,12 @@ object ProductDetailUtil {
 
     private const val MAX_CHAR_OLD = 150
     private const val MAX_CHAR = 140
-    private const val MORE_DESCRIPTION_OLD = "<font color='#42b549'>Selengkapnya</font>"
     private const val ALLOW_CLICK = true
 
-    fun reviewDescFormatterOld(review: String): Pair<Spanned, Boolean> {
+    fun reviewDescFormatterOld(context: Context, review: String): Pair<CharSequence?, Boolean> {
         return if (MethodChecker.fromHtml(review).length > MAX_CHAR_OLD) {
             val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR_OLD)
-            Pair(MethodChecker
-                    .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                            + MORE_DESCRIPTION_OLD), ALLOW_CLICK)
+            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
         } else {
             Pair(MethodChecker.fromHtml(review), !ALLOW_CLICK)
         }

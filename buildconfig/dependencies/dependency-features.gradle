@@ -68,7 +68,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
@@ -102,6 +101,7 @@ ext {
             wallet                          : ":features:fintech:wallet",
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
             layanan                         : ":features:fintech:layanan_finansial",
+            paylater                        : ":features:fintech:paylater",
 
             accountHome                     : ":features:home:account-home",
             dynamicBanner                   : ":features:home:dynamicbanner",
@@ -212,6 +212,7 @@ ext {
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             snapshot                        : ":features:ordermanagement:snapshot",
+            ordermanagementhistory          : ":features:ordermanagement:orderhistory",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 
@@ -251,7 +252,6 @@ ext {
             fcm_common                      : ":features:user:fcm_common",
             homeAccountUser                 : ":features:user:home_account",
             tkpdcore                        : ":tkpdcore",
-            tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",
