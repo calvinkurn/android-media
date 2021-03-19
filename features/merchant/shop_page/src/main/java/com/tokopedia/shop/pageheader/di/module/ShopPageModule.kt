@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.GqlQueryConstant
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
@@ -15,11 +14,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
-import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase
-import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -68,72 +65,6 @@ class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    @Named(GQLQueryConstant.SHOP_PRODUCT)
-    fun getShopProductQuery(@ApplicationContext context: Context): String {
-        return """
-            query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
-              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
-                status
-                errors
-                data {
-                  product_id
-                  name
-                  product_url
-                  stock
-                  status
-                  price{
-                    text_idr
-                  }
-                  flags{
-                    isFeatured
-                    isPreorder
-                    isFreereturn
-                    isVariant
-                    isWholesale
-                    isWishlist
-                    isSold
-                    supportFreereturn
-                    mustInsurance
-                    withStock
-                  }
-                  stats{
-                    reviewCount
-                    rating
-                  }
-                  campaign{
-                    original_price
-                    original_price_fmt
-                    discounted_price_fmt
-                    discounted_percentage
-                    discounted_price
-                  }
-                  primary_image{
-                    original
-                    thumbnail
-                    resize300
-                  }
-                  cashback{
-                    cashback
-                    cashback_amount
-                  }
-                  freeOngkir {
-                    isActive
-                    imgURL
-                  }
-                  label_groups {
-                    position
-                    type
-                    title
-                  }
-                }
-                totalData
-              }
-            }
-        """.trimIndent()
-    }
-
-    @ShopPageScope
-    @Provides
     @Named(ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE)
     fun getShopPageHomeTypeQuery(@ApplicationContext context: Context): String {
         return """
@@ -145,13 +76,6 @@ class ShopPageModule {
               }
             }
         """.trimIndent()
-    }
-
-    @ShopPageScope
-    @Provides
-    fun getShopProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT) gqlQuery: String?,
-                              gqlUseCase: MultiRequestGraphqlUseCase?): GqlGetShopProductUseCase {
-        return GqlGetShopProductUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
     @ShopPageScope
