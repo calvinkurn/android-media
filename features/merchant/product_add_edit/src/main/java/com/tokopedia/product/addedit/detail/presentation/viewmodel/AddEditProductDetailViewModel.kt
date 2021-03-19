@@ -52,7 +52,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val validateProductUseCase: ValidateProductUseCase,
         private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
         private val annotationCategoryUseCase: AnnotationCategoryUseCase,
-        private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase
+        private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher) {
 
