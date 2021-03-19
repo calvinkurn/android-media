@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 class Voucher (
         @SerializedName("voucher_id")
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: String = "",
         @SerializedName("voucher_type")
         val voucherType: Int = 0,
         @SerializedName("voucher_name")
@@ -32,6 +32,12 @@ class Voucher (
         @SerializedName("is_quota_available")
         val isAvailable: Int = 0,
         @SerializedName("tnc")
-        val termAndCondition: String = ""
+        val termAndCondition: String = "",
+        @SerializedName("is_copyable")
+        val isCopyable: Boolean = false,
+        @SerializedName("is_highlighted")
+        val isHighlighted: Boolean = false,
+        @SerializedName("is_private")
+        val isPrivate: Boolean = false
 
 )
