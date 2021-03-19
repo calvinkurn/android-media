@@ -6,7 +6,7 @@ data class InspirationCardOptionViewModel(
         val text: String = "",
         val img: String = "",
         val url: String = "",
-        val color: String = "",
+        val hexColor: String = "",
         val applink: String = "",
         val inspirationCardType: String = ""
 ) {
