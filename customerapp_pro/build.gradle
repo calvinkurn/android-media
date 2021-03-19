@@ -222,10 +222,6 @@ android {
         manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
     }
 
-    viewBinding {
-        enabled = true
-    }
-
     dexOptions {
         javaMaxHeapSize "8g"
     }
