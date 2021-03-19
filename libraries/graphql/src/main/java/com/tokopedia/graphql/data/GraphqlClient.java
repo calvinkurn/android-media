@@ -189,36 +189,25 @@ public class GraphqlClient {
     }
 
     public static class Function {
-        Function0<Long> currentTime;
-        Function0<Long> getExpiredTime;
-        Function1<Long, Unit> setExpiredTime;
-        Function0<Unit> setAkamaiValue;
-        Function0<String> getAkamaiValue;
         private WeakReference<Context> context;
 
         public Function(Context mContext) {
             this.context = new WeakReference<>(mContext);
-
-            currentTime = () -> System.currentTimeMillis() ;
-            getExpiredTime = () -> getExpiredTime(context.get());
-            setExpiredTime = (time) -> {
-                setExpiredTime(context.get(), time);
-                return null;
-            };
-            setAkamaiValue = () -> {
-                UtilsKt.setAkamaiValue(context.get(), CYFMonitor.getSensorData());
-                return null;
-            };
-            getAkamaiValue = () -> UtilsKt.getAkamaiValue(context.get());
         }
 
         public String getAkamaiValue() {
             return UtilsKt.setExpire(
-                    currentTime,
-                    getExpiredTime,
-                    setExpiredTime,
-                    setAkamaiValue,
-                    getAkamaiValue
+                    () -> System.currentTimeMillis(),
+                    () -> getExpiredTime(context.get()),
+                    (time) -> {
+                        setExpiredTime(context.get(), time);
+                        return Unit.INSTANCE;
+                    },
+                    () -> {
+                        UtilsKt.setAkamaiValue(context.get(), CYFMonitor.getSensorData());
+                        return Unit.INSTANCE;
+                    },
+                    () -> UtilsKt.getAkamaiValue(context.get())
             );
         }
     }

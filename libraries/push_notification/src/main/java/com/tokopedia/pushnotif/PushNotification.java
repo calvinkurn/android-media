@@ -42,16 +42,19 @@ public class PushNotification {
     private static Bundle aidlApiBundle;
 
     public static void init(Context context) {
-        PushNotificationApi.bindService(
-                context,
-                (s, bundle) -> {
-                    onAidlReceive(s, bundle);
-                    return null;
-                },
-                () -> {
-                    onAidlError();
-                    return null;
-                });
+        UserSessionInterface userSession = new UserSession(context);
+        if (userSession.isLoggedIn()) {
+            PushNotificationApi.bindService(
+                    context,
+                    (s, bundle) -> {
+                        onAidlReceive(s, bundle);
+                        return null;
+                    },
+                    () -> {
+                        onAidlError();
+                        return null;
+                    });
+        }
     }
 
     private static void onAidlReceive(String tag, Bundle data) {

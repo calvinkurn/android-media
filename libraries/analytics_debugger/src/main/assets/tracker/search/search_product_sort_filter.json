@@ -1,5 +1,6 @@
 {
   "readme": "Search Product Sort & Filter Tracking",
+  "mode": "exact",
   "query": [
     {
       "event": "clickSearchResult",
