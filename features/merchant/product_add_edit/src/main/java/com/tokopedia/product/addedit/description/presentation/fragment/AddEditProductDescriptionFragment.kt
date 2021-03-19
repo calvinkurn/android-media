@@ -179,12 +179,12 @@ class AddEditProductDescriptionFragment:
 
             cacheManagerId.run {
                 val productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
-                descriptionViewModel.updateProductInputModel(productInputModel)
+                descriptionViewModel.updateProductInputModel(productInputModel.copy())
                 descriptionViewModel.isEditMode = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java, false) ?: false
                 descriptionViewModel.isAddMode = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java, false) ?: false
                 descriptionViewModel.isDraftMode = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
                 descriptionViewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
-                videoList.addAll(productInputModel.descriptionInputModel.videoLinkList)
+                videoList.addAll(productInputModel.copy().descriptionInputModel.videoLinkList)
             }
             if (descriptionViewModel.isAddMode) {
                 ProductAddDescriptionTracking.trackScreen()
@@ -559,10 +559,11 @@ class AddEditProductDescriptionFragment:
 
     private fun applyEditMode() {
         val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
-        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.toMutableList() ?: emptyList()
+        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.toMutableList()
 
         textFieldDescription?.setText(description)
-        if (videoLinks.isNotEmpty()) {
+        if (!videoLinks.isNullOrEmpty()) {
+            super.clearAllData()
             super.renderList(videoLinks)
             textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
             // start network monitoring when videoLinks is not empty
