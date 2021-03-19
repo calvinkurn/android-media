@@ -1098,7 +1098,7 @@ class PlayUserInteractionFragment @Inject constructor(
         when (state) {
             PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
             PlayViewerVideoState.End -> {
-                if (playViewModel.bottomInsets.isAnyShown) playButtonView.showRepeatButton()
+                if (playViewModel.bottomInsets.isAnyShown || !playNavigation.canNavigateNextPage()) playButtonView.showRepeatButton()
                 else doAutoSwipe()
             }
             else -> playButtonView.hide()
