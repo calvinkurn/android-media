@@ -110,6 +110,11 @@ class PlayBottomSheetFragment @Inject constructor(
         analytic.getTrackingQueue().sendAll()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hideLoadingView()
+    }
+
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         return ::loadingDialog.isInitialized && loadingDialog.isVisible
     }
