@@ -483,6 +483,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     GtmEvents.clickProductRecom(userSession?.userId)
+                    pdpGamificationView.recyclerView.scrollBy(0,1.toPx())
                 }
             }
         })

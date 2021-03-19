@@ -45,7 +45,7 @@ class PdpGamificationView : LinearLayout {
     private var spanCount = 2
 
     private lateinit var tvTitle: Typography
-    private lateinit var recyclerView: RecyclerView
+    lateinit var recyclerView: RecyclerView
     private lateinit var loadingView: LinearLayout
     private lateinit var viewFlipper: ViewFlipper
     var fragment: Fragment? = null

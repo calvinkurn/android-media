@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.giftbox.analytics
 
+import android.os.Bundle
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
@@ -289,7 +290,7 @@ object GtmEvents {
             "login"
         }
         map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
-        map[GiftBoxTrackerConstants.ITEMS] = getItemsMap(productId,
+        map[GiftBoxTrackerConstants.ITEMS] = getItemsMapList(productId,
                 productPositionIndex,
                 productBrand,
                 itemCategory,
@@ -300,18 +301,19 @@ object GtmEvents {
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
-        getTracker().sendGeneralEvent(map)
+
+        getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
     }
 
-    private fun getItemsMap(productId: String,
+    private fun getItemsMapList(productId: String,
                             productPositionIndex:Int,
                             productBrand:String,
                             itemCategory:String,
                             productName:String,
                             productVariant:String,
-                            productPrice:String):Map<String,Any>{
+                            productPrice:String):List<Map<String,Any>>{
 
-        val itemsMap = mutableMapOf<String, Any>()
+        val itemsMap = HashMap<String, Any>()
         itemsMap["index"] = productPositionIndex
         itemsMap["item_brand"] = productBrand
         itemsMap["item_category"] = itemCategory
@@ -319,7 +321,7 @@ object GtmEvents {
         itemsMap["item_name"] = productName
         itemsMap["item_variant"] = productVariant
         itemsMap["price"] = productPrice
-        return itemsMap
+        return arrayListOf<Map<String, Any>>(itemsMap)
     }
 
     fun impressionProductRecomItem(userId: String?,productId: String,
@@ -345,7 +347,7 @@ object GtmEvents {
         }
 
         map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
-        map[GiftBoxTrackerConstants.ITEMS] = getItemsMap(productId,
+        map[GiftBoxTrackerConstants.ITEMS] = getItemsMapList(productId,
                 productPositionIndex,
                 productBrand,
                 itemCategory,
@@ -356,6 +358,31 @@ object GtmEvents {
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
-        getTracker().sendGeneralEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
+    }
+
+    private fun convertToBundle(data: Map<String, Any>): Bundle {
+        val bundle = Bundle()
+        for (entry in data.entries) {
+            when (val value = entry.value) {
+                is String -> bundle.putString(entry.key, value)
+                is Boolean -> bundle.putBoolean(entry.key, value)
+                is Int -> bundle.putInt(entry.key, value)
+                is Long -> bundle.putLong(entry.key, value)
+                is Double -> bundle.putDouble(entry.key, value)
+                is List<*> -> {
+                    val list = ArrayList<Bundle>(
+                            value.map {
+                                (it as? Map<String, Any>)?.let { map ->
+                                    return@map convertToBundle(map)
+                                }
+                                null
+                            }.filterNotNull()
+                    )
+                    bundle.putParcelableArrayList(entry.key, list)
+                }
+            }
+        }
+        return bundle
     }
 }
