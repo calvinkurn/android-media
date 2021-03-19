@@ -468,8 +468,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                "${CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS} - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",
-                catalogId,userSession.userId)
+                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId)
         removeWishlistActionUseCase.createObservable(productId,
                 userId, this)
     }
@@ -478,8 +478,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                "${CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS} - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",
-                catalogId,userSession.userId)
+                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId)
         addWishlistActionUseCase.createObservable(productId, userId,
                 this)
     }
