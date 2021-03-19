@@ -93,7 +93,11 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityPaused(Activity activity) {
         if (nfcAdapter != null)
-            nfcAdapter.disableForegroundDispatch(activity);
+            try {
+                nfcAdapter.disableForegroundDispatch(activity);
+            } catch (SecurityException e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
+            }
     }
 
     @Override
