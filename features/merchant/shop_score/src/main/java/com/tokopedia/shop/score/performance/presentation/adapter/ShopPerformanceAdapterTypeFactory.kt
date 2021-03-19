@@ -11,7 +11,8 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
                                         private val itemShopPerformanceListener: ItemShopPerformanceListener,
                                         private val itemPotentialPowerMerchantListener: ItemPotentialRegularMerchantListener,
                                         private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener,
-                                        private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener
+                                        private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener,
+                                        private val itemTimerNewSellerListener: ItemTimerNewSellerListener
 ) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
     override fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int {
@@ -54,6 +55,10 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return SectionFaqViewHolder.LAYOUT
     }
 
+    override fun type(itemShopPerformanceErrorUiModel: ItemShopPerformanceErrorUiModel): Int {
+        return ItemShopPerformanceErrorViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: LoadingModel?): Int {
         return ShopPerformanceShimmerViewHolder.LAYOUT
     }
@@ -69,8 +74,9 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(parent)
             ItemStatusRMViewHolder.LAYOUT -> ItemStatusRMViewHolder(parent, itemPotentialPowerMerchantListener)
             SectionShopFeatureRecommendationViewHolder.LAYOUT -> SectionShopFeatureRecommendationViewHolder(parent, itemRecommendationFeatureListener)
-            ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(parent)
+            ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(parent, itemTimerNewSellerListener)
             SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(parent)
+            ItemShopPerformanceErrorViewHolder.LAYOUT -> ItemShopPerformanceErrorViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }

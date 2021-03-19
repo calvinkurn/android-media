@@ -61,12 +61,21 @@ object ShopScoreConstant {
     const val BROADCAST_CHAT_URL = "https://m.tokopedia.com/broadcast-chat"
 
     const val PM_INACTIVE = "inactive"
+    const val PM_INACTIVE_TEXT = "nonaktif"
     const val PM_ACTIVE = "active"
     const val UP_POTENTIAL_PM = "naik"
     const val STILL_POTENTIAL_PM = "tetap"
     const val DOWN_POTENTIAL_PM = "turun"
-    const val GRADE_BRONZE_PM = "Bronze"
-    const val GRADE_SILVER_PM = "Silver"
-    const val GRADE_GOLD_PM = "Gold"
-    const val GRADE_DIAMOND_PM = "Diamon"
+    const val GRADE_BRONZE_PM = "bronze"
+    const val GRADE_SILVER_PM = "silver"
+    const val GRADE_GOLD_PM = "gold"
+    const val GRADE_DIAMOND_PM = "diamond"
+    const val NO_GRADE_SCORE = 0
+    const val BRONZE_SCORE = 1
+    const val SILVER_SCORE = 2
+    const val GOLD_SCORE = 3
+    const val DIAMOND_SCORE = 4
+
+    const val PENALTY_IDENTIFIER = "penalty"
+
 }

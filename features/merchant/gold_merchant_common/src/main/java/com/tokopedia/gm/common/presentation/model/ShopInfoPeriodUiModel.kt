@@ -5,4 +5,5 @@ data class ShopInfoPeriodUiModel(var isNewSeller: Boolean = false,
                                  var isEndTenureNewSeller: Boolean = false,
                                  var periodType: String = "",
                                  var joinDate: String = "",
+                                 var shopAge: Int = 0
 )

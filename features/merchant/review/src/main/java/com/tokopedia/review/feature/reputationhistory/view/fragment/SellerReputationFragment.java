@@ -33,6 +33,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.review.R;
 import com.tokopedia.review.ReviewInstance;
@@ -54,6 +55,7 @@ import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationView
 import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
 import com.tokopedia.review.feature.reputationhistory.view.presenter.SellerReputationFragmentPresenter;
 import com.tokopedia.unifycomponents.CardUnify;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -115,6 +117,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
     private IconUnify iconChevronRightReputationDetail;
     private Typography tvInfoMigrateReputation;
     private CardUnify cardReputationShopScore;
+    private Ticker tickerShopScore;
 
     public static SellerReputationFragment createInstance() {
         SellerReputationFragment fragment = new SellerReputationFragment();
@@ -207,10 +210,22 @@ public class SellerReputationFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
+        shopScorePeriodToggle();
         initCardShopScore();
         initialVar();
         setViewListener();
         setActionVar();
+    }
+
+    private void shopScorePeriodToggle() {
+        UserSessionInterface userSession = new UserSession(getActivity());
+        if (userSession.isShopOfficialStore()) {
+            tickerShopScore.setVisibility(View.VISIBLE);
+            cardReputationShopScore.setVisibility(View.GONE);
+        } else {
+            cardReputationShopScore.setVisibility(View.VISIBLE);
+            tickerShopScore.setVisibility(View.GONE);
+        }
     }
 
     private void initCardShopScore() {
@@ -236,6 +251,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
         tvInfoMigrateReputation = view.findViewById(R.id.tv_info_migrate_reputation);
         iconChevronRightReputationDetail = view.findViewById(R.id.icon_chevron_reputation_detail);
         cardReputationShopScore = view.findViewById(R.id.cardReputationShopScore);
+        tickerShopScore = view.findViewById(R.id.tickerShopScore);
         appBarLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

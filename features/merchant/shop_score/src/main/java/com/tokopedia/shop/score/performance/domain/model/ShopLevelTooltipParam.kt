@@ -9,5 +9,8 @@ data class ShopLevelTooltipParam (
         val shopID: String = "",
         @Expose
         @SerializedName("source")
-        val source: String = "gql"
+        val source: String = "gql",
+        @Expose
+        @SerializedName("lang")
+        val lang: String = "id"
 )

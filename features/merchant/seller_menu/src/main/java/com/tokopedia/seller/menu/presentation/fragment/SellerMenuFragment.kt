@@ -13,8 +13,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.utils.getShopScoreDate
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
@@ -160,7 +159,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun observeShopInfoPeriod() {
         observe(viewModel.shopAccountTickerPeriod) {
             when (it) {
-                is Success ->
+                is Success -> {
                     if (it.data) {
                         val tickerShopInfoData = TickerShopScoreUiModel(
                                 tickerTitle = getString(R.string.seller_menu_ticker_title_shop_score,
@@ -168,6 +167,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                                 descTitle = getString(R.string.seller_menu_ticker_desc_shop_score))
                         adapter.showShopScoreTicker(tickerShopInfoData)
                     }
+                }
             }
         }
         viewModel.getShopAccountTickerPeriod(userSession.shopId.toIntOrZero())

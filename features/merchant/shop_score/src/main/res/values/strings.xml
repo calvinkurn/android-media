@@ -74,8 +74,9 @@
     <string name="title_transition_period_relief">Keringanan masa transisi</string>
     <string name="btn_show_penalty">Tampilkan Pelanggaran</string>
     <string name="date_penalty_detail">Tanggal pelanggaran %s</string>
-    <string name="current_regarding_penalty_pm_label">Berdasarkan reputasi, tokomu dapat</string>
-    <string name="grade_higher_than_reputation_pm_label">Berdasarkan Performamu di %s, tokomu dapat, tokomu dapat</string>
+    <string name="current_regarding_penalty_pm_label">Dari reputasi, tokomu dapat</string>
+    <string name="performance_regarding_pm_label">Dari Performamu di %s, tokomu dapat</string>
+    <string name="grade_higher_than_reputation_pm_label">Berdasarkan Performamu di %s, tokomu dapat</string>
 
     <string name="btn_call_help_center">Hubungi Pusat Bantuan</string>
     <string name="next_update_date_pm_status">Update berikutnya: %s</string>

@@ -1,6 +1,8 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.gm.common.constant.END_OF_TENURE_SEVEN_DAYS
+import com.tokopedia.gm.common.constant.GoldMerchantUtil.diffDays
+import com.tokopedia.gm.common.constant.GoldMerchantUtil.totalDays
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.gm.common.constant.PATTERN_DATE_PARAM
 import com.tokopedia.gm.common.constant.PATTERN_DATE_SHOP_INFO
@@ -27,11 +29,12 @@ class ShopScoreCommonMapper @Inject constructor(private val userSession: UserSes
                 isNewSeller = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty()
                         isNewSeller (NEW_SELLER_DAYS),
                 isEndTenureNewSeller = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty()
-                        isEndOfTenureNewSeller (END_OF_TENURE_SEVEN_DAYS)
+                        isEndOfTenureNewSeller (END_OF_TENURE_SEVEN_DAYS),
+                shopAge = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty().totalDays()
         )
     }
 
-    infix fun String.joinDateFormatted(pattern: String): String {
+    private infix fun String.joinDateFormatted(pattern: String): String {
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         return simpleDateFormat.format(this)
     }
@@ -39,13 +42,5 @@ class ShopScoreCommonMapper @Inject constructor(private val userSession: UserSes
     private infix fun String.isNewSeller(days: Int) = diffDays(days)
 
     private infix fun String.isEndOfTenureNewSeller(days: Int) = diffDays(days)
-
-    private infix fun String.diffDays(days: Int): Boolean {
-        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale.getDefault())
-        val joinDate = simpleDateFormat.parse(this)
-        val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
-        val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
-        return diff < days
-    }
 
 }

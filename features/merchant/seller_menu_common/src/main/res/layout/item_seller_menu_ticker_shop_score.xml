@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_lvl4">
-    
+
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/tickerShopScore"
         android:layout_width="match_parent"

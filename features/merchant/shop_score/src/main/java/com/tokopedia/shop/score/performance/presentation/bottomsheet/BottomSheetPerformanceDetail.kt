@@ -31,7 +31,7 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titlePerformanceDetail = arguments?.getString(TITLE_PERFORMANCE_DETAIL_KEY).orEmpty()
+        getDataFromArguments()
     }
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_shop_performance_detail
@@ -54,6 +54,10 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
         super.onViewCreated(view, savedInstanceState)
         view.setup()
         observeShopPerformanceDetail()
+    }
+
+    private fun getDataFromArguments() {
+        titlePerformanceDetail = arguments?.getString(TITLE_PERFORMANCE_DETAIL_KEY).orEmpty()
     }
 
     private fun View.setup() {

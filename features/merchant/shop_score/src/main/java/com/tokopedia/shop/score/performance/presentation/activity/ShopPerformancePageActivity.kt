@@ -1,6 +1,5 @@
 package com.tokopedia.shop.score.performance.presentation.activity
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -11,10 +10,7 @@ import com.tokopedia.shop.score.performance.presentation.fragment.ShopPerformanc
 
 class ShopPerformancePageActivity : BaseSimpleActivity(), HasComponent<ShopPerformanceComponent> {
 
-    override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        return ShopPerformancePageFragment.newInstance(bundle)
-    }
+    override fun getNewFragment(): Fragment = ShopPerformancePageFragment.newInstance()
 
     override fun getComponent(): ShopPerformanceComponent {
         return DaggerShopPerformanceComponent

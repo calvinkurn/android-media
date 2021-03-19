@@ -11,6 +11,9 @@ data class GoldPMGradeBenefitInfoResponse(
 ) {
     data class GoldGetPMGradeBenefitInfo(
             @Expose
+            @SerializedName("next_monthly_refresh_date")
+            val nextMonthlyRefreshDate: String = "",
+            @Expose
             @SerializedName("current_pm_grade")
             val currentPmGrade: CurrentPmGrade = CurrentPmGrade(),
             @Expose
@@ -26,13 +29,7 @@ data class GoldPMGradeBenefitInfoResponse(
                 val imageBadgeBackgroundMobileUrl: String = "",
                 @Expose
                 @SerializedName("image_badge_url")
-                val imageBadgeUrl: String = "",
-                @Expose
-                @SerializedName("shop_level_actual")
-                val shopLevelActual: Int = 0,
-                @Expose
-                @SerializedName("shop_score_actual")
-                val shopScoreActual: Int = 0
+                val imageBadgeUrl: String = ""
         )
 
         data class PotentialPmGrade(
@@ -44,13 +41,7 @@ data class GoldPMGradeBenefitInfoResponse(
                 val imageBadgeBackgroundMobileUrl: String = "",
                 @Expose
                 @SerializedName("image_badge_url")
-                val imageBadgeUrl: String = "",
-                @Expose
-                @SerializedName("shop_level_current")
-                val shopLevelCurrent: Int = 0,
-                @Expose
-                @SerializedName("shop_score_current")
-                val shopScoreCurrent: Int = 0
+                val imageBadgeUrl: String = ""
         )
     }
 }

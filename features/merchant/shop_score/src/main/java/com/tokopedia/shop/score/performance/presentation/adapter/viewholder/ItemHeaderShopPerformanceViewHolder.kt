@@ -4,8 +4,10 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreUtils
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
@@ -29,26 +31,26 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
                     .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
                     .build()
 
-            tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel.orZero().toString())
+            tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel)
 
-            tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore.toString() else "-"
+            tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore else "-"
 
-            progressBarScorePerformance?.setValue(element?.shopScore.orZero())
+            progressBarScorePerformance?.setValue(element?.shopScore.toIntOrZero())
 
             ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
-                    ShopScoreUtils.getLevelBarWhite(element?.shopLevel.orZero()))
+                    ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toIntOrZero()))
 
             ic_performance_level_information?.setOnClickListener {
-                shopPerformanceListener.onTooltipLevelClicked(element?.shopLevel.orZero())
+                shopPerformanceListener.onTooltipLevelClicked(element?.shopLevel.toIntOrZero())
             }
             ic_shop_score_performance?.setOnClickListener {
                 shopPerformanceListener.onTooltipScoreClicked()
             }
 
-            tvHeaderShopService?.text = getString(element?.titleHeaderShopService.orZero()).orEmpty()
-            tvDescShopService?.text = getString(element?.descHeaderShopService.orZero()).orEmpty()
+            tvHeaderShopService?.text = element?.titleHeaderShopService ?: "-"
+            tvDescShopService?.text = element?.descHeaderShopService ?: "-"
 
-            tickerShopHasPenalty?.showWithCondition(element?.scorePenalty != null)
+            tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0)
             tickerShopHasPenalty?.apply {
                 if (element?.scorePenalty != null) {
                     setHtmlDescription(getString(R.string.ticker_deduction_point_penalty, element.scorePenalty?.toString()))

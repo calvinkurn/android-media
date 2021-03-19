@@ -6,10 +6,12 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_GREEN_TIMER
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_ORANGE_TIMER
+import com.tokopedia.shop.score.performance.presentation.adapter.ItemTimerNewSellerListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
 
-class ItemTimerNewSellerViewHolder(view: View): AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
+class ItemTimerNewSellerViewHolder(view: View,
+                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener): AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.timer_new_seller_before_transition
@@ -24,11 +26,15 @@ class ItemTimerNewSellerViewHolder(view: View): AbstractViewHolder<ItemTimerNewS
                     element?.effectiveDateText.orEmpty())
 
             ic_video_shop_performance_learn?.setOnClickListener {
-
+                itemTimerNewSellerListener.onWatchVideoClicked()
             }
 
             tv_watch_video?.setOnClickListener {
+                itemTimerNewSellerListener.onWatchVideoClicked()
+            }
 
+            btn_shop_performance_learn?.setOnClickListener {
+                itemTimerNewSellerListener.onBtnShopPerformanceClicked()
             }
 
         }

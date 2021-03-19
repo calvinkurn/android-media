@@ -14,13 +14,12 @@ import javax.inject.Inject
 class GetShopLevelTooltipUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val shopScoreMapper: ShopScoreMapper
-) : UseCase<ShopInfoLevelUiModel>() {
+) : UseCase<ShopLevelTooltipResponse.ShopLevel>() {
 
     companion object {
-        //need adjust type input
         const val SHOP_LEVEL_INPUT = "input"
         val SHOP_LEVEL_TOOLTIP_QUERY = """
-            query shopLevel(${'$'}input: ShopLevelRequest!){
+            query shopLevel(${'$'}input: ShopLevelParam!){
               shopLevel(input: ${'$'}input){
                 result {
                   period
@@ -43,13 +42,13 @@ class GetShopLevelTooltipUseCase @Inject constructor(
 
     var params = mapOf<String, ShopLevelTooltipParam>()
 
-    override suspend fun executeOnBackground(): ShopInfoLevelUiModel {
+    override suspend fun executeOnBackground(): ShopLevelTooltipResponse.ShopLevel {
         val gqlRequest = GraphqlRequest(SHOP_LEVEL_TOOLTIP_QUERY, ShopLevelTooltipResponse::class.java, params)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         val gqlResult = gqlResponse.getData<ShopLevelTooltipResponse>(ShopLevelTooltipResponse::class.java).shopLevel
         if (error.isNullOrEmpty()) {
-            return shopScoreMapper.mapToShoInfoLevelUiModel(gqlResult.result)
+            return gqlResult
         } else {
             throw MessageErrorException(gqlResult.error.message)
         }

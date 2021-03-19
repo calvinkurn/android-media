@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapterTypeFactory
 
 data class ItemStatusPMUiModel(
+        val titlePowerMerchant: String = "",
         val statusPowerMerchant: String = "",
         val badgePowerMerchant: String = "",
         @StringRes val bgPowerMerchant: Int = 0,

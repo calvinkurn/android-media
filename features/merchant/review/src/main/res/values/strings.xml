@@ -282,5 +282,6 @@
     <string name="btn_shop_performance">Pelajari Performa Toko</string>
     <string name="desc_info_reputation_migrate_shop_score">Mulai dari <![CDATA[<b>%s</b>]]></string>
     <string name="desc_title_card_shop_score">Mulai %s, Reputasi akan digabung dengan Performa Toko untuk lebih menarik pembeli</string>
-
+    <string name="title_shop_score_ticker">Mulai %s, Reputasi akan dinonaktifkan</string>
+    <string name="desc_shop_score_ticker">Reputasi Toko akan dinonaktifkan dan Performa Toko akan berdasarkan level dan skor.</string>
 </resources>

@@ -26,3 +26,8 @@ interface ItemStatusPowerMerchantListener {
 interface ItemFaqListener {
     fun onArrowClicked(position: Int)
 }
+
+interface ItemTimerNewSellerListener {
+    fun onBtnShopPerformanceClicked()
+    fun onWatchVideoClicked()
+}
