@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
-import com.tokopedia.sellerhome.domain.usecase.RamadhanKetupatUseCase
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
@@ -41,7 +40,6 @@ class SellerHomeViewModel @Inject constructor(
         private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
         private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
         private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
-        private val ramadhanKetupatUseCase: Lazy<RamadhanKetupatUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
         private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
@@ -77,7 +75,6 @@ class SellerHomeViewModel @Inject constructor(
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
     private val _multiLineGraphWidgetData = MutableLiveData<Result<List<MultiLineGraphDataUiModel>>>()
     private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
-    private val _ramadhanKetupatJsonData = MutableLiveData<Result<String>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -105,8 +102,6 @@ class SellerHomeViewModel @Inject constructor(
         get() = _multiLineGraphWidgetData
     val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
         get() = _announcementWidgetData
-    val ramadhanKetupatJsonData: LiveData<Result<String>>
-        get() = _ramadhanKetupatJsonData
 
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
@@ -253,14 +248,4 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getKetupatLottieJson() {
-        launchCatchError(block = {
-            val result: Success<String> = Success(withContext(dispatcher.io) {
-                return@withContext ramadhanKetupatUseCase.get().executeOnBackground()
-            })
-            _ramadhanKetupatJsonData.value = result
-        }, onError = {
-            _ramadhanKetupatJsonData.value = Fail(it)
-        })
-    }
 }

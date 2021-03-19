@@ -125,12 +125,6 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.dbDependencies.sqliteFramework
-
-    implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.networkDependencies.okHttp
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
 }
 
 project.ext {

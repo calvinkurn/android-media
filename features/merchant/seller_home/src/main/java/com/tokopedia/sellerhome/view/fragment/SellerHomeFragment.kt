@@ -7,10 +7,7 @@ import android.view.*
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -50,6 +47,7 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhome.view.viewhelper.KetupatLottieView
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
@@ -75,12 +73,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.abs
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener, CoroutineScope {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener,
+        CoroutineScope, KetupatLottieView.Listener{
 
     companion object {
         @JvmStatic
@@ -94,6 +94,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
+
+        private const val MIN_LOTTIE_ANIM_SPEED = 0f
+        private const val MAX_LOTTIE_ANIM_SPEED = 4f
+        private const val SCROLL_DELTA_Y_THRESHOLD = 500
     }
 
     @Inject
@@ -117,12 +121,26 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         NotificationDotBadge(context ?: return@lazy null)
     }
 
+    private val rvOnScrollListener by lazy {
+        object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val yDelta = abs(dy)
+                val animSpeed = getAnimationSpeedByVerticalDelta(yDelta)
+                ketupatLottie?.animateKetupat(canLoadLottieAnimation, animSpeed)
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        }
+    }
+
     private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
+    private var canLoadLottieAnimation = true
 
     private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
+
+    private var ketupatLottie: KetupatLottieView? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
     override val coroutineContext: CoroutineContext
@@ -156,7 +174,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         observeWidgetLayoutLiveData()
         observeShopLocationLiveData()
-        observeRamadhanKetupatLiveData()
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(sellerHomeViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.progressWidgetData, WidgetType.PROGRESS)
@@ -239,6 +256,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupView() = view?.run {
+        ketupatLottie = findViewById<KetupatLottieView>(R.id.lottie_seller_home_ketupat).apply {
+            loadAnimationFromUrl()
+            setListener(this@SellerHomeFragment)
+        }
+
         val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
@@ -258,6 +280,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView?.run {
             layoutManager = sellerHomeLayoutManager
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            addOnScrollListener(rvOnScrollListener)
         }
 
         swipeRefreshLayout.setOnRefreshListener {
@@ -305,7 +328,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sahGlobalError.gone()
         sellerHomeViewModel.getWidgetLayout()
         sellerHomeViewModel.getTicker()
-        sellerHomeViewModel.getKetupatLottieJson()
     }
 
     override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl {
@@ -546,6 +568,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }.show(childFragmentManager)
     }
 
+    override fun onAnimationStarted() {
+        canLoadLottieAnimation = false
+    }
+
+    override fun onAnimationFinished() {
+        canLoadLottieAnimation = true
+    }
+
+    override fun onDownloadAnimationFailed(ex: Throwable) {
+        // TODO: Log to crashlytics
+    }
+
     private fun setProgressBarVisibility(isShown: Boolean) {
         view?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
     }
@@ -757,19 +791,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getTicker()
     }
 
-    private fun observeRamadhanKetupatLiveData() {
-        sellerHomeViewModel.ramadhanKetupatJsonData.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Success -> {
-                    // TODO: Show lottie iv
-                }
-                is Fail -> {
-                    // TODO: determine how to do
-                }
-            }
-        }
-    }
-
     private fun setViewBackground() = view?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
@@ -975,6 +996,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (!isAnyLoadingWidget) {
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
+        }
+    }
+
+    private fun getAnimationSpeedByVerticalDelta(deltaY: Int): Float {
+        return when {
+            deltaY <= 0 -> MIN_LOTTIE_ANIM_SPEED
+            deltaY > SCROLL_DELTA_Y_THRESHOLD -> MAX_LOTTIE_ANIM_SPEED
+            else -> deltaY / SCROLL_DELTA_Y_THRESHOLD * MAX_LOTTIE_ANIM_SPEED
         }
     }
 

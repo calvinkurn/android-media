@@ -60,32 +60,4 @@ class SellerHomeModule {
         return SettingFreeShippingTracker(analytics, userSession)
     }
 
-    @SellerHomeScope
-    @Provides
-    fun provideRestRepository(interceptors: MutableList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository =
-            RestRequestInteractor.getInstance().restRepository.apply {
-                updateInterceptors(interceptors, context)
-            }
-
-    @SellerHomeScope
-    @Provides
-    fun provideInterceptors(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            loggingInterceptor: HttpLoggingInterceptor,
-                            commonErrorResponseInterceptor: CommonErrorResponseInterceptor) =
-            mutableListOf(tkpdAuthInterceptor, loggingInterceptor, commonErrorResponseInterceptor)
-
-    @SellerHomeScope
-    @Provides
-    fun provideAuthInterceptors(@ApplicationContext context: Context,
-                                userSession: UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
-    }
-
-    @SellerHomeScope
-    @Provides
-    fun provideErrorInterceptors(): CommonErrorResponseInterceptor {
-        return CommonErrorResponseInterceptor()
-    }
-
 }
