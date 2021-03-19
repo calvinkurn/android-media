@@ -73,9 +73,7 @@ object DeepLinkHandler {
                 callback(PageFragment(FragmentType.HOME))
             }
 
-            else -> if (!RouteManager.route(context, data)) {
-                callback(PageFragment(FragmentType.HOME))
-            }
+            else -> callback(PageFragment(FragmentType.HOME))
         }
     }
 }
