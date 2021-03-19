@@ -116,6 +116,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
+    private var searchProperties: List<Property> = listOf()
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
@@ -667,13 +668,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             allMarker.add(marker)
             markerCounter++
         }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
     private fun changeMarkerState(position: Int) {
         resetMarkerState()
         if (!allMarker.isNullOrEmpty()) {
-            if (cardListPosition == position) allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+            if (cardListPosition == position && !searchProperties.isNullOrEmpty()) {
+                allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+                val latLng = LatLng(searchProperties[position].location.latitude.toDouble(), searchProperties[position].location.longitude.toDouble())
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            }
         }
     }
 
@@ -767,7 +771,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hideLoader()
         showQuickFilterShimmering(false)
 
-        val searchProperties = data.properties
+        searchProperties = data.properties
 
         if (searchProperties.isNotEmpty()) {
             renderCardListMap(searchProperties)
