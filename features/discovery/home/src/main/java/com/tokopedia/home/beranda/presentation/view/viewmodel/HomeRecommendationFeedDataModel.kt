@@ -10,7 +10,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
  * Created by devarafikry on 27/08/19.
  */
 
-data class HomeRecommendationFeedDataModel(var homeChooseAddressData: HomeChooseAddressData? = null) : HomeVisitable {
+data class HomeRecommendationFeedDataModel(
+        var homeChooseAddressData: HomeChooseAddressData? = null
+) : HomeVisitable {
 
     //keep this section if exist, because this viewholder is heavy to render
     override fun equalsWith(b: Any?): Boolean {
