@@ -6,7 +6,7 @@
       "event": "clickSearch",
       "eventCategory": "{{top nav|top nav - .+}}",
       "eventAction": "general search",
-      "eventLabel": "{{.+|.+|\\d|.+|.+|.+}}",
+      "eventLabel": "{{.+|.+|\\d|.+|.+|.+|.+}}",
       "currentSite": "tokopediamarketplace",
       "userId": "{{.+}}",
       "businessUnit": "search",
