@@ -2,7 +2,7 @@ package com.tokopedia.pocnewrelic
 
 import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.pocnewrelic.datasource.NewRelicCloudDataSource
+import com.tokopedia.pocnewrelic.datasource.NewRelicDataSource
 import com.tokopedia.pocnewrelic.remoteconfig.NewRelicRemoteConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
@@ -33,12 +33,12 @@ class NewRelic private constructor(context: Context) {
         }
     }
 
-    private val newRelicCloudDataSource: NewRelicCloudDataSource = NewRelicCloudDataSource(
+    private val newRelicDataSource: NewRelicDataSource = NewRelicDataSource(
             CoroutineDispatchersProvider,
             NewRelicRemoteConfig(FirebaseRemoteConfigImpl(context))
     )
 
     fun sendData(data: Map<String, Any>) {
-        newRelicCloudDataSource.sendData(data)
+        newRelicDataSource.sendData(data)
     }
 }

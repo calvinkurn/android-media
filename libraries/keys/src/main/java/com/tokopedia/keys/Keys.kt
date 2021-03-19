@@ -19,6 +19,9 @@ object Keys {
     val AUTH_NEW_RELIC_API_KEY = decodeKey(NEW_RELIC_API_KEY)
 
     @JvmStatic
+    val AUTH_NEW_RELIC_USER_ID = decodeKey(NEW_RELIC_USER_ID)
+
+    @JvmStatic
     val AUTH_SCALYR_API_KEY
         get() =
             when (GlobalConfig.APPLICATION_TYPE) {

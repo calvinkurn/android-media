@@ -15,10 +15,15 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random
 
-class NewRelicCloudDataSource constructor(
+class NewRelicDataSource constructor(
         private val dispatchers: CoroutineDispatchers,
         private val newRelicRemoteConfig: NewRelicRemoteConfig
 ) : CoroutineScope {
+
+    companion object {
+        private const val REMOTE_CONFIG_MIN_VALUE = 0.0
+        private const val REMOTE_CONFIG_MAX_VALUE = 100.0
+    }
 
     private val gson: Gson = Gson()
     override val coroutineContext: CoroutineContext = dispatchers.io
@@ -43,7 +48,8 @@ class NewRelicCloudDataSource constructor(
 
     private fun shouldSendDataToNewRelic(): Boolean {
         val pocNewRelicRemoteConfigValue = newRelicRemoteConfig.getPocNewRelicRemoteConfigValue()
-        return pocNewRelicRemoteConfigValue != 0.0 && Random.nextDouble(0.0, 100.0) <= pocNewRelicRemoteConfigValue
+        return pocNewRelicRemoteConfigValue != REMOTE_CONFIG_MIN_VALUE &&
+                Random.nextDouble(REMOTE_CONFIG_MIN_VALUE, REMOTE_CONFIG_MAX_VALUE) <= pocNewRelicRemoteConfigValue
     }
 
     private fun compressRequestBody(requestBody: Map<String, Any>): ByteArray {
@@ -59,7 +65,7 @@ class NewRelicCloudDataSource constructor(
 
     private fun openConnection(size: Int): HttpURLConnection {
         val urlConnection: HttpURLConnection?
-        val url = URL(URL_NEW_RELIC_EVENT)
+        val url = URL(getNewRelicEventURL(Keys.AUTH_NEW_RELIC_USER_ID))
         urlConnection = (url.openConnection() as HttpURLConnection).setUpConnection(size)
         return urlConnection
     }
@@ -68,8 +74,6 @@ class NewRelicCloudDataSource constructor(
         requestMethod = REQUEST_METHOD_POST
         doOutput = true
         useCaches = false
-        connectTimeout = 60000
-        readTimeout = 60000
         setRequestProperty(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_JSON)
         setRequestProperty(HEADER_NEW_RELIC_KEY, Keys.AUTH_NEW_RELIC_API_KEY)
         setRequestProperty(HEADER_CONTENT_ENCODING, HEADER_CONTENT_ENCODING_GZIP)
