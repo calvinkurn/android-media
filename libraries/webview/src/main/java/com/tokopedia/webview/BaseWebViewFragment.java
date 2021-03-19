@@ -47,6 +47,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -58,6 +59,8 @@ import com.tokopedia.webview.ext.UrlEncoderExtKt;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -77,10 +80,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int MAX_PROGRESS = 100;
     private static final int HALF_PROGRESS = 50;
     private static final int PICTURE_QUALITY = 60;
+    private static final String ERR_INTERNET_DISCONNECTED = "ERR_INTERNET_DISCONNECTED";
 
     public TkpdWebView webView;
     ProgressBar progressBar;
     private SwipeToRefresh swipeRefreshLayout;
+    private GlobalError globalError;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -200,6 +205,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
         swipeRefreshLayout = view.findViewById(R.id.general_web_view_lib_swipe_refresh_layout);
+        globalError = view.findViewById(R.id.unify_global_error);
 
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setEnabled(pullToRefresh);
@@ -207,7 +213,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         webView.clearCache(true);
-        webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
+        webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -361,7 +367,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onPermissionRequest(PermissionRequest request) {
-            for (String resource:
+            for (String resource :
                     request.getResources()) {
                 if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
                     permissionCheckerHelper = new PermissionCheckerHelper();
@@ -370,10 +376,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         public void onPermissionDenied(String permissionText) {
                             request.deny();
                         }
+
                         @Override
                         public void onNeverAskAgain(String permissionText) {
                             request.deny();
                         }
+
                         @Override
                         public void onPermissionGranted() {
                             request.grant(request.getResources());
@@ -382,6 +390,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             }
         }
+
         @Override
         public void onPermissionRequestCanceled(PermissionRequest request) {
             super.onPermissionRequestCanceled(request);
@@ -589,10 +598,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            progressBar.setVisibility(View.GONE);
             String webUrl = view.getUrl();
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
-                    failingUrl, errorCode, description, webUrl);
+            onWebPageReceivedError(failingUrl, errorCode, description, webUrl);
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
@@ -600,8 +607,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
             String webUrl = view.getUrl();
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
-                    request.getUrl(), error.getErrorCode(), error.getDescription(), webUrl);
+            onWebPageReceivedError(request.getUrl().toString(), error.getErrorCode(),
+                    error.getDescription().toString(), webUrl);
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
@@ -611,6 +618,27 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             String webUrl = view.getUrl();
             Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s';web_url='%s'",
                     request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase(), webUrl);
+        }
+    }
+
+    private void onWebPageReceivedError(String failingUrl, int errorCode, String description, String webUrl) {
+        progressBar.setVisibility(View.GONE);
+        Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
+                failingUrl, errorCode, description, webUrl);
+        if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
+                description.contains(ERR_INTERNET_DISCONNECTED) &&
+                globalError != null && swipeRefreshLayout != null) {
+            globalError.setActionClickListener(new Function1<View, Unit>() {
+                @Override
+                public Unit invoke(View view) {
+                    swipeRefreshLayout.setVisibility(View.VISIBLE);
+                    globalError.setVisibility(View.GONE);
+                    reloadPage();
+                    return null;
+                }
+            });
+            globalError.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.GONE);
         }
     }
 
@@ -655,7 +683,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
             if (queryParam != null)
                 intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            if(headerText != null)
+            if (headerText != null)
                 intent.putExtra(CUST_HEADER, headerText);
             startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
@@ -701,7 +729,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         }
-        if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
+        if (url.contains(LOGIN_APPLINK) || url.contains(REGISTER_APPLINK)) {
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT);
@@ -809,7 +837,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             startActivity(linkAjaIntent);
             getActivity().finish();
             return true;
-        }else
+        } else
             return false;
 
     }
