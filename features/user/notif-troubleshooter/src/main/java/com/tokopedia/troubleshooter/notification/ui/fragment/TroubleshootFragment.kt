@@ -4,7 +4,9 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,6 +63,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
+    }
+
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        return binding?.root!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
