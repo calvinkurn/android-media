@@ -444,6 +444,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     override fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean) {
         if (isChecked) digitalAnalytics.eventTebusMurahChecked(fintechProduct, position, userSession.userId)
         else digitalAnalytics.eventTebusMurahUnchecked(fintechProduct, userSession.userId)
+        viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }
 
     override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean) {

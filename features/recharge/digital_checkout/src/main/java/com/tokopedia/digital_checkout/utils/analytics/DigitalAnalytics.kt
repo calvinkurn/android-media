@@ -94,9 +94,10 @@ class DigitalAnalytics {
                 DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
                 BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
-                DigitalCheckoutTrackingConst.Label.CLICK, DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
-                DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - tebus murah",
-                        DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*fintechProductList.toTypedArray())))),
+                DigitalCheckoutTrackingConst.Label.CLICK,
+                DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
+                        DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - tebus murah"),
+                        DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*fintechProductList.toTypedArray()))),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
     }
@@ -269,7 +270,7 @@ class DigitalAnalytics {
                 DigitalCheckoutTrackingConst.Product.KEY_NAME, fintechProduct.info.title,
                 DigitalCheckoutTrackingConst.Product.KEY_POSITION, position,
                 DigitalCheckoutTrackingConst.Product.KEY_PRICE, fintechProduct.fintechAmount,
-                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, fintechProduct.fintechPartnerAmount,
+                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, fintechProduct.fintechPartnerAmount.toString()
         )
     }
 
@@ -285,7 +286,7 @@ class DigitalAnalytics {
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_ID, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_NAME, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_TYPE, DigitalCheckoutTrackingConst.Value.NONE,
-                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, fintechProduct.fintechPartnerAmount,
+                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, fintechProduct.fintechPartnerAmount.toString(),
         )
     }
 
