@@ -7,7 +7,7 @@ class NewRelicRemoteConfig constructor(
 ) {
 
     companion object {
-        private const val ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD = "android_sellerapp_poc_new_relic_dashboard"
+        private const val ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD = "ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD"
     }
 
     fun getPocNewRelicRemoteConfigValue(): Double {

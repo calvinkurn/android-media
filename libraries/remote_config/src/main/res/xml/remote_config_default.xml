@@ -518,7 +518,7 @@
         <value>false</value>
     </entry>
     <entry>
-        <key>android_sellerapp_poc_new_relic_dashboard</key>
+        <key>ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD</key>
         <value>0.0</value>
     </entry>
 </defaultsMap>
