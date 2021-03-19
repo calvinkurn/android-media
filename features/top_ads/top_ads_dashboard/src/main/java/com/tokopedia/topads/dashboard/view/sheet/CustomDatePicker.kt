@@ -19,6 +19,9 @@ import java.util.*
  * Created by Pika on 10/6/20.
  */
 
+private const val SIX_MONTH = -6
+private const val ONE_UNIT = -1
+
 class CustomDatePicker : BottomSheetUnify() {
 
     lateinit var minDate: Date
@@ -40,12 +43,12 @@ class CustomDatePicker : BottomSheetUnify() {
 
     private fun getBundleData() {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
+        calendar.add(Calendar.DATE, ONE_UNIT)
         val selectDateDef: String = Utils.format.format(calendar.time)
         if (isCreditSheet) {
-            calendar.add(Calendar.MONTH, -6)
+            calendar.add(Calendar.MONTH, SIX_MONTH)
         } else {
-            calendar.add(Calendar.YEAR, -1)
+            calendar.add(Calendar.YEAR, ONE_UNIT)
         }
         val minDateDef = Utils.format.format(calendar.time)
         val maxDateDef: String = Utils.format.format(Date())
@@ -111,6 +114,7 @@ class CustomDatePicker : BottomSheetUnify() {
                     }
                 }
             }
+
             override fun onDateUnselected(date: Date) {}
         })
     }
