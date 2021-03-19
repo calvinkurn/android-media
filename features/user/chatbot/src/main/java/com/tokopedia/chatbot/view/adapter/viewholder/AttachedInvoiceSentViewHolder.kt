@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Label
@@ -79,9 +80,13 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     }
 
     private fun setPrice(totalAmount: String?) {
-        if (!totalAmount.isNullOrEmpty()){
+        if (totalAmount.isNullOrEmpty()) {
+            pricePrefix?.hide()
+            price?.hide()
+        }else{
             pricePrefix?.show()
             price?.text = totalAmount
+            price?.show()
         }
     }
 

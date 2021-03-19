@@ -121,9 +121,13 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
         }
 
         private fun setPrice(totalAmount: String?) {
-            if (!totalAmount.isNullOrEmpty()) {
+            if (totalAmount.isNullOrEmpty()) {
+                pricePrefix.hide()
+                price.hide()
+            }else{
                 pricePrefix.show()
                 price.text = totalAmount
+                price.show()
             }
         }
 
