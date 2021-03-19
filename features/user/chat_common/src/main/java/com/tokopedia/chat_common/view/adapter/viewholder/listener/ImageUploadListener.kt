@@ -8,4 +8,5 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 interface ImageUploadListener {
     fun onImageUploadClicked(imageUrl: String, replyTime: String)
     fun onRetrySendImage(element: ImageUploadViewModel)
+    fun onImageUploadCancelClicked(image : ImageUploadViewModel){}
 }
