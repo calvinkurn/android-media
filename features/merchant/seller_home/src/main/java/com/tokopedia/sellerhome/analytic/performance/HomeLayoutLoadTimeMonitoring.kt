@@ -23,6 +23,14 @@ class HomeLayoutLoadTimeMonitoring: LoadTimeMonitoring() {
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
+    private fun getCustomMetricsDurationIfCompleted(key: String): Long {
+        return (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.let { pltMonitoring ->
+            pltMonitoring.customMetric[key].takeIf {
+                pltMonitoring.isCustomMetricDone[key] == true
+            }
+        }.orZero()
+    }
+
     fun addDataSourceAttribution(fromCache: Boolean) {
         if (fromCache) {
             pageLoadTimePerformanceMonitoring?.addAttribution(
@@ -40,15 +48,15 @@ class HomeLayoutLoadTimeMonitoring: LoadTimeMonitoring() {
     fun getOverallDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.overallDuration.orZero()
     fun getNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.requestNetworkDuration.orZero()
     fun getRenderDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.renderDuration.orZero()
-    fun getCardWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE).orZero()
-    fun getLineGraphWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE).orZero()
-    fun getProgressWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE).orZero()
-    fun getPostListWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE).orZero()
-    fun getCarouselWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE).orZero()
-    fun getTableWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE).orZero()
-    fun getPieChartWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE).orZero()
-    fun getBarChartWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE).orZero()
-    fun getMultiLineGraphWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE).orZero()
-    fun getAnnouncementWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE).orZero()
-    fun getTickerWidgetNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.customMetric?.get(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE).orZero()
+    fun getCardWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE)
+    fun getLineGraphWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE)
+    fun getProgressWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE)
+    fun getPostListWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE)
+    fun getCarouselWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE)
+    fun getTableWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE)
+    fun getPieChartWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE)
+    fun getBarChartWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE)
+    fun getMultiLineGraphWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
+    fun getAnnouncementWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE)
+    fun getTickerWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE)
 }

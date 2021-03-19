@@ -57,9 +57,8 @@ class NewRelicDataSource constructor(
         return ByteArrayOutputStream(requestBodyInBytes.size).use { byteArrayOutputStream ->
             GZIPOutputStream(byteArrayOutputStream).use { gzipOutputStream ->
                 gzipOutputStream.write(requestBodyInBytes, 0, requestBodyInBytes.size)
-                gzipOutputStream.finish()
-                byteArrayOutputStream.toByteArray()
             }
+            byteArrayOutputStream.toByteArray()
         }
     }
 
