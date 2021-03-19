@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.util
+package com.tokopedia.topads.sdk.utils
 
 const val PARAM_DEVICE = "device"
 const val PARAM_PAGE = "page"
@@ -12,5 +12,4 @@ const val VALUE_DEVICE = "android"
 const val VALUE_EP = "headline"
 const val VALUE_HEADLINE_PRODUCT_COUNT = "3"
 const val VALUE_ITEM = "1"
-const val VALUE_SRC = "fav_product"
 const val VALUE_TEMPLATE_ID = "3"
