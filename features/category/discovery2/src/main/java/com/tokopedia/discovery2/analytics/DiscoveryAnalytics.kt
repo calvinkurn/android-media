@@ -1,8 +1,8 @@
 package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
-import com.tokopedia.discovery2.Constant.LABEL_FULFILLMENT
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -439,12 +439,15 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
     private fun getProductDime83(dataItem: DataItem): String {
-        return if (dataItem.freeOngkir?.isActive == true && dataItem.labelsGroupList?.firstOrNull()?.type == LABEL_FULFILLMENT){
-            BEBAS_ONGKIR_EXTRA
-        }else if(dataItem.freeOngkir?.isActive == true){
-            BEBAS_ONGKIR
-        }else {
-            NONE_OTHER
+        if (dataItem.freeOngkir?.isActive == true) {
+            for (labelGroup in dataItem.labelsGroupList ?: arrayListOf()) {
+                if (labelGroup.position == Constant.LABEL_FULFILLMENT) {
+                    return BEBAS_ONGKIR_EXTRA
+                }
+            }
+            return BEBAS_ONGKIR
+        } else {
+            return NONE_OTHER
         }
     }
 
