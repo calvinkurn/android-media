@@ -13,7 +13,6 @@ import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsRemoteConfig
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolFormatter
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolLogger
-import leakcanary.LeakCanary
 import timber.log.Timber
 
 /**
@@ -24,7 +23,6 @@ class DevMonitoring(private var context: Context) {
 
     init {
         devMonitoringToolsConfig = DevMonitoringToolsRemoteConfig.getConfig(context)
-        LeakCanary.config = LeakCanary.config.copy(dumpHeap = false)
     }
 
     fun initCrashMonitoring() {
