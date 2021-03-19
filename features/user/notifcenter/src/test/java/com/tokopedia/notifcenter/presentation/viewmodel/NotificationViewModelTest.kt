@@ -24,8 +24,8 @@ import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
 import com.tokopedia.notifcenter.util.coroutines.TestDispatcherProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-//import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper.Companion.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -545,32 +545,32 @@ class NotificationViewModelTest {
         verify(exactly = 1) { notifcenterDetailUseCase.getMoreEarlierNotifications(any(), any(), any(), any()) }
     }
 
-//    @Test
-//    fun `loadRecommendations should return data properly`() {
-//        // given
-//        val listOfRecommWidget = productRecommResponse
-//                .productRecommendationWidget
-//                ?.data
-//                ?.let {
-//                    mappingToRecommendationModel(it)
-//                } ?: listOf(RecommendationWidget())
-//
-//        val expectedValue = listOfRecommWidget.first()
-//
-//        every {
-//            getRecommendationUseCase.createObservable(any())
-//        } returns Observable.just(listOfRecommWidget)
-//
-//        // when
-//        viewModel.loadRecommendations(0)
-//
-//        // then
-//        coVerifyOrder {
-//            val asVisitable = getRecommendationVisitables(0, expectedValue)
-//            recommendationsObserver.onChanged(asVisitable)
-//            assert(viewModel.recommendations.value == asVisitable)
-//        }
-//    }
+    @Test
+    fun `loadRecommendations should return data properly`() {
+        // given
+        val listOfRecommWidget = productRecommResponse
+                .productRecommendationWidget
+                ?.data
+                ?.let {
+                    it.mappingToRecommendationModel()
+                }
+
+        val expectedValue = listOfRecommWidget.first()
+
+        every {
+            getRecommendationUseCase.createObservable(any())
+        } returns Observable.just(listOfRecommWidget)
+
+        // when
+        viewModel.loadRecommendations(0)
+
+        // then
+        coVerifyOrder {
+            val asVisitable = getRecommendationVisitables(0, expectedValue)
+            recommendationsObserver.onChanged(asVisitable)
+            assert(viewModel.recommendations.value == asVisitable)
+        }
+    }
 
     @Test
     fun `addWishList test if is topAds and should return called addWishListTopAds`() {
