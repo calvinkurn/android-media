@@ -914,7 +914,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun clearCache() {
-        presenter.clearCache()
+        if(::presenter.isInitialized)
+            presenter.clearCache()
     }
 
     private fun trackGotoSellerApp() {

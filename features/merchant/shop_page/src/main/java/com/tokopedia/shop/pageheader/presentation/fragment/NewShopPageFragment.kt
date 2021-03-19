@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -84,6 +83,7 @@ import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocal
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
+import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
@@ -125,12 +125,19 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
+import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.appBarLayout
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.shopPageErrorState
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.shopPageLoadingState
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.swipeToRefresh
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.tabLayout
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.viewPager
 import kotlinx.android.synthetic.main.shop_page_main.*
 import java.io.File
 import javax.inject.Inject
@@ -190,7 +197,7 @@ class NewShopPageFragment :
         fun createInstance() = NewShopPageFragment()
     }
 
-    private var initialFloatingChatButtonMarginBottom: Int = 0
+    private var initialScrollToTopButtonMarginBottom: Int = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -250,10 +257,8 @@ class NewShopPageFragment :
         get() = R.drawable.ic_chat_floating_button.takeIf {
             isUsingNewNavigation()
         } ?: R.drawable.ic_chat_floating_button_old
-    private val chatButton: FloatingActionButton
-        get() = button_chat.takeIf {
-            isUsingNewNavigation()
-        }?: button_chat_old
+    private val scrollToTopButton: FloatingButtonUnify?
+        get() = button_scroll_to_top
     private val intentData: Intent = Intent()
     private val permissionChecker: PermissionCheckerHelper = PermissionCheckerHelper()
     private var shouldOverrideTabToHome: Boolean = false
@@ -355,8 +360,16 @@ class NewShopPageFragment :
             refreshData()
         }
         mainLayout.requestFocus()
-        getChatButtonInitialMargin()
+        getScrollToTopButtonInitialMargin()
         if (shopViewModel?.isUserSessionActive == false) initStickyLogin(view)
+        scrollToTopButton?.apply {
+            circleMainMenu.setOnClickListener {
+                val selectedFragment = viewPagerAdapter?.getRegisteredFragment(viewPager.currentItem)
+                (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
+                    it.scrollToTop()
+                }
+            }
+        }
     }
 
     private fun initViewPager() {
@@ -402,9 +415,9 @@ class NewShopPageFragment :
         SellerMigrationTracking.trackClickShopAccount(userSession.userId.orEmpty())
     }
 
-    private fun getChatButtonInitialMargin() {
-        val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
-        initialFloatingChatButtonMarginBottom = buttonChatLayoutParams.bottomMargin
+    private fun getScrollToTopButtonInitialMargin() {
+        val scrollToTopButtonLayoutParams = (scrollToTopButton?.layoutParams as ViewGroup.MarginLayoutParams)
+        initialScrollToTopButtonMarginBottom = scrollToTopButtonLayoutParams.bottomMargin
     }
 
     private fun observeLiveData(owner: LifecycleOwner) {
@@ -847,7 +860,7 @@ class NewShopPageFragment :
 
             override fun onViewChange(isShowing: Boolean) {
                 updateViewPagerPadding()
-                updateFloatingChatButtonMargin()
+                updateScrollToTopButtonMargin()
             }
         })
 
@@ -995,7 +1008,7 @@ class NewShopPageFragment :
                 shopPageErrorState.visibility = View.GONE
                 appBarLayout.visibility = View.INVISIBLE
                 viewPager.visibility = View.INVISIBLE
-                chatButton.hide()
+                scrollToTopButton?.gone()
             }
             VIEW_ERROR -> {
                 shopPageLoadingState.visibility = View.GONE
@@ -1265,8 +1278,24 @@ class NewShopPageFragment :
                             hideBottomSheetSellerMigration()
                         }
                     }
+                    viewPager?.post {
+                        checkIfShouldShowOrHideScrollToTopButton(position)
+                    }
                 }
         })
+    }
+
+    private fun checkIfShouldShowOrHideScrollToTopButton(position: Int) {
+        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
+        if (selectedFragment is InterfaceShopPageClickScrollToTop) {
+            if(selectedFragment.isShowScrollToTopButton()){
+                showScrollToTopButton()
+            }else{
+                hideScrollToTopButton()
+            }
+        }else{
+            hideScrollToTopButton()
+        }
     }
 
     private fun getSelectedTabPosition(): Int {
@@ -1641,25 +1670,26 @@ class NewShopPageFragment :
         }
     }
 
-    private fun updateFloatingChatButtonMargin() {
-        val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
+    private fun updateScrollToTopButtonMargin() {
+        val scrollToTopButtonLayoutParams = (scrollToTopButton?.layoutParams as ViewGroup.MarginLayoutParams)
         if (stickyLoginView?.isShowing() == true) {
-            val stickyLoginViewHeight = stickyLoginView?.height.orZero()
-            buttonChatLayoutParams.setMargins(
-                    buttonChatLayoutParams.leftMargin,
-                    buttonChatLayoutParams.topMargin,
-                    buttonChatLayoutParams.rightMargin,
+            stickyLoginView?.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED)
+            val stickyLoginViewHeight = stickyLoginView?.measuredHeight.orZero()
+            scrollToTopButtonLayoutParams.setMargins(
+                    scrollToTopButtonLayoutParams.leftMargin,
+                    scrollToTopButtonLayoutParams.topMargin,
+                    scrollToTopButtonLayoutParams.rightMargin,
                     stickyLoginViewHeight + MARGIN_BOTTOM_STICKY_LOGIN
             )
         } else {
-            buttonChatLayoutParams.setMargins(
-                    buttonChatLayoutParams.leftMargin,
-                    buttonChatLayoutParams.topMargin,
-                    buttonChatLayoutParams.rightMargin,
-                    initialFloatingChatButtonMarginBottom + MARGIN_BOTTOM_STICKY_LOGIN
+            scrollToTopButtonLayoutParams.setMargins(
+                    scrollToTopButtonLayoutParams.leftMargin,
+                    scrollToTopButtonLayoutParams.topMargin,
+                    scrollToTopButtonLayoutParams.rightMargin,
+                    initialScrollToTopButtonMarginBottom + MARGIN_BOTTOM_STICKY_LOGIN
             )
         }
-        chatButton.layoutParams = buttonChatLayoutParams
+        scrollToTopButton?.layoutParams = scrollToTopButtonLayoutParams
     }
 
     private fun updateViewPagerPadding() {
@@ -2034,5 +2064,25 @@ class NewShopPageFragment :
 
     override fun onLocalizingAddressLoginSuccess() {
         refreshData()
+    }
+
+    fun expandHeader() {
+        appBarLayout.post {
+            appBarLayout.setExpanded(true)
+        }
+    }
+
+    fun showScrollToTopButton() {
+        if(scrollToTopButton?.isShown == false) {
+            scrollToTopButton?.show()
+            scrollToTopButton?.visible()
+        }
+    }
+
+    fun hideScrollToTopButton() {
+        if(scrollToTopButton?.isShown == true) {
+            scrollToTopButton?.hide()
+            scrollToTopButton?.gone()
+        }
     }
 }
