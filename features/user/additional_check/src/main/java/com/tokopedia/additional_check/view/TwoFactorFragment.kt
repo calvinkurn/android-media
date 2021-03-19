@@ -135,9 +135,6 @@ class TwoFactorFragment: BaseDaggerFragment() {
     private fun goToAddPhone(){
         context?.run {
             val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PHONE)
-            i.putExtras(Bundle().apply {
-                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
-            })
             startActivityForResult(i, ADD_PHONE_REQ_CODE)
         }
     }

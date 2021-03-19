@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFragment
+import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFrom2FAFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
@@ -41,10 +42,8 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.extras?.run {
-            if(getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA)){
-                enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
-                isFrom2FA = getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, false)
-            }
+            enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
+            isFrom2FA = getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, false)
         }
         super.onCreate(savedInstanceState)
         KeyboardHandler.hideSoftKeyboard(this)
@@ -55,18 +54,19 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return AddPinFragment.createInstance(bundle)
+        return if (isFrom2FA) {
+            AddPinFrom2FAFragment.createInstance(bundle)
+        } else {
+            AddPinFragment.createInstance(bundle)
+        }
     }
 
     override fun onBackPressed() {
         if (fragment != null && fragment is AddPinFragment) {
-            if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) {
-                if (isFrom2FA && enableBackBtn) {
-                    setResult(Activity.RESULT_OK)
-                    finish()
-                } else {
-                    super.onBackPressed()
-                }
+            if (!(fragment as AddPinFrom2FAFragment).onBackPressedFromConfirm()) {
+                super.onBackPressed()
+            } else if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) {
+                super.onBackPressed()
             }
         } else {
             super.onBackPressed()
