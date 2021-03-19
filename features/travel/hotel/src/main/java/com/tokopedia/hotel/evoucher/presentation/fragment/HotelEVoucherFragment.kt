@@ -2,11 +2,14 @@ package com.tokopedia.hotel.evoucher.presentation.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
+import java.io.OutputStream
 import javax.inject.Inject
 
 
@@ -54,6 +58,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private lateinit var shareAsPdfBottomSheets: HotelSharePdfBottomSheets
 
     private var uri: Uri? = null
+    private val permissionChecker = PermissionCheckerHelper()
 
     override fun getScreenName(): String = ""
 
@@ -103,18 +108,14 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         orderId = args?.getString(EXTRA_ORDER_ID) ?: ""
         eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_hotel_order_list_detail), orderId)
+
     }
 
     override fun initInjector() = getComponent(HotelEVoucherComponent::class.java).inject(this)
 
     fun takeScreenshot(isShare: Boolean) {
         val bitmap = getScreenBitmap()
-        uri = saveImage(bitmap)
-        if (isShare) {
-            shareImageUri(uri)
-        } else {
-            showToastMessage(uri)
-        }
+        saveImage(bitmap, isShare)
     }
 
     private fun showToastMessage(uri: Uri?) {
@@ -130,23 +131,21 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         }
     }
 
+
     private fun getScreenBitmap(): Bitmap? {
         val v = container_root
 
         v.measure(View.MeasureSpec.makeMeasureSpec(v.width, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-        v.layout(0, 0, v.measuredWidth, v.measuredHeight)
 
-        val b = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
+        val b = Bitmap.createBitmap(v.measuredWidth, v.measuredHeight, Bitmap.Config.ARGB_8888)
         val c = Canvas(b)
         v.draw(c)
         return b
     }
 
-    private fun saveImage(bitmap: Bitmap?): Uri? {
-        var uri: Uri? = null
+    private fun saveImage(bitmap: Bitmap?, isShare: Boolean) {
         if (bitmap != null) {
-            val permissionChecker = PermissionCheckerHelper()
             permissionChecker.checkPermission(this,
                     PERMISSION_WRITE_EXTERNAL_STORAGE,
                     object : PermissionCheckerHelper.PermissionCheckListener {
@@ -167,12 +166,16 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                             val filename = getString(R.string.hotel_share_file_name, currentTime)
                             val bitmapPath = MediaStore.Images.Media.insertImage(context?.contentResolver, bitmap, filename, null)
                             uri = Uri.parse(bitmapPath)
+
+                            if (isShare) {
+                                shareImageUri(uri)
+                            } else {
+                                showToastMessage(uri)
+                            }
                         }
                     })
         }
-        return uri
     }
-
     private fun removeImageFromStorage(uri: Uri?) {
         if (uri != null) {
             context?.contentResolver?.delete(uri, null, null)
@@ -301,6 +304,11 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 removeImageFromStorage(uri)
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionChecker.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
 
     companion object {
