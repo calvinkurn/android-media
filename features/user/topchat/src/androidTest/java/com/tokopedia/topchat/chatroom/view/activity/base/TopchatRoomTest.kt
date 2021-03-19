@@ -15,6 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 import com.tokopedia.config.GlobalConfig
@@ -72,6 +73,12 @@ abstract class TopchatRoomTest {
     protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCaseStub
 
     @Inject
+    protected lateinit var uploadImageUseCase: TopchatUploadImageUseCaseStub
+
+    @Inject
+    protected lateinit var replyChatGQLUseCase: ReplyChatGQLUseCaseStub
+
+    @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
@@ -101,6 +108,10 @@ abstract class TopchatRoomTest {
     protected var stickerListAsBuyer: StickerResponse = AndroidFileUtil.parse(
             "success_chat_bundle_sticker.json",
             StickerResponse::class.java
+    )
+    protected var uploadImageReplyResponse: ChatReplyPojo = AndroidFileUtil.parse(
+            "success_upload_image_reply.json",
+            ChatReplyPojo::class.java
     )
 
     protected lateinit var chatComponentStub: ChatComponentStub
@@ -170,6 +181,15 @@ abstract class TopchatRoomTest {
         val viewAction = RecyclerViewActions
                 .actionOnItemAtPosition<AttachmentItemViewHolder>(
                         0, click()
+                )
+        onView(withId(R.id.rv_topchat_attachment_menu))
+                .perform(viewAction)
+    }
+
+    protected fun clickAttachImageMenu() {
+        val viewAction = RecyclerViewActions
+                .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                        1, click()
                 )
         onView(withId(R.id.rv_topchat_attachment_menu))
                 .perform(viewAction)

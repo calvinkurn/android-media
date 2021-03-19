@@ -13,7 +13,7 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class TopchatUploadImageUseCase @Inject constructor(
+open class TopchatUploadImageUseCase @Inject constructor(
         private var uploadImageUseCase: UploaderUseCase,
         private var chatImageServerUseCase: ChatImageServerUseCase,
         private var dispatchers: TopchatCoroutineContextProvider
@@ -27,7 +27,7 @@ class TopchatUploadImageUseCase @Inject constructor(
 
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
-    fun upload(
+    open fun upload(
             image: ImageUploadViewModel,
             onSuccess: (String, ImageUploadViewModel) -> Unit,
             onError: (Throwable, ImageUploadViewModel) -> Unit

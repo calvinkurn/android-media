@@ -31,10 +31,12 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingRespon
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.common.dispatcher.DispatcherProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
+import com.tokopedia.topchat.stub.common.TestDispatcherProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -251,5 +253,11 @@ class ChatModuleStub {
     @Named(AtcConstant.MUTATION_ATC_OCC)
     fun provideAtcOccMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTestDispatcher(): DispatcherProvider {
+        return TestDispatcherProvider()
     }
 }

@@ -5,7 +5,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import javax.inject.Inject
 
-class ReplyChatGQLUseCase @Inject constructor(
+open class ReplyChatGQLUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatReplyPojo>
 ) {
 

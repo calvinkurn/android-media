@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import com.google.gson.JsonObject
@@ -343,6 +342,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun startUploadImages(image: ImageUploadViewModel) {
         if(isEnableUploadImageService()) {
+            view?.addDummyMessage(image)
             UploadImageChatService.dummyMap[thisMessageId]?.add(image)
             UploadImageChatService.enqueueWork(view.context, image, thisMessageId)
         } else {

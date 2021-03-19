@@ -32,7 +32,7 @@ import rx.Subscriber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class UploadImageChatService: JobIntentService(), CoroutineScope {
+open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     @Inject
     lateinit var uploadImageUseCase: TopchatUploadImageUseCase
@@ -49,7 +49,7 @@ class UploadImageChatService: JobIntentService(), CoroutineScope {
     lateinit var dispatcher: DispatcherProvider
 
     companion object {
-        private const val JOB_ID_UPLOAD_IMAGE = 813
+        const val JOB_ID_UPLOAD_IMAGE = 813
         const val IMAGE = "image"
         const val ERROR_MESSAGE = "errorMessage"
         const val MESSAGE_ID = "messageId"
@@ -66,6 +66,10 @@ class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     override fun onCreate() {
         super.onCreate()
+        inject()
+    }
+
+    open fun inject() {
         DaggerChatComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .chatRoomContextModule(ChatRoomContextModule(this))

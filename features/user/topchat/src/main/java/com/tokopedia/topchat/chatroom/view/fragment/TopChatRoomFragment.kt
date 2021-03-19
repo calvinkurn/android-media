@@ -83,6 +83,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
+import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
+import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastReceiver
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_CODE_CHAT_IMAGE
@@ -142,7 +144,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
         RoomSettingFraudAlertViewHolder.Listener,
-        ReviewViewHolder.Listener {
+        ReviewViewHolder.Listener, UploadImageBroadcastListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -201,7 +203,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var chatBackground: ImageView? = null
     private var textWatcher: MessageTextWatcher? = null
     private var topchatViewState: TopChatViewStateImpl? = null
-    private var firstTimeOpen = true
     private var broadcastReceiver: BroadcastReceiver? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -212,6 +213,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
         initFireBase()
+        registerUploadImageReceiver()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -462,7 +464,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupFirstTimeOnly(chatRoom, chat)
         setupFirstPage(chatRoom, chat)
         fpm.stopTrace()
-        firstTimeOpen = false
         setupDummyData()
     }
 
@@ -1347,6 +1348,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        unregisterUploadImageReceiver()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
@@ -1750,17 +1752,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun registerUploadImageReceiver() {
-        broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == UploadImageChatService.BROADCAST_UPLOAD_IMAGE) {
-                    when (intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0)) {
-                        TkpdState.ProductService.STATUS_DONE -> onSuccessUploadImageWS(intent)
-                        TkpdState.ProductService.STATUS_ERROR -> onErrorUploadImageWS(intent)
-                    }
-                }
-            }
-        }
-
+        broadcastReceiver = UploadImageBroadcastReceiver(this)
         activity?.let {
             val intentFilters = IntentFilter().apply {
                 addAction(UploadImageChatService.BROADCAST_UPLOAD_IMAGE)
@@ -1772,7 +1764,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     //Success upload image with service
-    private fun onSuccessUploadImageWS(intent: Intent) {
+    override fun onSuccessUploadImageWS(intent: Intent) {
         if(messageId == getResultMessageId(intent)) {
             val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
             removeDummy(image)
@@ -1780,7 +1772,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     //Error upload image with service
-    private fun onErrorUploadImageWS(intent: Intent) {
+    override fun onErrorUploadImageWS(intent: Intent) {
         if(messageId == getResultMessageId(intent)) {
             val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
             val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
@@ -1801,19 +1793,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        registerUploadImageReceiver()
-        if(!firstTimeOpen) {
-            setupDummyData()
-        }
-    }
 
-    override fun onPause() {
-        super.onPause()
-        unregisterUploadImageReceiver()
-        removeDummyData()
-    }
 
     companion object {
         const val PARAM_RATING = "rating"
