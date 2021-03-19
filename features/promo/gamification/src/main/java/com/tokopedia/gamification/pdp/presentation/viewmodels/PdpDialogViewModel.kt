@@ -2,11 +2,9 @@ package com.tokopedia.gamification.pdp.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.gamification.pdp.data.GamingRecommendationParamResponse
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.modules.DispatcherModule
-import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationParamUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationProductUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -18,49 +16,27 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
 
 class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: GamingRecommendationProductUseCase,
-                                             val paramUseCase: GamingRecommendationParamUseCase,
                                              val addWishListUseCase: AddWishListUseCase,
                                              val removeWishListUseCase: RemoveWishListUseCase,
                                              val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
                                              val userSession: UserSessionInterface,
                                              @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher) : BaseViewModel(workerDispatcher) {
 
-    val recommendationLiveData: MutableLiveData<LiveDataResult<GamingRecommendationParamResponse>> = MutableLiveData()
     val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
-    var recomResponse:GamingRecommendationParamResponse?=null
 
-    var shopId = 0L
+    var shopId = ""
     var pageName = ""
     var useEmptyShopId = false
 
-    fun getRecommendationParams(pageName: String) {
-        this.pageName = pageName
+    fun getProducts(pageNumber: Int) {
         launchCatchError(block = {
-            withContext(workerDispatcher) {
-                val response = paramUseCase.getResponse(paramUseCase.getRequestParams(pageName))
-                recommendationLiveData.postValue(LiveDataResult.success(response))
-                getProducts(0, response)
-            }
-        }, onError = {
-            recommendationLiveData.postValue(LiveDataResult.error(it))
-        })
-    }
-
-    fun getProducts(page: Int, recomResponse:GamingRecommendationParamResponse?=null) {
-
-        launchCatchError(block = {
-            if(recomResponse !=null){
-                this.recomResponse = recomResponse
-            }
-            val params = this.recomResponse!!.params
             recommendationProductUseCase.useEmptyShopId = useEmptyShopId
-            val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, page, shopId, pageName)).first()
+            val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(pageNumber, shopId, pageName)).first()
             val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
             if(list.isNullOrEmpty() && useEmptyShopId){
                 productLiveData.postValue(LiveDataResult.error(Exception("Getting empty personal recommendataion")))

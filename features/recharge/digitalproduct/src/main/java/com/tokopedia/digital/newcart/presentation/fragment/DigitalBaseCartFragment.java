@@ -102,8 +102,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     protected EmptyStateUnify emptyState;
 
-    private static final String DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         DeviceInfo.getAdsIdSuspend(requireContext(), null);
@@ -482,21 +480,29 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void showError(String message) {
-        if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
-            emptyState.setDescription(message);
-            emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
-            emptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionAction));
+        String errorDesc = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        String errorTitle = getString(R.string.digital_transaction_failed_title);
+
+        if(message == null || message.isEmpty()){
+            emptyState.setImageUrl(getString(R.string.digital_image_url_failed_transaction));
+        } else {
+            if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
+                errorDesc = message;
+                errorTitle = getString(com.tokopedia.globalerror.R.string.noConnectionAction);
+                emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
+            }
+            else if(message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)){
+                errorDesc = getString(com.tokopedia.globalerror.R.string.error500Desc);
+                errorTitle = getString(com.tokopedia.globalerror.R.string.error500Title);
+                emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
+            }
+            else {
+                errorDesc = message;
+                emptyState.setImageUrl(getString(R.string.digital_image_url_failed_transaction));
+            }
         }
-        else if(message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)){
-            emptyState.setDescription(getString(com.tokopedia.globalerror.R.string.error500Desc));
-            emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
-            emptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title));
-        }
-        else {
-            emptyState.setDescription(message);
-            emptyState.setImageUrl(DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL);
-            emptyState.setTitle(getString(R.string.digital_transaction_failed_title));
-        }
+        emptyState.setDescription(errorDesc);
+        emptyState.setTitle(errorTitle);
         emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
         emptyState.setPrimaryCTAClickListener(() -> {
             emptyState.setVisibility(View.GONE);

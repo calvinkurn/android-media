@@ -27,7 +27,6 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenef
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
@@ -67,122 +66,6 @@ class ShopProductModule {
     @Provides
     fun getNetworkRouter(@ApplicationContext context: Context?): NetworkRouter {
         return context as NetworkRouter
-    }
-
-    @ShopProductScope
-    @Provides
-    @Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT)
-    fun getShopFeaturedProductQuery(@ShopPageContext context: Context): String {
-        return """
-            query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!){
-              shop_featured_product(shopID:${'$'}shopId, userID:${'$'}userID){
-                data{
-                  parent_id
-                  product_id
-                  name
-                  uri
-                  image_uri
-                  price
-                  preorder
-                  returnable
-                  wholesale
-                  cashback
-                  isWishlist
-                  is_rated
-                  original_price
-                  percentage_amount
-                  cashback_detail{
-                    cashback_status
-                    cashback_percent
-                    is_cashback_expired
-                    cashback_value
-                  }
-                  free_ongkir {
-                    is_active
-                    img_url
-                  }
-                  label_groups {
-                    position
-                    type
-                    title
-                  }
-                  total_review
-                  rating
-                }
-              }
-            }
-        """.trimIndent()
-    }
-
-    @ShopProductScope
-    @Provides
-    @Named(GQLQueryConstant.SHOP_PRODUCT)
-    fun getShopProductQuery(@ShopPageContext context: Context): String {
-        return """
-            query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
-              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
-                status
-                errors
-                data {
-                  product_id
-                  name
-                  product_url
-                  stock
-                  status
-                  price{
-                    text_idr
-                  }
-                  flags{
-                    isFeatured
-                    isPreorder
-                    isFreereturn
-                    isVariant
-                    isWholesale
-                    isWishlist
-                    isSold
-                    supportFreereturn
-                    mustInsurance
-                    withStock
-                  }
-                  stats{
-                    reviewCount
-                    rating
-                    viewCount
-                  }
-                  campaign{
-                    hide_gimmick
-                    original_price
-                    original_price_fmt
-                    discounted_price_fmt
-                    discounted_percentage
-                    discounted_price
-                    is_upcoming
-                    stock_sold_percentage
-                  }
-                  primary_image{
-                    original
-                    thumbnail
-                    resize300
-                  }
-                  cashback{
-                    cashback
-                    cashback_amount
-                  }
-                  freeOngkir {
-                    isActive
-                    imgURL
-                  }
-                  label_groups {
-                    position
-                    type
-                    title
-                    url
-                  }
-                }
-                totalData
-              }
-            }
-        """.trimIndent()
     }
 
     @Provides
@@ -329,27 +212,6 @@ class ShopProductModule {
     fun provideClaimBenefitMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP) gqlQuery: String?,
                                              gqlUseCase: MultiRequestGraphqlUseCase?): ClaimBenefitMembershipUseCase {
         return ClaimBenefitMembershipUseCase(gqlQuery!!, gqlUseCase!!)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun getShopFeaturedProductUseCase(@Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT) gqlQuery: String?,
-                                      gqlUseCase: MultiRequestGraphqlUseCase?): GetShopFeaturedProductUseCase {
-        return GetShopFeaturedProductUseCase(gqlQuery!!, gqlUseCase!!)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun getShopProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT) gqlQuery: String?,
-                              gqlUseCase: MultiRequestGraphqlUseCase?): GqlGetShopProductUseCase {
-        return GqlGetShopProductUseCase(gqlQuery!!, gqlUseCase!!)
-    }
-
-    @ShopProductGetHighlightProductQualifier
-    @Provides
-    fun getShopHighlightProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT) gqlQuery: String?,
-                              gqlUseCase: MultiRequestGraphqlUseCase?): GqlGetShopProductUseCase {
-        return GqlGetShopProductUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
     @Provides

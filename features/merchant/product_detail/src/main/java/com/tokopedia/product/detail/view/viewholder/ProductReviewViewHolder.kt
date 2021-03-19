@@ -124,10 +124,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun setReviewVariant(review: Review) {
-        if (review.productVariantReview.variantTitle.isNotEmpty()) {
+        if (review.variant.variantTitle.isNotEmpty()) {
             view.txt_variant_review_pdp.apply {
                 show()
-                text = review.productVariantReview.variantTitle
+                text = review.variant.variantTitle
             }
         } else {
             view.txt_variant_review_pdp.hide()

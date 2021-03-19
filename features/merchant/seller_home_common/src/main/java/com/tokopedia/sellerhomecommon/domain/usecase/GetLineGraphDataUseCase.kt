@@ -69,6 +69,7 @@ class GetLineGraphDataUseCase(
                     xLabel
                   }
                   error
+                  showWidget
                 }
               }
             }

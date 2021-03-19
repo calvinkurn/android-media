@@ -16,6 +16,7 @@ import android.view.View.LAYER_TYPE_SOFTWARE
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Created by Lukas on 2019-08-20
@@ -104,4 +105,11 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
 fun convertDpToPixel(dp: Float, context: Context): Int {
     val r = context.resources
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics).toInt()
+}
+
+fun RecyclerView.removeAllItemDecoration() {
+    if (this.itemDecorationCount > 0)
+    for (i in 0 until this.itemDecorationCount) {
+        this.removeItemDecorationAt(i)
+    }
 }

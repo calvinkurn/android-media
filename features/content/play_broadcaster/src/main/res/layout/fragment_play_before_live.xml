@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@color/Neutral_N700_68"
+    tools:background="@color/play_dms_broadcaster_background"
     >
 
     <include
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/play_prepare_cover_title_change_cover_label"
-            android:textColor="@color/play_white_96"
+            android:textColor="@color/play_dms_white_96"
             app:typographyType="small"
             app:typographyWeight="bold"
             />
@@ -81,7 +81,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:text="@string/play_cover_title_label"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/tv_cover_title"
         app:layout_constraintEnd_toEndOf="@id/tv_cover_title"
         app:layout_constraintStart_toStartOf="@id/tv_cover_title"
@@ -93,7 +93,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/v_separator"
         app:layout_constraintEnd_toEndOf="@id/v_separator"
         app:layout_constraintStart_toStartOf="@id/v_separator"
@@ -106,7 +106,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/play_dp_1"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/ll_selected_product"
         app:layout_constraintEnd_toEndOf="@id/iv_share_link"
         app:layout_constraintStart_toStartOf="@id/ll_selected_product"
@@ -130,7 +130,7 @@
             android:layout_height="wrap_content"
             app:typographyType="heading_6"
             tools:text="15 Produk Dipilih"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_Static_White"
             />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -168,7 +168,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/dp_1"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:background="@color/play_broadcast_schedule_divider"
+        android:background="@color/play_dms_broadcast_schedule_divider"
         app:layout_constraintBottom_toTopOf="@id/view_play_broadcast_schedule"
         app:layout_constraintEnd_toEndOf="@id/view_play_broadcast_schedule"
         app:layout_constraintStart_toStartOf="@id/view_play_broadcast_schedule"

@@ -49,12 +49,13 @@ data class SomListGetOrderListParam(
         @SerializedName("batch_page")
         @Expose
         var batchPage: Int = 0,
-
         @SerializedName("is_shipping_printed")
         @Expose
         var isShippingPrinted: Int = 0,
-
         @SerializedName("deadline")
         @Expose
-        var deadline: Int = 0
-): Parcelable
+        var deadline: Int = 0,
+        @SerializedName("source")
+        @Expose
+        var source: String = "som-list"
+) : Parcelable
