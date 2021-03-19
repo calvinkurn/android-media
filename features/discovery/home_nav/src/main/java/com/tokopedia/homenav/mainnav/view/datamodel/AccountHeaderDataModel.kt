@@ -14,7 +14,7 @@ data class AccountHeaderDataModel(
         var saldo: String = "",
         var tokopointPointAmount: String = "",
         var tokopointExternalAmount: String = "",
-        var isTokopointExternalAmountError: Boolean = false,
+        var isTokopointExternalAmountError: Boolean = true,
         var tokopointBadgeUrl: String = "",
         var tierBadgeUrl: String = "",
         var shopName: String = "",
