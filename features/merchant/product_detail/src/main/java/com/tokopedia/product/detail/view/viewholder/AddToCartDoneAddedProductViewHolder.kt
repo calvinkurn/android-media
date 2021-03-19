@@ -21,6 +21,7 @@ class AddToCartDoneAddedProductViewHolder(
 
     override fun bind(element: AddToCartDoneAddedProductDataModel) {
         with(itemView) {
+            free_ongkir_image.gone()
             element.productImageUr?.let {
                 image_view_added_product.loadImageRounded(it, resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8))
             }
