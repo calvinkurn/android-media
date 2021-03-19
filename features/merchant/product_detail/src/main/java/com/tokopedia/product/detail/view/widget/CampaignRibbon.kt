@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -20,10 +21,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.widget_campaign_ribbon_layout.view.*
-import kotlinx.android.synthetic.main.widget_campaign_ribbon_type_1_layout.view.*
-import kotlinx.android.synthetic.main.widget_campaign_ribbon_type_2_layout.view.*
-import kotlinx.android.synthetic.main.widget_campaign_ribbon_type_3_layout.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -81,7 +78,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    // FLASH SALE
+    // FLASH SALE - use campaign ribbon structure type 2
     private fun renderFlashSaleCampaignRibbon(onGoingData: ProductContentMainData? = null) {
         onGoingData?.let {
             renderOnGoingCampaignRibbon(onGoingData)
@@ -89,7 +86,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    // SLASH PRICE - not eligible for thematic campaign
+    // SLASH PRICE - not eligible for thematic campaign - use campaign ribbon structure type 3
     private fun renderSlashPriceCampaignRibbon(onGoingData: ProductContentMainData) {
         val campaign = onGoingData.campaign
         if (campaign.shouldShowRibbonCampaign) {
@@ -97,68 +94,73 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             val thematicCampaign = onGoingData.thematicCampaign
             // render campaign name
             val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
-            tpg_campaign_name_s3.text = campaignName
+            val campaignNameView = this.findViewById<Typography>(R.id.tpg_campaign_name_s3)
+            campaignNameView.text = campaignName
             // render campaign ribbon background
             val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
             val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes, SLASH_PRICE)
-            campaign_ribbon_type_3?.background = gradientDrawable
+            val campaignRibbonLayout = findViewById<View>(R.id.campaign_ribbon_type_3)
+            campaignRibbonLayout?.background = gradientDrawable
             // show count down wording
-            tpg_ends_in_s3.show()
+            findViewById<Typography>(R.id.tpg_ends_in_s3).show()
             // render ongoing count down timer
-            renderOnGoingCountDownTimer(campaign = campaign, timerView = tus_timer_view_s3)
+            val timerView = findViewById<TimerUnifySingle>(R.id.tus_timer_view_s3)
+            renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView)
             // hide irrelevant views
-            tgp_regulatory_info_s3?.hide()
-            iu_campaign_logo_s3?.hide()
+            findViewById<Typography>(R.id.tgp_regulatory_info_s3)?.hide()
+            findViewById<ImageView>(R.id.iu_campaign_logo_s3)?.hide()
             // show campaign ribbon type 3
             showCampaignRibbonType3()
         } else this.hide()
     }
 
-    // THEMATIC ONLY
+    // THEMATIC ONLY - use campaign ribbon structure type 3
     private fun renderThematicCampaignRibbon(onGoingData: ProductContentMainData) {
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
         if (thematicCampaign.background.isNotBlank()) {
-            campaign_ribbon_type_3?.background = getGradientDrawableForBackGround(thematicCampaign.background)
+            val campaignRibbonLayout = findViewById<View>(R.id.campaign_ribbon_type_3)
+            campaignRibbonLayout?.background = getGradientDrawableForBackGround(thematicCampaign.background)
         }
         // render campaign logo
+        val campaignLogoView = findViewById<ImageView>(R.id.iu_campaign_logo_s3)
         if (thematicCampaign.icon.isNotBlank()) {
-            iu_campaign_logo_s3.loadImage(thematicCampaign.icon)
-            iu_campaign_logo_s3.show()
-        } else iu_campaign_logo_s3.hide()
+            campaignLogoView.loadImage(thematicCampaign.icon)
+            campaignLogoView.show()
+        } else campaignLogoView.hide()
         // render campaign name
-        tpg_campaign_name_s3.text = thematicCampaign.campaignName
+        val campaignNameView = this.findViewById<Typography>(R.id.tpg_campaign_name_s3)
+        campaignNameView.text = thematicCampaign.campaignName
         // hide irrelevant views
-        tgp_regulatory_info_s3?.hide()
-        tpg_ends_in_s3?.hide()
-        tus_timer_view_s3?.hide()
+        findViewById<Typography>(R.id.tgp_regulatory_info_s3)?.hide()
+        findViewById<Typography>(R.id.tpg_ends_in_s3)?.hide()
+        findViewById<TimerUnifySingle>(R.id.tus_timer_view_s3)?.hide()
         // show campaign ribbon type 3
         showCampaignRibbonType3()
     }
 
-    //==========================================================================================================================================
-
     // show upcoming structure
     private fun showCampaignRibbonType1() {
-        campaign_ribbon_type_1.show()
-        campaign_ribbon_type_2.hide()
-        campaign_ribbon_type_3.hide()
+        findViewById<View>(R.id.campaign_ribbon_type_1).show()
+        findViewById<View>(R.id.campaign_ribbon_type_2).hide()
+        findViewById<View>(R.id.campaign_ribbon_type_3).hide()
     }
 
     // show ongoing structure
     private fun showCampaignRibbonType2() {
-        campaign_ribbon_type_1.hide()
-        campaign_ribbon_type_2.show()
-        campaign_ribbon_type_3.hide()
+        findViewById<View>(R.id.campaign_ribbon_type_1).hide()
+        findViewById<View>(R.id.campaign_ribbon_type_2).show()
+        findViewById<View>(R.id.campaign_ribbon_type_3).hide()
     }
 
     // show thematic only, new user, slash price structure
     private fun showCampaignRibbonType3() {
-        campaign_ribbon_type_1.hide()
-        campaign_ribbon_type_2.hide()
-        campaign_ribbon_type_3.show()
+        findViewById<View>(R.id.campaign_ribbon_type_1).hide()
+        findViewById<View>(R.id.campaign_ribbon_type_2).hide()
+        findViewById<View>(R.id.campaign_ribbon_type_3).show()
     }
 
+    // UPCOMING CAMPAIGN -  use campaign ribbon structure type 1
     fun renderUpComingCampaignRibbon(upcomingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
         showCampaignRibbonType1()
         val gradientDrawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
@@ -166,22 +168,24 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         } else {
             context.getDrawable(R.drawable.bg_gradient_default_flash_sale_by_seller)
         }
-
         // render campaign ribbon background
-        gradientDrawable?.run { campaign_ribbon_layout_s1.background = gradientDrawable }
+        val campaignRibbonLayout = findViewById<View>(R.id.campaign_ribbon_type_1)
+        gradientDrawable?.run { campaignRibbonLayout.background = gradientDrawable }
         // render campaign name
+        val campaignNameView = findViewById<Typography>(R.id.tpg_campaign_name_s1)
         val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
-        tpg_campaign_name_s1.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
+        campaignNameView.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
         // count down timer
+        val timerView = findViewById<TimerUnifySingle>(R.id.tus_timer_view_s1)
         upcomingData?.let {
             renderUpComingNplCountDownTimer(
                     it.startDate,
-                    tus_timer_view_s1
+                    timerView
             )
         }
         updateRemindMeButton(listener, upcomingData, upcomingIdentifier)
         // hide regulatory info
-        regulatory_info_layout_s1.hide()
+        findViewById<Typography>(R.id.regulatory_info_layout_s1).hide()
     }
 
     private fun renderUpComingNplCountDownTimer(startDateData: String,
@@ -217,7 +221,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         when (upComingData.notifyMe) {
             true -> {
                 remindMeButton.text = context.getString(R.string.notify_me_active)
-                remindMeButton.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+                remindMeButton.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                 remindMeButton.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_active)
             }
             false -> {
@@ -233,12 +237,14 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     fun updateRemindMeButton(listener: DynamicProductDetailListener?, upComingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
+        val remindMeButton = findViewById<Typography>(R.id.remind_me_button_s1)
         upComingData?.let {
             renderUpComingRemindMeButton(listener?.isOwner()
-                    ?: false, upComingData, remind_me_button_s1, upcomingIdentifier)
+                    ?: false, upComingData, remindMeButton, upcomingIdentifier)
         }
     }
 
+    // ONGOING CAMPAIGN - use campaign ribbon structure type 2 -
     private fun renderOnGoingCampaignRibbon(onGoingData: ProductContentMainData) {
 
         val campaign = onGoingData.campaign
@@ -247,39 +253,46 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render campaign ribbon background
         val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
         val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-        campaign_ribbon_type_2?.background = gradientDrawable
+        val campaignRibbonLayout = findViewById<View>(R.id.campaign_ribbon_type_2)
+        campaignRibbonLayout?.background = gradientDrawable
 
         // render campaign logo
+        val campaignLogoView = findViewById<ImageView>(R.id.iu_campaign_logo_s2)
         if (thematicCampaign.icon.isNotBlank()) {
-            iu_campaign_logo_s2.loadImage(thematicCampaign.icon)
-            iu_campaign_logo_s2.scaleType = ImageView.ScaleType.FIT_CENTER
-            iu_campaign_logo_s2.show()
-        } else iu_campaign_logo_s2.hide()
+            campaignLogoView.loadImage(thematicCampaign.icon)
+            campaignLogoView.show()
+        } else campaignLogoView.hide()
 
         // render campaign name
+        val campaignNameView = findViewById<Typography>(R.id.tpg_campaign_name_s2)
         val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
-        tpg_campaign_name_s2.text = campaignName
+        campaignNameView.text = campaignName
 
         // render ongoing count down
-        renderOnGoingCountDownTimer(campaign = campaign, timerView = tus_timer_view_s2)
+        val timerView = findViewById<TimerUnifySingle>(R.id.tus_timer_view_s2)
+        renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView)
 
         // render stock wording
+        val stockWordingView = findViewById<Typography>(R.id.tgp_stock_wording_s2)
+        val stockSoldOutView = findViewById<Typography>(R.id.tgp_sold_out_wording_s2)
         val isStockWordingRendered = renderStockWording(
                 stockSoldPercentage = campaign.stockSoldPercentage,
                 stockWording = onGoingData.stockWording,
-                stockTypography = tgp_stock_wording_s2,
-                soldOutTypography = tgp_sold_out_wording_s2
+                stockTypography = stockWordingView,
+                soldOutTypography = stockSoldOutView
         )
 
         // render stock bar
-        renderStockBar(isStockWordingRendered, campaign.stockSoldPercentage, pbu_stock_bar_s2)
+        val stockBarView = findViewById<ProgressBarUnify>(R.id.pbu_stock_bar_s2)
+        renderStockBar(isStockWordingRendered, campaign.stockSoldPercentage, stockBarView)
 
         // render regulatory info
+        val regulatoryInfoView = findViewById<Typography>(R.id.tgp_regulatory_info_s2)
         if (campaign.paymentInfoWording.isNotBlank()) {
-            tgp_regulatory_info_s2.text = campaign.paymentInfoWording
-            tgp_regulatory_info_s2?.show()
+            regulatoryInfoView.text = campaign.paymentInfoWording
+            regulatoryInfoView?.show()
         } else {
-            tgp_regulatory_info_s2?.hide()
+            regulatoryInfoView?.hide()
         }
     }
 

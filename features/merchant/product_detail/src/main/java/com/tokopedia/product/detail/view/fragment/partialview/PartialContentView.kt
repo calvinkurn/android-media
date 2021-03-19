@@ -22,6 +22,8 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
     companion object {
     }
 
+    private var campaignRibbon: CampaignRibbon? = null
+
     fun renderData(data: ProductContentMainData,
                    isUpcomingNplType: Boolean) = with(view) {
         txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
@@ -41,9 +43,9 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
             text_cashback_green.text = context.getString(R.string.template_cashback, data.cashbackPercentage.toString())
         }
 
-        val campaignRibbon = campaign_ribbon
-        campaignRibbon.setCampaignCountDownCallback(this@PartialContentView)
-        campaignRibbon.setDynamicProductDetailListener(listener)
+        campaignRibbon = findViewById(R.id.campaign_ribbon)
+        campaignRibbon?.setCampaignCountDownCallback(this@PartialContentView)
+        campaignRibbon?.setDynamicProductDetailListener(listener)
 
         when {
             isUpcomingNplType -> {
@@ -52,7 +54,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
                 } else {
                     setTextCampaignActive(data.campaign)
                 }
-                campaignRibbon.hide()
+                campaignRibbon?.hide()
             }
             // no campaign
             data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN -> {
@@ -61,11 +63,11 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
             }
             // thematic only
             data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN -> {
-                campaignRibbon.renderOnGoingCampaign(data)
+                campaignRibbon?.renderOnGoingCampaign(data)
                 renderCampaignInactive(data.price.priceFmt)
             }
             else -> {
-                campaignRibbon.renderOnGoingCampaign(data)
+                campaignRibbon?.renderOnGoingCampaign(data)
                 setTextCampaignActive(data.campaign)
             }
         }
@@ -112,7 +114,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         txt_main_price.text = price
         text_slash_price.gone()
         text_discount_red.gone()
-        campaign_ribbon.show()
+        campaignRibbon?.show()
     }
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
@@ -154,7 +156,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
     private fun hideProductCampaign(campaign: CampaignModular) = with(view) {
         txt_main_price.text = context.getString(R.string.template_price, "",
                 campaign.originalPrice.getCurrencyFormatted())
-        campaign_ribbon.hide()
+        campaignRibbon?.hide()
         text_discount_red.gone()
         text_slash_price.gone()
         text_stock_available.show()

@@ -8,6 +8,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
 
 class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
@@ -20,7 +21,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
         if (element.campaignID.isNotEmpty()) {
             showContainer()
             // render upcoming campaign ribbon
-            val campaignRibbon = itemView.upcoming_campaign_ribbon
+            val campaignRibbon = itemView.findViewById<CampaignRibbon>(R.id.upcoming_campaign_ribbon)
             val trackDataModel = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
             campaignRibbon?.setDynamicProductDetailListener(listener)
             campaignRibbon?.setComponentTrackDataModel(trackDataModel)
