@@ -70,7 +70,8 @@ object ShopPageHomeMapper {
         return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
-                type = labelGroup.type
+                type = labelGroup.type,
+                url = labelGroup.url
         )
     }
 
@@ -144,7 +145,8 @@ object ShopPageHomeMapper {
         return ProductCardModel.LabelGroup(
                 position = labelGroupUiModel.position,
                 title = labelGroupUiModel.title,
-                type = labelGroupUiModel.type
+                type = labelGroupUiModel.type,
+                imageUrl = labelGroupUiModel.url
         )
     }
 
@@ -371,6 +373,7 @@ object ShopPageHomeMapper {
                 isShowWishList = !isMyOwnProduct
                 isShowFreeOngkir = response.isShowFreeOngkir
                 freeOngkirPromoIcon = response.freeOngkirPromoIcon
+                labelGroupList = response.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
             }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {
