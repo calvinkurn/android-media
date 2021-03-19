@@ -59,7 +59,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
             // no campaign
             data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN -> {
                 renderCampaignInactive(data.price.priceFmt)
-                campaign_ribbon.hide()
+                campaignRibbon?.hide()
             }
             // thematic only
             data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN -> {

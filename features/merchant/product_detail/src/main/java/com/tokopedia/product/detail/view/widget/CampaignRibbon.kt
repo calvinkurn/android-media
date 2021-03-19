@@ -46,29 +46,32 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     // upcoming components - structure type 1
-    private val campaignRibbonLayout1: View? = findViewById(R.id.campaign_ribbon_type_1)
-    private val campaignNameViews1: Typography? = findViewById(R.id.tpg_campaign_name_s1)
-    private val timerView1: TimerUnifySingle? = findViewById(R.id.tus_timer_view_s1)
-    private val regulatoryInfoView1: Typography? = findViewById(R.id.regulatory_info_layout_s1)
-    private val remindMeButton1: Typography? = findViewById(R.id.remind_me_button_s1)
+    private var campaignRibbonType1View: View? = null
+    private var campaignRibbonLayout1: View? = null
+    private var campaignNameViews1: Typography? = null
+    private var timerView1: TimerUnifySingle? = null
+    private var regulatoryInfoLayout1: View? = null
+    private var remindMeButton1: Typography? = null
 
     // ongoing components - structure type 2
-    private val campaignRibbonLayout2: View? = findViewById(R.id.campaign_ribbon_type_2)
-    private val campaignLogoView2: ImageView? = findViewById(R.id.iu_campaign_logo_s2)
-    private val campaignNameView2: Typography? = findViewById(R.id.tpg_campaign_name_s2)
-    private val timerView2: TimerUnifySingle? = findViewById(R.id.tus_timer_view_s2)
-    private val stockWordingView2: Typography? = findViewById(R.id.tgp_stock_wording_s2)
-    private val stockSoldOutView2: Typography? = findViewById(R.id.tgp_sold_out_wording_s2)
-    private val stockBarView2: ProgressBarUnify? = findViewById(R.id.pbu_stock_bar_s2)
-    private val regulatoryInfoView2: Typography? = findViewById(R.id.tgp_regulatory_info_s2)
+    private var campaignRibbonType2View: View? = null
+    private var campaignRibbonLayout2: View? = null
+    private var campaignLogoView2: ImageView? = null
+    private var campaignNameView2: Typography? = null
+    private var timerView2: TimerUnifySingle? = null
+    private var stockWordingView2: Typography? = null
+    private var stockSoldOutView2: Typography? = null
+    private var stockBarView2: ProgressBarUnify? = null
+    private var regulatoryInfoView2: Typography? = null
 
     // slash price / thematic only components - structure type 3
-    private val campaignRibbonLayout3: View? = findViewById(R.id.campaign_ribbon_type_3)
-    private val campaignLogoView3: ImageView? = findViewById(R.id.iu_campaign_logo_s3)
-    private val campaignNameViews3: Typography? = findViewById(R.id.tpg_campaign_name_s3)
-    private val timerView3: TimerUnifySingle? = findViewById(R.id.tus_timer_view_s3)
-    private val endsInWordingView3: Typography? = findViewById(R.id.tpg_ends_in_s3)
-    private val regulatoryInfo3: Typography? = findViewById(R.id.tgp_regulatory_info_s3)
+    private var campaignRibbonType3View: View? = null
+    private var campaignRibbonLayout3: View? = null
+    private var campaignLogoView3: ImageView? = null
+    private var campaignNameViews3: Typography? = null
+    private var timerView3: TimerUnifySingle? = null
+    private var endsInWordingView3: Typography? = null
+    private var regulatoryInfo3: Typography? = null
 
     // listeners , callback properties
     private var callback: CampaignCountDownCallback? = null
@@ -76,10 +79,40 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     private var trackDataModel: ComponentTrackDataModel? = null
 
     init {
-        addView(LayoutInflater.from(context).inflate(
+        val rootView = LayoutInflater.from(context).inflate(
                 R.layout.widget_campaign_ribbon_layout,
                 this,
-                false))
+                false)
+        addView(rootView)
+        collectViewReferences(rootView)
+    }
+
+    private fun collectViewReferences(rootView: View) {
+        // TYPE 1 PROPERTIES
+        campaignRibbonType1View = rootView.findViewById(R.id.campaign_ribbon_type_1)
+        campaignRibbonLayout1 = campaignRibbonType1View?.findViewById(R.id.campaign_ribbon_layout_s1)
+        campaignNameViews1 = campaignRibbonType1View?.findViewById(R.id.tpg_campaign_name_s1)
+        timerView1 = campaignRibbonType1View?.findViewById(R.id.tus_timer_view_s1)
+        regulatoryInfoLayout1 = campaignRibbonType1View?.findViewById(R.id.regulatory_info_layout_s1)
+        remindMeButton1 = campaignRibbonType1View?.findViewById(R.id.remind_me_button_s1)
+        // TYPE 2 PROPERTIES
+        campaignRibbonType2View = rootView.findViewById(R.id.campaign_ribbon_type_2)
+        campaignRibbonLayout2 = campaignRibbonType2View?.findViewById(R.id.campaign_ribbon_layout_s2)
+        campaignLogoView2 = campaignRibbonType2View?.findViewById(R.id.iu_campaign_logo_s2)
+        campaignNameView2 = campaignRibbonType2View?.findViewById(R.id.tpg_campaign_name_s2)
+        timerView2 = campaignRibbonType2View?.findViewById(R.id.tus_timer_view_s2)
+        stockWordingView2 = campaignRibbonType2View?.findViewById(R.id.tgp_stock_wording_s2)
+        stockSoldOutView2 = campaignRibbonType2View?.findViewById(R.id.tgp_sold_out_wording_s2)
+        stockBarView2 = campaignRibbonType2View?.findViewById(R.id.pbu_stock_bar_s2)
+        regulatoryInfoView2 = campaignRibbonType2View?.findViewById(R.id.tgp_regulatory_info_s2)
+        // TYPE 3 PROPERTIES
+        campaignRibbonType3View = rootView.findViewById(R.id.campaign_ribbon_type_3)
+        campaignRibbonLayout3 = campaignRibbonType3View?.findViewById(R.id.campaign_ribbon_layout_s3)
+        campaignLogoView3 = campaignRibbonType3View?.findViewById(R.id.iu_campaign_logo_s3)
+        campaignNameViews3 = campaignRibbonType3View?.findViewById(R.id.tpg_campaign_name_s3)
+        timerView3 = campaignRibbonType3View?.findViewById(R.id.tus_timer_view_s3)
+        endsInWordingView3 = campaignRibbonType3View?.findViewById(R.id.tpg_ends_in_s3)
+        regulatoryInfo3 = campaignRibbonType3View?.findViewById(R.id.tgp_regulatory_info_s3)
     }
 
     fun setCampaignCountDownCallback(callback: CampaignCountDownCallback) {
@@ -128,9 +161,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             // show count down wording
             endsInWordingView3?.show()
             // render ongoing count down timer
-            timerView3?.run {
-                renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView3)
-            }
+            renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView3)
             // hide irrelevant views
             regulatoryInfo3?.hide()
             campaignLogoView3?.hide()
@@ -163,23 +194,23 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     // show upcoming structure
     private fun showCampaignRibbonType1() {
-        campaignRibbonLayout1?.show()
-        campaignRibbonLayout2?.hide()
-        campaignRibbonLayout3?.hide()
+        campaignRibbonType1View?.show()
+        campaignRibbonType2View?.hide()
+        campaignRibbonType3View?.hide()
     }
 
     // show ongoing structure
     private fun showCampaignRibbonType2() {
-        campaignRibbonLayout1?.hide()
-        campaignRibbonLayout2?.show()
-        campaignRibbonLayout3?.hide()
+        campaignRibbonType1View?.hide()
+        campaignRibbonType2View?.show()
+        campaignRibbonType3View?.hide()
     }
 
     // show thematic only, new user, slash price structure
     private fun showCampaignRibbonType3() {
-        campaignRibbonLayout1?.hide()
-        campaignRibbonLayout2?.hide()
-        campaignRibbonLayout3?.show()
+        campaignRibbonType1View?.hide()
+        campaignRibbonType2View?.hide()
+        campaignRibbonType3View?.show()
     }
 
     // UPCOMING CAMPAIGN -  use campaign ribbon structure type 1
@@ -197,40 +228,37 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         campaignNameViews1?.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
         // count down timer
         upcomingData?.let { data ->
-            timerView1?.let {
-                renderUpComingNplCountDownTimer(
-                        data.startDate,
-                        timerView1
-                )
-            }
+            renderUpComingNplCountDownTimer(
+                    data.startDate,
+                    timerView1
+            )
         }
         // update remind me button
         updateRemindMeButton(listener, upcomingData, upcomingIdentifier)
         // hide regulatory info
-        regulatoryInfoView1?.hide()
+        regulatoryInfoLayout1?.hide()
     }
 
-    private fun renderUpComingNplCountDownTimer(startDateData: String,
-                                                timerView: TimerUnifySingle) {
+    private fun renderUpComingNplCountDownTimer(startDateData: String, timerView: TimerUnifySingle?) {
         try {
             val now = System.currentTimeMillis()
             val startTime = startDateData.toLongOrZero() * ONE_SECOND
             val startDate = Date(startTime)
             val calendar = Calendar.getInstance()
             calendar.time = startDate
-            timerView.targetDate = calendar
-            timerView.isShowClockIcon = false
+            timerView?.targetDate = calendar
+            timerView?.isShowClockIcon = false
 
             // less then 24 hours campaign period
             if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
-                timerView.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                timerView.onFinish = {
+                timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                timerView?.onFinish = {
                     listener?.refreshPage()
                 }
             } else {
-                timerView.timerFormat = TimerUnifySingle.FORMAT_DAY
+                timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
             }
-            timerView.show()
+            timerView?.show()
         } catch (e: Throwable) {
             this.hide()
         }
@@ -238,21 +266,22 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun renderUpComingRemindMeButton(isOwner: Boolean,
                                              upComingData: ProductNotifyMeDataModel,
-                                             remindMeButton: Typography, upcomingIdentifier: String) {
-        remindMeButton.showWithCondition(!isOwner && upcomingIdentifier != ProductUpcomingTypeDef.UPCOMING_NPL)
+                                             remindMeButton: Typography?,
+                                             upcomingIdentifier: String) {
+        remindMeButton?.showWithCondition(!isOwner && upcomingIdentifier != ProductUpcomingTypeDef.UPCOMING_NPL)
         when (upComingData.notifyMe) {
             true -> {
-                remindMeButton.text = context.getString(R.string.notify_me_active)
-                remindMeButton.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                remindMeButton.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_active)
+                remindMeButton?.text = context.getString(R.string.notify_me_active)
+                remindMeButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                remindMeButton?.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_active)
             }
             false -> {
-                remindMeButton.text = context.getString(R.string.notify_me_inactive)
-                remindMeButton.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                remindMeButton.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_inactive)
+                remindMeButton?.text = context.getString(R.string.notify_me_inactive)
+                remindMeButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                remindMeButton?.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_inactive)
             }
         }
-        remindMeButton.setOnClickListener {
+        remindMeButton?.setOnClickListener {
             listener?.onNotifyMeClicked(upComingData, this.trackDataModel
                     ?: ComponentTrackDataModel())
         }
@@ -260,10 +289,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun updateRemindMeButton(listener: DynamicProductDetailListener?, upComingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
         upComingData?.let {
-            remindMeButton1?.let {
-                renderUpComingRemindMeButton(listener?.isOwner()
-                        ?: false, upComingData, remindMeButton1, upcomingIdentifier)
-            }
+            renderUpComingRemindMeButton(listener?.isOwner()
+                    ?: false, upComingData, remindMeButton1, upcomingIdentifier)
         }
     }
 
@@ -347,27 +374,27 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    private fun renderOnGoingCountDownTimer(campaign: CampaignModular, timerView: TimerUnifySingle) {
+    private fun renderOnGoingCountDownTimer(campaign: CampaignModular, timerView: TimerUnifySingle?) {
         try {
             val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
             val calendar = Calendar.getInstance()
             calendar.time = endDate
-            timerView.targetDate = calendar
-            timerView.isShowClockIcon = false
+            timerView?.targetDate = calendar
+            timerView?.isShowClockIcon = false
 
             // less then 24 hours campaign period
             if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
-                timerView.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                timerView.onFinish = {
+                timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                timerView?.onFinish = {
                     callback?.onOnGoingCampaignEnded(campaign)
                     listener?.showAlertCampaignEnded()
                 }
             } else {
-                timerView.timerFormat = TimerUnifySingle.FORMAT_DAY
+                timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
             }
-            timerView.show()
+            timerView?.show()
         } catch (ex: Exception) {
             this.hide()
         }
