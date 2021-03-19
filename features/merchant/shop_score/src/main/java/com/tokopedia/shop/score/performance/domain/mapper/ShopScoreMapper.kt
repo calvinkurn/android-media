@@ -141,7 +141,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             if (shopInfoPeriodUiModel.isNewSeller) {
                 add(mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
             }
-            add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result))
+            add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopInfoPeriodUiModel.isNewSeller))
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
                 addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail))
@@ -299,6 +299,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             this.shopLevel = shopScoreLevelResponse?.shopLevel?.toString() ?: "-"
             this.shopScore = shopScoreLevelResponse?.shopScore?.toString() ?: "-"
             this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.firstOrNull { it.identifier == PENALTY_IDENTIFIER }?.value
+            this.isNewSeller = isNewSeller
         }
 
         return headerShopPerformanceUiModel

@@ -5,8 +5,8 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformance
 data class HeaderShopPerformanceUiModel(var shopLevel: String = "-",
                                         var shopScore: String = "-",
                                         var scorePenalty: Int? = 0,
-                                        var titleHeaderShopService: String? = "-",
-                                        var descHeaderShopService: String? = "-",
+                                        var titleHeaderShopService: String? = "",
+                                        var descHeaderShopService: String? = "",
                                         var isNewSeller: Boolean = false
 ) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
