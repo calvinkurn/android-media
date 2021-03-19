@@ -14,6 +14,7 @@ data class AccountHeaderDataModel(
         var saldo: String = "",
         var tokopointPointAmount: String = "",
         var tokopointExternalAmount: String = "",
+        var isTokopointExternalAmountError: Boolean = true,
         var tokopointBadgeUrl: String = "",
         var tierBadgeUrl: String = "",
         var shopName: String = "",
@@ -52,6 +53,7 @@ data class AccountHeaderDataModel(
 
         const val ERROR_TEXT_PROFILE = "Gagal memuat profil"
         const val ERROR_TEXT_OVO = "Gagal memuat saldo Ovo"
+        const val ERROR_TEXT_TOKOPOINTS = "Gagal memuat Tokopoints"
         const val ERROR_TEXT_SHOP = "Gagal Memuat Toko.  %s"
         const val ERROR_TEXT_SHOP_TRY = "Coba Lagi"
     }
@@ -85,19 +87,20 @@ data class AccountHeaderDataModel(
         this.ovoSaldo = ovo
         this.ovoPoint = point
         this.isGetOvoError = false
+        this.isTokopointExternalAmountError = false
     }
 
     fun setSaldoData(saldo: String) {
         this.saldo = saldo
         this.isGetSaldoError = false
+        this.isTokopointExternalAmountError = false
     }
 
     fun setTokopointData(amount: String, point: String, badge: String){
         this.tokopointPointAmount = point
         this.tokopointExternalAmount = amount
         this.tokopointBadgeUrl = badge
-        this.isGetSaldoError = false
-        this.isGetOvoError = false
+        this.isTokopointExternalAmountError = false
     }
 
     fun setUserBadge(badge: String) {

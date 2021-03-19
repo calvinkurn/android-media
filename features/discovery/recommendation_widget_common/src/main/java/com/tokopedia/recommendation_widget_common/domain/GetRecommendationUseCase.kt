@@ -75,13 +75,8 @@ constructor(
     fun getOfficialStoreRecomParams(pageNumber: Int,
                                     pageName: String,
                                     categoryIds: String): RequestParams {
-        val params = RequestParams.create()
-
-        params.putInt(PAGE_NUMBER, pageNumber)
+        val params = getRecomParams(pageNumber, OFFICIAL_STORE, pageName, listOf(), "")
         params.putString(CATEGORY_IDS, categoryIds)
-        params.putString(X_SOURCE, OFFICIAL_STORE)
-        params.putString(PAGE_NAME, pageName)
-        params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         params.putBoolean(OS, true)
         return params
     }

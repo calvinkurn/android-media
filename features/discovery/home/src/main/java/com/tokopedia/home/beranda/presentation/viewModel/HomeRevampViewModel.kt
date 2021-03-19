@@ -40,7 +40,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -808,12 +807,19 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onRefreshTokoPoint() {
         if (!userSession.get().isLoggedIn) return
-        updateHeaderViewModel(
-                tokopointsDrawer = null,
-                tokopointsBBODrawer = null,
-                isTokoPointDataError = false
+        balanceRemoteConfigCondition(
+                isNewBalanceWidget = {
+                    getTokopointDrawerListData()
+                },
+                isOldBalanceWidget = {
+                    updateHeaderViewModel(
+                            tokopointsDrawer = null,
+                            tokopointsBBODrawer = null,
+                            isTokoPointDataError = false
+                    )
+                    getTokopoint()
+                }
         )
-        getTokopoint()
     }
 
     fun onRefreshTokoCash() {
@@ -1546,22 +1552,22 @@ open class HomeRevampViewModel @Inject constructor(
         }
 
         launchCatchError(coroutineContext, block = {
-            val tokopointContentDefered = async { getTokopointBalanceContent() }
-            val walletContentDefered = async { getWalletBalanceContent() }
 
             var walletContent: HomeHeaderWalletAction? = null
             var tokopointContent: TokopointsDrawerListHomeData? = null
             var pendingCashback: PendingCashback? = null
 
             try {
-                walletContent = walletContentDefered.await()
+                walletContent = getWalletBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.mapErrorWallet()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
             }
 
             try {
-                tokopointContent = tokopointContentDefered.await()
+                tokopointContent = getTokopointBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
             }
 
@@ -1590,7 +1596,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             tokopointContent?.let {
-                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContentDefered.await())
+                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = getTokopointBalanceContent())
             }
 
             newUpdateHeaderViewModel(homeBalanceModel)
@@ -1608,6 +1614,7 @@ open class HomeRevampViewModel @Inject constructor(
             homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointsDrawerListHome)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }) {
+            homeBalanceModel.mapErrorTokopoints()
             homeBalanceModel.setTokopointBalanceState(state = STATE_ERROR)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }
@@ -1625,6 +1632,7 @@ open class HomeRevampViewModel @Inject constructor(
                 _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
             }
         }){
+            homeBalanceModel.mapErrorWallet()
             homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }
