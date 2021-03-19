@@ -10,6 +10,7 @@ data class MultiLineGraphDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false,
         val metrics: List<MultiLineMetricUiModel> = emptyList()
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {

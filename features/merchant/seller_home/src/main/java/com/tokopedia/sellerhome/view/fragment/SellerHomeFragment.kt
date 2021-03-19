@@ -817,8 +817,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }.takeIf { it > -1 }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
-                    if (!widget.isShowEmpty && widgetData.shouldRemove()) {
+                    if (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())) {
                         newWidgetList.removeAt(index)
+                        removeEmptySections(newWidgetList, index)
                     } else {
                         val copiedWidget = widget.copy()
                         copiedWidget.data = widgetData
@@ -834,6 +835,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 checkLoadingWidgets()
                 requestVisibleWidgetsData()
             }
+        }
+    }
+
+    private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {
+        val previousWidget = newWidgetList.getOrNull(removedWidgetIndex - 1)
+        val widgetReplacement = newWidgetList.getOrNull(removedWidgetIndex)
+        if ((widgetReplacement == null || widgetReplacement is SectionWidgetUiModel) && previousWidget is SectionWidgetUiModel) {
+            newWidgetList.removeAt(removedWidgetIndex - 1)
         }
     }
 
