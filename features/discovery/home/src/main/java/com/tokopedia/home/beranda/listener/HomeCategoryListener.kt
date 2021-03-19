@@ -138,4 +138,6 @@ interface HomeCategoryListener {
     fun onChooseAddressUpdated()
 
     fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
+
+    fun onChooseAddressServerDown()
 }

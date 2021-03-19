@@ -1230,6 +1230,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
+
+        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(requireContext())
+        if (isChooseAddressShow) {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        } else {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        }
+
         Glide.with(requireContext())
                 .load(backgroundUrl)
                 .fitCenter()
@@ -1702,6 +1714,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             chooseAddressWidgetInitialized = true
         }
+    }
+
+    override fun onChooseAddressServerDown() {
+        getHomeViewModel().removeChooseAddressWidget()
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce

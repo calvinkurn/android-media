@@ -995,6 +995,7 @@ open class HomeRevampViewModel @Inject constructor(
             val detectHomeRecom = homeVisitableListData.find { visitable -> visitable is HomeRecommendationFeedDataModel }
             return if (detectHomeRecom != null) {
                 val currentList = homeDataModel.list.toMutableList()
+                (detectHomeRecom as? HomeRecommendationFeedDataModel)?.homeChooseAddressData = homeChooseAddressData
                 currentList.add(detectHomeRecom)
                 homeDataModel.copy(list = currentList)
             } else {
@@ -1319,7 +1320,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             if (findRecommendationModel != null) return@launchCatchError
 
-            val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel()
+            val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel(homeChooseAddressData)
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
@@ -1952,6 +1953,17 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getAddressData(): HomeChooseAddressData {
         return homeChooseAddressData
+    }
+
+    fun removeChooseAddressWidget() {
+        val homeHeaderOvoDataModel = homeVisitableListData.withIndex().find {
+            it.value is HomeHeaderOvoDataModel
+        }
+        (homeHeaderOvoDataModel?.value as? HomeHeaderOvoDataModel)?.needToShowChooseAddress = false
+        homeHeaderOvoDataModel?.let {
+            homeProcessor.get().sendWithQueueMethod(
+                    UpdateWidgetCommand(homeHeaderOvoDataModel.value, homeHeaderOvoDataModel.index, this))
+        }
     }
 
     fun isAddressDataEmpty(): Boolean {
