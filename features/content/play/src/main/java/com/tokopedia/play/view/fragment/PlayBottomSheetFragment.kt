@@ -110,6 +110,11 @@ class PlayBottomSheetFragment @Inject constructor(
         analytic.getTrackingQueue().sendAll()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hideLoadingView()
+    }
+
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         return ::loadingDialog.isInitialized && loadingDialog.isVisible
     }
@@ -146,7 +151,8 @@ class PlayBottomSheetFragment @Inject constructor(
         doShowToaster(
                 bottomSheetType = BottomInsetsType.ProductSheet,
                 toasterType = Toaster.TYPE_NORMAL,
-                message = getString(R.string.play_voucher_code_copied)
+                message = getString(R.string.play_voucher_code_copied),
+                actionText = getString(R.string.play_action_ok),
         )
         analytic.clickCopyVoucher(voucher)
     }

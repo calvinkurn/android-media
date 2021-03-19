@@ -395,7 +395,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (voucher.code.isBlank() || voucher.code.isEmpty()) return
 
         copyToClipboard(content = voucher.code)
-        doShowToaster(message = getString(R.string.play_voucher_code_copied))
+        doShowToaster(message = getString(R.string.play_voucher_code_copied), actionText = getString(R.string.play_action_ok))
         analytic.clickHighlightedVoucher(voucher)
     }
     //endregion
@@ -1046,6 +1046,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun doShowToaster(
             toasterType: Int = Toaster.TYPE_NORMAL,
+            actionText: String = "",
             message: String,
     ) {
         if (toasterBottomMargin == 0) {
@@ -1056,7 +1057,9 @@ class PlayUserInteractionFragment @Inject constructor(
         Toaster.build(
                 container,
                 message,
-                type = toasterType).show()
+                type = toasterType,
+                actionText = actionText
+        ).show()
     }
 
     private fun doAutoSwipe() {
@@ -1098,7 +1101,7 @@ class PlayUserInteractionFragment @Inject constructor(
         when (state) {
             PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
             PlayViewerVideoState.End -> {
-                if (playViewModel.bottomInsets.isAnyShown) playButtonView.showRepeatButton()
+                if (playViewModel.bottomInsets.isAnyShown || !playNavigation.canNavigateNextPage()) playButtonView.showRepeatButton()
                 else doAutoSwipe()
             }
             else -> playButtonView.hide()
