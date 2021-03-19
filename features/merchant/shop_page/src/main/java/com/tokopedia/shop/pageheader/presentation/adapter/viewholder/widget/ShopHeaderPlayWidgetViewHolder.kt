@@ -46,15 +46,13 @@ class ShopHeaderPlayWidgetViewHolder(
     private val shopPageSgcTitle: Typography? = itemView.findViewById(R.id.shop_page_sgc_title)
     private val containerLottie: FrameLayout? = itemView.findViewById(R.id.container_lottie)
     private val lottieAnimation: LottieAnimationView? = itemView.findViewById(R.id.lottie)
+    private val widgetPlayRootContainer:  FrameLayout? = itemView.findViewById(R.id.widget_play_root_container)
 
     override fun bind(shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
-        playWidgetContainer?.layoutParams = RecyclerView.LayoutParams(0, 0)
-        playWidgetContainer?.hide()
         val modelComponent = shopHeaderWidgetUiModel.components.filterIsInstance<ShopHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
         modelComponent?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             if (isShowPlayWidget(shopPageHeaderDataModel)) {
-                playWidgetContainer?.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-                playWidgetContainer?.show()
+                showPlayWidget()
                 setupTextContentSgcWidget()
                 setLottieAnimationFromUrl(itemView.context.getString(R.string.shop_page_lottie_sgc_url))
                 if (shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
@@ -72,10 +70,19 @@ class ShopHeaderPlayWidgetViewHolder(
                     )
                 }
             } else {
-                playWidgetContainer?.layoutParams = RecyclerView.LayoutParams(0, 0)
-                playWidgetContainer?.hide()
+                hidePlayWidget()
             }
         }
+    }
+
+    private fun showPlayWidget(){
+        widgetPlayRootContainer?.show()
+        playWidgetContainer?.show()
+    }
+
+    private fun hidePlayWidget(){
+        widgetPlayRootContainer?.hide()
+        playWidgetContainer?.hide()
     }
 
     private fun isShowPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel) = shopPageHeaderDataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()
