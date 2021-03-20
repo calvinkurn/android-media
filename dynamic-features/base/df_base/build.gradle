@@ -150,4 +150,7 @@ dependencies {
     implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.features.buyerorder)
     implementation project(rootProject.ext.features.snapshot)
+
+    //Library
+    implementation project(rootProject.ext.libraries.imagePicker)
 }
