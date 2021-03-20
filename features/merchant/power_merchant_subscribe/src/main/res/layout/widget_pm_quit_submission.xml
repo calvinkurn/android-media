@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700"
         app:typographyType="body_2"
-        tools:text="Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan dan status PM otomatis berhenti pada 18 Jan 2021, pukul 11.31 WIB." />
+        tools:text="@string/pm_deactivate_power_merchant_message_info" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnPmCancelQuitSubmission"
@@ -23,6 +23,6 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/pm_cancel_submission"
         android:textStyle="bold"
-        app:unifyButtonSize="medium" />
+        app:unifyButtonSize="small" />
 
 </LinearLayout>

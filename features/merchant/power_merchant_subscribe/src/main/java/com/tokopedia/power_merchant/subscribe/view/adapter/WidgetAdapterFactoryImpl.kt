@@ -11,7 +11,9 @@ import com.tokopedia.power_merchant.subscribe.view.model.*
  * Created By @ilhamsuaib on 02/03/21
  */
 
-class WidgetAdapterFactoryImpl : BaseAdapterTypeFactory(), WidgetAdapterFactory {
+class WidgetAdapterFactoryImpl(
+        private val widgetListener: PMWidgetListener
+) : BaseAdapterTypeFactory(), WidgetAdapterFactory {
 
     override fun type(model: WidgetRegistrationHeaderUiModel): Int = RegistrationHeaderWidget.RES_LAYOUT
 
@@ -31,12 +33,18 @@ class WidgetAdapterFactoryImpl : BaseAdapterTypeFactory(), WidgetAdapterFactory 
 
     override fun type(model: WidgetNextShopGradeUiModel): Int = NextShopGradeWidget.RES_LAYOUT
 
+    override fun type(model: WidgetNextUpdateUiModel): Int = NextUpdateInfoWidget.RES_LAYOUT
+
+    override fun type(model: WidgetPMDeactivateUiModel): Int = PMDeactivateWidget.RES_LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent)
             QuitSubmissionWidget.RES_LAYOUT -> QuitSubmissionWidget(parent)
+            NextUpdateInfoWidget.RES_LAYOUT -> NextUpdateInfoWidget(parent)
             NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)
+            PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
             ExpandableWidget.RES_LAYOUT -> ExpandableWidget(parent)
             ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(parent)
             PotentialWidget.RES_LAYOUT -> PotentialWidget(parent)

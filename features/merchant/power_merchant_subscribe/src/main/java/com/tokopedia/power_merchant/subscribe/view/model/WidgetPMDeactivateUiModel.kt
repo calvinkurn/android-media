@@ -6,7 +6,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 04/03/21
  */
 
-object WidgetQuitSubmissionUiModel : BaseWidgetUiModel {
+object WidgetPMDeactivateUiModel : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)

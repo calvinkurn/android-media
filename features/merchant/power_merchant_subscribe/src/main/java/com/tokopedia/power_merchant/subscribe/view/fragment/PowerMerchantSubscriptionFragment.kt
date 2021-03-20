@@ -25,6 +25,7 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.constant.ShopGrade
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
+import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
@@ -40,7 +41,8 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 02/03/21
  */
 
-class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>() {
+class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(),
+        PMWidgetListener {
 
     companion object {
         fun createInstance(): PowerMerchantSubscriptionFragment {
@@ -70,7 +72,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvPmRegistration
 
-    override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl = WidgetAdapterFactoryImpl()
+    override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl = WidgetAdapterFactoryImpl(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_pm_power_merchant_subscription, container, false)
@@ -86,6 +88,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     override fun onItemClicked(t: BaseWidgetUiModel?) {}
 
     override fun loadData(page: Int) {}
+
+    override fun setOnDeactivatePMClickListener() {
+
+    }
 
     private fun setupView() = view?.run {
 
@@ -242,6 +248,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun renderPMActiveState(data: PMFinalPeriodUiModel) {
         val widgets = mutableListOf<BaseWidgetUiModel>()
+        widgets.add(WidgetQuitSubmissionUiModel)
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
@@ -250,7 +257,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             widgets.add(getNextShopGradeWidgetData(data))
             widgets.add(WidgetDividerUiModel)
         }
+        widgets.add(WidgetNextUpdateUiModel(data.nextQuarterlyCalibrationRefreshDate))
         widgets.add(WidgetSingleCtaUiModel(getString(R.string.pm_pm_transition_period_learnmore), Constant.Url.POWER_MERCHANT_EDU))
+        widgets.add(WidgetPMDeactivateUiModel)
         renderList(widgets)
     }
 
