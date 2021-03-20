@@ -909,6 +909,7 @@ class AddEditProductDetailViewModelTest {
             } returns listOf()
 
             viewModel.getShopShowCasesUseCase()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 getShopEtalaseUseCase.executeOnBackground()
