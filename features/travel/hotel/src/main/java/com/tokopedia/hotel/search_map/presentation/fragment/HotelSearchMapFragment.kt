@@ -1145,7 +1145,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val COLLAPSING_THIRTEEN_FIFTEEN_OF_SCREEN = 14.5 / 15.0
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
-        private const val REQUEST_CHANGE_SEARCH_HOTEL = 101
+        private const val REQUEST_CHANGE_SEARCH_HOTEL = 105
 
         private const val ANCHOR_MARKER_X: Float = 0.8f
         private const val ANCHOR_MARKER_Y: Float = 1f
