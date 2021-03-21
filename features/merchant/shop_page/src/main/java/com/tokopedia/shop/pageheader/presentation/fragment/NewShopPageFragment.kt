@@ -132,13 +132,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
-import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.appBarLayout
-import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.shopPageErrorState
-import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.shopPageLoadingState
-import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.swipeToRefresh
-import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.tabLayout
-import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.viewPager
-import kotlinx.android.synthetic.main.shop_page_main.*
+import kotlinx.android.synthetic.main.new_shop_page_main.*
 import java.io.File
 import javax.inject.Inject
 
@@ -1004,20 +998,20 @@ class NewShopPageFragment :
     private fun setViewState(viewState: Int) {
         when (viewState) {
             VIEW_LOADING -> {
-                shopPageLoadingState.visibility = View.VISIBLE
+                newShopPageLoadingState.visibility = View.VISIBLE
                 shopPageErrorState.visibility = View.GONE
                 appBarLayout.visibility = View.INVISIBLE
                 viewPager.visibility = View.INVISIBLE
                 scrollToTopButton?.gone()
             }
             VIEW_ERROR -> {
-                shopPageLoadingState.visibility = View.GONE
+                newShopPageLoadingState.visibility = View.GONE
                 shopPageErrorState.visibility = View.VISIBLE
                 appBarLayout.visibility = View.INVISIBLE
                 viewPager.visibility = View.INVISIBLE
             }
             else -> {
-                shopPageLoadingState.visibility = View.GONE
+                newShopPageLoadingState.visibility = View.GONE
                 shopPageErrorState.visibility = View.GONE
                 appBarLayout.visibility = View.VISIBLE
                 viewPager.visibility = View.VISIBLE

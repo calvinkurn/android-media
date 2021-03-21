@@ -13,8 +13,8 @@
         android:orientation="vertical">
 
         <include
-            android:id="@+id/shopPageLoadingState"
-            layout="@layout/partial_shop_page_loading_state"
+            android:id="@+id/newShopPageLoadingState"
+            layout="@layout/new_partial_shop_page_loading_state"
             android:visibility="gone" />
 
         <include
