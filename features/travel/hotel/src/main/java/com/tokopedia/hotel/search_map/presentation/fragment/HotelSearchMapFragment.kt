@@ -881,7 +881,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 coachmark.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                         if (currentIndex == COACHMARK_LIST_STEP_POSITION) {
-                            animateCollapsingToolbar(COLLAPSING_ONE_TENTH_OF_SCREEN)
+                            animateCollapsingToolbar(COLLAPSING_FULL_EXPAND)
                         } else if (currentIndex == COACHMARK_FILTER_STEP_POSITION) {
                             animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
                         }
@@ -1089,10 +1089,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             text = getString(R.string.hotel_search_map_search_with_map)
         }
         wrapper.addView(textView)
-        wrapper.setOnClickListener {
-            animateCollapsingToolbar()
-        }
+
         btnHotelSearchWithMap.addItem(wrapper)
+        btnHotelSearchWithMap.setOnClickListener {
+            nsvContainerHotelSearchMap.scrollTo(0, 0)
+            animateCollapsingToolbar(COLLAPSING_FULL_EXPAND)
+        }
 
         rvVerticalPropertiesHotelSearchMap.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -1139,9 +1141,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         private const val ANIMATION_DETAIL_TIMES: Long = 500
 
+        private const val COLLAPSING_FULL_EXPAND = 0.0
         private const val COLLAPSING_HALF_OF_SCREEN = 1.0 / 2.0
         private const val COLLAPSING_ONE_FOURTH_OF_SCREEN = 1.0 / 5.0
-        private const val COLLAPSING_ONE_TENTH_OF_SCREEN = 1.0 / 10.0
         private const val COLLAPSING_THIRTEEN_FIFTEEN_OF_SCREEN = 14.5 / 15.0
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
