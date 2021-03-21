@@ -279,7 +279,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         initLocationMap()
         setupToolbarAction()
         setUpTitleAndSubtitle()
-        setupCollapsingToolbar()
+        setupCollapsingToolbar(collapsingHeightSize = COLLAPSING_THIRTEEN_FIFTEEN_OF_SCREEN)
         setupFindWithMapButton()
         Handler().postDelayed({
             animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
@@ -1142,6 +1142,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val COLLAPSING_HALF_OF_SCREEN = 1.0 / 2.0
         private const val COLLAPSING_ONE_FOURTH_OF_SCREEN = 1.0 / 5.0
         private const val COLLAPSING_ONE_TENTH_OF_SCREEN = 1.0 / 10.0
+        private const val COLLAPSING_THIRTEEN_FIFTEEN_OF_SCREEN = 14.5 / 15.0
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
         private const val REQUEST_CHANGE_SEARCH_HOTEL = 101
