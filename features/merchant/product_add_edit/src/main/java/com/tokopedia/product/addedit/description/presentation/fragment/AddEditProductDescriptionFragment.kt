@@ -130,10 +130,10 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onTextChanged(url: String, position: Int) {
+        getVideoYoutube(url)
         adapter.data.getOrNull(position)?.run {
             inputUrl = url
             youtubeAdapterPosition = position
-            getVideoYoutube(url)
         }
     }
 
