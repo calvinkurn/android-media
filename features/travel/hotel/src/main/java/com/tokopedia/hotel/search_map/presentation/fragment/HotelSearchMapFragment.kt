@@ -432,9 +432,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
                 containerFilterHotelSearchMap.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
 
+                val bottomMargin = containerFilterHotelSearchMap.measuredHeight - resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                 val headerParams = headerHotelSearchMap.layoutParams as CollapsingToolbarLayout.LayoutParams
                 headerParams.setMargins(headerParams.leftMargin, headerParams.topMargin,
-                        headerParams.rightMargin, containerFilterHotelSearchMap.measuredHeight)
+                        headerParams.rightMargin, bottomMargin)
 
                 headerHotelSearchMap.layoutParams = headerParams
             }
