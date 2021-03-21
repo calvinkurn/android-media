@@ -90,19 +90,25 @@ class AddEditProductDescriptionViewModel @Inject constructor(
                     return@filter it.isNotBlank()
                 }
                 .debounce(INPUT_DEBOUNCE)
-                .mapLatest {
-                    getIdYoutubeUrl(it)?.let { youtubeId  ->
-                        getYoutubeVideoUseCase.setVideoId(youtubeId)
-                    }
-                    convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+                .flatMapLatest { url ->
+                    getYoutubeVideo(url)
+                            .catch {
+                                emit(Fail(it))
+                            }
                 }
                 .flowOn(coroutineDispatcher.io)
-                .catch {
-                    _videoYoutubeNew.value = Fail(it)
-                }
                 .collect {
-                    _videoYoutubeNew.value = Success(it)
+                    _videoYoutubeNew.value = it
                 }
+    }
+
+    private fun getYoutubeVideo(url: String): Flow<Result<YoutubeVideoDetailModel>> {
+        return flow {
+            getIdYoutubeUrl(url)?.let { youtubeId  ->
+                getYoutubeVideoUseCase.setVideoId(youtubeId)
+            }
+            emit(Success(convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())))
+        }
     }
 
     private fun getIdYoutubeUrl(url: String): String? {
