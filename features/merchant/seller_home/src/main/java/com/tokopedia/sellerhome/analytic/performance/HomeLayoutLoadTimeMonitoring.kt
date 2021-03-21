@@ -46,6 +46,7 @@ class HomeLayoutLoadTimeMonitoring: LoadTimeMonitoring() {
     }
 
     fun getOverallDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.overallDuration.orZero()
+    fun getPrepareDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.preparePageDuration.orZero()
     fun getNetworkDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.requestNetworkDuration.orZero()
     fun getRenderDuration(): Long = (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.renderDuration.orZero()
     fun getCardWidgetNetworkDuration(): Long = getCustomMetricsDurationIfCompleted(SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE)

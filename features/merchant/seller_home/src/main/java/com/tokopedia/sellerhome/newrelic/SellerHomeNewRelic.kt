@@ -53,6 +53,7 @@ class SellerHomeNewRelic @Inject constructor() {
                         KEY_USER_ID to userId,
                         KEY_VERSION_CODE to GlobalConfig.VERSION_CODE,
                         KEY_PLT to performanceMonitoringSellerHomePlt?.getOverallDuration().orZero(),
+                        PLT_PREPARE to performanceMonitoringSellerHomePlt?.getPrepareDuration().orZero(),
                         PLT_NETWORK to performanceMonitoringSellerHomePlt?.getNetworkDuration().orZero(),
                         PLT_RENDER to performanceMonitoringSellerHomePlt?.getRenderDuration().orZero()
                 )
