@@ -97,6 +97,7 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var shopId: String
     private var isFragmentVisible = false
+    private var youtubeAdapterPosition = 0
 
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -131,7 +132,8 @@ class AddEditProductDescriptionFragment:
     override fun onTextChanged(url: String, position: Int) {
         adapter.data.getOrNull(position)?.run {
             inputUrl = url
-            getVideoYoutube(position, url)
+            youtubeAdapterPosition = position
+            getVideoYoutube(url)
         }
     }
 
@@ -422,8 +424,8 @@ class AddEditProductDescriptionFragment:
 
     @ExperimentalCoroutinesApi
     @FlowPreview
-    private fun getVideoYoutube(index: Int, url: String) {
-        descriptionViewModel.urlYoutubeChanged(index, url)
+    private fun getVideoYoutube(url: String) {
+        descriptionViewModel.urlYoutubeChanged(url)
     }
 
     private fun onFragmentResult() {
@@ -502,30 +504,29 @@ class AddEditProductDescriptionFragment:
 
     private fun observeProductVideo() {
         descriptionViewModel.videoYoutube.observe(viewLifecycleOwner) { result ->
-            val position = result.first
-            when (val requestResult = result.second) {
+            when (result) {
                 is Success -> {
-                    val id = requestResult.data.id
+                    val id = result.data.id
                     if (id == null) {
-                        displayErrorOnSelectedVideo(position)
+                        displayErrorOnSelectedVideo(youtubeAdapterPosition)
                     } else {
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()
-                        setDataOnSelectedVideo(requestResult.data, position)
+                        setDataOnSelectedVideo(result.data, youtubeAdapterPosition)
                     }
                 }
                 is Fail -> {
-                    displayErrorOnSelectedVideo(position)
-                    AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
+                    displayErrorOnSelectedVideo(youtubeAdapterPosition)
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                 }
             }
-            adapter.notifyItemChanged(position)
+            adapter.notifyItemChanged(youtubeAdapterPosition)
             updateSaveButtonStatus()
         }
     }
 
-    private fun displayErrorOnSelectedVideo(index: Int) {
-        adapter.data.getOrNull(index)?.apply {
+    private fun displayErrorOnSelectedVideo(position: Int) {
+        adapter.data.getOrNull(position)?.apply {
             inputTitle = ""
             inputDescription = ""
             inputImage = ""
@@ -533,8 +534,8 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoDetailModel, index: Int) {
-        adapter.data.getOrNull(index)?.apply {
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoDetailModel, position: Int) {
+        adapter.data.getOrNull(position)?.apply {
             inputTitle = youtubeVideoModel.title.orEmpty()
             inputDescription = youtubeVideoModel.description.orEmpty()
             inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()

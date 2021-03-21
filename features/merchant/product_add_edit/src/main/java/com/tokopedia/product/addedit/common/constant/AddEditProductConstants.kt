@@ -13,7 +13,6 @@ object AddEditProductConstants {
 
     const val HTTP_PREFIX = "http"
     const val KEY_YOUTUBE_VIDEO_ID = "v"
-    const val WEB_PREFIX_HTTP = "http://"
     const val WEB_PREFIX_HTTPS = "https://"
     const val GQL_ERROR_SUBSTRING = "gql.tokopedia.com"
     const val YOUTU_BE_URL = "youtu.be"

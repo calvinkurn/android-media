@@ -9,8 +9,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FULL_YOUTUBE_URL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTP
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTUBE_URL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTU_BE_URL
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -50,10 +48,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private var _descriptionValidationMessage = MutableLiveData<String>()
     val descriptionValidationMessage: LiveData<String> get() = _descriptionValidationMessage
 
-    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
-    val videoYoutube: LiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = _videoYoutubeNew
+    private val _videoYoutubeNew = MutableLiveData<Result<YoutubeVideoDetailModel>>()
+    val videoYoutube: LiveData<Result<YoutubeVideoDetailModel>> = _videoYoutubeNew
 
-    private val videoYoutubeFlow = MutableLiveData<Pair<Int, String>>()
+    private val videoYoutubeFlow = MutableLiveData<String>()
 
     var isEditMode: Boolean = false
     var isAddMode: Boolean = false
@@ -89,61 +87,37 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         videoYoutubeFlow
                 .asFlow()
                 .filter {
-                    return@filter it.first >= 0 && it.second.isNotBlank()
+                    return@filter it.isNotBlank()
                 }
                 .debounce(INPUT_DEBOUNCE)
-                .flatMapLatest { model ->
-                    val url = model.second
-                    val position = model.first
-                    getYoutubeDataFlow(position, url)
-                            .catch {
-                                _videoYoutubeNew.postValue(Pair(position, Fail(it)))
-                            }
-                }
-                .flowOn(coroutineDispatcher.io)
-                .collect { model ->
-                    model.run {
-                        _videoYoutubeNew.value = this
+                .mapLatest {
+                    getIdYoutubeUrl(it)?.let { youtubeId  ->
+                        getYoutubeVideoUseCase.setVideoId(youtubeId)
                     }
-                }
-    }
-
-    private fun getYoutubeDataFlow(position: Int, url: String): Flow<Pair<Int, Result<YoutubeVideoDetailModel>>> {
-        return flow {
-            getIdYoutubeUrl(url)?.let { youtubeId  ->
-                getYoutubeVideoUseCase.setVideoId(youtubeId)
-                val result = withContext(coroutineDispatcher.io) {
                     convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
                 }
-                emit(Pair(position, Success(result)))
-            }
+                .flowOn(coroutineDispatcher.io)
+                .catch {
+                    _videoYoutubeNew.value = Fail(it)
+                }
+                .collect {
+                    _videoYoutubeNew.value = Success(it)
+                }
+    }
+
+    private fun getIdYoutubeUrl(url: String): String? {
+        val videoUrl = url.replace("(www\\.|m\\.)".toRegex(), "")
+        val uri = Uri.parse(videoUrl)
+        return when (uri.host) {
+            YOUTU_BE_URL -> uri.lastPathSegment
+            YOUTUBE_URL -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+            FULL_YOUTUBE_URL -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+            else -> throw MessageErrorException("")
         }
     }
 
-    private fun getIdYoutubeUrl(videoUrl: String): String? {
-        return try {
-            // add https:// prefix to videoUrl
-            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
-                videoUrl
-            } else {
-                WEB_PREFIX_HTTPS + videoUrl
-            }
-            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
-
-            val uri = Uri.parse(webVideoUrl)
-            when (uri.host) {
-                YOUTU_BE_URL -> uri.lastPathSegment
-                YOUTUBE_URL -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
-                FULL_YOUTUBE_URL -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
-                else -> throw MessageErrorException("")
-            }
-        } catch (e: NullPointerException) {
-            throw MessageErrorException(e.message)
-        }
-    }
-
-    fun urlYoutubeChanged(position: Int, url: String) {
-        videoYoutubeFlow.value = Pair(position, url)
+    fun urlYoutubeChanged(url: String) {
+        videoYoutubeFlow.value = url
     }
 
     fun updateProductInputModel(productInputModel: ProductInputModel) {
