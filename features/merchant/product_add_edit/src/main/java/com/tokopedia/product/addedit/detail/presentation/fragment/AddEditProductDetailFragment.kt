@@ -1465,7 +1465,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 || viewModel.hasVariants) return
 
         viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
-            if (it.suggestedPrice > 0.0) {
+            val productPrice = viewModel.productInputModel.detailInputModel.price
+            val productSuggestedPrice = it.suggestedPrice.toBigDecimal().toBigInteger()
+
+            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0 && it.price > it.suggestedPrice
+            if (productPriceRecommendation?.isVisible == true) {
                 val minText = it.suggestedPriceMin.getCurrencyFormatted()
                 val maxText = it.suggestedPriceMax.getCurrencyFormatted()
                 val descriptionText = getString(R.string.label_price_recommendation_description, minText, maxText)
@@ -1473,9 +1477,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productPriceRecommendation?.price = it.suggestedPrice.getCurrencyFormatted()
                 productPriceRecommendation?.description = descriptionText
             }
-            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0
 
-            if (it.price == it.suggestedPrice) {
+            if (productPrice <= productSuggestedPrice) {
                 productPriceRecommendation?.setSuggestedPriceSelected()
             }
         }
