@@ -12,8 +12,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_shop_logo"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
         android:adjustViewBounds="true"
         android:background="@drawable/bg_shop_page_profile"
         android:contentDescription="@string/content_desc_shop_page_main_profile_image"
@@ -53,10 +53,10 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@id/image_shop_badge"
         app:layout_constraintRight_toLeftOf="@id/shop_page_chevron_shop_info"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
+        app:layout_constraintTop_toTopOf="@id/image_shop_logo"
+        app:layout_constraintVertical_bias="0.15"
         app:layout_goneMarginLeft="@dimen/dp_12"
-        app:typographyType="heading_5"
+        app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="Rockbros Indonesia" />
 
@@ -94,7 +94,7 @@
         app:layout_constraintTop_toBottomOf="@id/text_shop_name"
         app:layout_constraintVertical_bias="0"
         app:layout_goneMarginLeft="@dimen/dp_12"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Terakhir online Feb 2020" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
