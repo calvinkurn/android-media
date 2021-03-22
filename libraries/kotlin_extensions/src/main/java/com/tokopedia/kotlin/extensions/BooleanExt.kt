@@ -1,0 +1,3 @@
+package com.tokopedia.kotlin.extensions
+
+fun Boolean?.orFalse(): Boolean = this ?: false

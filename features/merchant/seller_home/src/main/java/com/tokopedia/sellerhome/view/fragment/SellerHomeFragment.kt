@@ -72,6 +72,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -108,7 +109,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
     private val recyclerView: RecyclerView?
-        get() = super.getRecyclerView(view)
+        get() =
+            try {
+                super.getRecyclerView(view)
+            } catch (ex: Exception) {
+                null
+            }
 
     private var sellerHomeListener: Listener? = null
     private var menu: Menu? = null
@@ -817,8 +823,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }.takeIf { it > -1 }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
-                    if (!widget.isShowEmpty && widgetData.shouldRemove()) {
+                    if (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())) {
                         newWidgetList.removeAt(index)
+                        removeEmptySections(newWidgetList, index)
                     } else {
                         val copiedWidget = widget.copy()
                         copiedWidget.data = widgetData
@@ -834,6 +841,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 checkLoadingWidgets()
                 requestVisibleWidgetsData()
             }
+        }
+    }
+
+    private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {
+        val previousWidget = newWidgetList.getOrNull(removedWidgetIndex - 1)
+        val widgetReplacement = newWidgetList.getOrNull(removedWidgetIndex)
+        if ((widgetReplacement == null || widgetReplacement is SectionWidgetUiModel) && previousWidget is SectionWidgetUiModel) {
+            newWidgetList.removeAt(removedWidgetIndex - 1)
         }
     }
 
