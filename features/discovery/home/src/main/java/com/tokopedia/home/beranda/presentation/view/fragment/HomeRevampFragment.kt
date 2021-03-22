@@ -701,25 +701,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark() {
-        coachMarkIsShowing = true
-        val coachMarkItem = ArrayList<CoachMark2Item>()
-        val coachMark = CoachMark2(requireContext())
+        context?.let {
+            coachMarkIsShowing = true
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(it)
 
-        coachMarkItem.buildHomeCoachmark()
-        coachMark.setStepListener(object: CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                coachMarkItem.setCoachmarkShownPref()
+            coachMarkItem.buildHomeCoachmark()
+            coachMark.setStepListener(object: CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    coachMarkItem.setCoachmarkShownPref()
+                }
+            })
+            //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+            //will be removed along the coachmark removal in the future
+            try {
+                if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                    coachMark.showCoachMark(step = coachMarkItem, index = 0)
+                    coachMarkItem[0].setCoachmarkShownPref()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        })
-        //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-        //will be removed along the coachmark removal in the future
-        try {
-            if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                coachMark.showCoachMark(step = coachMarkItem, index = 0)
-                coachMarkItem[0].setCoachmarkShownPref()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
@@ -1229,6 +1231,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
+
+        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(requireContext())
+        if (isChooseAddressShow) {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        } else {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        }
+
         Glide.with(requireContext())
                 .load(backgroundUrl)
                 .fitCenter()
@@ -1701,6 +1715,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             chooseAddressWidgetInitialized = true
         }
+    }
+
+    override fun onChooseAddressServerDown() {
+        getHomeViewModel().removeChooseAddressWidget()
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce

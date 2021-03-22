@@ -2,6 +2,7 @@ package com.tokopedia.localizationchooseaddress.ui.bottomsheet
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
@@ -210,6 +211,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 if (resultCode == Activity.RESULT_OK) {
                     isLoginFlow = true
                     setInitialViewState()
+                    val chooseAddressPref = context?.getSharedPreferences(CHOOSE_ADDRESS_PREF, Context.MODE_PRIVATE)
+                    chooseAddressPref?.edit()?.clear()?.apply()
                     viewModel.getDefaultChosenAddress("", source)
                 }
             }
@@ -486,6 +489,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_LOGIN_PAGE = 499
 
         private const val HAS_ASKED_PERMISSION_KEY = "has_asked_permission"
+        private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
     }
 
     override fun onItemClicked(address: ChosenAddressList) {

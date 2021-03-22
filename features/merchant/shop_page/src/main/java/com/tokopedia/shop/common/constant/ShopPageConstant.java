@@ -26,6 +26,7 @@ public class ShopPageConstant {
     public static final int DEFAULT_ETALASE_POSITION = 4;
     public static final int DEFAULT_ETALASE_TITLE_POSITION = 5;
     public static final int ITEM_OFFSET = 6;
+    public static final int DEFAULT_VALUE_ETALASE_TYPE = 0;     // It's only for apps or frontend identifier
 
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list
     public static final int SMALL_DATA_LIMIT = 2;

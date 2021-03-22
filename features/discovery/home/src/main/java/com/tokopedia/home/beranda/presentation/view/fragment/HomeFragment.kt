@@ -1509,6 +1509,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     }
 
+    override fun onChooseAddressServerDown() {
+
+    }
+
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
 //        homeRecyclerView?.itemAnimator = null

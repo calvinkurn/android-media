@@ -64,7 +64,11 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
         val chooseAddressView = itemView.widget_choose_address
-        listener.initializeChooseAddressWidget(chooseAddressView, needToShowChooseAddress)
+        if (needToShowChooseAddress) {
+            listener.initializeChooseAddressWidget(chooseAddressView, needToShowChooseAddress)
+        } else {
+            chooseAddressView.gone()
+        }
     }
 
     private fun renderEmptySpace(isUserLogin: Boolean) {

@@ -65,6 +65,7 @@ import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialItemViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialViewHolder
+import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
@@ -397,8 +398,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun onSuccessGetFirstRecommendationData(recommendation: RecommendationWidget) {
         widgetTitle = recommendation.title
         addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
+        addTopAdsHeadLine()
         adapter?.notifyDataSetChanged()
         addRecommendationItem(recommendation.recommendationItemList)
+    }
+
+    private fun addTopAdsHeadLine() {
+        addItem(TopadsHeadlineUiModel(), addSeparator = false)
     }
 
     private fun addRecommendationItem(list: List<RecommendationItem>) {
@@ -455,7 +461,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         financialAdapter = HomeAccountFinancialAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
-        adapter = HomeAccountUserAdapter(this, financialAdapter, memberAdapter)
+        adapter = HomeAccountUserAdapter(this, financialAdapter, memberAdapter, userSession)
         setupList()
         setLoadMore()
         showLoading()

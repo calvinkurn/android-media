@@ -22,7 +22,7 @@ class ChooseAddressWidgetCallback(
     }
 
     override fun onLocalizingAddressServerDown() {
-
+        homeCategoryListener.onChooseAddressServerDown()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {

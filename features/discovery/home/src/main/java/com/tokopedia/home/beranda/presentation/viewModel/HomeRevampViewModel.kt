@@ -1001,26 +1001,37 @@ open class HomeRevampViewModel @Inject constructor(
             val detectHomeRecom = homeVisitableListData.find { visitable -> visitable is HomeRecommendationFeedDataModel }
             return if (detectHomeRecom != null) {
                 val currentList = homeDataModel.list.toMutableList()
-                currentList.add(detectHomeRecom)
-                homeDataModel.copy(list = currentList)
+                val isAddressChanged =
+                        (detectHomeRecom as? HomeRecommendationFeedDataModel)?.homeChooseAddressData != homeChooseAddressData
+                if (isAddressChanged) {
+                    currentList.remove(detectHomeRecom)
+                    initializeRecomSection(homeDataModel.copy(list = currentList))
+                } else {
+                    currentList.add(detectHomeRecom)
+                    homeDataModel.copy(list = currentList)
+                }
             } else {
-                val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
-                val mutableIterator = visitableMutableList.iterator()
-                for (e in mutableIterator) {
-                    if(e is HomeRetryModel){
-                        mutableIterator.remove()
-                        break
-                    }
-                }
-                if (!homeDataModel.isCache) {
-                    if(visitableMutableList.find { it::class.java == HomeLoadingMoreModel::class.java } == null) visitableMutableList.add(HomeLoadingMoreModel())
-                    getFeedTabData()
-                }
-                homeDataModel.copy(
-                        list = visitableMutableList)
+                initializeRecomSection(homeDataModel)
             }
         }
         return homeDataModel
+    }
+
+    private fun initializeRecomSection(homeDataModel: HomeDataModel): HomeDataModel {
+        val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
+        val mutableIterator = visitableMutableList.iterator()
+        for (e in mutableIterator) {
+            if (e is HomeRetryModel) {
+                mutableIterator.remove()
+                break
+            }
+        }
+        if (!homeDataModel.isCache) {
+            if (visitableMutableList.find { it::class.java == HomeLoadingMoreModel::class.java } == null) visitableMutableList.add(HomeLoadingMoreModel())
+            getFeedTabData()
+        }
+        return homeDataModel.copy(
+                list = visitableMutableList)
     }
 
     fun getRecommendationFeedSectionPosition() = homeVisitableListData.size -1
@@ -1311,7 +1322,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun getFeedTabData() {
-        if (getTabRecommendationJob != null) return
+        if (getTabRecommendationJob?.isActive == true) return
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
             getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
@@ -1325,7 +1336,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             if (findRecommendationModel != null) return@launchCatchError
 
-            val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel()
+            val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel(homeChooseAddressData)
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
@@ -1962,6 +1973,17 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getAddressData(): HomeChooseAddressData {
         return homeChooseAddressData
+    }
+
+    fun removeChooseAddressWidget() {
+        val homeHeaderOvoDataModel = homeVisitableListData.withIndex().find {
+            it.value is HomeHeaderOvoDataModel
+        }
+        (homeHeaderOvoDataModel?.value as? HomeHeaderOvoDataModel)?.needToShowChooseAddress = false
+        homeHeaderOvoDataModel?.let {
+            homeProcessor.get().sendWithQueueMethod(
+                    UpdateWidgetCommand(homeHeaderOvoDataModel.value, homeHeaderOvoDataModel.index, this))
+        }
     }
 
     fun isAddressDataEmpty(): Boolean {
