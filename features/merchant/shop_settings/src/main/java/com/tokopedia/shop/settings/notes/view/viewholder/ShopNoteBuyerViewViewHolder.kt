@@ -60,7 +60,6 @@ class ShopNoteBuyerViewViewHolder(view: View): BaseViewHolder(view) {
                 title = model.title,
                 description = MethodChecker.fromHtml(model.description),
                 isTheLastPosition = model.isTheLastPosition
-
         )
     }
 
