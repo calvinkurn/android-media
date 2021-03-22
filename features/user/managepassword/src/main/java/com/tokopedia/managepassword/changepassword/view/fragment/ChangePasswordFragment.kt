@@ -8,13 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.managepassword.R
@@ -22,6 +22,11 @@ import com.tokopedia.managepassword.changepassword.analytics.ChangePasswordAnaly
 import com.tokopedia.managepassword.changepassword.view.viewmodel.ChangePasswordViewModel
 import com.tokopedia.managepassword.changepassword.view.viewmodel.LiveDataValidateResult
 import com.tokopedia.managepassword.di.ManagePasswordComponent
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,6 +43,10 @@ import javax.inject.Inject
  */
 
 class ChangePasswordFragment : BaseDaggerFragment() {
+
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+
+    private var isEnableEncryption = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -57,6 +66,11 @@ class ChangePasswordFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(ManagePasswordComponent::class.java).inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fetchRemoteConfig()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -99,11 +113,47 @@ class ChangePasswordFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun fetchRemoteConfig() {
+        if (context != null) {
+            val firebaseRemoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
+            isEnableEncryption = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_RESET_PASSWORD_ENCRYPTION, false)
+        }
+    }
+
+    fun isEnableEncryptRollout(): Boolean {
+        val rolloutKey = if(GlobalConfig.isSellerApp()) {
+            SessionConstants.Rollout.ROLLOUT_RESET_PASS_ENCRYPTION_SELLER
+        } else {
+            SessionConstants.Rollout.ROLLOUT_RESET_PASS_ENCRYPTION
+        }
+
+        val variant = getAbTestPlatform().getString(rolloutKey)
+        return variant.isNotEmpty()
+    }
+
+    private fun isUseEncryption(): Boolean {
+        return isEnableEncryptRollout() && isEnableEncryption
+    }
+
     private fun initObserver() {
-        viewModel.validatePassword.observe(this, Observer {
+        viewModel.validatePassword.observe(viewLifecycleOwner, {
             when (it) {
                 LiveDataValidateResult.VALID -> {
-                    viewModel.submitChangePassword("encode", newPassword, confirmationPassword, "token")
+                    if(isUseEncryption()){
+                        viewModel.submitChangePasswordV2(newPassword, confirmationPassword)
+                    } else{
+                        viewModel.submitChangePassword(newPassword, confirmationPassword)
+                    }
+                }
+                LiveDataValidateResult.INVALID_LENGTH -> {
+                    onErrorTextField(textNewPassword, getString(R.string.change_password_invalid_length))
                 }
                 LiveDataValidateResult.SAME_WITH_OLD -> {
                     onErrorTextField(textNewPassword, getString(R.string.change_password_same_with_old))
@@ -114,7 +164,7 @@ class ChangePasswordFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.response.observe(this, Observer {
+        viewModel.response.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessChangePassword()
                 is Fail -> onErrorChangePassword(it.throwable.toString())

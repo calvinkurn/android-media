@@ -85,32 +85,6 @@
               },
               {
                 "msgId": 932022280,
-                "replyId": "8367013658",
-                "senderId": 29240564,
-                "senderName": "Nisaa",
-                "role": "Shop Owner",
-                "msg": "\"\"\n",
-                "fraudStatus": 0,
-                "replyTime": "1593320444778965000",
-                "status": 1,
-                "attachmentID": 439369781,
-                "isOpposite": true,
-                "isHighlight": false,
-                "isRead": true,
-                "blastId": 151610,
-                "source": "blast_seller",
-                "attachment": {
-                  "id": 439369781,
-                  "type": 11,
-                  "attributes": "{\"voucher\":{\"voucher_id\":898645,\"tnc\":\"\u003col\u003e\u003cb\u003e\u003cli\u003eGunakan kode voucher : LORESSG5JU\u003c/li\u003e\u003c/b\u003e\u003cli\u003eVoucher Cashback dapat digunakan dengan membuka halaman promo di Keranjang\u003c/li\u003e\u003cli\u003eVoucher Cashback hanya berlaku apabila pembelian Pengguna sudah memenuhi syarat dan ketentuan yang tertera pada voucher.\u003c/li\u003e\u003cli\u003eNominal cashback yang bisa didapatkan sebesar Rp 20.000.\u003c/li\u003e\u003cli\u003eVoucher Cashback berlaku untuk transaksi minimal Rp 50.000 (tidak termasuk ongkos kirim dan biaya tambahan lainnya).\u003c/li\u003e\u003cli\u003eVoucher Cashback hanya berlaku untuk pembelanjaan di L\u0026#39;oreal Paris.\u003c/li\u003e\u003cli\u003e1 (satu) Pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher Cashback ini.\u003c/li\u003e\u003cli\u003eCashback akan diberikan dalam bentuk OVO Points pada saat transaksi selesai. Pengguna diharapkan untuk memastikan bahwa Pengguna sudah mengaktifkan OVO. Jika tidak mengaktifkan dalam 7 hari setelah mengikuti promo, Cashback akan hangus.\u003c/li\u003e\u003cli\u003eJika transaksi dibatalkan atau masuk ke Pusat Resolusi, dana yang kembali ke pembeli akan sesuai dengan nominal pembayaran yang dilakukan.\u003c/li\u003e\u003cli\u003eTokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan yang dilakukan oleh Pengguna dan/atau yang melanggar Syarat dan Ketentuan Situs dan/atau merugikan pihak Tokopedia.\u003c/li\u003e\u003cli\u003eDengan menggunakan Voucher Cashback ini, pengguna dianggap telah memahami dan menyetujui semua Syarat \u0026amp; Ketentuan yang berlaku.\u003c/li\u003e\u003c/ol\u003e\",\"voucher_code\":\"LORESSG5JU\",\"voucher_name\":\"LOreal Broadcast 28 Juni\",\"minimum_spend\":50000,\"valid_thru\":1593361800,\"valid_thru_str\":\"2020-06-28 23:30:00 +0700 WIB\",\"desktop_url\":\"https://ecs7.tokopedia.net/img/attachment/2020/6/26/29240564/29240564_aa0e78b2-acce-4380-b692-463801390b91\",\"mobile_url\":\"https://ecs7.tokopedia.net/img/attachment/2020/6/26/29240564/29240564_aa0e78b2-acce-4380-b692-463801390b91\",\"amount\":20000,\"amount_type\":1,\"identifier\":\"cashback\",\"voucher_type\":3,\"is_quota_available\":1,\"is_public\":1}}\n",
-                  "fallback": {
-                    "message": "Dapatkan cashback 20000\nMinimal Transaksi : Rp50000",
-                    "html": "\u003cdiv\u003eDapatkan cashback 20000\u003cbr\u003eMinimal Transaksi : Rp50000\u003c/div\u003e"
-                  }
-                }
-              },
-              {
-                "msgId": 932022280,
                 "replyId": "8367013659",
                 "senderId": 29240564,
                 "senderName": "Nisaa",
@@ -193,7 +167,7 @@
                 "senderId": 29240564,
                 "senderName": "Nisaa",
                 "role": "Shop Owner",
-                "msg": "EXTRA Cashback Rp 20,000 dari Loreal Paris\u003cbr\u003eDengan belanja Min. Rp 50,000! Dapatkan cashback sebesar Rp 20,000 menggunakan kode voucher LORESSG5JU. Dapatkan diskon menarik termasuk FREE Masker dengan belanja all make up Min. 150K dan banyak hadiah gratis lainnya untuk bundle eksklusif. Cek sekarang!",
+                "msg": "Lorem ipsum test broadcast text",
                 "fraudStatus": 0,
                 "replyTime": "1593320444778969000",
                 "status": 1,

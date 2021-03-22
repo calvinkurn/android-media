@@ -6,7 +6,6 @@ import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import javax.inject.Inject
 
 /**
@@ -15,7 +14,7 @@ import javax.inject.Inject
 class PlayProductTagUiMapper @Inject constructor() {
 
     fun mapProductTag(input: Product): PlayProductUiModel {
-        return ProductLineUiModel(
+        return PlayProductUiModel.Product(
                 id = input.id.toString(),
                 shopId = input.shopId,
                 imageUrl = input.image,
