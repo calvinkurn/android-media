@@ -261,6 +261,22 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    private fun resetBbo() {
+        val logisticPromoViewModel = _orderShipment.logisticPromoViewModel
+        val logisticPromoShipping = _orderShipment.logisticPromoShipping
+        val shippingRecommendationData = _orderShipment.shippingRecommendationData
+        if (shippingRecommendationData != null && logisticPromoViewModel != null && _orderShipment.isApplyLogisticPromo && logisticPromoShipping != null) {
+            shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = false)
+            val shippingDuration = shippingRecommendationData.shippingDurationViewModels.first { it.serviceData.serviceId == logisticPromoShipping.serviceData.serviceId }
+            shippingDuration.isSelected = true
+            shippingDuration.shippingCourierViewModelList.first { it.productData.shipperProductId == logisticPromoShipping.productData.shipperProductId }.isSelected = true
+            _orderShipment = _orderShipment.copy(shippingRecommendationData = shippingRecommendationData,
+                    isApplyLogisticPromo = false,
+                    logisticPromoShipping = null,
+                    logisticPromoTickerMessage = "Tersedia ${logisticPromoViewModel.title}")
+        }
+    }
+
     fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
         val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, _orderShipment)
         newOrderShipment?.let {
@@ -508,11 +524,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
-            val (error, resultValidateUse) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
+            val (error, resultValidateUse, isAkamaiError) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
             when {
-                error != null -> {
+                error != null && !isAkamaiError -> {
                     orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                    globalEvent.value = OccGlobalEvent.Error(error)
+                }
+                error != null && isAkamaiError -> {
+                    resetBbo()
+                    clearAllPromoFromLastRequest()
+                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
                     globalEvent.value = OccGlobalEvent.Error(error)
                 }
                 resultValidateUse != null -> {
@@ -525,6 +547,16 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
             }
         }
+    }
+
+    private fun clearAllPromoFromLastRequest() {
+        validateUsePromoRevampUiModel = null
+        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
+        if (orders.isNotEmpty()) {
+            orders[0]?.codes?.clear()
+        }
+        lastValidateUsePromoRequest?.codes?.clear()
+        orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
     }
 
     fun updatePromoState(promoUiModel: PromoUiModel) {

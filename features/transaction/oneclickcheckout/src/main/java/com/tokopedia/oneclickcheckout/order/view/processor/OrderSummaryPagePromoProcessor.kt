@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
@@ -31,8 +32,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                          private val executorDispatchers: ExecutorDispatchers) {
 
-    suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<Throwable?, ValidateUsePromoRevampUiModel?> {
-        if (!hasPromo(validateUsePromoRequest)) return null to null
+    suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Throwable?, ValidateUsePromoRevampUiModel?, Boolean> {
+        if (!hasPromo(validateUsePromoRequest)) return Triple(null, null, false)
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
@@ -52,9 +53,10 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 } else if (lastValidateUsePromoRevampUiModel != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastValidateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
                     orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
                 }
-                return@withContext null to result
+                return@withContext Triple(null, result, false)
             } catch (t: Throwable) {
-                return@withContext (t.cause ?: t) to null
+                val throwable = t.cause ?: t
+                return@withContext Triple(throwable, null, handlePromoThrowable(throwable, validateUsePromoRequest))
             }
         }
         OccIdlingResource.decrement()
@@ -106,8 +108,9 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
                 return@withContext Triple(response, isSuccess, newGlobalEvent)
             } catch (t: Throwable) {
-                return@withContext Triple(null, false, OccGlobalEvent.TriggerRefresh(throwable = t.cause
-                        ?: t))
+                val throwable = t.cause ?: t
+                handlePromoThrowable(throwable, validateUsePromoRequest)
+                return@withContext Triple(null, false, OccGlobalEvent.TriggerRefresh(throwable = throwable))
             }
         }
         OccIdlingResource.decrement()
@@ -296,5 +299,23 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             }
         }
         return notEligiblePromoHolderdataList
+    }
+
+    private fun handlePromoThrowable(throwable: Throwable, validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
+        if (throwable is AkamaiErrorException) {
+            val allPromoCodes = arrayListOf<String>()
+            validateUsePromoRequest.orders.first()?.codes?.also {
+                allPromoCodes.addAll(it)
+            }
+            validateUsePromoRequest.codes.forEach {
+                if (it != null) {
+                    allPromoCodes.add(it)
+                }
+            }
+            clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, allPromoCodes, true)
+            clearCacheAutoApplyStackUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().single()
+            return true
+        }
+        return false
     }
 }
