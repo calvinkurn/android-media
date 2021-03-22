@@ -13,5 +13,6 @@ data class PowerMerchantInterruptUiModel(
         val pmGradeBadge: String,
         val potentialPmGrade: String,
         val potentialPmGradeBadge: String,
-        val pmNewUpdateDateFmt: String
+        val pmNewUpdateDateFmt: String,
+        val periodType: String
 )

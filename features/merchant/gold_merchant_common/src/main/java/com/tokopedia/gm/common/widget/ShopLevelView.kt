@@ -1,10 +1,12 @@
-package com.tokopedia.gm.common.view.customview
+package com.tokopedia.gm.common.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.gm.common.R
+import com.tokopedia.gm.common.constant.ShopLevel
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import kotlinx.android.synthetic.main.view_gmc_shop_level.view.*
 
 /**
@@ -24,13 +26,15 @@ class ShopLevelView : LinearLayout {
     }
 
     fun show(shopLevel: Int) {
-        tvSahPmShopLevel.text = shopLevel.toString()
-        /*val imgLevelDrawableRes = when(shopLevel) {
-            1 ->
-            2 ->
-            3 ->
-            else ->
+        tvGmcPmShopLevel.text = shopLevel.toString()
+
+        val imgLevelDrawableRes = when (shopLevel) {
+            ShopLevel.ONE -> R.drawable.ic_gmc_shop_level_1
+            ShopLevel.TWO -> R.drawable.ic_gmc_shop_level_2
+            ShopLevel.THREE -> R.drawable.ic_gmc_shop_level_3
+            ShopLevel.FOUR -> R.drawable.ic_gmc_shop_level_4
+            else -> R.drawable.ic_gmc_shop_level_0
         }
-        imgShopLevel.loadImageDrawable(imgLevelDrawableRes)*/
+        imgGmcPmShopLevel.loadImageDrawable(imgLevelDrawableRes)
     }
 }

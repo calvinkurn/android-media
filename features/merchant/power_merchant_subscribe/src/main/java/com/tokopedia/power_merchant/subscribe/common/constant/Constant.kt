@@ -8,14 +8,6 @@ object Constant {
 
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-ui"
 
-    object ShopLevel {
-        const val UNDEFINED = -1
-        const val ONE = 1
-        const val TWO = 2
-        const val THREE = 3
-        const val FOUR = 4
-    }
-
     object Url {
         const val FREE_SHIPPING_TERMS_AND_CONDITION = "https://seller.tokopedia.com/edu/bebas-ongkir/"
         const val POWER_MERCHANT_EDU = "https://seller.tokopedia.com/edu/power-merchant/"

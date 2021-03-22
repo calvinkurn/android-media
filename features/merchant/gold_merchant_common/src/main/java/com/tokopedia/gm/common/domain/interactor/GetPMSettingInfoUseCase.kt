@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 08/03/21
  */
 
-class GetPowerMerchantSettingInfoUseCase @Inject constructor(
+class GetPMSettingInfoUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PowerMerchantSettingInfoMapper
 ) : BaseGqlUseCase<PowerMerchantSettingInfoUiModel>() {

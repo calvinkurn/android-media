@@ -12,9 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.constant.GMParamTracker
-import com.tokopedia.gm.common.constant.KYCStatusId
-import com.tokopedia.gm.common.constant.PeriodType
+import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
-import com.tokopedia.power_merchant.subscribe.common.constant.ShopGrade
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
@@ -268,7 +265,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         return WidgetNextShopGradeUiModel(
                 shopLevel = nextGrade?.shopLevel.orZero(),
                 shopScoreMin = nextGrade?.shopScoreMin.orZero(),
-                gradeName = nextGrade?.gradeName ?: ShopGrade.UNDEFINED,
+                gradeName = nextGrade?.gradeName ?: PMShopGrade.UNDEFINED,
                 gradeBadgeUrl = nextGrade?.imgBadgeUrl.orEmpty(),
                 benefitList = data.nextPMBenefits?.map { it.benefitName }.orEmpty()
         )
@@ -297,7 +294,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 shopGrade = shopGrade?.gradeName.orEmpty(),
                 shopScore = shopGrade?.shopScore.orZero(),
                 threshold = 0,
-                shopLevel = shopGrade?.shopLevel ?: Constant.ShopLevel.UNDEFINED,
+                shopLevel = shopGrade?.shopLevel ?: ShopLevel.NO_LEVEL,
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
                 nextPmCalculationDate = data.nextMonthlyRefreshDate,

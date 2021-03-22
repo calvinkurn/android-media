@@ -141,6 +141,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             RouteManager.route(this, ApplinkConst.CREATE_SHOP)
             finish()
         }
+        observePmInterruptData()
     }
 
     override fun onNewIntent(intent: Intent?) {

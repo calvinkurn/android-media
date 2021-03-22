@@ -1,4 +1,4 @@
-package com.tokopedia.gm.common.view.customview
+package com.tokopedia.gm.common.widget
 
 import android.content.Context
 import android.util.AttributeSet

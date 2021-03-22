@@ -1,7 +1,7 @@
 package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.gm.common.data.source.cloud.model.PMGradeBenefitInfoResponse
-import com.tokopedia.gm.common.data.source.local.model.CurrentPMGradeAndBenefitUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMCurrentAndNextShopGradeUiModel
 import com.tokopedia.gm.common.domain.mapper.PMGradeBenefitInfoMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -15,12 +15,12 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 10/03/21
  */
 
-class GetCurrentPMGradeWithBenefitUseCase @Inject constructor(
+class GetPMCurrentAndNextShopGradeUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PMGradeBenefitInfoMapper
-) : BaseGqlUseCase<CurrentPMGradeAndBenefitUiModel>() {
+) : BaseGqlUseCase<PMCurrentAndNextShopGradeUiModel>() {
 
-    override suspend fun executeOnBackground(): CurrentPMGradeAndBenefitUiModel {
+    override suspend fun executeOnBackground(): PMCurrentAndNextShopGradeUiModel {
         val gqlRequest = GraphqlRequest(QUERY, PMGradeBenefitInfoResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
@@ -28,11 +28,13 @@ class GetCurrentPMGradeWithBenefitUseCase @Inject constructor(
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<PMGradeBenefitInfoResponse>()
             val data = mapper.mapRemoteModelToUiModel(response.data)
-            return CurrentPMGradeAndBenefitUiModel(
+            return PMCurrentAndNextShopGradeUiModel(
                     nextMonthlyRefreshDate = data.nextMonthlyRefreshDate,
                     nextQuarterlyCalibrationRefreshDate = data.nextQuarterlyCalibrationRefreshDate,
                     currentPMGrade = data.currentPMGrade,
-                    currentPMBenefits = data.currentPMBenefits
+                    currentPMBenefits = data.currentPMBenefits,
+                    nextPMGrade = data.nextPMGrade,
+                    nextPMBenefits = data.nextPMBenefits
             )
         } else {
             throw MessageErrorException(errors.joinToString(" - ") { it.message })
@@ -66,6 +68,16 @@ class GetCurrentPMGradeWithBenefitUseCase @Inject constructor(
                   benefit_category
                   benefit_name
                   related_link_applink
+                  seq_num
+                }
+                next_pm_grade {
+                  shop_level
+                  shop_score_min
+                  grade_name
+                  image_badge_url
+                }
+                next_benefit_list {
+                  benefit_name
                   seq_num
                 }
               }

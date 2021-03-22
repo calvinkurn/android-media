@@ -1,10 +1,8 @@
 package com.tokopedia.power_merchant.subscribe.domain.interactor
 
-import com.tokopedia.gm.common.data.source.local.model.CurrentPMGradeAndBenefitUiModel
-import com.tokopedia.gm.common.data.source.local.model.NextPMGradeAndBenefitUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMCurrentAndNextShopGradeUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMShopStatusUiModel
-import com.tokopedia.gm.common.domain.interactor.GetCurrentPMGradeWithBenefitUseCase
-import com.tokopedia.gm.common.domain.interactor.GetNextPMGradeWithBenefitUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMCurrentAndNextShopGradeUseCase
 import com.tokopedia.gm.common.domain.interactor.GetPMShopStatusUseCase
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.model.PMFinalPeriodUiModel
@@ -20,28 +18,25 @@ import javax.inject.Inject
 
 class GetPMFinalPeriodDataUseCase @Inject constructor(
         private val getPMShopStatusUseCase: GetPMShopStatusUseCase,
-        private val getCurrentPMGradeWithBenefitUseCase: GetCurrentPMGradeWithBenefitUseCase,
-        private val getNextPMGradeWithBenefitUseCase: GetNextPMGradeWithBenefitUseCase,
+        private val getPMCurrentAndNextShopGradeUseCase: GetPMCurrentAndNextShopGradeUseCase,
         private val userSession: UserSessionInterface
 ) : UseCase<PMFinalPeriodUiModel>() {
 
     override suspend fun executeOnBackground(): PMFinalPeriodUiModel {
         return coroutineScope {
             val shopStatusAsync = async { getPMShopStatus() }
-            val currentPMGradeAsync = async { getCurrentPmGrade() }
-            val nextPMGradeAsync = async { getNextPmGrade() }
+            val currentAndNextPMGradeAsync = async { getCurrentAndNextPMGrade() }
             val shopStatus = shopStatusAsync.await()
-            val currentPMGrade = currentPMGradeAsync.await()
-            val nextPMGrade = nextPMGradeAsync.await()
+            val currentAndNextPMGrade = currentAndNextPMGradeAsync.await()
             return@coroutineScope PMFinalPeriodUiModel(
                     pmStatus = shopStatus.status,
                     expiredTime = shopStatus.expiredTime,
-                    nextMonthlyRefreshDate = currentPMGrade.nextMonthlyRefreshDate,
-                    nextQuarterlyCalibrationRefreshDate = currentPMGrade.nextQuarterlyCalibrationRefreshDate,
-                    currentPMGrade = currentPMGrade.currentPMGrade,
-                    currentPMBenefits = currentPMGrade.currentPMBenefits,
-                    nextPMGrade = nextPMGrade.nextPMGrade,
-                    nextPMBenefits = nextPMGrade.nextPMBenefits
+                    nextMonthlyRefreshDate = currentAndNextPMGrade.nextMonthlyRefreshDate,
+                    nextQuarterlyCalibrationRefreshDate = currentAndNextPMGrade.nextQuarterlyCalibrationRefreshDate,
+                    currentPMGrade = currentAndNextPMGrade.currentPMGrade,
+                    currentPMBenefits = currentAndNextPMGrade.currentPMBenefits,
+                    nextPMGrade = currentAndNextPMGrade.nextPMGrade,
+                    nextPMBenefits = currentAndNextPMGrade.nextPMBenefits
             )
         }
     }
@@ -51,19 +46,11 @@ class GetPMFinalPeriodDataUseCase @Inject constructor(
         return getPMShopStatusUseCase.executeOnBackground()
     }
 
-    private suspend fun getNextPmGrade(): NextPMGradeAndBenefitUiModel {
-        getNextPMGradeWithBenefitUseCase.params = GetCurrentPMGradeWithBenefitUseCase.createParams(
+    private suspend fun getCurrentAndNextPMGrade(): PMCurrentAndNextShopGradeUiModel {
+        getPMCurrentAndNextShopGradeUseCase.params = GetPMCurrentAndNextShopGradeUseCase.createParams(
                 shopId = userSession.shopId,
                 source = Constant.PM_SETTING_INFO_SOURCE
         )
-        return getNextPMGradeWithBenefitUseCase.executeOnBackground()
-    }
-
-    private suspend fun getCurrentPmGrade(): CurrentPMGradeAndBenefitUiModel {
-        getCurrentPMGradeWithBenefitUseCase.params = GetNextPMGradeWithBenefitUseCase.createParams(
-                shopId = userSession.shopId,
-                source = Constant.PM_SETTING_INFO_SOURCE
-        )
-        return getCurrentPMGradeWithBenefitUseCase.executeOnBackground()
+        return getPMCurrentAndNextShopGradeUseCase.executeOnBackground()
     }
 }

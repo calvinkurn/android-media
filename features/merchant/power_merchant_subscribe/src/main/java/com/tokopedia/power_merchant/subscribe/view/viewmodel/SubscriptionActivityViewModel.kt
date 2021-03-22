@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
-import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantSettingInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMSettingInfoUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,7 +21,7 @@ import javax.inject.Inject
  */
 
 class SubscriptionActivityViewModel @Inject constructor(
-        private val getPowerMerchantSettingInfoUseCase: Lazy<GetPowerMerchantSettingInfoUseCase>,
+        private val getPowerMerchantSettingInfoUseCase: Lazy<GetPMSettingInfoUseCase>,
         private val userSession: Lazy<UserSessionInterface>,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -33,7 +33,7 @@ class SubscriptionActivityViewModel @Inject constructor(
 
     fun getPowerMerchantSettingInfo() {
         launchCatchError(block = {
-            val params = GetPowerMerchantSettingInfoUseCase.createParams(userSession.get().shopId, Constant.PM_SETTING_INFO_SOURCE)
+            val params = GetPMSettingInfoUseCase.createParams(userSession.get().shopId, Constant.PM_SETTING_INFO_SOURCE)
             getPowerMerchantSettingInfoUseCase.get().params = params
             val result = Success(withContext(dispatcher.io) {
                 getPowerMerchantSettingInfoUseCase.get().executeOnBackground()

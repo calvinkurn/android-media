@@ -5,6 +5,6 @@
     <string name="sah_label_pm_shop_level">Level:</string>
     <string name="sah_max_shop_score">/100</string>
     <string name="sah_label_core">Skor:</string>
-    <string name="gmc_power_merchant_bottom_sheet_title">Mulai %1$s, Performa Toko kamu diperbarui!</string>
+    <string name="gmc_power_merchant_bottom_sheet_title">Mulai %1$s, Performa Toko \nkamu diperbarui!</string>
     <string name="gmc_check_your_shop_performance">Cek Performa Tokomu</string>
 </resources>

@@ -4,8 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2">
+    android:paddingStart="@dimen/unify_space_12"
+    android:paddingEnd="@dimen/unify_space_12">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineGmcStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/spacing_lvl2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineGmcEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/spacing_lvl2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSahPmTitle"
@@ -15,19 +29,19 @@
         android:layout_marginTop="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl3"
         android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineGmcEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineGmcStart"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="@string/gmc_power_merchant_bottom_sheet_title" />
 
-    <com.tokopedia.gm.common.view.customview.ShopLevelView
+    <com.tokopedia.gm.common.widget.ShopLevelView
         android:id="@+id/slvSahPmShopLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guidelineGmcStart"
         app:layout_constraintTop_toBottomOf="@+id/tvSahPmTitle" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,9 +50,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl1"
         android:text="@string/sah_max_shop_score"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/tvSahPmShopScore"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineGmcEnd"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -57,14 +71,15 @@
         android:id="@+id/tvSahPmLabelShopScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
         android:text="@string/sah_label_core"
-        android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/unify_font_18"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/tvSahPmShopScore"
         app:layout_constraintEnd_toStartOf="@+id/tvSahPmShopScore"
-        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel" />
+        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel"
+        app:typographyType="body_1" />
 
-    <com.tokopedia.gm.common.view.customview.PowerMerchantGradeView
+    <com.tokopedia.gm.common.widget.PowerMerchantGradeView
         android:id="@+id/pmgSahPmCard"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
@@ -81,8 +96,8 @@
         android:gravity="center"
         android:text="@string/gmc_check_your_shop_performance"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineGmcEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineGmcStart"
         app:layout_constraintTop_toBottomOf="@+id/pmgSahPmCard"
         app:unifyButtonSize="medium" />
 </androidx.constraintlayout.widget.ConstraintLayout>

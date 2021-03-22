@@ -61,6 +61,9 @@ class GetPMInterruptDataUseCase @Inject constructor(
                   }
                 }
               }
+              goldGetPMSettingInfo(shopID: ${'$'}shopId, source:${'$'}source) {
+                period_type
+              }
             }
         """.trimIndent()
 
