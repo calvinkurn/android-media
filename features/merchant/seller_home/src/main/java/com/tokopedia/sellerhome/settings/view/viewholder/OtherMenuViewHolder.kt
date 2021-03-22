@@ -251,7 +251,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.shopType
-        showShopStatusHeader(shopType)
+        showShopStatusHeader(shopType, shopStatusUiModel.thematicIllustrationUrl)
         val layoutInflater = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
         val shopStatusLayout: View = when(shopType) {
             is RegularMerchant -> {
