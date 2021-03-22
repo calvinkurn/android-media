@@ -439,10 +439,6 @@ public class BranchWrapper implements WrapperInterface {
 
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
         if (context == null) return;
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-            if (!(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK) && LinkerUtils.APP_OPEN_FROM_BRANCH_LINK)) {
-                return;
-            }
             String utmSource;
             String utmCampaign;
             String utmMedium;
@@ -466,7 +462,7 @@ public class BranchWrapper implements WrapperInterface {
         if (context == null) return;
         if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
-            param.put(LinkerConstants.SCREEN_NAME, "Deeplink Page");
+            param.put(LinkerConstants.SCREEN_NAME_KEY, LinkerConstants.SCREEN_NAME_VALUE);
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
@@ -480,6 +476,9 @@ public class BranchWrapper implements WrapperInterface {
 
     private void sendCampaignToGTM(Context context, Map<String,Object> param) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (!(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK) && LinkerUtils.APP_OPEN_FROM_BRANCH_LINK)) {
+            return;
+        }
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT)) {
             TrackApp.getInstance().getGTM().sendCampaign(param);
         }
@@ -498,7 +497,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
-        campaign.setScreenName("Deeplink Page");
+        campaign.setScreenName(LinkerConstants.SCREEN_NAME_VALUE);
         sendCampaignToGTM(activity, campaign.getCampaign());
     }
 }
