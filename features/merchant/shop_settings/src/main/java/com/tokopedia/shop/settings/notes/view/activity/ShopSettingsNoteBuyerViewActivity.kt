@@ -3,6 +3,7 @@ package com.tokopedia.shop.settings.notes.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -24,18 +25,21 @@ class ShopSettingsNoteBuyerViewActivity : BaseSimpleActivity(), HasComponent<Sho
                 }
     }
 
-    private var shopId: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopId = intent.getStringExtra(SHOP_ID)
+
+        window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                        this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+        )
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_shop_settings_note_buyer_view
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 
-    override fun getNewFragment(): Fragment = ShopSettingsNoteBuyerViewFragment.createInstance(shopId)
+    override fun getNewFragment(): Fragment = ShopSettingsNoteBuyerViewFragment.createInstance(intent.getStringExtra(SHOP_ID))
 
     override fun getComponent(): ShopSettingsComponent = DaggerShopSettingsComponent.builder()
                                                             .baseAppComponent((application as BaseMainApplication).baseAppComponent)

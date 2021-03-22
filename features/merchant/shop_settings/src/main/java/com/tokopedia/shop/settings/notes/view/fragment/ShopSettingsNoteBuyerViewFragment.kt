@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -63,14 +62,6 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
     }
 
     private fun setupUi() {
-        context?.let{ context ->
-            activity?.window?.decorView?.setBackgroundColor(
-                    getColor(
-                           context, com.tokopedia.unifyprinciples.R.color.Unify_N0
-                    )
-            )
-        }
-
         rvNote = view?.findViewById(R.id.rv_note)
         adapter = ShopNoteBuyerViewAdapter()
         rvNote?.adapter = adapter
