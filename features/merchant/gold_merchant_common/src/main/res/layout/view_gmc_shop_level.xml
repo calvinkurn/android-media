@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPmLabelShopLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sah_label_pm_shop_level"
+        android:textColor="@color/Unify_N700_44"
+        android:textSize="@dimen/unify_font_18" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPmShopLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSahPmShopLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:scaleType="fitXY"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@tools:sample/avatars" />
+</LinearLayout>

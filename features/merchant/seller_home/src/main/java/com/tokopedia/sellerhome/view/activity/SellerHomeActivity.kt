@@ -12,9 +12,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
-import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
-import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -23,10 +21,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.gm.common.view.bottomsheet.PowerMerchantBottomSheet
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
@@ -38,6 +41,7 @@ import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
+import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.StatusBarCallback
@@ -48,6 +52,7 @@ import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerreview.common.SellerReviewHelper
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
@@ -67,10 +72,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
     }
 
-    @Inject lateinit var userSession: UserSessionInterface
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-    @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
-    @Inject lateinit var sellerReviewHelper: SellerReviewHelper
+    @Inject
+    lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var remoteConfig: SellerHomeRemoteConfig
+    @Inject
+    lateinit var sellerReviewHelper: SellerReviewHelper
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -199,7 +208,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         performanceMonitoringSomListPlt?.initPerformanceMonitoring()
     }
 
-    override fun getSomListLoadTimeMonitoring() =  performanceMonitoringSomListPlt
+    override fun getSomListLoadTimeMonitoring() = performanceMonitoringSomListPlt
 
     private fun fetchSellerAppWidget() {
         val broadcastIntent = Intent().apply {
@@ -360,24 +369,53 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun observeShopInfoLiveData() {
         homeViewModel.shopInfo.observe(this, Observer {
-            if (it is Success) {
-                navigator?.run {
-                    val shopName = MethodChecker.fromHtml(it.data.shopName).toString()
-                    val shopAvatar = it.data.shopAvatar
+            when (it) {
+                is Success -> {
+                    navigator?.run {
+                        val shopName = MethodChecker.fromHtml(it.data.shopName).toString()
+                        val shopAvatar = it.data.shopAvatar
 
-                    // update userSession
-                    userSession.shopName = shopName
-                    userSession.shopAvatar = shopAvatar
+                        // update userSession
+                        userSession.shopName = shopName
+                        userSession.shopAvatar = shopAvatar
 
-                    if (isHomePageSelected()) {
-                        supportActionBar?.title = shopName
+                        if (isHomePageSelected()) {
+                            supportActionBar?.title = shopName
+                        }
+
+                        setHomeTitle(shopName)
                     }
-
-                    setHomeTitle(shopName)
+                }
+                is Fail -> {
+                    val message = "Seller Home Error shop info"
+                    logToCrashlytics(it.throwable, message)
                 }
             }
         })
         homeViewModel.getShopInfo()
+    }
+
+    private fun observePmInterruptData() {
+        homeViewModel.pmInterruptData.observe(this, {
+            when (it) {
+                is Success -> {
+                    val bottomSheet = (supportFragmentManager.findFragmentByTag(PowerMerchantBottomSheet.TAG)
+                            as? PowerMerchantBottomSheet)
+                            ?: PowerMerchantBottomSheet.createInstance()
+                    if (!bottomSheet.isAdded) {
+                        Handler().post {
+                            bottomSheet.setData(it.data)
+                                    .show(supportFragmentManager)
+                        }
+                    }
+                }
+                is Fail -> {
+                    val message = "Seller Home Error PM interrupt data"
+                    logToCrashlytics(it.throwable, message)
+                }
+            }
+        })
+        homeViewModel.getPmInterruptInfo()
     }
 
     private fun showNotificationBadge(notifUnreadInt: Int) {
@@ -450,6 +488,16 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             lifecycleScope.launch(Dispatchers.IO) {
                 sellerReviewHelper.checkForReview(this@SellerHomeActivity, supportFragmentManager)
             }
+        }
+    }
+
+    private fun logToCrashlytics(throwable: Throwable, message: String) {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
+            val exceptionMessage = "$message -> ${throwable.localizedMessage}"
+            FirebaseCrashlytics.getInstance().recordException(SellerHomeException(
+                    message = exceptionMessage,
+                    cause = throwable
+            ))
         }
     }
 }

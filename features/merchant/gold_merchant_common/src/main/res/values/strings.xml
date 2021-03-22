@@ -2,4 +2,9 @@
     <string name="app_name">GmCommon</string>
     <string name="bottom_sheet_idle_title">Yaah, Fitur %s hanya dapat diakses Power Merchant aktif</string>
     <string name="bottom_sheet_idle_desc">Skor performa tokomu kurang dari 65 poin. Segera tingkatkan performa toko untuk menggunakan %s dan fitur eksklusif Power Merchant lainnya kembali.</string>
+    <string name="sah_label_pm_shop_level">Level:</string>
+    <string name="sah_max_shop_score">/100</string>
+    <string name="sah_label_core">Skor:</string>
+    <string name="gmc_power_merchant_bottom_sheet_title">Mulai %1$s, Performa Toko kamu diperbarui!</string>
+    <string name="gmc_check_your_shop_performance">Cek Performa Tokomu</string>
 </resources>

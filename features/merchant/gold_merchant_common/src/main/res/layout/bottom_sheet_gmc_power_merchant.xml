@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPmTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        tools:text="@string/gmc_power_merchant_bottom_sheet_title" />
+
+    <com.tokopedia.gm.common.view.customview.ShopLevelView
+        android:id="@+id/slvSahPmShopLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSahPmTitle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPmLabelShopScoreMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:text="@string/sah_max_shop_score"
+        android:textColor="@color/Unify_N700_44"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSahPmShopScore"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPmShopScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toStartOf="@+id/tvSahPmLabelShopScoreMax"
+        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="70" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPmLabelShopScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sah_label_core"
+        android:textColor="@color/Unify_N700_44"
+        android:textSize="@dimen/unify_font_18"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSahPmShopScore"
+        app:layout_constraintEnd_toStartOf="@+id/tvSahPmShopScore"
+        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel" />
+
+    <com.tokopedia.gm.common.view.customview.PowerMerchantGradeView
+        android:id="@+id/pmgSahPmCard"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slvSahPmShopLevel" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:gravity="center"
+        android:text="@string/gmc_check_your_shop_performance"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pmgSahPmCard"
+        app:unifyButtonSize="medium" />
+</androidx.constraintlayout.widget.ConstraintLayout>

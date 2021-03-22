@@ -3,6 +3,9 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.domain.interactor.GetPMInterruptDataUseCase
+import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
@@ -19,12 +22,17 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getNotificationUseCase: GetNotificationUseCase,
         private val getSopInfoUseCase: GetShopInfoUseCase,
+        private val getPMInterruptDataUseCase: GetPMInterruptDataUseCase,
         dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
+    private val _pmInterruptData = MutableLiveData<Result<PowerMerchantInterruptUiModel>>()
+
     val notifications: LiveData<Result<NotificationUiModel>>
         get() = _notifications
+    val pmInterruptData: LiveData<Result<PowerMerchantInterruptUiModel>>
+        get() = _pmInterruptData
 
     private val _shopInfo = MutableLiveData<Result<ShopInfoUiModel>>()
     val shopInfo: LiveData<Result<ShopInfoUiModel>>
@@ -38,5 +46,15 @@ class SellerHomeActivityViewModel @Inject constructor(
     fun getShopInfo() = executeCall(_shopInfo) {
         getSopInfoUseCase.params = GetShopInfoUseCase.getRequestParam(userSession.userId)
         getSopInfoUseCase.executeOnBackground()
+    }
+
+    fun getPmInterruptInfo() {
+        executeCall(_pmInterruptData) {
+            getPMInterruptDataUseCase.params = GetPMInterruptDataUseCase.createParams(
+                    shopId = userSession.shopId,
+                    source = PMConstant.PM_SETTING_INFO_SOURCE
+            )
+            getPMInterruptDataUseCase.executeOnBackground()
+        }
     }
 }
