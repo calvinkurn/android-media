@@ -31,7 +31,6 @@ abstract class UploadImageNotificationManager(private val context: Context) {
                 .setContentIntent(getFailedIntent(errorMessage))
                 .build()
 
-        notificationManager.cancel(TAG, id)
         notificationManager.notify(TAG, id, notification)
     }
 
