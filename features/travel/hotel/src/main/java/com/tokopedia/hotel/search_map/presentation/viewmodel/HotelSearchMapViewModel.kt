@@ -90,6 +90,7 @@ class HotelSearchMapViewModel @Inject constructor(
                 location.radius = hotelSearchModel.radius
             }
 
+            location.radius = DEFAULT_RADIUS
             checkIn = hotelSearchModel.checkIn
             checkOut = hotelSearchModel.checkOut
             room = hotelSearchModel.room
@@ -223,5 +224,6 @@ class HotelSearchMapViewModel @Inject constructor(
     companion object {
         const val PARAM_SEARCH_PROPERTY = "data"
         private const val DEFAULT_SORT = "popularity"
+        private const val DEFAULT_RADIUS = 10000.0
     }
 }
