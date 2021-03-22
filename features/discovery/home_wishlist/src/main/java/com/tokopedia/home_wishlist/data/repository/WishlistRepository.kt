@@ -10,6 +10,7 @@ import com.tokopedia.home_wishlist.data.query.WishlistQuery
 import com.tokopedia.home_wishlist.model.entity.Wishlist
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistResponse
+import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,10 +22,11 @@ class WishlistRepository @Inject constructor(
         private const val PARAM_COUNT = "count"
         private const val PARAM_PAGE = "page"
         private const val PARAM_QUERY = "query"
+        private const val PARAM_ADDITIONAL_PARAMS = "additionalParams"
         private const val DEFAULT_COUNT = 20
     }
 
-    suspend fun getData(keyword: String, page: Int) : WishlistEntityData{
+    suspend fun getData(keyword: String, page: Int, additionalParams: WishlistAdditionalParamRequest) : WishlistEntityData{
         val data = withContext(Dispatchers.IO){
             val cacheStrategy =
                     GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -32,7 +34,8 @@ class WishlistRepository @Inject constructor(
             val params = mapOf(
                     PARAM_QUERY to keyword,
                     PARAM_PAGE to page,
-                    PARAM_COUNT to DEFAULT_COUNT
+                    PARAM_COUNT to DEFAULT_COUNT,
+                    PARAM_ADDITIONAL_PARAMS to additionalParams
             )
 
             val gqlRecommendationRequest = GraphqlRequest(

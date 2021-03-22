@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -43,7 +43,8 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
             val recommendationEntity = "searchproduct/emptysearchrecommendation/empty-search-recommendation.json".jsonToObject<RecommendationEntity>()
             val recommendationDataList = recommendationEntity.productRecommendationWidget?.data
                     ?: listOf()
-            val recommendationWidgetList = RecommendationEntityMapper().call(recommendationDataList)
+
+            val recommendationWidgetList = recommendationDataList.mappingToRecommendationModel()
 
             secondArg<Subscriber<List<RecommendationWidget>>>().complete(recommendationWidgetList)
         }
