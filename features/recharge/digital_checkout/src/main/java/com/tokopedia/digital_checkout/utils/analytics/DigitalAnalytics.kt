@@ -109,7 +109,7 @@ class DigitalAnalytics {
                 TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.UNCHECK_TEBUS_MURAH_ICON,
                 TrackAppUtils.EVENT_LABEL, String.format("%s - %s", fintechProduct.transactionType, fintechProduct.info.title),
                 DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
     }
