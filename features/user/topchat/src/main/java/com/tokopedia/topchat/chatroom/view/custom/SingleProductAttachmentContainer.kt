@@ -2,12 +2,8 @@ package com.tokopedia.topchat.chatroom.view.custom
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
@@ -22,7 +18,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.config.GlobalConfig
@@ -31,10 +26,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -47,7 +40,6 @@ import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 class SingleProductAttachmentContainer : ConstraintLayout {
 
     private var btnWishList: UnifyButton? = null
-    private var btnOcc: UnifyButton? = null
     private var btnBuy: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
     private var label: Label? = null
@@ -96,9 +88,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
-    private val white = "#ffffff"
-    private val white2 = "#fff"
-    private val labelEmptyStockColor = "#AD31353B"
     private val bottomMarginOpposite = getOppositeMargin(context).toInt()
 
     constructor(context: Context?) : super(context) {
@@ -125,7 +114,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun initBindView() {
         btnWishList = findViewById(R.id.tv_wishlist)
-        btnOcc = findViewById(R.id.tv_occ)
         btnBuy = findViewById(R.id.tv_buy)
         btnAtc = findViewById(R.id.tv_atc)
         label = findViewById(R.id.lb_product_label)
@@ -301,7 +289,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         showVariantLayout()
         if (product.hasColorVariant()) {
             ll_variant_color?.show()
-            val backgroundDrawable = getBackgroundDrawable(product.colorHexVariant)
+            val backgroundDrawable = ColorDrawableGenerator.generate(
+                    context, product.colorHexVariant
+            )
             iv_variant_color?.background = backgroundDrawable
             tv_variant_color?.text = product.colorVariant
         } else {
@@ -329,16 +319,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindMargin(product: ProductAttachmentViewModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
-            if (isNextItemSender(product) && bottomMarginOpposite > defaultMarginBottom) {
-                setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, bottomMarginOpposite)
+            if (isNextItemOppositeFrom(product)) {
+                setMargin(defaultMarginLeft, bottomMarginOpposite, defaultMarginRight, defaultMarginBottom)
             } else {
                 setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, defaultMarginBottom)
             }
         }
     }
 
-    private fun isNextItemSender(product: ProductAttachmentViewModel): Boolean {
-        return adapterListener?.isNextItemSender(adapterPosition, product.isSender) == false
+    private fun isNextItemOppositeFrom(product: ProductAttachmentViewModel): Boolean {
+        return adapterListener?.isOpposite(adapterPosition, product.isSender) == true
     }
 
     private fun bindBackground(product: ProductAttachmentViewModel) {
@@ -416,55 +406,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindFooter(product: ProductAttachmentViewModel) {
-        val abTestVariant = getOccAbTestVariant()
         if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
-            if (product.isEligibleOcc() && isEligibleOccAbTest(abTestVariant)) {
-                when (abTestVariant) {
-                    TopchatProductAttachmentViewHolder.VARIANT_A -> {
-                        btnBuy?.hide()
-                        bindOcc(product)
-                        bindAtc(product)
-                    }
-                    TopchatProductAttachmentViewHolder.VARIANT_B -> {
-                        btnBuy?.hide()
-                        btnAtc?.hide()
-                        bindOcc(product)
-                    }
-                }
-            } else {
-                bindBuy(product)
-                bindAtc(product)
-                btnOcc?.hide()
-            }
+            bindBuy(product)
+            bindAtc(product)
             bindWishList(product)
         } else {
             hideFooter()
-        }
-    }
-
-    private fun getOccAbTestVariant(): String {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(TopchatProductAttachmentViewHolder.AB_TEST_KEY, TopchatProductAttachmentViewHolder.VARIANT_DEFAULT);
-    }
-
-    private fun isEligibleOccAbTest(variant: String): Boolean {
-        return (variant == TopchatProductAttachmentViewHolder.VARIANT_A || variant == TopchatProductAttachmentViewHolder.VARIANT_B)
-    }
-
-    fun bindOcc(product: ProductAttachmentViewModel) {
-        btnOcc?.apply {
-            if (product.hasEmptyStock()) {
-                hide()
-            } else {
-                show()
-                isLoading = product.isLoadingOcc
-                setOnClickListener {
-                    if (!product.isLoadingOcc) {
-                        product.isLoadingOcc = true
-                        isLoading = true
-                        listener?.onClickOccFromProductAttachment(product, adapterPosition)
-                    }
-                }
-            }
         }
     }
 
@@ -474,7 +421,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 show()
                 setText(R.string.title_topchat_pre_order)
                 unlockFeature = true
-                setLabelType(labelEmptyStockColor)
+                setLabelType(getEmptyStockLabelBg())
             } else {
                 hide()
             }
@@ -487,7 +434,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 show()
                 setText(R.string.title_topchat_empty_stock)
                 unlockFeature = true
-                setLabelType(labelEmptyStockColor)
+                setLabelType(getEmptyStockLabelBg())
             } else {
                 if (!product.isPreOrder) {
                     hide()
@@ -496,11 +443,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
+    private fun getEmptyStockLabelBg(): String {
+        return resources.getString(R.string.topchat_dms_hex_empty_stock_color_bg)
+    }
+
     private fun hideFooter() {
         btnBuy?.hide()
         btnAtc?.hide()
         btnWishList?.hide()
-        btnOcc?.hide()
     }
 
     private fun bindBuy(product: ProductAttachmentViewModel) {
@@ -562,30 +512,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun showVariantLayout() {
         ll_variant?.show()
-    }
-
-    private fun getBackgroundDrawable(hexColor: String): Drawable? {
-        val backgroundDrawable = MethodChecker.getDrawable(context, com.tokopedia.chat_common.R.drawable.topchat_circle_color_variant_indicator)
-                ?: return null
-
-        if (isWhiteColor(hexColor)) {
-            applyStrokeTo(backgroundDrawable)
-            return backgroundDrawable
-        }
-
-        backgroundDrawable.colorFilter = PorterDuffColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.SRC_ATOP)
-        return backgroundDrawable
-    }
-
-    private fun applyStrokeTo(backgroundDrawable: Drawable) {
-        if (backgroundDrawable is GradientDrawable) {
-            val strokeWidth = 1f.toPx()
-            backgroundDrawable.setStroke(strokeWidth.toInt(), MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
-        }
-    }
-
-    private fun isWhiteColor(hexColor: String): Boolean {
-        return hexColor == white || hexColor == white2
     }
 
     private fun toggleCampaign(visibility: Int) {

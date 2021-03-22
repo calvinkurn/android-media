@@ -59,7 +59,7 @@ class UohRobot {
 
     fun doSearch(str: String) {
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
-                .perform(ViewActions.typeText(str))
+                .perform(ViewActions.typeText(str)).perform(ViewActions.pressImeActionButton())
         waitForData()
     }
 

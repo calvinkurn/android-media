@@ -15,15 +15,14 @@
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:background="@android:color/holo_purple"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         app:typographyType="heading_3"
         android:layout_marginTop="@dimen/dp_8"
         android:id="@+id/deals_channel_title"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/home_component_margin_default"
+        android:layout_marginEnd="@dimen/home_component_margin_default"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -109,8 +108,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:background="@android:color/holo_blue_bright" />
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 app:typographyType="heading_6"

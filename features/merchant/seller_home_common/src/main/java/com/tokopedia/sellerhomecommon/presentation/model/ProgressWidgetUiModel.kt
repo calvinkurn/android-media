@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 class ProgressWidgetUiModel(
+        override val id: String,
         override val widgetType: String,
         override val title: String,
         override val appLink: String,
@@ -29,6 +30,6 @@ class ProgressWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<ProgressDataUiModel> {
-        return ProgressWidgetUiModel(widgetType, title, appLink, subtitle, tooltip, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return ProgressWidgetUiModel(id, widgetType, title, appLink, subtitle, tooltip, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
 }

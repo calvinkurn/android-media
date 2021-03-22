@@ -6,11 +6,11 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemModel
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_dash_item_moveto_group.view.*
 
-class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) -> Unit)) : MovetoGroupViewHolder<MovetoGroupItemViewModel>(view) {
+class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) -> Unit)) : MovetoGroupViewHolder<MovetoGroupItemModel>(view) {
 
     companion object {
         @LayoutRes
@@ -28,7 +28,7 @@ class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) ->
         }
     }
 
-    override fun bind(item: MovetoGroupItemViewModel, lastSelected: Int, countList: MutableList<CountDataItem>) {
+    override fun bind(item: MovetoGroupItemModel, lastSelected: Int, countList: MutableList<CountDataItem>) {
         item.let {
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
             view.group_title.text = it.result.groupName
