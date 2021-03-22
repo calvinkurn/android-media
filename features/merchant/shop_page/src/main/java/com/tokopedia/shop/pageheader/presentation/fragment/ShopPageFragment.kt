@@ -101,7 +101,6 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
-import com.tokopedia.shop.common.util.EspressoIdlingResource
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
@@ -317,6 +316,11 @@ class ShopPageFragment :
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         shopPageHeaderContentConstraintLayout = view.findViewById(R.id.shop_page_header_content)
         swipeToRefresh = view.findViewById(R.id.swipeToRefresh)
+        swipeToRefresh?.apply {
+            if (!isRefreshing) {
+                setViewState(VIEW_LOADING)
+            }
+        }
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
@@ -392,7 +396,6 @@ class ShopPageFragment :
 
     private fun observeLiveData(owner: LifecycleOwner) {
         shopViewModel?.shopPageP1Data?.observe(owner, Observer { result ->
-            EspressoIdlingResource.decrement()
             stopMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
             startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
             when (result) {
@@ -639,11 +642,6 @@ class ShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
-            swipeToRefresh?.apply {
-                if (!isRefreshing) {
-                    setViewState(VIEW_LOADING)
-                }
-            }
             initViews(view)
         }
     }
@@ -737,7 +735,6 @@ class ShopPageFragment :
 
     private  fun getShopPageP1Data(){
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
-        EspressoIdlingResource.increment()
         shopViewModel?.getShopPageTabData(
                 shopId.toIntOrZero(),
                 shopDomain.orEmpty(),

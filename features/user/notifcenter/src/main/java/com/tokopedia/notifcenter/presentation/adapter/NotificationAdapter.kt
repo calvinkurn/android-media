@@ -7,23 +7,26 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
-import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
-import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
-import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
-import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
+import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 
 class NotificationAdapter constructor(
-        private val typeFactory: NotificationTypeFactory
+        private val typeFactory: NotificationTypeFactory,
+        private val listener: Listener
 ) : BaseListAdapter<Visitable<*>, NotificationTypeFactory>(
         typeFactory
 ), NotificationAdapterListener, CarouselProductNotificationViewHolder.Listener {
@@ -31,6 +34,10 @@ class NotificationAdapter constructor(
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val widgetTimeline = RecyclerView.RecycledViewPool()
+
+    interface Listener {
+        fun hasFilter(): Boolean
+    }
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
         return carouselViewPool
@@ -69,6 +76,10 @@ class NotificationAdapter constructor(
 
     override fun getSavedCarouselState(position: Int): Parcelable? {
         return productCarouselState[position]
+    }
+
+    fun lastItemIsErrorNetwork(): Boolean {
+        return visitables.getOrNull(visitables.lastIndex) is ErrorNetworkModel
     }
 
     fun shouldDrawDivider(position: Int): Boolean {
@@ -167,6 +178,72 @@ class NotificationAdapter constructor(
         if (visitables.addAll(recommendations)) {
             notifyItemRangeInserted(currentItemSize, recommendations.size)
         }
+    }
+
+    override fun showErrorNetwork() {
+        if (!listener.hasFilter() && hasNotifOrderList()) {
+            clearElementExceptOrderList()
+            visitables.add(errorNetworkModel)
+            notifyDataSetChanged()
+        } else {
+            super.showErrorNetwork()
+        }
+    }
+
+    override fun isShowLoadingMore(): Boolean {
+        return visitables.size > 0 && !hasNotifOrderList()
+    }
+
+    override fun clearAllElements() {
+        if (!listener.hasFilter() && hasNotifOrderList()) {
+            clearElementExceptOrderList()
+            notifyDataSetChanged()
+        } else {
+            super.clearAllElements()
+        }
+    }
+
+    fun removeAllItems() {
+        visitables.clear()
+        notifyDataSetChanged()
+    }
+
+    fun hasNotifOrderList(): Boolean {
+        return visitables.getOrNull(0) is NotifOrderListUiModel
+    }
+
+    private fun clearElementExceptOrderList() {
+        val orderListUiModel = visitables.getOrNull(0)
+        visitables.clear()
+        visitables.add(orderListUiModel)
+    }
+
+    fun updateOrRenderOrderListState(
+            response: NotifOrderListResponse?,
+            inserted: () -> Unit = {}
+    ) {
+        if (response == null) return
+        if (hasNotifOrderList()) {
+            val payload = PayloadOrderList(response.notifcenterNotifOrderList)
+            getOrderListUiModel()?.update(payload.orderList)
+            notifyItemChanged(0, payload)
+        } else {
+            visitables.add(0, response.notifcenterNotifOrderList)
+            notifyItemInserted(0)
+            inserted()
+            updateSectionTitlePadding()
+        }
+    }
+
+    private fun updateSectionTitlePadding() {
+        val nextItem = visitables.getOrNull(1) ?: return
+        if (nextItem is SectionTitleUiModel) {
+            notifyItemChanged(1, SectionTitleViewHolder.PAYLOAD_UPDATE_PADDING)
+        }
+    }
+
+    private fun getOrderListUiModel(): NotifOrderListUiModel? {
+        return visitables.getOrNull(0) as? NotifOrderListUiModel
     }
 
     private inline fun <reified T : Visitable<NotificationTypeFactory>> getUpToDateUiModelPosition(

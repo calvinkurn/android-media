@@ -152,4 +152,9 @@ interface DynamicProductDetailListener {
      * ProductReportViewHolder
      */
     fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductMiniSocialProofChipViewHolder
+     */
+    fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?)
 }
