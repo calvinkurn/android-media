@@ -6,26 +6,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvSummaryDetailPenalty"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_3"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        tools:text="@string/example_summary_detail_penalty"/>
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleDetailPenalty"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvSummaryDetailPenalty"
+        app:layout_constraintTop_toTopOf="parent"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -47,13 +33,27 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         tools:text="@string/example_date_penalty_detail"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSummaryDetailPenalty"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDateDetailPenalty"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        tools:text="@string/example_summary_detail_penalty"/>
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/separatorDetailPenalty"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDateDetailPenalty"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvSummaryDetailPenalty"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleResultDetailPenalty"
@@ -121,6 +121,8 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="4"
         tools:listitem="@layout/item_penalty_stepper"
         app:layout_constraintStart_toStartOf="@id/tvTitleStatusPenalty"
         app:layout_constraintTop_toBottomOf="@id/tvTitleStatusPenalty"
@@ -159,7 +161,9 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnCallHelpCenter"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/tvDateResultDetailPenalty"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

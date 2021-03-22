@@ -38,6 +38,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                           grade_name
                           image_badge_url
                           image_badge_background_mobile_url
+                          last_updated_date
                         }
                         potential_pm_grade {
                           grade_name

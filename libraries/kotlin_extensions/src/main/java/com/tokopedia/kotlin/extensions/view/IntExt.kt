@@ -25,6 +25,7 @@ fun Int?.toZeroIfNull():Int {
 
 fun Int?.isZero(): Boolean = this?.let { it == 0 } ?: false
 fun Int?.isMoreThanZero(): Boolean = this?.let { it > 0 } ?: false
+fun Int?.isLessThanZero(): Boolean = this?.let { it < 0 } ?: false
 fun Int?.isOdd(): Boolean = this?.let { it % 2 == 1 } ?: false
 fun Int?.isEven(): Boolean = this?.let { it % 2 == 0 } ?: false
 

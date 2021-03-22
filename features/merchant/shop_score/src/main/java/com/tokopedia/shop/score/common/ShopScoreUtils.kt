@@ -3,6 +3,8 @@ package com.tokopedia.shop.score.common
 import android.graphics.Color
 import android.text.method.LinkMovementMethod
 import com.tokopedia.shop.score.R
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
@@ -26,5 +28,13 @@ fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
     this.text = htmlString.spannedString
     htmlString.urlList.getOrNull(0)?.setOnClickListener {
         onClick()
+    }
+}
+
+fun SortFilterItem.toggle() {
+    type = if (type == ChipsUnify.TYPE_NORMAL) {
+        ChipsUnify.TYPE_SELECTED
+    } else {
+        ChipsUnify.TYPE_NORMAL
     }
 }

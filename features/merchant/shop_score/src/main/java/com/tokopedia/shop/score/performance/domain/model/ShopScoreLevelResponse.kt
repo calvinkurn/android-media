@@ -51,10 +51,7 @@ data class ShopScoreLevelResponse(
                     val rawValue: Int = 0,
                     @Expose
                     @SerializedName("title")
-                    val title: String = "",
-                    @Expose
-                    @SerializedName("value")
-                    val value: Int = 0
+                    val title: String = ""
             )
         }
     }

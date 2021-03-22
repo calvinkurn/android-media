@@ -298,7 +298,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
             this.shopLevel = shopScoreLevelResponse?.shopLevel?.toString() ?: "-"
             this.shopScore = shopScoreLevelResponse?.shopScore?.toString() ?: "-"
-            this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.firstOrNull { it.identifier == PENALTY_IDENTIFIER }?.value
+            this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.firstOrNull { it.identifier == PENALTY_IDENTIFIER }?.rawValue
             this.isNewSeller = isNewSeller
         }
 
@@ -319,7 +319,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 if (index + 1 == shopScoreLevelList.size) {
                     add(ItemDetailPerformanceUiModel(
                             titleDetailPerformance = shopScoreDetail.title,
-                            valueDetailPerformance = shopScoreDetail.value.toString(),
+                            valueDetailPerformance = shopScoreDetail.rawValue.toString(),
                             colorValueDetailPerformance = shopScoreDetail.colorText,
                             targetDetailPerformance = shopScoreDetail.nextMinValue.toString(),
                             lastPosition = shopScoreLevelList.size
@@ -327,7 +327,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 } else {
                     add(ItemDetailPerformanceUiModel(
                             titleDetailPerformance = shopScoreDetail.title,
-                            valueDetailPerformance = shopScoreDetail.value.toString(),
+                            valueDetailPerformance = shopScoreDetail.rawValue.toString(),
                             colorValueDetailPerformance = shopScoreDetail.colorText,
                             targetDetailPerformance = shopScoreDetail.nextMinValue.toString(),
                     ))
@@ -645,11 +645,10 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 Pair(UP_POTENTIAL_PM, context?.getString(R.string.performance_regarding_pm_label).orEmpty())
             }
             currentPMGrade?.gradeName?.mapToGradeNameToInt() == potentialPMGrade?.gradeName?.mapToGradeNameToInt() -> {
-                //need adjust current_regarding_penalty_pm_label for date (on discuss)
                 Pair(STILL_POTENTIAL_PM, context?.getString(R.string.current_regarding_penalty_pm_label).orEmpty())
             }
             else -> {
-                Pair(DOWN_POTENTIAL_PM, context?.getString(R.string.performance_regarding_pm_label).orEmpty())
+                Pair(DOWN_POTENTIAL_PM, context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty())
             }
         }
 

@@ -14,7 +14,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4">
 
         <View
-            android:id="@+id/somOrderDetailIndicator"
+            android:id="@+id/penaltyIndicator"
             android:layout_width="@dimen/spacing_lvl2"
             android:layout_height="@dimen/layout_lvl0"
             android:background="@drawable/ic_penalty_status_indicator"
@@ -81,7 +81,7 @@
             tools:text="Pelanggaran Produk" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_detail_transaction_penalty"
+            android:id="@+id/tv_invoice_transaction_penalty"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
@@ -99,7 +99,7 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintEnd_toEndOf="@id/tv_date_status_penalty"
             app:layout_constraintTop_toTopOf="@id/tv_title_transaction_penalty"
-            app:layout_constraintBottom_toBottomOf="@id/tv_detail_transaction_penalty" />
+            app:layout_constraintBottom_toBottomOf="@id/tv_invoice_transaction_penalty" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

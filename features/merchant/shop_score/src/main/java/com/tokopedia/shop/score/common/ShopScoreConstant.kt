@@ -78,4 +78,10 @@ object ShopScoreConstant {
 
     const val PENALTY_IDENTIFIER = "penalty"
 
+    const val CASH_ADVANCE = "Cash advance"
+    const val PRODUCT_DUPLICATE = "Duplikasi produk"
+    const val PRODUCT_VIOLATION = "Pelanggaran produk"
+    const val TRANSACTION_MANIPULATION = "Manipulasi Transaksi"
+
+
 }
