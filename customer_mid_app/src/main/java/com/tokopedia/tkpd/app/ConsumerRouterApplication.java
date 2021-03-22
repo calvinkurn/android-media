@@ -11,8 +11,6 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -90,14 +88,8 @@ import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
-import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
-import com.tokopedia.tkpdreactnative.react.ReactUtils;
-import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
-import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
@@ -112,9 +104,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -133,12 +122,10 @@ import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
-        ReactApplication,
         AbstractionRouter,
         ApplinkRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
-        ReactNativeRouter,
         NetworkRouter,
         OmsModuleRouter,
         TkpdAppsFlyerRouter,
@@ -149,13 +136,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     protected CacheManager cacheManager;
-    @Inject
-    Lazy<ReactNativeHost> reactNativeHost;
-    @Inject
-    Lazy<ReactUtils> reactUtils;
-    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
+
     private OmsComponent omsComponent;
-    private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
     private TetraDebugger tetraDebugger;
     private Iris mIris;
@@ -243,10 +225,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
     }
 
-    private void initDaggerInjector() {
-        getReactNativeComponent().inject(this);
-    }
-
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(ConsumerRouterApplication.this);
         WeaveInterface irisInitializeWeave = new WeaveInterface() {
@@ -302,11 +280,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NFCSubscriber.onNewIntent(context, intent);
     }
 
-    @Override
-    public boolean getEnableFingerprintPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP);
-    }
 
     @Override
     public Interceptor getChuckerInterceptor() {
@@ -342,28 +315,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Class<?> getHomeClass() {
         return MainParentActivity.class;
-    }
-
-    @Override
-    public void sendLoginEmitter(String userId) {
-        reactUtils.get().sendLoginEmitter(userId);
-    }
-
-    private ReactNativeComponent getReactNativeComponent() {
-        if (daggerReactNativeBuilder == null) {
-            daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
-                    .appComponent(getApplicationComponent())
-                    .reactNativeModule(new ReactNativeModule(ConsumerRouterApplication.this));
-        }
-        if (reactNativeComponent == null)
-            reactNativeComponent = daggerReactNativeBuilder.build();
-        return reactNativeComponent;
-    }
-
-    @Override
-    public ReactNativeHost getReactNativeHost() {
-        if (reactNativeHost == null) initDaggerInjector();
-        return reactNativeHost.get();
     }
 
     @Override
@@ -512,10 +463,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                                           String trainReservationCode,
                                                           String galaCode) {
         return Observable.just(new VoucherViewModel());
-    }
-
-    public UseCase<String> setCreditCardSingleAuthentication() {
-        return new CreditCardFingerPrintUseCase();
     }
 
     @Override
