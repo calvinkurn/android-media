@@ -173,10 +173,7 @@ public class SplashScreen extends AppCompatActivity {
 
     @NotNull
     private boolean getBranchDefferedDeeplink() {
-        if(SplashScreen.this.getIntent().getData()!= null && SplashScreen.this.getIntent().getData().toString().contains("tokopedia.link/")){
-            LinkerUtils.APP_OPEN_FROM_BRANCH_LINK = true;
-            processUTM(this.getIntent().getData());
-        }
+        LinkerUtils.APP_OPEN_FROM_BRANCH_LINK = false;
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setClientId(TrackingUtils.getClientID(SplashScreen.this));
         linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
@@ -225,23 +222,5 @@ public class SplashScreen extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         getBranchDefferedDeeplink();
-    }
-
-    public void processUTM( Uri applink) {
-        if (DeeplinkUTMUtils.isValidCampaignUrl(applink)) {
-            sendCampaignGTM(SplashScreen.this, applink.toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER);
-        }
-    }
-    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
-        campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(activity, campaign);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.CAMPAIGN,
-                AppEventTracking.Category.CAMPAIGN,
-                AppEventTracking.Action.DEEPLINK,
-                campaignUri
-        ).getEvent());
-
     }
 }

@@ -1,10 +1,17 @@
 package com.tokopedia.linker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
+import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.linker.helper.BranchHelper;
 import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -71,6 +78,7 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
+        CheckBranchLinkUTMParams(linkerDeeplinkRequest);
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -432,7 +440,6 @@ public class BranchWrapper implements WrapperInterface {
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
         if (context == null) return;
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT)) {
             if (!(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK) && LinkerUtils.APP_OPEN_FROM_BRANCH_LINK)) {
                 return;
             }
@@ -450,13 +457,12 @@ public class BranchWrapper implements WrapperInterface {
                 utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
                 utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
             }
-            sendCampaignTOGTM(context, utmSource, utmCampaign, utmMedium, utmTerm);
+            convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm);
 
-        }
+
     }
 
-
-    private void sendCampaignTOGTM(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm) {
+    private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm) {
         if (context == null) return;
         if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
@@ -468,7 +474,31 @@ public class BranchWrapper implements WrapperInterface {
                 param.put(LinkerConstants.UTM_TERM, utmTerm);
             }
 
+            sendCampaignToGTM(context, param);
+        }
+    }
+
+    private void sendCampaignToGTM(Context context, Map<String,Object> param) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT)) {
             TrackApp.getInstance().getGTM().sendCampaign(param);
         }
+    }
+
+    private void CheckBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest){
+        Activity activity= ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
+        if(activity != null && activity.getIntent().getData()!= null && activity.getIntent().getData().toString().contains("tokopedia.link/")){
+            if (DeeplinkUTMUtils.isValidCampaignUrl(activity.getIntent().getData())) {
+                sendCampaignGTM(activity, activity.getIntent().getData().toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER);
+                LinkerUtils.APP_OPEN_FROM_BRANCH_LINK = true;
+            }
+        }
+    }
+
+
+    private void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
+        campaign.setScreenName("Deeplink Page");
+        sendCampaignToGTM(activity, campaign.getCampaign());
     }
 }
