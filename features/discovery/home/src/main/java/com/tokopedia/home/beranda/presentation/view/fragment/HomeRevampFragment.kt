@@ -701,9 +701,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark() {
-        coachMarkIsShowing = true
-        val coachMarkItem = ArrayList<CoachMark2Item>()
         context?.let {
+            coachMarkIsShowing = true
+            val coachMarkItem = ArrayList<CoachMark2Item>()
             val coachMark = CoachMark2(it)
 
             coachMarkItem.buildHomeCoachmark()
