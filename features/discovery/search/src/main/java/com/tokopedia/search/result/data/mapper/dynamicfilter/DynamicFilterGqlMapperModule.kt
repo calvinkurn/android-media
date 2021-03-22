@@ -11,7 +11,7 @@ import rx.functions.Func1
 class DynamicFilterGqlMapperModule {
     @SearchScope
     @Provides
-    fun provideDynamicFilterModelMapper(): Func1<GraphqlResponse, DynamicFilterModel> {
+    fun provideDynamicFilterModelMapper(): Func1<GraphqlResponse?, DynamicFilterModel?> {
         return DynamicFilterGqlMapper()
     }
 }
