@@ -35,7 +35,7 @@ class SellerOnboardingFragment : Fragment() {
 //        const val SELLER_ONBOARDING_URL_2 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_2_webp.webp"
 //        const val SELLER_ONBOARDING_URL_3 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_3_webp.webp"
 
-        const val SELLER_ONBOARDING_URL_1 = "https://images.tokopedia.net/img/android/seller_onboarding/sellerapp_onboarding_ramadhan_1.webpp"
+        const val SELLER_ONBOARDING_URL_1 = "https://images.tokopedia.net/img/android/seller_onboarding/sellerapp_onboarding_ramadhan_1.webp"
         const val SELLER_ONBOARDING_URL_2 = "https://images.tokopedia.net/img/android/seller_onboarding/sellerapp_onboarding_ramadhan_2.webp"
         const val SELLER_ONBOARDING_URL_3 = "https://images.tokopedia.net/img/android/seller_onboarding/sellerapp_onboarding_ramadhan_3.webp"
 
