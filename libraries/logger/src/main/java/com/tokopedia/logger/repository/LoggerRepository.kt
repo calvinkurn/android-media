@@ -14,6 +14,7 @@ import com.tokopedia.logger.utils.TimberReportingTree
 import kotlinx.coroutines.*
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.log
 
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
@@ -89,14 +90,13 @@ class LoggerRepository(private val logDao: LoggerDao,
             return true
         }
 
-        val newRelicMessageList = mutableListOf<String>()
-
+        val messageList = mutableListOf<String>()
         for (log in logs) {
-            val message = encryptor.decrypt(log.message, secretKey)
-            newRelicMessageList.add(message)
+            val  message = encryptor.decrypt(log.message, secretKey)
+            messageList.add(message)
         }
 
-        return loggerCloudNewRelicImpl.sendToLogServer(newRelicMessageList)
+        return loggerCloudNewRelicImpl.sendToLogServer(messageList)
     }
 
     fun truncate(str: String): String {

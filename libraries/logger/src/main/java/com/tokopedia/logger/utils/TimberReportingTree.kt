@@ -81,6 +81,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         }
         val scalyrConfig = LogManager.scalyrConfigList.getOrNull(tokenIndex)
         with(mapMessage) {
+            put("eventType", "android")
             put("tag", tag)
             put("timestamp", timeStamp.toString())
             put("time", getReadableTimeStamp(timeStamp))
