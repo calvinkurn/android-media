@@ -102,12 +102,12 @@ class DealsCategoryActivityTest {
 
         Thread.sleep(2000)
         onView(CommonMatcher.firstView(withText(FILTERS_CHIP_TITLE))).perform(click())
-        Thread.sleep(1000)
+        Thread.sleep(4000)
         onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_TWO))).perform(click())
-        Thread.sleep(1000)
+        Thread.sleep(4000)
         onView(CommonMatcher.firstView(withText(context.getString(R.string.deals_filter_submit)))).perform(click())
 
-        Thread.sleep(1000)
+        Thread.sleep(4000)
     }
 
     private fun onChangeLocation() {
