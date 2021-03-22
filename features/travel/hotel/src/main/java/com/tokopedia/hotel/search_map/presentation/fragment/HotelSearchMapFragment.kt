@@ -34,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.Behavior.DragCallback
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -115,6 +116,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
+    private var searchProperties: List<Property> = listOf()
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
@@ -289,6 +291,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
     }
 
+    private fun removeAnimation(canDrag: Boolean){
+        val params: CoordinatorLayout.LayoutParams = appBarHotelSearchMap.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = AppBarLayout.Behavior()
+        behavior.setDragCallback(object : DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean = canDrag
+        })
+        params.behavior = behavior
+    }
+
     override fun onMapReady(map: GoogleMap) {
         this.googleMap = map
         setGoogleMap()
@@ -298,13 +309,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         GlobalScope.launch(Dispatchers.Main) {
             delay(DELAY_BUTTON_RADIUS)
             showFindNearHereView()
-            showCardListView()
         }
     }
 
     override fun onCameraMove() {
         hideFindNearHereView()
-        hideCardListView()
         googleMap.setOnCameraIdleListener(this)
     }
 
@@ -598,7 +607,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.setOnCameraMoveListener(this)
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnMapClickListener {
-                // do nothing
+                removeAnimation(false)
             }
         }
     }
@@ -660,13 +669,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             allMarker.add(marker)
             markerCounter++
         }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
     private fun changeMarkerState(position: Int) {
         resetMarkerState()
         if (!allMarker.isNullOrEmpty()) {
-            if (cardListPosition == position) allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+            if (cardListPosition == position && !searchProperties.isNullOrEmpty()) {
+                allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+                val latLng = LatLng(searchProperties[position].location.latitude.toDouble(), searchProperties[position].location.longitude.toDouble())
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            }
         }
     }
 
@@ -760,7 +772,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hideLoader()
         showQuickFilterShimmering(false)
 
-        val searchProperties = data.properties
+        searchProperties = data.properties
 
         if (searchProperties.isNotEmpty()) {
             renderCardListMap(searchProperties)
