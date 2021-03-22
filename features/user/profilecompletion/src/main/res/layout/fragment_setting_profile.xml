@@ -24,7 +24,8 @@
                     android:id="@+id/headerPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:contentDescription="photoHeader" />
 
                 <RelativeLayout
                     android:layout_width="90dp"
@@ -36,7 +37,8 @@
                         android:id="@+id/profilePhoto"
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_centerHorizontal="true"
+                        android:contentDescription="photoProfile" />
 
                     <ImageView
                         android:id="@+id/btnEditProfilePhoto"
@@ -49,7 +51,8 @@
                         android:layout_margin="@dimen/spacing_lvl1"
                         app:srcCompat="@drawable/ic_edit_pencil_photo"
                         android:elevation="@dimen/spacing_lvl1"
-                        android:background="@drawable/rounded_bg_icon_with_shadow"/>
+                        android:background="@drawable/rounded_bg_icon_with_shadow"
+                        android:contentDescription="btnEditPhotoProfile" />
                 </RelativeLayout>
             </RelativeLayout>
   

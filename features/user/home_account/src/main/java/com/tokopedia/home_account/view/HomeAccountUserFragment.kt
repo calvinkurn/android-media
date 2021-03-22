@@ -316,7 +316,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         status_bar_bg.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             status_bar_bg.visibility = View.INVISIBLE
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             status_bar_bg.visibility = View.VISIBLE
         } else {
             status_bar_bg.visibility = View.GONE
@@ -415,7 +415,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun clearCache() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE)
             if (activityManager is ActivityManager) {
                 activityManager.clearApplicationUserData()
