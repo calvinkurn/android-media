@@ -37,4 +37,6 @@ class ShopSettingsNoteBuyerViewActivity : BaseSimpleActivity(), HasComponent<Sho
     override fun getComponent(): ShopSettingsComponent = DaggerShopSettingsComponent.builder()
                                                             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                                                             .build()
+
+    override fun getParentViewResourceID(): Int = R.id.parent_view
 }
