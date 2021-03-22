@@ -95,9 +95,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val ERROR_THEMATIC = "Error get thematic illustration."
         private const val TOAST_DURATION = 5000L
 
-        private const val MIN_LOTTIE_ANIM_SPEED = 0f
+        private const val MIN_LOTTIE_ANIM_SPEED = 2f
+        private const val MEDIUM_LOTTIE_ANIM_SPEED = 3f
         private const val MAX_LOTTIE_ANIM_SPEED = 4f
-        private const val SCROLL_DELTA_Y_THRESHOLD = 500
+        private const val SCROLL_DELTA_MIN_Y_THRESHOLD = 20f
+        private const val SCROLL_DELTA_MAX_Y_THRESHOLD = 100f
     }
 
     @Inject
@@ -125,7 +127,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         object: RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val yDelta = abs(dy)
-                val animSpeed = getAnimationSpeedByVerticalDelta(yDelta)
+                val animSpeed = getAnimationSpeedByVerticalDelta(yDelta.toFloat())
                 ketupatLottie?.animateKetupat(canLoadLottieAnimation, animSpeed)
                 super.onScrolled(recyclerView, dx, dy)
             }
@@ -1001,11 +1003,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun getAnimationSpeedByVerticalDelta(deltaY: Int): Float {
+    private fun getAnimationSpeedByVerticalDelta(deltaY: Float): Float {
         return when {
-            deltaY <= 0 -> MIN_LOTTIE_ANIM_SPEED
-            deltaY > SCROLL_DELTA_Y_THRESHOLD -> MAX_LOTTIE_ANIM_SPEED
-            else -> deltaY / SCROLL_DELTA_Y_THRESHOLD * MAX_LOTTIE_ANIM_SPEED
+            deltaY <= SCROLL_DELTA_MIN_Y_THRESHOLD -> MIN_LOTTIE_ANIM_SPEED
+            deltaY > SCROLL_DELTA_MAX_Y_THRESHOLD -> MAX_LOTTIE_ANIM_SPEED
+            else -> MEDIUM_LOTTIE_ANIM_SPEED
         }
     }
 

@@ -12,19 +12,23 @@ class KetupatLottieView @JvmOverloads constructor(context: Context,
                                                   defStyleAttr: Int = 0) : LottieAnimationView(context, attrs, defStyleAttr) {
 
     private var listener: Listener? = null
+    private var canAnimateLottie = false
 
     init {
         addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
+                canAnimateLottie = true
                 listener?.onAnimationFinished()
             }
 
             override fun onAnimationCancel(animation: Animator?) {}
 
             override fun onAnimationStart(animation: Animator?) {
-                listener?.onAnimationStarted()
+                if (canAnimateLottie) {
+                    listener?.onAnimationStarted()
+                }
             }
         })
     }
