@@ -489,6 +489,7 @@ public class BranchWrapper implements WrapperInterface {
         if(activity != null && activity.getIntent().getData()!= null && activity.getIntent().getData().toString().contains("tokopedia.link/")){
             if (DeeplinkUTMUtils.isValidCampaignUrl(activity.getIntent().getData())) {
                 sendCampaignGTM(activity, activity.getIntent().getData().toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER);
+            }else {
                 LinkerUtils.APP_OPEN_FROM_BRANCH_LINK = true;
             }
         }
