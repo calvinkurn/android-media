@@ -32,10 +32,10 @@ class ShopNoteBuyerViewViewHolder(view: View): BaseViewHolder(view) {
 
             if (tpDescription?.isVisible == true) {
                 tpDescription?.gone()
-                ivChevron?.loadImageDrawable(R.drawable.ic_chevron_down)
+                ivChevron?.loadImageDrawable(R.drawable.ic_shop_settings_chevron_down)
             } else {
                 tpDescription?.show()
-                ivChevron?.loadImageDrawable(R.drawable.ic_chevron_up)
+                ivChevron?.loadImageDrawable(R.drawable.ic_shop_settings_chevron_up)
             }
 
         }
