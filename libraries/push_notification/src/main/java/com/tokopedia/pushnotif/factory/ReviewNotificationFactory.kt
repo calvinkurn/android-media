@@ -51,7 +51,7 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
             setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
         }
         if (isAllowBell!!) {
-            setSound(getRingtoneUri(context))
+            setSound(ringtoneUri)
             if (isAllowVibrate!!) setVibrate(vibratePattern)
         }
     }

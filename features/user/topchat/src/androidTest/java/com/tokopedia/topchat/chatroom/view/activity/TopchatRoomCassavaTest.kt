@@ -12,7 +12,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -21,7 +20,6 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,11 +31,6 @@ import org.junit.runner.RunWith
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class TopchatRoomCassavaTest : TopchatRoomTest() {
-
-    private var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = AndroidFileUtil.parse(
-            "success_get_chat_broadcast.json",
-            GetExistingChatPojo::class.java
-    )
 
     private val cassavaDirTopchat = "tracker/user/topchat"
     private val cassavaProduct = "$cassavaDirTopchat/product_card_p0.json"
@@ -62,9 +55,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)
@@ -86,9 +79,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.rv_product_carousel)
         performClickAtcButton(R.id.rv_product_carousel)
         performClickBuyButton(R.id.rv_product_carousel)
@@ -112,9 +105,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)

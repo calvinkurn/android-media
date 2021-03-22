@@ -11,14 +11,14 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_OFFSET
+import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_HEIGHT
+import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_WIDTH
 import com.tokopedia.productcard.ProductCardModel.Companion.WORDING_SEGERA_HABIS
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
 import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonNotify
@@ -120,9 +120,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
             if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
                 progressBarStock.setProgressIcon(
                         icon = ContextCompat.getDrawable(context, R.drawable.ic_fire_filled),
-                        offsetY = FIRE_OFFSET,
-                        width = context.resources.getDimension(R.dimen.dp_12).toInt(),
-                        height = context.resources.getDimension(R.dimen.dp_16).toInt())
+                        width = context.resources.getDimension(FIRE_WIDTH).toInt(),
+                        height = context.resources.getDimension(FIRE_HEIGHT).toInt())
             }
             progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
             progressBarStock.setValue(productCardModel.stockBarPercentage, true)

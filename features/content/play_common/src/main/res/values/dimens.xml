@@ -9,6 +9,8 @@
     <dimen name="play_placeholder_product_line_title">16dp</dimen>
     <dimen name="play_placeholder_product_line_price">16dp</dimen>
 
+    <dimen name="play_placeholder_product_featured_text_height">10dp</dimen>
+
     <dimen name="play_placeholder_voucher_title_width">92dp</dimen>
 
     <dimen name="play_placeholder_variant_option_size">58dp</dimen>

@@ -1,12 +1,14 @@
 package com.tokopedia.statistic.view.model
 
 import android.content.Context
+import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.view.adapter.factory.DateFilterAdapterFactory
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -20,7 +22,7 @@ sealed class DateFilterItem(
         open val endDate: Date? = null,
         open var isSelected: Boolean = false,
         open val type: Int
-) : Visitable<DateFilterAdapterFactory> {
+) : Visitable<DateFilterAdapterFactory>, Parcelable {
 
     companion object {
         const val TYPE_TODAY = 0
@@ -84,6 +86,7 @@ sealed class DateFilterItem(
         }
     }
 
+    @Parcelize
     data class Click(
             override val label: String,
             override val startDate: Date,
@@ -98,12 +101,14 @@ sealed class DateFilterItem(
         }
     }
 
+    @Parcelize
     data class Pick(
             override val label: String,
             override var startDate: Date? = null,
             override var endDate: Date? = null,
             override var isSelected: Boolean = false,
-            override val type: Int
+            override val type: Int,
+            val calendarPickerMaxDate: Date? = null
     ) : DateFilterItem(label, startDate, endDate, isSelected, type) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {
@@ -111,6 +116,7 @@ sealed class DateFilterItem(
         }
     }
 
+    @Parcelize
     object ApplyButton : DateFilterItem(type = TYPE_BUTTON) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {
@@ -118,6 +124,7 @@ sealed class DateFilterItem(
         }
     }
 
+    @Parcelize
     object Divider : DateFilterItem(type = TYPE_DIVIDER) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {
@@ -125,11 +132,13 @@ sealed class DateFilterItem(
         }
     }
 
+    @Parcelize
     data class MonthPickerItem(
             override val label: String,
             override var startDate: Date? = null,
             override var endDate: Date? = null,
-            override var isSelected: Boolean = false
+            override var isSelected: Boolean = false,
+            val monthPickerMaxDate: Date? = null
     ) : DateFilterItem(type = TYPE_PER_MONTH) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {

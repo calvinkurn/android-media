@@ -54,8 +54,8 @@ import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivit
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.developer_options.utils.TimberWrapper;
-import com.tokopedia.logger.common.LoggerException;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.logger.common.LoggerException;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
@@ -66,7 +66,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -94,6 +93,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView reviewNotifBtn;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
+    private AppCompatTextView abTestRollenceEditorStartButton;
     private ToggleButton toggleTimberDevOption;
     private Spinner spinnerEnvironmentChooser;
 
@@ -118,7 +118,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToFpm;
     private TextView vGoToCassava;
     private TextView vGoToAnalytics;
-    private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
     private CheckBox toggleDarkMode;
@@ -138,6 +137,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
+    private TextView appAuthSecretView;
     private TextView tvFakeResponse;
 
     private Button requestFcmToken;
@@ -221,7 +221,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoToFpm = findViewById(R.id.goto_fpm);
         vGoToCassava = findViewById(R.id.goto_cassava);
         vGoToAnalytics = findViewById(R.id.goto_analytics);
-        vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
@@ -235,6 +234,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
+        abTestRollenceEditorStartButton = findViewById(R.id.ab_test_rollence_editor_start);
 
         reviewNotifBtn = findViewById(R.id.review_notification);
 
@@ -264,6 +264,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
         accessTokenView = findViewById(R.id.access_token);
+        appAuthSecretView = findViewById(R.id.app_auth_secret);
         requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
@@ -363,6 +364,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             Editable prefix = remoteConfigPrefix.getText();
 
             startRemoteConfigEditor(prefix != null ? prefix.toString() : "");
+        });
+
+        abTestRollenceEditorStartButton.setOnClickListener(v -> {
+            startAbTestRollenceEditor();
         });
 
         vForceCrash.setOnClickListener(v -> {
@@ -561,11 +566,8 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
-        vGoToCassava.setOnClickListener(v -> GtmLogger.getInstance(this).navigateToValidator());
-        vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
-        vGoToAnalyticsError.setOnClickListener(v -> {
-            GtmLogger.getInstance(DeveloperOptionActivity.this).openErrorActivity();
-        });
+        vGoToCassava.setOnClickListener(v -> startActivity(MainValidatorActivity.newInstance(this)));
+        vGoToAnalytics.setOnClickListener(v -> startActivity(AnalyticsDebuggerActivity.newInstance(this)));
 
         vGoToIrisSaveLogDB.setOnClickListener(v -> {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSaveActivity();
@@ -619,6 +621,16 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
+        appAuthSecretView.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            String decoder = AppAuthKt.getDecoder(this);
+            ClipData clip = ClipData.newPlainText("Copied Text", decoder);
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(clip);
+            }
+            Toast.makeText(this, decoder, Toast.LENGTH_LONG).show();
+        });
+
         requestFcmToken.setOnClickListener(v -> {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
@@ -636,6 +648,11 @@ public class DeveloperOptionActivity extends BaseActivity {
         } else {
             return null;
         }
+    }
+
+    private void startAbTestRollenceEditor() {
+        Intent intent = new Intent(DeveloperOptionActivity.this, AbTestRollenceConfigFragmentActivity.class);
+        startActivity(intent);
     }
 
     private int toInt(String str) {

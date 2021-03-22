@@ -17,12 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
+import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecoration
@@ -36,8 +36,11 @@ import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewMod
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home.*
 import javax.inject.Inject
@@ -98,7 +101,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         hideStatusBar()
         digital_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
-        digital_homepage_search_view.setFocusChangeListener(this)
+
+        initSearchView()
+
         calculateToolbarView(0)
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -119,15 +124,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             loadData()
         }
 
-        digital_homepage_order_list.setOnClickListener {
-            rechargeHomepageAnalytics.eventClickOrderList()
-            RouteManager.route(activity, ApplinkConst.DIGITAL_ORDER)
-        }
-
         // Recharge Branch Event
         rechargeHomepageAnalytics.eventHomepageLaunched(userSession.userId)
 
-        if(sliceOpenApp){
+        if (sliceOpenApp) {
             rechargeHomepageAnalytics.sliceOpenApp(userSession.userId)
             rechargeHomepageAnalytics.onOpenPageFromSlice()
         }
@@ -135,11 +135,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         loadData()
     }
 
+    private fun initSearchView() {
+        digital_homepage_search_view.setFocusChangeListener(this)
+    }
+
     private fun hideStatusBar() {
         digital_homepage_container.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            digital_homepage_container.requestApplyInsets()
-        }
+        digital_homepage_container.requestApplyInsets()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var flags = digital_homepage_container.systemUiVisibility
@@ -208,7 +210,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         super.onActivityCreated(savedInstanceState)
 
         viewModel.rechargeHomepageSectionSkeleton.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) adapter.showGetListError(it.throwable)
+            when (it) {
+                is Success -> renderSearchBarView(it.data)
+                is Fail -> {
+                    adapter.showGetListError(it.throwable)
+                    digital_homepage_toolbar.hide()
+                }
+            }
         })
 
         viewModel.rechargeHomepageSections.observe(viewLifecycleOwner, Observer {
@@ -225,6 +233,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun loadData() {
         adapter.showLoading()
+        digital_homepage_toolbar.hide()
         viewModel.getRechargeHomepageSectionSkeleton(
                 viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
                 swipe_refresh_layout.isRefreshing
@@ -373,7 +382,17 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         if (hasFocus) {
             digital_homepage_search_view.getSearchTextView()?.let { it.clearFocus() }
             rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
-            context?.let { context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
+
+            redirectToSearchByDynamicIconsFragment()
+        }
+    }
+
+    private fun redirectToSearchByDynamicIconsFragment() {
+        val sectionIds = viewModel.getDynamicIconsSectionIds()
+        if (sectionIds.isNotEmpty()) {
+            startActivity(DigitalHomePageSearchActivity.getCallingIntent(
+                    requireContext(), platformId, enablePersonalize,
+                    sectionIds, viewModel.getSearchBarPlaceholder()))
         }
     }
 
@@ -385,6 +404,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         swipe_refresh_layout.isEnabled = true
         swipe_refresh_layout.isRefreshing = false
         adapter.hideLoading()
+    }
+
+    private fun renderSearchBarView(rechargeHomepageSectionSkeleton: RechargeHomepageSectionSkeleton) {
+        digital_homepage_toolbar.show()
+        digital_homepage_search_view.setSearchHint(rechargeHomepageSectionSkeleton.searchBarPlaceholder)
+        digital_homepage_order_list.setOnClickListener {
+            rechargeHomepageAnalytics.eventClickOrderList()
+            RouteManager.route(activity, rechargeHomepageSectionSkeleton.searchBarAppLink)
+        }
     }
 
     companion object {

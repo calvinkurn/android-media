@@ -82,7 +82,7 @@ public interface SearchEventTracking {
         String KEYWORD_PRODUCT_ID = "Keyword: %s - product id: %s";
         String TOPADS = "topads";
         String GENERAL = "general";
-        String GENERAL_SEARCH_EVENT_LABEL = "%s|%s|%s|%s|%s|%s";
+        String GENERAL_SEARCH_EVENT_LABEL = "%s|%s|%s|%s|%s|%s|%s";
     }
 
     interface MOENGAGE {
