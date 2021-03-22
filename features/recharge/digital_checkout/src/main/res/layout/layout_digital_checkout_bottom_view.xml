@@ -10,24 +10,30 @@
     android:focusableInTouchMode="true"
     app:layout_constraintBottom_toBottomOf="parent">
 
+    <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
+        android:id="@+id/digitalPromoBtnView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTotalPaymentLabel"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="@string/digital_checkout_total_payment_label"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@id/btnCheckout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTotalPayment"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
@@ -44,8 +50,8 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:minWidth="@dimen/digital_checkout_checkout_button_min_width"
         android:text="@string/digital_cart_checkout_pay_label"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tvTotalPayment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
         app:unifyButtonSize="medium" />
 </androidx.constraintlayout.widget.ConstraintLayout>
