@@ -1,15 +1,23 @@
 package com.tokopedia.shop.settings.notes.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.notes.data.ShopNoteBuyerViewUiModel
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteBuyerViewAdapter
+import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteBuyerViewViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
 
@@ -18,12 +26,18 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
         fun createInstance() = ShopSettingsNoteBuyerViewFragment()
     }
 
+    @Inject
+    lateinit var viewModel: ShopSettingsNoteBuyerViewViewModel
+
     private var rvNote: RecyclerView? = null
     private var adapter: ShopNoteBuyerViewAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
+        setupObserver()
+
+        viewModel.getShopNotes("")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -37,10 +51,44 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
     }
 
     private fun setupUi() {
+        context?.let{ context ->
+            activity?.window?.decorView?.setBackgroundColor(
+                    getColor(
+                           context, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    )
+            )
+        }
+
         rvNote = view?.findViewById(R.id.rv_note)
         adapter = ShopNoteBuyerViewAdapter()
         rvNote?.adapter = adapter
         rvNote?.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun setupObserver() {
+        viewModel.shopNotes.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    adapter?.setItemsAndAnimateChanges(mapToShopNoteUiModel(result.data))
+                }
+                is Fail -> {
+                    Log.d("ERROR-TEST", result.throwable.message)
+                }
+            }
+        }
+    }
+
+    private fun mapToShopNoteUiModel(response: List<ShopNoteModel>): List<ShopNoteBuyerViewUiModel> {
+        val notes = mutableListOf<ShopNoteBuyerViewUiModel>()
+        response.forEach { model ->
+            notes.add(
+                    ShopNoteBuyerViewUiModel(
+                        title = model.title ?: "",
+                        description = model.content ?: ""
+                    )
+            )
+        }
+        return notes
     }
 
 }
