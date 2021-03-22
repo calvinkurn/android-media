@@ -140,7 +140,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -165,7 +166,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -190,7 +192,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = false.toString(),
@@ -215,7 +218,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -240,7 +244,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -265,7 +270,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -292,7 +298,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -318,7 +325,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -345,7 +353,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -370,7 +379,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -394,7 +404,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -419,7 +430,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -444,7 +456,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         searchProductModel.globalSearchNavigation.data.source,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -469,7 +482,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         OTHER,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -504,7 +518,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         navSource,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -539,7 +554,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        pageTitle
+                        pageTitle,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),

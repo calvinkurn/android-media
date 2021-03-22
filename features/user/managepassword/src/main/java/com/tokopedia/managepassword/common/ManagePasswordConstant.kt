@@ -13,4 +13,5 @@ object ManagePasswordConstant {
     const val IS_SUCCESS_RESET = "IS_SUCCESS_RESET"
 
     const val PARAM_AUTO_FILL = "email"
+    const val PARAM_HASH = "h"
 }

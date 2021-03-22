@@ -39,28 +39,35 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
         etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val beforePrice = priceInput
-                val price: Long? = s.toString().replace(".", "").toLongOrNull()
-                val stringFormatted = getFormattedPriceString(price ?: 0)
-
-                setPriceInput(price)
-
-                actionListener?.onInputPriceByUserFilled(priceInput)
-                validateUserInput(priceInput, minPayment, maxPayment, minPaymentString, maxPaymentString)
-
-                val selectionPosition = etDigitalCheckoutInputPrice.textFieldInput.selectionStart
-
-                etDigitalCheckoutInputPrice.textFieldInput.removeTextChangedListener(this)
-                etDigitalCheckoutInputPrice.textFieldInput.setText(stringFormatted)
-                etDigitalCheckoutInputPrice.textFieldInput.setSelection(getSelectionPosition(beforePrice
-                        ?: 0, stringFormatted, selectionPosition))
-                etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(this)
+                onAfterTextChanged(this, s.toString(), minPayment,
+                        maxPayment, minPaymentString, maxPaymentString)
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
+    }
+
+    private fun onAfterTextChanged(watcher: TextWatcher, s: String, minPayment: Long, maxPayment: Long,
+                                   minPaymentString: String, maxPaymentString: String) {
+        val beforePrice = priceInput
+        val price: Long? = s.replace(".", "").toLongOrNull()
+        val stringFormatted = getFormattedPriceString(price ?: 0)
+
+        setPriceInput(price)
+
+        actionListener?.onInputPriceByUserFilled(priceInput)
+        validateUserInput(priceInput, minPayment, maxPayment, minPaymentString, maxPaymentString)
+
+        val selectionPosition = etDigitalCheckoutInputPrice.textFieldInput.selectionStart
+
+        etDigitalCheckoutInputPrice.textFieldInput.removeTextChangedListener(watcher)
+        etDigitalCheckoutInputPrice.textFieldInput.setText(stringFormatted)
+        getSelectionPosition(beforePrice ?: 0, stringFormatted, selectionPosition).let {
+            if (it >= 0) etDigitalCheckoutInputPrice.textFieldInput.setSelection(it)
+        }
+        etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(watcher)
     }
 
     private fun validateUserInput(priceInput: Long?, minPayment: Long, maxPayment: Long,

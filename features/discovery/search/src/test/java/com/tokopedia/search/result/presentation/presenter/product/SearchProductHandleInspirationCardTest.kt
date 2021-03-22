@@ -136,7 +136,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         img shouldBe inspirationWidgetOption.img
         url shouldBe inspirationWidgetOption.url
         applink shouldBe inspirationWidgetOption.applink
-        color shouldBe inspirationWidgetOption.color
+        hexColor shouldBe inspirationWidgetOption.color
         inspirationCardType shouldBe type
     }
 

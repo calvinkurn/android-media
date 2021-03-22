@@ -10,6 +10,7 @@ package com.tokopedia.managepassword.changepassword.view.viewmodel
 enum class LiveDataValidateResult {
     VALID,
     EMPTY_PARAMS,
+    INVALID_LENGTH,
     SAME_WITH_OLD,
     CONFIRMATION_INVALID,
 }
