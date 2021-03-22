@@ -44,6 +44,7 @@ include 'libraries:iris'
 include 'libraries:iris_session'
 include "libraries:mediauploader"
 include "libraries:oms"
+include "libraries:poc_new_relic"
 include "libraries:push_notification"
 include "libraries:product_photo_adapter"
 include "libraries:remote_config"
