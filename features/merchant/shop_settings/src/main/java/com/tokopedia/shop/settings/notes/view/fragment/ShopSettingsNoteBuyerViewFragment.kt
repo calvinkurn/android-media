@@ -25,7 +25,9 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun createInstance(shopId: String?) = ShopSettingsNoteBuyerViewFragment().apply {
-            arguments?.putString(SHOP_ID, shopId)
+            arguments = Bundle().apply {
+                putString(SHOP_ID, shopId)
+            }
         }
     }
 
@@ -36,16 +38,14 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
     private var rvNote: RecyclerView? = null
     private var adapter: ShopNoteBuyerViewAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        buyerShopId = arguments?.getString(SHOP_ID)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
         setupObserver()
 
+        arguments?.run {
+            buyerShopId = getString(SHOP_ID)
+        }
         buyerShopId?.run {
             viewModel.getShopNotes(this)
         }
