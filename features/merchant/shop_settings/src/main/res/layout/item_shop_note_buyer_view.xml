@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/dp_16"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:ignore="RtlSymmetry">
 
@@ -29,7 +29,7 @@
         <ImageView
             android:id="@+id/iv_chevron"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_shop_settings_chevron_down"
+            android:src="@drawable/ic_shop_chevron_down"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_width="@dimen/dp_12"

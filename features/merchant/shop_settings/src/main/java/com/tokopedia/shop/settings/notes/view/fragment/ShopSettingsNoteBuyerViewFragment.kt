@@ -94,11 +94,13 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
 
     private fun mapToShopNoteUiModel(response: List<ShopNoteModel>): List<ShopNoteBuyerViewUiModel> {
         val notes = mutableListOf<ShopNoteBuyerViewUiModel>()
-        response.forEach { model ->
+        val responseSize = response.size - 1
+        response.forEachIndexed { position, model ->
             notes.add(
                     ShopNoteBuyerViewUiModel(
                         title = model.title ?: "",
-                        description = model.content ?: ""
+                        description = model.content ?: "",
+                        isTheLastPosition = position == responseSize
                     )
             )
         }
