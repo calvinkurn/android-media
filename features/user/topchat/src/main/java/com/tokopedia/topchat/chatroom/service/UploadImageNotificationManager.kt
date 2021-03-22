@@ -21,31 +21,6 @@ abstract class UploadImageNotificationManager(private val context: Context) {
         priority = NotificationCompat.PRIORITY_MAX
     }
 
-    fun onStartUpload() {
-        val text = MESSAGE
-        val notification = notificationBuilder.setContentText(text)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-                .setProgress(0, 0, true)
-                .setOngoing(false)
-                .setShowWhen(true)
-                .build()
-        notificationManager.notify(TAG, id, notification)
-    }
-
-    fun onSuccessUpload() {
-        val text = MESSAGE_SUCCESS
-        val notification = notificationBuilder.setContentText(text)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-                .setProgress(0, 0, false)
-                .setContentIntent(getSuccessIntent())
-                .setOngoing(false)
-                .setShowWhen(true)
-                .build()
-
-        notificationManager.cancel(TAG, id)
-        notificationManager.notify(TAG, id, notification)
-    }
-
     fun onFailedUpload(errorMessage: String) {
         val text = MESSAGE_ERROR
         val notification = notificationBuilder
@@ -68,8 +43,7 @@ abstract class UploadImageNotificationManager(private val context: Context) {
         private const val CHANNEL_GENERAL = "ANDROID_GENERAL_CHANNEL"
         private const val NOTIFICATION_GROUP = "com.tokopedia"
         private const val TITLE = "Upload gambar"
-        private const val MESSAGE = "Mengupload gambar"
-        private const val MESSAGE_SUCCESS = "Gambar berhasil di-upload"
         private const val MESSAGE_ERROR = "Gambar gagal di-upload. Coba lagi"
+        const val MESSAGE_INTERRUPTED = "Jangan tutup aplikasi Tokopedia ya"
     }
 }

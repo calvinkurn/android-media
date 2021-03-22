@@ -4,18 +4,18 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
@@ -23,7 +23,6 @@ import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
-import com.tokopedia.topchat.common.dispatcher.DispatcherProvider
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -46,7 +45,9 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     @Inject
     lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
     @Inject
-    lateinit var dispatcher: DispatcherProvider
+    lateinit var dispatcher: CoroutineDispatchers
+
+    private var isDone: Boolean = false
 
     companion object {
         const val JOB_ID_UPLOAD_IMAGE = 813
@@ -106,7 +107,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         image?.let {
             uploadImageUseCase.upload(it, ::onSuccessUploadImage, ::onErrorUploadImage)
         }
-        notificationManager?.onStartUpload()
     }
 
     private fun onSuccessUploadImage(uploadId: String, dummyMessage: ImageUploadViewModel) {
@@ -120,14 +120,14 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     private fun sendImageByGQL(msgId: String, msg: String, filePath: String, dummyMessage: ImageUploadViewModel) {
         launchCatchError(block = {
-            withContext(dispatcher.io()) {
+            withContext(dispatcher.io) {
                 replyChatGQLUseCase.replyMessage(msgId, msg, filePath, dummyMessage.source,
                         {
                             if(it.data.attachment.attributes.isNotEmpty()) {
-                                notificationManager?.onSuccessUpload()
                                 removeDummyOnList(dummyMessage)
                                 image?.let {img ->
                                     sendSuccessBroadcast(img)
+                                    isDone = true
                                 }
                             }
                         },
@@ -136,11 +136,13 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         },
         onError = {
             onErrorUploadImage(it, dummyMessage)
+            isDone = true
         })
     }
 
     private fun onFailedReplyMessage(): (Throwable) -> Unit {
         return {
+            isDone = true
             image?.let { img ->
                 onErrorUploadImage(it, img)
             }
@@ -155,13 +157,11 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     private fun sendByApi(requestParams: RequestParams, dummyMessage: Visitable<*>) {
         replyChatUseCase.execute(requestParams, object : Subscriber<ReplyChatViewModel>() {
             override fun onNext(response: ReplyChatViewModel) {
-                if (response.isSuccessReplyChat) {
-                    notificationManager?.onSuccessUpload()
-                }
                 removeDummyOnList(dummyMessage)
                 image?.let {
                     sendSuccessBroadcast(it)
                 }
+                isDone = true
             }
 
             override fun onCompleted() {
@@ -171,6 +171,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                 image?.let {
                     onErrorUploadImage(e, it)
                 }
+                isDone = true
             }
         })
     }
@@ -199,6 +200,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         result.putExtras(bundle)
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
 
+        firebaseLogError(throwable)
         removeDummyOnList(image)
 
         val errorMessage = ErrorHandler.getErrorMessage(this@UploadImageChatService, throwable)
@@ -223,11 +225,27 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         }
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        if(!isDone) {
+            notificationManager?.onFailedUpload(UploadImageNotificationManager.MESSAGE_INTERRUPTED)
+        }
+        stopSelf()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         replyChatUseCase.unsubscribe()
+        replyChatGQLUseCase.cancel()
+    }
+
+    private fun firebaseLogError(throwable: Throwable) {
+        try {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
     }
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcher.io() + SupervisorJob()
+        get() = dispatcher.io + SupervisorJob()
 }

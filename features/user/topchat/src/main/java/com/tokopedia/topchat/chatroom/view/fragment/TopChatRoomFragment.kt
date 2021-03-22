@@ -1793,8 +1793,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-
-
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"

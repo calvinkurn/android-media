@@ -1,11 +1,11 @@
 package com.tokopedia.topchat.stub.common
 
-import com.tokopedia.topchat.common.dispatcher.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-class TestDispatcherProvider: DispatcherProvider {
-    override fun main(): CoroutineDispatcher = Dispatchers.Unconfined
-    override fun io(): CoroutineDispatcher = Dispatchers.Unconfined
-    override fun default(): CoroutineDispatcher = Dispatchers.Unconfined
+class TestDispatcherProvider: CoroutineDispatchers {
+    override val main: CoroutineDispatcher = Dispatchers.Unconfined
+    override val io: CoroutineDispatcher = Dispatchers.Unconfined
+    override val default: CoroutineDispatcher = Dispatchers.Unconfined
 }

@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.network.ChatUrl
@@ -35,7 +35,6 @@ import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.dispatcher.AppDispatcherProvider
-import com.tokopedia.topchat.common.dispatcher.DispatcherProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
@@ -264,7 +263,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideMainDispatcher(): DispatcherProvider {
+    fun provideMainDispatcher(): CoroutineDispatchers {
         return AppDispatcherProvider()
     }
 
