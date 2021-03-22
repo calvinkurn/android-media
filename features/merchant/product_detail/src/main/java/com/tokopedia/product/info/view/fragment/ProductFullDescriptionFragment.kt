@@ -73,7 +73,7 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
             when {
                 descriptionData.isOfficial -> {
                     ic_badge.show()
-                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_official_store_product))
+                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_official_store_product))
                 }
                 descriptionData.isGoldMerchant -> {
                     ic_badge.show()

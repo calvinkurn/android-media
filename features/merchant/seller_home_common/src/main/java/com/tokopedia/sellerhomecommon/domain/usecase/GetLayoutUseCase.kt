@@ -54,9 +54,11 @@ class GetLayoutUseCase(
             query GetSellerDashboardLayout(${'$'}shopID: Int!, ${'$'}page: String!) {
               GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
                 widget {
+                  ID
                   widgetType
                   title
                   subtitle
+                  comparePeriode
                   tooltip {
                     title
                     content

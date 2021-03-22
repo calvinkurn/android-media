@@ -41,6 +41,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDura
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -78,6 +79,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private var tvPaymentName: Typography? = null
     private var tvPaymentDetail: Typography? = null
     private var tvPaymentInfo: Typography? = null
+    private var tickerPaymentInfo: Ticker? = null
     private var buttonChangePayment: Typography? = null
 
     private var cbMainPreference: CheckboxUnify? = null
@@ -269,10 +271,18 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             tvPaymentDetail?.gone()
         }
         if (paymentModel.tickerMessage.isNotBlank()) {
-            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
-            tvPaymentInfo?.visible()
+            if (isNewFlow) {
+                tickerPaymentInfo?.setHtmlDescription(paymentModel.tickerMessage)
+                tickerPaymentInfo?.visible()
+                tvPaymentInfo?.gone()
+            } else {
+                tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
+                tvPaymentInfo?.visible()
+                tickerPaymentInfo?.gone()
+            }
         } else {
             tvPaymentInfo?.gone()
+            tickerPaymentInfo?.gone()
         }
 
         val parent = activity
@@ -352,6 +362,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         tvPaymentName = view?.findViewById(R.id.tv_payment_name)
         tvPaymentDetail = view?.findViewById(R.id.tv_payment_detail)
         tvPaymentInfo = view?.findViewById(R.id.tv_payment_info)
+        tickerPaymentInfo = view?.findViewById(R.id.ticker_payment_info)
         buttonChangePayment = view?.findViewById(R.id.btn_change_payment)
 
         cbMainPreference = view?.findViewById(R.id.cb_main_preference)

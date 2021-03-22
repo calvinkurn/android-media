@@ -45,7 +45,7 @@ object TopChatWebSocketParam {
             if (attachment is SendableProductPreview) {
                 val product = JsonObject().apply {
                     addProperty("url", attachment.productUrl)
-                    addProperty("product_id", attachment.productId.toInt())
+                    addProperty("product_id", attachment.productId.toLongOrZero())
                 }
                 extrasProducts.add(product)
             }

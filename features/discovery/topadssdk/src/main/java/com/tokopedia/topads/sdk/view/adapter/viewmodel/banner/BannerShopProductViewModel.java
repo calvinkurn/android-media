@@ -15,12 +15,14 @@ public class BannerShopProductViewModel extends ImpressHolder implements Item<Ba
     private ProductCardModel product;
     private CpmData cpmData;
     private final String appLink;
+    private final String imageUrl;
     private final String adsClickUrl;
 
-    public BannerShopProductViewModel(CpmData cpmData, ProductCardModel product, String appLink, String adsClickUrl) {
+    public BannerShopProductViewModel(CpmData cpmData, ProductCardModel product, String appLink, String imageUrl, String adsClickUrl) {
         this.cpmData = cpmData;
         this.product = product;
         this.appLink = appLink;
+        this.imageUrl = imageUrl;
         this.adsClickUrl = adsClickUrl;
     }
 
@@ -36,6 +38,9 @@ public class BannerShopProductViewModel extends ImpressHolder implements Item<Ba
         return adsClickUrl;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
     public ProductCardModel getProduct() {
         return product;

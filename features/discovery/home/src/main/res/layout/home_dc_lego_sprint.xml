@@ -11,10 +11,10 @@
         app:layout_constraintTop_toBottomOf="@+id/channel_title">
     <ImageView
             android:id="@+id/background_thematic"
+            android:contentDescription="@string/content_desc_home_background"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="fitXY"
-        tools:background="@android:color/holo_purple"
             android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

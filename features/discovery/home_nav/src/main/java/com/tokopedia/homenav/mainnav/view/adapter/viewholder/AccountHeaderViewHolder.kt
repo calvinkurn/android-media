@@ -26,8 +26,10 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -51,7 +53,6 @@ class AccountHeaderViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
-        const val TEXT_TOKO_SAYA = "Toko saya:  %s"
         private const val GREETINGS_0_2 = "Selamat tidur~"
         private const val GREETINGS_3_4 =  "Lagi begadang? Kangen, ya?"
         private const val GREETINGS_5_9 =  "Selamat pagi! Semongko!"
@@ -71,7 +72,6 @@ class AccountHeaderViewHolder(itemView: View,
         initViewHolder()
         when(element.loginState) {
             AccountHeaderDataModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
-            AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS -> renderLoginAs()
             else -> renderNonLoginState()
         }
     }
@@ -99,7 +99,7 @@ class AccountHeaderViewHolder(itemView: View,
         val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
-        val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
+        val tvShopNotif: NotificationUnify = layoutLogin.findViewById(R.id.usr_shop_notif)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
         val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
 
@@ -167,23 +167,47 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         //shop info error state
-        if (!element.isGetShopError && element.shopName.isNotEmpty()) {
-            tvShopInfo.visible()
-            tvShopTitle.visible()
-            tvShopInfo.setText(element.shopName, TextView.BufferType.SPANNABLE)
+        if (!element.isGetShopError && (element.shopName.isNotEmpty() || !element.adminRoleText.isNullOrEmpty())) {
+            val shopTitle: String
+            val shopInfo: String
+            if (element.adminRoleText == null) {
+                shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
+                shopInfo = MethodChecker.fromHtml(element.shopName).toString()
+            } else {
+                shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
+                shopInfo = element.adminRoleText.orEmpty()
+            }
+            tvShopTitle.run {
+                visible()
+                text = shopTitle
+            }
+            tvShopInfo.run {
+                visible()
+                setText(shopInfo, TextView.BufferType.SPANNABLE)
+                setOnClickListener { onShopClicked(element.canGoToSellerAccount) }
+            }
             val str = tvShopInfo.text as Spannable
-            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            str.setSpan(StyleSpan(BOLD), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            tvShopInfo.setOnClickListener { onShopClicked(element.canGoToSellerAccount) }
+            if (element.shopOrderCount > 0) {
+                tvShopNotif.visible()
+                tvShopNotif.setNotification(element.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+            } else {
+                tvShopNotif.gone()
+            }
         } else if (element.isGetShopLoading) {
             tvShopInfo.gone()
             tvShopTitle.gone()
             btnTryAgainShopInfo.gone()
+            tvShopNotif.gone()
             shimmerShopInfo.visible()
         } else if (element.isGetShopError) {
             btnTryAgainShopInfo.visible()
             tvShopInfo.visible()
             tvShopTitle.visible()
             shimmerShopInfo.gone()
+            tvShopNotif.gone()
 
             tvShopInfo.text = getString(R.string.error_state_shop_info)
         }
@@ -269,9 +293,13 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun onShopClicked() {
+    private fun onShopClicked(canGoToSellerMenu: Boolean) {
         TrackingProfileSection.onClickShopProfileSection(userSession.userId)
-        RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
+        if (canGoToSellerMenu) {
+            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
+        } else {
+            LocationAdminDialog(itemView.context).show()
+        }
     }
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
@@ -297,12 +325,5 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun setFirstTimeUserSeeNameAnimationOnSession(value: Boolean) {
         MainNavConst.MainNavState.runAnimation = value
-    }
-
-    private fun setColor(view: TextView, fulltext: String, subtext: String, color: Int) {
-        view.setText(fulltext, TextView.BufferType.SPANNABLE)
-        val str = view.text as Spannable
-        val i = fulltext.indexOf(subtext)
-        str.setSpan(ForegroundColorSpan(color), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 }

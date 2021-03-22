@@ -43,6 +43,15 @@ class StatisticUseCaseModule {
 
     @StatisticScope
     @Provides
+    fun provideGetMultiLineGraphDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: MultiLineGraphMapper
+    ): GetMultiLineGraphUseCase {
+        return GetMultiLineGraphUseCase(gqlRepository, mapper)
+    }
+
+    @StatisticScope
+    @Provides
     fun provideGetProgressDataUseCase(
             gqlRepository: GraphqlRepository,
             progressMapper: ProgressMapper

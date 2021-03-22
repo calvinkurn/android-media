@@ -48,6 +48,7 @@ ext {
             commonElectronicMoney           : ":features:recharge:common_electronic_money",
             digitalHomepage                 : ":features:recharge:digital_homepage",
             digitalproduct                  : ":features:recharge:digitalproduct",
+            digitalCheckout                 : ":features:recharge:digital_checkout",
             digitalTopupBills               : ":features:recharge:digital_topup_bills",
             rechargeGeneral                 : ":features:recharge:recharge_general",
             rechargeOcr                     : ":features:recharge:rechargeocr",
@@ -67,7 +68,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
@@ -101,6 +101,7 @@ ext {
             wallet                          : ":features:fintech:wallet",
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
             layanan                         : ":features:fintech:layanan_finansial",
+            paylater                        : ":features:fintech:paylater",
 
             accountHome                     : ":features:home:account-home",
             dynamicBanner                   : ":features:home:dynamicbanner",
@@ -123,7 +124,6 @@ ext {
             productDetailCommon             : ":features:merchant:product_detail_common",
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
-            atc_variant                     : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
             ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
@@ -135,6 +135,8 @@ ext {
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
+            moengageWrapper                 : ":features:im:moengage_wrapper",
+
 
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
@@ -184,6 +186,7 @@ ext {
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
             promoUiCommon                   : ":features:promo:promo_ui_common",
+            promoMvcWidget                  : ":features:promo:mvc_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
@@ -208,11 +211,15 @@ ext {
             sellerorder                     : ":features:transaction:sellerorder",
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
+            snapshot                        : ":features:ordermanagement:snapshot",
+            ordermanagementhistory          : ":features:ordermanagement:orderhistory",
+
+            pushNotificationCommon          : ":features:communication:push-notification-common",
 
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
-            attachcommon                   : ":features:user:attachcommon",
+            attachcommon                    : ":features:user:attachcommon",
             managepassword                  : ":features:user:managepassword",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
@@ -245,7 +252,6 @@ ext {
             fcm_common                      : ":features:user:fcm_common",
             homeAccountUser                 : ":features:user:home_account",
             tkpdcore                        : ":tkpdcore",
-            tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",

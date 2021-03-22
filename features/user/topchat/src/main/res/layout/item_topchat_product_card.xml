@@ -21,6 +21,7 @@
             android:id="@+id/iv_thumbnail"
             android:layout_width="@dimen/dp_topchat_96"
             android:layout_height="@dimen/dp_topchat_96"
+            android:contentDescription="@null"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -81,6 +82,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/spacing_lvl2"
                     android:layout_marginRight="@dimen/spacing_lvl2"
+                    android:contentDescription="@null"
                     tools:background="@color/Unify_N700" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -192,6 +194,7 @@
                 android:layout_width="@dimen/dp_topchat_14"
                 android:layout_height="@dimen/dp_topchat_13"
                 android:layout_gravity="center_vertical"
+                android:contentDescription="@null"
                 android:scaleType="fitCenter"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_topchat_star"
@@ -233,6 +236,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_topchat_20"
                 android:layout_gravity="center_vertical"
+                android:contentDescription="@null"
                 android:scaleType="fitCenter"
                 android:visibility="gone"
                 tools:src="@drawable/ic_close_default"
@@ -284,24 +288,8 @@
                 android:gravity="center"
                 android:text="@string/action_buy"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@+id/tv_occ"
-                app:layout_constraintStart_toEndOf="@+id/tv_atc"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unifyButtonSize="small"
-                app:unifyButtonType="transaction"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/tv_occ"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:gravity="center"
-                android:text="@string/title_buy_occ"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_buy"
+                app:layout_constraintStart_toEndOf="@+id/tv_atc"
                 app:layout_constraintTop_toTopOf="parent"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="transaction"

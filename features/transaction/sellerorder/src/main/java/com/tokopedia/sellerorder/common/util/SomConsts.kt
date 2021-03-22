@@ -12,7 +12,6 @@ object SomConsts {
     const val PARAM_BOOKING_CODE = "bookingCode"
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_ORDER_CODE = "order_code"
-    const val PARAM_USER_ROLES = "user_roles"
     const val PARAM_INVOICE = "invoice"
 
     const val VAR_PARAM_ORDERID = "orderID"
@@ -50,6 +49,7 @@ object SomConsts {
     const val KEY_TRACK_SELLER = "track"
     const val KEY_REQUEST_PICKUP = "request_pickup"
     const val KEY_CONFIRM_SHIPPING = "confirm_shipping"
+    const val KEY_STATUS_COMPLAINT = "complaint"
     const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint"
     const val KEY_SET_DELIVERED = "set_delivered"
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"

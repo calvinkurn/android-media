@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.track.TrackApp;
@@ -33,7 +34,7 @@ public class DigitalAnalytics {
         ));
     }
 
-    public void eventAddToCart(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom) {
+    public void eventAddToCart(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom, String userId) {
         String productName = cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase() + " " +
                 cartDigitalInfoData.getAttributes().getPrice().toLowerCase();
         List<Object> products = new ArrayList<>();
@@ -46,6 +47,8 @@ public class DigitalAnalytics {
                         "eventAction", DigitalEventTracking.Action.CLICK_BELI,
                         "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase() +
                                 " - " + (cartDigitalInfoData.isInstantCheckout() ? "instant" : "non instant"),
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.USER_ID, userId,
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "add", DataLayer.mapOf(

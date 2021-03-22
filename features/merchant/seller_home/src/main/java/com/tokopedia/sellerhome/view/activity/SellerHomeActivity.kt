@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -118,12 +119,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+        observeIsRoleEligible()
         fetchSellerAppWidget()
     }
 
     override fun onResume() {
         super.onResume()
         homeViewModel.getNotifications()
+        homeViewModel.getAdminInfo()
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
@@ -254,7 +257,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun handleAppLink(intent: Intent?) {
-        DeepLinkHandler.handleAppLink(intent) { page ->
+        DeepLinkHandler.handleAppLink(this, intent) { page ->
             val pageType = page.type
 
             when (pageType) {
@@ -380,6 +383,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         homeViewModel.getShopInfo()
     }
 
+    private fun observeIsRoleEligible() {
+        homeViewModel.isRoleEligible.observe(this) { result ->
+            if (result is Success) {
+                result.data.let { isRoleEligible ->
+                    if (!isRoleEligible) {
+                        RouteManager.route(this, ApplinkConstInternalGlobal.LOGOUT)
+                        finish()
+                    }
+                }
+            }
+        }
+    }
+
     private fun showNotificationBadge(notifUnreadInt: Int) {
         val homeFragment = navigator?.getHomeFragment()
         homeFragment?.setNotifCenterCounter(notifUnreadInt)
@@ -430,7 +446,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (intent.data == null) {
             initPerformanceMonitoringSellerHome()
         } else {
-            DeepLinkHandler.handleAppLink(intent) {
+            DeepLinkHandler.handleAppLink(this, intent) {
                 if (it.type == FragmentType.HOME) {
                     initPerformanceMonitoringSellerHome()
                 } else if (it.type == FragmentType.ORDER) {

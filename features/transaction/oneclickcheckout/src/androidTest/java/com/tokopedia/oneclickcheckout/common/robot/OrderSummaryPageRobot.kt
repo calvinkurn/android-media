@@ -120,8 +120,17 @@ class OrderSummaryPageRobot {
         OvoActivationBottomSheetRobot().apply(func)
     }
 
+    fun clickOvoActivationButtonRevamp(func: OvoActivationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_new_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+        OvoActivationBottomSheetRobot().apply(func)
+    }
+
     fun clickOvoTopUpButton() {
         onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+    }
+
+    fun clickOvoTopUpButtonRevamp() {
+        onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).perform(click())
     }
 
     fun clickChangeInstallment(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
@@ -204,6 +213,21 @@ class OrderSummaryPageRobot {
 
     fun assertProductQuantity(qty: Int) {
         onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).perform(scrollTo()).check(matches(withText(qty.toString())))
+    }
+
+    fun assertProfileRevampWording(wording: String) {
+        onView(withId(R.id.tv_new_card_header)).perform(scrollTo()).check(matches(withText(wording)))
+    }
+
+    fun assertProfileRevampUtama(isDefaultProfile: Boolean) {
+        onView(withId(R.id.lbl_new_default_preference)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(if (isDefaultProfile) View.VISIBLE else View.GONE, view.visibility)
+        }
+    }
+
+    fun assertProfileRevampActionWording(actionWording: String) {
+        onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).check(matches(withText(actionWording)))
     }
 
     fun assertProfileAddress(headerMessage: String,
@@ -363,6 +387,14 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
     }
 
+    fun assertProfilePaymentErrorRevamp(message: String, buttonText: String?) {
+        var expectedMessage = "$message "
+        if (buttonText != null) {
+            expectedMessage += buttonText
+        }
+        onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(expectedMessage)))
+    }
+
     fun assertProfilePaymentOvoError(message: String?, buttonText: String?) {
         if (message != null) {
             onView(withId(R.id.tv_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
@@ -370,6 +402,20 @@ class OrderSummaryPageRobot {
         if (buttonText != null) {
             onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
         }
+    }
+
+    fun assertProfilePaymentOvoErrorRevamp(message: String?, buttonText: String?) {
+        if (message != null && buttonText != null) {
+            onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("$message $buttonText")))
+        } else if (message != null) {
+            onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("$message ")))
+        } else if (buttonText != null) {
+            onView(withId(R.id.tv_new_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
+        }
+    }
+
+    fun assertProfilePaymentInfoRevamp(message: String) {
+        onView(withId(R.id.tv_new_payment_info)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
     }
 
     fun assertPayment(total: String, buttonText: String) {

@@ -73,7 +73,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private var isClearDataOnly = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-
     private var tetraDebugger: TetraDebugger? = null
 
     override fun getNewFragment(): Fragment? = null

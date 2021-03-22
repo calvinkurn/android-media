@@ -328,7 +328,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
             list.add(file.getAbsolutePath());
             ArrayList<ImageRatioType> ratioList = new ArrayList<>();
             ratioList.add(ImageRatioType.RATIO_1_1);
-            imageRatioCropPresenter.cropBitmapToExpectedRatio(list, ratioList, false);
+            imageRatioCropPresenter.cropBitmapToExpectedRatio(list, ratioList, false, false);
         } else {
             onFinishEditAfterTakenFromCamera(file.getAbsolutePath());
         }

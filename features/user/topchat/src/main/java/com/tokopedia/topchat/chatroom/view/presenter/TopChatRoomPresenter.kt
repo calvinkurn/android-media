@@ -3,11 +3,10 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -75,11 +74,11 @@ import kotlin.coroutines.CoroutineContext
  * @author : Steven 11/12/18
  */
 
-class TopChatRoomPresenter @Inject constructor(
+open class TopChatRoomPresenter @Inject constructor(
         tkpdAuthInterceptor: TkpdAuthInterceptor,
         fingerprintInterceptor: FingerprintInterceptor,
         userSession: UserSessionInterface,
-        private val webSocketUtil: RxWebSocketUtil,
+        protected val webSocketUtil: RxWebSocketUtil,
         private var getChatUseCase: GetChatUseCase,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
@@ -99,7 +98,6 @@ class TopChatRoomPresenter @Inject constructor(
         private val groupStickerUseCase: ChatListGroupStickerUseCase,
         private val chatAttachmentUseCase: ChatAttachmentUseCase,
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
-        private val addToCartOccUseCase: AddToCartOccUseCase,
         private val chatBackgroundUseCase: ChatBackgroundUseCase,
         private val sharedPref: SharedPreferences,
         private val dispatchers: TopchatCoroutineContextProvider
@@ -416,8 +414,12 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    private fun sendMessageWebSocket(messageText: String) {
+    protected open fun sendMessageWebSocket(messageText: String) {
         RxWebSocket.send(messageText, listInterceptor)
+    }
+
+    protected open fun sendMessageJsonObjWebSocket(msgObj: JsonObject) {
+        RxWebSocket.send(msgObj, listInterceptor)
     }
 
     override fun sendAttachmentsAndMessage(
@@ -494,14 +496,24 @@ class TopChatRoomPresenter @Inject constructor(
     ) {
         val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime, attachmentsPreview)
         val stringContract = CommonUtil.toJson(stickerContract)
-        RxWebSocket.send(stringContract, listInterceptor)
+        sendMessageWebSocket(stringContract)
     }
 
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
-            attachment.sendTo(messageId, opponentId, message, listInterceptor)
+            val wsMsgPayload = attachment.generateMsgObj(
+                    messageId, opponentId, message, listInterceptor
+            )
+            sendWebSocketAttachmentPayload(wsMsgPayload)
             view?.sendAnalyticAttachmentSent(attachment)
+        }
+    }
+
+    private fun sendWebSocketAttachmentPayload(wsMsgPayload: Any) {
+        when (wsMsgPayload) {
+            is String -> sendMessageWebSocket(wsMsgPayload)
+            is JsonObject -> sendMessageJsonObjWebSocket(wsMsgPayload)
         }
     }
 
@@ -668,14 +680,6 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun isStickerTooltipAlreadyShow(): Boolean {
-        return sharedPref.getBoolean(STICKER_TOOLTIP_ONBOARDING, false)
-    }
-
-    override fun toolTipOnBoardingShown() {
-        sharedPref.edit().putBoolean(STICKER_TOOLTIP_ONBOARDING, true).apply()
-    }
-
     override fun setBeforeReplyTime(createTime: String) {
         getChatUseCase.minReplyTime = createTime
     }
@@ -708,37 +712,38 @@ class TopChatRoomPresenter @Inject constructor(
         chatToggleBlockChat.unBlockChat(messageId, onSuccess, onError)
     }
 
-    override fun addToCart(
-            addToCartOccRequestParams: AddToCartOccRequestParams,
-            onSuccess: (AddToCartDataModel) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        launchCatchError(dispatchers.IO,
-                {
-                    val requestParams = RequestParams.create().apply {
-                        putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartOccRequestParams)
-                    }
-                    val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
-                    if (result.isDataError()) {
-                        withContext(dispatchers.Main) {
-                            val errorMessage = result.getAtcErrorMessage()
-                            onError(Throwable(errorMessage))
-                        }
-                    } else {
-                        withContext(dispatchers.Main) {
-                            onSuccess(result)
-                        }
-                    }
-                },
-                {
-                    onError(it)
-                }
-        )
-    }
-
     override fun getBackground() {
         chatBackgroundUseCase.getBackground(
                 ::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground
+        )
+    }
+
+    override fun addProductToCart(
+            requestParams: RequestParams,
+            onSuccessAddToCart: (data: DataModel) -> Unit,
+            onError: (msg: String) -> Unit
+    ) {
+        launchCatchError(
+                dispatchers.IO,
+                block = {
+                    val atcResponse = addToCartUseCase.createObservable(requestParams)
+                            .toBlocking()
+                            .single().data
+                    withContext(dispatchers.Main) {
+                        if (atcResponse.success == 1) {
+                            onSuccessAddToCart(atcResponse)
+                        } else {
+                            onError(atcResponse.message.getOrNull(0) ?: "")
+                        }
+                    }
+                },
+                onError = {
+                    withContext(dispatchers.Main) {
+                        it.message?.let { errorMsg ->
+                            onError(errorMsg)
+                        }
+                    }
+                }
         )
     }
 
@@ -789,8 +794,4 @@ class TopChatRoomPresenter @Inject constructor(
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
 
     private fun onErrorGetStickerGroup(throwable: Throwable) {}
-
-    companion object {
-        const val STICKER_TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"
-    }
 }

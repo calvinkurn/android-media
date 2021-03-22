@@ -19,9 +19,8 @@
         app:titleTextAppearance="?titleTextAppearance"
         tools:targetApi="lollipop">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSave"
-            style="@style/TextView.Title.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -34,6 +33,9 @@
             android:paddingRight="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
             android:text="@string/label_save"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler"
+            android:textColor="@color/g_500"
             android:visibility="gone"
             tools:visibility="visible" />
     </androidx.appcompat.widget.Toolbar>

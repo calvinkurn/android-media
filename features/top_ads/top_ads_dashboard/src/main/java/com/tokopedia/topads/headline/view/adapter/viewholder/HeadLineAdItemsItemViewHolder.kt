@@ -16,7 +16,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDA
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
@@ -30,7 +30,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                                     var actionDelete: ((pos: Int) -> Unit),
                                     var actionStatusChange: ((pos: Int, status: Int) -> Unit),
                                     private var editDone: ((groupId: Int) -> Unit),
-                                    private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemViewModel>(view) {
+                                    private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemModel>(view) {
 
     companion object {
         @LayoutRes
@@ -41,7 +41,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         TopadsSelectActionSheet.newInstance()
     }
 
-    override fun bind(item: HeadLineAdItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String) {
+    override fun bind(item: HeadLineAdItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String) {
         item.let {
 
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
