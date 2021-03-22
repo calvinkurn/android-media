@@ -350,7 +350,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         userSession.email = profileCompletionData.email
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
-        profileCompletionData.fullName = DEFAULT_NAME + "123"
+
         name?.showFilled(
                 getString(R.string.subtitle_name_setting_profile),
                 profileCompletionData.fullName,

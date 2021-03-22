@@ -6,7 +6,7 @@ package com.tokopedia.home_account.data.model
  */
 
 data class ProfileDataView (
-        var name: String = "",
+        val name: String = "",
         val phone: String = "",
         val email: String = "",
         val avatar: String = "",

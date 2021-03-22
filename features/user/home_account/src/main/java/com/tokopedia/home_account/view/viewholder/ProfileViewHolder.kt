@@ -49,7 +49,6 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
                 }
             }
 
-            profile.name = DEFAULT_NAME + "123"
             if (profile.name.contains(DEFAULT_NAME)) {
                 account_user_item_profile_icon_warning_name?.show()
                 account_user_item_profile_icon_warning_name?.setOnClickListener { listener.onIconWarningClicked(profile) }
