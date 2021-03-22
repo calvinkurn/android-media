@@ -223,11 +223,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webSettings.setDisplayZoomControls(true);
         webView.setWebChromeClient(new MyWebChromeClient());
         webView.setWebViewClient(new MyWebViewClient());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webSettings.setMediaPlaybackRequiresUserGesture(false);
-        }
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
 
-        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
