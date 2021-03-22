@@ -1,17 +1,13 @@
 package com.tokopedia.linker;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.linker.helper.BranchHelper;
 import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -338,6 +334,10 @@ public class BranchWrapper implements WrapperInterface {
             linkProperties.setFeature(LinkerConstants.FEATURE_TYPE_HOTEL);
             linkProperties.addTag(LinkerConstants.HOTEL_LABEL);
             linkProperties.addTag(LinkerConstants.PDP_LABEL);
+            if (!desktopUrl.isEmpty()) {
+                linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
+            }
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
             linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
             deeplinkPath = data.getDeepLink();

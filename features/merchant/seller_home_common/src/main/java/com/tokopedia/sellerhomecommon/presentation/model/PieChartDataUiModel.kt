@@ -8,7 +8,8 @@ class PieChartDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
         val data: PieChartUiModel = PieChartUiModel(),
-        override var isFromCache: Boolean = false
+        override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
         return !isFromCache && data.item.all { it.value == 0 }

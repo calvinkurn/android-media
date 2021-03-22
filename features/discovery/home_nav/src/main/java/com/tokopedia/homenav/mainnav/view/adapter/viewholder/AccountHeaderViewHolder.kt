@@ -200,6 +200,7 @@ class AccountHeaderViewHolder(itemView: View,
             tvShopInfo.gone()
             tvShopTitle.gone()
             btnTryAgainShopInfo.gone()
+            tvShopNotif.gone()
             shimmerShopInfo.visible()
         } else if (element.isGetShopError) {
             btnTryAgainShopInfo.visible()
