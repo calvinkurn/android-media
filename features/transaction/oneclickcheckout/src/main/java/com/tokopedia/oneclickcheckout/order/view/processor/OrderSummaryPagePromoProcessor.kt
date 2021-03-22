@@ -91,7 +91,9 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 }
                 return@withContext Triple(false, response, OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE))
             } catch (t: Throwable) {
-                return@withContext Triple(false, null, OccGlobalEvent.Error(t.cause ?: t))
+                val throwable = t.cause ?: t
+                handlePromoThrowable(throwable, validateUsePromoRequest)
+                return@withContext Triple(false, null, OccGlobalEvent.Error(throwable))
             }
         }
         OccIdlingResource.decrement()

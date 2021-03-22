@@ -247,9 +247,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 updateCart()
                 return@launch
             }
-            orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+            clearAllPromoFromLastRequest()
+            calculateTotal(forceButtonState = OccButtonState.NORMAL)
             globalEvent.value = newGlobalEvent
-            calculateTotal(forceButtonState = OccButtonState.DISABLE)
             updateCart()
         }
     }
@@ -348,8 +348,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     updateCart()
                     return@launch
                 }
-                resultValidateUse?.let {
-                    validateUsePromoRevampUiModel = it
+                if (resultValidateUse != null) {
+                    validateUsePromoRevampUiModel = resultValidateUse
+                } else {
+                    clearAllPromoFromLastRequest()
+                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
                 }
                 globalEvent.value = newGlobalEvent
                 updateCart()
@@ -526,15 +529,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             val (error, resultValidateUse, isAkamaiError) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
             when {
-                error != null && !isAkamaiError -> {
-                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
-                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                    globalEvent.value = OccGlobalEvent.Error(error)
-                }
                 error != null && isAkamaiError -> {
                     resetBbo()
                     clearAllPromoFromLastRequest()
                     calculateTotal(forceButtonState = OccButtonState.NORMAL)
+                    globalEvent.value = OccGlobalEvent.Error(error)
+                }
+                error != null && !isAkamaiError -> {
+                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                     globalEvent.value = OccGlobalEvent.Error(error)
                 }
                 resultValidateUse != null -> {
