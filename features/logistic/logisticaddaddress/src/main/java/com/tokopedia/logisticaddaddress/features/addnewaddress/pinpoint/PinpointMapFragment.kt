@@ -403,6 +403,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onDestroyView() {
         binding.mapView.onDestroy()
         _binding = null
+        presenter.detachView()
         super.onDestroyView()
     }
 
