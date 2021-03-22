@@ -88,9 +88,10 @@ class HotelSearchMapViewModel @Inject constructor(
                 location.latitude = hotelSearchModel.lat
                 location.longitude = hotelSearchModel.long
                 location.radius = hotelSearchModel.radius
+            }else {
+                location.radius = DEFAULT_RADIUS
             }
 
-            location.radius = DEFAULT_RADIUS
             checkIn = hotelSearchModel.checkIn
             checkOut = hotelSearchModel.checkOut
             room = hotelSearchModel.room
