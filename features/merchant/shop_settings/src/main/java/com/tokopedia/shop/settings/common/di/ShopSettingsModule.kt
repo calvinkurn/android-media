@@ -66,7 +66,7 @@ class ShopSettingsModule {
     @ShopSettingsScope
     @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)
     @Provides
-    fun getGqlQueryShopNotesByShopId(@ShopSettingsContext context: Context): String {
+    fun getGqlQueryShopNotesByShopId(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_notes_by_shop_id)
     }
 
