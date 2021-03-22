@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.shop.settings">
 
     <application>
+        <activity android:name=".notes.view.activity.ShopSettingsNoteBuyerViewActivity"></activity>
         <activity
             android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
             android:label="@string/shop_settings_info"
