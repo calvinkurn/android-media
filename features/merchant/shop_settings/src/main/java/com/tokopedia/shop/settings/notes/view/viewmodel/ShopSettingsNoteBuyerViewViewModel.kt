@@ -16,7 +16,7 @@ import javax.inject.Inject
 class ShopSettingsNoteBuyerViewViewModel @Inject constructor(
         private val getShopNotesByShopIdUseCase: GetShopNotesByShopIdUseCase,
         private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.io) {
+): BaseViewModel(dispatchers.main) {
 
     private val _shopNotes = MutableLiveData<Result<List<ShopNoteModel>>>()
     val shopNotes: LiveData<Result<List<ShopNoteModel>>> = _shopNotes
