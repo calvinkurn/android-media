@@ -9,10 +9,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.*
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SearchPropertyViewHolder
+import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.HotelSearchMapItemViewHolder
 
 class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : BaseAdapterTypeFactory() {
 
-    fun type(data: Property): Int = SearchPropertyViewHolder.LAYOUT
+    fun type(data: Property): Int {
+        return if (data.isForHorizontalItem) HotelSearchMapItemViewHolder.LAYOUT
+        else SearchPropertyViewHolder.LAYOUT
+    }
 
     override fun type(viewModel: ErrorNetworkModel): Int = ErrorNetworkViewHolder.LAYOUT
 
@@ -24,6 +28,7 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
             ErrorNetworkViewHolder.LAYOUT -> ErrorNetworkViewHolder(parent)
             R.layout.property_search_shimmer_loading -> LoadingViewholder(parent)
             EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
+            HotelSearchMapItemViewHolder.LAYOUT -> HotelSearchMapItemViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
