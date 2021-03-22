@@ -34,6 +34,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
+import com.tokopedia.shop.settings.notes.view.activity.ShopSettingsNoteBuyerViewActivity
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -253,13 +254,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun showFollowButton(){
         followButton.visibility = View.VISIBLE
-        followButton.setOnClickListener {
-            if (!followButton.isLoading) {
-                removeCompoundDrawableFollowButton()
-                followButton.isLoading = true
-                listener.setFollowStatus(isShopFavorite)
-            }
-        }
     }
 
     private fun setupTextContentSgcWidget(){
@@ -432,6 +426,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             } else {
                 removeCompoundDrawableFollowButton()
             }
+        }
+        followButton.setOnClickListener {
+            context.startActivity(ShopSettingsNoteBuyerViewActivity.createIntent(context, shopId))
         }
         changeColorButton()
     }
