@@ -8,8 +8,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
@@ -50,6 +52,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val validateProductUseCase: ValidateProductUseCase,
         private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
         private val annotationCategoryUseCase: AnnotationCategoryUseCase,
+        private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher) {
 
@@ -182,6 +185,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mSpecificationText = MutableLiveData<String>()
     val specificationText: LiveData<String>
         get() = mSpecificationText
+
+    private val mProductPriceRecommendation = MutableLiveData<PriceSuggestionSuggestedPriceGet>()
+    val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
+        get() = mProductPriceRecommendation
 
     private fun isInputValid(): Boolean {
 
@@ -586,5 +593,18 @@ class AddEditProductDetailViewModel @Inject constructor(
                 result
             }
         }
+    }
+
+    fun getProductPriceRecommendation() {
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                priceSuggestionSuggestedPriceGetUseCase.setParamsProductId(productInputModel.productId)
+                priceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
+            }
+            mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
     }
 }
