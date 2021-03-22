@@ -28,7 +28,7 @@ data class ShopData(
                 @SerializedName("newOrder")
                 val newOrderCount: Int = 0,
                 @SerializedName("readyToShip")
-                val readyToShipOrderCount: Int =0,
+                val readyToShipOrderCount: Int = 0,
                 @SerializedName("inResolution")
                 val inResolution: Int = 0
         )

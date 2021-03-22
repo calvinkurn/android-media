@@ -47,7 +47,8 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
                                 ProductCardModel.LabelGroup(
                                         position = recommendationLabel.position,
                                         title = recommendationLabel.title,
-                                        type = recommendationLabel.type
+                                        type = recommendationLabel.type,
+                                        imageUrl = recommendationLabel.imageUrl
                                 )
                             },
                             hasAddToCartButton = true,

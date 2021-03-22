@@ -11,7 +11,6 @@ import com.tokopedia.homenav.rule.TestDispatcherProvider
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -61,7 +60,7 @@ fun createViewModel (
         coEvery { it.executeOnBackground() }.answers { listOf() }
     }
     val getShopInfoUseCaseMock = getOrUseDefault(getShopInfoUseCase) {
-        coEvery { it.executeOnBackground() }.answers { Success(com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData())}
+        coEvery { it.executeOnBackground() }.answers { Success(com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData()) }
     }
     val accountAdminInfoUseCaseMock = getOrUseDefault(accountAdminInfoUseCase) {
         coEvery { it.executeOnBackground() }.answers { Pair(AdminDataResponse(), ShopData()) }

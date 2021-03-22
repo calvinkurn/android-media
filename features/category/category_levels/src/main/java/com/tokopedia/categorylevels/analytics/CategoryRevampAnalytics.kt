@@ -1,6 +1,7 @@
 package com.tokopedia.categorylevels.analytics
 
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -168,6 +169,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
             productMap[KEY_VARIANT] = NONE_OTHER
+            productMap[DIMENSION83] = getProductDime83(it)
         }
         list.add(productMap)
 
@@ -207,6 +209,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_POSITION] = componentsItems.position + 1
                 productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
                 productMap[KEY_VARIANT] = NONE_OTHER
+                productMap[DIMENSION83] = getProductDime83(it)
             }
             list.add(productMap)
 
@@ -222,6 +225,19 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             map[KEY_CAMPAIGN_CODE] = campaignCode
             map[KEY_E_COMMERCE] = eCommerce
             getTracker().sendEnhanceEcommerceEvent(map)
+        }
+    }
+
+    private fun getProductDime83(dataItem: DataItem): String {
+        if (dataItem.freeOngkir?.isActive == true){
+            for(labelGroup in dataItem.labelsGroupList ?: arrayListOf()){
+                if(labelGroup.position == Constant.LABEL_FULFILLMENT){
+                    return BEBAS_ONGKIR_EXTRA
+                }
+            }
+            return BEBAS_ONGKIR
+        }else {
+            return NONE_OTHER
         }
     }
 

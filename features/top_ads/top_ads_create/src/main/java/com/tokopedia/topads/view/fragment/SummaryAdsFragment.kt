@@ -25,6 +25,7 @@ import com.tokopedia.topads.common.data.model.Group
 import com.tokopedia.topads.common.data.model.InputCreateGroup
 import com.tokopedia.topads.common.data.model.KeywordsItem
 import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -314,9 +315,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun onErrorActivation(throwable: Throwable) {
+        val message = Utils.getErrorMessage(context, throwable.message ?: "")
         view?.let {
-            Toaster.build(it, throwable.message
-                    ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
         }
         loading?.visibility = View.GONE
         btn_submit?.isEnabled = true
