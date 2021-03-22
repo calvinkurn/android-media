@@ -119,35 +119,6 @@
                 app:layout_goneMarginBottom="@dimen/layout_lvl1">
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl2"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textColor="@color/Unify_N700_96"
-                    app:layout_constraintStart_toStartOf="@+id/price_origin"
-                    app:layout_constraintTop_toBottomOf="@+id/price_origin"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold"
-                    tools:text="Rp10.800.0000" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/price_per_night"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl2"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="@string/hotel_list_per_night"
-                    android:textColor="@color/Unify_N700_44"
-                    app:layout_constraintBottom_toBottomOf="@+id/price"
-                    app:layout_constraintStart_toEndOf="@+id/price"
-                    app:layout_constraintTop_toTopOf="@+id/price"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler" />
-
-                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/price_origin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -176,6 +147,37 @@
                     app:typographyType="body_3"
                     tools:text="Sisa 2 kamar"
                     tools:visibility="visible" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/price"
+                    app:layout_goneMarginTop="@dimen/hotel_20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl2"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintStart_toStartOf="@+id/price_origin"
+                    app:layout_constraintTop_toBottomOf="@+id/price_origin"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Rp10.800.0000" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/price_per_night"
+                    app:layout_goneMarginTop="@dimen/hotel_20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl2"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@string/hotel_list_per_night"
+                    android:textColor="@color/Unify_N700_44"
+                    app:layout_constraintBottom_toBottomOf="@+id/price"
+                    app:layout_constraintStart_toEndOf="@+id/price"
+                    app:layout_constraintTop_toTopOf="@+id/price"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
