@@ -19,6 +19,15 @@
       "eventAction": "click - search bar on rating product page",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
+    },
+    {
+      "eventCategory": "ulasan - rating produk",
+      "shopId": "{{.+}}",
+      "screenName": "rating produk",
+      "event": "clickReview",
+      "eventAction": "click - search by keyword on rating product page",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "keyword:{{.*}}"
     }
   ]
 }

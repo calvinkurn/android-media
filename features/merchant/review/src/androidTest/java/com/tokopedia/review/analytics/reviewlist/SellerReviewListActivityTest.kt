@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Instrumentation
 import android.content.Intent
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -24,6 +25,7 @@ import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxRepu
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import kotlinx.android.synthetic.main.fragment_rating_product.view.*
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -38,6 +40,7 @@ class SellerReviewListActivityTest {
         const val CLICK_FILTER_PATH = "tracker/merchant/review/seller/rating_product_click_filter.json"
         const val CLICK_SORT_PATH = "tracker/merchant/review/seller/rating_product_click_sort.json"
         const val CLICK_SEARCH_PATH = "tracker/merchant/review/seller/rating_product_search.json"
+        const val PRODUCT_NAME_TO_SEARCH = "baju"
     }
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -79,7 +82,12 @@ class SellerReviewListActivityTest {
             if (!isVisibleCoachMark) {
                 clickAction(com.tokopedia.coachmark.R.id.text_skip)
             }
-            Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.rvRatingProduct)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, ViewActions.click()))
+            waitForData()
+            scrollAndWait(getRatingProductItemCount())
+            scrollAndWait(getRatingProductItemCount())
+            scrollAndWait(getRatingProductItemCount())
+            scrollAndWait(getRatingProductItemCount())
+            Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.rvRatingProduct)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(getRatingProductItemCount() - 1, ViewActions.click()))
         } assertTest {
             waitForData()
             performClose(activityRule)
@@ -135,6 +143,8 @@ class SellerReviewListActivityTest {
                 clickAction(com.tokopedia.coachmark.R.id.text_skip)
             }
             Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.searchBarRatingProduct)).perform(ViewActions.click())
+            Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(ViewActions.typeText(PRODUCT_NAME_TO_SEARCH))
+            Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(ViewActions.pressImeActionButton())
         } assertTest {
             waitForData()
             performClose(activityRule)
@@ -163,6 +173,15 @@ class SellerReviewListActivityTest {
     private fun finishTest() {
         gtmLogDBSource.deleteAll().subscribe()
         Thread.sleep(3000)
+    }
+
+    private fun scrollAndWait(itemCount: Int) {
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.rvRatingProduct)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(itemCount - 1))
+        waitForData()
+    }
+
+    private fun getRatingProductItemCount(): Int  {
+        return activityRule.activity.findViewById<RecyclerView>(com.tokopedia.review.R.id.rvRatingProduct).adapter?.itemCount ?: 0
     }
 
     private fun setAppToSellerApp() {
