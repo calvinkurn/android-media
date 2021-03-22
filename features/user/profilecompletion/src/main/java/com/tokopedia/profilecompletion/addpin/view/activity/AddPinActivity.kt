@@ -28,7 +28,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
  * ade.hadian@tokopedia.com
  */
 
-class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     var enableBackBtn = true
     var isFrom2FA = false
@@ -43,7 +43,6 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.extras?.run {
             enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
-            isFrom2FA = getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, false)
         }
         super.onCreate(savedInstanceState)
         KeyboardHandler.hideSoftKeyboard(this)
@@ -54,11 +53,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return if (isFrom2FA) {
-            AddPinFrom2FAFragment.createInstance(bundle)
-        } else {
-            AddPinFragment.createInstance(bundle)
-        }
+        return AddPinFragment.createInstance(bundle)
     }
 
     override fun onBackPressed() {

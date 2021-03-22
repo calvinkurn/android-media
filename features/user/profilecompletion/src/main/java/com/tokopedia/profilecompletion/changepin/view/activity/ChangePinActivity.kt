@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFragment
-import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFrom2FAFragment
+import com.tokopedia.profilecompletion.changepin.view.fragment.ResetPinFragment
 import com.tokopedia.profilecompletion.changepin.view.fragment.ForgotPinFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -33,8 +33,8 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return if(intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
-            ChangePinFrom2FAFragment.createInstance(bundle)
+        return if(intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, false) == true) {
+            ResetPinFragment.createInstance(bundle)
         } else {
             ChangePinFragment.createInstance(bundle)
         }

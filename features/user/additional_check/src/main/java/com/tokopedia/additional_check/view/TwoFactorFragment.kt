@@ -122,9 +122,8 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     private fun goToAddPin(validateToken: String){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN)
+            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN_FROM_2FA)
             i.putExtras(Bundle().apply {
-                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
                 putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
                 putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
             })
