@@ -71,11 +71,11 @@ class BudgetingAdsViewModelTest {
 
     @Test
     fun `check onSuccess invocation in getBidInfo`() {
-        val expected = 1000
-        var actual = 0
+        val expected = "1000"
+        var actual = "0"
         val bidInfoData: ResponseBidInfo.Result = ResponseBidInfo.Result(TopadsBidInfo(data =
         listOf(TopadsBidInfo.DataItem(suggestionBid = expected))))
-        val onSuccess:(List<TopadsBidInfo.DataItem>) -> Unit = {
+        val onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit = {
             actual = it[0].suggestionBid
 
         }
@@ -97,11 +97,11 @@ class BudgetingAdsViewModelTest {
 
     @Test
     fun `check onSuccess invocation in getBidInfoDefault`() {
-        val expected = 1000
-        var actual = 0
+        val expected = "1000"
+        var actual = "0"
         val bidInfoData: ResponseBidInfo.Result = ResponseBidInfo.Result(TopadsBidInfo(data =
         listOf(TopadsBidInfo.DataItem(suggestionBid = expected))))
-        val onSuccess:(List<TopadsBidInfo.DataItem>) -> Unit = {
+        val onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit = {
             actual = it[0].suggestionBid
 
         }

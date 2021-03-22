@@ -6,6 +6,10 @@ import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_DEFAULT
+import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
+import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
+import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -49,12 +53,19 @@ class DataViewMapper @Inject constructor(
             val shortcutList = shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList
             if (shortcutList.isNotEmpty()) {
                 shortcutList.forEach {
+                    val type = when (it.cta.text) {
+                        TOKOMEMBER -> TYPE_TOKOMEMBER
+                        TOPQUEST -> TYPE_TOPQUEST
+                        KUPON_SAYA -> TYPE_KUPON_SAYA
+                        else -> TYPE_DEFAULT
+                    }
                     items.add(
                             MemberItemDataView(
                                     title = it.description,
                                     subtitle = it.cta.text,
                                     icon = it.iconImageURL,
-                                    applink = it.cta.appLink
+                                    applink = it.cta.appLink,
+                                    type = type
                             )
                     )
                 }
@@ -77,6 +88,7 @@ class DataViewMapper @Inject constructor(
                 }
 
                 val item = CommonDataView(
+                        id = AccountConstants.SettingCode.SETTING_OVO,
                         title = wallet.action?.text.toEmptyStringIfNull(),
                         body = body,
                         urlIcon = cdnUrl + AccountConstants.Url.OVO_IMG,
@@ -101,6 +113,7 @@ class DataViewMapper @Inject constructor(
     fun mapSaldo(context: Context?, accountDataModel: UserAccountDataModel): SettingDataView {
         val dataView = SettingDataView(getString(context, R.string.account_title_saldo_section))
         val saldoItem = CommonDataView(
+                id = AccountConstants.SettingCode.SETTING_SALDO,
                 title = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false),
                 body = getString(context, R.string.account_title_saldo_item),
                 type = CommonViewHolder.TYPE_DEFAULT,
@@ -117,5 +130,8 @@ class DataViewMapper @Inject constructor(
 
     companion object {
         private val OVO = "OVO"
+        private val TOKOMEMBER = "TokoMember"
+        private val TOPQUEST = "TopQuest"
+        private val KUPON_SAYA = "Kupon Saya"
     }
 }

@@ -11,7 +11,6 @@ import javax.inject.Inject
 
 
 class ContentCreator @Inject constructor(
-        private val gson: Gson,
         private val rsa: RSA
 ){
 
@@ -21,7 +20,7 @@ class ContentCreator @Inject constructor(
         "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCaDPpCjDLd15gwys1oYW+90ALTYKShRvz3ZzOlYLxfh6uBrWqb05UD+nilZ84z3UmHWZ+LqkE+GhifwI965iTUg4Oz67K52SJ19BXs8SpyLxRmovi539CiRCu6ZMQSAGl9GC/Zv1/tV8UFx2XuprRkwbUJU0oA0xXcP2sqCkN/EwIDAQAB"
     }
 
-    fun createContent(deviceInfoPayload: DeviceInfoPayload): String {
+    fun createContent(payLoad: String): String {
         // Create key from 32-byte random byte array, encrypted with RSA using publicKey
         val secretKeyInString = RandomHelper.randomString(32)
         val publicKey = rsa.stringToPublicKey(publicKeyString)
@@ -33,12 +32,9 @@ class ContentCreator @Inject constructor(
         val ivInString = RandomHelper.randomNumber(16)
 
         // Encrypt deviceInfoPayload using AES-256-CBC, with iv and secret key generated earlier
-        val deviceInfoPayloadInJson = gson.toJson(deviceInfoPayload)
-
-        // Encrypt deviceInfoPayload using AES-256-CBC, with iv and secret key generated earlier
         val aesEncryptorCBC = AESEncryptorCBC(ivInString)
         val secretKey = aesEncryptorCBC.generateKey(secretKeyInString)
-        val encryptedPayload = aesEncryptorCBC.encrypt(deviceInfoPayloadInJson, secretKey) { bytes ->
+        val encryptedPayload = aesEncryptorCBC.encrypt(payLoad, secretKey) { bytes ->
             Base64.encodeToString(bytes, Base64.DEFAULT)
         }
 

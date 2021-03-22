@@ -1,15 +1,14 @@
 package com.tokopedia.shop.settings.notes.view.viewholder
 
+import android.annotation.SuppressLint
 import androidx.core.view.MotionEventCompat
 import android.view.MotionEvent
 import android.view.View
-import android.widget.TextView
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by hendry on 16/08/18.
@@ -17,8 +16,8 @@ import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 class ShopNoteReorderViewHolder(itemView: View,
                                 private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopNoteUiModel>(itemView) {
 
-    private val tvNoteName: TextView
-    private val tvLastUpdate: TextView
+    private val tvNoteName: Typography
+    private val tvLastUpdate: Typography
     private val handler: View
 
     init {
@@ -27,6 +26,7 @@ class ShopNoteReorderViewHolder(itemView: View,
         handler = itemView.findViewById(R.id.ivReorder)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun bind(shopNoteUiModel: ShopNoteUiModel) {
         tvNoteName.text = shopNoteUiModel.title
         tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteUiModel.updateTimeUTC)
@@ -35,7 +35,6 @@ class ShopNoteReorderViewHolder(itemView: View,
             handler.visibility = View.GONE
         } else {
             handler.setOnTouchListener { _, event ->
-                @Suppress("DEPRECATION")
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                     onStartDragListener?.onStartDrag(this@ShopNoteReorderViewHolder)
                 }

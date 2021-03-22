@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="digital_checkout_checkout_button_min_width">140dp</dimen>
+</resources>

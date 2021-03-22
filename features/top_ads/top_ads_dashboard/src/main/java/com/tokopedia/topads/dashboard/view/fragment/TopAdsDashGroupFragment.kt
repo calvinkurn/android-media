@@ -37,8 +37,8 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.dashboard.view.adapter.group_item.GroupItemsAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.group_item.GroupItemsListAdapter
-import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemModel
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
@@ -164,10 +164,10 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private fun statusChange(pos: Int, status: Int) {
         if (status != CUREENTY_ACTIVATED)
             topAdsDashboardPresenter.setGroupAction(::onSuccessAction, ACTION_ACTIVATE,
-                    listOf((adapter.items[pos] as GroupItemsItemViewModel).data.groupId.toString()), resources)
+                    listOf((adapter.items[pos] as GroupItemsItemModel).data.groupId.toString()), resources)
         else
             topAdsDashboardPresenter.setGroupAction(::onSuccessAction, ACTION_DEACTIVATE,
-                    listOf((adapter.items[pos] as GroupItemsItemViewModel).data.groupId.toString()), resources)
+                    listOf((adapter.items[pos] as GroupItemsItemModel).data.groupId.toString()), resources)
     }
 
     private fun startSelectMode(select: Boolean) {
@@ -184,7 +184,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun singleItemDelete(pos: Int) {
-        SingleDelGroupId = (adapter.items[pos] as GroupItemsItemViewModel).data.groupId.toString()
+        SingleDelGroupId = (adapter.items[pos] as GroupItemsItemModel).data.groupId.toString()
         performAction(TopAdsDashboardConstant.ACTION_DELETE)
     }
 
@@ -231,7 +231,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyResult() {
-        adapter.items.add(GroupItemsEmptyViewModel())
+        adapter.items.add(GroupItemsEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!EMPTY_SEARCH_VIEW)
         } else {
@@ -271,7 +271,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         loader.visibility = View.GONE
         response.data.forEach {
             groupIds.add(it.groupId.toString())
-            adapter.items.add(GroupItemsItemViewModel(it))
+            adapter.items.add(GroupItemsItemModel(it))
         }
         (parentFragment as TopAdsProductIklanFragment).setGroupCount(totalCount)
         if (adapter.items.size.isZero()) {

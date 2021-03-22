@@ -4,16 +4,12 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_NPL_CAMPAIGN_TNC
 import com.tokopedia.shop.home.data.model.GetMerchantCampaignTNCRequest
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetShopHomeCampaignNplTncUseCase @Inject constructor(
-        @Named(GQL_GET_SHOP_NPL_CAMPAIGN_TNC)
-        val gqlQuery: String,
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<ShopHomeCampaignNplTncModel>() {
 
@@ -33,13 +29,26 @@ class GetShopHomeCampaignNplTncUseCase @Inject constructor(
         }
     }
 
+    private val query = """
+            query get_merchant_campaign_tnc(${'$'}param: GetMerchantCampaignTNCRequest!){
+              getMerchantCampaignTNC (params:${'$'}param){
+                title,
+    			messages,
+    			error {
+    			  error_code
+    			  error_message
+    			}
+              }
+            }
+        """.trimIndent()
+
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ShopHomeCampaignNplTncModel {
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.CLOUD_THEN_CACHE).build())
-        val gqlRequest = GraphqlRequest(gqlQuery, ShopHomeCampaignNplTncModel.Response::class.java, params)
+        val gqlRequest = GraphqlRequest(query, ShopHomeCampaignNplTncModel.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
 

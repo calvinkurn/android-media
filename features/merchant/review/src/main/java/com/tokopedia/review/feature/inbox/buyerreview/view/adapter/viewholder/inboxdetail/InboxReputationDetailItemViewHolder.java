@@ -14,12 +14,14 @@ import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.review.R;
 import com.tokopedia.review.common.util.TimeConverter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ImageUploadAdapter;
@@ -32,6 +34,8 @@ import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.iconunify.IconUnifyHelperKt.getIconUnifyDrawable;
 
 /**
  * @author by nisie on 8/19/17.
@@ -246,6 +250,8 @@ public class InboxReputationDetailItemViewHolder extends
 
                 }
             });
+
+            setChevronDownImage();
 
             if (canShowOverflow(element)) {
                 reviewOverflow.setVisibility(View.VISIBLE);
@@ -474,5 +480,9 @@ public class InboxReputationDetailItemViewHolder extends
 
             }
         };
+    }
+
+    private void setChevronDownImage() {
+        replyArrow.setImageDrawable(getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)));
     }
 }

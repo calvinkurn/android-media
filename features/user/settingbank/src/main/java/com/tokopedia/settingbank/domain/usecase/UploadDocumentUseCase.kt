@@ -1,9 +1,9 @@
 package com.tokopedia.settingbank.domain.usecase
 
 import com.tokopedia.settingbank.data.SettingBankApi
-import com.tokopedia.settingbank.domain.DocumentType
-import com.tokopedia.settingbank.domain.UploadDocumentPojo
-import com.tokopedia.settingbank.domain.UploadDocumentRequest
+import com.tokopedia.settingbank.domain.model.DocumentType
+import com.tokopedia.settingbank.domain.model.UploadDocumentPojo
+import com.tokopedia.settingbank.domain.model.UploadDocumentRequest
 import com.tokopedia.settingbank.domain.mapper.UploadDocumentMapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

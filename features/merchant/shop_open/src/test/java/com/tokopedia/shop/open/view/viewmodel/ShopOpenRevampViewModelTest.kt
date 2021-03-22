@@ -221,6 +221,19 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
+    fun `check shop name is return if given shop name is empty`() {
+        coroutineTestRule.runBlockingTest {
+            val shopName = ""
+            viewModel.checkShopName(shopName)
+
+            // check validateDomainShopNameUseCase not called because domainName is Empty
+            coVerify(exactly = 0) {
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
+        }
+    }
+
+    @Test
     fun `given success response when validate domain name is called`() {
         coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
@@ -246,11 +259,33 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
-    fun `given survey payload when data survey is provided`() {
-        val dataSurvey: MutableMap<Int, MutableList<Int>> = anyMap()
-        viewModel.getDataSurveyInput(dataSurvey)
+    fun `check domain name is return if given domain name is empty`() {
+        coroutineTestRule.runBlockingTest {
+            val domainName = ""
+            viewModel.checkDomainName(domainName)
 
-        Assert.assertTrue(viewModel.getDataSurveyInput(dataSurvey) is MutableMap<String, Any>)
+            // check validateDomainShopNameUseCase not called because domainName is Empty
+            coVerify(exactly = 0) {
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
+        }
+    }
+
+    @Test
+    fun `given survey payload when data survey is provided`() {
+
+        val exampleQuestionID = 1
+        val exampleQuestionID2 = 2
+        val exampleChoices1 = mutableListOf(1, 2, 3)
+        val exampleChoices2 = mutableListOf(3, 4, 5)
+
+        val dataSurvey: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+        dataSurvey[exampleQuestionID] = exampleChoices1
+        dataSurvey[exampleQuestionID2] = exampleChoices2
+
+        val surveyPayload = viewModel.getDataSurveyInput(dataSurvey)
+
+        Assert.assertTrue(surveyPayload.isNotEmpty())
     }
 
     @Test

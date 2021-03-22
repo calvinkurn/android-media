@@ -3,11 +3,11 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
@@ -17,33 +17,38 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class SomListViewModel @Inject constructor(
-        getUserRoleUseCase: SomGetUserRoleUseCase,
         somAcceptOrderUseCase: SomAcceptOrderUseCase,
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
         userSession: UserSessionInterface,
-        dispatcher: SomDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val somListGetTickerUseCase: SomListGetTickerUseCase,
         private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
         private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
         private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
-        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
+        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
+        authorizeSomListAccessUseCase: AuthorizeAccessUseCase,
+        authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest, authorizeSomListAccessUseCase, authorizeMultiAcceptAccessUseCase) {
 
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
@@ -83,6 +88,30 @@ class SomListViewModel @Inject constructor(
     private val _bulkAcceptOrderResult = MutableLiveData<Result<SomListBulkAcceptOrderUiModel>>()
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
+
+    private val _isLoadingOrder = MutableLiveData<Boolean>()
+    val isLoadingOrder: LiveData<Boolean>
+        get() = _isLoadingOrder
+
+    private val _isOrderManageEligible = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
+    val isOrderManageEligible: LiveData<Result<Pair<Boolean, Boolean>>>
+        get() = _isOrderManageEligible
+
+    private val _canShowOrderData = MediatorLiveData<Boolean>().apply {
+        value = true
+        addSource(_isOrderManageEligible) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { (canShowOrder, _) ->
+                        value = canShowOrder
+                    }
+                }
+                is Fail -> {
+                    value = false
+                }
+            }
+        }
+    }
 
     private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
@@ -183,6 +212,14 @@ class SomListViewModel @Inject constructor(
         return getOrderListParams.nextOrderId == 0L
     }
 
+    private fun updateLoadOrderStatus(job: Job) {
+        job.invokeOnCompletion {
+            launch(context = dispatcher.main) {
+                _isLoadingOrder.value = isRefreshingOrder()
+            }
+        }
+    }
+
     fun bulkAcceptOrder(orderIds: List<String>) {
         launchCatchError(block = {
             retryCount = 0
@@ -217,18 +254,28 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        getFiltersJob?.cancel()
-        getFiltersJob = launchCatchError(block = {
-            val result = somListGetFilterListUseCase.executeOnBackground().apply { refreshOrder = refreshOrders }
-            _filterResult.postValue(Success(result))
+        if (somListGetFilterListUseCase.isFirstLoad) {
+            somListGetFilterListUseCase.isFirstLoad = false
+            launchCatchError(context = dispatcher.main, block = {
+                if (_canShowOrderData.value == true) {
+                    _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders })
+                }
+            }, onError = {})
+        }
+        launchCatchError(context = dispatcher.main, block = {
+            if (_canShowOrderData.value == true) {
+                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
+            }
         }, onError = {
-            _filterResult.postValue(Fail(it))
+            _filterResult.value = Fail(it)
         })
     }
 
     fun getWaitingPaymentCounter() {
         launchCatchError(block = {
-            _waitingPaymentCounterResult.postValue(Success(somListGetWaitingPaymentUseCase.executeOnBackground()))
+            if (_canShowOrderData.value == true) {
+                _waitingPaymentCounterResult.postValue(Success(somListGetWaitingPaymentUseCase.executeOnBackground()))
+            }
         }, onError = {
             _waitingPaymentCounterResult.postValue(Fail(it))
         })
@@ -241,14 +288,15 @@ class SomListViewModel @Inject constructor(
         }
         getOrderListJob?.cancel()
         getOrderListJob = launchCatchError(block = {
-            val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
-            val result = somListGetOrderListUseCase.executeOnBackground(params)
-            getUserRolesJob()?.join()
-            getOrderListParams.nextOrderId = result.first.toLongOrZero()
-            _orderListResult.postValue(Success(result.second))
+            if (_canShowOrderData.value == true) {
+                val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
+                val result = somListGetOrderListUseCase.executeOnBackground(params)
+                getOrderListParams.nextOrderId = result.first.toLongOrZero()
+                _orderListResult.postValue(Success(result.second))
+            }
         }, onError = {
             _orderListResult.postValue(Fail(it))
-        })
+        }).apply { updateLoadOrderStatus(this) }
     }
 
     fun refreshSelectedOrder(orderId: String, invoice: String) {
@@ -261,14 +309,17 @@ class SomListViewModel @Inject constructor(
                 )
                 val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
                 val result = somListGetOrderListUseCase.executeOnBackground(params)
-                getUserRolesJob()?.join()
                 getFiltersJob?.join()
-                refreshOrderJobs.remove(refreshOrder)
-                _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
+                withContext(dispatcher.main) {
+                    refreshOrderJobs.remove(refreshOrder)
+                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
+                }
             }, onError = {
-                _refreshOrderResult.value = Fail(it)
-                containsFailedRefreshOrder = true
-            })
+                withContext(dispatcher.main) {
+                    _refreshOrderResult.value = Fail(it)
+                    containsFailedRefreshOrder = true
+                }
+            }).apply { updateLoadOrderStatus(this) }
             refreshOrder = RefreshOrder(orderId, invoice, job)
             refreshOrderJobs.add(refreshOrder)
         }
@@ -289,10 +340,6 @@ class SomListViewModel @Inject constructor(
         }, onError = {
             _topAdsCategoryResult.postValue(Fail(it))
         })
-    }
-
-    fun clearUserRoles() {
-        _userRoleResult.postValue(null)
     }
 
     fun isTopAdsActive(): Boolean {
@@ -340,4 +387,19 @@ class SomListViewModel @Inject constructor(
     fun isRefreshingSelectedOrder() = refreshOrderJobs.any { !it.job.isCompleted }
 
     fun isRefreshingOrder() = isRefreshingAllOrder() || isRefreshingSelectedOrder()
+
+    fun isOrderStatusIdsChanged(orderStatusIds: List<Int>): Boolean {
+        return this.getOrderListParams.statusList != orderStatusIds
+    }
+
+    fun getAdminPermission() {
+        launchCatchError(
+                block = {
+                    _isOrderManageEligible.postValue(getAdminAccessEligibilityPair(AccessId.SOM_LIST, AccessId.SOM_MULTI_ACCEPT))
+                },
+                onError = {
+                    _isOrderManageEligible.postValue(Fail(it))
+                }
+        )
+    }
 }
