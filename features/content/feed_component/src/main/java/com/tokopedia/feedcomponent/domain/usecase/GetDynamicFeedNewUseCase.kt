@@ -1,6 +1,8 @@
 package com.tokopedia.feedcomponent.domain.usecase
 
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXQuery
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXData
+import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedNewMapper
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,22 +17,22 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
       __typename
       ... on FeedXCardBanners {
         id
-        publishedAt
-        mods
         items {
           id
           appLink
           webLink
-          mods
           coverURL
+          mods
         }
+        publishedAt
+        mods
       }
       ... on FeedXCardPost {
         id
         author {
           id
-          name
           type
+          name
           description
           badgeURL
           logoURL
@@ -46,18 +48,18 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
         actionButtonOperationWeb
         actionButtonOperationApp
         media {
-          type
           id
+          type
           coverURL
           mediaURL
           appLink
           webLink
-          mods
           tagging {
             tagIndex
             posX
             posY
           }
+          mods
         }
         tags {
           id
@@ -86,11 +88,10 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
           isLiked
           mods
         }
-        comments {
+        comm: comments {
           label
           count
           countFmt
-          mods
           items {
             id
             author {
@@ -106,15 +107,16 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
             text
             mods
           }
+          mods
         }
-        share {
+        sh: share {
           label
           operation
           mods
         }
-        followers {
-          isFollowed
+        fol: followers {
           label
+          isFollowed
           count
           countFmt
           mods
@@ -122,17 +124,49 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
         publishedAt
         mods
       }
-      ... on FeedXCardPlaceholder {
-        id
-        type
+      ... on FeedXCardTopAds {
+        a: id
+        author {
+          id
+          type
+          name
+          description
+          badgeURL
+          logoURL
+          webLink
+          appLink
+        }
+        promos
+        items {
+          id
+          product {
+            id
+            name
+            coverURL
+            webLink
+            appLink
+            star
+            price
+            priceFmt
+            priceStruck
+            priceStruckFmt
+            discount
+            discountFmt
+            badgeTexts
+            badgeImageURLs
+            mods
+          }
+          mods
+        }
+        publishedAt
         mods
       }
       ... on FeedXCardProductsHighlight {
         id
         author {
           id
-          name
           type
+          name
           description
           badgeURL
           logoURL
@@ -159,11 +193,56 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
           badgeImageURLs
           mods
         }
+        like {
+          label
+          count
+          countFmt
+          likedBy
+          isLiked
+          mods
+        }
+        comments {
+          label
+          count
+          countFmt
+          items {
+            id
+            author {
+              id
+              type
+              name
+              description
+              badgeURL
+              logoURL
+              webLink
+              appLink
+            }
+            text
+            mods
+          }
+          mods
+        }
+        share {
+          label
+          operation
+          mods
+        }
+        followers {
+          label
+          isFollowed
+          count
+          countFmt
+          mods
+        }
         publishedAt
         mods
       }
+      ... on FeedXCardPlaceholder {
+        id
+        type
+        mods
+      }
     }
-    mods
     pagination {
       totalData
       cursor
@@ -176,22 +255,29 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
 private const val CURSOR: String = "cursor"
 private const val LIMIT = "limit"
 
-@GqlQuery("FeedXQuery", FEED_X_QUERY)
+@GqlQuery("GetFeedXHomeQuery", FEED_X_QUERY)
 class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<FeedXQuery>(graphqlRepository) {
+    : GraphqlUseCase<FeedXData>(graphqlRepository) {
 
     init {
-        setTypeClass(FeedXQuery::class.java)
+        setTypeClass(FeedXData::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
-        setGraphqlQuery(FeedXQuery.GQL_QUERY)
+        setGraphqlQuery(GetFeedXHomeQuery.GQL_QUERY)
     }
 
-    fun setParams(cursor: String = "", limit: Int = 5) {
+    fun setParams(cursor: String, limit: Int) {
         val queryMap = mutableMapOf(
                 CURSOR to cursor,
                 LIMIT to limit
         )
         setRequestParams(queryMap)
+    }
+
+    suspend fun execute(cursor: String = "", limit: Int = 5):
+            DynamicFeedDomainModel {
+        this.setParams(cursor, limit)
+        val dynamicFeedResponse = executeOnBackground()
+        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome)
     }
 
 }

@@ -10,14 +10,15 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_INTEREST
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
-import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.di.FeedDispatcherProvider
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
@@ -56,21 +57,22 @@ private const val PARAM_SRC = "src"
 private const val PARAM_AD_KEY = "ad_key"
 private const val DEFAULT_VALUE_SRC = "fav_shop"
 
-class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatcherProvider,
-                                        private val userSession: UserSessionInterface,
-                                        private val getInterestPickUseCase: GetInterestPickUseCase,
-                                        private val submitInterestPickUseCase: SubmitInterestPickUseCase,
-                                        private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
-                                        private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                        private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
-                                        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-                                        private val likeKolPostUseCase: LikeKolPostUseCase,
-                                        private val atcUseCase: AddToCartUseCase,
-                                        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-                                        private val deletePostUseCase: DeletePostUseCase,
-                                        private val sendTopAdsUseCase: SendTopAdsUseCase,
-                                        private val playWidgetTools: PlayWidgetTools)
-    : BaseViewModel(baseDispatcher.ui()) {
+class FeedViewModel @Inject constructor(
+        private val baseDispatcher: FeedDispatcherProvider,
+        private val userSession: UserSessionInterface,
+        private val getInterestPickUseCase: GetInterestPickUseCase,
+        private val submitInterestPickUseCase: SubmitInterestPickUseCase,
+        private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
+        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+        private val likeKolPostUseCase: LikeKolPostUseCase,
+        private val atcUseCase: AddToCartUseCase,
+        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
+        private val deletePostUseCase: DeletePostUseCase,
+        private val sendTopAdsUseCase: SendTopAdsUseCase,
+        private val playWidgetTools: PlayWidgetTools,
+        private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
+        private val getWhitelistNewUseCase: GetWhitelistNewUseCase
+) : BaseViewModel(baseDispatcher.ui()) {
 
     companion object {
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
@@ -129,12 +131,12 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         })
     }
 
-    fun getFeedFirstPage(firstPageCursor: String) {
+    fun getFeedFirstPage() {
         pagingHandler.resetPage()
         currentCursor = ""
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io()) {
-                getFeedDataResult(firstPageCursor)
+                getFeedFirstDataResult()
             }
             currentCursor = results.dynamicFeedDomainModel.cursor
             getFeedFirstPageResp.value = Success(results)
@@ -159,7 +161,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         }
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io()) {
-                getFeedNextDataResult()
+                getFeedDataResult()
             }
             if (results.hasNext) {
                 currentCursor = results.cursor
@@ -346,29 +348,25 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         return dataList
     }
 
-    private fun getFeedDataResult(firstPageCursor: String): DynamicFeedFirstPageDomainModel {
-        try {
-            return getDynamicFeedFirstPageUseCase.createObservable(
-                    GetDynamicFeedFirstPageUseCase.createRequestParams(
-                            userId,
-                            "",
-                            GetDynamicFeedUseCase.FeedV2Source.Feeds,
-                            firstPageCursor, userSession.isLoggedIn))
-                    .toBlocking().single() ?: DynamicFeedFirstPageDomainModel()
+    private suspend fun getFeedFirstDataResult(): DynamicFeedFirstPageDomainModel {
+        return try {
+            val feedResponseModel = getFeedDataResult()
+            if(userSession.isLoggedIn){
+                val whiteListModel = getWhitelistNewUseCase.execute(type = WHITELIST_INTEREST)
+                DynamicFeedFirstPageDomainModel(feedResponseModel,
+                        (whiteListModel.whitelist.error.isEmpty() && whiteListModel.whitelist.isWhitelist))
+            } else {
+                DynamicFeedFirstPageDomainModel(feedResponseModel, false)
+            }
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e
         }
     }
 
-    private fun getFeedNextDataResult(): DynamicFeedDomainModel {
+    private suspend fun getFeedDataResult(): DynamicFeedDomainModel {
         try {
-            return getDynamicFeedUseCase.createObservable(
-                    GetDynamicFeedUseCase.createRequestParams(
-                            userId,
-                            currentCursor,
-                            GetDynamicFeedUseCase.FeedV2Source.Feeds))
-                    .toBlocking().single() ?: DynamicFeedDomainModel()
+            return getDynamicFeedNewUseCase.execute(cursor = currentCursor)
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e

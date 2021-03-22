@@ -48,7 +48,6 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.util.util.ShareToAppsBS
 import com.tokopedia.feedcomponent.util.util.copy
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -144,6 +143,7 @@ import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
@@ -1499,18 +1499,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun fetchFirstPage() {
-        val firstPageCursor: String = if (afterRefresh) getFirstPageCursor() else ""
         showRefresh()
-        feedViewModel.getFeedFirstPage(firstPageCursor)
+        adapter.showShimmer()
+        feedViewModel.getFeedFirstPage()
         afterRefresh = false
-    }
-
-    private fun getFirstPageCursor(): String {
-        context?.let {
-            val cache = LocalCacheHandler(it, KEY_FEED)
-            return cache.getString(KEY_FEED_FIRST_PAGE_CURSOR, "")
-        }
-        return ""
     }
 
     private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {

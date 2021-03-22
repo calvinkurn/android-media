@@ -60,7 +60,7 @@ class FeedTestGetData : Spek({
             }
 
             When("Get feed data", timeout = 100000) {
-                feedViewModel.getFeedFirstPage(firstPageCursor)
+                feedViewModel.getFeedFirstPage()
             }
 
             Then("Feed data call success", timeout = 100000) {
@@ -93,7 +93,7 @@ class FeedTestGetData : Spek({
             }
 
             When("Get feed data", timeout = 100000) {
-                feedViewModel.getFeedFirstPage(firstPageCursor)
+                feedViewModel.getFeedFirstPage()
             }
 
             Then("Feed data call success", timeout = 100000) {
@@ -182,7 +182,7 @@ class FeedTestGetData : Spek({
             }
 
             When("Get feed first data", timeout = 100000) {
-                feedViewModel.getFeedFirstPage("")
+                feedViewModel.getFeedFirstPage()
             }
 
             When("Get feed next data", timeout = 100000) {
@@ -224,7 +224,7 @@ class FeedTestGetData : Spek({
             }
 
             When("Get feed first data", timeout = 100000) {
-                feedViewModel.getFeedFirstPage("")
+                feedViewModel.getFeedFirstPage()
             }
 
             When("Get feed next data", timeout = 100000) {

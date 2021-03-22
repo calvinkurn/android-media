@@ -1,25 +1,20 @@
 package com.tokopedia.feedplus.view.adapter
 
-import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-
-import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
@@ -195,6 +190,16 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
             else it
         }
         updateList(newList)
+    }
+
+    fun showShimmer() {
+        val shimmerItems: ArrayList<ShimmerUiModel> = ArrayList()
+        repeat(5) { shimmerItems.add(ShimmerUiModel()) }
+        updateList(shimmerItems)
+    }
+
+    fun removeShimmer(){
+        clearData()
     }
 
     interface OnLoadListener {

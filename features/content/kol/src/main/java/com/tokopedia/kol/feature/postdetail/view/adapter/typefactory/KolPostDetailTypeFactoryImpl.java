@@ -24,6 +24,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
@@ -203,6 +204,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
 
     @Override
     public int type(@NotNull CarouselPlayCardViewModel carouselPlayCardViewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull ShimmerUiModel shimmerUiModel) {
         return 0;
     }
 

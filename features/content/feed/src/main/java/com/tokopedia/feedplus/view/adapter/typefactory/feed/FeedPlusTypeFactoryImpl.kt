@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.shimmer.ShimmerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
@@ -26,6 +27,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewM
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -144,6 +146,10 @@ class FeedPlusTypeFactoryImpl(
         return CarouselPlayCardViewHolder.LAYOUT
     }
 
+    override fun type(shimmerUiModel: ShimmerUiModel): Int {
+        return ShimmerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
 
         val viewHolder: AbstractViewHolder<*>
@@ -186,6 +192,8 @@ class FeedPlusTypeFactoryImpl(
                             coordinator = playWidgetCoordinator
                     )
             )
+        } else if (type == ShimmerViewHolder.LAYOUT){
+            viewHolder = ShimmerViewHolder(view)
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder

@@ -9,7 +9,9 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
@@ -35,8 +37,6 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val userSession by memoized<UserSessionInterface>()
     val getInterestPickUseCase by memoized<GetInterestPickUseCase>()
     val submitInterestPickUseCase by memoized<SubmitInterestPickUseCase>()
-    val getDynamicFeedFirstPageUseCase by memoized<GetDynamicFeedFirstPageUseCase>()
-    val getDynamicFeedUseCase by memoized<GetDynamicFeedUseCase>()
     val doFavoriteShopUseCase by memoized<ToggleFavouriteShopUseCase>()
     val followKolPostGqlUseCase by memoized<FollowKolPostGqlUseCase>()
     val likeKolPostUseCase by memoized<LikeKolPostUseCase>()
@@ -45,14 +45,14 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val deletePostUseCase by memoized<DeletePostUseCase>()
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
     val playWidgetTools by memoized<PlayWidgetTools>()
+    val getDynamicFeedNewUseCase by memoized<GetDynamicFeedNewUseCase>()
+    val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
 
     return FeedViewModel(
             FeedTestDispatcherProvider(),
             userSession,
             getInterestPickUseCase,
             submitInterestPickUseCase,
-            getDynamicFeedFirstPageUseCase,
-            getDynamicFeedUseCase,
             doFavoriteShopUseCase,
             followKolPostGqlUseCase,
             likeKolPostUseCase,
@@ -60,7 +60,9 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
             trackAffiliateClickUseCase,
             deletePostUseCase,
             sendTopAdsUseCase,
-            playWidgetTools
+            playWidgetTools,
+            getDynamicFeedNewUseCase,
+            getWhitelistNewUseCase
     )
 }
 
@@ -117,6 +119,12 @@ fun FeatureBody.createFeedTestInstance() {
 
     val playWidgetTools by memoized {
         mockk<PlayWidgetTools>(relaxed = true)
+    }
+    val getWhitelistNewUseCase by memoized {
+        mockk<GetWhitelistNewUseCase>(relaxed = true)
+    }
+    val getDynamicFeedNewUseCase by memoized {
+        mockk<GetDynamicFeedNewUseCase>(relaxed = true)
     }
 }
 

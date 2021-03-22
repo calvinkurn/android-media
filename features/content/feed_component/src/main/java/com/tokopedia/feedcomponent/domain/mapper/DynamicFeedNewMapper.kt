@@ -5,25 +5,26 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCardDataItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXHome
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
-private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceHolder"
+private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
 private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_FEED_X_CARD_POST: String = "FeedXCardPost"
+private const val TYPE_FEED_X_CARD_TOP_ADS: String = "FeedXCardTopAds"
 private const val TYPE_TOPADS_HEADLINE = "topads_headline"
 private const val TYPE_CARD_PLAY_CAROUSEL = "play_carousel"
 
 object DynamicFeedNewMapper {
 
-    fun map(feedXHome: FeedXHome): DynamicPostViewModel {
+    fun map(feedXHome: FeedXHome): DynamicFeedDomainModel {
         val posts: MutableList<Visitable<*>> = ArrayList()
         var lastCursor = ""
         var firstPageCursor = ""
@@ -47,11 +48,17 @@ object DynamicFeedNewMapper {
                 TYPE_FEED_X_CARD_POST -> {
                     //to add mapping for card post
                 }
-
+                TYPE_FEED_X_CARD_TOP_ADS -> {
+                }
             }
         }
+        lastCursor = feedXHome.pagination.cursor
+        if (firstPageCursor.isEmpty()) {
+            firstPageCursor = feedXHome.pagination.cursor
+        }
+        hasNext = feedXHome.pagination.hasNext && lastCursor.isNotEmpty()
 
-        return DynamicPostViewModel()
+        return DynamicFeedDomainModel(posts, lastCursor, firstPageCursor, hasNext)
     }
 
     private fun mapCardHeadline(posts: MutableList<Visitable<*>>) {
@@ -109,7 +116,8 @@ object DynamicFeedNewMapper {
 
     private fun getFooter(feedXCard: FeedXCard): Footer {
         return Footer(like = Like(fmt = feedXCard.like.label, value = feedXCard.like.count, isChecked = feedXCard.like.isLiked),
-                comment = Comment(feedXCard.comments.label, feedXCard.comments.count))
+                comment = Comment(feedXCard.comments.label, feedXCard.comments.count),
+                share = Share(description = feedXCard.share.label, url = feedXCard.share.operation))
         //need to confirm for share and button cta
     }
 
