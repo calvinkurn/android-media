@@ -25,7 +25,7 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
         const val SHOP_ID = "EXTRA_SHOP_ID"
 
         @JvmStatic
-        fun createInstance(shopId: String) = ShopSettingsNoteBuyerViewFragment().apply {
+        fun createInstance(shopId: String?) = ShopSettingsNoteBuyerViewFragment().apply {
             arguments?.putString(SHOP_ID, shopId)
         }
     }
