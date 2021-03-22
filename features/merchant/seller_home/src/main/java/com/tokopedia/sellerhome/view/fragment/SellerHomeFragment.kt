@@ -190,6 +190,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onResume() {
         super.onResume()
+        canLoadLottieAnimation = true
         if (!isFirstLoad)
             reloadPage()
     }
@@ -280,6 +281,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView?.run {
             layoutManager = sellerHomeLayoutManager
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            canLoadLottieAnimation = true
             addOnScrollListener(rvOnScrollListener)
         }
 
