@@ -264,6 +264,8 @@ PopularCityAdapter.ActionListener {
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
                             ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
+                            hasRequestedLocation = false
+                            showDialogAskGps()
                         }
 
                         override fun onNeverAskAgain(permissionText: String) {
