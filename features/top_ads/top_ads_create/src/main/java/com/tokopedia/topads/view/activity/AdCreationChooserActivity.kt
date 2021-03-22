@@ -1,5 +1,6 @@
 package com.tokopedia.topads.view.activity
 
+import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -19,6 +20,14 @@ import com.tokopedia.topads.view.fragment.AdCreationChooserFragment
 
 class AdCreationChooserActivity : BaseSimpleActivity(), HasComponent<CreateAdsComponent> {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (intent.extras?.get(TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP) == true) {
+            updateTitle(getString(R.string.mulai_beriklan))
+        } else {
+            updateTitle(getString(R.string.creat_ad))
+        }
+    }
     override fun getNewFragment(): Fragment? {
         return AdCreationChooserFragment.newInstance()
     }
@@ -41,15 +50,5 @@ class AdCreationChooserActivity : BaseSimpleActivity(), HasComponent<CreateAdsCo
             startActivity(intent)
         }
         finish()
-    }
-
-    override fun setTitle(title: CharSequence?) {
-        if (intent.extras?.get(TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP) != true) {
-            Log.d("Naven", "For Onboarding")
-            toolbar.setTitle(getString(R.string.mulai_beriklan))
-        } else {
-            Log.d("Naven", "For Create flow")
-            toolbar.setTitle(getString(R.string.creat_ad))
-        }
     }
 }
