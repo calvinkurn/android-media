@@ -322,7 +322,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
             )
         }
-        if (!pauseLiveDialog.isShowing) pauseLiveDialog.show()
+        if (!pauseLiveDialog.isShowing) {
+            pauseLiveDialog.show()
+            analytic.viewDialogContinueBroadcastOnLivePage(parentViewModel.channelId, parentViewModel.title)
+        }
     }
 
     private fun showToaster(
