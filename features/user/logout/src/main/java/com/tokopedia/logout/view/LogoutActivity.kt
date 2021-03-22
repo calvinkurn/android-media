@@ -168,6 +168,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         NotificationModHandler(applicationContext).dismissAllActivedNotifications()
         clearWebView()
+        clearLocalChooseAddress()
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
 
@@ -209,6 +210,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         stickyPref.edit().clear().apply()
     }
 
+    private fun clearLocalChooseAddress() {
+        val chooseAddressPref = applicationContext.getSharedPreferences(CHOOSE_ADDRESS_PREF, Context.MODE_PRIVATE)
+        chooseAddressPref.edit().clear().apply()
+    }
+
     private fun saveLoginReminderData() {
         getSharedPreferences(STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)?.edit()?.apply {
             putString(KEY_USER_NAME, userSession.name).apply()
@@ -242,5 +248,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val STICKY_LOGIN_REMINDER_PREF = "sticky_login_reminder.pref"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_PROFILE_PICTURE = "profile_picture"
+        private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -103,7 +104,8 @@ object BestSellerWidgetTracker : BaseTracking(){
                 isCarousel = true,
                 productPrice = recommendationItem.priceInt.toString(),
                 productPosition = recommendationItem.position.toString(),
-                isFreeOngkir = recommendationItem.isFreeOngkirActive,
+                isFreeOngkir = recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment(),
+                isFreeOngkirExtra = recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment(),
                 pageName = pageName,
                 cartId = recommendationItem.cartId,
                 channelId = channelId,
