@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -50,6 +51,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
+            TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
             TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
             TYPE_CHAT_SEPRATOR->convertToChatSeprator(chatItemPojoByDateByTime)
@@ -76,9 +78,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 reply.attachment?.id ?: "",
                 reply.attachment?.type.toString(),
                 reply.replyTime,
-                convertToQuickRepliesList(pojoAttribute.quickReplies)
-
-
+                convertToQuickRepliesList(pojoAttribute.quickReplies),
+                reply.source
         )
     }
 
@@ -203,7 +204,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
                 chatItemPojoByDateByTime.msg,
-                helpFullQuestionPojo.helpfulQuestion
+                helpFullQuestionPojo.helpfulQuestion,
+                chatItemPojoByDateByTime.source
         )
     }
 
@@ -222,7 +224,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
                 chatItemPojoByDateByTime.msg,
-                csatAttributesPojo.csat
+                csatAttributesPojo.csat,
+                chatItemPojoByDateByTime.source
         )
     }
 

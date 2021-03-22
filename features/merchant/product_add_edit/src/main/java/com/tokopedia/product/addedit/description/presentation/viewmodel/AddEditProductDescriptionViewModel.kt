@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -15,6 +16,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
+import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.ENABLED_HAMPERS_CATEGORY_ID
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -37,16 +39,30 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private var _productInputModel = MutableLiveData(ProductInputModel())
     val productInputModel: LiveData<ProductInputModel> get() = _productInputModel
+
+    private var _descriptionValidationMessage = MutableLiveData<String>()
+    val descriptionValidationMessage: LiveData<String> get() = _descriptionValidationMessage
+
+    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
+    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()
+
+    var isFetchingVideoData: MutableMap<Int, Boolean> = mutableMapOf()
+    var urlToFetch: MutableMap<Int, String> = mutableMapOf()
+    var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
+
     var isEditMode: Boolean = false
     var isAddMode: Boolean = false
     var isDraftMode: Boolean = false
     var isFirstMoved: Boolean = false
+
     val descriptionInputModel: DescriptionInputModel? get() {
         return productInputModel.value?.descriptionInputModel
     }
+
     val variantInputModel: VariantInputModel? get() {
         return productInputModel.value?.variantInputModel
     }
+
     val hasVariant: Boolean get() {
         productInputModel.value?.apply {
             return variantInputModel.products.isNotEmpty()
@@ -54,14 +70,11 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         return false
     }
 
-    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
-    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()
-    var isFetchingVideoData: MutableMap<Int, Boolean> = mutableMapOf()
-    var urlToFetch: MutableMap<Int, String> = mutableMapOf()
-    var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
-
-    private var _descriptionValidationMessage = MutableLiveData<String>()
-    val descriptionValidationMessage: LiveData<String> get() = _descriptionValidationMessage
+    val isHampersProduct = Transformations.map(productInputModel) { productInputModel ->
+        ENABLED_HAMPERS_CATEGORY_ID.any {
+            it == productInputModel.detailInputModel.categoryId
+        }
+    }
 
     init {
         videoYoutube.addSource(_videoYoutubeNew) { pair ->

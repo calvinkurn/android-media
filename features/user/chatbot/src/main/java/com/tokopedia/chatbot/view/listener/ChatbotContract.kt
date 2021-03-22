@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.listener
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -43,6 +44,8 @@ interface ChatbotContract {
         fun showErrorToast(it: Throwable)
 
         fun updateToolbar(profileName: String?, profileImage: String?)
+
+        fun removeDummy(visitable: Visitable<*>)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -91,7 +94,7 @@ interface ChatbotContract {
         fun uploadImages(it: ImageUploadViewModel,
                          messageId : String,
                          opponentId : String,
-                         onError: (Throwable) -> Unit)
+                         onError: (Throwable, ImageUploadViewModel) -> Unit)
 
         fun destroyWebSocket()
 
@@ -100,6 +103,10 @@ interface ChatbotContract {
         fun submitChatCsat(input: ChipSubmitChatCsatInput,
                            onsubmitingChatCsatSuccess: (String) -> Unit,
                            onError: (Throwable) -> Unit)
+
+        fun cancelImageUpload()
+
+        fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel
 
         fun checkLinkForRedirection(invoiceRefNum: String,
                                     onGetSuccessResponse: (String) -> Unit,

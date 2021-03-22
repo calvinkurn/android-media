@@ -91,6 +91,7 @@
     <string name="mismatch_title">Pinpoint Gagal Disimpan</string>
     <string name="mismatch_desc">Pinpoint Anda gagal disimpan. Silahkan pilih Kota atau Kecamatan secara manual terlebih dahulu</string>
     <string name="mismatch_btn_title">Mengerti</string>
+    <string name="et_nama_lokasi_label">Nama Lokasi</string>
     <string name="et_kota_kecamatan_label">Kota atau Kecamatan</string>
     <string name="et_kode_pos_label">Kode Pos</string>
     <string name="alamat_label">Alamat</string>
@@ -137,6 +138,7 @@
     <string name="content_desc_receiver_phone">input nomor telepon</string>
     <string name="content_desc_value_location">input lokasi pickup</string>
     <string name="content_desc_save_button">button simpan</string>
+    <string name="lokasi_saat_ini">Lokasi saat ini</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
@@ -157,4 +159,7 @@
         <item>Apartemen</item>
         <item>Kos</item>
     </string-array>
+
+    <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
+
 </resources>

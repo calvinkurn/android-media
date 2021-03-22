@@ -2,6 +2,7 @@ package com.tokopedia.fcmcommon.service
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import androidx.core.app.JobIntentService
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.fcmcommon.BuildConfig
@@ -31,7 +32,17 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
 
     override fun onHandleWork(intent: Intent) {
         try {
-            fcmManager.syncFcmToken(this)
+            /*
+            * This is to preventing invoke the service before initialize
+            * of the Graphql module.
+            *
+            * Handling this delayed specifically on this service, because
+            * some of case in fcmManager.syncFcmToken(this) may didn't
+            * need to delay.
+            * */
+            Handler().postDelayed({
+                fcmManager.syncFcmToken(this)
+            }, POST_DELAYED)
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -42,7 +53,9 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
     override fun onError(exception: Exception?) {}
 
     companion object {
-        const val JOB_ID = 91219
+        private const val POST_DELAYED = 3000L
+        private const val JOB_ID = 91219
+
         fun startService(context: Context) {
             // https://issuetracker.google.com/issues/112157099
             try {

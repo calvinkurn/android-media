@@ -22,6 +22,7 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
@@ -420,7 +421,7 @@ class ChatbotPresenter @Inject constructor(
     override fun uploadImages(it: ImageUploadViewModel,
                               messageId: String,
                               opponentId: String,
-                              onError: (Throwable) -> Unit) {
+                              onError: (Throwable, ImageUploadViewModel) -> Unit) {
         if (validateImageAttachment(it.imageUrl)) {
             isUploading = true
             uploadImageUseCase.unsubscribe()
@@ -453,11 +454,16 @@ class ChatbotPresenter @Inject constructor(
 
                         override fun onError(e: Throwable) {
                             isUploading = false
-                            onError(e)
+                            onError(e, it)
                         }
 
                     })
         }
+
+    }
+
+    override fun cancelImageUpload() {
+        uploadImageUseCase.unsubscribe()
     }
 
     private fun sendUploadedImageToWebsocket(json: JsonObject) {
@@ -581,5 +587,13 @@ class ChatbotPresenter @Inject constructor(
 
     override fun showTickerData(onError: (Throwable) -> Unit, onSuccesGetTickerData: (TickerData) -> Unit) {
         getTickerDataUseCase.execute(TickerDataSubscriber(onError,onSuccesGetTickerData))
+    }
+
+    override fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel {
+        val text = view.context?.getString(R.string.chatbot_text_for_no_transaction_found) ?: ""
+        val value = view.context?.getString(R.string.chatbot_text_for_no_transaction_found) ?: ""
+        val action = view.context?.getString(R.string.chatbot_action_text_for_no_transaction_found)
+                ?: ""
+        return ChatActionBubbleViewModel(text, value, action)
     }
 }

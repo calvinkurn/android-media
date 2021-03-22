@@ -8,8 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.kotlin.extensions.view.ImageViewExtKt;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.view.widgets.ShareItem;
+
 import java.util.ArrayList;
 
 /**
@@ -60,7 +62,7 @@ public class ShareAdapter extends BaseAdapter {
         final ShareItem info = shareItems.get(position);
 
         if (info.getIcon() != null) {
-            holder.icon.setBackgroundDrawable(info.getIcon());
+            ImageViewExtKt.loadImage(holder.icon, info.getIcon(), com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
         } else {
 //                loadIcon();
         }
