@@ -58,6 +58,8 @@ include "features:logistic:activation"
 include "features:logistic:manageaddress"
 include "features:logistic:localizationchooseaddress"
 
+include "features:media:mediauploader"
+
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
 include "features:merchant:product_detail"
