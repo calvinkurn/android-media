@@ -1,7 +1,18 @@
 {
-  "readme": "Rating Product - click sort in bottom sheet",
+  "readme": "Rating Product - click sort",
   "mode": "exact",
   "query": [
+    {
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "rating produk",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
     {
       "eventCategory": "ulasan - rating produk",
       "shopId": "{{.+}}",
@@ -10,6 +21,15 @@
       "eventAction": "click - sort on rating product page",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
+    },
+    {
+      "eventCategory": "ulasan - rating produk",
+      "shopId": "{{.+}}",
+      "screenName": "rating produk",
+      "event": "clickReview",
+      "eventAction": "click - select sort on bottomsheet",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
     }
   ]
 }

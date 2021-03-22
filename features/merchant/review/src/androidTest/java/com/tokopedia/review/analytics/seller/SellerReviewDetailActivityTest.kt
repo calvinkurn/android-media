@@ -55,13 +55,14 @@ class SellerReviewDetailActivityTest {
         override fun getActivityIntent(): Intent {
             return Intent(targetContext, SellerReviewDetailActivity::class.java).apply {
                 putExtra(SellerReviewDetailFragment.PRODUCT_ID, PRODUCT_ID)
-                putExtra(SellerReviewDetailFragment.CHIP_FILTER, TIME_ONE_YEAR)
                 putExtra(SellerReviewDetailFragment.PRODUCT_IMAGE, "")
             }
         }
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().toBlocking().first()
+            setupGraphqlMockResponse(SellerReviewDetailMockResponse())
             setAppToSellerApp()
             login()
         }
@@ -70,13 +71,6 @@ class SellerReviewDetailActivityTest {
             super.afterActivityLaunched()
             waitForData()
         }
-    }
-
-    @Before
-    fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponse(SellerReviewDetailMockResponse())
-        intendingIntent()
     }
 
     @After
@@ -250,7 +244,6 @@ class SellerReviewDetailActivityTest {
         const val TAG_FILTER_TIME = "Tampilkan periode ulasan dalam"
         const val TAG_OPTION_FEEDBACK = "Menu"
         const val TAG_SORT_FILTER = "Filter"
-        const val TIME_ONE_YEAR = "1 Tahun Terakhir"
         const val EDIT_PRODUCT_PATH = "tracker/merchant/review/seller/review_detail_click_dot_edit_product.json"
         const val FILTER_TIME_PATH = "tracker/merchant/review/seller/review_detail_click_filter_time.json"
         const val FILTER_STAR_PATH = "tracker/merchant/review/seller/review_detail_click_filter_star.json"

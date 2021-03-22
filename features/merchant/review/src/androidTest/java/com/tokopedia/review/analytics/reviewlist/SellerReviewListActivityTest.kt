@@ -37,6 +37,7 @@ class SellerReviewListActivityTest {
         const val CLICK_PRODUCT_PATH = "tracker/merchant/review/seller/rating_product_click_product.json"
         const val CLICK_FILTER_PATH = "tracker/merchant/review/seller/rating_product_click_filter.json"
         const val CLICK_SORT_PATH = "tracker/merchant/review/seller/rating_product_click_sort.json"
+        const val CLICK_SEARCH_PATH = "tracker/merchant/review/seller/rating_product_search.json"
     }
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -96,6 +97,8 @@ class SellerReviewListActivityTest {
                 clickAction(com.tokopedia.coachmark.R.id.text_skip)
             }
             Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.review_period_filter_chips)).perform(ViewActions.click())
+            waitForData()
+            Espresso.onData(Matchers.anything()).inAdapterView(ViewMatchers.withId(com.tokopedia.review.R.id.listFilterRatingProduct)).atPosition(1).perform(ViewActions.click())
         } assertTest {
             waitForData()
             performClose(activityRule)
@@ -113,11 +116,30 @@ class SellerReviewListActivityTest {
                 clickAction(com.tokopedia.coachmark.R.id.text_skip)
             }
             Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.review_sort_chips)).perform(ViewActions.click())
+            waitForData()
+            Espresso.onData(Matchers.anything()).inAdapterView(ViewMatchers.withId(com.tokopedia.review.R.id.listSortRatingProduct)).atPosition(1).perform(ViewActions.click())
         } assertTest {
             waitForData()
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, CLICK_SORT_PATH)
+            finishTest()
+        }
+    }
+
+    @Test
+    fun validateClickSearch() {
+        actionTest {
+            val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, RatingProductFragment.TAG_COACH_MARK_RATING_PRODUCT)
+            if (!isVisibleCoachMark) {
+                clickAction(com.tokopedia.coachmark.R.id.text_skip)
+            }
+            Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.searchBarRatingProduct)).perform(ViewActions.click())
+        } assertTest {
+            waitForData()
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, CLICK_SEARCH_PATH)
             finishTest()
         }
     }

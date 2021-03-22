@@ -1,7 +1,27 @@
 {
-  "readme": "Rating Product - click filter in bottom sheet then click item product",
+  "readme": "Rating Product - click product",
   "mode": "exact",
   "query": [
+    {
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "rating produk",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventCategory": "ulasan - rating produk",
+      "shopId": "{{.+}}",
+      "screenName": "rating produk",
+      "event": "clickReview",
+      "eventAction": "click - rating produk tab",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
     {
       "eventCategory": "ulasan - rating produk",
       "shopId": "{{.+}}",
