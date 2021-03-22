@@ -623,8 +623,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun stopHomeLayoutRenderMonitoring(fromCache: Boolean) {
         performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
-        (activity as? LoadTimeMonitoringActivity)?.loadTimeMonitoringListener?.onStopPltMonitoring()
-        newRelic.sendSellerHomeNewRelicData(context, screenName, userSession.userId, performanceMonitoringSellerHomePlt)
+        activity?.let {
+            (it as LoadTimeMonitoringActivity).loadTimeMonitoringListener?.onStopPltMonitoring()
+            newRelic.sendSellerHomeNewRelicData(it.applicationContext, screenName, userSession.userId, performanceMonitoringSellerHomePlt)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
