@@ -1,6 +1,7 @@
 package com.tokopedia.seller.menu.common.view.uimodel.shopinfo
 
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.seller.menu.common.utils.FastingPeriodUtil
 import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
@@ -30,7 +31,7 @@ data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingRes
     }
     val shopStatusUiModel by lazy {
         (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
-            ShopStatusUiModel(it.shopStatusType, userSession)
+            ShopStatusUiModel(it.shopStatusType, userSession, FastingPeriodUtil.getThematicIllustrationUrl(it.shopStatusType))
         }
     }
 

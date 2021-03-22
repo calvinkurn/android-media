@@ -26,7 +26,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
-import com.tokopedia.sellerhome.settings.util.FastingPeriodUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
@@ -290,12 +289,11 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun showShopStatusHeader(shopType: ShopType) {
+    private fun showShopStatusHeader(shopType: ShopType, thematicIllustrationUrl: String = "") {
         itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
 
         itemView.findViewById<AppCompatImageView>(R.id.iv_other_menu_thematic)?.let { thematicIv ->
-            val illustrationUrl = FastingPeriodUtil.getThematicIllustrationUrl(shopType)
-            ImageHandler.loadImageWithoutPlaceholderAndError(thematicIv, illustrationUrl)
+            ImageHandler.loadImageWithoutPlaceholderAndError(thematicIv, thematicIllustrationUrl)
         }
 
 //        Revert to these code lines after Ramadhan thematic campaign finished

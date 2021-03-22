@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.util
+package com.tokopedia.seller.menu.common.utils
 
 enum class FastingPeriod(val regularMerchantIllustrationUrl: String,
                          val powerMerchantIllustrationUrl: String,

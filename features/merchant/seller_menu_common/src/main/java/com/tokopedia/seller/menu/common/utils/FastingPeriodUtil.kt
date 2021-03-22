@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.util
+package com.tokopedia.seller.menu.common.utils
 
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
