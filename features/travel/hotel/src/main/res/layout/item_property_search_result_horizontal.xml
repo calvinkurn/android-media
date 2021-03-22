@@ -2,28 +2,28 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_margin="@dimen/spacing_lvl2"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl1"
         app:cardBackgroundColor="@color/cardview_light_background"
         app:cardCornerRadius="@dimen/layout_lvl1"
         app:cardElevation="@dimen/spacing_lvl1"
         app:cardPreventCornerOverlap="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+            android:layout_width="294dp"
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -46,10 +46,10 @@
                 android:gravity="center_vertical"
                 android:paddingEnd="@dimen/spacing_lvl3"
                 android:paddingRight="@dimen/spacing_lvl3"
-                app:srcCompat="@drawable/ic_hotel_hygiene_verified"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_hotel_hygiene_verified"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography

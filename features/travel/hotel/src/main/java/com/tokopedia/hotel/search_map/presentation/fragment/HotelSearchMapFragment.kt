@@ -60,6 +60,7 @@ import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactor
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
+import com.tokopedia.hotel.search_map.helper.StartSnapHelper
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
@@ -120,6 +121,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
+    private val snapHelper = StartSnapHelper()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -500,6 +502,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
 
+        if(rvHorizontalPropertiesHotelSearchMap.onFlingListener == null){
+            snapHelper.attachToRecyclerView(rvHorizontalPropertiesHotelSearchMap)
+        }
+
         initScrollCardList()
     }
 
@@ -517,7 +523,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun getCurrentItemCardList(): Int {
         return (rvHorizontalPropertiesHotelSearchMap.layoutManager as LinearLayoutManager)
-                .findFirstVisibleItemPosition()
+                .findFirstCompletelyVisibleItemPosition()
     }
 
     /**
@@ -672,12 +678,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun changeMarkerState(position: Int) {
-        resetMarkerState()
-        if (!allMarker.isNullOrEmpty()) {
-            if (cardListPosition == position && !searchProperties.isNullOrEmpty()) {
-                allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
-                val latLng = LatLng(searchProperties[position].location.latitude.toDouble(), searchProperties[position].location.longitude.toDouble())
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(DELAY_MARKER_STATE)
+            resetMarkerState()
+            if (!allMarker.isNullOrEmpty()) {
+                if (cardListPosition == position && !searchProperties.isNullOrEmpty()) {
+                    allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+                    val latLng = LatLng(searchProperties[position].location.latitude.toDouble(), searchProperties[position].location.longitude.toDouble())
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                }
             }
         }
     }
@@ -1180,6 +1189,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
+        const val DELAY_MARKER_STATE: Long = 500L
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 80f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -300f
 
