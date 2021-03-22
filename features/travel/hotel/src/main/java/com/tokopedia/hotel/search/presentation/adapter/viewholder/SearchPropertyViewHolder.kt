@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.search.presentation.adapter.viewholder
 
 import android.graphics.Paint
-import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
@@ -83,7 +82,6 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
     private fun renderView(isHorizontal: Boolean) {
         with(itemView) {
             if (isHorizontal) {
-                Log.d("HORIZONTAL", "Is Horizontal")
                 type.gone()
                 rating_star.gone()
                 hotel_property_item_tag.gone()
