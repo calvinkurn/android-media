@@ -1313,7 +1313,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
                 isUpcomingType)
 
-        viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
         pdpUiUpdater?.updateShipmentData(
                 viewModel.getP2RatesEstimateByProductId(),
                 viewModel.getMultiOriginByProductId().isFulfillment,
