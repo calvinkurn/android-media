@@ -21,6 +21,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
@@ -349,7 +350,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         userSession.email = profileCompletionData.email
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
-
+        profileCompletionData.fullName = DEFAULT_NAME + "123"
         name?.showFilled(
                 getString(R.string.subtitle_name_setting_profile),
                 profileCompletionData.fullName,
@@ -560,7 +561,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         if (profileCompletionData.fullName.contains(DEFAULT_NAME)) {
             tickerAddNameWarning?.show()
         } else {
-            tickerAddNameWarning?.show()
+            tickerAddNameWarning?.hide()
         }
     }
 

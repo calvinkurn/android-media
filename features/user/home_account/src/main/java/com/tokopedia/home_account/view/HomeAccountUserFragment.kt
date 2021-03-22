@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.view
 
 import android.Manifest
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -468,8 +469,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         homeAccountAnalytic.eventClickProfile()
     }
 
-    override fun onIconWarningClicked() {
-        showBottomSheetAddName()
+    override fun onIconWarningClicked(profile: ProfileDataView) {
+        showBottomSheetAddName(profile)
     }
 
     override fun onEditProfileClicked() {
@@ -979,6 +980,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         }
 
+        if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
+            gotoSSettingProfile()
+        }
+
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
@@ -1029,12 +1034,18 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    private fun showBottomSheetAddName() {
+    private fun showBottomSheetAddName(profile: ProfileDataView) {
         activity?.let {
             val bottomSheet = BottomSheetUnify()
             val addNameLayout = View.inflate(context, R.layout.layout_bottom_sheet_add_name, null)
+            addNameLayout?.layout_bottom_sheet_add_name_bg_dot?.setBackgroundResource(R.drawable.ic_bg_circle_shadow)
             addNameLayout?.layout_bottom_sheet_add_name_button?.setOnClickListener {
-                // goto add name / profile
+                gotoChangeName(profile)
+                bottomSheet.dismiss()
+            }
+            addNameLayout?.layout_bottom_sheet_add_name_icon?.setOnClickListener {
+                gotoChangeName(profile)
+                bottomSheet.dismiss()
             }
 
             bottomSheet.setTitle("")
@@ -1047,6 +1058,16 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 bottomSheet.show(this, "bottom sheet add name")
             }
         }
+    }
+
+    private fun gotoChangeName(profile: ProfileDataView) {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.CHANGE_NAME, profile.name, "")
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+    }
+
+    private fun gotoSSettingProfile() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+        startActivity(intent)
     }
 
     private fun showSuccessRemoveWishlist() {
@@ -1102,6 +1123,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
+        private const val REQUEST_CODE_CHANGE_NAME = 300
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"

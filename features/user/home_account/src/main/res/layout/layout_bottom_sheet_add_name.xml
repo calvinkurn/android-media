@@ -1,54 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  android:paddingBottom="@dimen/layout_lvl3">
   
-  <com.tokopedia.iconunify.IconUnify
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/layout_bottom_sheet_add_name_icon"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/layout_lvl2"
-    android:background="@drawable/rounded_bg_icon_with_shadow"
-    app:icon_name="EDIT"
-    app:layout_constraintTop_toTopOf="parent"
+    android:foregroundGravity="center"
     app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"/>
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+    
+    <com.tokopedia.iconunify.IconUnify
+      android:layout_width="@dimen/layout_lvl5"
+      android:layout_height="@dimen/layout_lvl5"
+      android:layout_gravity="center"
+      android:layout_margin="@dimen/layout_lvl1"
+      android:elevation="@dimen/layout_lvl2"
+      app:icon_name="EDIT"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_bg_circle_shadow" />
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+      android:id="@+id/layout_bottom_sheet_add_name_bg_dot"
+      android:layout_width="@dimen/layout_lvl8"
+      android:layout_height="@dimen/layout_lvl8"
+      android:layout_gravity="center"
+      android:elevation="@dimen/layout_lvl2"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_bg_circle_dot" />
   
-  <com.tokopedia.unifyprinciples.Typography
-    android:id="@+id/layout_bottom_sheet_add_name_title"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Yuk, ubah nama profilmu!"
-    android:layout_marginTop="@dimen/layout_lvl4"
-    android:layout_marginStart="@dimen/layout_lvl2"
-    android:layout_marginEnd="@dimen/layout_lvl2"
-    android:gravity="center"
-    app:typographyType="heading_3"
-    app:typographyWeight="bold"
-    app:layout_constraintTop_toBottomOf="@id/layout_bottom_sheet_add_name_icon"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
   
-  <com.tokopedia.unifyprinciples.Typography
-    android:id="@+id/layout_bottom_sheet_add_name_description"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Ubah nama profil sesuai dengan nama aslimu di halaman data diri, agar pengalaman berbelanjamu semakin mudah dan aman."
-    android:layout_marginTop="@dimen/layout_lvl1"
-    android:layout_marginStart="@dimen/layout_lvl2"
-    android:layout_marginEnd="@dimen/layout_lvl2"
-    android:textColor="@color/Unify_N400"
-    android:gravity="center"
-    app:typographyType="body_2"
-    app:layout_constraintTop_toBottomOf="@id/layout_bottom_sheet_add_name_title"/>
-
   <com.tokopedia.unifycomponents.UnifyButton
     android:id="@+id/layout_bottom_sheet_add_name_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/layout_lvl2"
-    android:text="Ubah Nama Sekarang"
-    app:layout_constraintTop_toBottomOf="@id/layout_bottom_sheet_add_name_description"
+    android:text="@string/text_button_add_name_bottom_sheet"
     app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"/>
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/layout_bottom_sheet_add_name_description" />
   
+  <com.tokopedia.unifyprinciples.Typography
+    android:id="@+id/layout_bottom_sheet_add_name_description"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_lvl2"
+    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginEnd="@dimen/layout_lvl2"
+    android:gravity="center"
+    android:text="@string/text_description_add_name_bottom_sheet"
+    android:textColor="@color/Unify_N400"
+    app:layout_constraintTop_toBottomOf="@id/layout_bottom_sheet_add_name_title"
+    app:typographyType="body_2" />
+  
+  <com.tokopedia.unifyprinciples.Typography
+    android:id="@+id/layout_bottom_sheet_add_name_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_lvl2"
+    android:layout_marginTop="@dimen/layout_lvl4"
+    android:layout_marginEnd="@dimen/layout_lvl2"
+    android:gravity="center"
+    android:text="@string/text_title_add_name_bottom_sheet"
+    app:layout_constraintTop_toBottomOf="@id/layout_bottom_sheet_add_name_icon"
+    app:typographyType="heading_3"
+    app:typographyWeight="bold" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
