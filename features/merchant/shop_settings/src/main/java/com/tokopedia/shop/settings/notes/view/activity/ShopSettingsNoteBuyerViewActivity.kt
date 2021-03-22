@@ -28,15 +28,16 @@ class ShopSettingsNoteBuyerViewActivity : BaseSimpleActivity(), HasComponent<Sho
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_shop_settings_note_buyer_view)
         shopId = intent.getStringExtra(SHOP_ID)
     }
+
+    override fun getLayoutRes(): Int = R.layout.activity_shop_settings_note_buyer_view
+
+    override fun getParentViewResourceID(): Int = R.id.parent_view
 
     override fun getNewFragment(): Fragment = ShopSettingsNoteBuyerViewFragment.createInstance(shopId)
 
     override fun getComponent(): ShopSettingsComponent = DaggerShopSettingsComponent.builder()
                                                             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                                                             .build()
-
-    override fun getParentViewResourceID(): Int = R.id.parent_view
 }
