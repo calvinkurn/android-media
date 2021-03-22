@@ -73,6 +73,10 @@ class SwipeContainerViewComponent(
         vpFragment.isUserInputEnabled = shouldEnable
     }
 
+    fun hasNextPage(): Boolean {
+        return getCurrentPos() < adapter.itemCount - 1
+    }
+
     fun scrollTo(direction: ScrollDirection, isSmoothScroll: Boolean = false) {
         scrollToPosition(
                 position = when (direction) {
