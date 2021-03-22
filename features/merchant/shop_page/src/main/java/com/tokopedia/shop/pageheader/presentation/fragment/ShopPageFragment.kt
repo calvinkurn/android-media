@@ -50,6 +50,9 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -82,6 +85,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResu
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -135,7 +139,8 @@ class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<ShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener,
-        ShopShareBottomsheetListener {
+        ShopShareBottomsheetListener,
+        ChooseAddressWidget.ChooseAddressWidgetListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -169,6 +174,7 @@ class ShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
+        private const val SOURCE = "shop page"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
@@ -270,6 +276,7 @@ class ShopPageFragment :
     var selectedPosition = -1
     val isMyShop: Boolean
         get() =shopViewModel?.isMyShop(shopId) == true
+    var localCacheModel: LocalCacheModel? = null
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
@@ -322,7 +329,7 @@ class ShopPageFragment :
             }
         }
         setupBottomSheetSellerMigration(view)
-        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
+        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context, this)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -525,8 +532,8 @@ class ShopPageFragment :
             }
         })
 
-        shopViewModel?.followStatusData?.observe(owner) {
-            when(it) {
+        shopViewModel?.followStatusData?.observe(owner, Observer {
+            when (it) {
                 is Success -> {
                     it.data.followStatus.apply {
                         shopPageFragmentHeaderViewHolder?.setFollowStatus(
@@ -541,7 +548,13 @@ class ShopPageFragment :
                     shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(false)
                 }
             }
-        }
+            val followStatusData = (it as? Success)?.data?.followStatus
+            shopPageFragmentHeaderViewHolder?.showCoachMark(
+                    followStatusData,
+                    shopId,
+                    shopViewModel?.userId.orEmpty()
+            )
+        })
 
         shopViewModel?.followShopData?.observe(owner) {
             when(it) {
@@ -724,6 +737,7 @@ class ShopPageFragment :
     }
 
     private fun getInitialData() {
+        updateCurrentPageLocalCacheModelData()
         startMonitoringPltNetworkRequest()
         startMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
         if (shopId.isEmpty()) {
@@ -743,7 +757,8 @@ class ShopPageFragment :
                 initialProductFilterParameter ?: ShopProductFilterParameter(),
                 "",
                 "",
-                isRefresh
+                isRefresh,
+                localCacheModel ?: LocalCacheModel()
         )
     }
 
@@ -839,6 +854,20 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         setShopName()
+        checkIfChooseAddressWidgetDataUpdated()
+    }
+
+    private fun checkIfChooseAddressWidgetDataUpdated() {
+        context?.let{context ->
+            localCacheModel?.let{
+                val isUpdated = ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                        context,
+                        it
+                )
+                if(isUpdated)
+                    refreshData()
+            }
+        }
     }
 
     private fun setViewState(viewState: Int) {
@@ -1050,6 +1079,7 @@ class ShopPageFragment :
         swipeToRefresh?.isRefreshing = false
         shopPageHeaderDataModel?.let {
             remoteConfig?.let { nonNullableRemoteConfig ->
+                shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(nonNullableRemoteConfig)
                 shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
             }
         }
@@ -1817,6 +1847,41 @@ class ShopPageFragment :
         } else {
             false
         }
+    }
+
+    private fun updateCurrentPageLocalCacheModelData() {
+        localCacheModel = getShopPageWidgetUserAddressLocalData(context)
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        context?.let {
+            shopPageFragmentHeaderViewHolder?.updateChooseAddressWidget()
+            refreshData()
+        }
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+    }
+
+    override fun onLocalizingAddressServerDown() {
+    }
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { }
+
+    override fun getLocalizingAddressHostFragment(): Fragment {
+        return this
+    }
+
+    override fun getLocalizingAddressHostSourceData(): String {
+        return "shop"
+    }
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return SOURCE
+    }
+
+    override fun onLocalizingAddressLoginSuccess() {
+        refreshData()
     }
 
 }

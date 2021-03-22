@@ -72,6 +72,7 @@ class GetPieChartDataUseCase(
                     }
                   }
                   errorMsg
+                  showWidget
                 }
               }
             }

@@ -125,7 +125,6 @@ dependencies {
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.hotel)
-    implementation project(rootProject.ext.features.travel_slice)
 
     //User
     implementation project(rootProject.ext.features.settingnotif)
@@ -148,4 +147,7 @@ dependencies {
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.buyerorder)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
 }

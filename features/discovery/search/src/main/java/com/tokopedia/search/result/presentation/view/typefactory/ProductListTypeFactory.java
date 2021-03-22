@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
+import com.tokopedia.search.result.presentation.model.ChooseAddressViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -58,6 +59,8 @@ public interface ProductListTypeFactory {
     int type(SearchProductCountViewModel searchProductCountViewModel);
 
     int type(SearchProductTopAdsImageViewModel searchProductTopAdsImageViewModel);
+
+    int type(ChooseAddressViewModel chooseAddressViewModel);
 
     int getRecyclerViewItem();
 
