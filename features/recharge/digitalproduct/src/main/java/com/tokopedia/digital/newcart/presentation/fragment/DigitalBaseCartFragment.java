@@ -62,6 +62,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import kotlin.Unit;
+import timber.log.Timber;
 
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
@@ -512,6 +513,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                 emptyState.setVisibility(View.VISIBLE);
             } else showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         } catch (Exception e) {
+            Timber.e("P2#OLD_CHECKOUT_DG#EMPTY_STATE#%s", message);
         }
     }
 
