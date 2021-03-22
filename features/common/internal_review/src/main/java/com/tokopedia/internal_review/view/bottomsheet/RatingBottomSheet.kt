@@ -40,7 +40,7 @@ class RatingBottomSheet(tracker: ReviewTracking,
         }
     }
 
-    private val mViewModel = createReviewViewModel(this)
+    private val mViewModel by lazy { createReviewViewModel(this) }
     private var ratingStatus: Array<String>? = null
     private var onSubmitted: ((Int) -> Unit)? = null
     private var givenRating = 0

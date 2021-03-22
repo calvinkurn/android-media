@@ -43,7 +43,7 @@ class FeedbackBottomSheet(tracker: ReviewTracking,
         }
     }
 
-    private val mViewModel = createReviewViewModel(this)
+    private val mViewModel by lazy { createReviewViewModel(this) }
     private var onSubmitted: (() -> Unit)? = null
 
     override fun getResLayout(): Int = R.layout.sir_feedback_bottom_sheet
