@@ -19,7 +19,6 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
         get() = getTimeElapsedInMillis().convertMillisToMinuteSecond()
 
     private var mCountDownTimer: CountDownTimer? = null
-    private var mPauseDuration: Long? = null
     private var mMaxDuration: Long = 0L
     private var mDuration: Long = 0L
     private var mRemainingMillis: Long = 0L
@@ -32,14 +31,10 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
 
     private val localStorageEditor: SharedPreferences.Editor
         get() = localStorage.edit()
-    
+
     fun setDuration(duration: Long) {
         setupDuration(duration)
         setMaxDuration(duration)
-    }
-
-    fun setPauseDuration(duration: Long) {
-        mPauseDuration = duration
     }
 
     fun setMaxDuration(duration: Long) {
@@ -51,7 +46,7 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
     }
 
     fun start() {
-        val lastMillis = getLongValue(KEY_REMAINING_MILLIS)?:0
+        val lastMillis = localStorage.getLong(KEY_REMAINING_MILLIS, 0L)
         this.mDuration = if (lastMillis > 0) lastMillis else mDuration
         start(mDuration)
     }
@@ -68,8 +63,11 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
 
     fun stop() {
         mCountDownTimer?.cancel()
-        removeValue(KEY_REMAINING_MILLIS)
-        removeValue(KEY_PAUSE_TIME)
+        removeLastRemainingMillis()
+    }
+
+    private fun removeLastRemainingMillis() {
+        localStorageEditor.remove(KEY_REMAINING_MILLIS)?.apply()
     }
 
     fun restart(duration: Long) {
@@ -78,21 +76,12 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
     }
 
     fun resume() {
-        mPauseDuration?.let { maxPauseMillis ->
-            getLongValue(KEY_PAUSE_TIME).let { lastMillis ->
-                if (lastMillis > 0  && reachMaximumPauseDuration(lastMillis, maxPauseMillis)) {
-                    mListener?.onReachMaximumPauseDuration()
-                    removeValue(KEY_PAUSE_TIME)
-                }
-            }
-        }
         mCountDownTimer?.resume()
     }
 
     fun pause() {
         mCountDownTimer?.pause()
-        saveLongValue(KEY_REMAINING_MILLIS, mRemainingMillis)
-        saveLongValue(KEY_PAUSE_TIME, System.currentTimeMillis())
+        saveLastRemainingMillis()
     }
 
     fun destroy() {
@@ -123,33 +112,19 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
 
     private fun getTimeElapsedInMillis(): Long = max(0, mMaxDuration - mRemainingMillis)
 
-    private fun reachMaximumPauseDuration(lastMillis: Long, maxPauseMillis: Long): Boolean {
-        val currentMillis = System.currentTimeMillis()
-        return ((currentMillis - lastMillis) > maxPauseMillis)
-    }
-
     private fun defaultCountDownTimeoutConfig() = arrayListOf(
             CountDownTimeout(2),
             CountDownTimeout(5)
     )
 
-    private fun saveLongValue(key: String, value: Long) {
-        localStorageEditor.putLong(key, value)?.apply()
-    }
-
-    private fun getLongValue(key: String, defaultValue: Long = 0L): Long {
-        return localStorage.getLong(key, defaultValue)
-    }
-
-    private fun removeValue(key: String) {
-        localStorageEditor.remove(key)?.apply()
+    private fun saveLastRemainingMillis() {
+        localStorageEditor.putLong(KEY_REMAINING_MILLIS, mRemainingMillis)?.apply()
     }
 
     companion object {
         const val DEFAULT_INTERVAL = 1000L
 
         const val PLAY_BROADCAST_PREFERENCE = "play_broadcast_timer"
-        const val KEY_PAUSE_TIME = "play_broadcast_pause_time"
         const val KEY_REMAINING_MILLIS = "play_broadcast_remaining_millis"
     }
 
@@ -158,6 +133,6 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
         fun onCountDownActive(millis: Long)
         fun onCountDownAlmostFinish(minutes: Long)
         fun onCountDownFinish()
-        fun onReachMaximumPauseDuration()
+//        fun onReachMaximumPauseDuration()
     }
 }

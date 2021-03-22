@@ -20,7 +20,6 @@ import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayChannelLiveStateListener
-import com.tokopedia.play.broadcaster.util.state.PlayLiveErrorStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveStateProcessor
 import com.tokopedia.play.broadcaster.util.timer.PlayCountDownTimer
@@ -70,6 +69,8 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = hydraConfigStore.getIngestUrl()
     val title: String
         get() = hydraConfigStore.getTitle()
+    val pusherState: PlayLivePusherState
+        get() = _observableLivePusherState.value?:PlayLivePusherState.Unknown
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -121,8 +122,9 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val liveStateListener = object : PlayLiveStateListener {
         override fun onStateChanged(state: PlayLivePusherState) {
-            sendLivePusherState(state)
             if (state is PlayLivePusherState.Started) startWebSocket()
+            if (state is PlayLivePusherState.Stopped) stopPushStream(state.shouldNavigate)
+            else sendLivePusherState(state)
         }
     }
 
@@ -159,9 +161,9 @@ class PlayBroadcastViewModel @Inject constructor(
             }
         }
 
-        override fun onReachMaximumPauseDuration() {
-            stopPushStream()
-        }
+//        override fun onReachMaximumPauseDuration() {
+//            stopPushStream()
+//        }
     }
     
     private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, countDownTimer)
@@ -220,7 +222,7 @@ class PlayBroadcastViewModel @Inject constructor(
             else countDownTimer.setDuration(configUiModel.durationConfig.duration)
 
             countDownTimer.setMaxDuration(configUiModel.durationConfig.duration)
-            countDownTimer.setPauseDuration(configUiModel.durationConfig.pauseDuration)
+            liveStateProcessor.setPauseDuration(configUiModel.durationConfig.pauseDuration)
 
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
@@ -433,17 +435,12 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun stopPushStream(shouldNavigate: Boolean = false) {
-//        scope.launchCatchError(block = {
-//            withContext(dispatcher.io) {
-                playSocket.destroy()
-                countDownTimer.stop()
-                livePusher.stop()
-                livePusher.stopPreview()
-//            }
-//            _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
-//        }) {
-//            _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
-//        }
+        playSocket.destroy()
+        countDownTimer.stop()
+        livePusher.stop()
+        livePusher.stopPreview()
+        sendLivePusherState(PlayLivePusherState.Stopped(shouldNavigate))
+        livePusher.destroy()
     }
 
     fun setChannelId(channelId: String) {

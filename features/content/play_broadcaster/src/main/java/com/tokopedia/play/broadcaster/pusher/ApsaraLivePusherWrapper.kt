@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.alivc.live.pusher.*
 import com.tokopedia.play.broadcaster.pusher.config.ApsaraLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.config.DefaultApsaraLivePusherConfig
+import com.tokopedia.play.broadcaster.pusher.exception.ApsaraFatalException
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePushInfoListenerImpl
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherErrorListenerImpl
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherNetworkListenerImpl
@@ -22,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * Created by mzennis on 15/03/21.
  */
 class ApsaraLivePusherWrapper private constructor(
-        private val context: Context,
+        val context: Context,
         private val lifecycleOwner: LifecycleOwner,
         private val pusherConfig: ApsaraLivePusherConfig
 ) {
@@ -51,7 +52,11 @@ class ApsaraLivePusherWrapper private constructor(
 
     }
 
+    val pusherState: ApsaraLivePusherState
+        get() = apsaraLivePusherState
+
     private var aliVcLivePusher: AlivcLivePusher? = null
+    private var apsaraLivePusherState: ApsaraLivePusherState = ApsaraLivePusherState.Idle
 
     private val livePusherStateProcessor = object : ApsaraLivePusherStateProcessor {
         override fun onStateChanged(state: ApsaraLivePusherState) {
@@ -101,11 +106,22 @@ class ApsaraLivePusherWrapper private constructor(
                         context,
                         Manifest.permission.CAMERA
                 ) == PackageManager.PERMISSION_DENIED) {
-            broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, IllegalStateException("We need camera permission to continue live streaming"))
+            broadcastErrorToListeners(
+                    PLAY_PUSHER_ERROR_SYSTEM_ERROR,
+                    IllegalStateException("We need camera permission to continue live streaming"))
             return
         }
 
-        safeAction { aliVcLivePusher?.startPreviewAysnc(surfaceView) }
+        try {
+            aliVcLivePusher?.startPreviewAysnc(surfaceView)
+        } catch (exception: IllegalStateException) {
+            if (exception.localizedMessage.orEmpty().contains("start preview", true)
+                    || exception.localizedMessage.orEmpty().contains("should init first", true) ){
+                broadcastErrorToListeners(
+                        PLAY_PUSHER_ERROR_SYSTEM_ERROR,
+                        ApsaraFatalException("Something went wrong, please restart application"))
+            }
+        }
     }
 
     fun switchCamera() {
@@ -118,7 +134,10 @@ class ApsaraLivePusherWrapper private constructor(
     }
 
     fun stopPreview() {
-        safeAction { aliVcLivePusher?.stopPreview() }
+        try {
+            aliVcLivePusher?.stopPreview()
+        } catch (exception: IllegalStateException) {
+        }
     }
 
     fun start(ingestUrl: String)  {
@@ -130,14 +149,16 @@ class ApsaraLivePusherWrapper private constructor(
             return
         }
 
-        safeAction {
+        try {
             broadcastStateToListeners(ApsaraLivePusherState.Connecting)
             aliVcLivePusher?.startPushAysnc(ingestUrl)
+        } catch (exception: IllegalStateException) {
+            if (exception.localizedMessage.orEmpty().contains("start push", true)){
+                broadcastErrorToListeners(
+                        PLAY_PUSHER_ERROR_SYSTEM_ERROR,
+                        ApsaraFatalException("Something went wrong, please restart application"))
+            }
         }
-    }
-
-    fun restart() {
-        safeAction { aliVcLivePusher?.restartPushAync() }
     }
 
     fun stop() {
@@ -163,19 +184,24 @@ class ApsaraLivePusherWrapper private constructor(
     private fun safeAction(onAction: () -> Unit) {
         try {
             onAction()
-        } catch (exception: Exception) {
+        } catch (exception: IllegalStateException) {
             // ignored because sometimes it's an unnecessary error, ex. status error current state init
-            // broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, exception)
+        } catch (exception: Exception) {
+             broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, exception)
         } catch (error: Error) {
             broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, error)
         }
     }
 
     private fun configureLifecycleObserver() {
-        lifecycleOwner.lifecycle.addObserver(PlayLivePusherObserver(this))
+        lifecycleOwner.lifecycle.addObserver(
+                PlayLivePusherObserver(this)
+        )
     }
 
     private fun broadcastStateToListeners(state: ApsaraLivePusherState) {
+        if (state == ApsaraLivePusherState.Pause && aliVcLivePusher?.isPushing == false) return
+        apsaraLivePusherState = state
         listeners.forEach { it.onStateChanged(state) }
     }
 

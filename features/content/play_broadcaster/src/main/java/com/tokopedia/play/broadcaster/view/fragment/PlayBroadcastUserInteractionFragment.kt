@@ -129,6 +129,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         viewTimer.requestApplyInsetsWhenAttached()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (parentViewModel.pusherState is PlayLivePusherState.Paused) showDialogContinueLiveStreaming()
+    }
+
     private fun initView(view: View) {
         viewTimer = view.findViewById(R.id.view_timer)
         viewStatInfo = view.findViewById(R.id.view_stat_info)
@@ -364,13 +369,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (state) {
             is PlayLivePusherState.Connecting -> showLoading(true)
             is PlayLivePusherState.Started -> showLoading(false)
-            is PlayLivePusherState.Paused -> {
-                showLoading(false)
-                showDialogContinueLiveStreaming()
-            }
+//            is PlayLivePusherState.Paused -> {
+//                showLoading(false)
+//                showDialogContinueLiveStreaming()
+//            }
             is PlayLivePusherState.Stopped -> {
                 showLoading(false)
-//                 if (state.shouldNavigate) navigateToSummary()
+                 if (state.shouldNavigate) navigateToSummary()
             }
             is PlayLivePusherState.Error -> {
                 showLoading(false)
