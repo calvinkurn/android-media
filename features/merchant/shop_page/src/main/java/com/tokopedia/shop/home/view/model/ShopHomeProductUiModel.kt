@@ -41,6 +41,8 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var stockLabel: String = ""
     var hideGimmick: Boolean = false
     var stockSoldPercentage: Int = 0
+    var recommendationType: String? = null
+    var minimumOrder: Int = 1
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){

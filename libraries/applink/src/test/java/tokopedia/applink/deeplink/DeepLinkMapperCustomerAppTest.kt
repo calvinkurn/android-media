@@ -824,8 +824,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check seller center appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_CENTER, "")
+    fun `check seller center appLink then should return to seller center webview in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview?url=https://seller.tokopedia.com/edu/"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_CENTER, expectedDeepLink)
     }
 
     @Test
@@ -966,6 +967,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             DeeplinkMapperUohOrder.useUoh(context)
         } returns true
         assertEqualsDeepLinkMapper(ApplinkConst.PURCHASE_HISTORY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check ongoing appLink then should return tokopedia internal ongoing in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://order/unified?filter=uoh_ongoing"
+        every {
+            DeeplinkMapperUohOrder.useUoh(context)
+        } returns true
+        assertEqualsDeepLinkMapper(ApplinkConst.PURCHASE_ONGOING, expectedDeepLink)
     }
 
     @Test

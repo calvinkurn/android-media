@@ -28,6 +28,7 @@ include "features:content:play_common"
 include "features:content:play_widget"
 include "features:content:interest_pick"
 include "features:content:interest_pick_common"
+include "features:im:moengage_wrapper"
 
 include "features:category:basemvvm"
 include "features:category:tradein"
@@ -35,10 +36,6 @@ include "features:category:age_restriction"
 include "features:category:explore_category"
 include "features:category:discovery2"
 include "features:category:category_navbottomsheet"
-
-
-        include "features:digital:digital_browse"
-
 include "features:recharge:common_digital"
 include "features:recharge:digitalproduct"
 include "features:recharge:common_topup_bills"
@@ -98,6 +95,7 @@ include "features:digital:instant_debit_bca"
 include "features:fintech:saldo_details"
 include "features:fintech:common_wallet"
 include "features:fintech:wallet"
+include "features:fintech:paylater"
 
 include "features:home:dynamicbanner"
 include "features:home:navigation"
@@ -144,7 +142,6 @@ include "features:merchant:shop_settings"
 include "features:merchant:talk"
 include "features:merchant:official_store"
 include "features:merchant:brandlist"
-include "features:merchant:atc_variant"
 include "features:merchant:variant_common"
 include "features:merchant:favorite"
 include "features:merchant:product_add_edit"
@@ -157,6 +154,7 @@ include "features:operational:csat_rating"
 include "features:ovop2p"
 
 include "features:ordermanagement:snapshot"
+include "features:ordermanagement:orderhistory"
 
 include "features:payment:common_payment"
 include "features:payment:payment"
@@ -241,7 +239,6 @@ include "features:user:fcm_common"
 
 include "tkpdcore"
 include "tkpddesign"
-include "tkpdseller"
 include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'

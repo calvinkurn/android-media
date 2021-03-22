@@ -74,6 +74,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -112,7 +113,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
-    private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
+    private val recyclerView: RecyclerView?
+        get() =
+            try {
+                super.getRecyclerView(view)
+            } catch (ex: Exception) {
+                null
+            }
 
     private var sellerHomeListener: Listener? = null
     private var menu: Menu? = null
@@ -192,7 +199,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.post {
                 requestVisibleWidgetsData()
             }
-            recyclerView.post {
+            recyclerView?.post {
                 resetWidgetImpressionHolder()
             }
         }
@@ -257,7 +264,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 requestVisibleWidgetsData()
             }
         }
-        with(recyclerView) {
+        recyclerView?.run {
             layoutManager = sellerHomeLayoutManager
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
@@ -279,7 +286,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
      * load only visible widget on screen, except card widget should load all directly
      * */
     private fun requestVisibleWidgetsData() {
-        val layoutManager = recyclerView.layoutManager as GridLayoutManager
+        val layoutManager = recyclerView?.layoutManager as? GridLayoutManager ?: return
         val firstVisible = layoutManager.findFirstVisibleItemPosition()
         val lastVisible = layoutManager.findLastVisibleItemPosition()
 
@@ -410,7 +417,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        recyclerView.post {
+        recyclerView?.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
         }
@@ -539,7 +546,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
                 ?: PostFilterBottomSheet.newInstance()
         postFilterBottomSheet.init(requireContext(), element.postFilter) {
-            recyclerView.post {
+            recyclerView?.post {
                 val copiedWidget = element.copy().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getPostData(listOf(element))
@@ -577,7 +584,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
-            recyclerView.post {
+            recyclerView?.post {
                 when (result) {
                     is Success -> {
                         stopLayoutCustomMetric(result.data)
@@ -623,7 +630,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Suppress("UNCHECKED_CAST")
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         view?.sahGlobalError?.gone()
-        recyclerView.visible()
+        recyclerView?.visible()
 
         adapter.hideLoading()
         hideSnackBarRetry()
@@ -651,7 +658,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.swipeRefreshLayout?.isRefreshing = false
         }
 
-        recyclerView.post {
+        recyclerView?.post {
             requestVisibleWidgetsData()
         }
 
@@ -678,7 +685,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.BAR_CHART]?.run { getBarChartData(this) }
         groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
-            recyclerView.post {
+            recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()
                 forEach { section ->
                     newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
@@ -778,7 +785,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
-            recyclerView.post {
+            recyclerView?.post {
                 startHomeLayoutRenderMonitoring()
                 when (result) {
                     is Success -> result.data.setOnSuccessWidgetState(type)
@@ -829,8 +836,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }.takeIf { it > -1 }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
-                    if (!widget.isShowEmpty && widgetData.shouldRemove()) {
+                    if (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())) {
                         newWidgetList.removeAt(index)
+                        removeEmptySections(newWidgetList, index)
                     } else {
                         val copiedWidget = widget.copy()
                         copiedWidget.data = widgetData
@@ -842,10 +850,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         view?.addOneTimeGlobalLayoutListener {
-            recyclerView.post {
+            recyclerView?.post {
                 checkLoadingWidgets()
                 requestVisibleWidgetsData()
             }
+        }
+    }
+
+    private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {
+        val previousWidget = newWidgetList.getOrNull(removedWidgetIndex - 1)
+        val widgetReplacement = newWidgetList.getOrNull(removedWidgetIndex)
+        if ((widgetReplacement == null || widgetReplacement is SectionWidgetUiModel) && previousWidget is SectionWidgetUiModel) {
+            newWidgetList.removeAt(removedWidgetIndex - 1)
         }
     }
 
@@ -925,7 +941,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun stopPltMonitoringIfNotCompleted(fromCache: Boolean) {
         if (!performanceMonitoringSellerHomePltCompleted) {
             performanceMonitoringSellerHomePltCompleted = true
-            recyclerView.addOneTimeGlobalLayoutListener {
+            recyclerView?.addOneTimeGlobalLayoutListener {
                 stopHomeLayoutRenderMonitoring(fromCache)
             }
         }
