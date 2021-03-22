@@ -486,7 +486,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void CheckBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest){
         Activity activity= ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
-        if(activity != null && activity.getIntent().getData()!= null && activity.getIntent().getData().toString().contains("tokopedia.link/")){
+        if(activity != null && activity.getIntent().getData()!= null && activity.getIntent().getData().toString().contains(LinkerConstants.BRANCH_LINK_DOMAIN)){
             if (DeeplinkUTMUtils.isValidCampaignUrl(activity.getIntent().getData())) {
                 sendCampaignGTM(activity, activity.getIntent().getData().toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER);
             }else {
