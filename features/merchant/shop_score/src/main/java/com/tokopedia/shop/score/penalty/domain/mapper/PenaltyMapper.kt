@@ -1,4 +1,7 @@
 package com.tokopedia.shop.score.penalty.domain.mapper
 
-class PenaltyMapper {
+import javax.inject.Inject
+
+class PenaltyMapper @Inject constructor() {
+
 }
