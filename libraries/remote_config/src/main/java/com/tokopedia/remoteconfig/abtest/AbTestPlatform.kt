@@ -211,7 +211,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
         const val NAVIGATION_EXP_TOP_NAV = "Navigation P0.1"
         const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
-        const val NAVIGATION_VARIANT_REVAMP = "Navigation Revamp"
+        const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
 
         const val HOME_EXP = "Home Revamp 2021"
         const val HOME_VARIANT_OLD = "Existing Home"
