@@ -104,7 +104,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     private fun setActiveStatus() {
         autoAds?.isEnabled = true
         manualAds?.isEnabled = true
-        ticker_info.visible()
+        ticker_info.gone()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -168,7 +168,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     }
 
     private fun autoAdsDisableConfirm() {
-        ticker_info.visible()
+        ticker_info.gone()
         autoAds?.isEnabled = true
         manualAds?.isEnabled = true
     }
