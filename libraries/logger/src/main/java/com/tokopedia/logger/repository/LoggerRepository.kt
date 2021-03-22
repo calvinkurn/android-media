@@ -1,5 +1,6 @@
 package com.tokopedia.logger.repository
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.BaseEncryptor
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
@@ -10,14 +11,18 @@ import com.tokopedia.logger.model.scalyr.ScalyrEvent
 import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.TimberReportingTree
+import kotlinx.coroutines.*
 import javax.crypto.SecretKey
+import kotlin.coroutines.CoroutineContext
 
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
                        private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
+                       private val dispatcher: CoroutineDispatchers,
                        private val scalyrConfigs: List<ScalyrConfig>,
                        private val encryptor: BaseEncryptor,
-                       private val secretKey: SecretKey) : LoggerRepositoryContract {
+                       private val secretKey: SecretKey) : LoggerRepositoryContract, CoroutineScope {
+
 
     override suspend fun insert(logger: Logger) {
         val encryptedLogger = logger.copy(message = encryptor.encrypt(logger.message, secretKey))
@@ -48,13 +53,15 @@ class LoggerRepository(private val logDao: LoggerDao,
     }
 
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
-        val tokenIndex = priority-1
+        val tokenIndex = priority - 1
 
-        val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
-        val newRelicSendSuccess = sendNewRelicLogToServer(logs)
-        if (scalyrSendSuccess || newRelicSendSuccess) {
-            deleteEntries(logs)
-        }
+        launch(context = dispatcher.io, block = {
+            val scalyrSendSuccess = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs) }
+            val newRelicSendSuccess = async { sendNewRelicLogToServer(logs) }
+            if (scalyrSendSuccess.await() || newRelicSendSuccess.await()) {
+                deleteEntries(logs)
+            }
+        })
     }
 
     suspend fun sendScalyrLogToServer(config: ScalyrConfig, logs: List<Logger>): Boolean {
@@ -92,11 +99,14 @@ class LoggerRepository(private val logDao: LoggerDao,
         return loggerCloudNewRelicImpl.sendToLogServer(newRelicMessageList)
     }
 
-    fun truncate (str:String):String {
+    fun truncate(str: String): String {
         return if (str.length > Constants.MAX_BUFFER) {
             str.substring(0, Constants.MAX_BUFFER)
         } else {
             str
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatcher.io
 }

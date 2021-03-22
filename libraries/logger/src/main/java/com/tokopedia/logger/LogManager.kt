@@ -1,6 +1,7 @@
 package com.tokopedia.logger
 
 import android.app.Application
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.encryption.security.AESEncryptorECB
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
@@ -46,6 +47,7 @@ class LogManager(val application: Application) {
                 loggerRepository = LoggerRepository(logsDao,
                         loggerCloudScalyrDataSource,
                         loggerCloudNewRelicDataSource,
+                        CoroutineDispatchersProvider,
                         scalyrConfigList,
                         encryptor, secretKey)
             }
