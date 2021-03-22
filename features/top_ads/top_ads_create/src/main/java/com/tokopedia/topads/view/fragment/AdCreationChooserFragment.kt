@@ -6,16 +6,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.getSellerMigrationFeatureName
+import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
+import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
@@ -25,11 +32,13 @@ import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.AdChooserViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.topads_create_ads_chooser_fragment.*
-import kotlinx.android.synthetic.main.topads_create_ads_chooser_fragment.view.*
+import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.*
+import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.view.*
 import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.view.imageView7
 import javax.inject.Inject
 
+private const val CLICK_MULAI_IKLAN = "click-mulai iklan otomatis"
+private const val CLICK_BUAT_IKLAN_MANUAL = "click-buat iklan manual"
 class AdCreationChooserFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -64,7 +73,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(AdChooserViewModel::class.java)
-        return inflater.inflate(resources.getLayout(R.layout.topads_create_ads_chooser_fragment), container, false)
+        return inflater.inflate(resources.getLayout(R.layout.topads_create_fragment_onboarding), container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -95,7 +104,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     private fun setActiveStatus() {
         autoAds?.isEnabled = true
         manualAds?.isEnabled = true
-        ticker_info?.gone()
+        ticker_info.visible()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,82 +113,74 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         })
         view.imageView7.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
-        setCaraouselView(view)
-    }
-
-    private fun setCaraouselView(view: View) {
-        view.topAdsCaraousel.apply {
-            slideToShow = 1.2f
-            indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-            centerMode = true
-            freeMode = false
-
-            val autoAdsView = layoutInflater.inflate(R.layout.topads_automatic_onboarding_auto_ads, null).apply {
-                val image = this.findViewById<ImageUnify>(R.id.top_corner_icon1)
-                image.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_ic_thumb_up))
-                val topCorner = this.findViewById<ImageUnify>(R.id.top_corner_bg1)
-                topCorner.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_bg_top_corner))
-
-                val icon2 = this.findViewById<ImageUnify>(R.id.icon2)
-                val icon3 = this.findViewById<ImageUnify>(R.id.icon3)
-                val icon4 = this.findViewById<ImageUnify>(R.id.icon4)
-
-                icon2.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-                icon3.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-                icon4.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-
-                autoAds = this.findViewById(R.id.btn_start_auto_ads)
-                autoAds?.setOnClickListener {
-                    if (adStatus == AUTO) {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
-                        startActivityForResult(intent, AUTO_ADS_DISABLED)
-                    }
-                    if (adStatus == MANUAL || adStatus == NO_ADS) {
-                        RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
-                    }
-                }
-            }
-
-            val manualAutoAds = layoutInflater.inflate(R.layout.topads_automatic_onboarding_manual_ads, null).apply {
-                val image = this.findViewById<ImageUnify>(R.id.top_corner_icon2)
-                image.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_ic_gear))
-                val topCorner = this.findViewById<ImageUnify>(R.id.top_corner_bg2)
-                topCorner.setImageDrawable(this.context.getResDrawable(R.drawable.topads_create_bg_top_corner))
-
-                val icon6 = this.findViewById<ImageUnify>(R.id.icon6)
-                val icon7 = this.findViewById<ImageUnify>(R.id.icon7)
-                val icon8 = this.findViewById<ImageUnify>(R.id.icon8)
-
-                icon6.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-                icon7.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-                icon8.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-
-                manualAds = this.findViewById(R.id.btn_start_manual_ads)
-                manualAds?.setOnClickListener {
-                    if (adStatus == MANUAL || adStatus == NO_ADS) {
-                        startActivity(Intent(activity, StepperActivity::class.java))
-                    }
-                    if (adStatus == AUTO) {
-                        val sheet = ManualAdsConfirmationCommonSheet.newInstance()
-                        sheet.show(childFragmentManager, "")
-                        sheet.manualClick = {
-                            viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
-                        }
-                    }
-                }
-            }
-            addItem(autoAdsView)
-            addItem(manualAutoAds)
+        context?.let {
+            view.top_corner_bg1.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_bg_top_corner))
+            view.top_corner_bg2.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_bg_top_corner))
         }
+
+        view.top_corner_icon1.setImageResource(R.drawable.icon_otomatis_onboarding)
+        view.icon2.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_1)
+        view.icon3.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_2)
+        view.icon4.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_3)
+
+        view.top_corner_icon2.setImageResource(R.drawable.icon_manual_onboarding)
+        view.icon6.setImageResource(R.drawable.topads_create_ic_iklan_manual_1)
+        view.icon7.setImageResource(R.drawable.topads_create_ic_iklan_manual_2)
+        view.icon8.setImageResource(R.drawable.topads_create_ic_iklan_manual_3)
+
+
+        btn_start_auto_ads.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
+            RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                }
+                startActivity(this)
+            }
+            if (adStatus == AUTO) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
+                startActivityForResult(intent, AUTO_ADS_DISABLED)
+            }
+            if (adStatus == MANUAL || adStatus == NO_ADS) {
+                RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+            }
+        }
+
+        btn_start_manual_ads.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
+            Intent(activity, StepperActivity::class.java).apply {
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                }
+                startActivity(this)
+            }
+            if (adStatus == AUTO) {
+                val sheet = ManualAdsConfirmationCommonSheet.newInstance()
+                sheet.show(childFragmentManager, "")
+                sheet.manualClick = {
+                    viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
+                }
+            }
+        }
+
     }
 
     private fun autoAdsDisableConfirm() {
-        ticker_info.gone()
+        ticker_info.visible()
         autoAds?.isEnabled = true
         manualAds?.isEnabled = true
     }
 
     private fun inProgress() {
+        if(adStatus == AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE) {
+            ticker_info.tickerTitle = getString(R.string.ticker_title_activate)
+            ticker_info.setHtmlDescription(getString(R.string.ticker_desc_actiivate))
+        } else if(adStatus == AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE) {
+            ticker_info.tickerTitle = getString(R.string.ticker_title_deactivate)
+            ticker_info.setHtmlDescription(getString(R.string.ticker_desc_deactiivate))
+        }
         ticker_info.visible()
         autoAds?.isEnabled = false
         manualAds?.isEnabled = false
