@@ -12,8 +12,6 @@ class Constants {
 
         const val MAX_BUFFER = 3900
         const val SCALYR_SERVER_URL = "https://app.scalyr.com/addEvents"
-        const val NEW_RELIC_SERVER_URL = "https://insights-collector.newrelic.com/v1/accounts/2565133/events"
-        const val NEW_RELIC_API_KEY = "NRII-Gb14CG6Z9DzGN-9uKm4254N9Lr8pN81Y"
         const val ENCRYPTION_KEY = "q(e#%Gf@oi>lkB~h"
         const val DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss:SSS"
 
@@ -30,5 +28,18 @@ class Constants {
         const val LOG_DEFAULT_ERROR_CODE = 404
 
         const val METHOD_POST = "POST"
+
+        private const val URL_NEW_RELIC_EVENT_UID_PLACEHOLDER = "{uid}"
+        const val NEW_RELIC_SERVER_URL = "https://insights-collector.newrelic.com/v1/accounts/$URL_NEW_RELIC_EVENT_UID_PLACEHOLDER/events"
+        const val HEADER_CONTENT_TYPE = "Content-Type"
+        const val HEADER_CONTENT_ENCODING = "Content-Encoding"
+        const val HEADER_CONTENT_LENGTH = "Content-Length"
+        const val HEADER_NEW_RELIC_KEY = "X-Insert-Key"
+        const val HEADER_CONTENT_TYPE_JSON = "application/json"
+        const val HEADER_CONTENT_ENCODING_GZIP = "gzip"
+
+        fun getNewRelicEventURL(userId: String): String {
+            return NEW_RELIC_SERVER_URL.replace(URL_NEW_RELIC_EVENT_UID_PLACEHOLDER, userId)
+        }
     }
 }

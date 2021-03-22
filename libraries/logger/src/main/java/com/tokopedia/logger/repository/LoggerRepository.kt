@@ -2,6 +2,7 @@ package com.tokopedia.logger.repository
 
 import com.tokopedia.encryption.security.BaseEncryptor
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
@@ -13,6 +14,7 @@ import javax.crypto.SecretKey
 
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
+                       private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
                        private val scalyrConfigs: List<ScalyrConfig>,
                        private val encryptor: BaseEncryptor,
                        private val secretKey: SecretKey) : LoggerRepositoryContract {
@@ -49,8 +51,8 @@ class LoggerRepository(private val logDao: LoggerDao,
         val tokenIndex = priority-1
 
         val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
-        // val newRelicSendSuccess
-        if (scalyrSendSuccess) {
+        val newRelicSendSuccess = sendNewRelicLogToServer(logs)
+        if (scalyrSendSuccess || newRelicSendSuccess) {
             deleteEntries(logs)
         }
     }
@@ -73,6 +75,21 @@ class LoggerRepository(private val logDao: LoggerDao,
             scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
         }
         return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
+    }
+
+    suspend fun sendNewRelicLogToServer(logs: List<Logger>): Boolean {
+        if (logs.isEmpty()) {
+            return true
+        }
+
+        val newRelicMessageList = mutableListOf<String>()
+
+        for (log in logs) {
+            val message = encryptor.decrypt(log.message, secretKey)
+            newRelicMessageList.add(message)
+        }
+
+        return loggerCloudNewRelicImpl.sendToLogServer(newRelicMessageList)
     }
 
     fun truncate (str:String):String {

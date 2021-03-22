@@ -2,6 +2,7 @@ package com.tokopedia.logger
 
 import android.app.Application
 import com.tokopedia.encryption.security.AESEncryptorECB
+import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
@@ -39,10 +40,12 @@ class LogManager(val application: Application) {
                 val context = instance.application.applicationContext
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
                 val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource()
+                val loggerCloudNewRelicDataSource = LoggerCloudNewRelicDataSource()
                 val encryptor = AESEncryptorECB()
                 val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
                 loggerRepository = LoggerRepository(logsDao,
                         loggerCloudScalyrDataSource,
+                        loggerCloudNewRelicDataSource,
                         scalyrConfigList,
                         encryptor, secretKey)
             }
