@@ -241,5 +241,9 @@
     <string name="title_uoh_1">Menunggu Pembayaran</string>
     <string name="title_uoh_3">Semua Transaksi</string>
     <string name="e_ticket_desc">Cek tiket dan voucher siap pakai</string>
+  
+    <string name="text_description_add_name_bottom_sheet">Ubah nama profil sesuai dengan nama aslimu di halaman data diri, agar pengalaman berbelanjamu semakin mudah dan aman.</string>
+    <string name="text_title_add_name_bottom_sheet">Yuk, ubah nama profilmu!</string>
+    <string name="text_button_add_name_bottom_sheet">Ubah Nama Sekarang</string>
 
 </resources>

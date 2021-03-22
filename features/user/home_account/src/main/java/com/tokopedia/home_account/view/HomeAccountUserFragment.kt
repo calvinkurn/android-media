@@ -981,7 +981,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
 
         if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
-            gotoSSettingProfile()
+            gotoSettingProfile()
         }
 
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
@@ -1065,7 +1065,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
     }
 
-    private fun gotoSSettingProfile() {
+    private fun gotoSettingProfile() {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
         startActivity(intent)
     }

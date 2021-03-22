@@ -28,9 +28,9 @@
         android:clickable="false"
         android:focusable="false"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/text_username"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_username"
         app:layout_constraintStart_toEndOf="@+id/image_profile_completed"
-        app:layout_constraintTop_toTopOf="@+id/text_username"
+        app:layout_constraintTop_toTopOf="@+id/layout_username"
         app:srcCompat="@drawable/ic_byme_blue"
         tools:ignore="ContentDescription" />
 
@@ -300,36 +300,55 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/text_profile_completion"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_username" />
+        app:layout_constraintTop_toTopOf="@+id/layout_username" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_username"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_username"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_14"
-        android:layout_marginRight="@dimen/dp_14"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@+id/text_profile_completion"
-        app:layout_constraintEnd_toStartOf="@+id/by_me_button"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/ic_affiliate_byme"
-        app:layout_constraintTop_toTopOf="@id/image_profile_completed"
-        app:layout_goneMarginStart="@dimen/dp_8"
-        app:typographyType="heading_3"
-        tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
-
+        app:layout_constraintTop_toTopOf="@id/image_profile_completed">
+      
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_14"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_goneMarginStart="@dimen/dp_8"
+            app:typographyType="heading_3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Young Lex Le Bron" />
+      
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_warning_name"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_R500"
+            app:icon_name="WARNING"
+            app:layout_constraintLeft_toRightOf="@id/text_username"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+      
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivMemberBadge"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/image_profile_completed"
-        app:layout_constraintStart_toStartOf="@+id/text_username"
-        app:layout_constraintTop_toBottomOf="@+id/text_username" />
+        app:layout_constraintStart_toStartOf="@+id/layout_username"
+        app:layout_constraintTop_toBottomOf="@+id/layout_username" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_profile_completion"
@@ -343,9 +362,9 @@
         android:textColor="@color/Unify_N200"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/ivMemberBadge"
-        app:layout_constraintEnd_toEndOf="@+id/text_username"
+        app:layout_constraintEnd_toEndOf="@+id/layout_username"
         app:layout_constraintStart_toEndOf="@+id/ivMemberBadge"
-        app:layout_constraintTop_toBottomOf="@+id/text_username"
+        app:layout_constraintTop_toBottomOf="@+id/layout_username"
         app:layout_constraintTop_toTopOf="@id/ivMemberBadge"
         app:typographyType="body_2"
         tools:text="Gold Member " />

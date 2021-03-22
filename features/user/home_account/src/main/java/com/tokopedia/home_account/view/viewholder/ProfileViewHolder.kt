@@ -49,7 +49,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
                 }
             }
 
-            if (profile.name.contains(DEFAULT_NAME)) {
+            if (profile.name.toLowerCase().contains(DEFAULT_NAME)) {
                 account_user_item_profile_icon_warning_name?.show()
                 account_user_item_profile_icon_warning_name?.setOnClickListener { listener.onIconWarningClicked(profile) }
             }
@@ -134,6 +134,6 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
 
     companion object {
         val LAYOUT = R.layout.home_account_item_profile
-        private const val DEFAULT_NAME = "Toppers-"
+        private const val DEFAULT_NAME = "toppers-"
     }
 }
