@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
@@ -176,8 +178,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
         setupToolbar()
         btnChangeShopInfo.setOnClickListener {
-            moveToShopEditBasicInfoFragment()
-            ShopSettingsTracking.clickChange(shopId, getShopType())
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES_BUYER_VIEW)
+            intent.putExtra("EXTRA_SHOP_ID", "3418893")
+            startActivity(intent)
         }
 
         vgShopStatusContainer.setOnClickListener {
