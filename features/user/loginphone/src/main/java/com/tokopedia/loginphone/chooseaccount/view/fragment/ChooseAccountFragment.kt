@@ -327,7 +327,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 analytics.eventSuccessLoginPhoneNumber()
             } else {
                 if (viewModel.isFacebook) {
-                    analytics.eventSuccessLoginPhoneNumberFBSmartRegister()
+                    analytics.eventSuccessFbPhoneNumber()
                 } else {
                     analytics.eventSuccessLoginPhoneNumberSmartRegister()
                 }

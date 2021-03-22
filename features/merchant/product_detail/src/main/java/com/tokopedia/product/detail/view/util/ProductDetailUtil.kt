@@ -9,13 +9,18 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import androidx.annotation.DimenRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -33,15 +38,12 @@ object ProductDetailUtil {
 
     private const val MAX_CHAR_OLD = 150
     private const val MAX_CHAR = 140
-    private const val MORE_DESCRIPTION_OLD = "<font color='#42b549'>Selengkapnya</font>"
     private const val ALLOW_CLICK = true
 
-    fun reviewDescFormatterOld(review: String): Pair<Spanned, Boolean> {
+    fun reviewDescFormatterOld(context: Context, review: String): Pair<CharSequence?, Boolean> {
         return if (MethodChecker.fromHtml(review).length > MAX_CHAR_OLD) {
             val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR_OLD)
-            Pair(MethodChecker
-                    .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                            + MORE_DESCRIPTION_OLD), ALLOW_CLICK)
+            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
         } else {
             Pair(MethodChecker.fromHtml(review), !ALLOW_CLICK)
         }
@@ -300,3 +302,50 @@ fun View?.showToasterError(message: String,
     }
 }
 
+internal fun View?.animateExpand() = this?.run {
+    val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
+    val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+    val targetHeight = measuredHeight
+
+    // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+    layoutParams.height = 1
+    show()
+    val animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            layoutParams.height = if (interpolatedTime == 1f) ConstraintLayout.LayoutParams.WRAP_CONTENT
+            else (targetHeight * interpolatedTime).toInt()
+            alpha = interpolatedTime
+            requestLayout()
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+    animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    startAnimation(animation)
+}
+
+internal fun View?.animateCollapse() = this?.run {
+    val initialHeight = measuredHeight
+    val animation: Animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            if (interpolatedTime == 1f) {
+                gone()
+            } else {
+                layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                alpha = 1.0f - interpolatedTime
+                requestLayout()
+            }
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+    animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    startAnimation(animation)
+}
