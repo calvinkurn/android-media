@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.common.data.model.pdplayout.IsFreeOngkir
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -18,6 +17,7 @@ data class ProductContentDataModel(
         val name: String = "",
         var data: ProductContentMainData? = null,
         var isWishlisted: Boolean = false,
+        var freeOngkirImgUrl: String = "",
 
         //Ribbon Data
         var shouldShowTradein: Boolean = false,
@@ -59,6 +59,7 @@ data class ProductContentDataModel(
                     && shouldShowTradein == newData.shouldShowTradein
                     && upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
                     && isWishlisted == newData.isWishlisted
+                    && freeOngkirImgUrl == newData.freeOngkirImgUrl
                     && data?.thematicCampaign?.campaignName == newData.data?.thematicCampaign?.campaignName
         } else {
             false
@@ -78,8 +79,8 @@ data class ProductContentDataModel(
                 return null
             }
 
-            if (shouldShowTradein != newData.shouldShowTradein) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN)
+            if (shouldShowTradein != newData.shouldShowTradein || freeOngkirImgUrl != newData.freeOngkirImgUrl) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE)
                 return bundle
             }
 
@@ -97,7 +98,6 @@ data class ProductContentDataModel(
 data class ProductContentMainData(
         var campaign: CampaignModular = CampaignModular(),
         var thematicCampaign: ThematicCampaign = ThematicCampaign(),
-        var freeOngkir: IsFreeOngkir = IsFreeOngkir(),
         var cashbackPercentage: Int = 0,
         var price: Price = Price(),
         var stockWording: String = "",

@@ -22,6 +22,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.Event
+import com.tokopedia.homenav.common.util.isABNewTokopoint
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
@@ -30,9 +31,7 @@ import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,7 +41,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
@@ -303,10 +301,11 @@ class MainNavViewModel @Inject constructor(
             accountModel?.let { account ->
                 if (account.isProfileLoading) {
                     updateWidget(account.copy(
+                            isTokopointExternalAmountError = isABNewTokopoint(),
                             isGetShopError = true,
                             isProfileLoading = false,
-                            isGetOvoError = true,
-                            isGetSaldoError = true,
+                            isGetOvoError = !isABNewTokopoint(),
+                            isGetSaldoError = !isABNewTokopoint(),
                             isGetUserMembershipError = true,
                             isGetUserNameError = true
                     ), INDEX_MODEL_ACCOUNT)
