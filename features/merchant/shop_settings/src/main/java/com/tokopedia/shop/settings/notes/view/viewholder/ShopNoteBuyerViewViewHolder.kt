@@ -1,7 +1,9 @@
 package com.tokopedia.shop.settings.notes.view.viewholder
 
+import android.text.Spanned
 import android.view.View
 import android.widget.ImageView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.settings.R
@@ -18,7 +20,7 @@ class ShopNoteBuyerViewViewHolder(view: View): BaseViewHolder(view) {
     private var tpDescription: Typography? = null
     private var ivChevron: ImageView? = null
 
-    private fun setupUi(title: String, description: String) {
+    private fun setupUi(title: String, description: Spanned) {
         itemView.apply {
 
             tpTitle = findViewById(R.id.tp_title)
@@ -44,7 +46,7 @@ class ShopNoteBuyerViewViewHolder(view: View): BaseViewHolder(view) {
     fun bind(model: ShopNoteBuyerViewUiModel) {
         setupUi(
                 title = model.title,
-                description = model.description
+                description = MethodChecker.fromHtml(model.description)
         )
     }
 
