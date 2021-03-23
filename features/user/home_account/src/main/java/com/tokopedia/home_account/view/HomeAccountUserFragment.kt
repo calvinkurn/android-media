@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -84,7 +85,10 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.internal_review.factory.createReviewHelper
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -114,6 +118,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
+    private val reviewHelper by lazy { createReviewHelper(context) }
 
     private var endlessRecyclerViewScrollListener: HomeAccountEndlessScrollListener? = null
 
@@ -631,7 +636,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_APP_REVIEW_ID -> {
                 homeAccountAnalytic.eventClickSetting(APPLICATION_REVIEW)
                 homeAccountAnalytic.eventClickReviewAboutTokopedia()
-                goToPlaystore()
+                goToReviewApp()
             }
 
             AccountConstants.SettingCode.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
@@ -771,6 +776,16 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             val uri = Uri.fromParts("package", it.packageName, null)
             intent.data = uri
             it.startActivity(intent)
+        }
+    }
+
+    private fun goToReviewApp() {
+        if (reviewHelper != null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                reviewHelper?.checkForCustomerReview(context, childFragmentManager, ::goToPlaystore)
+            }
+        } else {
+            goToPlaystore()
         }
     }
 

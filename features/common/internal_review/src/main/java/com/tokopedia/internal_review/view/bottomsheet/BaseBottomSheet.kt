@@ -58,11 +58,21 @@ abstract class BaseBottomSheet constructor(val tracker: ReviewTracking,
                 userId = userSession.userId,
                 rating = rating,
                 feedback = feedback,
-                appVersion = GlobalConfig.VERSION_NAME,
+                appVersion = getAppVersion(),
                 deviceModel = "${Build.BRAND}_${Build.MODEL}",
                 osType = Const.OS_TYPE,
                 osVersion = Build.VERSION.RELEASE
         )
+    }
+
+    private fun getAppVersion() : String {
+        if (GlobalConfig.isSellerApp()) {
+            return GlobalConfig.VERSION_NAME
+        } else if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_PRO_APPLICATION) {
+            return "PRO-" + GlobalConfig.VERSION_NAME
+        } else {
+            return "MA-" + GlobalConfig.VERSION_NAME
+        }
     }
 
     protected open fun showErrorToaster(throwable: Throwable) = childView?.run {
