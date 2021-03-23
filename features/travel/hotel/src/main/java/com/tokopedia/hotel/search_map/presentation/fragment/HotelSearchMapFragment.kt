@@ -1143,9 +1143,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && !adapter.isLoading && adapter.isContainData) {
                     showSearchWithMap()
-                    if((recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() < (recyclerView.layoutManager as LinearLayoutManager).itemCount){
-                        loadData(defaultInitialPage.plus(1))
-                    }
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     hideSearchWithMap()
                 }
