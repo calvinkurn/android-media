@@ -165,6 +165,7 @@ public class SplashScreen extends AppCompatActivity {
 
     @NotNull
     private boolean getBranchDefferedDeeplink() {
+        LinkerUtils.APP_OPEN_FROM_BRANCH_LINK = false;
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setClientId(TrackingUtils.getClientID(SplashScreen.this));
         linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());

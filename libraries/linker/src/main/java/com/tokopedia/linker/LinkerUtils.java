@@ -22,6 +22,7 @@ import io.branch.referral.BranchError;
 
 public class LinkerUtils {
 
+    public static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
     public static String getOgTitle(LinkerData data) {
         if (TextUtils.isEmpty(data.getOgTitle())) {
             return data.getName();
