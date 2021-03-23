@@ -6,7 +6,7 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_cart_recommendation.view.*
 
@@ -26,34 +26,7 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
     fun bind(element: CartRecommendationItemHolderData) {
         itemView.productCardView?.apply {
             setProductModel(
-                    ProductCardModel(
-                            slashedPrice = element.recommendationItem.slashedPrice,
-                            productName = element.recommendationItem.name,
-                            formattedPrice = element.recommendationItem.price,
-                            productImageUrl = element.recommendationItem.imageUrl,
-                            isTopAds = element.recommendationItem.isTopAds,
-                            discountPercentage = element.recommendationItem.discountPercentage.toString(),
-                            reviewCount = element.recommendationItem.countReview,
-                            ratingCount = element.recommendationItem.rating,
-                            shopLocation = element.recommendationItem.location,
-                            shopBadgeList = element.recommendationItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it
-                                        ?: "")
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = element.recommendationItem.isFreeOngkirActive,
-                                    imageUrl = element.recommendationItem.freeOngkirImageUrl
-                            ),
-                            labelGroupList = element.recommendationItem.labelGroupList.map { recommendationLabel ->
-                                ProductCardModel.LabelGroup(
-                                        position = recommendationLabel.position,
-                                        title = recommendationLabel.title,
-                                        type = recommendationLabel.type
-                                )
-                            },
-                            hasAddToCartButton = true,
-                            addToCartButtonType = UnifyButton.Type.MAIN
-                    )
+                    element.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
             )
             setOnClickListener {
                 actionListener?.onRecommendationProductClicked(

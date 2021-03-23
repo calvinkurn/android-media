@@ -6,9 +6,9 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.CpmViewModel
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.usecase.RequestParams
@@ -64,8 +64,8 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list has global nav widget and CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<GlobalNavViewModel>()
-        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
+        visitableList[0].shouldBeInstanceOf<GlobalNavDataView>()
+        visitableList[1].shouldBeInstanceOf<CpmDataView>()
     }
 
     @Test
@@ -87,10 +87,10 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list has global nav widget and no CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<GlobalNavViewModel>()
+        visitableList[0].shouldBeInstanceOf<GlobalNavDataView>()
 
         for(i in 1 until visitableList.size) {
-            visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
+            visitableList[i].shouldBeInstanceOf<ProductItemDataView>()
         }
     }
 
@@ -113,10 +113,10 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list not showing global nav widget and still show CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<CpmViewModel>()
+        visitableList[0].shouldBeInstanceOf<CpmDataView>()
 
         for (i in 1 until visitableList.size) {
-            visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
+            visitableList[i].shouldBeInstanceOf<ProductItemDataView>()
         }
     }
 
@@ -159,7 +159,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list does not have global nav widget`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList.any { it is GlobalNavViewModel } shouldBe false
+        visitableList.any { it is GlobalNavDataView } shouldBe false
     }
 
     @Test

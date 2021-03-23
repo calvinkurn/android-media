@@ -116,4 +116,72 @@ class OrderSummaryPageActivityEtaTest {
             }
         }
     }
+
+    @Test
+    fun happyFlow_BebasOngkirExtra() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_BOE_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_ETA_WITH_BOE_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProductCard(
+                    shopName = "tokocgk",
+                    shopLocation = "TokoCabang",
+                    hasShopLocationImg = true,
+                    hasShopBadge = true,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = null,
+                    isFreeShipping = true,
+                    productQty = 1
+            )
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler",
+                    shippingCourier = "AnterAja (Rp10.000)",
+                    shippingPrice = null,
+                    shippingEta = "Estimasi tiba besok - 3 Feb"
+            )
+
+            assertShipmentPromoRevamp(
+                    hasPromo = true,
+                    promoTitle = "Tersedia Bebas Ongkir Extra",
+                    promoSubtitle = "Estimasi tiba besok - 3 Feb")
+
+            assertPayment("Rp111.300", "Bayar")
+
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BOE_APPLIED_RESPONSE
+            clickApplyShipmentPromoRevamp()
+
+            assertShipmentPromoRevamp(hasPromo = false)
+
+            assertShipmentRevamp(
+                    shippingDuration = null,
+                    shippingCourier = "Pengiriman Bebas Ongkir Extra",
+                    shippingPrice = null,
+                    shippingEta = "Estimasi tiba besok - 3 Feb"
+            )
+
+            assertPayment("Rp101.300", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        isBbo = true,
+                        insurancePrice = "Rp300",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp101.300"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
 }

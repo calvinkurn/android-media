@@ -6,6 +6,8 @@ import com.tokopedia.cart.domain.mapper.mapUpdateCartData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -16,7 +18,9 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-12-26.
  */
 
-class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase, private val schedulers: ExecutorSchedulers) : UseCase<UpdateCartData>() {
+class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
+                                            private val schedulers: ExecutorSchedulers,
+                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartData>() {
 
     companion object {
         val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
@@ -31,7 +35,8 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
 
         val variables = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_CARTS to paramUpdateList
+                PARAM_CARTS to paramUpdateList,
+                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
 
         val mutation = getUpdateCartMutation()

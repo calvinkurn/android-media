@@ -57,10 +57,14 @@ class HotelMenuShareSheets : BottomSheetUnify() {
                 dismiss()
             }
 
+            menuHelp.setOnClickListener {
+                if (::listener.isInitialized) listener.onSaveImageClicked()
+                dismiss()
+            }
+
             menuOrderList.text = context.getString(R.string.hotel_share_as_image)
             menuPromo.text = context.getString(R.string.hotel_share_as_pdf)
-            menuHelp.visibility = View.GONE
-            secondSeparator.visibility = View.GONE
+            menuHelp.text = context.getString(R.string.hotel_save_as_image)
         }
     }
 
@@ -69,6 +73,8 @@ class HotelMenuShareSheets : BottomSheetUnify() {
         fun onShareAsImageClicked()
 
         fun onShareAsPdfClicked()
+
+        fun onSaveImageClicked()
 
     }
 }
