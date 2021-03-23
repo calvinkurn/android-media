@@ -302,7 +302,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             setEmptyView()
         } else {
             data.forEach { result ->
-                if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE) && result.status != -1) {
+                if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE)) {
                     adapter.items.add(EditKeywordItemViewModel(result))
                     isnewlyAddded.add(false)
                     initialBudget.add(result.priceBid)

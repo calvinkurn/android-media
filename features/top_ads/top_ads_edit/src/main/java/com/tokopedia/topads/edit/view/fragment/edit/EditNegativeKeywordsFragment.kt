@@ -103,7 +103,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
         this.cursor = cursor
         data.forEach { result ->
-            if ((result.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT) && result.status != -1) {
+            if ((result.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT)) {
                 adapter.items.add(EditNegKeywordItemViewModel(result))
                 originalKeyList.add(result.tag)
             }
