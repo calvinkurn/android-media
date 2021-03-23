@@ -237,6 +237,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         position
                         type
                         title
+                        url
                     }
                 }
                 shop{

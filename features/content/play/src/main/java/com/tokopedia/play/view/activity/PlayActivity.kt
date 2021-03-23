@@ -289,6 +289,10 @@ class PlayActivity : BaseActivity(),
         swipeContainerView.scrollTo(SwipeContainerViewComponent.ScrollDirection.Next, isSmoothScroll = true)
     }
 
+    override fun canNavigateNextPage(): Boolean {
+        return swipeContainerView.hasNextPage()
+    }
+
     fun getPerformanceMonitoring(): PlayPltPerformanceCallback = pageMonitoring
 
     private fun startPageMonitoring() {

@@ -209,4 +209,8 @@
     <string name="action_reset">Reset</string>
     <string name="navigate_browser">Lanjut ke Aplikasi TopSeller</string>
     <string name="navigate_back">Kembali</string>
+
+    <!-- Order Management History   -->
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+    <string name="title_seller_info">Info Penjual</string>
 </resources>
