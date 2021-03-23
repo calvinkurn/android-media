@@ -56,7 +56,7 @@ class ReminderMessageViewModel @Inject constructor(
             productrevGetReminderListUseCase.setParams(lastProductId)
             val responseWrapper = productrevGetReminderListUseCase.executeOnBackground()
             products.postValue(Success(responseWrapper.productrevGetReminderList))
-        }, onError = { Fail(it) })
+        }, onError = { products.postValue(Fail(it)) })
     }
 
     fun sendReminder(template: String?) {

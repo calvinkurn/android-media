@@ -4,6 +4,8 @@ import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCou
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderListResponseWrapper
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplateResponseWrapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Test
@@ -52,16 +54,16 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         coEvery { productrevGetReminderListUseCase.executeOnBackground() } returns responseWrapper
         viewModel.fetchProductList()
         coVerify { productrevGetReminderListUseCase.executeOnBackground() }
-        viewModel.getProducts().verifyValueEquals(responseWrapper.productrevGetReminderList.list)
+        viewModel.getProducts().verifyValueEquals(Success(responseWrapper.productrevGetReminderList))
     }
 
     @Test
-    fun `when fetch product list fail should update error value`(){
-        val errorMessage = anyString()
-        coEvery { productrevGetReminderListUseCase.executeOnBackground() } throws Throwable(errorMessage)
+    fun `when fetch product list fail should update products value with error`(){
+        val throwable = Throwable()
+        coEvery { productrevGetReminderListUseCase.executeOnBackground() } throws throwable
         viewModel.fetchProductList()
         coVerify { productrevGetReminderListUseCase.executeOnBackground() }
-        viewModel.getError().verifyValueEquals(errorMessage)
+        viewModel.getProducts().verifyValueEquals(Fail(throwable))
     }
 
     @Test

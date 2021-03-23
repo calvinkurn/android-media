@@ -68,8 +68,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     private var cardNoProducts: CardUnify? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
-    private var bottomSheetHowTo: BottomSheetUnify? = null
-    private var bottomSheetEditMessage: EditMessageBottomSheet? = null
     private var dialogSend: DialogUnify? = null
 
     private var estimation: ProductrevGetReminderCounter? = null
@@ -115,19 +113,10 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
 
         initView()
-        initBottomSheet()
         setupViewInteraction()
         initCoachMark()
         observeViewModel()
         fetchData()
-    }
-
-    private fun initBottomSheet() {
-        bottomSheetHowTo = BottomSheetUnify()
-        bottomSheetHowTo?.setTitle(getString(R.string.review_reminder_how_to_title))
-        bottomSheetHowTo?.setChild(View.inflate(context, R.layout.bottom_sheet_review_reminder_how_to, null))
-
-        bottomSheetEditMessage = EditMessageBottomSheet { message -> textSampleMessage?.text = message }
     }
 
     private fun initView() {
@@ -145,7 +134,10 @@ class ReminderMessageFragment : BaseDaggerFragment() {
 
     private fun setupViewInteraction() {
         iconInformation?.setOnClickListener {
-            bottomSheetHowTo?.show(childFragmentManager, TAG_BOTTOM_SHEET_HOW_TO)
+            val bottomSheetHowTo = BottomSheetUnify()
+            bottomSheetHowTo.setTitle(getString(R.string.review_reminder_how_to_title))
+            bottomSheetHowTo.setChild(View.inflate(context, R.layout.bottom_sheet_review_reminder_how_to, null))
+            bottomSheetHowTo.show(childFragmentManager, TAG_BOTTOM_SHEET_HOW_TO)
         }
 
         buttonEditMessage?.setOnClickListener { showEditMessage() }
@@ -242,8 +234,9 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     }
 
     private fun showEditMessage() {
-        bottomSheetEditMessage?.message = textSampleMessage?.text?.toString()
-        bottomSheetEditMessage?.show(childFragmentManager, TAG_BOTTOM_SHEET_EDIT_MESSAGE)
+        val bottomSheetEditMessage = EditMessageBottomSheet { message -> textSampleMessage?.text = message }
+        bottomSheetEditMessage.message = textSampleMessage?.text?.toString()
+        bottomSheetEditMessage.show(childFragmentManager, TAG_BOTTOM_SHEET_EDIT_MESSAGE)
     }
 
     private fun checkRefresh() {
@@ -267,7 +260,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     private val observerTemplate = Observer<ProductrevGetReminderTemplate> { reminderTemplate ->
         val template = reminderTemplate.template
         textSampleMessage?.text = template
-        bottomSheetEditMessage?.message = template
         isLoadTemplate = false
         checkRefresh()
     }
