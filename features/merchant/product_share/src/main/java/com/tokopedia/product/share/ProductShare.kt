@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.linker.LinkerManager
@@ -66,6 +67,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                         imageProcess = timeBitmapEnd - timeResourceEnd
                         generateBranchLink(file, data, isLog = isLog)
                     } catch (t: Throwable) {
+                        logExceptionToFirebase(t)
                         err.add(t)
                         generateBranchLink(null, data, isLog = isLog)
                     } finally {
@@ -78,6 +80,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     try {
                         generateBranchLink(null, data, isLog = isLog)
                     } catch (t: Throwable) {
+                        logExceptionToFirebase(t)
                     } finally {
                         postBuildImage()
                     }
@@ -100,6 +103,10 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 "img_process=$imageProcess;branch_time=$branchTime;" +
                 "err='${error.map { it.stackTrace.toString().substring(0, 50) }.joinToString(",")}';" +
                 "linker_err='${linkerError?.errorCode}'")
+    }
+
+    fun logExceptionToFirebase(e: Throwable) {
+        FirebaseCrashlytics.getInstance().recordException(ProductShareException(e))
     }
 
     private fun openIntentShare(file: File?, title: String?, shareContent: String, shareUri: String) {
@@ -137,6 +144,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                         openIntentShare(file, data.productName, data.getShareContent(linkerShareData.url), linkerShareData.url)
                     } catch (e: Exception) {
                         err.add(e)
+                        logExceptionToFirebase(e)
                         openIntentShareDefault(file, data)
                     }
                     if (isLog) {
@@ -192,3 +200,5 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
     }
 }
+
+class ProductShareException(e: Throwable): Throwable(e)
