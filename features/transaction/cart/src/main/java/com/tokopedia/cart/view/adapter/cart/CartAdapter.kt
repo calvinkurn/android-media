@@ -14,7 +14,6 @@ import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.*
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -22,6 +21,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.math.min

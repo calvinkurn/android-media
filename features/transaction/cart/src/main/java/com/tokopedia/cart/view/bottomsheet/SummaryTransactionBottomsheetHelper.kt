@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 fun showSummaryTransactionBottomsheet(cartListData: CartListData, fragmentManager: FragmentManager, context: Context) {
 

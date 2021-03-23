@@ -20,7 +20,6 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
@@ -28,6 +27,7 @@ import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import rx.Observable
 import rx.Subscriber
@@ -409,9 +409,10 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 charSequence?.let {
-                    binding.tvNoteCharCounter.setText("${charSequence.length}/${data.cartItemData?.updatedData?.maxCharRemark ?: 0}")
+                    binding.tvNoteCharCounter.text = "${charSequence.length}/${data.cartItemData?.updatedData?.maxCharRemark ?: 0}"
                 }
             }
         })

@@ -70,7 +70,6 @@ import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
@@ -122,6 +121,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -829,11 +829,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
                         statusBarBackground?.visibility = View.INVISIBLE
                     }
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                        statusBarBackground?.show()
-                    }
                     else -> {
-                        statusBarBackground?.hide()
+                        statusBarBackground?.show()
                     }
                 }
             }
@@ -895,11 +892,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
                         statusBarBackground?.visibility = View.INVISIBLE
                     }
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                        statusBarBackground?.show()
-                    }
                     else -> {
-                        statusBarBackground?.hide()
+                        statusBarBackground?.show()
                     }
                 }
             }

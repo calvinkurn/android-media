@@ -15,12 +15,12 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
