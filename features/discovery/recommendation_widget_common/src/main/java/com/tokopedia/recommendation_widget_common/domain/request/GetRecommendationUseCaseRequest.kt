@@ -137,6 +137,10 @@ internal class GetRecommendationUseCaseRequest {
                               quantityMin
                               priceString
                           }
+                          freeOngkir{
+                            isActive
+                            imageUrl
+                          }
                           rating
                           ratingAverage
                           countReview

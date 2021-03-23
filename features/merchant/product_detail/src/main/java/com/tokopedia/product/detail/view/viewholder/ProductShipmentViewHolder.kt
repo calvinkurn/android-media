@@ -88,7 +88,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
         shipmentOtherContainer?.setOnClickListener(null)
         otherCourierTxt?.setOnClickListener {
-            listener.goToShipmentErrorAddressOrChat(errorCode)
+            listener.clickShippingComponentError(errorCode, title, componentTrackDataModel)
         }
 
         otherCourierTxt?.show()
@@ -100,7 +100,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     private fun renderShipmentSuccess(element: ProductShipmentDataModel) = with(itemView) {
         hideShipmentLoading()
-        renderText(element.rates)
+        renderText(element.rates, element.localDestination)
         renderTokoCabang(element.isFullfillment, element.tokoCabangIconUrl)
         renderOtherSection(element)
     }
@@ -143,10 +143,11 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         shipmentTokoCabangGroup?.gone()
     }
 
-    private fun renderText(data: P2RatesEstimateData) = with(itemView) {
+    private fun renderText(data: P2RatesEstimateData, localDestination: String) = with(itemView) {
+        val destination = if (localDestination.isEmpty()) data.destination else context.getString(R.string.pdp_shipping_to_builder, localDestination)
         shipmentTitle?.text = data.title
-        shipmentDestination?.shouldShowWithAction(data.destination.isNotEmpty()) {
-            shipmentDestination.text = data.destination.renderHtmlBold(context)
+        shipmentDestination?.shouldShowWithAction(destination.isNotEmpty()) {
+            shipmentDestination.text = destination.renderHtmlBold(context)
         }
         shipmentEstimation?.shouldShowWithAction(data.etaText.isNotEmpty()) {
             shipmentEstimation.text = data.etaText

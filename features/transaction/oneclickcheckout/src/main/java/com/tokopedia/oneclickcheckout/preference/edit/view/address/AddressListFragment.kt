@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.oneclickcheckout.R
@@ -83,14 +84,12 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
 
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val ARG_IS_EDIT = "is_edit"
-        private const val ARG_IS_AUTO_SELECT_ADDRESS = "ARG_IS_AUTO_SELECT_ADDRESS"
         private const val ARGS_ADDRESS_STATE = "ARGS_ADDRESS_STATE"
 
-        fun newInstance(isEdit: Boolean = false, isAutoSelectAddress: Boolean = false, addressState: Int): AddressListFragment {
+        fun newInstance(isEdit: Boolean = false, addressState: Int): AddressListFragment {
             val addressListFragment = AddressListFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
-            bundle.putBoolean(ARG_IS_AUTO_SELECT_ADDRESS, isAutoSelectAddress)
             bundle.putInt(ARGS_ADDRESS_STATE, addressState)
             addressListFragment.arguments = bundle
             return addressListFragment
@@ -141,7 +140,6 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                     globalErrorLayout?.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
                     addressListRv?.scrollToPosition(0)
-                    validateAutoSelectAddress(it)
                     adapter?.setData(it.data.listAddress, it.data.hasNext ?: false)
                     endlessScrollListener?.resetState()
                     endlessScrollListener?.setHasNextPage(it.data.hasNext ?: false)
@@ -165,20 +163,6 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 is OccState.Loading -> swipeRefreshLayout?.isRefreshing = true
             }
         })
-    }
-
-    private fun validateAutoSelectAddress(addressModel: OccState.FirstLoad<AddressListModel>) {
-        activity?.let { activity ->
-            if (arguments?.getBoolean(ARG_IS_AUTO_SELECT_ADDRESS) == true) {
-                val localizingAddressData = ChooseAddressUtils.getLocalizingAddressData(activity)
-                addressModel.data.listAddress.forEach { address ->
-                    if (address.id == localizingAddressData?.address_id) {
-                        address.isSelected = true
-                        return@forEach
-                    }
-                }
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -280,6 +264,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
+                viewModel.selectedAddressModel?.let {
+                    parent.setNewlySelectedAddressModel(it)
+                }
                 setShippingParam()
                 parent.goBack()
             }
@@ -366,9 +353,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         searchAddress?.searchBarPlaceholder = getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
     }
 
-    override fun onSelect(addressId: String) {
+    override fun onSelect(addressModel: RecipientAddressModel) {
         preferenceListAnalytics.eventClickAddressOptionInPilihAlamatPage()
-        viewModel.setSelectedAddress(addressId)
+        viewModel.setSelectedAddress(addressModel)
     }
 
     private fun openSoftKeyboard() {

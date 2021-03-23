@@ -56,7 +56,13 @@ private fun renderSellerCashback(cartListData: CartListData, view: View) {
             text = cartListData.shoppingSummaryData.sellerCashbackWording
             visibility = View.VISIBLE
         }
+        view.separator_seller_cashback?.apply {
+            visibility = View.VISIBLE
+        }
     } else {
+        view.separator_seller_cashback?.apply {
+            visibility = View.GONE
+        }
         view.text_total_cashback_value?.apply {
             visibility = View.GONE
         }
@@ -125,7 +131,7 @@ private fun renderDiscount(cartListData: CartListData, view: View) {
 private fun renderPriceTotal(view: View, cartListData: CartListData) {
     view.text_price_total_title?.apply {
         cartListData.shoppingSummaryData.totalWording.let {
-            text = it.replace("[0-9]".toRegex(), cartListData.shoppingSummaryData.qty)
+            text = it.replace("[0-9]+".toRegex(), cartListData.shoppingSummaryData.qty)
         }
     }
     view.text_price_total_value?.apply {

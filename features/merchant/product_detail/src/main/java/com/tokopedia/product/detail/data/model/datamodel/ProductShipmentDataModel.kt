@@ -18,7 +18,8 @@ data class ProductShipmentDataModel(
         var freeOngkirType: Int = 0,
         var tokoCabangIconUrl: String = "",
         var isCod: Boolean = false,
-        var shouldShowShipmentError: Boolean = false
+        var shouldShowShipmentError: Boolean = false,
+        var localDestination: String = ""
 ) : DynamicPdpDataModel {
 
     fun isBoeType(): Boolean {
@@ -42,6 +43,7 @@ data class ProductShipmentDataModel(
                     && shouldShowShipmentError == newData.shouldShowShipmentError
                     && freeOngkirType == newData.freeOngkirType
                     && tokoCabangIconUrl == newData.tokoCabangIconUrl
+                    && localDestination == newData.localDestination
         } else {
             false
         }

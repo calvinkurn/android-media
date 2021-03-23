@@ -13,7 +13,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
-import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -83,7 +82,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
         } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_transaction_list) {
             if (userSession.isLoggedIn()) {
                 flightAnalytics.eventClickTransactions(getScreenName());
-                startActivity(FlightOrderListActivity.getCallingIntent(this));
+                RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
             } else {
                 RouteManager.route(this, ApplinkConst.LOGIN);
             }

@@ -262,7 +262,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for product impression with coach mark shown`(productItemViewModel: ProductItemViewModel, position: Int) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemViewModel, capture(suggestedRelatedKeywordSlot))
+            productListView.sendProductImpressionTrackingEvent(productItemViewModel, capture(suggestedRelatedKeywordSlot), any())
             productListView.showOnBoarding(position)
         }
     }

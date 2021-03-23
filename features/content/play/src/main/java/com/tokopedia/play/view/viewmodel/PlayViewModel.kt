@@ -6,6 +6,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -16,14 +17,11 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
-import com.tokopedia.play.util.video.state.PlayViewerVideoState
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
-import com.tokopedia.play.util.video.state.hasNoData
+import com.tokopedia.play.util.video.state.*
+import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -65,6 +63,7 @@ class PlayViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
         private val remoteConfig: RemoteConfig,
         private val playPreference: PlayPreference,
+        private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -149,6 +148,9 @@ class PlayViewModel @Inject constructor(
 
     val totalView: String?
         get() = _observableTotalViews.value?.totalViewFmt
+
+    val videoLatency: Long
+        get() = videoLatencyPerformanceMonitoring.totalDuration
 
     private var mChannelData: PlayChannelData? = null
 
@@ -293,6 +295,16 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private val videoPerformanceListener = object : PlayViewerVideoPerformanceListener {
+        override fun onPlaying() {
+            if (videoLatencyPerformanceMonitoring.hasStarted) videoLatencyPerformanceMonitoring.stop()
+        }
+
+        override fun onError() {
+            videoLatencyPerformanceMonitoring.reset()
+        }
+    }
+
     private val playVideoPlayer = playVideoBuilder.build()
 
     /**
@@ -308,6 +320,7 @@ class PlayViewModel @Inject constructor(
 
     init {
         videoStateProcessor.addStateListener(videoStateListener)
+        videoStateProcessor.addStateListener(videoPerformanceListener)
         channelStateProcessor.addStateListener(channelStateListener)
         videoBufferGovernor.startBufferGovernance()
 
@@ -337,6 +350,7 @@ class PlayViewModel @Inject constructor(
         if (!pipState.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
+        videoStateProcessor.removeStateListener(videoPerformanceListener)
         channelStateProcessor.removeStateListener(channelStateListener)
     }
     //endregion
@@ -391,7 +405,7 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowVariantSheet(estimatedProductSheetHeight: Int, product: ProductLineUiModel, action: ProductAction) {
+    fun onShowVariantSheet(estimatedProductSheetHeight: Int, product: PlayProductUiModel.Product, action: ProductAction) {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
         insetsMap[BottomInsetsType.VariantSheet] =
@@ -487,6 +501,7 @@ class PlayViewModel @Inject constructor(
 
     private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl, lastPosition: Long?) {
         try {
+            videoLatencyPerformanceMonitoring.start()
             playVideoPlayer.playUri(uri = Uri.parse(urlString), bufferControl = bufferControl, startPosition = lastPosition)
         } catch (e: Exception) {}
     }
@@ -690,7 +705,7 @@ class PlayViewModel @Inject constructor(
                     is ProductTag -> {
                         val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
                         val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
-                        if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                        _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
                             currentPinnedProduct.copy(
                                     shouldShow = shouldShow,
                                     productTags = currentPinnedProduct.productTags.copy(
@@ -715,7 +730,7 @@ class PlayViewModel @Inject constructor(
                     is MerchantVoucher -> {
                         val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
                         val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
-                        if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                        _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
                             currentPinnedProduct.copy(
                                     productTags = currentPinnedProduct.productTags.copy(
                                             voucherList = mappedVouchers
@@ -808,8 +823,12 @@ class PlayViewModel @Inject constructor(
     private fun handlePinnedInfo(pinnedInfo: PlayPinnedInfoUiModel) {
         _observablePinnedMessage.value = pinnedInfo.pinnedMessage
         _observablePinnedProduct.value = pinnedInfo.pinnedProduct
-        if (pinnedInfo.pinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
-            _observableProductSheetContent.value = PlayResult.Success(pinnedInfo.pinnedProduct.productTags)
+
+        if (pinnedInfo.pinnedProduct.shouldShow) {
+            _observableProductSheetContent.value = when (pinnedInfo.pinnedProduct.productTags) {
+                is PlayProductTagsUiModel.Incomplete -> PlayResult.Loading(showPlaceholder = true)
+                is PlayProductTagsUiModel.Complete -> PlayResult.Success(pinnedInfo.pinnedProduct.productTags)
+            }
         }
     }
 
@@ -850,15 +869,15 @@ class PlayViewModel @Inject constructor(
 
                 val (totalView, totalLike, totalLikeFormatted) = try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
-                    Triple(report.totalViewFmt, report.totalLike.toIntOrZero(), report.totalLikeFmt)
+                    Triple(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
                 } catch (e: Throwable) {
-                    Triple("", 0 , "0")
+                    Triple("0", 0 , "0")
                 }
 
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
 
                 val newLikeStatus = PlayLikeStatusInfoUiModel(
-                        totalLike = totalLike,
+                        totalLike = totalLike.toLong(),
                         totalLikeFormatted = totalLikeFormatted,
                         isLiked = isLiked,
                         source = LikeSource.Network
@@ -962,14 +981,16 @@ class PlayViewModel @Inject constructor(
         )
 
         val productTagsResponse = withContext(dispatchers.io) {
-            getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channelId)
+            getProductTagItemsUseCase.setRequestParams(GetProductTagItemsUseCase.createParam(channelId))
             getProductTagItemsUseCase.executeOnBackground()
         }
-        val productTags = playUiModelMapper.mapProductTags(productTagsResponse.listOfProducts)
-        val merchantVouchers = playUiModelMapper.mapMerchantVouchers(productTagsResponse.listOfVouchers)
+        val productTags = playUiModelMapper.mapProductTags(productTagsResponse.playGetTagsItem.listOfProducts)
+        val merchantVouchers = playUiModelMapper.mapMerchantVouchers(productTagsResponse.playGetTagsItem.listOfVouchers)
 
         val newProductSheet = PlayProductTagsUiModel.Complete(
-                basicInfo = productTagsBasicInfo,
+                basicInfo = productTagsBasicInfo.copy(
+                        maxFeaturedProducts = productTagsResponse.playGetTagsItem.config.peekProductCount
+                ),
                 productList = productTags,
                 voucherList = merchantVouchers
         )
@@ -984,7 +1005,7 @@ class PlayViewModel @Inject constructor(
     private fun trackProductTag(channelId: String, productList: List<PlayProductUiModel>) {
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
-                val productIds = productList.mapNotNull { product -> if (product is ProductLineUiModel) product.id else null }
+                val productIds = productList.mapNotNull { product -> if (product is PlayProductUiModel.Product) product.id else null }
                 trackProductTagBroadcasterUseCase.params = TrackProductTagBroadcasterUseCase.createParams(channelId, productIds)
                 trackProductTagBroadcasterUseCase.executeOnBackground()
             }
@@ -995,7 +1016,7 @@ class PlayViewModel @Inject constructor(
     private fun trackVisitChannel(channelId: String) {
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
-                trackVisitChannelBroadcasterUseCase.params = TrackVisitChannelBroadcasterUseCase.createParams(channelId)
+                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
                 trackVisitChannelBroadcasterUseCase.executeOnBackground()
             }
         }) {
@@ -1011,7 +1032,7 @@ class PlayViewModel @Inject constructor(
     private fun doOnForbidden() {
         destroy()
         stopPlayer()
-        hideInsets(isKeyboardHandled = false)
+        onKeyboardHidden()
     }
 
     private fun getPinnedModel(

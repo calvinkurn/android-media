@@ -7,7 +7,7 @@ import android.os.Bundle
 
 class AppAuthActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        AppAuthWorker.scheduleWorker(activity.applicationContext)
+        AppAuthWorker.scheduleWorker(activity.applicationContext, false)
     }
 
     override fun onActivityStarted(activity: Activity) {

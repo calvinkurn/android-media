@@ -177,6 +177,7 @@ object QueryHome {
             "                flags(name: \"has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh\"){\n" +
             "                    name\n" +
             "                    is_active\n" +
+            "                    integer_value\n" +
             "                }\n" +
             "            }\n" +
             "        }"

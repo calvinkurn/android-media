@@ -11,11 +11,12 @@ import com.tokopedia.play.robot.play.result.PlayViewModelRobotResult
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -54,7 +55,8 @@ class PlayViewModelRobot(
         private val userSession: UserSessionInterface,
         dispatchers: CoroutineDispatcherProvider,
         remoteConfig: RemoteConfig,
-        playPreference: PlayPreference
+        playPreference: PlayPreference,
+        videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring
 ) {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -83,6 +85,7 @@ class PlayViewModelRobot(
                 dispatchers,
                 remoteConfig,
                 playPreference,
+                videoLatencyPerformanceMonitoring
         )
     }
 
@@ -153,7 +156,7 @@ class PlayViewModelRobot(
         viewModel.onHideProductSheet()
     }
 
-    fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: ProductLineUiModel = productTagBuilder.buildProductLine()) {
+    fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: PlayProductUiModel.Product = productTagBuilder.buildProductLine()) {
         viewModel.onShowVariantSheet(bottomSheetHeight, action = action, product = product)
     }
 
@@ -217,6 +220,7 @@ fun givenPlayViewModelRobot(
         dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider,
         remoteConfig: RemoteConfig = mockk(relaxed = true),
         playPreference: PlayPreference = mockk(relaxed = true),
+        videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -239,7 +243,8 @@ fun givenPlayViewModelRobot(
             userSession = userSession,
             dispatchers = dispatchers,
             remoteConfig = remoteConfig,
-            playPreference = playPreference
+            playPreference = playPreference,
+            videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring
     ).apply(fn)
 }
 

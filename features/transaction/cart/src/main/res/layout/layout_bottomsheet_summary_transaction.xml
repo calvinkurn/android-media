@@ -101,13 +101,34 @@
         app:typographyType="heading_4"
         tools:text="Hemat Pakai Promo" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_cart_promo_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_summary_promo_transaction_title"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_cart_promo_price_summary" />
+
+    <View
+        android:id="@+id/separator_seller_cashback"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view_cart_promo_summary" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_total_cashback_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_summary_promo_transaction_title"
+        app:layout_constraintTop_toBottomOf="@+id/separator_seller_cashback"
         app:typographyType="body_3"
         tools:text="Cashback Penjual" />
 
@@ -119,16 +140,5 @@
         app:layout_constraintTop_toTopOf="@+id/text_total_cashback_title"
         app:typographyType="heading_6"
         tools:text="Rp10.000.000" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_cart_promo_summary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_total_cashback_title"
-        tools:itemCount="2"
-        tools:listitem="@layout/item_cart_promo_price_summary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

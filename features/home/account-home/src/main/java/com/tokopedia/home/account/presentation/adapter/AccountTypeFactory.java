@@ -21,6 +21,7 @@ import com.tokopedia.home.account.presentation.viewholder.MenuTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TickerViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TokopediaPayViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.TopAdsHeadlineViewHolder;
 import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -31,15 +32,20 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TopadsHeadlineUiModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * @author okasurya on 7/17/18.
  */
 public class AccountTypeFactory extends BaseAdapterTypeFactory {
     private AccountItemListener listener;
+    private UserSession userSession;
 
-    public AccountTypeFactory(@NonNull AccountItemListener listener) {
+    public AccountTypeFactory(@NonNull AccountItemListener listener, UserSession userSession) {
         this.listener = listener;
+        this.userSession = userSession;
     }
 
     @Override
@@ -68,6 +74,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new LoadingShimmeringListViewHolder(parent);
         } else if (type == AccountLoadingMoreViewHolder.LAYOUT) {
             return new AccountLoadingMoreViewHolder(parent);
+        } else if (type == TopAdsHeadlineViewHolder.Companion.getLAYOUT()) {
+            return new TopAdsHeadlineViewHolder(parent, userSession);
         }
         return super.createViewHolder(parent, type);
     }
@@ -120,5 +128,9 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
     @Override
     public int type(LoadingMoreModel viewModel) {
         return AccountLoadingMoreViewHolder.LAYOUT;
+    }
+
+    public int type(TopadsHeadlineUiModel viewModel) {
+        return TopAdsHeadlineViewHolder.Companion.getLAYOUT();
     }
 }

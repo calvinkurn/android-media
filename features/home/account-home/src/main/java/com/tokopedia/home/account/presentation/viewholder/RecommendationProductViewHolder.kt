@@ -23,7 +23,7 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
     override fun bind(element: RecommendationProductViewModel) {
         productCardView.run {
             setProductModel(
-                    element.product.toProductCardModel()
+                    element.product.toProductCardModel(hasThreeDots = true)
             )
             setImageProductViewHintListener(element.product, object : ViewHintListener {
                 override fun onViewHint() {

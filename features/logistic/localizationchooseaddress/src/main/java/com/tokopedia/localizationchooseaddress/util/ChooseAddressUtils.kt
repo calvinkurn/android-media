@@ -13,8 +13,10 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.localizationchooseaddress.R
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,7 +54,7 @@ object ChooseAddressUtils {
     /**
      * Rollence key
      */
-    fun isRollOutUser(context: Context): Boolean {
+    fun isRollOutUser(context: Context?): Boolean {
         val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
         return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
     }
@@ -105,13 +107,13 @@ object ChooseAddressUtils {
      * coachmark must implemented by own host page
      */
     fun isLocalizingAddressNeedShowCoachMark(context: Context): Boolean? {
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        return chooseAddressPref.getCoachMarkState()
+        val coachMarkStatePref = CoachMarkStateSharePref(context)
+        return coachMarkStatePref.getCoachMarkState()
     }
 
     fun coachMarkLocalizingAddressAlreadyShown(context: Context) {
-        var chooseAddressPref = ChooseAddressSharePref(context)
-        chooseAddressPref.setCoachMarkState(false)
+        val coachMarkStatePref = CoachMarkStateSharePref(context)
+        coachMarkStatePref.setCoachMarkState(false)
     }
 
     fun coachMarkItem(context: Context, view: View) : CoachMarkItem {
@@ -180,5 +182,13 @@ object ChooseAddressUtils {
                 "&user_cityId=" + city_id +
                 "&user_districtId=" + district_id +
                 "&user_postCode=" + postal_code
+    }
+
+    fun setLabel(data: ChosenAddressModel) : String {
+        return if (data.addressName.isEmpty() || data.receiverName.isEmpty()) {
+            "${data.districtName}, ${data.cityName}"
+        } else {
+            "${data.addressName} ${data.receiverName}"
+        }
     }
 }

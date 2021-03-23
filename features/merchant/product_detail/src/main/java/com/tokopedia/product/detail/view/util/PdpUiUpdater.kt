@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -119,6 +120,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 basicContentMap?.run {
                     data = ProductContentMainData(
                             campaign = it.data.campaign,
+                            thematicCampaign = it.data.thematicCampaign,
                             cashbackPercentage = it.data.isCashback.percentage,
                             price = it.data.price,
                             stockWording = it.data.stock.stockWording,
@@ -279,7 +281,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, boeImageUrl: String) {
+    fun updateDataP2(context: Context?,
+                     p2Data: ProductInfoP2UiData,
+                     productId: String,
+                     isProductWarehouse: Boolean,
+                     isProductInCampaign: Boolean,
+                     isOutOfStock: Boolean,
+                     boeImageUrl: String) {
         p2Data.let {
             updateData(ProductDetailConstant.SHOP_INFO) {
                 shopInfoMap?.run {
@@ -297,6 +305,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 tickerInfoMap?.run {
                     statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo.copy() else null
                     closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo.copy() else null
+                    isUpcomingType = it.upcomingCampaigns[productId]?.isUpcomingNplType() ?: false
                     this.isProductWarehouse = isProductWarehouse
                     this.isProductInCampaign = isProductInCampaign
                     this.isOutOfStock = isOutOfStock
@@ -331,6 +340,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
+                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    setSocialProofData()
                 }
             }
 
@@ -353,6 +364,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateNotifyMeAndContent(productId, it.upcomingCampaigns, it.validateTradeIn.isEligible, boeImageUrl)
             updateDataTradein(context, it.validateTradeIn)
+            updateData(ProductDetailConstant.REVIEW) {
+                productReviewMap?.run {
+                    listOfReviews = it.helpfulReviews
+                    imageReviews = it.imageReviews?.imageReviewItems
+                }
+            }
+
+            updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW) {
+                productReviewOldMap?.run {
+                    listOfReviews = it.helpfulReviews
+                    imageReviews = it.imageReviews?.imageReviewItems
+                }
+            }
         }
     }
 
@@ -384,7 +408,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateNotifyMeAndContent(productId: String, upcomingData: Map<String, ProductUpcomingData>?, eligibleTradein: Boolean, freeOngkirImgUrl: String) {
+    private fun updateNotifyMeAndContent(productId: String,
+                                         upcomingData: Map<String, ProductUpcomingData>?, eligibleTradein: Boolean, freeOngkirImgUrl: String) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
@@ -419,7 +444,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        ?: "", selectedUpcoming?.campaignType ?: "",
                         selectedUpcoming?.startDate ?: "")
                 this.freeOngkirImgUrl = freeOngkirImgUrl
             }
@@ -434,7 +459,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
                         selectedUpcoming?.startDate ?: "")
             }
         }
@@ -442,20 +467,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateDataP2General(data: ProductInfoP2Other?) {
         data?.let {
-            updateData(ProductDetailConstant.REVIEW) {
-                productReviewMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews
-                }
-            }
-
-            updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW) {
-                productReviewOldMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews
-                }
-            }
-
             updateData(ProductDetailConstant.DISCUSSION_FAQ) {
                 productDiscussionMostHelpfulMap?.run {
                     if (it.discussionMostHelpful == null) {
@@ -504,7 +515,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             (mapOfData[data.name] as? ProductRecommendationDataModel)?.run {
                 filterData = data.filterData
                 recomWidgetData = data.recomWidgetData
-                cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels() ?: listOf()
+                cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels()
+                        ?: listOf()
             }
         }
     }
@@ -574,12 +586,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
+    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, isUpcomingType: Boolean) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 this.isProductWarehouse = isProductWarehouse
                 this.isProductInCampaign = isProductInCampaign
                 this.isOutOfStock = isOutOfStock
+                this.isUpcomingType = isUpcomingType
             }
         }
     }
@@ -590,7 +603,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage) {
+    fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage, userLocationLocalData: LocalCacheModel) {
         //pair.first boType, pair.second boImage
         updateData(ProductDetailConstant.SHIPMENT) {
             shipmentData?.rates = data ?: P2RatesEstimateData()
@@ -600,6 +613,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirType = freeOngkirData.boType
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
+            shipmentData?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
         }
     }
 
@@ -619,7 +633,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (!loadInitialData) {
             val data = mapOfData[key]
             data?.let {
-                mapOfData[key] = it.newInstance()
+                val newInstance = it.newInstance()
+                if (it.impressHolder.isInvoke) {
+                    newInstance.impressHolder.invoke()
+                }
+                mapOfData[key] = newInstance
             }
         }
         updateAction.invoke()

@@ -27,15 +27,15 @@
             app:srcCompat="@drawable/ic_pinpoint_green"
             tools:ignore="ContentDescription" />
 
-        <View
+        <ImageView
             android:id="@+id/view_indicator_vert"
-            android:layout_width="@dimen/dp_4"
-            android:layout_height="@dimen/dp_24"
-            android:background="@color/Unify_G500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_mark_ico"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/dp_12"/>
-
+            android:layout_marginTop="@dimen/dp_12"
+            tools:ignore="ContentDescription"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_name"

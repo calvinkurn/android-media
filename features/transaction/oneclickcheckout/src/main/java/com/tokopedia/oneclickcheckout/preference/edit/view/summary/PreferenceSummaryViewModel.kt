@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.model.CreatePreferenceRequest
@@ -13,14 +14,13 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePrefer
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceRequest
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import javax.inject.Inject
 
 class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceByIdUseCase: GetPreferenceByIdUseCase,
                                                      private val createPreferenceUseCase: CreatePreferenceUseCase,
                                                      private val deletePreferenceUseCase: DeletePreferenceUseCase,
-                                                     private val updatePreferenceUseCase: UpdatePreferenceUseCase,
-                                                     private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : ViewModel() {
+                                                     private val updatePreferenceUseCase: UpdatePreferenceUseCase) : ViewModel() {
 
     private val _preference: MutableLiveData<OccState<ProfilesItemModel>> = MutableLiveData()
     val preference: LiveData<OccState<ProfilesItemModel>>
@@ -30,6 +30,10 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     val editResult: LiveData<OccState<String>>
         get() = _editResult
 
+    private val _localCacheAddressResult: MutableLiveData<AddressModel> = MutableLiveData()
+    val localCacheAddressResult: LiveData<AddressModel>
+        get() = _localCacheAddressResult
+
     private var profileAddressId: Int = 0
     private var profileServiceId: Int = 0
     private var profileGatewayCode: String = ""
@@ -38,12 +42,15 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     fun setProfileAddressId(profileAddressId: Int) {
         this.profileAddressId = profileAddressId
     }
+
     fun setProfileServiceId(profileServiceId: Int) {
         this.profileServiceId = profileServiceId
     }
+
     fun setProfileGatewayCode(profileGatewayCode: String) {
         this.profileGatewayCode = profileGatewayCode
     }
+
     fun setProfilePaymentMetadata(profilePaymentMetadata: String) {
         this.profilePaymentMetadata = profilePaymentMetadata
     }
@@ -94,11 +101,24 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         }
     }
 
-    fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
+    fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
         _editResult.value = OccState.Loading
         OccIdlingResource.increment()
-        createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow, chosenAddressRequestHelper.getChosenAddress()),
+        var chosenAddress: ChosenAddress? = null
+        addressModel?.let {
+            chosenAddress = ChosenAddress(
+                    addressId = addressModel.addressId.toString(),
+                    districtId = addressModel.districtId.toString(),
+                    postalCode = addressModel.postalCode,
+                    geolocation = if (addressModel.latitude.isNotBlank() && addressModel.longitude.isNotBlank()) addressModel.latitude + "," + addressModel.longitude else "",
+                    mode = ChosenAddress.MODE_ADDRESS
+            )
+        }
+        createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow, chosenAddress),
                 { message: String ->
+                    if (addressModel != null && (isSelectedPreference || isDefaultProfileChecked)) {
+                        _localCacheAddressResult.value = addressModel
+                    }
                     _editResult.value = OccState.Success(message)
                     OccIdlingResource.decrement()
                 },
@@ -108,11 +128,14 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
                 })
     }
 
-    fun updatePreference(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
+    fun updatePreference(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
         _editResult.value = OccState.Loading
         OccIdlingResource.increment()
         updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
                 { message: String ->
+                    if (addressModel != null && (isSelectedPreference || isDefaultProfileChecked)) {
+                        _localCacheAddressResult.value = addressModel
+                    }
                     _editResult.value = OccState.Success(message)
                     OccIdlingResource.decrement()
                 },

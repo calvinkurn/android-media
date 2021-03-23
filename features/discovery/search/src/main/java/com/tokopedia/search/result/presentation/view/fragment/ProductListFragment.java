@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -32,6 +33,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.coachmark.CoachMark2;
 import com.tokopedia.coachmark.CoachMark2Item;
+import com.tokopedia.coachmark.CoachMarkBuilder;
+import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
@@ -1607,7 +1610,7 @@ public class ProductListFragment
         searchSortFilter.setVisibility(View.VISIBLE);
         searchSortFilter.getSortFilterHorizontalScrollView().setScrollX(0);
         searchSortFilter.addItem((ArrayList<SortFilterItem>) items);
-        searchSortFilter.getTextView().setText(getString(R.string.search_filter));
+        if (searchSortFilter.getTextView() != null) searchSortFilter.getTextView().setText(getString(R.string.search_filter));
         searchSortFilter.setParentListener(this::openBottomSheetFilterRevamp);
         setSortFilterNewNotification(items);
     }
@@ -1638,12 +1641,12 @@ public class ProductListFragment
         View productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel);
 
         recyclerView.postDelayed(() -> {
-            ArrayList<CoachMark2Item> coachMark2ItemList = createCoachMark2ItemList(productWithBOELabel);
-
-            if (coachMark2ItemList.size() <= 0) return;
-
-            CoachMark2 coachMark = new CoachMark2(getContext());
-            coachMark.showCoachMark(coachMark2ItemList, null, 0);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                buildCoachMark(productWithBOELabel);
+            }
+            else {
+                buildCoachMark2(productWithBOELabel);
+            }
         }, 200);
     }
 
@@ -1659,15 +1662,50 @@ public class ProductListFragment
             return null;
     }
 
-    private ArrayList<CoachMark2Item> createCoachMark2ItemList(@Nullable View boeLabelProductCard) {
-        ArrayList<CoachMark2Item> coachMarkItemList = new ArrayList<>();
+    private void buildCoachMark(View view) {
+        ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(view);
 
-        if (boeLabelProductCard != null) coachMarkItemList.add(createBOELabelOnBoarding(boeLabelProductCard));
+        if (coachMarkItemList.size() <= 0) return;
+
+        CoachMarkBuilder builder = new CoachMarkBuilder();
+        builder.allowPreviousButton(false);
+        builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
+    }
+
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(@Nullable View boeLabelProductCard) {
+        ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
+
+        if (boeLabelProductCard != null) coachMarkItemList.add(createBOELabelCoachMarkItem(boeLabelProductCard));
 
         return coachMarkItemList;
     }
 
-    private CoachMark2Item createBOELabelOnBoarding(View boeLabelProductCard) {
+    private CoachMarkItem createBOELabelCoachMarkItem(View boeLabelProductCard) {
+        return new CoachMarkItem(
+                boeLabelProductCard,
+                getString(R.string.search_product_boe_label_onboarding_title),
+                getString(R.string.search_product_boe_label_onboarding_description)
+        );
+    }
+
+    private void buildCoachMark2(View view) {
+        ArrayList<CoachMark2Item> coachMark2ItemList = createCoachMark2ItemList(view);
+
+        if (coachMark2ItemList.size() <= 0) return;
+
+        CoachMark2 coachMark = new CoachMark2(getContext());
+        coachMark.showCoachMark(coachMark2ItemList, null, 0);
+    }
+
+    private ArrayList<CoachMark2Item> createCoachMark2ItemList(@Nullable View boeLabelProductCard) {
+        ArrayList<CoachMark2Item> coachMarkItemList = new ArrayList<>();
+
+        if (boeLabelProductCard != null) coachMarkItemList.add(createBOELabelCoachMark2Item(boeLabelProductCard));
+
+        return coachMarkItemList;
+    }
+
+    private CoachMark2Item createBOELabelCoachMark2Item(View boeLabelProductCard) {
         return new CoachMark2Item(
                 boeLabelProductCard,
                 getString(R.string.search_product_boe_label_onboarding_title),

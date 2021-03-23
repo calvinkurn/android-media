@@ -13,6 +13,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -44,6 +46,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -143,6 +146,7 @@ class DynamicProductDetailViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        mockkStatic(RemoteConfigInstance::class)
         spykViewModel = spyk(DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
                 Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase }, userSessionInterface)
         )
@@ -160,6 +164,14 @@ class DynamicProductDetailViewModelTest {
 
     //=========================================VARIABLE SECTION======================================//
     //==============================================================================================//
+    @Test
+    fun `on success get user location cache`() {
+        viewModel.getProductP1(ProductParams(),userLocationLocal = LocalCacheModel("123"))
+
+        val data = viewModel.getUserLocationCache()
+        Assert.assertTrue(data.address_id == "123")
+    }
+
 
     @Test
     fun `on success clear cache`() {
@@ -738,6 +750,7 @@ class DynamicProductDetailViewModelTest {
         val productId = "123"
         val productParams = ProductParams(productId, "", "", "", "", "")
         val userLocation = UserLocationRequest("123")
+        `mock localization rollence`(true)
         `co every p1 success`(dataP1)
 
         coEvery {
@@ -746,7 +759,7 @@ class DynamicProductDetailViewModelTest {
                 ?: "", productParams.shopDomain ?: "", productParams.productName
                 ?: "", productParams.warehouseId ?: "", "", userLocation)
 
-        viewModel.getProductP1(productParams, true, false, "")
+        viewModel.getProductP1(productParams, true, false, "", userLocationLocal = getUserLocationCache())
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "") == productId)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
@@ -763,14 +776,14 @@ class DynamicProductDetailViewModelTest {
         val userLocation = UserLocationRequest("123")
 
         `co every p1 success`(dataP1)
-
+        `mock localization rollence`(true)
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
                 ?: "", productParams.shopDomain ?: "", productParams.productName
                 ?: "", productParams.warehouseId ?: "", "", userLocation)
 
-        viewModel.getProductP1(productParams, true, false, " ")
+        viewModel.getProductP1(productParams, true, false, " ", userLocationLocal = getUserLocationCache())
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty())
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
@@ -784,7 +797,7 @@ class DynamicProductDetailViewModelTest {
         val productParams = ProductParams("", "", "", "", "", "")
 
         viewModel.productInfoP3.observeForever { }
-
+        `mock localization rollence`(false)
         every {
             viewModel.userId
         } returns "123"
@@ -799,7 +812,7 @@ class DynamicProductDetailViewModelTest {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, true, false, "", false, false)
+        viewModel.getProductP1(productParams, true, false, "", false, userLocationLocal = getUserLocationCache())
 
         `co verify p1 success`()
 
@@ -872,12 +885,12 @@ class DynamicProductDetailViewModelTest {
     @Test
     fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
-
+        `mock localization rollence`(true)
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.getProductP1(productParams)
+        viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
         //P1
         coVerify {
             getPdpLayoutUseCase.executeOnBackground()
@@ -910,7 +923,7 @@ class DynamicProductDetailViewModelTest {
         val productParams = ProductParams("", "", "", "", "", "")
 
         viewModel.productInfoP3.observeForever { }
-
+        `mock localization rollence`(true)
         every {
             userSessionInterface.isLoggedIn
         } returns false
@@ -921,7 +934,7 @@ class DynamicProductDetailViewModelTest {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams)
+        viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
 
         //P1
         coVerify {
@@ -957,6 +970,7 @@ class DynamicProductDetailViewModelTest {
         val dataP1 = ProductDetailTestUtil.getMockPdpThatShouldRemoveUnusedComponent()
         val productParams = ProductParams("", "", "", "", "", "")
 
+        `mock localization rollence`(true)
         every {
             viewModel.userId
         } returns "123"
@@ -975,7 +989,7 @@ class DynamicProductDetailViewModelTest {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true, isUseOldNav = true, isNewShipment = true)
+        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true, isUseOldNav = true, userLocationLocal = getUserLocationCache())
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 0)
@@ -987,6 +1001,13 @@ class DynamicProductDetailViewModelTest {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
+    }
+
+    private fun `mock localization rollence`(expectedValue: Boolean) {
+        val rollenceKey = if (expectedValue) "hyperlocal_android" else ""
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
+        } returns rollenceKey
     }
 
     /**
@@ -1435,6 +1456,10 @@ class DynamicProductDetailViewModelTest {
         verify {
             removeWishlistUseCase.unsubscribe()
         }
+    }
+
+    private fun getUserLocationCache(): LocalCacheModel {
+        return LocalCacheModel("123", "123", "123", "123")
     }
 
     companion object {

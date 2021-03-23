@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.decorator
 import android.graphics.Canvas
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import kotlinx.android.synthetic.main.sticky_header_recycler_view.view.*
@@ -12,20 +13,16 @@ class HeaderItemDecoration(
         private val isHeader: (itemPosition: Int) -> Boolean
 ) : RecyclerView.ItemDecoration() {
 
-    private var currentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
 
     init {
         parent.recycler_view.adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
-                currentHeader = null
+                getRecyclerAdapter().setCurrentHeader(null)
             }
         })
-
-
     }
 
-
-
+    fun getRecyclerAdapter() = (parent.recycler_view.adapter as DiscoveryRecycleAdapter)
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
@@ -41,7 +38,7 @@ class HeaderItemDecoration(
             this.parent.addHeaderRecyclerView(it)
         } ?: also {
             this.parent.removeHeaderRecyclerView()
-            currentHeader = null
+            getRecyclerAdapter().setCurrentHeader(null)
         }
 
 
@@ -55,23 +52,18 @@ class HeaderItemDecoration(
         val headerPosition = getHeaderPositionForItem(itemPosition)
         if (headerPosition == RecyclerView.NO_POSITION) return null
         val headerType = parent.adapter?.getItemViewType(headerPosition) ?: return null
-        if (currentHeader?.second?.itemViewType == headerType) {
-            return currentHeader?.second?.itemView
+        if (getRecyclerAdapter().getCurrentHeader()?.second?.itemViewType == headerType) {
+            return getRecyclerAdapter().getCurrentHeader()?.second?.itemView
         }
         val headerHolder = parent.adapter?.createViewHolder(parent, headerType)
         if (headerHolder != null) {
             parent.adapter?.onBindViewHolder(headerHolder, headerPosition)
-            currentHeader = headerPosition to headerHolder
+            getRecyclerAdapter().setCurrentHeader(headerPosition to headerHolder)
         }
         (headerHolder as AbstractViewHolder).onViewAttachedToWindow()
         return headerHolder?.itemView
     }
 
-    internal fun rebindStickyHeader() {
-        currentHeader?.let {
-            parent.recyclerView?.adapter?.onBindViewHolder(it.second,it.first)
-        }
-    }
 
     private fun getHeaderPositionForItem(itemPosition: Int): Int {
         var headerPosition = RecyclerView.NO_POSITION

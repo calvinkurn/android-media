@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.manageaddress.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
-import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_IS_CHOOSE_ADDRESS_FROM_CHECKOUT
 import kotlinx.android.synthetic.main.activity_manage_address.*
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {

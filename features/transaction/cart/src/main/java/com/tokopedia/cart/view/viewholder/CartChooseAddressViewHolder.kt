@@ -14,6 +14,7 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
 
     companion object {
         val LAYOUT = R.layout.item_cart_choose_address
+        private const val SOURCE = "cart page"
     }
 
     fun bind(data: CartChooseAddressHolderData) {
@@ -23,7 +24,7 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
             }
 
             override fun onLocalizingAddressUpdatedFromBackground() {
-
+                // No-op
             }
 
             override fun onLocalizingAddressServerDown() {
@@ -42,6 +43,10 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
 
             override fun getLocalizingAddressHostSourceData(): String {
                 return data.hostFragment
+            }
+
+            override fun getLocalizingAddressHostSourceTrackingData(): String {
+                return SOURCE
             }
 
             override fun onLocalizingAddressLoginSuccess() {
