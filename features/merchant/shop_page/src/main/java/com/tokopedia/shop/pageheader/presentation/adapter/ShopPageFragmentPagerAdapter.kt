@@ -95,7 +95,7 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun getRegisteredFragment(position: Int): Fragment? {
         return if (listShopPageTabModel.isNotEmpty())
-            listShopPageTabModel[position].tabFragment
+            listShopPageTabModel.getOrNull(position)?.tabFragment
         else
             null
     }
