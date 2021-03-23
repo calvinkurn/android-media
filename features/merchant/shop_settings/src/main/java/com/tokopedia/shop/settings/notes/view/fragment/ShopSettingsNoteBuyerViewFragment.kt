@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
@@ -20,6 +22,9 @@ import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteBuyerVie
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
@@ -42,6 +47,7 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
     private var rvNote: RecyclerView? = null
     private var adapter: ShopNoteBuyerViewAdapter? = null
     private var loader: LoaderUnify? = null
+    private var globalError: GlobalError? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,10 +57,7 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
         arguments?.run {
             buyerShopId = getString(SHOP_ID)
         }
-        buyerShopId?.run {
-            viewModel.getShopNotes(this)
-            loader?.show()
-        }
+        getShopNotes()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -71,6 +74,7 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
         view?.apply {
             loader = findViewById(R.id.loader)
             rvNote = findViewById(R.id.rv_note)
+            globalError = findViewById(R.id.global_error)
         }
         adapter = ShopNoteBuyerViewAdapter()
         rvNote?.adapter = adapter
@@ -80,15 +84,25 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
     private fun setupObserver() {
         viewModel.shopNotes.observe(viewLifecycleOwner) { result ->
             loader?.gone()
+            rvNote?.show()
             when(result) {
                 is Success -> {
                     adapter?.setItemsAndAnimateChanges(mapToShopNoteUiModel(result.data))
                 }
                 is Fail -> {
+                    handleError(result.throwable)
                     logMessage(result.throwable.message ?: "")
                     logExceptionToCrashlytics(result.throwable)
                 }
             }
+        }
+    }
+
+    private fun getShopNotes() {
+        buyerShopId?.run {
+            viewModel.getShopNotes(this)
+            loader?.show()
+            rvNote?.gone()
         }
     }
 
@@ -107,4 +121,41 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
         return notes
     }
 
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                view?.let {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+                }
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage?.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                }
+            }
+        }
+    }
+
+    private fun showGlobalError(type: Int) {
+        globalError?.setType(type)
+        globalError?.setActionClickListener {
+            globalError?.gone()
+            getShopNotes()
+        }
+        rvNote?.gone()
+        globalError?.show()
+    }
 }
