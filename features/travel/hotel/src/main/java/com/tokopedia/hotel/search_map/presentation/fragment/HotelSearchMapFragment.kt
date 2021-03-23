@@ -41,6 +41,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -118,6 +119,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchProperties: List<Property> = listOf()
+    private var horizontalMarkerPage: Int = 0
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
@@ -189,6 +191,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.latLong.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    horizontalMarkerPage = 0
                     addMyLocation(LatLng(it.data.second, it.data.first))
                 }
             }
@@ -368,7 +371,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         tvHotelSearchListTitle.gone()
         adapterCardList.setLoadingModel(loadingModel)
         adapterCardList.showLoading()
-        removeAllMarker()
         super.showLoading()
     }
 
@@ -517,6 +519,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
                 }
+            }
+        })
+        rvHorizontalPropertiesHotelSearchMap.addOnScrollListener(object : EndlessRecyclerViewScrollListener(rvHorizontalPropertiesHotelSearchMap.layoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (page <= HORIZONTAL_PROPERTIES_CARD_MAX_PAGE){
+                    loadData(page)
+                }
+                horizontalMarkerPage++
             }
         })
     }
@@ -786,11 +796,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         searchProperties = data.properties
 
         if (searchProperties.isNotEmpty()) {
-            if(currentPage <= HORIZONTAL_PROPERTIES_CARD_MAX_PAGE){
+            if(horizontalMarkerPage <= HORIZONTAL_PROPERTIES_CARD_MAX_PAGE){
                 renderCardListMap(searchProperties)
                 searchProperties.forEach {
                     addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
                 }
+            }else{
+                horizontalMarkerPage = 0
             }
 
             renderList(searchProperties.map {
