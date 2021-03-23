@@ -27,7 +27,8 @@ class PdpComparisonWidgetViewHolder(
     override fun bind(element: PdpComparisonWidgetDataModel) {
         launch {
             itemView.comparison_widget.setComparisonWidgetData(
-                    ComparisonWidgetMapper.mapToComparisonWidgetModel(element.recommendationWidget, itemView.context)
+                    ComparisonWidgetMapper.mapToComparisonWidgetModel(element.recommendationWidget, itemView.context),
+                    listener.getStickyTitleView()
             )
         }
     }

@@ -10,19 +10,19 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.Reco
 data class ComparisonWidgetDataModel(
         val id: String = "",
         val comparisonListModel: ComparisonListModel
-) : RecommendationVisitable{
-    override fun visitableId(): String? {
-        return id
-    }
-
-    override fun equalsWith(b: Any?): Boolean {
-        return b is ComparisonWidgetDataModel &&
-                b.comparisonListModel == comparisonListModel
-    }
-
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return null
-    }
-
-    override fun type(typeFactory: RecommendationTypeFactory): Int = typeFactory.type(this)
+) {
+//    override fun visitableId(): String? {
+//        return id
+//    }
+//
+//    override fun equalsWith(b: Any?): Boolean {
+//        return b is ComparisonWidgetDataModel &&
+//                b.comparisonListModel == comparisonListModel
+//    }
+//
+//    override fun getChangePayloadFrom(b: Any?): Bundle? {
+//        return null
+//    }
+//
+//    override fun type(typeFactory: RecommendationTypeFactory): Int = typeFactory.type(this)
 }

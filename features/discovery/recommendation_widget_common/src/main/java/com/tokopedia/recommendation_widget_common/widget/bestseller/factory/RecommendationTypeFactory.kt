@@ -9,5 +9,4 @@ import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWi
  */
 interface RecommendationTypeFactory {
     fun type(bestSellerDataModel: BestSellerDataModel): Int
-    fun type(comparisonWidgetDataModel: ComparisonWidgetDataModel): Int
 }

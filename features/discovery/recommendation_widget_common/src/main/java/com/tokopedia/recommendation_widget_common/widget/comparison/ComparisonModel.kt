@@ -5,5 +5,6 @@ import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsL
 
 data class ComparisonModel(
     val specsModel: SpecsListModel,
-    val productCardModel: ProductCardModel
+    val productCardModel: ProductCardModel,
+    val productApplink: String
 )

@@ -126,6 +126,7 @@ import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormReque
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -847,6 +848,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     override fun loadTopads(pageName: String) {
         viewModel.loadRecommendation(pageName)
+    }
+
+    /**
+     * PdpComparisonWidgetViewHolder
+     */
+    override fun getStickyTitleView(): StickyTitleView? {
+        return stickyTitleComparisonWidget
     }
 
     /**

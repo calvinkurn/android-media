@@ -37,7 +37,8 @@ object ComparisonWidgetMapper {
                 ComparisonModel(
                     specsModel = SpecsMapper.mapToSpecsListModel(
                             it.value.specs, isEdgeStart, isEdgeEnd, context, specsConfig),
-                        productCardModel = it.value.toProductCardModel()
+                        productCardModel = it.value.toProductCardModel(),
+                        productApplink = it.value.appUrl
                 )
             },
                 comparisonWidgetConfig = ComparisonWidgetConfig(
