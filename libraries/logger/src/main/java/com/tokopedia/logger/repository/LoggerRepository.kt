@@ -1,5 +1,7 @@
 package com.tokopedia.logger.repository
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.BaseEncryptor
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
@@ -93,10 +95,16 @@ class LoggerRepository(private val logDao: LoggerDao,
         val messageList = mutableListOf<String>()
         for (log in logs) {
             val  message = encryptor.decrypt(log.message, secretKey)
-            messageList.add(message)
+            messageList.add(addEventNewRelic(message))
         }
 
         return loggerCloudNewRelicImpl.sendToLogServer(messageList)
+    }
+
+    private fun addEventNewRelic(message: String): String {
+        val gson = Gson().fromJson(message, JsonObject::class.java)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
+        return gson.toString()
     }
 
     fun truncate(str: String): String {

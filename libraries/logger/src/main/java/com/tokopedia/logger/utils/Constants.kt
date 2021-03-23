@@ -15,6 +15,9 @@ class Constants {
         const val ENCRYPTION_KEY = "q(e#%Gf@oi>lkB~h"
         const val DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss:SSS"
 
+        const val EVENT_TYPE_NEW_RELIC = "eventType"
+        const val EVENT_ANDROID_NEW_RELIC = "android"
+
         const val SEVERITY_HIGH = 1
         const val SEVERITY_MEDIUM = 2
 
