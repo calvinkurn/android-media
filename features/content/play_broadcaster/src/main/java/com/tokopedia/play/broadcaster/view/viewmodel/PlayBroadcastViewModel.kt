@@ -405,12 +405,8 @@ class PlayBroadcastViewModel @Inject constructor(
             if (err == null && _observableChannelInfo.value is NetworkResult.Success) {
                 val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
                 when (channelInfo.status) {
-                    PlayChannelStatusType.Pause -> {
-                        livePusher.pause()
-                    }
-                    PlayChannelStatusType.Live -> {
-                        livePusher.resume()
-                    }
+                    PlayChannelStatusType.Pause -> livePusher.pause()
+                    PlayChannelStatusType.Live -> livePusher.resume()
                     else -> stopPushStream(shouldNavigate = true)
                 }
             } else {
