@@ -18,8 +18,8 @@ import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -56,7 +56,7 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providerDispatcherProvider(): CoroutineDispatcherProvider = DefaultCoroutineDispatcherProvider()
+    fun providerDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @PlayScope
     @Provides

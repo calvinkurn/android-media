@@ -11,8 +11,8 @@ import com.tokopedia.play.broadcaster.pusher.PlayPusherImpl
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -29,7 +29,7 @@ class PlayBroadcastModule(val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = DefaultCoroutineDispatcherProvider()
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {

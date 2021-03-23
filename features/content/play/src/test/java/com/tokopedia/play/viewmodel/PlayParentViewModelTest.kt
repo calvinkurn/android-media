@@ -3,22 +3,15 @@ package com.tokopedia.play.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.PlayResponseBuilder
 import com.tokopedia.play.robot.parent.andWhen
 import com.tokopedia.play.robot.parent.givenParentViewModelRobot
 import com.tokopedia.play.robot.parent.thenVerify
 import com.tokopedia.play.view.storage.PlayChannelData
-import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.lang.IllegalStateException
@@ -34,18 +27,6 @@ class PlayParentViewModelTest {
     private val responseBuilder = PlayResponseBuilder()
     private val classBuilder = ClassBuilder()
     private val mapper = classBuilder.getPlayChannelDetailsRecomMapper()
-
-    private val dispatcher = TestCoroutineDispatchersProvider
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatcher.main)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `given there are available channels, when first init, then channels can be retrieved`() {

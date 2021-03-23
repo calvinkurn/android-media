@@ -43,7 +43,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
@@ -58,7 +58,7 @@ import javax.inject.Inject
  */
 class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        dispatchers: CoroutineDispatcherProvider,
+        dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {

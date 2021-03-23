@@ -46,7 +46,7 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
@@ -72,7 +72,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     lateinit var analytic: PlayBroadcastAnalytic
 
     @Inject
-    lateinit var dispatcher: CoroutineDispatcherProvider
+    lateinit var dispatcher: CoroutineDispatchers
 
     private val job = SupervisorJob()
     private val scope = object: CoroutineScope {
