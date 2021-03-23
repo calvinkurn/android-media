@@ -1073,7 +1073,14 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
-            NewRelic.recordBreadcrumb(eventName, bundleToMap(bundle));
+            Map<String, Object> map = bundleToMap(bundle);
+            for(Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<String, Object> entry = it.next();
+                if(TextUtils.isEmpty((String)entry.getValue())) {
+                    it.remove();
+                }
+            }
+            NewRelic.recordBreadcrumb(eventName, map);
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
