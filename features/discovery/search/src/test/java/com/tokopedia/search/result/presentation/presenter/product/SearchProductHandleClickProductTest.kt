@@ -1,16 +1,22 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.search.jsonToObject
+import com.tokopedia.search.result.complete
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.shouldBe
-import io.mockk.confirmVerified
-import io.mockk.every
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Test
+import rx.Subscriber
+
+private const val searchProductWithTopAdsResponseJSON = "searchproduct/with-topads.json"
 
 internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixtures() {
 
+    private val visitableListSlot = slot<List<Visitable<*>>>()
     private val adapterPosition = 1
     private val userId = "12345678"
     private val className = "SearchClassName"
@@ -35,19 +41,9 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     @Test
     fun `Handle onProductClick for Top Ads Product`() {
-        val productItemViewModel = ProductItemViewModel().also {
-            it.productID = "12345"
-            it.productName = "Pixel 4"
-            it.price = "Rp100.000.000"
-            it.imageUrl = imageUrl
-            it.categoryID = 13
-            it.isTopAds = true
-            it.topadsImpressionUrl = topAdsImpressionUrl
-            it.topadsClickUrl = topAdsClickUrl
-            it.position = 1
-        }
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
-        `Given className from view`()
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = true, isOrganicAds = false)
 
         `When handle product click`(productItemViewModel)
 
@@ -55,8 +51,39 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         `Then verify position is correct`(productItemViewModel)
     }
 
+    private fun `Given View already load data`(responseJSON: String) {
+        val searchProductModel = responseJSON.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given className from view`()
+        `Given view already load data`()
+    }
+
+    private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
+        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
+        }
+    }
+
     private fun `Given className from view`() {
         every { productListView.className } returns className
+    }
+
+    private fun `Given view already load data`() {
+        every { productListView.setProductList(capture(visitableListSlot)) } just runs
+
+        val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = "samsung"
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+        }
+        productListPresenter.loadData(searchParameter)
+    }
+
+    private fun findProductItemFromVisitableList(isTopAds: Boolean = false, isOrganicAds: Boolean = false): ProductItemViewModel {
+        val visitableList = visitableListSlot.captured
+
+        return visitableList.find { it is ProductItemViewModel && it.isTopAds == isTopAds && it.isOrganicAds == isOrganicAds } as ProductItemViewModel
     }
 
     private fun `Then verify view interaction for Top Ads Product`(productItemViewModel: ProductItemViewModel) {
@@ -75,8 +102,6 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             productListView.sendTopAdsGTMTrackingProductClick(capture(capturedProductItemViewModel))
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
-
-        confirmVerified(productListView)
     }
 
     private fun `Then verify position is correct`(productItemViewModel: ProductItemViewModel) {
@@ -86,15 +111,11 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     @Test
     fun `Handle onProductClick for non Top Ads Product`() {
-        val productItemViewModel = ProductItemViewModel().also {
-            it.productID = "12345"
-            it.productName = "Pixel 4"
-            it.price = "Rp100.000.000"
-            it.categoryID = 13
-            it.isTopAds = false
-        }
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
         `Given user session data`()
+
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = false)
 
         `When handle product click`(productItemViewModel)
 
@@ -112,8 +133,6 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot), any())
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
-
-        confirmVerified(productListView)
     }
 
     private fun `Then verify relatedKeyword`() {
@@ -122,20 +141,11 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     @Test
     fun `Handle onProductClick for organic ads product`() {
-        val productItemViewModel = ProductItemViewModel().also {
-            it.productID = "12345"
-            it.productName = "Pixel 4"
-            it.imageUrl = imageUrl
-            it.price = "Rp100.000.000"
-            it.categoryID = 13
-            it.isTopAds = false
-            it.isOrganicAds = true
-            it.topadsImpressionUrl = topAdsImpressionUrl
-            it.topadsClickUrl = topAdsClickUrl
-        }
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
         `Given user session data`()
-        `Given className from view`()
+
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = true)
 
         `When handle product click`(productItemViewModel)
 
@@ -159,7 +169,5 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot), any())
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
-
-        confirmVerified(productListView)
     }
 }

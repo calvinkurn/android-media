@@ -184,7 +184,7 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads after load more`() {
-        visitableList.size shouldBe 35
+        visitableList.size shouldBe 36
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0 || index == 14 || index == 27) {
