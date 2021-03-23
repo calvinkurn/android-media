@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.di
 
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
@@ -8,8 +9,10 @@ import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragme
 import dagger.Component
 
 /**
- * @author by nisie on 10/15/18.
+ * Created by Yoris Prayogo on 24/03/21.
+ * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
+
 @LoginScope
 @Component(modules = [
     LoginModule::class,
@@ -22,4 +25,6 @@ interface LoginComponent {
     fun inject(fragment: LoginEmailPhoneFragment)
     fun inject(fragment: SellerSeamlessLoginFragment)
     fun inject(service: RegisterPushNotifService)
+    fun inject(getDefaultChosenAddressService: GetDefaultChosenAddressService?)
+
 }
