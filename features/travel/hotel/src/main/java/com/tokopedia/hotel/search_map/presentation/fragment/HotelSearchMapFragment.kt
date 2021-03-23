@@ -794,6 +794,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 searchProperties.forEach {
                     addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
                 }
+            }else{
+                hideLoadingCardListMap()
             }
 
             renderList(searchProperties.map {
