@@ -1,4 +1,4 @@
-package com.tokopedia.rechargegeneral
+package com.tokopedia.rechargegeneral.cases.pbb
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -24,6 +24,9 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.rechargegeneral.R
+import com.tokopedia.rechargegeneral.RechargeGeneralLoginMockResponseConfig
+import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralInputViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -53,7 +56,7 @@ class RechargeGeneralLoginInstrumentTest {
         Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponse(RechargeGeneralLoginMockResponseConfig())
+        setupGraphqlMockResponse(RechargeGeneralLoginMockResponseConfig(RechargeGeneralProduct.PBB))
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, RechargeGeneralActivity::class.java).apply {

@@ -1,4 +1,4 @@
-package com.tokopedia.rechargegeneral
+package com.tokopedia.rechargegeneral.cases.pbb
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -14,18 +14,22 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
+import com.tokopedia.rechargegeneral.R
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
+import com.tokopedia.rechargegeneral.RechargeGeneralMockResponseConfig
+import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralInputViewHolder
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralProductSelectViewHolder
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
@@ -53,7 +57,7 @@ class RechargeGeneralInstrumentTest {
             super.beforeActivityLaunched()
             gtmLogDBSource.deleteAll().subscribe()
 
-            setupGraphqlMockResponse(RechargeGeneralMockResponseConfig())
+            setupGraphqlMockResponse(RechargeGeneralMockResponseConfig(RechargeGeneralProduct.PBB))
         }
     }
 
@@ -128,7 +132,16 @@ class RechargeGeneralInstrumentTest {
     fun validate_manual_input() {
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
-                        1, typeText(VALID_INPUT_NUMBER)
+                        1, typeText("123456789")
+                )
+        ).perform(closeSoftKeyboard())
+        Thread.sleep(1000)
+        onView(withText(R.string.input_error_message)).check(matches(isDisplayed()))
+        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
+
+        onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
+                        1, typeText("012445000")
                 )
         ).perform(closeSoftKeyboard())
         Thread.sleep(1000)
