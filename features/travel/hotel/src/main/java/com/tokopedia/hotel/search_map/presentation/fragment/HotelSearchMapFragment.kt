@@ -525,8 +525,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (page <= HORIZONTAL_PROPERTIES_CARD_MAX_PAGE){
                     loadData(page)
+                    horizontalMarkerPage++
                 }
-                horizontalMarkerPage++
             }
         })
     }
