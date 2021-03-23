@@ -270,9 +270,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 return CartSelectAllViewHolder(binding, actionListener, compositeSubscription)
             }
             CartChooseAddressViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartChooseAddressViewHolder.LAYOUT, parent, false)
-                return CartChooseAddressViewHolder(view, actionListener)
+                val binding = ItemCartChooseAddressBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartChooseAddressViewHolder(binding, actionListener)
             }
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
