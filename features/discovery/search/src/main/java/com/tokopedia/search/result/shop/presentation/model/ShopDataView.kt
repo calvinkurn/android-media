@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.*
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 
-internal data class ShopViewModel(
+internal data class ShopDataView(
         val source: String = "",
         val searchUrl: String = "",
         val paging: Paging = Paging(),
@@ -361,12 +361,12 @@ internal data class ShopViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<ShopViewModel> {
-        override fun createFromParcel(parcel: Parcel): ShopViewModel {
-            return ShopViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<ShopDataView> {
+        override fun createFromParcel(parcel: Parcel): ShopDataView {
+            return ShopDataView(parcel)
         }
 
-        override fun newArray(size: Int): Array<ShopViewModel?> {
+        override fun newArray(size: Int): Array<ShopDataView?> {
             return arrayOfNulls(size)
         }
     }

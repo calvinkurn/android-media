@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 
-internal data class ShopEmptySearchViewModel(
+internal data class ShopEmptySearchDataView(
         val sectionTitle: String = "",
         val query: String = "",
         val isFilterActive: Boolean = false
@@ -30,12 +30,12 @@ internal data class ShopEmptySearchViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<ShopEmptySearchViewModel> {
-        override fun createFromParcel(parcel: Parcel): ShopEmptySearchViewModel {
-            return ShopEmptySearchViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<ShopEmptySearchDataView> {
+        override fun createFromParcel(parcel: Parcel): ShopEmptySearchDataView {
+            return ShopEmptySearchDataView(parcel)
         }
 
-        override fun newArray(size: Int): Array<ShopEmptySearchViewModel?> {
+        override fun newArray(size: Int): Array<ShopEmptySearchDataView?> {
             return arrayOfNulls(size)
         }
     }

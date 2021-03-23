@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
-internal data class ShopCpmViewModel(
+internal data class ShopCpmDataView(
         val cpmModel: CpmModel = CpmModel()
 ): Parcelable, Visitable<ShopListTypeFactory> {
 
@@ -28,12 +28,12 @@ internal data class ShopCpmViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<ShopCpmViewModel> {
-        override fun createFromParcel(parcel: Parcel): ShopCpmViewModel {
-            return ShopCpmViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<ShopCpmDataView> {
+        override fun createFromParcel(parcel: Parcel): ShopCpmDataView {
+            return ShopCpmDataView(parcel)
         }
 
-        override fun newArray(size: Int): Array<ShopCpmViewModel?> {
+        override fun newArray(size: Int): Array<ShopCpmDataView?> {
             return arrayOfNulls(size)
         }
     }

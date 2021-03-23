@@ -21,7 +21,7 @@ import org.junit.Before
 import org.junit.Rule
 import dagger.Lazy as daggerLazy
 
-internal open class SearchShopViewModelTestFixtures {
+internal open class SearchShopDataViewTestFixtures {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()

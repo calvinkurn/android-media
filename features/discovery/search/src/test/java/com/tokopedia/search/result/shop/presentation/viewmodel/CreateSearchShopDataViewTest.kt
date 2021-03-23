@@ -6,7 +6,7 @@ import com.tokopedia.search.shouldBe
 import io.mockk.every
 import org.junit.Test
 
-internal class CreateSearchShopViewModelTest: SearchShopViewModelTestFixtures() {
+internal class CreateSearchShopDataViewTest: SearchShopDataViewTestFixtures() {
 
     private val userIdLoggedIn = "123456"
     private val userIdNonLogin = "0"

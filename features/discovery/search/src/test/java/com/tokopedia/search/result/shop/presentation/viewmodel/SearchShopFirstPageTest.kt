@@ -11,7 +11,7 @@ import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
 import org.junit.Test
 
-internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopFirstPageTest: SearchShopDataViewTestFixtures() {
 
     private var searchShopFirstPagePerformanceMonitoringIsStarted = false
     private var searchShopFirstPagePerformanceMonitoringIsEnded = false
