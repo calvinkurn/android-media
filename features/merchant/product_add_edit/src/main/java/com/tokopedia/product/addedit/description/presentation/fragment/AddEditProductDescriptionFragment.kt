@@ -98,6 +98,7 @@ class AddEditProductDescriptionFragment:
     private lateinit var shopId: String
     private var isFragmentVisible = false
     private var youtubeAdapterPosition = 0
+    private var isFirstTimeFetchYoutubeData = false
 
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -173,6 +174,7 @@ class AddEditProductDescriptionFragment:
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         shopId = userSession.shopId
+        isFirstTimeFetchYoutubeData = true
 
         arguments?.let {
             val cacheManagerId = AddEditProductDescriptionFragmentArgs.fromBundle(it).cacheManagerId
@@ -522,6 +524,18 @@ class AddEditProductDescriptionFragment:
             }
             adapter.notifyItemChanged(youtubeAdapterPosition)
             updateSaveButtonStatus()
+            getVideoYoutubeOneByOne()
+        }
+    }
+
+    private fun getVideoYoutubeOneByOne() {
+        if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved) && isFirstTimeFetchYoutubeData) {
+            youtubeAdapterPosition -= 1
+            if (youtubeAdapterPosition != -1) {
+                getVideoYoutube(adapter.data[youtubeAdapterPosition].inputUrl)
+            } else {
+                isFirstTimeFetchYoutubeData = false
+            }
         }
     }
 
