@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -76,10 +75,6 @@ class ShopSettingsNoteBuyerViewFragment : BaseDaggerFragment() {
         adapter = ShopNoteBuyerViewAdapter()
         rvNote?.adapter = adapter
         rvNote?.layoutManager = LinearLayoutManager(context)
-        rvNote?.itemAnimator = object: DefaultItemAnimator() {
-            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean = true
-            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder, payloads: MutableList<Any>): Boolean = true
-        }
     }
 
     private fun setupObserver() {
