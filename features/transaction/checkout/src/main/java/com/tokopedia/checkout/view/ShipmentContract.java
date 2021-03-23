@@ -13,6 +13,11 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
@@ -20,14 +25,9 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.Token;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.cod.Data;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
@@ -64,11 +64,13 @@ public interface ShipmentContract {
 
         void onCacheExpired(String message);
 
+        void onShipmentAddressFormEmpty();
+
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment);
 
-        void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
+        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState);
 
         void renderDataChanged();
 
@@ -111,10 +113,6 @@ public interface ShipmentContract {
 
         void setCourierPromoApplied(int itemPosition);
 
-        void showBottomSheetError(String htmlMessage);
-
-        void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest);
-
         void stopTrace();
 
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
@@ -132,9 +130,7 @@ public interface ShipmentContract {
                                                                               int devicePrice,
                                                                               String diagnosticId);
 
-        void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
-
-        boolean isInsuranceEnabled();
+        void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
 
         void updateTickerAnnouncementMessage();
 
@@ -144,13 +140,15 @@ public interface ShipmentContract {
 
         boolean isTradeInByDropOff();
 
-        void updateButtonPromoCheckout(PromoUiModel promoUiModel);
+        void updateButtonPromoCheckout(PromoUiModel promoUiModel, boolean isNeedToHitValidateFinal);
 
         void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
 
         void setHasRunningApiCall(boolean hasRunningApiCall);
 
         void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc);
+
+        void updateLocalCacheAddressData(UserAddress userAddress);
     }
 
     interface AnalyticsActionListener {
@@ -224,8 +222,7 @@ public interface ShipmentContract {
                                             boolean isReloadAfterPriceChangeHinger,
                                             String cornerId, String deviceId, String leasingId);
 
-        void processCheckout(boolean hasInsurance,
-                             boolean isOneClickShipment, boolean isTradeIn,
+        void processCheckout(boolean isOneClickShipment, boolean isTradeIn,
                              boolean isTradeInDropOff, String deviceId,
                              String cornerId, String leasingId);
 
@@ -272,13 +269,18 @@ public interface ShipmentContract {
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
-        void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType);
+        void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList);
 
         void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode);
 
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared);
 
-        void changeShippingAddress(RecipientAddressModel newRecipientAddressModel, boolean isOneClickShipment, boolean isTradeInDropOff, boolean isHandleFallback, boolean reloadCheckoutPage);
+        void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
+                                   ChosenAddressModel chosenAddressModel,
+                                   boolean isOneClickShipment,
+                                   boolean isTradeInDropOff,
+                                   boolean isHandleFallback,
+                                   boolean reloadCheckoutPage);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 
@@ -299,8 +301,6 @@ public interface ShipmentContract {
 
         CodModel getCodData();
 
-        void proceedCodCheckout(boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
-
         CampaignTimerUi getCampaignTimer();
 
         Token getKeroToken();
@@ -309,7 +309,6 @@ public interface ShipmentContract {
 
         void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
                                                            Map<String, String> tradeInCustomDimension,
-                                                           boolean hasInsurance,
                                                            String step,
                                                            String eventCategory,
                                                            String eventAction,
@@ -324,9 +323,7 @@ public interface ShipmentContract {
 
         void processSubmitHelpTicket(CheckoutData checkoutData);
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, boolean hasInsurance, int isDonation, String leasingId);
-
-        void getInsuranceTechCartOnCheckout();
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, String leasingId);
 
         ShipmentDataConverter getShipmentDataConverter();
 

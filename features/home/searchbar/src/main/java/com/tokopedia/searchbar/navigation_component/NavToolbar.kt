@@ -147,6 +147,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navIconAdapter?.setHasStableIds(true)
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
+        navIconRecyclerView.itemAnimator = null
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         toolbarThemeCondition(
@@ -233,7 +234,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
-            toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
@@ -358,6 +359,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     //this needed to enable coachmark on homepage
     fun getGlobalNavIconView(): View? {
         val globalNavPosition = navIconAdapter?.getGlobalNavIconPosition()
+        globalNavPosition?.let {
+            val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
+    //this needed to enable coachmark on homepage
+    fun getInboxIconView(): View? {
+        val globalNavPosition = navIconAdapter?.getInboxIconPosition()
         globalNavPosition?.let {
             val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
             return viewholder?.itemView
@@ -512,7 +523,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, com.tokopedia.iconunify.R.color.icon_enable_default_color)
+    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
 
     private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
 

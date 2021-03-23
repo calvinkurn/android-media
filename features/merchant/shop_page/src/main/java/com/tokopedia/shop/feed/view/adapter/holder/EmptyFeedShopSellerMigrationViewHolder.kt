@@ -2,6 +2,7 @@ package com.tokopedia.shop.feed.view.adapter.holder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.shop.R
@@ -19,7 +20,10 @@ class EmptyFeedShopSellerMigrationViewHolder(view: View,
 
     override fun bind(element: EmptyFeedShopSellerMigrationUiModel?) {
         with(itemView) {
-            ivTabFeedNoPost?.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_POST_FEED_BANNER_LINK)
+            try {
+                if(ivTabFeedNoPost?.context?.isValidGlideContext() == true)
+                    ivTabFeedNoPost?.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_POST_FEED_BANNER_LINK)
+            } catch (e: Throwable) { }
             tvSellerMigrationLearnMoreLink?.text = context?.let {
                 HtmlLinkHelper(it, getString(com.tokopedia.seller_migration_common.R.string.seller_migration_bottom_sheet_footer)).spannedString
             }

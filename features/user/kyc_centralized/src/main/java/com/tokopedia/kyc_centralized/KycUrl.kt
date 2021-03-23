@@ -19,6 +19,11 @@ object KycUrl {
     const val SCAN_FACE_FAIL_NETWORK = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_badnetwork.png"
     const val SCAN_FACE_FAIL_GENERAL = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_general.png"
 
+    const val KYC_BENEFIT_BANNER = "https://images.tokopedia.net/img/android/user/kyc_benefit_banner.png"
+    const val KYC_BENEFIT_POWER_MERCHANT = "https://images.tokopedia.net/img/android/user/kyc_benefit_power_merchant.png"
+    const val KYC_BENEFIT_FINTECH = "https://images.tokopedia.net/img/android/user/kyc_benefit_ic_fintech.png"
+    const val KYC_BENEFIT_SHIELD = "https://images.tokopedia.net/img/android/user/kyc_benefit_shield_star.png"
+
     fun getKYCBaseUrl(): String {
         return when (TokopediaUrl.getInstance().TYPE) {
             Env.STAGING -> KYC_BASE_URL_STAGING

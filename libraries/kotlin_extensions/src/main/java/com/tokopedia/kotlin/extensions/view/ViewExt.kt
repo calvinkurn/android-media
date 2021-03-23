@@ -3,6 +3,7 @@ package com.tokopedia.kotlin.extensions.view
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -298,4 +299,13 @@ fun View.addOneTimeGlobalLayoutListener(onGlobalLayout: () -> Unit) {
             viewTreeObserver.removeOnGlobalLayoutListener(this)
         }
     })
+}
+
+fun Context.isAppInstalled(packageName: String): Boolean {
+    return try {
+        packageManager.getPackageInfo(packageName, 0)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }
 }

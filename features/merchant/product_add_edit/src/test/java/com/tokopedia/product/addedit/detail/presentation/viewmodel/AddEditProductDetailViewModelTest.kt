@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -18,14 +19,19 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
+import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
+import com.tokopedia.product.addedit.specification.domain.model.Values
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
@@ -56,7 +62,16 @@ class AddEditProductDetailViewModelTest {
     lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
 
     @RelaxedMockK
+    lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
+
+    @RelaxedMockK
+    lateinit var productPriceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase
+
+    @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
+
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -105,8 +120,14 @@ class AddEditProductDetailViewModelTest {
         getPrivateField(viewModel, "mIsProductStockInputError") as MutableLiveData<Boolean>
     }
 
+    private val stockAllocationDefaultMessage: String by lazy {
+        (getPrivateField(viewModel, "stockAllocationDefaultMessage") as? String) ?: "invalid"
+    }
+
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase,
+                getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase,
+                annotationCategoryUseCase, productPriceSuggestionSuggestedPriceGetUseCase, userSession)
     }
 
     @Test
@@ -894,6 +915,7 @@ class AddEditProductDetailViewModelTest {
             } returns listOf()
 
             viewModel.getShopShowCasesUseCase()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 getShopEtalaseUseCase.executeOnBackground()
@@ -903,6 +925,230 @@ class AddEditProductDetailViewModelTest {
             val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
             assertEquals(expectedResponse, actualResponse)
         }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return unfilled data when productId is not provided`() = runBlocking {
+        val annotationCategoryData = listOf<AnnotationCategoryData>()
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        viewModel.getAnnotationCategory("", "")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertTrue(specificationText.isEmpty())
+        }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return specification data when productId is provided`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", true, ""),
+                                Values(1, "Seedap", false, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa",
+                        data = listOf(
+                                Values(1, "Soto", false, ""),
+                                Values(1, "Bawang", true, ""))
+                )
+        )
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        viewModel.getAnnotationCategory("", "11090")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertEquals("Indomie, Bawang", specificationText)
+        }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return simplified specification data when having more than 5 specification`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", true, ""),
+                                Values(1, "Seedap", false, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa1",
+                        data = listOf(
+                                Values(1, "Soto1", false, ""),
+                                Values(1, "Bawang1", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa2",
+                        data = listOf(
+                                Values(1, "Soto2", false, ""),
+                                Values(1, "Bawang2", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa3",
+                        data = listOf(
+                                Values(1, "Soto3", false, ""),
+                                Values(1, "Bawang3", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa4",
+                        data = listOf(
+                                Values(1, "Soto4", false, ""),
+                                Values(1, "Bawang4", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa5",
+                        data = listOf(
+                                Values(1, "Soto5", false, ""),
+                                Values(1, "Bawang5", true, ""))
+                )
+        )
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        every { provider.getProductSpecificationCounter(any()) } returns ", +1 lainnya"
+
+        viewModel.getAnnotationCategory("", "11090")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertEquals("Indomie, Bawang1, Bawang2, Bawang3, Bawang4, +1 lainnya", specificationText)
+        }
+    }
+
+    @Test
+    fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", false, ""),
+                                Values(1, "Seedap", false, ""))
+                )
+        )
+        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
+        val specificationText = viewModel.specificationText.getOrAwaitValue()
+        Assert.assertTrue(specificationText.isEmpty())
+    }
+
+    @Test
+    fun `when is not shop admin or not shop owner, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopOwner } returns false
+
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner and doesn't have multi location shop, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns true
+        every { userSession.isShopOwner } returns false
+        every { userSession.isMultiLocationShop } returns false
+
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner and has multi location shop, but not is editing or adding, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
+
+        viewModel.isAdding = false
+        viewModel.isEditing = false
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner, has multi location shop, and is editing, stock message should be present`() {
+        val editMessage = "edit"
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
+        every { provider.getEditProductMultiLocationMessage() } returns editMessage
+
+        viewModel.isEditing = true
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage == editMessage)
+        assert(viewModel.productStockMessage == editMessage)
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner, has multi location shop, and is adding, but is not editing, stock message should be present`() {
+        val addMessage = "add"
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
+        every { provider.getAddProductMultiLocationMessage() } returns addMessage
+
+        viewModel.isEditing = false
+        viewModel.isAdding = true
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage == addMessage)
+        assert(viewModel.productStockMessage == addMessage)
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner and not has multi location shop, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns true
+        every { userSession.isShopOwner } returns false
+
+        assert(stockAllocationDefaultMessage.isEmpty())
     }
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {

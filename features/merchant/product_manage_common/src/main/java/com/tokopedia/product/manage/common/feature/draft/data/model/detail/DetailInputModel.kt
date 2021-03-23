@@ -26,7 +26,8 @@ data class DetailInputModel(
         var wholesaleList: List<WholeSaleInputModel> = emptyList(),
         var pictureList: List<PictureInputModel> = emptyList(),
         var categoryName: String = "",
-        var productShowCases: List<ShowCaseInputModel> = emptyList()
+        var productShowCases: List<ShowCaseInputModel> = emptyList(),
+        var specification: List<SpecificationInputModel>? = null
 ) : Parcelable
 
 @Parcelize

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/txt_section_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/notif_dp_12"
+    android:paddingBottom="@dimen/notif_dp_6"
+    app:typographyType="heading_3"
+    app:typographyWeight="bold"
+    tools:text="Terbaru" />

@@ -9,6 +9,7 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Compa
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MINIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -48,8 +49,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return message
     }
 
-    suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment,
-                               orderTotal: OrderTotal, forceButtonState: OccButtonState?, isNewFlow: Boolean): Pair<OrderPayment, OrderTotal> {
+    suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment,
+                               validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment,
+                               orderTotal: OrderTotal, forceButtonState: OccButtonState?, isNewFlow: Boolean, orderPromo: OrderPromo? = null): Pair<OrderPayment, OrderTotal> {
         val quantity = orderCart.product.quantity
         var payment = _orderPayment
         if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
@@ -65,7 +67,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val purchaseProtectionPrice = if (orderCart.product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * orderCart.product.purchaseProtectionPlanData.protectionPricePerProduct else 0
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
-            val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
+            val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel, orderPromo)
             var subtotal = totalProductPrice + purchaseProtectionPrice + totalShippingPrice + insurancePrice
             payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
             val fee = payment.getRealFee()
@@ -112,12 +114,12 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     if (currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
                     }
-                    return@withContext payment.copy(isCalculationError = true,
-                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.ovoData.phoneNumber.errorMessage,
+                    return@withContext payment.copy(isCalculationError = true, errorData = null,
+                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = !isNewFlow, message = payment.ovoData.phoneNumber.errorMessage,
                                     type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 val tickerMessage = if (isNewFlow) null else payment.ovoData.phoneNumber.errorTicker
-                return@withContext payment.copy(isCalculationError = true,
+                return@withContext payment.copy(isCalculationError = true, errorData = null,
                         ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.phoneNumber.errorMessage,
                                 type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = tickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
@@ -126,12 +128,12 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     if (currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
                     }
-                    return@withContext payment.copy(isCalculationError = true,
-                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.ovoData.activation.errorMessage, buttonTitle = payment.ovoData.activation.buttonTitle,
+                    return@withContext payment.copy(isCalculationError = true, errorData = null,
+                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = !isNewFlow, message = payment.ovoData.activation.errorMessage, buttonTitle = payment.ovoData.activation.buttonTitle,
                                     type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = payment.ovoData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 val tickerMessage = if (isNewFlow) null else payment.ovoData.activation.errorTicker
-                return@withContext payment.copy(isCalculationError = true,
+                return@withContext payment.copy(isCalculationError = true, errorData = null,
                         ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.activation.errorMessage, buttonTitle = payment.ovoData.activation.buttonTitle,
                                 type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = payment.ovoData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = tickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
@@ -145,11 +147,13 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 if (isNewFlow) {
+                    var buttonType = OccButtonType.CHOOSE_PAYMENT
                     if (payment.isOvoOnlyCampaign && currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
+                        buttonType = OccButtonType.PAY
                     }
                     return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMinimumAmountPaymentErrorMessage(payment.gatewayName, null, false), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                            paymentErrorMessage = null, buttonType = buttonType, buttonState = currentState)
                 }
                 return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                         paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, true),
@@ -165,11 +169,13 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 if (isNewFlow) {
+                    var buttonType = OccButtonType.CHOOSE_PAYMENT
                     if (payment.isOvoOnlyCampaign && currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
+                        buttonType = OccButtonType.PAY
                     }
                     return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName, null, false), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                            paymentErrorMessage = null, buttonType = buttonType, buttonState = currentState)
                 }
                 return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                         paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, true),
@@ -204,10 +210,10 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return result
     }
 
-    private fun calculatePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Int, Int, ArrayList<Pair<String, String>>> {
+    private fun calculatePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPromo: OrderPromo?): Triple<Int, Int, ArrayList<OrderCostCashbackData>> {
         var productDiscount = 0
         var shippingDiscount = 0
-        val cashbacks = ArrayList<Pair<String, String>>()
+        val cashbacks = ArrayList<OrderCostCashbackData>()
         val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
                 ?: emptyList()
         for (summary in summaries) {
@@ -221,10 +227,30 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     }
                 }
             }
-            if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
-                cashbacks.addAll(summary.details.map { it.description to it.amountStr })
+        }
+
+        if (validateUsePromoRevampUiModel?.promoUiModel?.additionalInfoUiModel?.usageSummariesUiModel != null) {
+            validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.usageSummariesUiModel.map {
+                cashbacks.add(
+                        OrderCostCashbackData(
+                                description = it.desc,
+                                amountStr = it.amountStr,
+                                currencyDetailStr = it.currencyDetailStr
+                        )
+                )
+            }
+        } else if (orderPromo?.lastApply?.additionalInfo?.usageSummaries != null) {
+            (orderPromo.lastApply?.additionalInfo?.usageSummaries as List<LastApplyUsageSummariesUiModel>).map {
+                cashbacks.add(
+                        OrderCostCashbackData(
+                                description = it.description,
+                                amountStr = it.amountStr,
+                                currencyDetailStr = it.currencyDetailsStr
+                        )
+                )
             }
         }
+
         return Triple(productDiscount, shippingDiscount, cashbacks)
     }
 

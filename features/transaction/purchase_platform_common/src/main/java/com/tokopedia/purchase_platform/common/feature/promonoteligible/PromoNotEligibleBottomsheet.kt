@@ -51,7 +51,7 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         btnContinue = dialogView.findViewById(R.id.btn_continue)
         btnChooseOtherPromo = dialogView.findViewById(R.id.btn_choose_other_promo)
         btnContinue.setOnClickListener {
-            actionListener.onButtonContinueClicked(checkoutType)
+            actionListener.onButtonContinueClicked()
         }
         btnChooseOtherPromo.setOnClickListener {
             actionListener.onButtonChooseOtherPromo()

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragment.ShopShowcaseProductAddListener
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
@@ -153,10 +154,17 @@ class ShowcaseProductListAdapter(
                 // if in create mode, just use first selected product image
                 selectedProduct[idx]
             }
-            ImageHandler.LoadImage(
-                    fragmentView.product_choosen_image,
-                    item.productImageUrl
-            )
+
+            // try catch to avoid ImageUnify crash on set image to product counter image
+            try {
+                if(fragmentView.product_choosen_image?.context?.isValidGlideContext() == true) {
+                    ImageHandler.LoadImage(
+                            fragmentView.product_choosen_image,
+                            item.productImageUrl
+                    )
+                }
+            } catch (e : Throwable) {}
+
             fragmentView.product_choosen_counter.visibility = View.VISIBLE
             fragmentView.total_selected_product_counter.text = context.resources.getString(
                     R.string.chosen_product_counter_text,

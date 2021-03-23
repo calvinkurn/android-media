@@ -8,14 +8,18 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.S
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
+import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.viewholder.*
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopCpmViewHolder
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopEmptySearchViewHolder
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopItemViewHolder
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopRecommendationTitleViewHolder
+import com.tokopedia.search.result.shop.presentation.viewholder.ShopSuggestionViewHolder
 
 internal class ShopListTypeFactoryImpl(
         private val shopListener: ShopListener,
@@ -39,6 +43,10 @@ internal class ShopListTypeFactoryImpl(
         return ShopRecommendationTitleViewHolder.LAYOUT
     }
 
+    override fun type(shopSuggestionViewModel: ShopSuggestionViewModel): Int {
+        return ShopSuggestionViewHolder.LAYOUT
+    }
+
     override fun type(loadingMoreModel: LoadingMoreModel): Int {
         return SearchLoadingMoreViewHolder.LAYOUT
     }
@@ -50,6 +58,7 @@ internal class ShopListTypeFactoryImpl(
             ShopItemViewHolder.LAYOUT -> ShopItemViewHolder(view, shopListener)
             ShopRecommendationTitleViewHolder.LAYOUT -> ShopRecommendationTitleViewHolder(view)
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
+            ShopSuggestionViewHolder.LAYOUT -> ShopSuggestionViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

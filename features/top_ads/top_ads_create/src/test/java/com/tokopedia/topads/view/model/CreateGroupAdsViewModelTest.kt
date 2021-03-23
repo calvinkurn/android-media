@@ -5,7 +5,6 @@ import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -28,15 +27,12 @@ class CreateGroupAdsViewModelTest {
     val rule2 = InstantTaskExecutorRule()
 
     private lateinit var viewModel: CreateGroupAdsViewModel
-
-    private lateinit var userSession: UserSession
     private lateinit var topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase
 
     @Before
     fun setUp() {
         topAdsGroupValidateNameUseCase = mockk(relaxed = true)
-        userSession = mockk(relaxed = true)
-        viewModel = spyk(CreateGroupAdsViewModel(rule.dispatchers, userSession, topAdsGroupValidateNameUseCase))
+        viewModel = spyk(CreateGroupAdsViewModel(rule.dispatchers, topAdsGroupValidateNameUseCase))
     }
 
     @Test
@@ -44,7 +40,7 @@ class CreateGroupAdsViewModelTest {
         var actual: Throwable? = null
         val expected = Exception("my excep")
 
-        val onError: (Throwable) -> Unit = {
+        val onError: (String) -> Unit = {
             actual = expected
         }
         every { topAdsGroupValidateNameUseCase.execute(any(), any()) } throws expected
@@ -65,17 +61,16 @@ class CreateGroupAdsViewModelTest {
         val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateName(errors = listOf(Error().apply {
             detail = expected
         })))
-        val onError: (Throwable) -> Unit = {
+        val onError: (String) -> Unit = {
             actual = expected
         }
-        every { userSession.shopId } returns "123"
         every {
             topAdsGroupValidateNameUseCase.execute(captureLambda(), any())
         } answers {
             if (data.topAdsGroupValidateName.errors.isNotEmpty()) {
                 actual = data.topAdsGroupValidateName.errors.first().detail
             }
-            onError.invoke(java.lang.Exception(actual))
+            onError.invoke(actual)
         }
         viewModel.validateGroup(
                 groupName = "",
@@ -96,7 +91,6 @@ class CreateGroupAdsViewModelTest {
         val onSuccess: () -> Unit = {
             actual = expected
         }
-        every { userSession.shopId } returns "123"
         every {
             topAdsGroupValidateNameUseCase.execute(captureLambda(), any())
         } answers {

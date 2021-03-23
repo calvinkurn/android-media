@@ -286,16 +286,19 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         txtToken?.show()
 
         txtToken?.text = when {
-            newToken.isEmpty() || currentToken.isEmpty() -> {
+            newToken.isEmpty() -> {
                 getString(R.string.notif_error_update_token)
             }
             fcmManager.isNewToken(newToken) -> {
-                viewModel.updateToken(newToken)
                 tokenUpdateMessage(currentToken, newTrimToken)
             }
             else -> {
                 tokenCurrentMessage(currentToken, newTrimToken)
             }
+        }
+
+        if (newToken.isNotEmpty() && fcmManager.isNewToken(newToken)) {
+            viewModel.updateToken(newToken)
         }
     }
 

@@ -3,15 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/transparent">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarMvc"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/layout_lvl0"
         android:background="@color/transparent"
+        android:elevation="@dimen/layout_lvl0"
         app:elevation="@dimen/layout_lvl0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,11 +48,22 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toolbarMvcList"
-                app:search_bar_clearable="true"
-                app:search_bar_show_icon="false"
-                app:search_bar_placeholder="@string/mvc_find_shop_voucher"
                 app:layout_scrollFlags="scroll|snap"
-                tools:visibility="visible"/>
+                app:search_bar_clearable="true"
+                app:search_bar_placeholder="@string/mvc_find_shop_voucher"
+                app:search_bar_show_icon="false"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/mvcTickerBc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:closeButtonVisibility="visible"
+                app:descriptionText="@string/mvc_broadcast_chat_announcement"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/searchBarMvc"
+                app:tickerType="announcement" />
 
             <com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.HeaderChipsView
                 android:id="@+id/headerChipMvc"

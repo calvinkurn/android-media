@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_STATUS_COMPLAINT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
@@ -27,7 +28,7 @@ class SomListSortFilterTab(
 
     init {
         sortFilter.chipItems = arrayListOf()
-        sortFilter.indicatorNotifView.viewTreeObserver.addOnPreDrawListener {
+        sortFilter.indicatorNotifView?.viewTreeObserver?.addOnPreDrawListener {
             val count = selectedCount + if (selectedTab != null && selectedTab?.key != SomConsts.STATUS_ALL_ORDER) 1 else 0
             if (count != sortFilter.indicatorCounter) {
                 sortFilter.indicatorCounter = count
@@ -48,7 +49,7 @@ class SomListSortFilterTab(
                         filterItems.find {
                             it.title.contains(statusFilter.status)
                         }?.apply {
-                            title = composeTabTitle(statusFilter.status, statusFilter.amount)
+                            title = composeTabTitle(statusFilter.key, statusFilter.status, statusFilter.amount)
                             type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
                         }
                     }
@@ -58,7 +59,7 @@ class SomListSortFilterTab(
 
     private fun recreateTabs(statusList: List<SomListFilterUiModel.Status>) {
         filterItems = ArrayList(statusList.filter { it.key != SomConsts.STATUS_ALL_ORDER }.map { createNewTabs(it) })
-        sortFilter.chipItems.clear()
+        sortFilter.chipItems?.clear()
         sortFilter.addItem(filterItems)
     }
 
@@ -73,27 +74,30 @@ class SomListSortFilterTab(
     }
 
     private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): SortFilterItem {
-        return SortFilterItem(composeTabTitle(statusFilter.status, statusFilter.amount)).apply {
+        return SortFilterItem(composeTabTitle(statusFilter.key, statusFilter.status, statusFilter.amount)).apply {
             listener = { onTabClicked(this, statusFilter) }
             type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         }
     }
 
-    private fun composeTabTitle(status: String, amount: Int): String {
-        return "$status${" ($amount)".takeIf { amount > 0 } ?: ""}"
+    private fun composeTabTitle(key: String, status: String, amount: Int): String {
+        return when (key) {
+            STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING, KEY_STATUS_COMPLAINT -> "$status${" ($amount)".takeIf { amount > 0 } ?: ""}"
+            else -> status
+        }
     }
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {
         isStatusFilterAppliedFromAdvancedFilter = false
         status.isChecked = if (sortFilterItem.type == ChipsUnify.TYPE_NORMAL) {
-            sortFilter.chipItems.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
+            sortFilter.chipItems?.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
             selectTab(status)
             true
         } else {
             selectedTab = null
+            sortFilterItem.toggleSelected()
             false
         }
-        sortFilterItem.type = ChipsUnify.TYPE_SELECTED
         listener.onTabClicked(status, true)
     }
 
@@ -143,13 +147,6 @@ class SomListSortFilterTab(
             parentListener = {
                 listener.onParentSortFilterClicked()
             }
-        }
-    }
-
-    fun decrementOrderCount() {
-        selectedTab?.run {
-            amount -= 1
-            filterItems.find { it.title.contains(status) }?.title = composeTabTitle(status, amount)
         }
     }
 

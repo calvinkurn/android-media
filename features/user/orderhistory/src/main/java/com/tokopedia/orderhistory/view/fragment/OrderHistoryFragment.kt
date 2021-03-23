@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -16,6 +15,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.analytic.OrderHistoryAnalytic
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
@@ -26,8 +27,10 @@ import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactory
 import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactoryImpl
 import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
 import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryViewModel
-import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,14 +42,22 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var analytic: OrderHistoryAnalytic
+
     @Inject
     lateinit var session: UserSessionInterface
 
+    var remoteConfig: RemoteConfig? = null
+
     private var recycler: VerticalRecyclerView? = null
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelFragmentProvider.get(OrderHistoryViewModel::class.java) }
+    private val viewModelFragmentProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+    private val viewModel by lazy {
+        viewModelFragmentProvider.get(OrderHistoryViewModel::class.java)
+    }
     private lateinit var adapter: OrderHistoryAdapter
     private var shopId: String? = null
 
@@ -57,8 +68,13 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
             bindView(it)
             setupRecyclerview()
             initializeArguments()
+            initRemoteConfig()
             setupProductListObserver()
         }
+    }
+
+    private fun initRemoteConfig() {
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     private fun bindView(view: View?) {
@@ -74,7 +90,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     private fun setupProductListObserver() {
-        viewModel.product.observe(this, Observer { result ->
+        viewModel.product.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> onSuccessGetProductDate(result.data)
                 is Fail -> showGetListError(result.throwable)
@@ -107,26 +123,34 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun onClickBuyAgain(product: Product) {
-        val quantity = product.minOrder
-        val atcAndBuyAction = ATC_ONLY
-        val needRefresh = true
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shopId)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, product.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
-            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, product.categoryId)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, product.categoryId)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, product.name)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, product.priceInt.toFloat())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, product.buyEventAction)
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, "/chat - buy again")
+        val buyParam = getAtcBuyParam(product)
+        viewModel.addProductToCart(buyParam, {
+            analytic.trackSuccessDoBuy(product, it)
+            RouteManager.route(context, ApplinkConst.CART)
+        }, { msg ->
+            showErrorMessage(msg)
+        })
+    }
+
+    private fun getAtcBuyParam(product: Product): RequestParams {
+        val addToCartRequestParams = AddToCartRequestParams(
+                productId = product.productId.toLong(),
+                shopId = product.shopId.toInt(),
+                quantity = product.minOrder,
+                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_TOPCHAT
+        )
+        return RequestParams.create().apply {
+            putObject(
+                    AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                    addToCartRequestParams
+            )
         }
-        startActivityForResult(intent, REQUEST_GO_TO_NORMAL_CHECKOUT)
+    }
+
+    private fun showErrorMessage(msg: String) {
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
     }
 
     override fun onClickAddToWishList(product: Product) {

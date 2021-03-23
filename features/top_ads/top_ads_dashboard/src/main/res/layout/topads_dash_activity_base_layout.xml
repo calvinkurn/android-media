@@ -35,9 +35,9 @@
 
                 <com.tokopedia.unifycomponents.TabsUnify
                     android:id="@+id/tab_layout"
-                    android:layout_gravity="fill"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -47,34 +47,29 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <LinearLayout
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:orientation="vertical">
+            android:background="@color/white"
+            android:padding="@dimen/dp_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bottom"
-                android:layout_width="match_parent"
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/multiActionBtn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:padding="@dimen/dp_8"
+                android:gravity="center_vertical"
+                android:text="@string/topads_dash_button_submit_beranda"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view">
-
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/createAd"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="@string/topads_dash_button_submit_beranda"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:unifyButtonSize="large"
-                    app:unifyButtonType="main"
-                    app:unifyButtonVariant="filled" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

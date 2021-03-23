@@ -10,9 +10,9 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
+import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
 import java.util.*
@@ -38,7 +38,7 @@ class ShopHomeSliderBannerViewHolder(
     private var carouselData: ArrayList<Any>? = null
 
     private var itmListener = { view: View, data: Any ->
-        val img: ImageUnify = view.findViewById(R.id.imageCarousel)
+        val img: ShopCarouselBannerImageUnify = view.findViewById(R.id.imageCarousel)
         val carouselItem = data as CarouselData
         val index = carouselData?.indexOf(carouselItem) ?: 0
         bannerData?.let { bannerData ->
@@ -63,7 +63,10 @@ class ShopHomeSliderBannerViewHolder(
                 val ratio = bannerData?.let { getHeightRatio(it) } ?: 0f
                 img.layoutParams.height = (carouselShopPage?.measuredWidth.orZero() * ratio).toInt()
                 img.requestLayout()
-                img.setImageUrl(carouselItem.imageUrl)
+                try {
+                    if(img.context.isValidGlideContext())
+                        img.setImageUrl(carouselItem.imageUrl)
+                } catch (e: Throwable) { }
             }
         } catch (e: Exception) {
             e.printStackTrace()

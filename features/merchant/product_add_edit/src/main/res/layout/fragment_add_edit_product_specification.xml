@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderSpecification"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerSpecification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerType="announcement"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/label_info_specification"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSpecification"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/btnSpecification"
+        app:layout_constraintTop_toBottomOf="@+id/tickerSpecification" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSpecification"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:text="@string/action_specification_save"
+        android:enabled="false"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,6 @@ import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.view.viewmodel.InvoiceViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
-import com.tokopedia.websocket.RxWebSocket
 import okhttp3.Interceptor
 
 class InvoicePreviewUiModel(
@@ -48,15 +47,19 @@ class InvoicePreviewUiModel(
         return attachmentPreviewFactory.type(this)
     }
 
-    override fun sendTo(messageId: String, opponentId: String, message: String, listInterceptor: List<Interceptor>) {
+    override fun generateMsgObj(
+            messageId: String,
+            opponentId: String,
+            message: String,
+            listInterceptor: List<Interceptor>
+    ): Any {
         val startTime = SendableViewModel.generateStartTime()
-        val invoicePreviewParam = SendWebsocketParam.generateParamSendInvoiceAttachment(
+        return SendWebsocketParam.generateParamSendInvoiceAttachment(
                 messageId,
                 this,
                 startTime,
                 opponentId
         )
-        RxWebSocket.send(invoicePreviewParam, listInterceptor)
     }
 
     companion object {

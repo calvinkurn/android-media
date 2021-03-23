@@ -14,19 +14,20 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.utils.each
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -70,9 +71,6 @@ class ShipmentPresenterDisableFeatureTest {
     private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
     @MockK
-    private lateinit var codCheckoutUseCase: CodCheckoutUseCase
-
-    @MockK
     private lateinit var getRatesUseCase: GetRatesUseCase
 
     @MockK
@@ -103,9 +101,6 @@ class ShipmentPresenterDisableFeatureTest {
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
     @MockK
-    private lateinit var getInsuranceCartUseCase: GetInsuranceCartUseCase
-
-    @MockK
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
 
     @MockK
@@ -113,6 +108,9 @@ class ShipmentPresenterDisableFeatureTest {
 
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
+
+    @MockK
+    private lateinit var chosenAddressRequestHelper: ChosenAddressRequestHelper
 
     private var shipmentDataConverter = ShipmentDataConverter()
 
@@ -125,16 +123,14 @@ class ShipmentPresenterDisableFeatureTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
-        presenter = ShipmentPresenter(compositeSubscription,
-                checkoutUseCase, getShipmentAddressFormGqlUseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase,
-                saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
-                ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
-                getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
+        getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers, chosenAddressRequestHelper)
+        presenter = ShipmentPresenter(
+                compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
+                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
@@ -147,6 +143,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -167,6 +164,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -187,6 +185,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -207,6 +206,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -227,6 +227,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -247,6 +248,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")

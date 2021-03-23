@@ -133,8 +133,7 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
             )
 
     private fun isValidReturnJourney(departureModel: FlightJourneyModel, returnModel: FlightJourneyModel): Boolean {
-        if (departureModel.routeList != null && returnModel.routeList != null &&
-                departureModel.routeList.size > 0 && returnModel.routeList.size > 0) {
+        if (departureModel.routeList.isNotEmpty() && returnModel.routeList.isNotEmpty()) {
             val lastDepartureRoute = departureModel.routeList[departureModel.routeList.size - 1]
             val firstReturnRoute = returnModel.routeList[0]
             val departureArrivalTime = FlightDateUtil.stringToDate(

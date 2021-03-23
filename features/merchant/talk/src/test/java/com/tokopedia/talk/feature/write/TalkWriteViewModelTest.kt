@@ -23,7 +23,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when getWriteFormData success should execute expected use case and get expected data`() {
-        val productId = 0
+        val productId = "0"
         val expectedResponse = DiscussionGetWritingFormResponseWrapper()
 
         onGetDiscussionWritingForm_shouldReturn(expectedResponse)
@@ -36,7 +36,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when getWriteFormData fail should execute expected use case and fail with expected error`() {
-        val productId = 0
+        val productId = "0"
         val expectedError = NetworkErrorException()
 
         onGetDiscussionWritingFormError_shouldReturn(expectedError)
@@ -49,7 +49,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when toggleCategory should select category if not selected and vice versa`() {
-        val productId = 0
+        val productId = "0"
         val expectedResponse = DiscussionGetWritingFormResponseWrapper(DiscussionGetWritingForm(categories = unselectedCategories))
 
         onGetDiscussionWritingForm_shouldReturn(expectedResponse)
@@ -89,7 +89,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
     @Test
     fun `when getShopId should get expected shopId`() {
         val expectedShopId = "12345"
-        val productId = 0
+        val productId = "0"
         val expectedResponse = DiscussionGetWritingFormResponseWrapper(DiscussionGetWritingForm(shopId = expectedShopId))
 
         onGetDiscussionWritingForm_shouldReturn(expectedResponse)
@@ -102,7 +102,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when getProductId should return expected productId`() {
-        val expectedProductId = 0
+        val expectedProductId = "0"
 
         viewModel.setProductId(expectedProductId)
 
@@ -111,7 +111,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when refresh should trigger load form again`() {
-        viewModel.setProductId(0)
+        viewModel.setProductId("0")
         viewModel.refresh()
 
         verifyDiscussionGetWritingFormUseCaseCalled()
@@ -195,7 +195,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
         viewModel.writeFormData.verifyErrorEquals(expectedError)
     }
 
-    private fun verifyProductIdEquals(expectedProductId: Int) {
+    private fun verifyProductIdEquals(expectedProductId: String) {
         Assert.assertEquals(expectedProductId, viewModel.getProductId())
     }
 

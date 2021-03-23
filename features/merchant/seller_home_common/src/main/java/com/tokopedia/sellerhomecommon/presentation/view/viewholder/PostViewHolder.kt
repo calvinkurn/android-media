@@ -39,7 +39,7 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
         if (featuredMediaURL.isNotEmpty()) {
             ImageHandler.loadImageRounded(context, imgPost, featuredMediaURL, context.dpToPx(8))
         } else {
-            ImageHandler.loadImageRounded2(context, imgPost, R.drawable.error_drawable, context.dpToPx(8))
+            ImageHandler.loadImageRounded2(context, imgPost, com.tokopedia.abstraction.R.drawable.error_drawable, context.dpToPx(8))
         }
     }
 }

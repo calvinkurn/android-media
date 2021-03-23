@@ -14,4 +14,7 @@
     <string name="webview_help_menu_text">Tokopedia Care</string>
     <string name="webview_rationale_need_location">Akses lokasi diperlukan untuk menggunakan fitur ini. Perbolehkan?</string>
     <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
+
+    <string name="webview_label_download">Download</string>
+
 </resources>

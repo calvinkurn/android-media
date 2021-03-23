@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.replaceTextAndRestoreCursorPosition
 import com.tokopedia.product.addedit.common.util.setText
@@ -87,9 +88,15 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             itemView.apply {
                 cardThumbnail.visibility = if (inputTitle.isEmpty()) View.GONE else View.VISIBLE
                 itemView.textFieldUrl.textAreaIconClose.visibility = if (inputUrl.isEmpty()) View.GONE else View.VISIBLE
-                imgThumbnail.urlSrc = imageUrl
+
+                try {
+                    if(imgThumbnail?.context?.isValidGlideContext() == true)
+                        imgThumbnail.urlSrc = imageUrl
+                } catch (e: Throwable) { }
+
                 tvVideoTitle.text = inputTitle
                 tvVideoSubtitle.text = inputDescription
+
                 if (errorMessage.isNotEmpty() && !textFieldUrl.textAreaInput.text.isBlank()) {
                     textFieldUrl.isError = true
                     textFieldUrl.textAreaMessage = errorMessage

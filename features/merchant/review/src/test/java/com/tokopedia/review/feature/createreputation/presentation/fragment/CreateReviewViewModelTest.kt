@@ -323,30 +323,28 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getAfterEditImageList should add all images when 5 images`() {
-        val imagePickerResult = arrayListOf("picture1", "picture2", "picture3", "picture4", "picture5edited")
-        val originalImageUrl = arrayListOf("picture1", "picture2", "picture3", "picture4", "picture5")
-        val edited = arrayListOf(false, false, false, false, true)
+        val imagePickerResult = mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
+        val originalImageUrl = mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
 
         val expectedData = mutableListOf<BaseImageReviewUiModel>(ImageReviewUiModel("picture1"),
                 ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
-                ImageReviewUiModel("picture4"), ImageReviewUiModel("picture5edited"))
+                ImageReviewUiModel("picture4"), ImageReviewUiModel("picture5"))
 
-        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl, edited)
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
 
         Assert.assertEquals(expectedData, actualData)
     }
 
     @Test
     fun `when getAfterEditImageList should add images and add when DefaultImageReviewUiModel less than 5 images`() {
-        val imagePickerResult = arrayListOf("picture1", "picture2", "picture3", "picture4")
-        val originalImageUrl = arrayListOf("picture1", "picture2", "picture3", "picture4edited")
-        val edited = arrayListOf(false, false, false, true)
+        val imagePickerResult = mutableListOf("picture1", "picture2", "picture3", "picture4")
+        val originalImageUrl = mutableListOf("picture1", "picture2", "picture3", "picture4")
 
-        val expectedData = mutableListOf<BaseImageReviewUiModel>(ImageReviewUiModel("picture1"),
+        val expectedData = mutableListOf(ImageReviewUiModel("picture1"),
                 ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
                 ImageReviewUiModel("picture4"), DefaultImageReviewUiModel())
 
-        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl, edited)
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
 
         Assert.assertEquals(expectedData, actualData)
     }

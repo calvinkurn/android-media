@@ -78,7 +78,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
     private fun `Then verify visitable list has correct inspiration card and product sequence on first page`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
-        val inspirationWidget = searchProductModel.searchInspirationWidget.data
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data.filter { it.type != "unknown_random_type" }
 
         // 0 -> product
         // 1 -> product
@@ -136,7 +136,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         img shouldBe inspirationWidgetOption.img
         url shouldBe inspirationWidgetOption.url
         applink shouldBe inspirationWidgetOption.applink
-        color shouldBe inspirationWidgetOption.color
+        hexColor shouldBe inspirationWidgetOption.color
         inspirationCardType shouldBe type
     }
 
@@ -159,7 +159,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
     private fun `Then verify visitable list has correct inspiration card and product sequence after load more`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
-        val inspirationWidget = searchProductModel.searchInspirationWidget.data
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data.filter { it.type != "unknown_random_type" }
 
         // 0 -> product
         // 1 -> product

@@ -14,6 +14,7 @@ import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
+import com.tokopedia.topchat.chatlist.pojo.ChatAdminNoAccessUiModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 
@@ -59,6 +60,13 @@ class ChatListAdapter constructor(
         })
 
         diff.dispatchUpdatesTo(this)
+    }
+
+    fun deleteItem(msgId: String) {
+        val itemPosition = findChatWithMsgId(msgId)
+        if (itemPosition == RecyclerView.NO_POSITION) return
+        list.removeAt(itemPosition)
+        notifyItemRemoved(itemPosition)
     }
 
     fun deleteItem(position: Int, emptyModel: Visitable<*>?) {
@@ -160,7 +168,9 @@ class ChatListAdapter constructor(
             index: Int,
             newChat: IncomingChatWebSocketModel,
             readStatus: Int,
-            pinnedMsgId: Set<String>
+            pinnedMsgId: Set<String>,
+            counterIncrement: Int = 1,
+            shouldUpdateReadStatus: Boolean = false
     ) {
         val isChatPinned = pinnedMsgId.contains(newChat.msgId)
         val newChatIndex = if (isChatPinned) {
@@ -168,12 +178,26 @@ class ChatListAdapter constructor(
         } else {
             pinnedMsgId.size
         }
-        updateChatPojo(index, newChat, readStatus)
+        updateChatPojo(
+                index = index,
+                newChat = newChat,
+                readStatus = readStatus,
+                counterIncrement = counterIncrement,
+                shouldUpdateReadStatus = shouldUpdateReadStatus
+        )
         if (index != newChatIndex) {
             visitables.moveTo(index, newChatIndex)
             notifyItemMoved(index, newChatIndex)
         }
         notifyItemChanged(newChatIndex, ChatItemListViewHolder.PAYLOAD_NEW_INCOMING_CHAT)
+    }
+
+    fun showNoAccessView() {
+        visitables.run {
+            clear()
+            add(0, ChatAdminNoAccessUiModel)
+        }
+        notifyDataSetChanged()
     }
 
     private fun findElementFinalIndex(element: ItemChatListPojo, offset: Int): Int {
@@ -193,6 +217,18 @@ class ChatListAdapter constructor(
         return finalIndex
     }
 
+    fun findChat(newChat: IncomingChatWebSocketModel): Int {
+        return list.indexOfFirst { chat ->
+            return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
+        }
+    }
+
+    private fun findChatWithMsgId(msgId: String): Int {
+        return list.indexOfFirst { item ->
+            item is ItemChatListPojo && item.msgId == msgId
+        }
+    }
+
     private fun getItemPosition(element: ItemChatListPojo, previouslyKnownPosition: Int): Int {
         val chatItem = visitables.getOrNull(previouslyKnownPosition)
         return if (chatItem != null && chatItem == element) {
@@ -205,21 +241,26 @@ class ChatListAdapter constructor(
     private fun updateChatPojo(
             index: Int,
             newChat: IncomingChatWebSocketModel,
-            readStatus: Int
+            readStatus: Int,
+            counterIncrement: Int = 1,
+            shouldUpdateReadStatus: Boolean = false
     ) {
         if (index >= visitables.size) return
         visitables[index].apply {
             if (this is ItemChatListPojo) {
                 if (
                         attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                        readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                        readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD &&
+                        shouldUpdateReadStatus
                 ) {
                     listener.increaseNotificationCounter()
                 }
                 attributes?.lastReplyMessage = newChat.message
-                attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
-                attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
-                attributes?.readStatus = readStatus
+                if (shouldUpdateReadStatus) {
+                    attributes?.unreads = attributes?.unreads.toZeroIfNull() + counterIncrement
+                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + counterIncrement
+                    attributes?.readStatus = readStatus
+                }
                 attributes?.lastReplyTimeStr = newChat.time
                 attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
                 attributes?.label = ""

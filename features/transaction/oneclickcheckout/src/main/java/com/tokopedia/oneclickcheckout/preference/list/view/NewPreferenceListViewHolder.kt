@@ -40,7 +40,7 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
 
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
 
-        if (preference.profileId == currentProfileId) {
+        if (preference.enable && preference.profileId == currentProfileId) {
             cardUnify.cardType = CardUnify.TYPE_SHADOW_ACTIVE
             layoutCard.setOnClickListener {
                 /* no-op */
@@ -49,9 +49,16 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
         } else {
             cardUnify.cardType = CardUnify.TYPE_SHADOW
             layoutCard.setOnClickListener {
-                listener.onPreferenceSelected(preference)
+                if (preference.enable) {
+                    listener.onPreferenceSelected(preference, true)
+                }
             }
             dividerHeader.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+        }
+        if (preference.enable) {
+            itemView.alpha = 1f
+        } else {
+            itemView.alpha = 0.5f
         }
 
         val addressModel = preference.addressModel
@@ -71,13 +78,17 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
 
         val shipmentModel = preference.shipmentModel
         tvShippingName.text = itemView.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
-        val tempServiceDuration = shipmentModel.serviceDuration
-        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-            itemView.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
+        if (shipmentModel.estimation.isNotEmpty()) {
+            tvShippingDuration.text = shipmentModel.estimation
         } else {
-            itemView.context.getString(R.string.lbl_no_exact_shipping_duration)
+            val tempServiceDuration = shipmentModel.serviceDuration
+            val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+                itemView.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
+            } else {
+                itemView.context.getString(R.string.lbl_no_exact_shipping_duration)
+            }
+            tvShippingDuration.text = serviceDur
         }
-        tvShippingDuration.text = serviceDur
 
         val paymentModel = preference.paymentModel
         ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel.image)
@@ -121,7 +132,7 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
 
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
 
-        if (preference.profileId == currentProfileId) {
+        if (preference.enable && preference.profileId == currentProfileId) {
             cardUnify.cardType = CardUnify.TYPE_SHADOW_ACTIVE
             layoutCard.setOnClickListener {
                 /* no-op */
@@ -129,8 +140,15 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
         } else {
             cardUnify.cardType = CardUnify.TYPE_SHADOW
             layoutCard.setOnClickListener {
-                listener.onPreferenceSelected(preference)
+                if (preference.enable) {
+                    listener.onPreferenceSelected(preference, false)
+                }
             }
+        }
+        if (preference.enable) {
+            itemView.alpha = 1f
+        } else {
+            itemView.alpha = 0.5f
         }
 
         val addressModel = preference.addressModel
@@ -150,13 +168,17 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
 
         val shipmentModel = preference.shipmentModel
         tvShippingName.text = itemView.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
-        val tempServiceDuration = shipmentModel.serviceDuration
-        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-            itemView.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
+        if (shipmentModel.estimation.isNotEmpty()) {
+            tvShippingDuration.text = shipmentModel.estimation
         } else {
-            itemView.context.getString(R.string.lbl_no_exact_shipping_duration)
+            val tempServiceDuration = shipmentModel.serviceDuration
+            val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+                itemView.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
+            } else {
+                itemView.context.getString(R.string.lbl_no_exact_shipping_duration)
+            }
+            tvShippingDuration.text = serviceDur
         }
-        tvShippingDuration.text = serviceDur
 
         val paymentModel = preference.paymentModel
         ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel.image)

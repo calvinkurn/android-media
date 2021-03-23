@@ -167,6 +167,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                         inputMethodManager.showSoftInput(ac_input, InputMethod.SHOW_FORCED)
                     }
                     btn_clear_input.visibility = View.VISIBLE
+                    actionListener?.onTextChangeInput()
                 }
             }
         }
@@ -198,6 +199,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
 
     interface ActionListener {
         fun onFinishInput(input: String)
+        fun onTextChangeInput()
         fun onCustomInputClick()
     }
 

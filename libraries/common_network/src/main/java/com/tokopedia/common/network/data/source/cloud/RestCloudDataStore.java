@@ -302,7 +302,6 @@ public class RestCloudDataStore implements RestDataStore {
     }
 
     private RestApi getApiInterface(List<Interceptor> interceptors, Context context) {
-        NetworkClient.initRetrofitWithInterceptors(interceptors, context);
-        return NetworkClient.getApiInterfaceCustomInterceptor();
+        return NetworkClient.getApiInterfaceCustomInterceptor(interceptors, context);
     }
 }

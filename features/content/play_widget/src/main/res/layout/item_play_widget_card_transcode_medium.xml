@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N100">
+        android:background="@color/play_widget_dms_light_gray">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/play_widget_thumbnail"
@@ -133,7 +133,7 @@
             android:id="@+id/play_widget_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0_68"
+            android:background="@color/play_widget_dms_info_container"
             android:orientation="vertical"
             android:paddingTop="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"

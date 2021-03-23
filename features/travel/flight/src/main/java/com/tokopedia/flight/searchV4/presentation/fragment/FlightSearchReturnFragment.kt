@@ -36,7 +36,13 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         super.onActivityCreated(savedInstanceState)
 
         flightSearchReturnViewModel.departureJourney.observe(viewLifecycleOwner, Observer {
+            if (!flightSearchViewModel.isFilterModelInitialized()) {
+                flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
+            }
+            flightSearchViewModel.filterModel.departureArrivalTime = it.routeList[it.routeList.size - 1].arrivalTimestamp
+
             renderDepartureJourney(it)
+            flightSearchViewModel.fetchSortAndFilter()
         })
 
         flightSearchReturnViewModel.searchErrorStringId.observe(viewLifecycleOwner, Observer {

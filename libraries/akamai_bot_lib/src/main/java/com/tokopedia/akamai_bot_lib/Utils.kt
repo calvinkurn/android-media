@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.akamai.botman.CYFMonitor
+import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -40,7 +41,6 @@ val registeredGqlFunctions = mapOf(
         "gamiCrack" to "gamicrack",
         "add_to_cart_occ" to "atcocc",
         "one_click_checkout" to "checkoutocc",
-        "add_to_cart_transactional" to "atc",
         "add_to_cart_v2" to "atc",
         "checkout" to "checkout",
         "coupon_list_recommendation" to "clrecom",
@@ -111,12 +111,18 @@ fun <E> setExpire(
         saveTime: (param: Long) -> Unit,
         setValue: () -> Unit,
         getValue: () -> E): E {
-    val curr_time = currentTime.invoke()
-    val alreadyNotedTime1 = alreadyNotedTime.invoke()
+    val currTime = currentTime.invoke()
+    val savedTime = alreadyNotedTime.invoke()
 
-    if ((curr_time - alreadyNotedTime1) >= sdValidTime) {
-        saveTime(curr_time)
+    if ((currTime - savedTime) >= sdValidTime) {
+        saveTime(currTime)
+        val previousValue = getValue.invoke()
         setValue()
+        val currentValue = getValue.invoke()
+        val valueChanged = currentValue?.equals(previousValue)?:false
+        if (valueChanged) {
+            Timber.w("P1#AKAMAI_SENSOR_SAME#shared_pref;expired='true';value_changed='$valueChanged';expired_time='${savedTime+sdValidTime}';current_time='$currTime'")
+        }
         return getValue.invoke()
     } else {
         return getValue.invoke()

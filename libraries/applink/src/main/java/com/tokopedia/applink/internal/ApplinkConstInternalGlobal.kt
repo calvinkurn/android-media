@@ -34,6 +34,8 @@ object ApplinkConstInternalGlobal {
     const val PARAM_MESSAGE_BODY = "messageBody"
     const val PARAM_STATUS = "status"
     const val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+    const val PARAM_IS_FROM_REGISTER = "isFromRegister"
+    const val PARAM_IS_FACEBOOK = "isFacebook"
     const val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
     const val PARAM_USER_ID_ENC = "userIdEncrypted"
     const val PARAM_USER_ACCESS_TOKEN = "accessToken"
@@ -47,6 +49,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_ENABLE_2FA = "enable_2fa"
     const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
     const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
+    const val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -197,6 +200,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-talk
     @JvmField
     val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
+
+    @JvmField
+    val TALK_SELLER_SETTINGS = "$INTERNAL_GLOBAL/talk-seller-settings/"
 
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
@@ -431,6 +437,17 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_RETURN_HOME = "return_to_home"
     @JvmField
     val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
+
+    /**
+     * TermPrivacyActivity
+     * @applink : tokopedia-android-internal://global/term-privacy/{page}/
+     **/
+    @JvmField
+    val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}/"
+    /** for param term privacy */
+    const val PAGE_TERM_AND_CONDITION = "term-condition"
+    const val PAGE_PRIVACY_POLICY = "privacy-policy"
+
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
@@ -451,9 +468,18 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 
-    // Topchat
+    /**
+     * Go to chat list
+     */
     @JvmField
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
+
 
 
     //ReferralPhoneNumberVerificationActivity
@@ -507,4 +533,19 @@ object ApplinkConstInternalGlobal {
     //FeedbackPageActivity
     @JvmField
     val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
+
+    // OvoAddNameActivity
+    // tokopedia-android-internal://global/ovo-add-name
+    @JvmField
+    val OVO_ADD_NAME = "$INTERNAL_GLOBAL/ovo-add-name"
+
+    // OvoFinalPageActivity
+    // tokopedia-android-internal://global/ovo-final-page
+    @JvmField
+    val OVO_FINAL_PAGE = "$INTERNAL_GLOBAL/ovo-final-page"
+
+    // OvoRegisterInitialActivity
+    // tokopedia-android-internal://global/ovo-reg-init
+    @JvmField
+    val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
 }

@@ -11,23 +11,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.Menus
-import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -36,10 +33,13 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActiv
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
+import com.tokopedia.shop.settings.common.widget.Menus
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
 import java.util.*
@@ -94,7 +94,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
                 val itemMenusList = ArrayList<Menus.ItemMenus>()
                 if (shopBasicDataModel.isOpen) {
-                    if (StringUtils.isEmptyNumber(shopBasicDataModel.closeSchedule)) {
+                    if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
                         itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
                     } else {
                         itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
@@ -105,7 +105,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
                     itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
                 }
-                menus.itemMenuList = itemMenusList
+                menus.setItemMenuList(itemMenusList)
                 menus.setOnItemMenuClickListener { itemMenus, _ ->
                     onItemMenuClicked(itemMenus.title)
                     menus.dismiss()
@@ -122,12 +122,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             }
             getString(R.string.remove_schedule) -> {
                 activity?.let { it ->
-                    Dialog(it, Dialog.Type.PROMINANCE).apply {
+                    DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(R.string.remove_schedule))
-                        setDesc(getString(R.string.remove_schedule_message))
-                        setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(com.tokopedia.design.R.string.label_cancel))
-                        setOnOkClickListener {
+                        setDescription(getString(R.string.remove_schedule_message))
+                        setPrimaryCTAText(getString(R.string.action_delete))
+                        setSecondaryCTAText(getString(R.string.label_cancel))
+                        setPrimaryCTAClickListener {
                             //remove schedule
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingsInfoViewModel.updateShopSchedule(
@@ -139,7 +139,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                             )
                             dismiss()
                         }
-                        setOnCancelClickListener { dismiss() }
+                        setSecondaryCTAClickListener { dismiss() }
                         show()
                     }
                 }
@@ -334,7 +334,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
+        val tvSave: Typography? = activity?.findViewById(R.id.tvSave)
         tvSave?.hide()
     }
 
@@ -385,16 +385,21 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 if (URLUtil.isNetworkUrl(it)) {
                     it
                 } else {
-                    getString(com.tokopedia.design.R.string.tokopedia_domain) + "/$it"
+                    getString(R.string.tokopedia_domain) + "/$it"
                 }
             }
 
             val logoUrl = shopBasicData.logo
-            if (TextUtils.isEmpty(logoUrl)) {
-                ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
-            } else {
-                ImageHandler.LoadImage(ivShopLogo, logoUrl)
-            }
+            //avoid crash in ImageUnify when image url is returned as base64
+            try {
+                if (ivShopLogo.context.isValidGlideContext()) {
+                    if (TextUtils.isEmpty(logoUrl)) {
+                        ImageHandler.loadImage2(ivShopLogo, logoUrl, R.drawable.ic_shopdefault_empty)
+                    } else {
+                        ImageHandler.LoadImage(ivShopLogo, logoUrl)
+                    }
+                }
+            }catch (e: Exception) {}
 
             if (shopBasicData.tagline.isNullOrBlank()) {
                 tvShopSloganTitle.visibility = View.GONE
@@ -414,7 +419,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 tvShopDescription.text = shopBasicData.description
             }
 
-            tvShopStatus.text = if (shopBasicData.isOpen) getString(com.tokopedia.design.R.string.label_open) else getString(com.tokopedia.design.R.string.label_close)
+            tvShopStatus.text = if (shopBasicData.isOpen) getString(R.string.label_open) else getString(R.string.label_close)
         }
     }
 
@@ -423,7 +428,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             container_regular_merchant.visibility = View.VISIBLE
             container_power_merchant.visibility = View.GONE
             container_official_store.visibility = View.GONE
-            tv_regular_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
+            tv_regular_merchant_type.text = getString(R.string.label_regular_merchant)
         }
     }
 
@@ -433,7 +438,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_official_store.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-        tv_power_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
+        tv_power_merchant_type.text = getString(R.string.label_power_merchant)
     }
 
     private fun showOfficialStore(expirationDate: String) {
@@ -442,7 +447,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_power_merchant.visibility = View.GONE
         iv_logo_official_store.visibility = View.VISIBLE
         iv_logo_official_store.setImageResource(R.drawable.ic_shop_setting_official_store)
-        tv_official_store.text = getString(com.tokopedia.design.R.string.label_official_store)
+        tv_official_store.text = getString(R.string.label_official_store)
         tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
     }
 

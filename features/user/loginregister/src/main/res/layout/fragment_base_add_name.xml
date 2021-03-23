@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:background="@color/Unify_N0"
+    android:orientation="vertical"
+    android:padding="@dimen/unify_space_16"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:id="@+id/base_add_name_title"
+        android:text="@string/base_add_name_title"
+        app:typographyType="heading_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:id="@+id/base_add_name_textfield"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_label_static="true"
+        app:text_field_placeholder=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:text_field_input_type="textEmailAddress"
+        app:text_field_message="@string/base_add_name_ktp_message"
+        app:text_field_label="@string/base_add_name_full_name" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:id="@+id/base_add_name_button_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/base_add_name_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_3"
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:id="@+id/base_add_name_tnc_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

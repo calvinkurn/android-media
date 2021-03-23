@@ -99,14 +99,15 @@ class SmallGridInspirationCardViewHolder(
 
     private fun bindContent(element: InspirationCardViewModel) {
         val spacingItemDecoration = ChipSpacingItemDecoration(
-                itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+                itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
         )
 
         itemView.smallGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.options)
-            it.addItemDecorationIfNotExists(spacingItemDecoration)
+            if (!element.isRelated())
+                it.addItemDecorationIfNotExists(spacingItemDecoration)
         }
     }
 
@@ -116,7 +117,7 @@ class SmallGridInspirationCardViewHolder(
 
     private fun createAdapter(
             inspirationCarouselProductList: List<InspirationCardOptionViewModel>
-    ): RecyclerView.Adapter<InspirationCardOptionChipViewHolder> {
+    ): RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val inspirationCardOptionAdapter = InspirationCardOptionAdapter(inspirationCardListener)
         inspirationCardOptionAdapter.setItemList(inspirationCarouselProductList)
 

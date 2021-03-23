@@ -1,14 +1,14 @@
 package com.tokopedia.sellerorder.filter.presentation.adapter
 
+import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterItemChipsAdapter.Companion.KEY_IS_SELECTED_CHIPS
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterEmptyUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+
 
 class SomFilterDiffUtilCallback(
         private val oldItems: List<Visitable<*>>,
@@ -62,6 +62,21 @@ class SomSubFilterDiffUtil(private val oldList: List<SomFilterChipsUiModel>, pri
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition].idFilter == newList[newItemPosition].idFilter &&
                 oldList[oldItemPosition].isSelected == newList[newItemPosition].isSelected
+    }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val newItem = newList[newItemPosition]
+        val oldItem = oldList[oldItemPosition]
+
+        val diff = Bundle()
+
+        if (newItem.isSelected != oldItem.isSelected) {
+            diff.putBoolean(KEY_IS_SELECTED_CHIPS, newItem.isSelected)
+        }
+
+        return if (diff.size() == 0) {
+            null
+        } else diff
     }
 }
 

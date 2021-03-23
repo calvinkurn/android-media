@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.product.view.datamodel.ShopProductEmptySearchUiModel
@@ -16,7 +17,10 @@ class ShopProductEmptySearchViewHolder(val view: View,
     }
     override fun bind(element: ShopProductEmptySearchUiModel) {
         with(itemView) {
-            shopSearchEmptyState?.setImageUrl(ShopPageConstant.URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE)
+            try {
+                if(shopSearchEmptyState?.context?.isValidGlideContext() == true)
+                    shopSearchEmptyState?.setImageUrl(ShopPageConstant.URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE)
+            } catch (e: Throwable) { }
             shopSearchEmptyState?.setPrimaryCTAClickListener {
                 shopProductEmptySearchListener?.onPrimaryButtonEmptyClicked()
             }

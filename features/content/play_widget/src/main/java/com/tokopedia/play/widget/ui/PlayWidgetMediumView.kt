@@ -115,9 +115,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             }
         }
 
-        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
-            mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, remind)
-            mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, remind, position)
+        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, reminderType: PlayWidgetReminderType, position: Int) {
+            mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, reminderType.reminded)
+            mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, reminderType, position)
         }
 
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
@@ -190,10 +190,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         snapHelper.attachToRecyclerView(recyclerViewItem)
 
-        recyclerViewItem.addOneTimeGlobalLayoutListener {
-            mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
-        }
-
         recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -235,9 +231,18 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         configureBackgroundOverlay(data.background)
 
+        recyclerViewItem.addOneTimeGlobalLayoutListener {
+            mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
+        }
+
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        mWidgetInternalListener?.onWidgetAttached(recyclerViewItem)
     }
 
     /**

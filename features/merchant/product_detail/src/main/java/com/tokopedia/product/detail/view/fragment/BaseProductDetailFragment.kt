@@ -21,7 +21,6 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
-import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 
 /**
@@ -75,15 +74,20 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         observeData()
     }
 
-    fun remoteConfig(): RemoteConfig? = (activity as ProductDetailActivity).remoteConfig
+    fun remoteConfig(): RemoteConfig? = (activity as? ProductDetailActivity)?.remoteConfig
 
     fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
         hideSwipeLoading()
-        productAdapter?.submitList(visitables)
+
+        rvPdp?.post {
+            productAdapter?.submitList(visitables)
+        }
     }
 
     fun submitList(visitables: List<DynamicPdpDataModel>) {
-        productAdapter?.submitList(visitables)
+        rvPdp?.post {
+            productAdapter?.submitList(visitables)
+        }
     }
 
     fun showLoading() {
@@ -97,13 +101,22 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
                 it.isEnabled = false
             }
             base_btn_action?.gone()
-            ticker_occ_layout?.gone()
         }
     }
 
     fun <T : DynamicPdpDataModel> getComponentPosition(data: T?): Int {
         return if (data != null) {
             productAdapter?.currentList?.indexOf(data) ?: RecyclerView.NO_POSITION
+        } else {
+            RecyclerView.NO_POSITION
+        }
+    }
+
+    fun <T : DynamicPdpDataModel> getComponentPositionBeforeUpdate(data: T?): Int {
+        return if (data != null) {
+            productAdapter?.currentList?.indexOfFirst {
+                it.name() == data.name()
+            } ?: RecyclerView.NO_POSITION
         } else {
             RecyclerView.NO_POSITION
         }
@@ -139,7 +152,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     private fun setupRecyclerView(view: View) {
         rvPdp = view.findViewById(R.id.rv_pdp)
-
+        rvPdp?.isNestedScrollingEnabled = false
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
         showLoading()

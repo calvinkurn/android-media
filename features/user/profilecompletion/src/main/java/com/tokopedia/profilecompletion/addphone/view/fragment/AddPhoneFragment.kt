@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -45,6 +46,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     private val phoneNumberTracker = AddPhoneNumberTracker()
     private var isOnclickEventTriggered = false
+    private var validateToken: String = ""
 
     override fun getScreenName(): String {
         return ""
@@ -56,7 +58,14 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        splitCompatInstall()
         return inflater.inflate(R.layout.fragment_add_phone, container, false)
+    }
+
+    private fun splitCompatInstall() {
+        activity?.let{
+            SplitCompat.installActivity(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -197,6 +206,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             val bundle = Bundle()
             bundle.putInt(EXTRA_PROFILE_SCORE, result.addPhonePojo.data.completionScore)
             bundle.putString(EXTRA_PHONE, result.phoneNumber)
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
             intent.putExtras(bundle)
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -226,6 +236,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
+            validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
             onSuccessVerifyPhone(data)
         } else {
             dismissLoading()

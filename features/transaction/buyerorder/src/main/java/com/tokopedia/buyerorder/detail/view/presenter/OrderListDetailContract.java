@@ -1,9 +1,6 @@
 package com.tokopedia.buyerorder.detail.view.presenter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -31,7 +28,6 @@ import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
 
 import java.util.List;
 
@@ -143,6 +139,10 @@ public interface OrderListDetailContract {
         void onCopyButtonClick(String copiedValue);
 
         void onActionButtonClick(String buttonId, String buttonName);
+
+        String getOrderCategoryName();
+
+        String getOrderProductName();
     }
 
     interface ActionInterface {

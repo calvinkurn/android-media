@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play_common.view.RoundedConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_video"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_one_tap_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35"
-        />
+    android:background="@color/play_dms_video_background">
 
     <include
         android:id="@+id/view_video"
@@ -29,7 +21,6 @@
     <include
         android:id="@+id/view_video_loading"
         layout="@layout/view_video_loading"
-        android:visibility="gone"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,23 +29,33 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_onboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.30"
+        />
+
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_one_tap_finger"
+        android:id="@+id/iv_onboarding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:alpha="0"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gl_one_tap_post"
-        app:srcCompat="@drawable/ic_play_one_tap_finger"
-        />
+        app:layout_constraintTop_toBottomOf="@id/gl_onboarding"
+        app:srcCompat="@drawable/ic_play_onboarding"
+        tools:alpha="1"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/v_play_overlay_video"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/Neutral_N700_68"
+        android:background="@color/play_dms_N700_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -128,6 +128,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         val list: ArrayList<ComponentsItem> = ArrayList()
         mDiscoveryRecycleAdapter.setDataList(list)
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
+        if (mHeaderView.childCount > 0)
+            mHeaderView.removeAllViews()
     }
 
     override fun getInnerRecycleView(): RecyclerView {

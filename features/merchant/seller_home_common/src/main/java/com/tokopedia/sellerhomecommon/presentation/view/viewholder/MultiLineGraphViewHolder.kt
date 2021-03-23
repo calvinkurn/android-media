@@ -102,44 +102,51 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
-        val otherSelectedMetric = metricsAdapter.items.find { it.isSelected && it != metric }
-        val isAnyOtherSelected = otherSelectedMetric != null
-        if (this.lastSelectedMetric == metric) {
-            if (isAnyOtherSelected) {
-                if (lastSelectedMetric?.type == metric.type) {
-                    metric.isSelected = false
-                    this.lastSelectedMetric = otherSelectedMetric
-                } else {
-                    otherSelectedMetric?.isSelected = false
-                    metric.isSelected = true
-                    this.lastSelectedMetric = metric
-                }
-            } else {
-                metricsAdapter.notifyDataSetChanged()
-                return
+        if (element?.isComparePeriodeOnly == true) {
+            metricsAdapter.items.forEach {
+                it.isSelected = (it == metric)
             }
+            this.lastSelectedMetric = metric
         } else {
-            if (lastSelectedMetric?.type == metric.type) {
-                if (metric.isSelected) {
-                    metric.isSelected = false
-                    this.lastSelectedMetric = otherSelectedMetric
+            val otherSelectedMetric = metricsAdapter.items.find { it.isSelected && it != metric }
+            val isAnyOtherSelected = otherSelectedMetric != null
+            if (this.lastSelectedMetric == metric) {
+                if (isAnyOtherSelected) {
+                    if (lastSelectedMetric?.type == metric.type) {
+                        metric.isSelected = false
+                        this.lastSelectedMetric = otherSelectedMetric
+                    } else {
+                        otherSelectedMetric?.isSelected = false
+                        metric.isSelected = true
+                        this.lastSelectedMetric = metric
+                    }
                 } else {
                     metric.isSelected = true
-                    this.lastSelectedMetric?.let {
-                        it.isSelected = !checkIsMetricError(it)
-                    }
-                    this.lastSelectedMetric = metric
                 }
             } else {
-                metricsAdapter.items.forEach {
-                    if (it != metric) {
-                        it.isSelected = false
+                if (lastSelectedMetric?.type == metric.type) {
+                    if (metric.isSelected) {
+                        metric.isSelected = false
+                        this.lastSelectedMetric = otherSelectedMetric
+                    } else {
+                        metric.isSelected = true
+                        this.lastSelectedMetric?.let {
+                            it.isSelected = !checkIsMetricError(it)
+                        }
+                        this.lastSelectedMetric = metric
                     }
+                } else {
+                    metricsAdapter.items.forEach {
+                        if (it != metric) {
+                            it.isSelected = false
+                        }
+                    }
+                    lastSelectedMetric?.isSelected = false
+                    metric.isSelected = true
+                    lastSelectedMetric = metric
                 }
-                lastSelectedMetric?.isSelected = false
-                metric.isSelected = true
-                lastSelectedMetric = metric
             }
+
         }
 
         if (checkIsMetricError(metric)) {
@@ -172,7 +179,7 @@ class MultiLineGraphViewHolder(
                 it.gone()
             }
             commonWidgetErrorState.visible()
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
 
         setupTooltip(element)
@@ -185,12 +192,12 @@ class MultiLineGraphViewHolder(
                 tvShcMultiLineGraphTitle.text = title
 
                 val dimen12dp = context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
-                val dimen8dp = context.resources.getDimension(R.dimen.layout_lvl1).toInt()
+                val dimen8dp = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen8dp, dimen12dp, 0)
             } else {
 
                 val dimen12dp = context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
-                val dimen16dp = context.resources.getDimension(R.dimen.layout_lvl2).toInt()
+                val dimen16dp = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
                 tvShcMultiLineGraphTitle.gone()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen16dp, dimen12dp, 0)
             }
@@ -205,7 +212,11 @@ class MultiLineGraphViewHolder(
             return
         }
 
-        val metric = lastSelectedMetric ?: metricItems.getOrNull(0)
+        val metric = if (metricItems.contains(lastSelectedMetric)) {
+            lastSelectedMetric
+        } else {
+            metricItems.getOrNull(0)
+        }
         metric?.isSelected = true
 
         with(itemView) {
@@ -351,7 +362,7 @@ class MultiLineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -359,7 +370,7 @@ class MultiLineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
-                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }
@@ -389,7 +400,7 @@ class MultiLineGraphViewHolder(
     private fun getLineGraphTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, TOOLTIP_RES_LAYOUT)
                 .setOnDisplayContent { view, data, x, y ->
-                    data?.let {
+                    (data as? LineChartEntry)?.let {
                         if (isMetricComparableByPeriodSelected) {
                             showComparablePeriodMetricTooltip(view, it, x.toInt())
                         } else {
@@ -493,11 +504,12 @@ class MultiLineGraphViewHolder(
                 return emptyList()
             }
 
-            val isComparableByPeriod = metricsAdapter.items.filter { it.type == metric.type }.size == 1
-            isMetricComparableByPeriodSelected = isComparableByPeriod
-            if (isComparableByPeriod && metric.linePeriod.lastPeriod.isNotEmpty()) {
+            if (metric.linePeriod.lastPeriod.isNotEmpty()) {
+                isMetricComparableByPeriodSelected = true
                 showLegendView()
                 return getLineChartDataByPeriod(metric)
+            } else {
+                isMetricComparableByPeriodSelected = false
             }
         } else {
             isMetricComparableByPeriodSelected = false
@@ -534,7 +546,7 @@ class MultiLineGraphViewHolder(
         with(itemView) {
             chartViewShcMultiLine.gone()
             commonWidgetErrorState.visible()
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 

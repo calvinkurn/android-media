@@ -45,9 +45,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:gravity="center_horizontal"
-            android:text="@string/string_bottom_info"
-            app:typographyType="body_3"
-            tools:text="@string/string_bottom_info" />
+            app:typographyType="body_3"/>
     </LinearLayout>
 
     <ProgressBar

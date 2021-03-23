@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
 
     <View
@@ -32,6 +32,7 @@
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:contentDescription="null"
         android:src="@drawable/unify_chips_ic_chevron_normal"
         app:layout_constraintBottom_toBottomOf="@id/ec_typography_title"
         app:layout_constraintEnd_toEndOf="parent"

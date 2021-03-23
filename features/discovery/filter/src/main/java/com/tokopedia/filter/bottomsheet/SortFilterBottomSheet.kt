@@ -3,6 +3,7 @@ package com.tokopedia.filter.bottomsheet
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -276,6 +277,11 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun processLoading(isLoading: Boolean) {
         if (isLoading) {
             sortFilterBottomSheetView?.let {
+                if (isDarkModeOn()) {
+                    it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+                } else {
+                    it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                }
                 it.buttonApplyContainer?.visibility = View.VISIBLE
                 it.buttonApplySortFilter?.isLoading = true
                 it.buttonApplySortFilter?.text = ""
@@ -341,6 +347,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun undoStatusBarOverlayColor() {
         statusBarColorHelper?.undoSetStatusBarColor()
         statusBarColorHelper = null
+    }
+
+    private fun isDarkModeOn(): Boolean {
+        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
     }
 
     data class ApplySortFilterModel(

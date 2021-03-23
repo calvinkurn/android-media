@@ -6,13 +6,14 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAMS_PAGE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAMS_PAGE_PDP
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,6 +23,17 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
 
 
     companion object {
+        val QUERY_TICKER = """
+            query get_ticker(${'$'}page: String!) {
+              ticker {
+                tickers(page: ${'$'}page) {
+                  message
+                  layout
+                }
+              }
+            }
+        """.trimIndent()
+
         fun createParams(weight: Float, shopDomain: String?, origin: String?): Map<String, Any?> = mapOf(
                 ProductDetailCommonConstant.PARAM_RATE_EST_WEIGHT to weight,
                 ProductDetailCommonConstant.PARAM_SHOP_DOMAIN to shopDomain,
@@ -31,11 +43,13 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
     private var forceRefresh: Boolean = false
     private var mapOfParam: Map<String, Any?> = mapOf()
     private var isUserSessionActive = false
+    private var shouldExecuteRates = false
 
-    suspend fun executeOnBackground(mapOfParams: Map<String, Any?>, forceRefresh: Boolean, isUserSessionActive: Boolean): ProductInfoP3 {
+    suspend fun executeOnBackground(mapOfParams: Map<String, Any?>, forceRefresh: Boolean, isUserSessionActive: Boolean, shouldExecuteRates: Boolean): ProductInfoP3 {
         this.mapOfParam = mapOfParams
         this.forceRefresh = forceRefresh
         this.isUserSessionActive = isUserSessionActive
+        this.shouldExecuteRates = shouldExecuteRates
         return executeOnBackground()
     }
 
@@ -49,7 +63,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         val p3Request = mutableListOf<GraphqlRequest>()
 
         //region RatesEstimate
-        if (isUserSessionActive && shopDomain != null) {
+        if (isUserSessionActive && shopDomain != null && shouldExecuteRates) {
             val estimationParams = generateRateEstimateParam(weight, shopDomain, origin)
             val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
                     RatesEstimationModel.Response::class.java, estimationParams)
@@ -59,7 +73,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
 
         //region Ticker
         val tickerParams = generateTickerParam()
-        val tickerRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TICKER], StickyLoginTickerPojo.TickerResponse::class.java, tickerParams)
+        val tickerRequest = GraphqlRequest(QUERY_TICKER, GeneralTickerDataModel.TickerResponse::class.java, tickerParams)
         p3Request.add(tickerRequest)
         //endregion
 
@@ -81,10 +95,9 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
             //endregion
 
             //region Ticker
-            if (response.getError(StickyLoginTickerPojo.TickerResponse::class.java)?.isNotEmpty() != true) {
-                response.doActionIfNotNull<StickyLoginTickerPojo.TickerResponse> {
+            if (response.getError(GeneralTickerDataModel.TickerResponse::class.java)?.isNotEmpty() != true) {
+                response.doActionIfNotNull<GeneralTickerDataModel.TickerResponse> {
                     productInfoP3.tickerInfo = DynamicProductDetailMapper.getTickerInfoData(it)
-                    productInfoP3.tickerStickyLogin = DynamicProductDetailMapper.getStickyLoginData(it)
                 }
             }
             //endregion
@@ -97,7 +110,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
     }
 
     private fun generateTickerParam(): Map<String, Any> {
-        return mapOf(StickyLoginConstant.PARAMS_PAGE to StickyLoginConstant.Page.PDP.toString())
+        return mapOf(PARAMS_PAGE to PARAMS_PAGE_PDP)
     }
 
     private fun generateRateEstimateParam(weight: Float, shopDomain: String, origin: String?): Map<String, Any?> {

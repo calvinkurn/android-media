@@ -14,12 +14,6 @@ import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.*
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceCartShopViewHolder
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
-import com.tokopedia.purchase_platform.common.feature.insurance.PAGE_TYPE_CART
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -37,32 +31,20 @@ import kotlin.math.min
 
 class CartAdapter @Inject constructor(private val actionListener: ActionListener,
                                       private val cartItemActionListener: CartItemAdapter.ActionListener,
-                                      private val insuranceItemActionlistener: InsuranceItemActionListener,
                                       private val tickerAnnouncementActionListener: TickerAnnouncementActionListener,
                                       private val sellerCashbackListener: SellerCashbackListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val cartDataList = ArrayList<Any>()
     private var compositeSubscription = CompositeSubscription()
 
-    val insuranceCartShops = ArrayList<InsuranceCartShops>()
-    private val insuranceRecommendationList = ArrayList<InsuranceCartShops>()
-    private val insuranceCartList = ArrayList<InsuranceCartShops>()
     private var shipmentSellerCashbackModel: ShipmentSellerCashbackModel? = null
     private var cartEmptyHolderData: CartEmptyHolderData? = null
     private var cartLoadingHolderData: CartLoadingHolderData? = null
     private var cartWishlistAdapter: CartWishlistAdapter? = null
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
-    private var sendInsuranceImpressionEvent = false
     private var tmpCollapsedItem = ArrayList<Any>()
 
     var firstCartSectionHeaderPosition: Int = -1
-
-    var isInsuranceSelected: Boolean = false
-        private set
-    var selectedInsuranceProductId = ""
-        private set
-    var selectedInsuranceProductTitle = ""
-        private set
 
     val allShopGroupDataList: List<CartShopHolderData>
         get() {
@@ -232,59 +214,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             return cartItemDataList
         }
 
-    val selectedRecommendedInsuranceList: List<InsuranceCartShops>
-        get() {
-            val insuranceCartShopsList = ArrayList<InsuranceCartShops>()
-            for (insuranceCartShops in insuranceRecommendationList) {
-                if (insuranceCartShops.shopItemsList.size > 0 &&
-                        insuranceCartShops.shopItemsList[0].digitalProductList.size > 0 &&
-                        insuranceCartShops.shopItemsList[0].digitalProductList[0].optIn) {
-                    insuranceCartShopsList.add(insuranceCartShops)
-                }
-            }
-
-            return insuranceCartShopsList
-        }
-
-    val isInsuranceCartProductUnSelected: ArrayList<InsuranceCartDigitalProduct>
-        get() {
-            isInsuranceSelected = true
-            val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
-            for (insuranceCartShops in insuranceCartList) {
-                if (insuranceCartShops.shopItemsList.isNotEmpty()) {
-                    for (insuranceCartShopItem in insuranceCartShops.shopItemsList) {
-                        if (insuranceCartShopItem.digitalProductList.isNotEmpty()) {
-                            for (insuranceCartDigitalProduct in insuranceCartShopItem.digitalProductList) {
-                                selectedInsuranceProductTitle = insuranceCartDigitalProduct.productInfo.title
-                                selectedInsuranceProductId = insuranceCartDigitalProduct.productId
-                                if (!insuranceCartDigitalProduct.optIn) {
-                                    isInsuranceSelected = false
-                                    insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct)
-                                }
-                            }
-                        } else {
-                            isInsuranceSelected = false
-                        }
-                    }
-                } else {
-                    isInsuranceSelected = false
-                }
-            }
-
-            return insuranceCartDigitalProductArrayList
-        }
-
-    val promoStackingGlobalData: PromoStackingData?
-        get() {
-            for (i in cartDataList.indices) {
-                if (cartDataList[i] is PromoStackingData) {
-                    return cartDataList[i] as PromoStackingData
-                }
-            }
-
-            return null
-        }
-
     val allCartShopHolderData: List<CartShopHolderData>
         get() {
             val cartShopHolderDataList = ArrayList<CartShopHolderData>()
@@ -312,6 +241,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val data = cartDataList[position]
         return when (data) {
             is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
+            is CartChooseAddressHolderData -> CartChooseAddressViewHolder.LAYOUT
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
@@ -322,7 +252,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             is CartRecommendationItemHolderData -> CartRecommendationViewHolder.LAYOUT
             is CartLoadingHolderData -> CartLoadingViewHolder.LAYOUT
             is TickerAnnouncementHolderData -> TickerAnnouncementViewHolder.LAYOUT
-            is InsuranceCartShops -> InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP
             is DisabledCartItemHolderData -> DisabledCartItemViewHolder.LAYOUT
             is DisabledItemHeaderHolderData -> DisabledItemHeaderViewHolder.LAYOUT
             is DisabledReasonHolderData -> DisabledReasonViewHolder.LAYOUT
@@ -339,6 +268,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val view = LayoutInflater.from(parent.context)
                         .inflate(CartSelectAllViewHolder.LAYOUT, parent, false)
                 return CartSelectAllViewHolder(view, actionListener, compositeSubscription)
+            }
+            CartChooseAddressViewHolder.LAYOUT -> {
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(CartChooseAddressViewHolder.LAYOUT, parent, false)
+                return CartChooseAddressViewHolder(view, actionListener)
             }
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val view = LayoutInflater.from(parent.context)
@@ -390,11 +324,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         .inflate(TickerAnnouncementViewHolder.LAYOUT, parent, false)
                 return TickerAnnouncementViewHolder(view, tickerAnnouncementActionListener)
             }
-            InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP, parent, false)
-                return InsuranceCartShopViewHolder(view, insuranceItemActionlistener)
-            }
             DisabledCartItemViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
                         .inflate(DisabledCartItemViewHolder.LAYOUT, parent, false)
@@ -434,85 +363,77 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
-        when {
-            viewType == CartSelectAllViewHolder.LAYOUT -> {
+        when (viewType) {
+            CartSelectAllViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartSelectAllHolderData
                 (holder as CartSelectAllViewHolder).bind(data)
             }
-            viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
+            CartChooseAddressViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartChooseAddressHolderData
+                (holder as CartChooseAddressViewHolder).bind(data)
+            }
+            CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data)
             }
-            viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
+            CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
-                (holder as CartTickerErrorViewHolder).bindData(data, position)
+                (holder as CartTickerErrorViewHolder).bindData(data)
             }
-            viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
+            ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
                 val data = cartDataList[position] as ShipmentSellerCashbackModel
                 (holder as ShipmentSellerCashbackViewHolder).bindViewHolder(data)
             }
-            viewType == CartEmptyViewHolder.LAYOUT -> {
+            CartEmptyViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartEmptyHolderData
                 (holder as CartEmptyViewHolder).bind(data)
             }
-            viewType == CartRecentViewViewHolder.LAYOUT -> {
+            CartRecentViewViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartRecentViewHolderData
                 (holder as CartRecentViewViewHolder).bind(data)
                 cartRecentViewAdapter = holder.recentViewAdapter
             }
-            viewType == CartWishlistViewHolder.LAYOUT -> {
+            CartWishlistViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartWishlistHolderData
                 (holder as CartWishlistViewHolder).bind(data)
                 cartWishlistAdapter = holder.wishlistAdapter
             }
-            viewType == CartSectionHeaderViewHolder.LAYOUT -> {
+            CartSectionHeaderViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartSectionHeaderHolderData
                 (holder as CartSectionHeaderViewHolder).bind(data)
             }
-            viewType == CartRecommendationViewHolder.LAYOUT -> {
+            CartRecommendationViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartRecommendationItemHolderData
                 (holder as CartRecommendationViewHolder).bind(data)
             }
-            viewType == CartLoadingViewHolder.LAYOUT -> {
+            CartLoadingViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartLoadingHolderData
                 (holder as CartLoadingViewHolder).bind(data)
             }
-            viewType == TickerAnnouncementViewHolder.LAYOUT -> {
+            TickerAnnouncementViewHolder.LAYOUT -> {
                 val cartTickerData = cartDataList[position] as TickerAnnouncementHolderData
                 (holder as TickerAnnouncementViewHolder).bind(cartTickerData)
             }
-            getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP -> {
-                val insuranceCartShops = cartDataList[position] as InsuranceCartShops
-                (holder as InsuranceCartShopViewHolder).bindData(insuranceCartShops, position, PAGE_TYPE_CART)
-            }
-            viewType == DisabledItemHeaderViewHolder.LAYOUT -> {
+            DisabledItemHeaderViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledItemHeaderHolderData
                 (holder as DisabledItemHeaderViewHolder).bind(data)
             }
-            viewType == DisabledReasonViewHolder.LAYOUT -> {
+            DisabledReasonViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledReasonHolderData
                 (holder as DisabledReasonViewHolder).bind(data)
             }
-            viewType == DisabledShopViewHolder.LAYOUT -> {
+            DisabledShopViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledShopHolderData
                 (holder as DisabledShopViewHolder).bind(data)
             }
-            viewType == DisabledCartItemViewHolder.LAYOUT -> {
+            DisabledCartItemViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledCartItemHolderData
                 (holder as DisabledCartItemViewHolder).bind(data)
             }
-            viewType == DisabledAccordionViewHolder.LAYOUT -> {
+            DisabledAccordionViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledAccordionHolderData
                 (holder as DisabledAccordionViewHolder).bind(data)
             }
-        }
-    }
-
-    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
-            sendInsuranceImpressionEvent = true
-            insuranceItemActionlistener?.sendEventInsuranceImpression(holder.getProductTitle())
         }
     }
 
@@ -529,6 +450,23 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun clearCompositeSubscription() {
         compositeSubscription.clear()
+    }
+
+    fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {
+        cartDataList.add(tickerAnnouncementHolderData)
+    }
+
+    fun addChooseAddressWidget(data: CartChooseAddressHolderData) {
+        cartDataList.add(data)
+    }
+
+    fun addCartTickerError(cartItemTickerErrorHolderData: CartItemTickerErrorHolderData) {
+        cartDataList.add(cartItemTickerErrorHolderData)
+        checkForShipmentForm()
+    }
+
+    fun addSelectAll(data: CartSelectAllHolderData) {
+        cartDataList.add(data)
     }
 
     fun addAvailableDataList(shopGroupAvailableDataList: List<ShopGroupAvailableData>) {
@@ -583,6 +521,91 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         cartDataList.add(accordionHolderData)
     }
 
+    fun addCartEmptyData(cartEmptyHolderData: CartEmptyHolderData) {
+        cartDataList.add(cartEmptyHolderData)
+    }
+
+    fun addCartWishlistData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
+                            cartWishlistHolderData: CartWishlistHolderData) {
+        var wishlistIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartEmptyHolderData ||
+                    item is CartShopHolderData ||
+                    item is ShipmentSellerCashbackModel ||
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData
+            ) {
+                wishlistIndex = index
+            }
+        }
+        cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData)
+        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+            -1 -> wishlistIndex
+            else -> min(firstCartSectionHeaderPosition, wishlistIndex)
+        }
+        cartDataList.add(++wishlistIndex, cartWishlistHolderData)
+        notifyDataSetChanged()
+    }
+
+    fun addCartRecentViewData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
+                              cartRecentViewHolderData: CartRecentViewHolderData) {
+        var recentViewIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartEmptyHolderData ||
+                    item is CartShopHolderData ||
+                    item is ShipmentSellerCashbackModel ||
+                    item is CartWishlistHolderData ||
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData) {
+                recentViewIndex = index
+            }
+        }
+        cartDataList.add(++recentViewIndex, cartSectionHeaderHolderData)
+        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+            -1 -> recentViewIndex
+            else -> min(firstCartSectionHeaderPosition, recentViewIndex)
+        }
+        cartDataList.add(++recentViewIndex, cartRecentViewHolderData)
+        notifyDataSetChanged()
+    }
+
+    fun addCartRecommendationData(cartSectionHeaderHolderData: CartSectionHeaderHolderData?,
+                                  cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>) {
+        var recommendationIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartEmptyHolderData ||
+                    item is CartShopHolderData ||
+                    item is ShipmentSellerCashbackModel ||
+                    item is CartRecentViewHolderData ||
+                    item is CartWishlistHolderData ||
+                    item is CartRecommendationItemHolderData ||
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData) {
+                recommendationIndex = index
+            }
+        }
+
+        cartSectionHeaderHolderData?.let {
+            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData)
+            firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+                -1 -> recommendationIndex
+                else -> min(firstCartSectionHeaderPosition, recommendationIndex)
+            }
+        }
+
+        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
+        notifyItemRangeInserted(recommendationIndex, cartRecommendationItemHolderDataList.size)
+    }
+
     fun setShopSelected(position: Int, selected: Boolean) {
         val any = cartDataList[position]
         if (any is CartShopHolderData) {
@@ -633,121 +656,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         checkForShipmentForm()
     }
 
-    fun removeInsuranceDataItem(productIdList: List<Long>) {
-        try {
-            for (productId in productIdList) {
-                var position = 0
-                for (item in cartDataList) {
-                    position++
-                    if (item is InsuranceCartShops) {
-                        for ((productId1) in item.shopItemsList) {
-                            if (productId1 == productId) {
-                                cartDataList.remove(item)
-                                notifyItemRemoved(position)
-                                break
-                            }
-                        }
-                    }
-                }
-            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    fun addInsuranceDataList(insuranceCartShops: InsuranceCartShops, isRecommendation: Boolean) {
-        this.insuranceCartShops.clear()
-        this.insuranceCartShops.add(insuranceCartShops)
-
-        if (isRecommendation) {
-            insuranceRecommendationList.clear()
-            insuranceRecommendationList.add(insuranceCartShops)
-        } else {
-            insuranceCartList.clear()
-            insuranceCartList.add(insuranceCartShops)
-        }
-
-        var insuranceIndex = 0
-
-        for (item in cartDataList) {
-            if (item is CartEmptyHolderData || item is CartShopHolderData) {
-                insuranceIndex = cartDataList.indexOf(item)
-            }
-        }
-
-        cartDataList.add(++insuranceIndex, insuranceCartShops)
-
-        notifyDataSetChanged()
-    }
-
     fun resetData() {
         cartDataList.clear()
         firstCartSectionHeaderPosition = -1
         notifyDataSetChanged()
         checkForShipmentForm()
-    }
-
-    fun addCartTickerError(cartItemTickerErrorHolderData: CartItemTickerErrorHolderData) {
-        cartDataList.add(cartItemTickerErrorHolderData)
-        checkForShipmentForm()
-    }
-
-    fun addCartEmptyData(cartEmptyHolderData: CartEmptyHolderData) {
-        cartDataList.add(cartEmptyHolderData)
-    }
-
-    fun addCartRecentViewData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
-                              cartRecentViewHolderData: CartRecentViewHolderData) {
-        var recentViewIndex = 0
-        for ((index, item) in cartDataList.withIndex()) {
-            if (item is CartEmptyHolderData ||
-                    item is CartShopHolderData ||
-                    item is ShipmentSellerCashbackModel ||
-                    item is CartWishlistHolderData ||
-                    item is InsuranceCartShops ||
-                    item is DisabledItemHeaderHolderData ||
-                    item is DisabledReasonHolderData ||
-                    item is DisabledShopHolderData ||
-                    item is DisabledCartItemHolderData ||
-                    item is DisabledAccordionHolderData) {
-                recentViewIndex = index
-            }
-        }
-        cartDataList.add(++recentViewIndex, cartSectionHeaderHolderData)
-        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
-            -1 -> recentViewIndex
-            else -> min(firstCartSectionHeaderPosition, recentViewIndex)
-        }
-        cartDataList.add(++recentViewIndex, cartRecentViewHolderData)
-        notifyDataSetChanged()
-    }
-
-    fun addCartWishlistData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
-                            cartWishlistHolderData: CartWishlistHolderData) {
-        var wishlistIndex = 0
-        for ((index, item) in cartDataList.withIndex()) {
-            if (item is CartEmptyHolderData ||
-                    item is CartShopHolderData ||
-                    item is ShipmentSellerCashbackModel ||
-                    item is InsuranceCartShops ||
-                    item is DisabledItemHeaderHolderData ||
-                    item is DisabledReasonHolderData ||
-                    item is DisabledShopHolderData ||
-                    item is DisabledCartItemHolderData ||
-                    item is DisabledAccordionHolderData
-            ) {
-                wishlistIndex = index
-            }
-        }
-        cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData)
-        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
-            -1 -> wishlistIndex
-            else -> min(firstCartSectionHeaderPosition, wishlistIndex)
-        }
-        cartDataList.add(++wishlistIndex, cartWishlistHolderData)
-        notifyDataSetChanged()
     }
 
     fun updateCartWishlistData(cartWishlistHolderData: CartWishlistHolderData): Int {
@@ -776,55 +689,29 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return CartWishlistHolderData()
     }
 
-    fun addCartRecommendationData(cartSectionHeaderHolderData: CartSectionHeaderHolderData?,
-                                  cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>) {
-        var recommendationIndex = 0
-        for ((index, item) in cartDataList.withIndex()) {
-            if (item is CartEmptyHolderData ||
-                    item is CartShopHolderData ||
-                    item is ShipmentSellerCashbackModel ||
-                    item is CartRecentViewHolderData ||
-                    item is CartWishlistHolderData ||
-                    item is CartRecommendationItemHolderData ||
-                    item is InsuranceCartShops ||
-                    item is DisabledItemHeaderHolderData ||
-                    item is DisabledReasonHolderData ||
-                    item is DisabledShopHolderData ||
-                    item is DisabledCartItemHolderData ||
-                    item is DisabledAccordionHolderData) {
-                recommendationIndex = index
+    fun removeChooseAddressWidget(): Int {
+        var index = -1
+        cartDataList.forEachIndexed { i, data ->
+            if (data is CartChooseAddressHolderData) {
+                index = i
             }
         }
 
-        cartSectionHeaderHolderData?.let {
-            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData)
-            firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
-                -1 -> recommendationIndex
-                else -> min(firstCartSectionHeaderPosition, recommendationIndex)
-            }
+        if (index != -1) {
+            cartDataList.removeAt(index)
         }
 
-        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
-        notifyItemRangeInserted(recommendationIndex, cartRecommendationItemHolderDataList.size)
+        return index
     }
 
     fun removeCartEmptyData() {
         cartEmptyHolderData?.let {
             val index = cartDataList.indexOf(it)
-            cartDataList.remove(it)
-            notifyItemRemoved(index)
-
-            cartEmptyHolderData = null
-        }
-    }
-
-    fun renderEmptyCart(cartEmptyHolderData: CartEmptyHolderData) {
-        if (cartDataList.isNotEmpty() && cartDataList[0] is TickerAnnouncementHolderData) {
-            cartDataList.set(0, cartEmptyHolderData)
-            notifyItemChanged(0)
-        } else {
-            cartDataList.add(0, cartEmptyHolderData)
-            notifyItemInserted(0)
+            if (index != -1) {
+                cartDataList.remove(it)
+                notifyItemRemoved(index)
+                cartEmptyHolderData = null
+            }
         }
     }
 
@@ -897,15 +784,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     it.isVisible = true
                     it.sellerCashbackFmt = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     val index = cartDataList.indexOf(it)
-                    notifyItemChanged(index)
+                    if (index != -1) {
+                        notifyItemChanged(index)
+                    }
                 }
             }
         } else {
             shipmentSellerCashbackModel?.let {
                 val index = cartDataList.indexOf(it)
-                cartDataList.remove(it)
-                notifyItemRemoved(index)
-                shipmentSellerCashbackModel = null
+                if (index != -1) {
+                    cartDataList.remove(it)
+                    notifyItemRemoved(index)
+                    shipmentSellerCashbackModel = null
+                }
             }
         }
 
@@ -994,8 +885,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 // Remove wishlist holder & wishlist header
                 cartDataList.removeAt(wishlistIndex)
                 val headerIndex = wishlistIndex - 1
-                cartDataList.removeAt(headerIndex)
-                notifyItemRangeRemoved(headerIndex, 2)
+                if (headerIndex > -1) {
+                    cartDataList.removeAt(headerIndex)
+                    notifyItemRangeRemoved(headerIndex, 2)
+                }
             }
         }
     }
@@ -1031,8 +924,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun removeCartLoadingData() {
         cartLoadingHolderData?.let {
             val index = cartDataList.indexOf(it)
-            cartDataList.remove(it)
-            notifyItemRemoved(index)
+            if (index != -1) {
+                cartDataList.remove(it)
+                notifyItemRemoved(index)
+            }
         }
     }
 
@@ -1231,14 +1126,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return Pair(toBeRemovedIndex, toBeUpdatedIndex)
     }
 
-    fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {
-        cartDataList.add(0, tickerAnnouncementHolderData)
-    }
-
-    fun addSelectAll(data: CartSelectAllHolderData) {
-        cartDataList.add(data)
-    }
-
     fun getItemCountBeforeCartItem(): Int {
         var count = 0
         cartDataList.forEach {
@@ -1434,35 +1321,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun setCheckboxGlobalItemState(cheked: Boolean, isCheckUncheckDirectAction: Boolean) {
-        var tmpIndex = -1
-        getData().forEachIndexed { index, data ->
-            when (data) {
-                is CartSelectAllHolderData -> {
-                    data.isCheked = cheked
-                    data.isCheckUncheckDirectAction = isCheckUncheckDirectAction
-                    tmpIndex = index
-                    return@forEachIndexed
-                }
-            }
-        }
-
-        if (tmpIndex != -1) {
-            notifyItemChanged(tmpIndex)
-        }
-    }
-
-    fun resetGlobalItemLock() {
-        getData().forEach { data ->
-            when (data) {
-                is CartSelectAllHolderData -> {
-                    data.isCheckUncheckDirectAction = true
-                    return@forEach
-                }
-            }
-        }
-    }
-
     fun isAllAvailableItemCheked(): Boolean {
         getData().forEach {
             when (it) {
@@ -1503,20 +1361,4 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return false
     }
 
-    fun setGlobalDeleteVisibility(isShow: Boolean) {
-        var tmpIndex = -1
-        getData().forEachIndexed { index, data ->
-            when (data) {
-                is CartSelectAllHolderData -> {
-                    data.isShowDeleteButton = isShow
-                    tmpIndex = index
-                    return@forEachIndexed
-                }
-            }
-        }
-
-        if (tmpIndex != -1) {
-            notifyItemChanged(tmpIndex)
-        }
-    }
 }

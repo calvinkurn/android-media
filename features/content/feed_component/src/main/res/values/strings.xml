@@ -42,6 +42,7 @@
     <string name="menu_copy">Salin</string>
     <string name="msg_copy">Teks berhasil disalin.</string>
     <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
+    <string name="error_occurred">terjadi kesalahan</string>
 
     <!--Available Share Names-->
     <string name="share_whatsapp">WhatsApp</string>

@@ -4,10 +4,6 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -16,10 +12,8 @@ import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.internal.ParamObject.INSIGHT_SOURCE
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_id
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION
-import com.tokopedia.topads.dashboard.data.model.FinalAdResponse
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.dashboard.data.model.StatsData
-import com.tokopedia.topads.dashboard.data.model.insightkey.Keyword
 import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface

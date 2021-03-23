@@ -271,18 +271,22 @@ internal class SearchShopViewModel(
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val shouldShowCpmShop = shouldShowCpmShop(searchShopModel)
-        if (shouldShowCpmShop) {
-            val shopCpmViewModel = createShopCpmViewModel(searchShopModel)
-            visitableList.add(shopCpmViewModel)
-        }
-
-        val shopViewModelList = createShopItemViewModelList(searchShopModel)
-        visitableList.addAll(shopViewModelList)
+        processCPM(searchShopModel, visitableList)
+        processSuggestion(searchShopModel, visitableList)
+        processShopItem(searchShopModel, visitableList)
 
         addLoadingMoreModel(visitableList)
 
         return visitableList
+    }
+
+    private fun processCPM(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
+        val shouldShowCpmShop = shouldShowCpmShop(searchShopModel)
+
+        if (shouldShowCpmShop) {
+            val shopCpmViewModel = createShopCpmViewModel(searchShopModel)
+            visitableList.add(shopCpmViewModel)
+        }
     }
 
     private fun shouldShowCpmShop(searchShopModel: SearchShopModel): Boolean {
@@ -306,6 +310,29 @@ internal class SearchShopViewModel(
 
     private fun createShopCpmViewModel(searchShopModel: SearchShopModel): Visitable<*> {
         return shopCpmViewModelMapper.get().convert(searchShopModel)
+    }
+
+    private fun processSuggestion(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
+        val suggestionModel = searchShopModel.aceSearchShop.suggestion
+        val shouldShowSuggestion = suggestionModel.text.isNotEmpty()
+
+        if (shouldShowSuggestion) {
+            val suggestionViewModel = createSuggestionViewModel(suggestionModel)
+            visitableList.add(suggestionViewModel)
+        }
+    }
+
+    private fun createSuggestionViewModel(suggestionModel: SearchShopModel.AceSearchShop.Suggestion): ShopSuggestionViewModel {
+        return ShopSuggestionViewModel(
+                currentKeyword = suggestionModel.currentKeyword,
+                query = suggestionModel.query,
+                text = suggestionModel.text
+        )
+    }
+
+    private fun processShopItem(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
+        val shopViewModelList = createShopItemViewModelList(searchShopModel)
+        visitableList.addAll(shopViewModelList)
     }
 
     private fun createShopItemViewModelList(searchShopModel: SearchShopModel): List<Visitable<*>> {

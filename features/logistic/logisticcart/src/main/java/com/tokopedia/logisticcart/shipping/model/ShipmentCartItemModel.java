@@ -70,10 +70,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     // for robinhood III
     private boolean isBlackbox;
-    private int addressId;
+    private String addressId;
     private String blackboxInfo;
 
     private boolean isFulfillment;
+    private String fulfillmentBadgeUrl;
     private int fulfillmentId;
 
     // promo stacking
@@ -138,9 +139,10 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         useCourierRecommendation = in.readByte() != 0;
         isHidingCourier = in.readByte() != 0;
         isBlackbox = in.readByte() != 0;
-        addressId = in.readInt();
+        addressId = in.readString();
         blackboxInfo = in.readString();
         isFulfillment = in.readByte() != 0;
+        fulfillmentBadgeUrl = in.readString();
         fulfillmentId = in.readInt();
         hasPromoList = in.readByte() != 0;
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
@@ -192,9 +194,10 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
-        dest.writeInt(addressId);
+        dest.writeString(addressId);
         dest.writeString(blackboxInfo);
         dest.writeByte((byte) (isFulfillment ? 1 : 0));
+        dest.writeString(fulfillmentBadgeUrl);
         dest.writeInt(fulfillmentId);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
@@ -243,7 +246,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
         newShipmentCartItemModel.setOrderNumber(shipmentCartItemModel.getOrderNumber());
-        newShipmentCartItemModel.setUseCourierRecommendation(shipmentCartItemModel.isUseCourierRecommendation());
         newShipmentCartItemModel.setHidingCourier(shipmentCartItemModel.isHidingCourier());
         newShipmentCartItemModel.setCartString(shipmentCartItemModel.getCartString());
         newShipmentCartItemModel.setShippingId(shipmentCartItemModel.getShippingId());
@@ -259,6 +261,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
         newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment);
+        newShipmentCartItemModel.setFulfillmentBadgeUrl(shipmentCartItemModel.fulfillmentBadgeUrl);
         newShipmentCartItemModel.setFulfillmentId(shipmentCartItemModel.getFulfillmentId());
         newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
@@ -428,14 +431,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.shopShipmentList = shopShipmentList;
     }
 
-    public boolean isUseCourierRecommendation() {
-        return useCourierRecommendation;
-    }
-
-    public void setUseCourierRecommendation(boolean useCourierRecommendation) {
-        this.useCourierRecommendation = useCourierRecommendation;
-    }
-
     public boolean isHidingCourier() {
         return isHidingCourier;
     }
@@ -536,11 +531,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.isBlackbox = blackbox;
     }
 
-    public int getAddressId() {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(int addressId) {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
@@ -550,6 +545,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setFulfillment(boolean fulfillment) {
         isFulfillment = fulfillment;
+    }
+
+    public String getFulfillmentBadgeUrl() {
+        return fulfillmentBadgeUrl;
+    }
+
+    public void setFulfillmentBadgeUrl(String fulfillmentBadgeUrl) {
+        this.fulfillmentBadgeUrl = fulfillmentBadgeUrl;
     }
 
     public int getFulfillmentId() {
@@ -712,7 +715,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getErrorDescription(), that.getErrorDescription())
                 .append(getShopName(), that.getShopName())
                 .append(getCartItemModels(), that.getCartItemModels())
-                .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .append(getIsBlackbox(), that.getIsBlackbox())
                 .append(getAddressId(), that.getAddressId())
                 .isEquals();
@@ -734,7 +736,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isProductFcancelPartial())
                 .append(isProductIsPreorder())
                 .append(getCartItemModels())
-                .append(isUseCourierRecommendation())
                 .append(getIsBlackbox())
                 .append(getAddressId())
                 .toHashCode();

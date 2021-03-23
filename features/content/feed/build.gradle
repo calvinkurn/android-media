@@ -133,10 +133,11 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.json
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 }
 
 project.ext {

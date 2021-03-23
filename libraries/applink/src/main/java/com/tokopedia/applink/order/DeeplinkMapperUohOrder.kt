@@ -13,6 +13,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_SHIP
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OMS_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.UNIFY_ORDER_ONGOING
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.TRAIN_ORDER_LIST
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -112,6 +113,9 @@ object DeeplinkMapperUohOrder {
         } else if (deeplink.equals(TRAVEL_AND_ENTERTAINMENT_ORDER, true)) {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_TRAVEL_ENTERTAINMENT
             else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_ONGOING, true)) {
+            returnedDeeplink = getInternalDeeplink(context, deeplink)
         }
 
         return returnedDeeplink
@@ -119,12 +123,11 @@ object DeeplinkMapperUohOrder {
 
     fun useUoh(context: Context): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, UOH_AB_TEST_VALUE)
-            val rollence = remoteConfigRollenceValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
 
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
-            return (rollence && remoteConfigFirebase)
+            return (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
 
         } catch (e: Exception) {
             false
@@ -173,6 +176,9 @@ object DeeplinkMapperUohOrder {
             }
             deeplink.equals(TRAVEL_AND_ENTERTAINMENT_ORDER, true) -> {
                 return PESAWAT_INTERNAL_ORDER
+            }
+            deeplink.equals(PURCHASE_ONGOING, true) -> {
+                return UNIFY_ORDER_ONGOING
             }
             else -> {
                 return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)

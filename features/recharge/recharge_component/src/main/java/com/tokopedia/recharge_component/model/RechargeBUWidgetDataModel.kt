@@ -14,7 +14,9 @@ data class RechargeBUWidgetDataModel(
 
     override fun equalsWith(b: Any?): Boolean {
         return if (b is RechargeBUWidgetDataModel) {
-            data.items == b.data.items
+            b.data.items.zip(data.items).all { (elt1, elt2) ->
+                elt1.id == elt2.id
+            }
         } else false
     }
 

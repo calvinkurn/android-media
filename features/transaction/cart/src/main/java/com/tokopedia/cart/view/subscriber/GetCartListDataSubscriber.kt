@@ -12,7 +12,8 @@ import rx.Subscriber
 class GetCartListDataSubscriber(val view: ICartListView?,
                                 val presenter: ICartListPresenter?,
                                 val initialLoad: Boolean) : Subscriber<CartListData>() {
-    override fun onCompleted() {}
+    override fun onCompleted() {
+    }
 
     override fun onError(e: Throwable) {
         e.printStackTrace()

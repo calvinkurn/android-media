@@ -7,9 +7,11 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -25,6 +27,9 @@ import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationU
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.UNVALIDATED
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_SUCCESS
@@ -32,10 +37,15 @@ import com.tokopedia.product.addedit.variant.presentation.model.ValidationResult
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -48,6 +58,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val validateProductNameUseCase: ValidateProductNameUseCase,
         private val getShopInfoLocationUseCase: GetShopInfoLocationUseCase,
         private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
+        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
+        private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
+        private val userSession: UserSessionInterface,
+        private val annotationCategoryUseCase: AnnotationCategoryUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -59,10 +73,30 @@ class AddEditProductPreviewViewModel @Inject constructor(
         (!id.isNullOrBlank() || productInputModel.value?.productId.orZero() != 0L) && !isDuplicate
     }
 
-    // observing the product id, and will execute the use case when product id is changed
+    private val mIsProductManageAuthorized = MutableLiveData<Result<Boolean>>()
+    val isProductManageAuthorized: LiveData<Result<Boolean>>
+        get() = mIsProductManageAuthorized
+
+    // observing the product id, and will execute the use case or check authorization when product id is changed
+    // also, observing whether user role is authorized and will execute use case if true
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
-            if (!productId.value.isNullOrBlank()) getProductData(it)
+            if (!productId.value.isNullOrBlank())  {
+                getProductData(it)
+            } else {
+                // Authorize access if adding product
+                authorizeAccess()
+            }
+        }
+        addSource(mIsProductManageAuthorized) { result ->
+            mIsLoading.value = false
+            ((result as? Success)?.data)?.let { shouldLoadProductData ->
+                productId.value?.let {
+                    if (shouldLoadProductData && it.isNotBlank()) {
+                        getProductData(it)
+                    }
+                }
+            }
         }
     }
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
@@ -108,16 +142,21 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var productDomain: Product = Product()
 
-    var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
-
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
+
+    // Enable showing ticker if seller has multi location shop
+    val shouldShowMultiLocationTicker
+        get() = isAdding && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
 
     init {
         with (productInputModel) {
             addSource(mGetProductResult) {
                 productInputModel.value = when (it) {
                     is Success -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
                         productDomain = it.data
                         val productInputModel = getProductMapper.mapRemoteModelToUiModel(it.data)
 
@@ -127,6 +166,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         } else {
                             productInputModel.itemSold = 0 // reset item sold when duplicate product
                             productInputModel.detailInputModel.currentProductName = ""
+                            updateSpecificationFromRemote(productInputModel.detailInputModel.categoryId, it.data.productID)
                         }
 
                         // decrement wholesale min order by one because of > symbol
@@ -145,7 +185,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        if (productInputModel.value?.isDataChanged == true) {
+                            return@addSource
+                        }
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(detailInputModel) {
@@ -231,16 +276,21 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getProductData(productId: String) {
         mIsLoading.value = true
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
-                getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
-                getProductUseCase.executeOnBackground()
-            }
-            mGetProductResult.value = Success(data)
-            mIsLoading.value = false
-        }, onError = {
-            mGetProductResult.value = Fail(it)
-        })
+        val isAuthorized = (mIsProductManageAuthorized.value as? Success)?.data ?: false
+        if (isAuthorized) {
+            launchCatchError(block = {
+                val data = withContext(Dispatchers.IO) {
+                    getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
+                    getProductUseCase.executeOnBackground()
+                }
+                mGetProductResult.value = Success(data)
+                mIsLoading.value = false
+            }, onError = {
+                mGetProductResult.value = Fail(it)
+            })
+        } else {
+            authorizeAccess()
+        }
     }
 
     fun getProductDraft(draftId: Long) {
@@ -336,13 +386,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     .joinToString("\n")
             val validationResult = if (response.productValidateV3.isSuccess)
                 VALIDATION_SUCCESS else VALIDATION_ERROR
-            mValidationResult.value = ValidationResultModel(validationResult, validationMessage)
+            mValidationResult.value = ValidationResultModel(validationResult, MessageErrorException(validationMessage))
             mIsLoading.value = false
         }, onError = {
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR,
-                    resourceProvider.getGqlErrorMessage().orEmpty())
+            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR, it)
             mIsLoading.value = false
         })
     }
@@ -381,7 +430,74 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun resetValidateResult() {
         mValidationResult.value?.result = UNVALIDATED
-        mValidationResult.value?.message = ""
+        mValidationResult.value?.exception = Exception()
+    }
+
+    fun updateSpecificationFromRemote(categoryId: String, productId: String) {
+        mIsLoading.value = true
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                annotationCategoryUseCase.setParamsCategoryId(categoryId)
+                annotationCategoryUseCase.setParamsProductId(productId)
+                val response = annotationCategoryUseCase.executeOnBackground()
+                response.drogonAnnotationCategoryV2.data
+            }
+            updateSpecificationByAnnotationCategory(result)
+            mIsLoading.value = false
+        }, onError = {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            mIsLoading.value = false
+        })
+    }
+
+    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
+        val result: MutableList<SpecificationInputModel> = mutableListOf()
+        annotationCategoryList.forEach {
+            val selectedValue = it.data.firstOrNull { value -> value.selected }
+            selectedValue?.apply {
+                val specificationInputModel = SpecificationInputModel(id.toString(), name)
+                result.add(specificationInputModel)
+            }
+        }
+
+        productInputModel.value?.apply {
+            detailInputModel.specifications = result
+        }
+    }
+
+    private fun authorizeAccess() {
+        mIsLoading.value = true
+        launchCatchError(
+                block = {
+                    mIsProductManageAuthorized.value = Success(withContext(dispatcher.io) {
+                        if (userSession.isShopOwner) {
+                            true
+                        } else {
+                            val accessId =
+                                    when {
+                                        isAdding -> AccessId.PRODUCT_ADD
+                                        isDuplicate -> AccessId.PRODUCT_DUPLICATE
+                                        isEditing.value == true -> AccessId.PRODUCT_EDIT
+                                        else -> AccessId.PRODUCT_ADD
+                                    }
+                            userSession.shopId.toLongOrZero().let { shopId ->
+                                val canManageProduct = async {
+                                    val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
+                                    authorizeAccessUseCase.execute(requestParams)
+                                }
+                                val canEditStock = async {
+                                    val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.EDIT_STOCK)
+                                    authorizeEditStockUseCase.execute(requestParams)
+                                }
+                                canManageProduct.await() && canEditStock.await()
+                            }
+                        }
+                    })
+                },
+                onError = {
+                    mIsProductManageAuthorized.value = Fail(it)
+                }
+        )
     }
 
 }

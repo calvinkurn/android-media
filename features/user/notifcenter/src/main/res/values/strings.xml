@@ -8,7 +8,6 @@
     <string name="notif_no_info">Tidak ada info baru</string>
     <string name="notif_no_info_desc">Dapatkan info seputar transaksi penjualan &amp; pembelian, promo, event, update produk, fitur &amp; layanan terbaru untuk Anda.</string>
 
-
     <string name="home">Home</string>
     <string name="feed">Feed</string>
     <string name="inbox">Inbox</string>
@@ -81,6 +80,8 @@
     <string name="title_counter_update_notification">" (%1$s)"</string>
     <string name="title_notification_update">Update</string>
     <string name="title_notification_transaction">Transaksi</string>
+    <string name="title_notification_promo">Promo</string>
+    <string name="title_notification_info">Info</string>
     <string name="title_setting">Setting</string>
     <string name="exceed_ninety_nine">99+</string>
 
@@ -92,6 +93,7 @@
     <string name="in_full">Selengkapnya</string>
 
     <string name="notification_empty_message">Belum ada notifikasi</string>
+    <string name="notification_empty_filter_message">Yuk, coba pakai filter lainnya.</string>
 
     <string name="coachicon_title_filter">Cari notifikasi lebih cepat dengan filter</string>
     <string name="coachicon_description_filter">Klik salah satu filter buat menampilkan notifikasi sesuai kebutuhanmu</string>
@@ -107,6 +109,7 @@
     <string name="notifcenter_btn_buy">Beli</string>
     <string name="notifcenter_btn_atc">+ Keranjang</string>
     <string name="notifcenter_btn_reminder">Ingatkan Saya</string>
+    <string name="notifcenter_btn_delete_reminder">Hapus Pengingat</string>
     <string name="notifcenter_btn_out_of_stock">Stock Habis</string>
 
     <string name="product_reminder_success">Kami akan mengabarkan bila barang sudah di stok kembali</string>
@@ -115,4 +118,20 @@
     <string name="notifcenter_title_product_highlight">Produk unggulan dari toko ini</string>
 
     <string name="notifcenter_out_of_stock">Yaah, stok barangnya habis. Coba cek barang serupa lainnya, yuk.</string>
+    <string name="notifcenter_cd_avatar">avatar</string>
+    <string name="notifcenter_cd_icon_trx">transaction item</string>
+
+    <string name="title_notifcenter_click_here">Klik disini</string>
+    <string name="title_notifcenter_end_in">Berakhir dalam</string>
+    <string name="title_notifcenter_end_until">Berlaku sampai</string>
+    <string name="title_notifcenter_promo_already_ended">Promo telah berakhir</string>
+    <string name="title_notifcenter_see_more">Lihat Lebih Banyak</string>
+    <string name="title_notifcenter_empty_with_recom">Belum ada notifikasi baru, nih. Coba cek pilihan produk menarik di bawah ini, yuk!.</string>
+    <string name="title_success_bump_reminder">Siap-siap, kamu bakal jadi yang pertama dapat kabar saat barang ini tersedia lagi.</string>
+    <string name="title_success_delete_reminder">Pengingat telah dihapus.</string>
+    <string name="title_empty_stock">Stok Habis</string>
+
+    <string name="cta_widget_notifcenter_see_previous">Lihat sebelumnya</string>
+    <string name="cta_widget_notifcenter_close_previous">Tutup</string>
+    <string name="title_notifcenter_see_cart">Lihat Keranjang</string>
 </resources>

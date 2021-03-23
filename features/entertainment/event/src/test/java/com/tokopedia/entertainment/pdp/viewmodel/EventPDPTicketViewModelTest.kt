@@ -43,13 +43,13 @@ class EventPDPTicketViewModelTest {
     lateinit var usecaseHoliday: TravelCalendarHolidayUseCase
 
     @Before
-    fun setUp(){
+    fun setUp() {
         MockKAnnotations.init(this)
         eventPDPTicketViewModel = EventPDPTicketViewModel(Dispatchers.Unconfined, graphqlRepository, eventProductDetailUseCase, usecaseHoliday)
     }
 
     @Test
-    fun `DataTicket_NotNullData_Shownotnulldata`(){
+    fun `DataTicket_NotNullData_Shownotnulldata`() {
         Assert.assertNotNull(eventProductDetailUseCase)
         Assert.assertNotNull(usecaseHoliday)
         Assert.assertNotNull(graphqlRepository)
@@ -57,7 +57,7 @@ class EventPDPTicketViewModelTest {
     }
 
     @Test
-    fun `ProductdetailTicketData_SuccessShowProductSuccessShowHoliday_ShowActualResult`(){
+    fun `ProductdetailTicketData_SuccessShowProductSuccessShowHoliday_ShowActualResult`() {
         //given
         val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
         val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
@@ -72,17 +72,27 @@ class EventPDPTicketViewModelTest {
 
 
         //When
-        eventPDPTicketViewModel.getData("", "1557853200", false,"","")
+        eventPDPTicketViewModel.getData("", "1604250000", false, "", "")
 
         //then
+        val selectedDatePackages = arrayListOf(pdpMock.eventProductDetail.productDetailData.packages[0])
+        val recommendationPackages = arrayListOf<PackageV3>()
+        for ((index, item) in pdpMock.eventProductDetail.productDetailData.packages.withIndex()) {
+            if (index > 0) {
+                recommendationPackages.add(item)
+            }
+        }
+
         assertNotNull(eventPDPTicketViewModel.ticketModel)
-        assertEquals(eventPDPTicketViewModel.lists, pdpMock.eventProductDetail.productDetailData.packages)
+        assertEquals(eventPDPTicketViewModel.lists, selectedDatePackages)
         assertEquals(eventPDPTicketViewModel.ticketModel.value, eventPDPTicketViewModel.lists)
+        assertEquals(eventPDPTicketViewModel.recommendationList, recommendationPackages)
+        assertEquals(eventPDPTicketViewModel.recommendationTicketModel.value, eventPDPTicketViewModel.recommendationList)
         assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
     }
 
     @Test
-    fun `ProductdetailTicketData_FailShowProductSuccessShowHoliday_ShowActualResult`(){
+    fun `ProductdetailTicketData_FailShowProductSuccessShowHoliday_ShowActualResult`() {
         //given
         val error = Throwable("Error Ticket Data")
         val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
@@ -96,36 +106,38 @@ class EventPDPTicketViewModelTest {
 
 
         //When
-        eventPDPTicketViewModel.getData("", "1557853200", false,"","")
+        eventPDPTicketViewModel.getData("", "1557853200", false, "", "")
 
         //then
         assertNull(eventPDPTicketViewModel.ticketModel.value)
-        assertEquals(eventPDPTicketViewModel.error.value,error.message)
+        assertEquals(eventPDPTicketViewModel.error.value, error.message)
         assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
     }
 
     @Test
-    fun `ProductdetailTicketData_FailShowProductFailShowHoliday_FailActualResult`(){
+    fun `ProductdetailTicketData_FailShowProductFailShowHoliday_FailActualResult`() {
         //given
         val error = Throwable("Error Ticket Data")
-        coEvery { eventProductDetailUseCase.executeUseCase("",
-                "", false, "") } returns Fail(error)
+        coEvery {
+            eventProductDetailUseCase.executeUseCase("",
+                    "", false, "")
+        } returns Fail(error)
         coEvery {
             usecaseHoliday.execute()
         } returns Fail(Throwable())
 
         //When
-        eventPDPTicketViewModel.getData( "", "", false,"","")
+        eventPDPTicketViewModel.getData("", "1604250000", false, "", "")
 
         //then
         assertNull(eventPDPTicketViewModel.ticketModel.value)
         assertNotNull(eventPDPTicketViewModel.error.value)
-        assertEquals(eventPDPTicketViewModel.error.value,error.message)
+        assertEquals(eventPDPTicketViewModel.error.value, error.message)
         assert(eventPDPTicketViewModel.eventHoliday.value == arrayListOf<Legend>())
     }
 
     @Test
-    fun `VerifyData_SuccessVerify_ShouldSuccessVerify`(){
+    fun `VerifyData_SuccessVerify_ShouldSuccessVerify`() {
 
         val verifyMock = Gson().fromJson(getJson("verify_mock.json"), EventVerifyResponseV2::class.java)
 
@@ -133,7 +145,7 @@ class EventPDPTicketViewModelTest {
         result[EventVerifyResponseV2::class.java] = verifyMock
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         eventPDPTicketViewModel.verify("", VerifyRequest())
 
@@ -143,21 +155,21 @@ class EventPDPTicketViewModelTest {
 
 
     @Test
-    fun `VerifyData_FailVerify_ShouldFailVerify`(){
+    fun `VerifyData_FailVerify_ShouldFailVerify`() {
         //given
         val error = Throwable("Error Verify")
-        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw error }
 
         //when
-        eventPDPTicketViewModel.verify("",VerifyRequest())
+        eventPDPTicketViewModel.verify("", VerifyRequest())
 
         //then
-        assertEquals(eventPDPTicketViewModel.error.value,error.message)
+        assertEquals(eventPDPTicketViewModel.error.value, error.message)
 
     }
 
     @Test
-    fun categoryData_setCategoryData_successSetCategoryData(){
+    fun categoryData_setCategoryData_successSetCategoryData() {
         //given
         val categoryData = Category()
 
@@ -169,7 +181,7 @@ class EventPDPTicketViewModelTest {
     }
 
     @Test
-    fun listPdpTicket_setPdpData_successSetPDPData(){
+    fun listPdpTicket_setPdpData_successSetPDPData() {
         //given
         val listTicket = mutableListOf<EventPDPTicketModel>()
 

@@ -54,6 +54,7 @@ import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
+import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.RechargeWidgetAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.CopyableDetailItemView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
@@ -300,13 +301,28 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setInvoice(final Invoice invoice) {
+        String orderId = (getArguments().getString(KEY_ORDER_ID) != null) ?
+                getArguments().getString(KEY_ORDER_ID) : "";
         invoiceView.setText(invoice.invoiceRefNum());
         if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
+            String orderCategory = getArguments().getString(KEY_ORDER_CATEGORY) != null ?
+                    getArguments().getString(KEY_ORDER_CATEGORY) : "";
             presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
+            if (orderCategory != null && orderCategory.equals(OrderCategory.DIGITAL)) {
+                startActivity(SeeInvoiceActivity.newInstance(getContext(),
+                        presenter.getOrderCategoryName(),
+                        presenter.getOrderProductName(),
+                        orderId,
+                        invoice.invoiceUrl(),
+                        invoice.invoiceRefNum(),
+                        getString(R.string.title_invoice),
+                        OrderCategory.DIGITAL));
+            } else {
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
+            }
         });
     }
 
@@ -522,7 +538,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW,contactUs.helpUrl());
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, contactUs.helpUrl());
             }
 
             @Override

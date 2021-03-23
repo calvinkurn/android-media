@@ -14,5 +14,9 @@ data class LabelGroup(
 
         @SerializedName("title")
         @Expose
-        val title: String = ""
+        val title: String = "",
+
+        @SerializedName("url")
+        @Expose
+        val url: String = ""
 )

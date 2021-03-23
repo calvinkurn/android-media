@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEFAULT_MIN_ORDER_VALUE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEFAULT_STOCK_VALUE
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import kotlinx.android.parcel.Parcelize
 import java.math.BigInteger
@@ -29,7 +30,8 @@ data class DetailInputModel(
         var preorder: PreorderInputModel = PreorderInputModel(),
         var wholesaleList: List<WholeSaleInputModel> = emptyList(),
         var pictureList: List<PictureInputModel> = emptyList(),
-        var productShowCases: List<ShowcaseItemPicker> = emptyList()
+        var productShowCases: List<ShowcaseItemPicker> = emptyList(),
+        var specifications: List<SpecificationInputModel>? = null
 ) : Parcelable
 
 @Parcelize

@@ -70,7 +70,10 @@ data class ProductAddParam (
         var videos: Videos = Videos(),
         @SerializedName("variant")
         @Expose
-        var variant: Variant? = null
+        var variant: Variant? = null,
+        @SerializedName("annotations")
+        @Expose
+        var annotations: List<String>? = null
 ) : Parcelable
 
 @Parcelize

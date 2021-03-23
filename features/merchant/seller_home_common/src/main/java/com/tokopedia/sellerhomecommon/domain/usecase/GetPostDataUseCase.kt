@@ -66,8 +66,13 @@ class GetPostDataUseCase(
                     subtitle
                     featuredMediaURL
                   }
+                  cta{
+                    text
+                    applink
+                  }
                   error
                   errorMsg
+                  showWidget
                 }
               }
             }

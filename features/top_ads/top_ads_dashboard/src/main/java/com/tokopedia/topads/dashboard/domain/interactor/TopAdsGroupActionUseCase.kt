@@ -4,10 +4,6 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -20,7 +16,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUPS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_DASH
 import com.tokopedia.topads.dashboard.data.model.GroupActionResponse
-import com.tokopedia.topads.dashboard.data.model.StatsData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

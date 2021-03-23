@@ -157,10 +157,10 @@ internal class ShopListFragment:
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         )
     }
 
@@ -507,7 +507,7 @@ internal class ShopListFragment:
             it.visible()
             it.sortFilterHorizontalScrollView.scrollX = 0
             it.addItem(sortFilterItemList as ArrayList<SortFilterItem>)
-            it.textView.text = getString(R.string.search_filter)
+            it.textView?.text = getString(R.string.search_filter)
             it.parentListener = {
                 searchShopViewModel?.onViewOpenFilterPage()
             }

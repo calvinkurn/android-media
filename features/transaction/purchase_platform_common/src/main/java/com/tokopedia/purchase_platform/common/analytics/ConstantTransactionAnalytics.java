@@ -493,6 +493,11 @@ public interface ConstantTransactionAnalytics {
         String VIEW_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 3 for new buyer after create profile";
         String CLICK_DONE_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "click done on coachmark 3 for new buyer after create profile";
 
+        // OCC PP
+        String PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - impression on insurance section";
+        String PP_CLICK_TOOLTIP = "pp - click tooltip";
+        String PP_CLICK_BAYAR = "pp - click bayar";
+
         // Shipping experience
         String VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "view summary transaction ticker courier not complete";
         String CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "click cek on summary transaction ticker courier not complete";

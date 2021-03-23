@@ -14,6 +14,7 @@ data class OrderProduct(
         var originalPrice: String = "",
         var discountedPercentage: Float = 0f,
         var isFreeOngkir: Boolean = false,
+        var isFreeOngkirExtra: Boolean = false,
         var freeOngkirImg: String = "",
         var weight: Int = 0,
         var quantity: QuantityUiModel = QuantityUiModel(),
@@ -28,7 +29,8 @@ data class OrderProduct(
         var campaignId: Int = 0,
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
-        var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData()
+        var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
+        var preorderDuration: Int = 0
 ) {
 
     fun getPrice(): Long {

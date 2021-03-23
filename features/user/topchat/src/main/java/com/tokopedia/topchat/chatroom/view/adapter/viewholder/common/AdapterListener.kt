@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 
 interface AdapterListener {
-    fun isNextItemSender(adapterPosition: Int, isSender: Boolean): Boolean
+    fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean
     fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool
     fun changeToFallbackUiModel(element: ReviewUiModel, lastKnownPosition: Int)
 }

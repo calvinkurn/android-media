@@ -18,11 +18,12 @@ class SomListOrderAdapter(
         visitables.addAll(items)
     }
 
-    fun updateOrder(order: SomListOrderUiModel) {
-        visitables.filterIsInstance<SomListOrderUiModel>().indexOfFirst { it.orderId == order.orderId }.let { index ->
+    fun updateOrder(newOrder: SomListOrderUiModel) {
+        visitables.filterIsInstance<SomListOrderUiModel>().indexOfFirst { it.orderId == newOrder.orderId }.let { index ->
             if (index in 0 until visitables.size) {
-                visitables[index] = order
-                notifyItemChanged(index)
+                val oldOrder = visitables[index]
+                visitables[index] = newOrder
+                notifyItemChanged(index, oldOrder to newOrder)
             }
         }
     }

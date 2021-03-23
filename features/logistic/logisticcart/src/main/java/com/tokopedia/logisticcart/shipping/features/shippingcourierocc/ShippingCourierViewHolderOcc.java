@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +33,7 @@ public class ShippingCourierViewHolderOcc extends RecyclerView.ViewHolder {
     private View separator;
     private Label codLabel;
     private Label otdLabel;
+    private ConstraintLayout layoutMvc;
 
     private int cartPosition;
 
@@ -46,11 +48,14 @@ public class ShippingCourierViewHolderOcc extends RecyclerView.ViewHolder {
         separator = itemView.findViewById(R.id.separator);
         codLabel = itemView.findViewById(R.id.lbl_cod_available);
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
+        layoutMvc = itemView.findViewById(R.id.layout_mvc);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
                          ShippingCourierAdapterListener shippingCourierAdapterListener,
                          boolean isLastItem) {
+        // OCC has no MVC
+        layoutMvc.setVisibility(View.GONE);
 
         if (isLastItem) {
             separator.setVisibility(View.GONE);

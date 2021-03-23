@@ -67,6 +67,7 @@ class InspirationCarouselViewHolder(
                 it.initRecyclerViewForGrid(option, productList)
                 configureSeeAllButton(option)
             } else {
+                it.setDefaultHeightInspirationCarouselOptionList()
                 it.layoutManager = createLayoutManager()
                 it.adapter = createAdapter(element.options)
             }
@@ -148,6 +149,12 @@ class InspirationCarouselViewHolder(
         }
     }
 
+    private fun RecyclerView.setDefaultHeightInspirationCarouselOptionList() {
+        val carouselLayoutParams = layoutParams
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+        layoutParams = carouselLayoutParams
+    }
+
     private fun createLayoutManager(): RecyclerView.LayoutManager {
         return LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
     }
@@ -165,8 +172,8 @@ class InspirationCarouselViewHolder(
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return InspirationCarouselItemDecoration(
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) ?: 0,
         )
     }
 

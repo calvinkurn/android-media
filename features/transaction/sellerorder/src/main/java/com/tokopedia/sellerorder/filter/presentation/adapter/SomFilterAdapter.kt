@@ -8,6 +8,7 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
 
     companion object {
         const val PAYLOAD_DATE_FILTER = 104
+        const val PAYLOAD_CHIPS_FILTER = 108
     }
 
     fun updateData(dataList: List<BaseSomFilter>) {
@@ -23,7 +24,7 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
             val chipsIndex = visitables.indexOf(somFilter)
             somFilter.somFilterData = dataList[index].somFilterData
             if(chipsIndex != -1) {
-                notifyItemChanged(chipsIndex)
+                notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
             }
         }
         updateDateFilterText()
@@ -42,8 +43,9 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
         val updateIndex = visitables.filterIsInstance<SomFilterUiModel>().firstOrNull { it.nameFilter == nameFilter }
         val chipsIndex = visitables.indexOf(updateIndex)
         visitables.filterIsInstance<SomFilterUiModel>().firstOrNull { it.nameFilter == nameFilter}?.somFilterData = chipsList
+        visitables.filterIsInstance<SomFilterUiModel>().firstOrNull { it.nameFilter == nameFilter}?.nameFilter = nameFilter
         if(chipsIndex != -1) {
-            notifyItemChanged(chipsIndex)
+            notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
         }
     }
 

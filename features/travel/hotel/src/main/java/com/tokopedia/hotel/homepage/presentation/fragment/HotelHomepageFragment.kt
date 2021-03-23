@@ -88,7 +88,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
     private lateinit var remoteConfig: RemoteConfig
-
     private var bannerWidthInPixels = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -639,12 +638,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 data as TravelCollectiveBannerModel.Banner
 
                 val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
-                image.layoutParams.width = if (bannerWidthInPixels > 0) {
-                    bannerWidthInPixels
+                if (bannerWidthInPixels > 0) {
+                    image.layoutParams.height = (BANNER_HEIGHT_RATIO * bannerWidthInPixels).toInt()
+                    image.layoutParams.width = bannerWidthInPixels
                 } else {
-                    resources.getDimensionPixelSize(R.dimen.hotel_banner_width)
+                    image.layoutParams.height = resources.getDimensionPixelSize(R.dimen.hotel_banner_height)
+                    image.layoutParams.width = resources.getDimensionPixelSize(R.dimen.hotel_banner_width)
                 }
-                image.setImageUrl(data.attribute.imageUrl, BANNER_HEIGHT_RATIO, placeholderHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height), isSkipCache = true)
+                image.loadImage(data.attribute.imageUrl)
                 image.setOnClickListener {
                     onPromoClicked(data, data.position)
                 }

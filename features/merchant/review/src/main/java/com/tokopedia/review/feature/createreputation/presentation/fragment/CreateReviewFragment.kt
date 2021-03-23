@@ -455,8 +455,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val result = ImagePickerResultExtractor.extract(data)
                     val selectedImage = result.imageUrlOrPathList
-                    val originalImageUrl = result.originalImageUrl
-                    val isEdited = result.isEditted
+                    val imagesFedIntoPicker = result.imagesFedIntoPicker
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
@@ -469,8 +468,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     )
 
                     if (!selectedImage.isNullOrEmpty()) {
-                        val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage as ArrayList<String>,
-                                originalImageUrl as ArrayList<String>, isEdited as ArrayList<Boolean>)
+                        val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage, imagesFedIntoPicker)
                         imageAdapter.setImageReviewData(imageListData)
                         rv_img_review.show()
                         createReviewAddPhotoEmpty.hide()
@@ -509,6 +507,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewViewModel.isUserEligible() && isReviewComplete()
         )
         if (isEditMode) {
+            if(reviewMessage.isBlank()) {
+                showToasterError(getString(R.string.review_edit_blank_error))
+                return
+            }
             createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toLongOrZero(),
                     createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {
@@ -564,6 +566,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         with(data.productrevGetForm) {
+            updateProductId(productData.productID)
             when {
                 !validToReview -> {
                     finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
@@ -989,6 +992,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
             text = incentiveHelper
             show()
         }
+    }
+
+    private fun updateProductId(productId: Long) {
+        this.productId = productId
     }
 
     fun getOrderId(): String {

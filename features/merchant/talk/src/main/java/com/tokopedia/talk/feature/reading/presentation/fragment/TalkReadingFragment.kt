@@ -71,7 +71,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val TOASTER_CTA_WIDTH = 300
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
         const val DEFAULT_INITIAL_PAGE = 1
-        const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
@@ -90,8 +89,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     @Inject
     lateinit var viewModel: TalkReadingViewModel
-
-    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     private var productId: String = ""
     private var shopId: String = ""
@@ -125,7 +122,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         observeSortOptions()
         observeDiscussionData()
         observeFilterCategories()
-        getHeaderData()
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
     }
@@ -158,10 +154,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onFinishChooseSort(sortOption: SortOption) {
         TalkReadingTracking.eventClickSort(sortOption.displayName, viewModel.getUserId(), productId)
         viewModel.updateSelectedSort(sortOption)
-    }
-
-    override fun callInitialLoadAutomatically(): Boolean {
-        return DONT_LOAD_INITAL_DATA
     }
 
     override fun onSwipeRefresh() {
@@ -292,7 +284,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun loadInitialData() {
         isLoadingInitialData = true
-        getDiscussionData(isRefresh = true)
+        getHeaderData()
     }
 
     override fun onStart() {
@@ -321,7 +313,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         pageError.show()
         reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         pageError.talkConnectionErrorRetryButton.setOnClickListener {
-            getHeaderData()
+            loadInitialData()
         }
     }
 
@@ -346,9 +338,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     initSortOptions()
                     initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     showContainer()
-                    if(!isLoadingInitialData) {
-                        loadInitialData()
-                    }
                 }
             }
 

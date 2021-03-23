@@ -45,8 +45,8 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     @Inject
     lateinit var talkInboxTracking: TalkInboxTracking
 
-    private var sellerUnreadCount = 0
-    private var buyerUnreadCount = 0
+    private var sellerUnreadCount = 0L
+    private var buyerUnreadCount = 0L
     private var isFirstTimeEnterPage = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -79,15 +79,15 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         setupTabLayout()
     }
 
-    override fun updateUnreadCounter(sellerUnread: Int, buyerUnread: Int) {
+    override fun updateUnreadCounter(sellerUnread: Long, buyerUnread: Long) {
         sellerUnreadCount = sellerUnread
-        talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCounter(if(sellerUnread > 0) sellerUnread else HIDE_TAB_COUNTER)
+        talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCounter(if(sellerUnread > 0) sellerUnread.toInt() else HIDE_TAB_COUNTER)
         buyerUnreadCount = buyerUnread
-        talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCounter(if(buyerUnread > 0) buyerUnread else HIDE_TAB_COUNTER)
+        talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCounter(if(buyerUnread > 0) buyerUnread.toInt() else HIDE_TAB_COUNTER)
         if(isFirstTimeEnterPage) {
             isFirstTimeEnterPage = false
             when {
-                buyerUnreadCount > 0 && sellerUnreadCount == 0 -> {
+                buyerUnreadCount > 0 && sellerUnreadCount == 0L -> {
                     selectBuyerTab()
                 }
                 else -> {
@@ -155,7 +155,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private fun trackTabChange(position: Int) {
         if(position == SELLER_TAB_INDEX) {
-            talkInboxTracking.eventClickTab(TalkInboxTab.SHOP_TAB, userSession.userId, userSession.shopId, sellerUnreadCount)
+            talkInboxTracking.eventClickTab(TalkInboxTab.SHOP_OLD, userSession.userId, userSession.shopId, sellerUnreadCount)
         } else {
             talkInboxTracking.eventClickTab(TalkInboxTab.BUYER_TAB, userSession.userId, userSession.shopId, buyerUnreadCount)
         }

@@ -1,6 +1,8 @@
 package com.tokopedia.purchase_platform.common.feature.checkout.request
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * Since original class CheckoutRequest contains many unnecessary data, which is currently used for analytics purpose,
@@ -27,9 +29,8 @@ data class CheckoutRequestGqlData(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
         @SerializedName("leasing_id")
-        var leasingId: Int = 0,
-        @SerializedName("has_insurance_product")
-        var hasMacroInsurance: Boolean = false
+        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        var leasingId: Int = 0
 )
 
 data class EgoldGqlData(
@@ -45,18 +46,21 @@ data class TokopediaCornerGqlData(
         @SerializedName("user_corner_id")
         var userCornerId: String? = null,
         @SerializedName("corner_id")
+        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
         var cornerId: Int = 0
 )
 
 data class CheckoutGqlData(
         @SerializedName("address_id")
-        var addressId: Int = 0,
+        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        var addressId: Long = 0,
         @SerializedName("shop_products")
         var shopProducts: List<ShopProductGqlData> = ArrayList()
 )
 
 data class ShopProductGqlData(
         @SerializedName("shop_id")
+        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
         var shopId: Int = 0,
         @SerializedName("is_preorder")
         var isPreorder: Int = 0,
@@ -73,6 +77,7 @@ data class ShopProductGqlData(
         @SerializedName("fcancel_partial")
         var fcancelPartial: Int = 0,
         @SerializedName("warehouse_id")
+        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
         var warehouseId: Int = 0,
         @SerializedName("promo_codes")
         var promoCodes: List<String> = emptyList(),
@@ -84,8 +89,10 @@ data class ShopProductGqlData(
 
 data class ShippingInfoGqlData(
         @SerializedName("shipping_id")
+        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
         var shippingId: Int = 0,
         @SerializedName("sp_id")
+        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
         var spId: Int = 0,
         @SerializedName("rates_id")
         var ratesId: String? = null,
@@ -118,6 +125,7 @@ data class DropshipGqlData(
 
 data class ProductGqlData(
         @SerializedName("product_id")
+        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
         var productId: Long = 0,
         @SerializedName("is_ppp")
         var isPurchaseProtection: Boolean = false,
@@ -147,7 +155,6 @@ object CheckoutRequestGqlDataMapper {
             tokopediaCornerData = if (checkoutRequest.cornerData != null) mapTokopediaCornerData(checkoutRequest.cornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
-            hasMacroInsurance = checkoutRequest.hasMacroInsurance
         }
     }
 
@@ -182,7 +189,7 @@ object CheckoutRequestGqlDataMapper {
         val checkoutGqlDataList = ArrayList<CheckoutGqlData>()
         dataCheckoutRequestList.forEach {
             checkoutGqlDataList.add(CheckoutGqlData().apply {
-                addressId = it.addressId
+                addressId = it.addressId.toLongOrZero()
                 shopProducts = if (it.shopProducts != null) mapShopProduct(it.shopProducts) else emptyList()
             })
         }

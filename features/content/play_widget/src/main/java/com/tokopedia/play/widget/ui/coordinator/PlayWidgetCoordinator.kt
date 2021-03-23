@@ -48,6 +48,9 @@ class PlayWidgetCoordinator(
     )
 
     private val mWidgetInternalListener = object : PlayWidgetInternalListener {
+        override fun onWidgetAttached(widgetCardsContainer: RecyclerView) {
+            autoPlayCoordinator.onWidgetAttached(widgetCardsContainer)
+        }
 
         override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
             autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)

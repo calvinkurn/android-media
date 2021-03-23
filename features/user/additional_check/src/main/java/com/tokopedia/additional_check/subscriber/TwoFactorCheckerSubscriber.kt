@@ -35,7 +35,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
-            "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity"
+            "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity", "OvoRegisterInitialActivity", "OvoFinalPageActivity"
     )
 
     private val exceptionPageSeller = listOf(
@@ -51,7 +51,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 DaggerAdditionalCheckComponents
                         .builder()
                         .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                        .additionalCheckModules(AdditionalCheckModules(activity))
+                        .additionalCheckModules(AdditionalCheckModules())
                         .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
                         .build()
                         .inject(this)

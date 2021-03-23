@@ -1,5 +1,7 @@
 package com.tokopedia.categorylevels.analytics
 
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -19,10 +21,16 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                               private val userSession: UserSessionInterface)
     : BaseDiscoveryAnalytics(pageType, pagePath, pageIdentifier, campaignCode, sourceIdentifier, trackingQueue) {
 
+    private var categoryPageIdentifier : String = pageIdentifier
+
+    private fun changePageIdentifier(pageIdentifier: String){
+        categoryPageIdentifier = pageIdentifier
+    }
+
     private var viewedProductsSet: ArrayList<String> = arrayListOf()
     private var dimension40 = ""
     private fun createGeneralEvent(eventName: String = EVENT_CLICK_CATEGORY,
-                                   eventCategory: String = "$VALUE_CATEGORY_PAGE - $pageIdentifier",
+                                   eventCategory: String = "$VALUE_CATEGORY_PAGE - $categoryPageIdentifier",
                                    eventAction: String,
                                    eventLabel: String = EMPTY_STRING): MutableMap<String, Any> {
         return mutableMapOf(
@@ -150,9 +158,18 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             productMap[KEY_ID] = it.productId.toString()
             productMap[LIST] = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
             productMap[KEY_NAME] = it.name.toString()
+            var label = ""
+            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                label = "$label&${map.key}=${map.value}"
+            }
+            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+                label = "$label&${map.key}=${map.value}"
+            }
+            productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
             productMap[KEY_VARIANT] = NONE_OTHER
+            productMap[DIMENSION83] = getProductDime83(it)
         }
         list.add(productMap)
 
@@ -180,10 +197,19 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_CATEGORY] = it.departmentID
                 productMap[KEY_ID] = it.productId.toString()
                 productMap[LIST] = productCardItemList
+                var label = ""
+                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                    label = "$label&${map.key}=${map.value}"
+                }
+                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+                    label = "$label&${map.key}=${map.value}"
+                }
+                productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
                 productMap[KEY_NAME] = it.name.toString()
                 productMap[KEY_POSITION] = componentsItems.position + 1
                 productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
                 productMap[KEY_VARIANT] = NONE_OTHER
+                productMap[DIMENSION83] = getProductDime83(it)
             }
             list.add(productMap)
 
@@ -202,6 +228,19 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         }
     }
 
+    private fun getProductDime83(dataItem: DataItem): String {
+        if (dataItem.freeOngkir?.isActive == true){
+            for(labelGroup in dataItem.labelsGroupList ?: arrayListOf()){
+                if(labelGroup.position == Constant.LABEL_FULFILLMENT){
+                    return BEBAS_ONGKIR_EXTRA
+                }
+            }
+            return BEBAS_ONGKIR
+        }else {
+            return NONE_OTHER
+        }
+    }
+
     override fun clearProductViewIds(isRefresh : Boolean) {
         if(isRefresh) {
             viewedProductsSet.clear()
@@ -212,6 +251,9 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         additionalInfo?.categoryData?.let {
             if(it[KEY_REDIRECTION_URL].isNullOrEmpty())
                 TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME, createOpenScreenEventMap(rootId = it[KEY_ROOT_ID], parent = it[KEY_PARENT], id = it[KEY_CATEGORY_ID_MAP], url = it[KEY_URL]))
+            if(!it[KEY_CATEGORY_ID_MAP].isNullOrEmpty()){
+                changePageIdentifier(it[KEY_CATEGORY_ID_MAP]!!)
+            }
         }
     }
 
@@ -243,5 +285,18 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             }
         }
         return map
+    }
+
+    override fun trackClickDetailedFilter(componentName: String?) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_FILTER_MENU))
+    }
+
+    override fun trackClickApplyFilter(mapParameters: Map<String, String>) {
+        var label = ""
+        for (map in mapParameters) {
+            if(map.key!= ORIGIN_FILTER)
+            label = "$label&${map.key}=${map.value}"
+        }
+        getTracker().sendGeneralEvent(createGeneralEvent(eventName = EVENT_CLICK_FILTER, eventAction = APPLY_FILTER, eventLabel = label.removePrefix("&")))
     }
 }
