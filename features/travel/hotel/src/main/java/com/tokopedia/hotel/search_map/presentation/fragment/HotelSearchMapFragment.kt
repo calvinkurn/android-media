@@ -986,7 +986,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                         if (!contains) break
                     }
-                    if (contains) quickFilterSortHotelSearchMap.chipItems[index]?.type = ChipsUnify.TYPE_SELECTED
+                    quickFilterSortHotelSearchMap.chipItems?.let {
+                        if (contains) it[index].type = ChipsUnify.TYPE_SELECTED
+                    }
                 }
             }
         }
