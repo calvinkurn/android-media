@@ -14,9 +14,14 @@ sealed class ShopType(@LayoutRes val shopTypeLayoutRes: Int,
         val POWER_MERCHANT_LAYOUT = R.layout.setting_shop_status_pm
         val OFFICIAL_STORE_LAYOUT = R.layout.setting_shop_status_os
 
-        val REGULAR_MERCHANT_HEADER = R.drawable.setting_regular_header
-        val POWER_MERCHANT_HEADER = R.drawable.setting_pm_header_background
-        val OFFICIAL_STORE_HEADER = R.drawable.setting_os_header_background
+//        Reuse this drawable after Ramadhan campaign has finished
+//        val REGULAR_MERCHANT_HEADER = R.drawable.setting_regular_header
+//        val POWER_MERCHANT_HEADER = R.drawable.setting_pm_header_background
+//        val OFFICIAL_STORE_HEADER = R.drawable.setting_os_header_background
+
+        val REGULAR_MERCHANT_HEADER = R.drawable.setting_rm_header_background_ramadhan
+        val POWER_MERCHANT_HEADER = R.drawable.setting_pm_header_background_ramadhan
+        val OFFICIAL_STORE_HEADER = R.drawable.setting_os_header_background_ramadhan
 
         val POWER_MERCHANT_HEADER_ICON = R.drawable.ic_pm_icon_header
         val OFFICIAL_STORE_HEADER_ICON = R.drawable.ic_os_icon_header
