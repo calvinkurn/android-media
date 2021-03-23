@@ -1,7 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison
 
 import android.content.Context
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
