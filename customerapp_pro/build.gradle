@@ -61,6 +61,11 @@ def isFirebasePerformanceLogEnabled() {
     return "false"
 }
 
+task generateBundledResourcesHashLiveProdRelease {
+}
+task bundleLiveProdReleaseJsAndAssets{
+}
+
 project.ext {
     defaultVersionCode = 418001101;
     defaultVersionName = "3.80";
