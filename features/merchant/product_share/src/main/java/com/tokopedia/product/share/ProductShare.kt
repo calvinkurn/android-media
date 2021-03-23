@@ -46,7 +46,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         linkerErrorLog = null
     }
 
-    fun share(data: ProductData, preBuildImage: () -> Unit, postBuildImage: () -> Unit) {
+    fun share(data: ProductData, preBuildImage: () -> Unit, postBuildImage: () -> Unit, isLog: Boolean = false) {
         cancelShare = false
         resetLog()
 
