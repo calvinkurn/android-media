@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.EspressoIdlingResource
@@ -29,14 +31,15 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredent
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
-import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.sessioncommon.domain.usecase.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -57,6 +60,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val getProfileUseCase: GetProfileUseCase,
         private val tickerInfoUseCase: TickerInfoUseCase,
         private val statusPinUseCase: StatusPinUseCase,
+        private val getAdminTypeUseCase: GetAdminTypeUseCase,
+        private val loginTokenV2UseCase: LoginTokenV2UseCase,
+        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
@@ -68,7 +74,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = dispatcherProvider.io() + job
 
-    var idlingResourceProvider = EspressoIdlingResource
+    private val idlingResourceProvider = EspressoIdlingResource
 
     private val mutableRegisterCheckResponse = MutableLiveData<Result<RegisterCheckData>>()
     val registerCheckResponse: LiveData<Result<RegisterCheckData>>
@@ -85,6 +91,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val mutableLoginTokenResponse = MutableLiveData<Result<LoginTokenPojo>>()
     val loginTokenResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenResponse
+
+    private val mutableLoginTokenV2Response = MutableLiveData<Result<LoginTokenPojoV2>>()
+    val loginTokenV2Response: LiveData<Result<LoginTokenPojoV2>>
+        get() = mutableLoginTokenV2Response
 
     private val mutableProfileResponse = MutableLiveData<Result<ProfilePojo>>()
     val profileResponse: LiveData<Result<ProfilePojo>>
@@ -109,6 +119,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val mutableGoToActivationPage = MutableLiveData<String>()
     val goToActivationPage: LiveData<String>
         get() = mutableGoToActivationPage
+
+    private val mutableShowLocationAdminPopUp = MutableLiveData<Result<Boolean>>()
+    val showLocationAdminPopUp: LiveData<Result<Boolean>>
+        get() = mutableShowLocationAdminPopUp
 
     private val mutableGoToSecurityQuestion = MutableLiveData<String>()
     val goToSecurityQuestion: LiveData<String>
@@ -143,7 +157,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         get() = mutableDynamicBannerResponse
 
     fun registerCheck(id: String) {
-        idlingResourceProvider?.increment()
+        idlingResourceProvider.increment()
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
             execute({
@@ -152,10 +166,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty()) {
                     mutableRegisterCheckResponse.value = Fail(MessageErrorException(it.data.errors[0]))
                 } else mutableRegisterCheckResponse.value = Fail(RuntimeException())
-                idlingResourceProvider?.decrement()
+                idlingResourceProvider.decrement()
             }, {
                 mutableRegisterCheckResponse.value = Fail(it)
-                idlingResourceProvider?.decrement()
+                idlingResourceProvider.decrement()
             })
         }
     }
@@ -181,27 +195,36 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-        idlingResourceProvider?.increment()
+        idlingResourceProvider.increment()
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                {
-                    mutableProfileResponse.value = Success(it)
-                    idlingResourceProvider?.decrement()
+                { mutableProfileResponse.value = Success(it) },
+                { mutableProfileResponse.value = Fail(it) },
+                getAdminTypeUseCase = getAdminTypeUseCase,
+                showLocationAdminPopUp = {
+                    mutableShowLocationAdminPopUp.value = Success(true)
                 },
-                {
-                    mutableProfileResponse.value = Fail(it)
-                    idlingResourceProvider?.decrement()
+                showErrorGetAdminType = {
+                    mutableShowLocationAdminPopUp.value = Fail(it)
+                }, onFinished = {
+                    idlingResourceProvider.decrement()
                 }
         ))
     }
 
     fun loginFacebook(accessToken: AccessToken, email: String) {
-        idlingResourceProvider?.increment()
+        idlingResourceProvider.increment()
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
                 LoginTokenSubscriber(userSession,
-                        { onSuccessLoginTokenFacebook(it) },
-                        { onFailedLoginTokenFacebook(it) },
+                        {
+                            onSuccessLoginTokenFacebook(it)
+                            idlingResourceProvider.decrement()
+                        },
+                        {
+                            onFailedLoginTokenFacebook(it)
+                            idlingResourceProvider.decrement()
+                        },
                         { showPopup(it.loginToken.popupError) },
                         { onGoToActivationPage(email) },
                         { onGoToSecurityQuestion(email) }
@@ -209,81 +232,131 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun loginFacebookPhone(accessToken: AccessToken, phone: String) {
-        idlingResourceProvider?.increment()
+        idlingResourceProvider.increment()
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
                 LoginTokenFacebookSubscriber(userSession,
                         {
                             mutableLoginTokenFacebookPhoneResponse.value = Success(it)
-                            idlingResourceProvider?.decrement()
+                            idlingResourceProvider.decrement()
                         }, {
                             mutableLoginTokenFacebookPhoneResponse.value = Fail(it)
-                            idlingResourceProvider?.decrement()
+                            idlingResourceProvider.decrement()
                         },
                         { showPopup(it.loginToken.popupError) },
-                        { onGoToSecurityQuestion("") }
+                        { onGoToSecurityQuestion("") },
+                        onFinished = {
+                            idlingResourceProvider.decrement()
+                        }
                 )
         )
     }
 
     fun loginGoogle(accessToken: String, email: String) {
-        idlingResourceProvider?.increment()
+        idlingResourceProvider.increment()
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_GOOGLE
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
                 LoginTokenSubscriber(userSession,
                         {
                             mutableLoginTokenGoogleResponse.value = Success(it)
-                            idlingResourceProvider?.increment()
+                            idlingResourceProvider.decrement()
                         }, {
                             mutableLoginTokenGoogleResponse.value = Fail(it)
-                            idlingResourceProvider?.increment()
+                            idlingResourceProvider.decrement()
                         },
                         { showPopup(it.loginToken.popupError) },
                         { onGoToActivationPage(email) },
-                        { onGoToSecurityQuestion(email) }
+                        { onGoToSecurityQuestion(email) },
+                        onFinished = {
+                            idlingResourceProvider.decrement()
+                        }
                 ))
     }
 
-    fun loginEmail(email: String, password: String, isSmartLock: Boolean = false) {
+    private fun setSmartLock(isSmartLock: Boolean){
         if (isSmartLock) {
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
         } else {
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
         }
-        idlingResourceProvider?.increment()
+    }
+
+    fun loginEmail(email: String, password: String, isSmartLock: Boolean = false) {
+        setSmartLock(isSmartLock)
+        idlingResourceProvider.increment()
         loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                 email, password), LoginTokenSubscriber(userSession,
                 {
                     mutableLoginTokenResponse.value = Success(it)
-                    idlingResourceProvider?.increment()
+                    idlingResourceProvider.decrement()
                 },
                 {
                     mutableLoginTokenResponse.value = Fail(it)
-                    idlingResourceProvider?.increment()
+                    idlingResourceProvider.decrement()
                 },
                 { showPopup(it.loginToken.popupError) },
                 { onGoToActivationPage(email) },
-                { onGoToSecurityQuestion(email) }
+                { onGoToSecurityQuestion(email) },
+                onFinished = {
+                    idlingResourceProvider.decrement()
+                }
         ))
     }
 
+    fun loginEmailV2(email: String, password: String, isSmartLock : Boolean = false, useHash: Boolean) {
+        setSmartLock(isSmartLock)
+        idlingResourceProvider.increment()
+        launchCatchError(coroutineContext, {
+            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            if(keyData.key.isNotEmpty()) {
+                var finalPassword = password
+                if(useHash) {
+                    finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
+                }
+                loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
+                val tokenResult = loginTokenV2UseCase.executeOnBackground()
+                LoginV2Mapper(userSession).map(tokenResult,
+                        onSuccessLoginToken = {
+                            mutableLoginTokenV2Response.value = Success(it)
+                        },
+                        onErrorLoginToken = {
+                            mutableLoginTokenV2Response.value = Fail(it)
+                        },
+                        onShowPopupError = { showPopup(it.loginToken.popupError) },
+                        onGoToActivationPage = { onGoToActivationPage(email) },
+                        onGoToSecurityQuestion = { onGoToSecurityQuestion(email) }
+                )
+            }
+            else {
+                mutableLoginTokenV2Response.value = Fail(MessageErrorException("Failed"))
+            }
+            idlingResourceProvider.decrement()
+        }, {
+            mutableLoginTokenV2Response.value = Fail(it)
+            idlingResourceProvider.decrement()
+        })
+    }
+
     fun reloginAfterSQ(validateToken: String) {
-        idlingResourceProvider?.increment()
+        idlingResourceProvider.increment()
         loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                 userSession, validateToken), LoginTokenSubscriber(userSession,
                 {
                     mutableLoginTokenAfterSQResponse.value = Success(it)
-                    idlingResourceProvider?.increment()
+                    idlingResourceProvider.increment()
                 },
                 {
                     mutableLoginTokenAfterSQResponse.value = Fail(it)
-                    idlingResourceProvider?.increment()
+                    idlingResourceProvider.increment()
                 },
                 { showPopup(it.loginToken.popupError) },
                 { onGoToActivationPageAfterRelogin(it) },
-                { onGoToSecurityQuestionAfterRelogin("") })
+                { onGoToSecurityQuestionAfterRelogin("") },
+                onFinished = {
+                    idlingResourceProvider.decrement()
+                })
         )
     }
 
@@ -320,16 +393,25 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-        idlingResourceProvider?.increment()
+        idlingResourceProvider.increment()
         getFacebookCredentialUseCase.execute(
                 GetFacebookCredentialUseCase.getParam(
                         fragment,
                         callbackManager),
                 GetFacebookCredentialSubscriber(
                         ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener(
-                                onSuccessGetFacebookEmailCredential(),
-                                { onSuccessGetFacebookPhoneCredential(it) },
-                                { onFailedGetFacebookCredential(it) }
+                                {
+                                    onSuccessGetFacebookEmailCredential().invoke(it)
+                                    idlingResourceProvider.decrement()
+                                },
+                                {
+                                    onSuccessGetFacebookPhoneCredential(it)
+                                    idlingResourceProvider.decrement()
+                                },
+                                {
+                                    onFailedGetFacebookCredential(it)
+                                    idlingResourceProvider.decrement()
+                                }
                         )
                 )
         )
@@ -338,43 +420,43 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private fun onSuccessGetFacebookEmailCredential(): (FacebookCredentialData) -> Unit {
         return {
             mutableGetFacebookCredentialResponse.value = Success(it)
-            idlingResourceProvider?.decrement()
+            idlingResourceProvider.decrement()
         }
     }
 
     private fun onSuccessGetFacebookPhoneCredential(facebookCredentialData: FacebookCredentialData) {
         mutableGetFacebookCredentialResponse.value = Success(facebookCredentialData)
-        idlingResourceProvider?.decrement()
+        idlingResourceProvider.decrement()
     }
 
     private fun onFailedGetFacebookCredential(throwable: Throwable) {
         mutableGetFacebookCredentialResponse.value = Fail(throwable)
-        idlingResourceProvider?.decrement()
+        idlingResourceProvider.decrement()
     }
 
     private fun onFailedLoginTokenFacebook(throwable: Throwable) {
         mutableLoginTokenFacebookResponse.value = Fail(throwable)
-        idlingResourceProvider?.decrement()
+        idlingResourceProvider.decrement()
     }
 
     private fun onSuccessLoginTokenFacebook(loginToken: LoginTokenPojo) {
         mutableLoginTokenFacebookResponse.value = Success(loginToken.loginToken)
-        idlingResourceProvider?.decrement()
+        idlingResourceProvider.decrement()
     }
 
     private fun showPopup(popupError: PopupError) {
         mutableShowPopup.value = popupError
-        idlingResourceProvider?.decrement()
+        idlingResourceProvider.decrement()
     }
 
     private fun onGoToActivationPage(email: String) {
         mutableGoToActivationPage.value = email
-        idlingResourceProvider?.decrement()
+        idlingResourceProvider.decrement()
     }
 
     private fun onGoToSecurityQuestion(email: String) {
         mutableGoToSecurityQuestion.value = email
-        idlingResourceProvider?.decrement()
+        idlingResourceProvider.decrement()
     }
 
     private fun onGoToActivationPageAfterRelogin(messageErrorException: MessageErrorException) {
