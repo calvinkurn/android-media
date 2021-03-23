@@ -47,8 +47,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
-    private var isDone: Boolean = false
-
     companion object {
         const val JOB_ID_UPLOAD_IMAGE = 813
         const val IMAGE = "image"
@@ -127,7 +125,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                                 removeDummyOnList(dummyMessage)
                                 image?.let {img ->
                                     sendSuccessBroadcast(img)
-                                    isDone = true
                                 }
                             }
                         },
@@ -136,13 +133,11 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         },
         onError = {
             onErrorUploadImage(it, dummyMessage)
-            isDone = true
         })
     }
 
     private fun onFailedReplyMessage(): (Throwable) -> Unit {
         return {
-            isDone = true
             image?.let { img ->
                 onErrorUploadImage(it, img)
             }
@@ -161,7 +156,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                 image?.let {
                     sendSuccessBroadcast(it)
                 }
-                isDone = true
             }
 
             override fun onCompleted() {
@@ -171,7 +165,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                 image?.let {
                     onErrorUploadImage(e, it)
                 }
-                isDone = true
             }
         })
     }
@@ -223,13 +216,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                 it.remove(tmp)
             }
         }
-    }
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        if(!isDone) {
-            notificationManager?.onFailedUpload(UploadImageNotificationManager.MESSAGE_INTERRUPTED)
-        }
-        stopSelf()
     }
 
     override fun onDestroy() {

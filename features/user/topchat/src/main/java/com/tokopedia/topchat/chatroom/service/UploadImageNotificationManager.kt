@@ -43,6 +43,5 @@ abstract class UploadImageNotificationManager(private val context: Context) {
         private const val NOTIFICATION_GROUP = "com.tokopedia"
         private const val TITLE = "Upload gambar"
         private const val MESSAGE_ERROR = "Gambar gagal di-upload. Coba lagi"
-        const val MESSAGE_INTERRUPTED = "Jangan tutup aplikasi Tokopedia ya"
     }
 }
