@@ -34,7 +34,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
@@ -215,8 +214,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CodAnalytics mTrackerCod;
     @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
-    @Inject
-    CheckoutAnalyticsMacroInsurance mTrackerMacroInsurance;
     @Inject
     CornerAnalytics mTrackerCorner;
     @Inject
