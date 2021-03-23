@@ -84,7 +84,6 @@ dependencies {
 
     androidTestImplementation project(rootProject.ext.libraries.analytics)
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
-    androidTestImplementation rootProject.ext.testDependencies.couroutinesTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
