@@ -100,10 +100,10 @@
     <string name="cancel_btn">Batalkan</string>
     <string name="select_ad_creation_option_auto"> Sistem akan memilihkan produk dan biaya per klik yg tepat sehingga iklan lebih efektif</string>
     <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
-    <string name="ticker_title_deactivate">Iklan Otomatis akan dinonaktifkan</string>
-    <string name="ticker_desc_deactiivate">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
-    <string name="ticker_title_activate">Iklan Otomatis akan diaktifkan</string>
-    <string name="ticker_desc_actiivate">Proses mengaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi ya</string>
+    <string name="topads_create_ticker_title_deactivate">Iklan Otomatis akan dinonaktifkan</string>
+    <string name="topads_create_ticker_desc_deactiivate">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
+    <string name="topads_create_ticker_title_activate">Iklan Otomatis akan diaktifkan</string>
+    <string name="topads_create_ticker_desc_actiivate">Proses mengaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi ya</string>
     <string name="topads_create_onboarding_button1">Lanjut</string>
     <string name="topads_create_onboarding_button2">Yuk, Mulai Beriklan</string>
     <string name="topads_create_onboarding_action_text">Lewati</string>

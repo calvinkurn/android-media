@@ -54,13 +54,13 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:visibility="gone"
-            app:descriptionText="@string/ticker_desc_actiivate"
+            app:descriptionText="@string/topads_create_ticker_desc_actiivate"
             app:layout_constraintTop_toBottomOf="@+id/subtitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:tickerShapeType="loose"
             app:tickerType="announcement"
-            app:titleText="@string/ticker_title_activate"
+            app:titleText="@string/topads_create_ticker_title_activate"
             tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.CardUnify
