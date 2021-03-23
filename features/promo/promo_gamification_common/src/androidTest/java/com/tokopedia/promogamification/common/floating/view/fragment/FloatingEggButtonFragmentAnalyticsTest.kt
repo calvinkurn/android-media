@@ -6,6 +6,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -45,11 +46,12 @@ class FloatingEggButtonFragmentAnalyticsTest {
 
     @Test
     fun test_impression() {
+        Espresso.onView(ViewMatchers.withId(R.id.vg_floating_egg)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
         val luckyEggImpressionQuery = "tracker/promo/promo_gamification_common/lucky_egg_impression.json"
         MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, luckyEggImpressionQuery), hasAllSuccess())
 
-        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.vg_floating_egg), ViewMatchers.isDisplayed()))
-                .perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.vg_floating_egg)).perform(ViewActions.click())
         val luckyEggClickQuery = "tracker/promo/promo_gamification_common/lucky_egg_click.json"
         MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, luckyEggClickQuery), hasAllSuccess())
     }

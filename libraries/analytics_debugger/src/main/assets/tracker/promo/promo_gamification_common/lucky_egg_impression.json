@@ -1,12 +1,12 @@
 {
   "readme": "Lucky Egg impression",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
-      "eventName": "luckyEggView",
+      "event": "luckyEggView",
       "eventCategory": "lucky egg - homepage entry point",
       "eventAction": "impression on egg",
-      "eventLabel": "{{\\w+}}"
+      "eventLabel": "{{.*}}"
     }
   ]
 }
