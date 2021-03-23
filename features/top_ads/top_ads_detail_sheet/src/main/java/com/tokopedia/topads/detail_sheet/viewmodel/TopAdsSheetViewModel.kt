@@ -93,7 +93,7 @@ class TopAdsSheetViewModel @Inject constructor(
                 val restResponse: RestResponse? = typeResponse[token]
                 val response = restResponse?.getData() as DataResponse<ProductActionResponse>
                 val nonGroupResponse = response.data.topadsUpdateSingleAds
-                nonGroupResponse.let { onSuccess(action) }
+                onSuccess(action)
             }
 
             override fun onError(e: Throwable?) {
