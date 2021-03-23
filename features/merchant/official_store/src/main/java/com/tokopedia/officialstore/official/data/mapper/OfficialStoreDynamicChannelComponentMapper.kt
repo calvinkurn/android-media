@@ -75,6 +75,7 @@ object OfficialStoreDynamicChannelComponentMapper {
                             ratingFloat = it.ratingAverage,
                             productClickUrl = it.productClickUrl,
                             isFreeOngkirActive = it.freeOngkir?.isActive?:false,
+                            freeOngkirImageUrl = it.freeOngkir?.imageUrl?:"",
                             labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
                                         title = label.title,
