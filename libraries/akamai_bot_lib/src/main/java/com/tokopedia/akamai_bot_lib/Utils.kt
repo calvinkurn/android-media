@@ -120,10 +120,11 @@ fun <E> setExpire(
         setValue()
         val currentValue = getValue.invoke()
         val valueChanged = currentValue?.equals(previousValue)?:false
-        Timber.w("P1#AKAMAI_SENSOR#shared_pref;expired='true';value_changed='$valueChanged';expired_time='${savedTime+sdValidTime}';current_time='$currTime'")
+        if (valueChanged) {
+            Timber.w("P1#AKAMAI_SENSOR_SAME#shared_pref;expired='true';value_changed='$valueChanged';expired_time='${savedTime+sdValidTime}';current_time='$currTime'")
+        }
         return getValue.invoke()
     } else {
-        Timber.w("P1#AKAMAI_SENSOR#shared_pref;expired='false';value_changed='false';expired_time='${savedTime+sdValidTime}';current_time='$currTime'")
         return getValue.invoke()
     }
 }

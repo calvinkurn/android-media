@@ -716,10 +716,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     til_first_name.error = getString(R.string.flight_booking_passenger_first_name_max_error)
                     false
                 }
-                flightPassengerInfoValidator.validateLastNameIsLessThanMinLength(getFirstName()) -> {
-                    til_first_name.error = getString(R.string.flight_booking_passenger_first_name_error)
-                    false
-                }
                 else -> true
             }
 

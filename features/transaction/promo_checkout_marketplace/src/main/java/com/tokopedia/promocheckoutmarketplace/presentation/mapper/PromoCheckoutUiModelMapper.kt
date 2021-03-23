@@ -101,8 +101,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int, parentEnabled: Boolean, selectedPromo: List<String>): PromoListItemUiModel {
+    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int, parentEnabled: Boolean, selectedPromo: List<String>, index: Int = 0): PromoListItemUiModel {
         return PromoListItemUiModel(
+                id = index.toString(),
                 uiData = PromoListItemUiModel.UiData().apply {
                     uniqueId = couponItem.uniqueId
                     shopId = couponItem.shopId
@@ -113,6 +114,12 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
                     couponAppLink = couponItem.couponAppLink
+                    currencyDetailStr = couponItem.currencyDetailStr
+                    coachMark = PromoListItemUiModel.UiCoachmarkData(
+                            isShown = couponItem.coachMark.isShown,
+                            title = couponItem.coachMark.title,
+                            content = couponItem.coachMark.content
+                    )
                     val clashingInfoMap = HashMap<String, String>()
                     if (couponItem.clashingInfos.isNotEmpty()) {
                         couponItem.clashingInfos.forEach {

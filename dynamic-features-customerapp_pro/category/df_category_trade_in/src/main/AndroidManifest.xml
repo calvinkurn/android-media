@@ -6,12 +6,6 @@
         dist:title="@string/title_trade_in">
         <dist:delivery>
             <dist:on-demand/>
-            <dist:install-time >
-                <dist:conditions>
-                    <dist:min-sdk dist:value="21"/>
-                    <dist:max-sdk dist:value="23"/>
-                </dist:conditions>
-            </dist:install-time>
         </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
