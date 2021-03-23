@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -29,6 +31,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.coachmark.CoachMark2;
+import com.tokopedia.coachmark.CoachMark2Item;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
@@ -50,6 +54,9 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.productcard.IProductCardView;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -76,6 +83,7 @@ import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
+import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
@@ -146,7 +154,8 @@ public class ProductListFragment
         SortFilterBottomSheet.Callback,
         SearchInTokopediaListener,
         SearchNavigationClickListener,
-        TopAdsImageViewListener  {
+        TopAdsImageViewListener,
+        ChooseAddressListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -322,6 +331,7 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this, this,
+                this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -420,6 +430,13 @@ public class ProductListFragment
         }
 
         return null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (presenter != null) presenter.onViewResumed();
     }
 
     @Override
@@ -694,10 +711,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item) {
+    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
         if (presenter == null) return;
 
-        presenter.onProductImpressed(item);
+        presenter.onProductImpressed(item, adapterPosition);
     }
 
     @Override
@@ -1314,19 +1331,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
-        if (getActivity() != null) {
-            FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge, this::onFreeOngkirOnBoardingShown);
-        }
-    }
-
-    private void onFreeOngkirOnBoardingShown() {
-        if (presenter != null) {
-            presenter.onFreeOngkirOnBoardingShown();
-        }
-    }
-
-    @Override
     public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
         if (getActivity() == null || redirectionListener == null) return;
 
@@ -1631,50 +1635,82 @@ public class ProductListFragment
     }
 
     @Override
-    public void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding) {
-        if (recyclerView == null) return;
+    public void showOnBoarding(int firstProductPositionWithBOELabel) {
+        if (recyclerView == null || getContext() == null) return;
 
-        recyclerView.post(() -> {
-            View threeDots = showThreeDotsOnBoarding ? getThreeDotsOfFirstProductItem(firstProductPosition) : null;
+        View productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel);
 
-            if (firstProductPosition > 0 && threeDots != null)
-                recyclerView.smoothScrollToPosition(firstProductPosition);
-
-            recyclerView.postDelayed(() -> {
-                ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(threeDots);
-
-                CoachMarkBuilder builder = new CoachMarkBuilder();
-                builder.allowPreviousButton(false);
-                builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
-            }, 200);
-        });
+        recyclerView.postDelayed(() -> {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                buildCoachMark(productWithBOELabel);
+            }
+            else {
+                buildCoachMark2(productWithBOELabel);
+            }
+        }, 200);
     }
 
-    private View getThreeDotsOfFirstProductItem(int firstProductPosition) {
+    private View getFirstProductWithBOELabel(int firstProductPositionWithBOELabel) {
         if (recyclerView == null) return null;
 
-        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPosition);
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPositionWithBOELabel);
         if (viewHolder == null) return null;
 
         if (viewHolder.itemView instanceof IProductCardView)
-            return ((IProductCardView) viewHolder.itemView).getThreeDotsButton();
+            return viewHolder.itemView;
         else
             return null;
     }
 
-    private ArrayList<CoachMarkItem> createCoachMarkItemList(@Nullable View threeDots) {
+    private void buildCoachMark(View view) {
+        ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(view);
+
+        if (coachMarkItemList.size() <= 0) return;
+
+        CoachMarkBuilder builder = new CoachMarkBuilder();
+        builder.allowPreviousButton(false);
+        builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
+    }
+
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(@Nullable View boeLabelProductCard) {
         ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
 
-        if (threeDots != null) coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
+        if (boeLabelProductCard != null) coachMarkItemList.add(createBOELabelCoachMarkItem(boeLabelProductCard));
 
         return coachMarkItemList;
     }
 
-    private CoachMarkItem createThreeDotsOnBoarding(View threeDotsButton) {
+    private CoachMarkItem createBOELabelCoachMarkItem(View boeLabelProductCard) {
         return new CoachMarkItem(
-                threeDotsButton,
-                getString(R.string.search_product_three_dots_onboarding_title),
-                getString(R.string.search_product_three_dots_onboarding_description)
+                boeLabelProductCard,
+                getString(R.string.search_product_boe_label_onboarding_title),
+                getString(R.string.search_product_boe_label_onboarding_description)
+        );
+    }
+
+    private void buildCoachMark2(View view) {
+        ArrayList<CoachMark2Item> coachMark2ItemList = createCoachMark2ItemList(view);
+
+        if (coachMark2ItemList.size() <= 0) return;
+
+        CoachMark2 coachMark = new CoachMark2(getContext());
+        coachMark.showCoachMark(coachMark2ItemList, null, 0);
+    }
+
+    private ArrayList<CoachMark2Item> createCoachMark2ItemList(@Nullable View boeLabelProductCard) {
+        ArrayList<CoachMark2Item> coachMarkItemList = new ArrayList<>();
+
+        if (boeLabelProductCard != null) coachMarkItemList.add(createBOELabelCoachMark2Item(boeLabelProductCard));
+
+        return coachMarkItemList;
+    }
+
+    private CoachMark2Item createBOELabelCoachMark2Item(View boeLabelProductCard) {
+        return new CoachMark2Item(
+                boeLabelProductCard,
+                getString(R.string.search_product_boe_label_onboarding_title),
+                getString(R.string.search_product_boe_label_onboarding_description),
+                CoachMark2.POSITION_TOP
         );
     }
 
@@ -1845,5 +1881,50 @@ public class ProductListFragment
         if (getContext() == null) return;
 
         RouteManager.route(getContext(), searchTopAdsImageViewModel.getTopAdsImageViewModel().getApplink());
+    }
+
+    @Override
+    public void onLocalizingAddressSelected() {
+        if (presenter != null)
+            presenter.onLocalizingAddressSelected();
+    }
+
+    @NotNull
+    @Override
+    public Fragment getFragment() {
+        return this;
+    }
+
+    @Override
+    public boolean isChooseAddressWidgetEnabled() {
+        if (getContext() == null) return false;
+
+        try {
+            return ChooseAddressUtils.INSTANCE.isRollOutUser(getContext());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public LocalCacheModel getChooseAddressData() {
+        if (getContext() == null) return ChooseAddressConstant.Companion.getEmptyAddress();
+
+        try {
+            return ChooseAddressUtils.INSTANCE.getLocalizingAddressData(getContext());
+        } catch (Exception e) {
+            return ChooseAddressConstant.Companion.getEmptyAddress();
+        }
+    }
+
+    @Override
+    public boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData) {
+        if (getContext() == null) return false;
+
+        try {
+            return ChooseAddressUtils.INSTANCE.isLocalizingAddressHasUpdated(getContext(), currentChooseAddressData);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

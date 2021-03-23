@@ -77,15 +77,10 @@ class GqlGetShopProductUseCase @Inject constructor (
         """.trimIndent()
 
     var params = mapOf<String, Any>()
-    var isFromCacheFirst: Boolean = true
-    var cacheTime = 0L
 
     override suspend fun executeOnBackground(): ShopProduct.GetShopProduct {
         gqlUseCase.clearRequest()
-        val gqlCacheStrategyBuilder = GraphqlCacheStrategy.Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD)
-        if (cacheTime != 0L) {
-            gqlCacheStrategyBuilder.setExpiryTime(cacheTime)
-        }
+        val gqlCacheStrategyBuilder = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
         gqlUseCase.setCacheStrategy(gqlCacheStrategyBuilder.build())
         val gqlRequest = GraphqlRequest(query, ShopProduct.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)

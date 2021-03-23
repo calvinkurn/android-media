@@ -13,8 +13,10 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -62,9 +64,13 @@ public interface ShipmentContract {
 
         void onCacheExpired(String message);
 
+        void onShipmentAddressFormEmpty();
+
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment);
 
-        void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
+
+        void renderCheckoutPageNoMatchedAddress(CartShipmentAddressFormData cartShipmentAddressFormData, int addressState);
 
         void renderDataChanged();
 
@@ -143,6 +149,8 @@ public interface ShipmentContract {
         void setHasRunningApiCall(boolean hasRunningApiCall);
 
         void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc);
+
+        void updateLocalCacheAddressData(UserAddress userAddress);
 
         void resetAllCourier();
     }
@@ -271,7 +279,12 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared);
 
-        void changeShippingAddress(RecipientAddressModel newRecipientAddressModel, boolean isOneClickShipment, boolean isTradeInDropOff, boolean isHandleFallback, boolean reloadCheckoutPage);
+        void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
+                                   ChosenAddressModel chosenAddressModel,
+                                   boolean isOneClickShipment,
+                                   boolean isTradeInDropOff,
+                                   boolean isHandleFallback,
+                                   boolean reloadCheckoutPage);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 
