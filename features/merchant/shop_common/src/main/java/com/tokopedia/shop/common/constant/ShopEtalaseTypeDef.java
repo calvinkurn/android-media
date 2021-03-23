@@ -16,5 +16,6 @@ import static com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFA
 public @interface ShopEtalaseTypeDef {
     int ETALASE_DEFAULT = -1;   // Generated etalase
     int ETALASE_CAMPAIGN = -2;
+    int ETALASE_THEMATIC_CAMPAIGN = -3;
     int ETALASE_CUSTOM = 1;
 }

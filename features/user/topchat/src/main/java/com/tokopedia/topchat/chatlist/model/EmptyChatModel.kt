@@ -12,9 +12,9 @@ data class EmptyChatModel constructor(
         var body: String = "",
         var image: String = "",
         var ctaText: String = "",
-        var ctaApplink: String =  "",
+        var ctaApplink: String = "",
         var isTopAds: Boolean = false
-) : Visitable<ChatListTypeFactory>{
+) : Visitable<ChatListTypeFactory> {
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)

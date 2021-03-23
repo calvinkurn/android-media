@@ -23,7 +23,6 @@ class DisabledShopViewHolder(private val binding: ItemCartDisabledShopBinding, v
         renderShopName(data)
         renderDivider(data)
         renderShopBadge(data)
-        renderFulfillment(data)
     }
 
     private fun renderShopName(data: DisabledShopHolderData) {
@@ -45,14 +44,6 @@ class DisabledShopViewHolder(private val binding: ItemCartDisabledShopBinding, v
             binding.vDividerItemCartError.show()
         } else {
             binding.vDividerItemCartError.gone()
-        }
-    }
-
-    private fun renderFulfillment(data: DisabledShopHolderData) {
-        if (data.isFulfillment) {
-            binding.labelFulfillment.show()
-        } else {
-            binding.labelFulfillment.gone()
         }
     }
 

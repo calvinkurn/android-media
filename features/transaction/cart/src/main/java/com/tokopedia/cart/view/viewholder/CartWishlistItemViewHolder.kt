@@ -55,7 +55,7 @@ class CartWishlistItemViewHolder(private val binding: ItemProductWishlistBinding
 
     private fun renderFreeShipping(element: CartWishlistItemHolderData) {
         binding.imgFreeShipping.apply {
-            if (element.freeShipping && element.freeShippingUrl.isNotBlank()) {
+            if (element.freeShippingUrl.isNotBlank()) {
                 loadImage(element.freeShippingUrl)
                 show()
             } else {

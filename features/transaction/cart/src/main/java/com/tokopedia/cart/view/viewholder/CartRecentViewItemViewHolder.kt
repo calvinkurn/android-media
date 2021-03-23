@@ -46,7 +46,8 @@ class CartRecentViewItemViewHolder(private val binding: ItemProductRecentViewBin
                                 ProductCardModel.LabelGroup(
                                         position = recommendationLabel.position,
                                         title = recommendationLabel.title,
-                                        type = recommendationLabel.type
+                                        type = recommendationLabel.type,
+                                        imageUrl = recommendationLabel.imageUrl
                                 )
                             },
                             hasAddToCartButton = true,

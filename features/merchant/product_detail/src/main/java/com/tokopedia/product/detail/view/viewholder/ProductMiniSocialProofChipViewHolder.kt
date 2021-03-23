@@ -28,7 +28,7 @@ class ProductMiniSocialProofChipViewHolder(
                             view.isClickable = true
                             view.setOnClickListener { listener.onReviewClick() }
                             firstSocialProofTxt?.run {
-                                text = count
+                                text = reviewTitle
                                 setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_review_one_small), null, null, null)
                             }
                             firstSocialProofValue?.run {
@@ -59,7 +59,10 @@ class ProductMiniSocialProofChipViewHolder(
                 }
                 ProductMiniSocialProofItemType.ProductMiniSocialProofText -> {
                     val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
-                    firstSocialProofTxt.text = generateFirstSocialProofText(socialProof)
+                    firstSocialProofTxt.apply {
+                        text = generateFirstSocialProofText(socialProof)
+                        setPadding(16.toPx(),7.toPx(),8.toPx(),7.toPx())
+                    }
                 }
                 ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText -> {
                     val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)

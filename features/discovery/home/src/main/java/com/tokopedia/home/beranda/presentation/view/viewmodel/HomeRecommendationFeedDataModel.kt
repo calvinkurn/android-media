@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.viewmodel
 
 import android.os.Bundle
+import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -9,10 +10,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
  * Created by devarafikry on 27/08/19.
  */
 
-class HomeRecommendationFeedDataModel : HomeVisitable {
+data class HomeRecommendationFeedDataModel(
+        var homeChooseAddressData: HomeChooseAddressData? = null
+) : HomeVisitable {
 
     //keep this section if exist, because this viewholder is heavy to render
     override fun equalsWith(b: Any?): Boolean {
+        (b as? HomeRecommendationFeedDataModel)?.homeChooseAddressData?.let {
+            return it == homeChooseAddressData
+        }
         return true
     }
 

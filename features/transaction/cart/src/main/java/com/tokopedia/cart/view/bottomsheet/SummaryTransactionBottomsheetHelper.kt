@@ -4,8 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -33,7 +37,7 @@ fun showSummaryTransactionBottomsheet(cartListData: CartListData, fragmentManage
 }
 
 private fun renderSeparatorBenefit(cartListData: CartListData, binding: LayoutBottomsheetSummaryTransactionBinding) {
-    if (cartListData.shoppingSummaryData.promoValue > 0 ||
+    if (cartListData.promoSummaryData.details.isNotEmpty() ||
             cartListData.shoppingSummaryData.sellerCashbackValue > 0) {
         binding.separatorBenefit.show()
     } else {
@@ -45,7 +49,7 @@ private fun renderSellerCashback(cartListData: CartListData, binding: LayoutBott
     if (cartListData.shoppingSummaryData.sellerCashbackValue > 0) {
         binding.textTotalCashbackValue.apply {
             text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.sellerCashbackValue, false)
-                    .replace("Rp","")
+                    .replace("Rp", "")
                     .removeDecimalSuffix()
             visibility = View.VISIBLE
         }
@@ -53,8 +57,14 @@ private fun renderSellerCashback(cartListData: CartListData, binding: LayoutBott
             text = cartListData.shoppingSummaryData.sellerCashbackWording
             visibility = View.VISIBLE
         }
+        view.separator_seller_cashback?.apply {
+            visibility = View.VISIBLE
+        }
     } else {
-        binding.textTotalCashbackValue.apply {
+        view.separator_seller_cashback?.apply {
+            visibility = View.GONE
+        }
+        view.text_total_cashback_value?.apply {
             visibility = View.GONE
         }
         binding.textTotalCashbackTitle.apply {
@@ -63,24 +73,26 @@ private fun renderSellerCashback(cartListData: CartListData, binding: LayoutBott
     }
 }
 
-private fun renderPromo(cartListData: CartListData, binding: LayoutBottomsheetSummaryTransactionBinding) {
-    if (cartListData.shoppingSummaryData.promoValue > 0) {
-        binding.textTotalPromoValue.apply {
-            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.promoValue, false)
-                    .replace("Rp","")
-                    .removeDecimalSuffix()
-            visibility = View.VISIBLE
-        }
-        binding.textTotalPromoTitle.apply {
-            text = cartListData.shoppingSummaryData.promoWording
-            visibility = View.VISIBLE
-        }
-    } else {
-        binding.textTotalPromoValue.apply {
-            visibility = View.GONE
-        }
-        binding.textTotalPromoTitle.apply {
-            visibility = View.GONE
+private fun renderPromo(cartListData: CartListData, view: View) {
+    with(view) {
+        if (cartListData.promoSummaryData.details.isNotEmpty()) {
+            if (cartListData.promoSummaryData.title.isNotEmpty()) {
+                text_summary_promo_transaction_title.text = cartListData.promoSummaryData.title
+                text_summary_promo_transaction_title.visibility = View.VISIBLE
+            } else {
+                text_summary_promo_transaction_title.visibility = View.GONE
+            }
+
+            val adapter = CartPromoSummaryAdapter(cartListData.promoSummaryData.details)
+
+            recycler_view_cart_promo_summary.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            recycler_view_cart_promo_summary.setHasFixedSize(true)
+            recycler_view_cart_promo_summary.adapter = adapter
+
+            recycler_view_cart_promo_summary.visibility = View.VISIBLE
+        } else {
+            text_summary_promo_transaction_title.visibility = View.GONE
+            recycler_view_cart_promo_summary.visibility = View.GONE
         }
     }
 }

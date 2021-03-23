@@ -12,8 +12,13 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
@@ -104,14 +109,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderFulfillment(cartShopHolderData: CartShopHolderData) {
-        with(binding) {
-            labelFulfillment.visibility = if (cartShopHolderData.shopGroupAvailableData.isFulfillment) View.VISIBLE else View.GONE
-            if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
-                tvFulfillDistrict.show()
-                tvFulfillDistrict.text = cartShopHolderData.shopGroupAvailableData.fulfillmentName
+        if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
+            if (cartShopHolderData.shopGroupAvailableData.isFulfillment && cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl.isNotEmpty()) {
+                imgFulfillmentBadge.show()
+                imgFulfillmentBadge.loadImageWithoutPlaceholder(cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl)
             } else {
-                tvFulfillDistrict.gone()
+                imgFulfillmentBadge.gone()
             }
+            tvFulfillDistrict.show()
+            tvFulfillDistrict.text = cartShopHolderData.shopGroupAvailableData.fulfillmentName
+        } else {
+            imgFulfillmentBadge.gone()
+            tvFulfillDistrict.gone()
         }
     }
 

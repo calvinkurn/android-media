@@ -18,12 +18,12 @@ import java.util.*
 class CartMapperData : ICartMapperData {
 
     @Throws(MapperDataException::class)
-    override fun transformCartInfoData(responseCartData: ResponseCartData): CartDigitalInfoData {
+    override fun transformCartInfoData(responseCartData: ResponseCartData?): CartDigitalInfoData {
         try {
             val cartDigitalInfoData = CartDigitalInfoData()
             val cartItemDigitalList = ArrayList<CartItemDigital>()
             val cartAdditionalInfoList = ArrayList<CartAdditionalInfo>()
-            for (mainInfo in responseCartData.attributes!!.mainInfo!!) {
+            for (mainInfo in responseCartData?.attributes!!.mainInfo!!) {
                 cartItemDigitalList.add(
                         CartItemDigital(mainInfo.label, mainInfo.value)
                 )
@@ -149,7 +149,6 @@ class CartMapperData : ICartMapperData {
         } catch (e: Exception) {
             throw MapperDataException(e.message, e)
         }
-
     }
 
     @Throws(MapperDataException::class)
