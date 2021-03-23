@@ -308,7 +308,7 @@ object ApplinkConstInternalMarketplace {
     val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
 
     @JvmField
-    val REVIEW_SELLER_REMINDER = "$INTERNAL_MARKETPLACE/review-reminder"
+    val REVIEW_REMINDER = "$INTERNAL_MARKETPLACE/review-reminder"
 
     //ShopFavouriteListActivity
     @JvmField

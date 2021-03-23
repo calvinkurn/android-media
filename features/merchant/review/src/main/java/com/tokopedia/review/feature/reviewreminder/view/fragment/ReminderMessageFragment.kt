@@ -157,7 +157,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                 setPrimaryCTAClickListener {
                     viewModel?.sendReminder(textSampleMessage?.text?.toString())
                     dismiss()
-                    refreshData()
                     view?.let {
                         Toaster.build(
                                 it,
@@ -167,6 +166,7 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                                 "Oke"
                         ).show()
                     }
+                    refreshData()
                 }
 
                 setSecondaryCTAText(getString(R.string.review_reminder_dialog_send_button_secondary))

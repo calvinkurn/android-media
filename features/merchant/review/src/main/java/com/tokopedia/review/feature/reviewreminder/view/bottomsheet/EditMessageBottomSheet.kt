@@ -132,7 +132,7 @@ class EditMessageBottomSheet(
                     textAreaEditMessage?.isError = false
                 }
 
-                buttonSave?.isEnabled = !p0.isNullOrBlank() || isMaxLength
+                buttonSave?.isEnabled = !p0.isNullOrBlank() && !isMaxLength
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

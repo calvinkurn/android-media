@@ -776,7 +776,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     setHtmlDescription(getString(R.string.review_reminder_ticker_description))
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REMINDER)
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
                         }
 
                         override fun onDismiss() {

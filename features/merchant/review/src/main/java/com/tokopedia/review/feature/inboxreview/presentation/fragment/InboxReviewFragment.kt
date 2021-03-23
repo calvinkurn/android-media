@@ -303,7 +303,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun setupViewInteraction(){
         buttonReviewReminder?.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REMINDER)
+            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
         }
     }
 

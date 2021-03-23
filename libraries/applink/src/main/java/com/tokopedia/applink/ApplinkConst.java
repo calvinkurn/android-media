@@ -64,7 +64,7 @@ public interface ApplinkConst {
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
-    String REVIEW_SELLER_REMINDER = "tokopedia://review-reminder";
+    String REVIEW_REMINDER = "tokopedia://review-reminder";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_DOWNLOAD_HTML = "tokopedia://webview-download-html";
