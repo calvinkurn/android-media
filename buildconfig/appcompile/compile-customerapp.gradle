@@ -117,6 +117,7 @@ include "features:logistic:logisticCommon"
 include "features:logistic:logisticcart"
 include "features:logistic:manageaddress"
 include "features:logistic:editshipping"
+include "features:logistic:localizationchooseaddress"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
@@ -155,6 +156,7 @@ include "features:operational:csat_rating"
 include "features:ovop2p"
 
 include "features:ordermanagement:snapshot"
+include "features:ordermanagement:orderhistory"
 
 include "features:payment:common_payment"
 include "features:payment:payment"
@@ -239,7 +241,6 @@ include "features:user:fcm_common"
 
 include "tkpdcore"
 include "tkpddesign"
-include "tkpdseller"
 include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'

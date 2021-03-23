@@ -56,7 +56,7 @@ object MockSearchProductModel {
                 text = "Kemeja Pria $position",
                 img = "",
                 url = "https://www.tokopedia.com/search?q=baju&sc=3579&source=search&st=product",
-                color = "",
+                hexColor = "",
                 applink = "tokopedia://search?q=baju&sc=3579&source=search&st=product"
         )
     }

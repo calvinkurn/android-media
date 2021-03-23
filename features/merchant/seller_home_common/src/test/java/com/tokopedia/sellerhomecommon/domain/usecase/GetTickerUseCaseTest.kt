@@ -69,7 +69,7 @@ class GetTickerUseCaseTest {
         } returns successResponse
 
         coEvery {
-            mapper.mapRemoteModelToUiModel(any())
+            mapper.mapRemoteModelToUiModel(any(), cacheStrategy.type == CacheType.CACHE_ONLY)
         } returns expectedTickers
 
         val result = getTickerUseCase.executeOnBackground()
@@ -79,7 +79,7 @@ class GetTickerUseCaseTest {
         }
 
         coVerify {
-            mapper.mapRemoteModelToUiModel(any())
+            mapper.mapRemoteModelToUiModel(any(), cacheStrategy.type == CacheType.CACHE_ONLY)
         }
 
         Assert.assertEquals(expectedTickers, result)

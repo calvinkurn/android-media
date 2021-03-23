@@ -118,6 +118,7 @@ ext {
             manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
+            localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
@@ -213,6 +214,7 @@ ext {
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             snapshot                        : ":features:ordermanagement:snapshot",
+            ordermanagementhistory          : ":features:ordermanagement:orderhistory",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 
@@ -252,7 +254,6 @@ ext {
             fcm_common                      : ":features:user:fcm_common",
             homeAccountUser                 : ":features:user:home_account",
             tkpdcore                        : ":tkpdcore",
-            tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",
