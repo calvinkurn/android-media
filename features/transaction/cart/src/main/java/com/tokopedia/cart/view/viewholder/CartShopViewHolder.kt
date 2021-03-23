@@ -15,10 +15,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
@@ -109,18 +105,20 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderFulfillment(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
-            if (cartShopHolderData.shopGroupAvailableData.isFulfillment && cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl.isNotEmpty()) {
-                imgFulfillmentBadge.show()
-                imgFulfillmentBadge.loadImageWithoutPlaceholder(cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl)
+        with(binding) {
+            if (cartShopHolderData.shopGroupAvailableData.fulfillmentName?.isNotBlank() == true) {
+                if (cartShopHolderData.shopGroupAvailableData.isFulfillment && cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl.isNotEmpty()) {
+                    iuImageFulfill.show()
+                    iuImageFulfill.loadImageWithoutPlaceholder(cartShopHolderData.shopGroupAvailableData.fulfillmentBadgeUrl)
+                } else {
+                    iuImageFulfill.gone()
+                }
+                tvFulfillDistrict.show()
+                tvFulfillDistrict.text = cartShopHolderData.shopGroupAvailableData.fulfillmentName
             } else {
-                imgFulfillmentBadge.gone()
+                iuImageFulfill.gone()
+                tvFulfillDistrict.gone()
             }
-            tvFulfillDistrict.show()
-            tvFulfillDistrict.text = cartShopHolderData.shopGroupAvailableData.fulfillmentName
-        } else {
-            imgFulfillmentBadge.gone()
-            tvFulfillDistrict.gone()
         }
     }
 

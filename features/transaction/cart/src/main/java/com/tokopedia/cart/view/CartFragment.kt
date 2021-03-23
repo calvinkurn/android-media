@@ -717,7 +717,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 firstVisibleItemData is CartShopHolderData ||
                 firstVisibleItemData is ShipmentSellerCashbackModel) {
             if (!cartAdapter.allAvailableCartItemData.isEmpty()) {
-                if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
+                if (binding?.topLayout?.root?.visibility == View.GONE) setTopLayoutVisibility(true)
             }
         } else {
             if (binding?.topLayout?.root?.visibility == View.VISIBLE) setTopLayoutVisibility(false)
@@ -1670,9 +1670,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun setGlobalDeleteVisibility() {
         if (cartAdapter.hasSelectedCartItem()) {
-            textActionDelete.show()
+            binding?.topLayout?.textActionDelete?.show()
         } else {
-            textActionDelete.invisible()
+            binding?.topLayout?.textActionDelete?.invisible()
         }
     }
 

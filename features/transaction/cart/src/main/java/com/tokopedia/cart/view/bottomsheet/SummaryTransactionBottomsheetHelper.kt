@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
@@ -57,42 +56,34 @@ private fun renderSellerCashback(cartListData: CartListData, binding: LayoutBott
             text = cartListData.shoppingSummaryData.sellerCashbackWording
             visibility = View.VISIBLE
         }
-        view.separator_seller_cashback?.apply {
-            visibility = View.VISIBLE
-        }
+        binding.separatorSellerCashback.show()
     } else {
-        view.separator_seller_cashback?.apply {
-            visibility = View.GONE
-        }
-        view.text_total_cashback_value?.apply {
-            visibility = View.GONE
-        }
-        binding.textTotalCashbackTitle.apply {
-            visibility = View.GONE
-        }
+        binding.separatorSellerCashback.gone()
+        binding.textTotalCashbackValue.gone()
+        binding.textTotalCashbackTitle.gone()
     }
 }
 
-private fun renderPromo(cartListData: CartListData, view: View) {
-    with(view) {
+private fun renderPromo(cartListData: CartListData, binding: LayoutBottomsheetSummaryTransactionBinding) {
+    with(binding) {
         if (cartListData.promoSummaryData.details.isNotEmpty()) {
             if (cartListData.promoSummaryData.title.isNotEmpty()) {
-                text_summary_promo_transaction_title.text = cartListData.promoSummaryData.title
-                text_summary_promo_transaction_title.visibility = View.VISIBLE
+                textSummaryPromoTransactionTitle.text = cartListData.promoSummaryData.title
+                textSummaryPromoTransactionTitle.visibility = View.VISIBLE
             } else {
-                text_summary_promo_transaction_title.visibility = View.GONE
+                textSummaryPromoTransactionTitle.visibility = View.GONE
             }
 
             val adapter = CartPromoSummaryAdapter(cartListData.promoSummaryData.details)
 
-            recycler_view_cart_promo_summary.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            recycler_view_cart_promo_summary.setHasFixedSize(true)
-            recycler_view_cart_promo_summary.adapter = adapter
+            recyclerViewCartPromoSummary.layoutManager = LinearLayoutManager(root.context, RecyclerView.VERTICAL, false)
+            recyclerViewCartPromoSummary.setHasFixedSize(true)
+            recyclerViewCartPromoSummary.adapter = adapter
 
-            recycler_view_cart_promo_summary.visibility = View.VISIBLE
+            recyclerViewCartPromoSummary.visibility = View.VISIBLE
         } else {
-            text_summary_promo_transaction_title.visibility = View.GONE
-            recycler_view_cart_promo_summary.visibility = View.GONE
+            textSummaryPromoTransactionTitle.visibility = View.GONE
+            recyclerViewCartPromoSummary.visibility = View.GONE
         }
     }
 }
