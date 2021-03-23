@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
@@ -1072,6 +1073,7 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
+            NewRelic.recordBreadcrumb(eventName, bundleToMap(bundle));
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
