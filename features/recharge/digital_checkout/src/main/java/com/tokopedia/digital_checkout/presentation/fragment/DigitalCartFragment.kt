@@ -67,7 +67,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
 import javax.inject.Inject
 
-
 /**
  * @author by jessica on 07/01/21
  */
@@ -574,14 +573,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     private fun getPriceInput(): Double? {
         return if (inputPriceHolderView.getPriceInput() == null) return null
         else inputPriceHolderView.getPriceInput()?.toDouble()
-    }
-
-    fun getToolBarHeight(): Int {
-        val attrs = intArrayOf(android.R.attr.actionBarSize)
-        val ta = requireContext().obtainStyledAttributes(attrs)
-        val toolBarHeight = ta.getDimensionPixelSize(0, -1)
-        ta.recycle()
-        return toolBarHeight
     }
 
     companion object {
