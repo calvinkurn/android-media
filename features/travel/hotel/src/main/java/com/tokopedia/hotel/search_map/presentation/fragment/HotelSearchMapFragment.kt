@@ -41,6 +41,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -118,6 +119,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchProperties: List<Property> = listOf()
+    private var horizontalMarkerPage: Int = 0
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
@@ -189,6 +191,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.latLong.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    horizontalMarkerPage = 0
                     addMyLocation(LatLng(it.data.second, it.data.first))
                 }
             }
@@ -368,7 +371,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         tvHotelSearchListTitle.gone()
         adapterCardList.setLoadingModel(loadingModel)
         adapterCardList.showLoading()
-        removeAllMarker()
         super.showLoading()
     }
 
@@ -516,6 +518,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
+                }
+            }
+        })
+        rvHorizontalPropertiesHotelSearchMap.addOnScrollListener(object : EndlessRecyclerViewScrollListener(rvHorizontalPropertiesHotelSearchMap.layoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (page <= HORIZONTAL_PROPERTIES_CARD_MAX_PAGE){
+                    loadData(page)
+                    horizontalMarkerPage++
                 }
             }
         })
@@ -766,6 +776,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
+    override fun isLoadMoreEnabledByDefault(): Boolean = true
+
     private fun onSuccessGetResult(data: PropertySearch) {
         context?.let {
             val searchParam = hotelSearchMapViewModel.searchParam
@@ -784,21 +796,30 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         searchProperties = data.properties
 
         if (searchProperties.isNotEmpty()) {
-            renderCardListMap(searchProperties)
+            if(horizontalMarkerPage <= HORIZONTAL_PROPERTIES_CARD_MAX_PAGE){
+                renderCardListMap(searchProperties)
+                searchProperties.forEach {
+                    addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
+                }
+            }else{
+                horizontalMarkerPage = 0
+            }
+
             renderList(searchProperties.map {
                 it.isForHorizontalItem = false
                 it
             }.toList())
-            searchProperties.forEach {
-                addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
-            }
+            /**to avoid weird animation during nextPage
             animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
+            */
         } else {
             hideCardListView()
             hideSearchWithMap()
             hideHotelResultList()
             showErrorNoResult()
+            /**to avoid weird animation during nextPage
             animateCollapsingToolbar(COLLAPSING_ONE_FOURTH_OF_SCREEN)
+            */
         }
 
         if (isFirstInitializeFilter) {
@@ -1120,7 +1141,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         rvVerticalPropertiesHotelSearchMap.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && !adapter.isLoading && adapter.isContainData) {
                     showSearchWithMap()
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -1129,6 +1149,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         })
     }
+
+    override fun isAutoLoadEnabled(): Boolean = true
+    override fun getMinimumScrollableNumOfItems(): Int = 5
 
     private fun showHotelResultList() {
         rvVerticalPropertiesHotelSearchMap.visible()
@@ -1183,6 +1206,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val BUTTON_RADIUS_ANIMATION_Y = "translationY"
 
         private const val INIT_MARKER_TAG = 0
+        private const val HORIZONTAL_PROPERTIES_CARD_MAX_PAGE = 1
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         private const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
