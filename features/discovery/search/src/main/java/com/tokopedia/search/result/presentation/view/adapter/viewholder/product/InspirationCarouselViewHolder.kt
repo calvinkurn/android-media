@@ -120,12 +120,15 @@ class InspirationCarouselViewHolder(
                 showSeeMoreCard = activeOption.applink.isNotEmpty(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-
+                        val product = activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
+                        inspirationCarouselListener.onInspirationCarouselGridProductClicked(product)
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val product = activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
 
+                        inspirationCarouselListener.onImpressedInspirationCarouselGridProduct(product)
                     }
 
                     override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
