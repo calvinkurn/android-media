@@ -1945,7 +1945,7 @@ class NewShopPageFragment :
 
     override fun onClickNoteButton() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES_BUYER_VIEW)
-        intent.putExtra("EXTRA_SHOP_ID", "3418893")
+        intent.putExtra(SHOP_ID, shopId)
         startActivity(intent)
     }
 
