@@ -43,4 +43,6 @@
 
     <dimen name="hotel_sp_6">6sp</dimen>
     <dimen name="hotel_28sp">28sp</dimen>
+    <dimen name="hotel_image_list_horizontal_width">112dp</dimen>
+    <dimen name="hotel_image_list_horizontal_height">98dp</dimen>
 </resources>
