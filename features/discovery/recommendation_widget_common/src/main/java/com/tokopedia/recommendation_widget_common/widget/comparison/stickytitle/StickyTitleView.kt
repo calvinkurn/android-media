@@ -8,13 +8,13 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetViewInterface
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetScrollInterface
 import kotlinx.android.synthetic.main.view_sticky_title.view.*
 
 class StickyTitleView: FrameLayout{
 
     private var disableScrollTemp: Boolean = false
-    private var comparisonWidgetInterface: ComparisonWidgetViewInterface? = null
+    private var comparisonWidgetInterface: ComparisonWidgetScrollInterface? = null
     private var adapter: StickyTitleAdapter? = null
 
     constructor(context: Context) : super(context)
@@ -29,13 +29,13 @@ class StickyTitleView: FrameLayout{
     fun setStickyModelListData(
             stickyTitleModelList: StickyTitleModelList,
             stickyTitleInterface: StickyTitleInterface,
-            comparisonWidgetViewInterface: ComparisonWidgetViewInterface
+            comparisonWidgetScrollInterface: ComparisonWidgetScrollInterface
     ) {
         sticky_title_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         adapter = StickyTitleAdapter(stickyTitleModelList, stickyTitleInterface)
         sticky_title_rv.adapter = adapter
         adapter?.notifyDataSetChanged()
-        this.comparisonWidgetInterface = comparisonWidgetViewInterface
+        this.comparisonWidgetInterface = comparisonWidgetScrollInterface
         sticky_title_rv.clearOnScrollListeners()
         sticky_title_rv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

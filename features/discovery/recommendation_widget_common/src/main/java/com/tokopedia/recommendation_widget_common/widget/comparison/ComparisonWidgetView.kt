@@ -2,13 +2,10 @@ package com.tokopedia.recommendation_widget_common.widget.comparison
 
 import android.animation.LayoutTransition
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -17,19 +14,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModelList
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.view_comparison_widget.view.*
 
-class ComparisonWidgetView: FrameLayout, ComparisonWidgetViewInterface  {
+class ComparisonWidgetView: FrameLayout, ComparisonWidgetScrollInterface  {
 
     private var specOnScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
     private var comparisonListModel: ComparisonListModel? = null
     private var stickyTitleViewBinded: StickyTitleView? = null
     private var adapter: ComparisonWidgetAdapter? = null
     private var disableScrollTemp: Boolean = false
+
+    private var trackingQueue = TrackingQueue(context)
+    private var userSessionInterface = UserSession(context)
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -43,9 +46,15 @@ class ComparisonWidgetView: FrameLayout, ComparisonWidgetViewInterface  {
         switchToCollapsedState(resources.getDimensionPixelSize(R.dimen.comparison_widget_collapsed_height))
     }
 
-    fun setComparisonWidgetData(comparisonListModel: ComparisonListModel, stickyTitleView: StickyTitleView?) {
-        rootView.tv_header_title.text = comparisonListModel.headerTitle
-        if (comparisonListModel.seeMoreApplink.isNotEmpty()) {
+    fun setComparisonWidgetData(
+            comparisonListModel: ComparisonListModel,
+            stickyTitleView: StickyTitleView?,
+            comparisonWidgetInterface: ComparisonWidgetInterface,
+            recommendationTrackingModel: RecommendationTrackingModel,
+            stickyTitleInterface: StickyTitleInterface
+    ) {
+        rootView.tv_header_title.text = comparisonListModel.recommendationWidget.title
+        if (comparisonListModel.recommendationWidget.seeMoreAppLink.isNotEmpty()) {
             rootView.btn_see_more.visible()
         } else {
             rootView.btn_see_more.gone()
@@ -53,19 +62,35 @@ class ComparisonWidgetView: FrameLayout, ComparisonWidgetViewInterface  {
 
         if (this.adapter == null) {
             this.comparisonListModel = comparisonListModel
-            this.adapter = ComparisonWidgetAdapter(comparisonListModel)
+            this.adapter = ComparisonWidgetAdapter(
+                    comparisonListModel = comparisonListModel,
+                    comparisonWidgetInterface = comparisonWidgetInterface,
+                    trackingQueue = trackingQueue,
+                    userSessionInterface = userSessionInterface,
+                    recommendationTrackingModel = recommendationTrackingModel
+            )
             rootView.rv_comparison_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             rootView.rv_comparison_widget.adapter = adapter
-            rootView.btn_collapse.setOnClickListener { onSpecDetailsClick(comparisonListModel) }
+            rootView.btn_collapse.setOnClickListener {
+                ProductRecommendationTracking.getClickSpecDetailTracking(
+                        eventClick = recommendationTrackingModel.eventClick,
+                        eventCategory = recommendationTrackingModel.eventCategory,
+                        isLoggedIn = userSessionInterface.isLoggedIn,
+                        recomTitle = recommendationTrackingModel.headerTitle,
+                        pageName = comparisonListModel.recommendationWidget.pageName,
+                        userId = userSessionInterface.userId
+                )
+                onSpecDetailsClick(comparisonListModel)
+            }
             rootView.comparison_widget_container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
             stickyTitleView?.let {
                 this.stickyTitleViewBinded = stickyTitleView
-                bindStickyTitleView()
+                bindStickyTitleView(stickyTitleInterface)
             }
         }
     }
 
-    fun bindStickyTitleView() {
+    fun bindStickyTitleView(stickyTitleInterface: StickyTitleInterface) {
         stickyTitleViewBinded?.let { stickyTitleView ->
             comparisonListModel?.let { comparisonListModel ->
                 stickyTitleView.setStickyModelListData(
@@ -73,15 +98,11 @@ class ComparisonWidgetView: FrameLayout, ComparisonWidgetViewInterface  {
                                 comparisonListModel.comparisonData.map {
                                     StickyTitleModel(
                                             title = it.productCardModel.productName,
-                                            applink = it.productApplink
+                                            recommendationItem = it.recommendationItem
                                     )
                                 }
                         ),
-                        object: StickyTitleInterface {
-                            override fun onStickyTitleClick(stickyTitleModel: StickyTitleModel) {
-
-                            }
-                        },
+                        stickyTitleInterface,
                         this
                 )
 

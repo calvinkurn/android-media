@@ -27,8 +27,7 @@ object ComparisonWidgetMapper {
         )
         val collapsedHeight = productCardHeight + getCollapsedSpecsHeight(specsConfig.heightPositionMap)
         return ComparisonListModel(
-                seeMoreApplink = recommendationWidget.seeMoreAppLink,
-                headerTitle = recommendationWidget.title,
+                recommendationWidget = recommendationWidget,
             comparisonData = recommendationItems.withIndex().map {
                 val isEdgeStart = it.index == 0
                 val isEdgeEnd = it.index == (recommendationItems.size - 1)
@@ -37,7 +36,7 @@ object ComparisonWidgetMapper {
                     specsModel = SpecsMapper.mapToSpecsListModel(
                             it.value.specs, isEdgeStart, isEdgeEnd, context, specsConfig),
                         productCardModel = it.value.toProductCardModel(),
-                        productApplink = it.value.appUrl
+                        recommendationItem = it.value
                 )
             },
                 comparisonWidgetConfig = ComparisonWidgetConfig(

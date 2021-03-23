@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import kotlinx.android.synthetic.main.item_sticky_title.view.*
 
 class StickyTitleAdapter(
@@ -45,4 +46,4 @@ class StickyTitleViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 }
 
 data class StickyTitleModelList(val stickyTitles: List<StickyTitleModel>)
-data class StickyTitleModel(val title: String, val applink: String)
+data class StickyTitleModel(val title: String, val recommendationItem: RecommendationItem)

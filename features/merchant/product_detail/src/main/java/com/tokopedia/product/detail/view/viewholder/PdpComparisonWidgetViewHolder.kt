@@ -2,10 +2,19 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetMapper
+import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleInterface
+import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModel
 import kotlinx.android.synthetic.main.item_comparison_widget_viewholder.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,25 +24,90 @@ import kotlinx.coroutines.launch
 class PdpComparisonWidgetViewHolder(
       private val view: View,
       private val listener: DynamicProductDetailListener)
-: AbstractViewHolder<PdpComparisonWidgetDataModel>(view), CoroutineScope {
+: AbstractViewHolder<PdpComparisonWidgetDataModel>(view), CoroutineScope, ComparisonWidgetInterface {
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
+    private var componentTrackDataModel: ComponentTrackDataModel? = null
 
     companion object {
         val LAYOUT = R.layout.item_comparison_widget_viewholder
+        const val PDP_PAGE_NAME = "product detail page"
     }
 
     override fun bind(element: PdpComparisonWidgetDataModel) {
         launch {
             itemView.comparison_widget.setComparisonWidgetData(
                     ComparisonWidgetMapper.mapToComparisonWidgetModel(element.recommendationWidget, itemView.context),
-                    listener.getStickyTitleView()
+                    listener.getStickyTitleView(),
+                    this@PdpComparisonWidgetViewHolder,
+                    RecommendationTrackingModel(
+                            androidPageName = PDP_PAGE_NAME,
+                            headerTitle = element.recommendationWidget.title
+                    ),
+                    object : StickyTitleInterface {
+                        override fun onStickyTitleClick(stickyTitleModel: StickyTitleModel) {
+                            view.context?.run {
+                                RouteManager.route(this,
+                                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                                        stickyTitleModel.recommendationItem.productId.toString())
+                            }
+                        }
+                    }
             )
         }
+        this.componentTrackDataModel = getComponentTrackData(element)
     }
 
     override fun bind(element: PdpComparisonWidgetDataModel, payloads: MutableList<Any>) {
         bind(element)
     }
+
+    override fun onProductCardImpressed(recommendationItem: RecommendationItem, comparisonListModel: ComparisonListModel, position: Int) {
+        val topAdsImageUrl = recommendationItem.trackerImageUrl
+        if (recommendationItem.isTopAds) {
+            listener.sendTopAdsImpression(
+                    topAdsImageUrl,
+                    recommendationItem.productId.toString(),
+                    recommendationItem.name, recommendationItem.imageUrl)
+        }
+
+        listener.eventRecommendationImpression(
+                recommendationItem,
+                position,
+                recommendationItem.pageName,
+                recommendationItem.name,
+                componentTrackDataModel?: ComponentTrackDataModel())
+    }
+
+    override fun onProductCardClicked(recommendationItem: RecommendationItem, comparisonListModel: ComparisonListModel, position: Int) {
+        val topAdsClickUrl = recommendationItem.clickUrl
+        if (recommendationItem.isTopAds) {
+            listener.sendTopAdsClick(
+                    topAdsClickUrl,
+                    recommendationItem.productId.toString(),
+                    recommendationItem.name,
+                    recommendationItem.imageUrl)
+        }
+
+        listener.eventRecommendationClick(
+                recommendationItem,
+                position,
+                recommendationItem.pageName,
+                recommendationItem.name,
+                componentTrackDataModel?: ComponentTrackDataModel())
+
+        view.context?.run {
+            RouteManager.route(this,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+        }
+    }
+
+    override fun onSeeAllSpecClicked(comparisonListModel: ComparisonListModel) {
+
+    }
+
+    private fun getComponentTrackData(element: PdpComparisonWidgetDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "", element?.name ?: "", adapterPosition + 1)
 }
