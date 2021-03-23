@@ -14,29 +14,29 @@ import kotlinx.android.synthetic.main.home_account_item_common.view.*
  * Created by Yoris Prayogo on 16/10/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): BaseViewHolder(itemView) {
+class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) : BaseViewHolder(itemView) {
 
     fun bind(common: CommonDataView) {
         with(itemView) {
             account_user_item_common_title?.text = common.title
-            if(common.icon != 0) {
+            if (common.icon != 0) {
                 account_user_item_common_icon?.setImage(common.icon)
             }
-            if(common.urlIcon.isNotEmpty()){
+            if (common.urlIcon.isNotEmpty()) {
                 ImageHandler.loadImageFit2(account_user_item_common_icon.context, account_user_item_common_icon, common.urlIcon)
             }
 
             itemView.setOnClickListener {
                 listener.onSettingItemClicked(common)
             }
-            if(common.endText.isNotEmpty() && common.type != TYPE_SWITCH){
+            if (common.endText.isNotEmpty() && common.type != TYPE_SWITCH) {
                 account_user_item_common_end_text?.show()
                 account_user_item_common_end_text?.text = common.endText
             }
 
             account_user_item_common_title?.setPadding(0, 0, 0, 0)
 
-            when(common.type) {
+            when (common.type) {
                 TYPE_WITHOUT_BODY -> {
                     account_user_item_common_body?.hide()
                     account_user_item_common_title?.setPadding(0, 10, 0, 0)
@@ -60,9 +60,8 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
     companion object {
         val LAYOUT = R.layout.home_account_item_common
 
-        val TYPE_DEFAULT = 1
-        val TYPE_SWITCH = 2
-        val TYPE_WITHOUT_BODY = 3
+        const val TYPE_DEFAULT = 1
+        const val TYPE_SWITCH = 2
+        const val TYPE_WITHOUT_BODY = 3
     }
-
 }

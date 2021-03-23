@@ -10,6 +10,7 @@ object SomAnalytics {
 
     private const val CATEGORY_SOM = "som"
     private const val CLICK_SOM = "clickSOM"
+    private const val CLICK_PRODUCT_NAME = "click product name"
     private const val CLICK_QUICK_FILTER = "click quick filter"
     private const val CLICK_ORDER_CARD_ON_ORDER_LIST = "click order card on order list"
     private const val SUBMIT_SEARCH = "submit search"
@@ -40,6 +41,8 @@ object SomAnalytics {
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
     private const val BUSINESS_UNIT_PHYSICAL_GOODS = "physicalgoods"
     private const val CURRENT_SITE_TOKOPEDIA_SELLER = "tokopediaseller"
+    private const val BUSINESS_UNIT_SOM = "Seller Order Management"
+    private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
 
     @JvmStatic
     fun sendScreenName(screenName: String) {
@@ -59,6 +62,19 @@ object SomAnalytics {
 
     fun eventSubmitSearch(keyword: String) {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, SUBMIT_SEARCH, keyword)
+    }
+
+    fun clickProductNameToSnapshot(statusOrderName: String, userId: String) {
+        val event = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to CLICK_PRODUCT_NAME,
+                TrackAppUtils.EVENT_LABEL to statusOrderName,
+                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_SOM,
+                CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                CUSTOM_DIMENSION_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
     fun eventClickChatOnHeaderDetail(statusOrderCode: String, statusOrderName: String) {

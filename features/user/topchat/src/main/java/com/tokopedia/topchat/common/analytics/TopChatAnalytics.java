@@ -11,10 +11,9 @@ import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
 import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
-import com.tokopedia.abstraction.processor.beta.AddToCartBundler;
-import com.tokopedia.abstraction.processor.beta.AddToCartProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.atc_common.domain.model.response.DataModel;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
@@ -30,10 +29,29 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_CATEGORY_ID;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_DIMENSION_38;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_DIMENSION_45;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_DIMENSION_83;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_ITEM_CATEGORY;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_ITEM_ID;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_PICTURE;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_PRICE;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_QUANTITY;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_SHOP_ID;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_SHOP_NAME;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_PARAM_URL;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_VALUE_BEBAS_ONGKIR;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_VALUE_ITEMS;
+import static com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics.EE_VALUE_NONE_OTHER;
 
 /**
  * Created by stevenfredian on 11/6/17.
@@ -96,7 +114,7 @@ public class TopChatAnalytics {
         String EVENT_NAME_PRODUCT_PREVIEW = "productView";
 
         String CLICK_CHAT_DETAIL = "ClickChatDetail";
-
+        String ATC = "add_to_cart";
     }
 
     public interface Action {
@@ -137,7 +155,6 @@ public class TopChatAnalytics {
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
         String CLICK_OP_ORDER_HISTORY = "click on order history";
         String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
-        String CLICK_OCC_PRODUCT_THUMBNAIL = "click occ on product thumbnail";
         String CLICK_PRODUCT_REAL_IMAGE = "click on product image";
         String VIEW_REVIEW_REMINDER_WIDGET = "view on review reminder widget";
         String CLICK_REVIEW_REMINDER_WIDGET = "click on review reminder widget";
@@ -662,48 +679,6 @@ public class TopChatAnalytics {
         );
     }
 
-    // #OCC1
-    public void trackClickOccProduct(
-            @NotNull ProductAttachmentViewModel product,
-            @NotNull String shopType,
-            @NotNull String shopName,
-            @NotNull String cartId
-    ) {
-
-        List<AddToCartProduct> addToCartProducts
-                = new ArrayList<AddToCartProduct>() {{
-            add(new AddToCartProduct(
-                    product.getIdString(),
-                    product.getProductName(),
-                    "",
-                    product.getCategory(),
-                    product.getVariants().toString(),
-                    product.getPriceInt(),
-                    product.getMinOrder(),
-                    cartId,
-                    DataLayer.mapStringsOf(
-                            "dimension79", product.getShopId() + "",
-                            "dimension81", shopType,
-                            "dimension80", shopName,
-                            "dimension40", getFrom(product))
-            ));
-        }};
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                AddToCartBundler.KEY,
-                AddToCartBundler.getBundle(
-                        addToCartProducts,
-                        AddToCartBundler.KEY,
-                        Action.CLICK_OCC_PRODUCT_THUMBNAIL,
-                        null,
-                        Category.CHAT_DETAIL,
-                        null,
-                        null,
-                        new ArrayMap<>()
-                )
-        );
-    }
-
     // #RR1
     public void trackReviewCardImpression(
             @NotNull ReviewUiModel element,
@@ -740,6 +715,62 @@ public class TopChatAnalytics {
                         userId
                 )
         );
+    }
+
+    public void trackSuccessDoBuyAndAtc(
+            ProductAttachmentViewModel element,
+            DataModel data,
+            String shopName,
+            String eventAction
+    ) {
+        String dimen83 = "";
+        if (element.hasFreeShipping()) {
+            dimen83 = EE_VALUE_BEBAS_ONGKIR;
+        } else {
+            dimen83 = EE_VALUE_NONE_OTHER;
+        }
+        Bundle itemBundle = new Bundle();
+        itemBundle.putString(
+                EE_PARAM_ITEM_ID,
+                setValueOrDefault(String.valueOf(data.getProductId()))
+        );
+        itemBundle.putString(EE_PARAM_ITEM_NAME, setValueOrDefault(element.getProductName()));
+        itemBundle.putString(EE_PARAM_ITEM_BRAND, setValueOrDefault(""));
+        itemBundle.putString(EE_PARAM_ITEM_CATEGORY, setValueOrDefault(element.getCategory()));
+        itemBundle.putString(EE_PARAM_ITEM_VARIANT, setValueOrDefault(""));
+        itemBundle.putString(
+                EE_PARAM_SHOP_ID, setValueOrDefault(String.valueOf(data.getShopId()))
+        );
+        itemBundle.putString(EE_PARAM_SHOP_NAME, setValueOrDefault(shopName));
+        itemBundle.putString(EE_PARAM_SHOP_TYPE, setValueOrDefault(""));
+        itemBundle.putString(EE_PARAM_CATEGORY_ID, setValueOrDefault(""));
+        itemBundle.putInt(EE_PARAM_QUANTITY, element.getMinOrder());
+        itemBundle.putDouble(EE_PARAM_PRICE, element.getPriceInt());
+        itemBundle.putString(EE_PARAM_PICTURE, element.getProductImage());
+        itemBundle.putString(EE_PARAM_URL, element.getProductUrl());
+        itemBundle.putString(EE_PARAM_DIMENSION_38, setValueOrDefault(""));
+        itemBundle.putString(EE_PARAM_DIMENSION_45, setValueOrDefault(data.getCartId()));
+        itemBundle.putString(EE_PARAM_DIMENSION_83, dimen83);
+        itemBundle.putString("dimension40", element.getAtcDimension40(sourcePage));
+
+        Bundle eventDataLayer = new Bundle();
+        eventDataLayer.putString(TrackAppUtils.EVENT, Name.ATC);
+        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL);
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, eventAction);
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, element.getAtcDimension40(sourcePage));
+        eventDataLayer.putParcelableArrayList(EE_VALUE_ITEMS, new ArrayList<Bundle>() {{
+            add(itemBundle);
+        }});
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                Name.ATC, eventDataLayer
+        );
+    }
+
+    private String setValueOrDefault(String value) {
+        if (value.isEmpty()) {
+            return EE_VALUE_NONE_OTHER;
+        }
+        return value;
     }
 
     @SuppressLint("VisibleForTests")

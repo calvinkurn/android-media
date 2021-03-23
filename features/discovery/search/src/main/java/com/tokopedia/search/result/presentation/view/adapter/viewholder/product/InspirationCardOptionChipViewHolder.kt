@@ -45,8 +45,8 @@ class InspirationCardOptionChipViewHolder(
     }
 
     private fun bindIconColor(option: InspirationCardOptionViewModel) {
-        itemView.inspirationCardOptionChip?.shouldShowWithAction(option.color.isNotEmpty()) {
-            val gradientDrawable = createColorSampleDrawable(itemView.context, option.color)
+        itemView.inspirationCardOptionChip?.shouldShowWithAction(option.hexColor.isNotEmpty()) {
+            val gradientDrawable = createColorSampleDrawable(itemView.context, option.hexColor)
             itemView.inspirationCardOptionChip?.chip_image_icon?.setImageDrawable(gradientDrawable)
             itemView.inspirationCardOptionChip?.chip_image_icon?.visibility = View.VISIBLE
         }

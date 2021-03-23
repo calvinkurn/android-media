@@ -102,44 +102,51 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
-        val otherSelectedMetric = metricsAdapter.items.find { it.isSelected && it != metric }
-        val isAnyOtherSelected = otherSelectedMetric != null
-        if (this.lastSelectedMetric == metric) {
-            if (isAnyOtherSelected) {
-                if (lastSelectedMetric?.type == metric.type) {
-                    metric.isSelected = false
-                    this.lastSelectedMetric = otherSelectedMetric
-                } else {
-                    otherSelectedMetric?.isSelected = false
-                    metric.isSelected = true
-                    this.lastSelectedMetric = metric
-                }
-            } else {
-                metricsAdapter.notifyDataSetChanged()
-                return
+        if (element?.isComparePeriodeOnly == true) {
+            metricsAdapter.items.forEach {
+                it.isSelected = (it == metric)
             }
+            this.lastSelectedMetric = metric
         } else {
-            if (lastSelectedMetric?.type == metric.type) {
-                if (metric.isSelected) {
-                    metric.isSelected = false
-                    this.lastSelectedMetric = otherSelectedMetric
+            val otherSelectedMetric = metricsAdapter.items.find { it.isSelected && it != metric }
+            val isAnyOtherSelected = otherSelectedMetric != null
+            if (this.lastSelectedMetric == metric) {
+                if (isAnyOtherSelected) {
+                    if (lastSelectedMetric?.type == metric.type) {
+                        metric.isSelected = false
+                        this.lastSelectedMetric = otherSelectedMetric
+                    } else {
+                        otherSelectedMetric?.isSelected = false
+                        metric.isSelected = true
+                        this.lastSelectedMetric = metric
+                    }
                 } else {
                     metric.isSelected = true
-                    this.lastSelectedMetric?.let {
-                        it.isSelected = !checkIsMetricError(it)
-                    }
-                    this.lastSelectedMetric = metric
                 }
             } else {
-                metricsAdapter.items.forEach {
-                    if (it != metric) {
-                        it.isSelected = false
+                if (lastSelectedMetric?.type == metric.type) {
+                    if (metric.isSelected) {
+                        metric.isSelected = false
+                        this.lastSelectedMetric = otherSelectedMetric
+                    } else {
+                        metric.isSelected = true
+                        this.lastSelectedMetric?.let {
+                            it.isSelected = !checkIsMetricError(it)
+                        }
+                        this.lastSelectedMetric = metric
                     }
+                } else {
+                    metricsAdapter.items.forEach {
+                        if (it != metric) {
+                            it.isSelected = false
+                        }
+                    }
+                    lastSelectedMetric?.isSelected = false
+                    metric.isSelected = true
+                    lastSelectedMetric = metric
                 }
-                lastSelectedMetric?.isSelected = false
-                metric.isSelected = true
-                lastSelectedMetric = metric
             }
+
         }
 
         if (checkIsMetricError(metric)) {
@@ -205,7 +212,11 @@ class MultiLineGraphViewHolder(
             return
         }
 
-        val metric = lastSelectedMetric ?: metricItems.getOrNull(0)
+        val metric = if (metricItems.contains(lastSelectedMetric)) {
+            lastSelectedMetric
+        } else {
+            metricItems.getOrNull(0)
+        }
         metric?.isSelected = true
 
         with(itemView) {
@@ -389,7 +400,7 @@ class MultiLineGraphViewHolder(
     private fun getLineGraphTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, TOOLTIP_RES_LAYOUT)
                 .setOnDisplayContent { view, data, x, y ->
-                    data?.let {
+                    (data as? LineChartEntry)?.let {
                         if (isMetricComparableByPeriodSelected) {
                             showComparablePeriodMetricTooltip(view, it, x.toInt())
                         } else {
@@ -493,11 +504,12 @@ class MultiLineGraphViewHolder(
                 return emptyList()
             }
 
-            val isComparableByPeriod = metricsAdapter.items.filter { it.type == metric.type }.size == 1
-            isMetricComparableByPeriodSelected = isComparableByPeriod
-            if (isComparableByPeriod && metric.linePeriod.lastPeriod.isNotEmpty()) {
+            if (metric.linePeriod.lastPeriod.isNotEmpty()) {
+                isMetricComparableByPeriodSelected = true
                 showLegendView()
                 return getLineChartDataByPeriod(metric)
+            } else {
+                isMetricComparableByPeriodSelected = false
             }
         } else {
             isMetricComparableByPeriodSelected = false

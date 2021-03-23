@@ -74,6 +74,7 @@ class GetCarouselDataUseCase(
                     FeaturedMediaURL
                   }
                   errorMsg
+                  showWidget
                 }
               }
             }

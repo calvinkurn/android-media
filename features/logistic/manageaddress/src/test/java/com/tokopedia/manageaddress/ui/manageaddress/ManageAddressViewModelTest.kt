@@ -1,19 +1,34 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
+import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
 
+@ExperimentalCoroutinesApi
 class ManageAddressViewModelTest {
 
     @get:Rule
@@ -24,22 +39,27 @@ class ManageAddressViewModelTest {
     private val getPeopleAddressUseCase: GetAddressCornerUseCase = mockk(relaxed = true)
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase = mockk(relaxed = true)
     private val setDetaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase = mockk(relaxed = true)
+    private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
+    private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
+    private val getChosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
 
     private lateinit var manageAddressViewModel: ManageAddressViewModel
 
     @Before
     fun setUp() {
-        manageAddressViewModel = ManageAddressViewModel(getPeopleAddressUseCase, deletePeopleAddressUseCase, setDetaultPeopleAddressUseCase)
+        Dispatchers.setMain(TestCoroutineDispatcher())
+        manageAddressViewModel = ManageAddressViewModel(getPeopleAddressUseCase, deletePeopleAddressUseCase, setDetaultPeopleAddressUseCase, chooseAddressRepo, chooseAddressMapper)
+        manageAddressViewModel.getChosenAddress.observeForever(getChosenAddressObserver)
     }
 
     @Test
     fun `Search Address Success`() {
         val response = AddressListModel()
-        every { getPeopleAddressUseCase.execute(any()) } returns Observable.just(response).doOnSubscribe {
+        every { getPeopleAddressUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
             assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
         }
 
-        manageAddressViewModel.searchAddress("")
+        manageAddressViewModel.searchAddress("", -1, -1, true)
 
         assertEquals(ManageAddressState.Success(response), manageAddressViewModel.addressList.value)
     }
@@ -47,9 +67,9 @@ class ManageAddressViewModelTest {
     @Test
     fun `Search Address Failed`() {
         val response = Throwable()
-        every { getPeopleAddressUseCase.execute(any()) } returns Observable.error(response)
+        every { getPeopleAddressUseCase.execute(any(), any(), any(), any()) } returns Observable.error(response)
 
-        manageAddressViewModel.searchAddress("")
+        manageAddressViewModel.searchAddress("", -1, -1, true)
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
@@ -57,11 +77,11 @@ class ManageAddressViewModelTest {
     @Test
     fun `Load More Address Success`() {
         val response = AddressListModel()
-        every { getPeopleAddressUseCase.loadMore(any(), any()) } returns Observable.just(response).doOnSubscribe {
+        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
             assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
         }
 
-        manageAddressViewModel.loadMore()
+        manageAddressViewModel.loadMore(-1, -1, true)
 
         assertEquals(ManageAddressState.Success(response), manageAddressViewModel.addressList.value)
     }
@@ -69,9 +89,9 @@ class ManageAddressViewModelTest {
     @Test
     fun `Load More Address Failed`() {
         val response = Throwable()
-        every { getPeopleAddressUseCase.loadMore(any(), any()) } returns Observable.error(response)
+        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.error(response)
 
-        manageAddressViewModel.loadMore()
+        manageAddressViewModel.loadMore(-1, -1, true)
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
@@ -79,30 +99,28 @@ class ManageAddressViewModelTest {
     @Test
     fun `Set Default Address Success`() {
         every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any())
+            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
         } answers  {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
-            (secondArg() as ((String) -> Unit)).invoke(success)
+            (thirdArg() as ((String) -> Unit)).invoke(success)
         }
 
-        manageAddressViewModel.setDefaultPeopleAddress("1")
+        manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
 
-        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
+        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.setDefault.value)
     }
 
     @Test
     fun `Set Default Address Fail`() {
         val response = Throwable()
         every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any())
+            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
         } answers {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+            (lastArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        manageAddressViewModel.setDefaultPeopleAddress("1")
+        manageAddressViewModel.setDefaultPeopleAddress("1", false, 0, 0, true)
 
-        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.setDefault.value)
     }
 
     @Test
@@ -114,7 +132,7 @@ class ManageAddressViewModelTest {
             (secondArg() as ((String) -> Unit)).invoke(success)
         }
 
-        manageAddressViewModel.deletePeopleAddress("1")
+        manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
 
         assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
     }
@@ -129,8 +147,25 @@ class ManageAddressViewModelTest {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        manageAddressViewModel.deletePeopleAddress("1")
+        manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
+
+    @Test
+    fun `Get Chosen Address Success`() {
+        coEvery { chooseAddressRepo.getStateChosenAddress(any()) } returns GetStateChosenAddressQglResponse()
+        manageAddressViewModel.getStateChosenAddress("address")
+        verify { getChosenAddressObserver.onChanged(match { it is Success }) }
+    }
+
+
+    @Test
+    fun `Get Chosen Address Fail`() {
+        coEvery { chooseAddressRepo.getStateChosenAddress(any()) } throws Throwable("test error")
+        manageAddressViewModel.getStateChosenAddress("address")
+        verify { getChosenAddressObserver.onChanged(match { it is Fail }) }
+    }
+
+
 }

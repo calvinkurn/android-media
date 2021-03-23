@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -91,6 +92,7 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
             }.getSuccessData<TelcoCatalogPrefixSelect>()
 
+            delay(DELAY_TIME)
             _catalogPrefixSelect.postValue(Success(data))
         }) {
             _catalogPrefixSelect.postValue(Fail(it))
@@ -100,6 +102,7 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
     companion object {
         const val KEY_MENU_ID = "menuID"
         const val EXP_TIME = 10
+        const val DELAY_TIME = 200L
     }
 
 }

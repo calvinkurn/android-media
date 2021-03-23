@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
@@ -29,7 +30,9 @@ import java.util.*
 /**
  * Created by jegul on 02/06/20
  */
-class PlayBroadcastUiMapper : PlayBroadcastMapper {
+class PlayBroadcastUiMapper(
+        private val textTransformer: HtmlTextTransformer
+) : PlayBroadcastMapper {
 
     override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> = etalaseList.map {
         val type = EtalaseType.getByType(it.type, it.id)
@@ -226,7 +229,7 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
             title = channel.share.metaTitle,
             description = channel.share.metaDescription,
             imageUrl = channel.basic.coverUrl,
-            textContent = channel.share.text,
+            textContent = textTransformer.transform(channel.share.text),
             redirectUrl = channel.share.redirectURL,
             shortenUrl = channel.share.useShortURL
     )

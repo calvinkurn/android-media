@@ -49,11 +49,8 @@ object TopAdsDashboardConstant {
     const val GROUPNAME = "groupName"
     const val PRICEBID = "price_bid"
     const val CUSTOM_DATE = 5
-    const val DATE_RANGE_PRODUK = "dateRangeSelectedProduct"
     const val DATE_RANGE_BERANDA = "dateRangeSelectedBeranda"
     const val DATE_RANGE_DETAIL = "dateRangeSelectedDetail"
-    const val START_DATE_PRODUCT = "startDatePro"
-    const val END_DATE_PRODUCT = "endDatePro"
     const val START_DATE_BERANDA = "startDateBeranda"
     const val END_DATE_BERANDA = "endDateBeranad"
     const val START_DATE_DETAIL = "startDateDetail"

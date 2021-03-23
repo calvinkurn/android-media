@@ -76,6 +76,10 @@ data class FingerPrint(
     @Expose
     private val unique_id: String,
 
+    @SerializedName("inval")
+    @Expose
+    private val inval: String,
+
     @SerializedName("deviceMemoryClassCapacity")
     @Expose
     private val deviceMemoryClassCapacity: String,

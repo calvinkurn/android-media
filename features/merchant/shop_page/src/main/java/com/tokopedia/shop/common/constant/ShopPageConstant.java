@@ -26,6 +26,7 @@ public class ShopPageConstant {
     public static final int DEFAULT_ETALASE_POSITION = 4;
     public static final int DEFAULT_ETALASE_TITLE_POSITION = 5;
     public static final int ITEM_OFFSET = 6;
+    public static final int DEFAULT_VALUE_ETALASE_TYPE = 0;     // It's only for apps or frontend identifier
 
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list
     public static final int SMALL_DATA_LIMIT = 2;
@@ -51,5 +52,6 @@ public class ShopPageConstant {
     public static final String URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE = "https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png";
     public static final String URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE = "https://ecs7.tokopedia.net/android/empty_state_search_filter.png";
     public static final String DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST = "android_shop_page_disable_cache_initial_product_list";
+    public static final String ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET = "android_shop_page_enable_choose_address_widget_on_shop_page_header";
 
 }

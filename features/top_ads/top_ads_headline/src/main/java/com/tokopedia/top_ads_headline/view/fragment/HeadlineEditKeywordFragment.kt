@@ -243,13 +243,13 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
                     keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag, keywordSubType,
                             advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()), priceBid = result.priceBid,
                             maximumBid = stepperModel?.maxBid
-                                    ?: 0, minimumBid = stepperModel?.minBid ?: 0))
+                                    ?: "0", minimumBid = stepperModel?.minBid ?: "0"))
                 } else if (keywordType == KEYWORD_NEGATIVE &&
                         (result.type == KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == KEYWORD_TYPE_NEGATIVE_EXACT)) {
                     keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag, keywordSubType,
                             advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()), priceBid = result.priceBid, isNegativeKeyword = true,
                             maximumBid = stepperModel?.maxBid
-                                    ?: 0, minimumBid = stepperModel?.minBid ?: 0))
+                                    ?: "0", minimumBid = stepperModel?.minBid ?: "0"))
                 }
             }
         }
@@ -522,7 +522,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
                 action = action,
                 keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword().apply {
                     id = it.keywordId
-                    priceBid = it.priceBid
+                    priceBid = it.priceBid.toLong()
                     tag = it.tag
                     status = ACTIVE_STATUS
                     type = getKeywordSearchType(it.type)

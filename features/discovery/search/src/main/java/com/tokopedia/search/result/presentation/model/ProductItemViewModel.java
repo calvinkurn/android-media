@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
@@ -14,6 +15,8 @@ import com.tokopedia.utils.text.currency.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlin.collections.CollectionsKt;
 
 public class ProductItemViewModel extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
 
@@ -402,7 +405,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayer(String userId, String filterSortParams, String searchRef) {
+    public Object getProductAsObjectDataLayer(String userId, String filterSortParams, String dimension90) {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
@@ -415,18 +418,36 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "userId", userId,
                 "shopId", getShopID(),
                 "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams,
-                "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
+                "dimension83", setFreeOngkirDataLayer(),
                 "dimension87", "search result",
                 "dimension88", "search - product",
-                "dimension90", TextUtils.isEmpty(getPageTitle()) ? searchRef : getPageTitle(),
+                "dimension90", dimension90,
                 "dimension96", getBoosterList(),
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", getSourceEngine()
         );
     }
 
+    private String setFreeOngkirDataLayer() {
+        boolean isFreeOngkirActive = isFreeOngkirActive();
+
+        if (isFreeOngkirActive && hasLabelGroupFulfillment()) {
+            return "bebas ongkir extra";
+        }
+        else if (isFreeOngkirActive && !hasLabelGroupFulfillment()) {
+            return "bebas ongkir";
+        }
+        else {
+            return "none / other";
+        }
+    }
+
     private boolean isFreeOngkirActive() {
         return freeOngkirViewModel != null && freeOngkirViewModel.isActive();
+    }
+
+    public boolean hasLabelGroupFulfillment() {
+        return CollectionsKt.any(labelGroupList, labelGroupViewModel -> labelGroupViewModel.getPosition().equals(SearchConstant.ProductCardLabel.LABEL_FULFILLMENT));
     }
 
     private String getActionFieldString() {

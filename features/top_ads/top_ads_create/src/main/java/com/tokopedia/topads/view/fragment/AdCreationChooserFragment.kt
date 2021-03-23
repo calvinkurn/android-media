@@ -14,27 +14,24 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.AdChooserViewModel
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.*
 import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.view.*
-import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.view.imageView7
 import javax.inject.Inject
 
 private const val CLICK_MULAI_IKLAN = "click-mulai iklan otomatis"

@@ -18,7 +18,7 @@ class EditKeywordEmptyViewHolder(val view: View, var actionAdd: (() -> Unit)?) :
         val LAYOUT = R.layout.topads_edit_no_keywords_layout
     }
 
-    override fun bind(item: EditKeywordEmptyViewModel, added: MutableList<Boolean>, minBid: Int) {
+    override fun bind(item: EditKeywordEmptyViewModel, added: MutableList<Boolean>, minBid: String) {
         view.add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
         view.add.setOnClickListener {
             actionAdd?.invoke()

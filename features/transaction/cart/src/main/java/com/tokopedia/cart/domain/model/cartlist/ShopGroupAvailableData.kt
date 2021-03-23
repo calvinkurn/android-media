@@ -29,6 +29,7 @@ data class ShopGroupAvailableData(
         var shopBadge: String? = null,
         var isFulfillment: Boolean = false,
         var fulfillmentName: String? = null,
+        var fulfillmentBadgeUrl: String = "",
         var isHasPromoList: Boolean = false,
         var cartString: String? = null,
         var promoCodes: List<String>? = emptyList(),

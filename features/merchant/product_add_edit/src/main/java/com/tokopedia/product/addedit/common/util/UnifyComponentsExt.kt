@@ -1,16 +1,19 @@
 package com.tokopedia.product.addedit.common.util
 
-import android.text.Editable
-import android.text.InputFilter
-import android.text.TextWatcher
+import android.text.*
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.add_edit_product_insurance_input_layout.*
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
@@ -84,4 +87,23 @@ fun TextFieldUnify?.setRecyclerViewEditorActionListener() {
         }
         false
     })
+}
+
+fun RadioButtonUnify?.setTitle(title: String) {
+    this?.context?.let { context ->
+        val titleFontSize = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3).toInt()
+        val bodyFontSize = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2).toInt()
+        val titleColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        val bodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+
+        val span1 = SpannableString(title)
+        span1.setSpan(AbsoluteSizeSpan(titleFontSize), 0, title.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        span1.setSpan(ForegroundColorSpan(titleColor), 0, title.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+        val span2 = SpannableString(text)
+        span2.setSpan(AbsoluteSizeSpan(bodyFontSize), 0, text.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        span2.setSpan(ForegroundColorSpan(bodyColor), 0, text.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+        text = TextUtils.concat(span1, "\n", span2)
+    }
 }
