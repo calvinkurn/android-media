@@ -31,7 +31,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
@@ -45,30 +44,30 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
-import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
 import com.tokopedia.loginregister.common.view.LoginTextView
+import com.tokopedia.loginregister.common.view.PartialRegisterInputView
+import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
+import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
+import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
-import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
-import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
-import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
-import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.common.view.PartialRegisterInputView
-import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
-import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
@@ -83,7 +82,6 @@ import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -721,34 +719,33 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
-                        override fun onDismiss() {
-                            registerAnalytics.trackClickCloseTickerButton()
-                        }
-
-                    })
-                    tickerAnnouncement.addPagerView(adapter, mockData)
-                }
-            } else {
-                listTickerInfo.first().let {
-                    tickerAnnouncement.tickerTitle = it.title
-                    tickerAnnouncement.setHtmlDescription(it.message)
-                    tickerAnnouncement.tickerShape = getTickerType(it.color)
-                }
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
-
                     override fun onDismiss() {
                         registerAnalytics.trackClickCloseTickerButton()
                     }
 
                 })
+                tickerAnnouncement.addPagerView(adapter, mockData)
             }
-            tickerAnnouncement.setOnClickListener {
-                registerAnalytics.trackClickTicker()
+        } else {
+            listTickerInfo.first().let {
+                tickerAnnouncement.tickerTitle = it.title
+                tickerAnnouncement.setHtmlDescription(it.message)
+                tickerAnnouncement.tickerShape = getTickerType(it.color)
             }
+            tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                }
+
+                override fun onDismiss() {
+                    registerAnalytics.trackClickCloseTickerButton()
+                }
+
+            })
+        }
+        tickerAnnouncement.setOnClickListener {
+            registerAnalytics.trackClickTicker()
         }
     }
 
@@ -1154,8 +1151,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun goToLoginRegisteredPhoneNumber(phone: String) {
         phoneNumber = phone
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        val intent = goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
-        startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
+        context?.run {
+            val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER, context = this)
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
+        }
     }
 
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
@@ -1480,12 +1479,4 @@ val intent = Intent()
         }
     }
 
-    override fun goToLoginRegisteredPhoneNumber(phone: String) {
-        phoneNumber = phone
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        context?.run {
-            val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER, context = this)
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
-        }
-    }
 }

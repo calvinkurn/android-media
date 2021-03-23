@@ -5,12 +5,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Patterns
 import android.view.KeyEvent
@@ -25,8 +23,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
@@ -38,9 +34,9 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
-import com.tokopedia.loginregister.registerinitial.view.util.RegisterUtil
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -200,35 +196,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun initTermPrivacyView() {
-        context?.run {
-            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
-            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
-            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
-            registerNextTAndC?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
-            registerNextTAndC?.movementMethod = LinkMovementMethod.getInstance()
-            registerNextTAndC?.isSelected = false
-        }
-    }
-
-    private fun termConditionClickAction(): ClickableSpan {
-        return object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION))
-            }
-        }
-    }
-
-    private fun privacyClickAction(): ClickableSpan {
-        return object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY))
-            }
-        }
-    }
-
     private fun getSpannable(sourceString: String, hyperlinkString: String): Spannable {
         val spannable: Spannable = SpannableString(sourceString)
         spannable.setSpan(object : ClickableSpan() {
@@ -300,7 +267,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                 showPasswordHint()
                 if (s.isEmpty()) {
                     setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
-                } else if (wrapperPassword?.textFieldInput?.text.toString().length < PASSWORD_MINIMUM_LENGTH) {
+                } else if (wrapperPassword?.textFieldInput?.text.toString().length < PasswordUtils.PASSWORD_MINIMUM_LENGTH) {
                     setWrapperErrorNew(wrapper, getString(R.string.error_minimal_password))
                 }
                 checkIsValidForm()
@@ -351,6 +318,26 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             false
         }
         registerButton?.setOnClickListener { v: View? -> registerEmail() }
+    }
+
+    private fun validatePasswordInput(): Boolean {
+        wrapperPassword?.textFieldInput?.text?.toString()?.run {
+            return when {
+                isEmpty() -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_field_required))
+                    false
+                }
+                !PasswordUtils.isValidMinimumlength(this) -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_minimal_password))
+                    false
+                }
+                !PasswordUtils.isValidMaxLength(this) -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_maximal_password))
+                    false
+                } else -> true
+            }
+        }
+        return false
     }
 
     private fun registerEmail() {
@@ -554,17 +541,9 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage ?: "")
     }
 
-    fun onBackPressed() {
-        registerAnalytics?.trackClickOnBackButtonRegisterEmail()
     val isAutoVerify: Int
         get() = if (isEmailAddressFromDevice) 1 else 0
 
-    private fun onFailedRegisterEmail(errorMessage: String?) {
-        errorMessage?.run {
-            registerAnalytics?.trackFailedClickEmailSignUpButton(this)
-            registerAnalytics?.trackFailedClickSignUpButtonEmail(this)
-        }
-    }
 
     fun onBackPressed() {
         registerAnalytics?.trackClickOnBackButtonRegisterEmail()
@@ -626,8 +605,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         private const val REQUEST_AUTO_LOGIN = 101
         private const val REQUEST_ACTIVATE_ACCOUNT = 102
 
-        private const val ALREADY_REGISTERED = "sudah terdaftar"
-        @JvmStatic
         private const val ALREADY_REGISTERED = "sudah terdaftar"
         private const val GO_TO_REGISTER = 0
         private const val GO_TO_ACTIVATION_PAGE = 1
