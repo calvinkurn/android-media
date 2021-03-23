@@ -50,7 +50,8 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
     }
 
     companion object {
-        private const val ROLLANCE_KEY = "android_defername"
+//        private const val ROLLANCE_KEY = "android_defername"
+        private const val ROLLANCE_KEY = "defer_staging"
         private const val PATH_CLEAN_VIEW = "clean-view"
     }
 }
