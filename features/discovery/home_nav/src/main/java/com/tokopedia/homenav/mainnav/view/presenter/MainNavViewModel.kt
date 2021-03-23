@@ -6,9 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_MY_ACTIVITY
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
@@ -151,6 +155,7 @@ class MainNavViewModel @Inject constructor(
             initialList.add(AccountHeaderDataModel(loginState = getLoginState()))
         }
         initialList.addTransactionMenu()
+        initialList.addBUTitle()
         initialList.add(InitialShimmerDataModel())
         initialList.addUserMenu()
         return initialList
@@ -184,6 +189,10 @@ class MainNavViewModel @Inject constructor(
 
     private fun MutableList<Visitable<*>>.addUserMenu() {
         this.addAll(buildUserMenuList())
+    }
+
+    private fun MutableList<Visitable<*>>.addBUTitle() {
+        this.addAll(buildBUTitleList())
     }
 
     private fun removeHomeBackButtonMenu() {
@@ -385,27 +394,34 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    private fun buildBUTitleList(): List<Visitable<*>> {
+        clientMenuGenerator.get()?.let {
+            return mutableListOf(
+                    it.getSectionTitle(IDENTIFIER_TITLE_ALL_CATEGORIES)
+            )
+        }
+        return listOf()
+    }
+
     private fun buildUserMenuList(): List<Visitable<*>> {
         clientMenuGenerator.get()?.let {
-            val firstSectionList = mutableListOf<Visitable<*>>(
-                    SeparatorDataModel(),
-                    it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_RECENT_VIEW, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_SUBSCRIPTION, sectionId = MainNavConst.Section.USER_MENU)
-            )
-            firstSectionList.add(SeparatorDataModel())
-
             val complainNotification = if (navNotification.unreadCountComplain.isMoreThanZero())
                 navNotification.unreadCountComplain.toString() else ""
 
             val inboxTicketNotification = if (navNotification.unreadCountInboxTicket.isMoreThanZero())
                 navNotification.unreadCountInboxTicket.toString() else ""
 
-            val secondSectionList = listOf(
+            val firstSectionList = mutableListOf<Visitable<*>>(
+                    it.getSectionTitle(IDENTIFIER_TITLE_HELP_CENTER),
                     it.getMenu(menuId = ID_COMPLAIN, notifCount = complainNotification, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_TOKOPEDIA_CARE, notifCount = inboxTicketNotification, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU)
+                    it.getMenu(menuId = ID_TOKOPEDIA_CARE, notifCount = inboxTicketNotification, sectionId = MainNavConst.Section.USER_MENU)
+            )
+            firstSectionList.add(SeparatorDataModel())
+
+            val secondSectionList = listOf(
+                    it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU),
+                    it.getMenu(menuId = ID_RECENT_VIEW, sectionId = MainNavConst.Section.USER_MENU),
+                    it.getMenu(menuId = ID_SUBSCRIPTION, sectionId = MainNavConst.Section.USER_MENU)
             )
             val completeList = firstSectionList.plus(secondSectionList)
             return completeList
@@ -417,9 +433,12 @@ class MainNavViewModel @Inject constructor(
         clientMenuGenerator.get()?.let {
             val transactionDataList: MutableList<Visitable<*>> = mutableListOf(
                     SeparatorDataModel(),
+                    it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                     it.getMenu(ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(ID_TICKET, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(ID_REVIEW, sectionId = MainNavConst.Section.ORDER))
+                    it.getMenu(ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
+                    it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                    it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
             val showOpenShopTicker = userSession.get().isLoggedIn && !userSession.get().hasShop()
             if (showOpenShopTicker) transactionDataList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
             return transactionDataList
@@ -622,11 +641,11 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun findBuStartIndexPosition(): Int? {
-        val findHomeMenu = _mainNavListVisitable.firstOrNull {
-            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.BU_ICON
+        val findBUTitle = _mainNavListVisitable.firstOrNull {
+            it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_ALL_CATEGORIES
         }
-        findHomeMenu?.let{
-            return _mainNavListVisitable.indexOf(it)
+        findBUTitle?.let{
+            return _mainNavListVisitable.indexOf(it) + 1
         }
         return null
     }
