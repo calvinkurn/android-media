@@ -120,6 +120,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 basicContentMap?.run {
                     data = ProductContentMainData(
                             campaign = it.data.campaign,
+                            thematicCampaign = it.data.thematicCampaign,
                             cashbackPercentage = it.data.isCashback.percentage,
                             price = it.data.price,
                             stockWording = it.data.stock.stockWording,
@@ -280,7 +281,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, boeImageUrl: String) {
+    fun updateDataP2(context: Context?,
+                     p2Data: ProductInfoP2UiData,
+                     productId: String,
+                     isProductWarehouse: Boolean,
+                     isProductInCampaign: Boolean,
+                     isOutOfStock: Boolean,
+                     boeImageUrl: String) {
         p2Data.let {
             updateData(ProductDetailConstant.SHOP_INFO) {
                 shopInfoMap?.run {
@@ -298,6 +305,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 tickerInfoMap?.run {
                     statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo.copy() else null
                     closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo.copy() else null
+                    isUpcomingType = it.upcomingCampaigns[productId]?.isUpcomingNplType() ?: false
                     this.isProductWarehouse = isProductWarehouse
                     this.isProductInCampaign = isProductInCampaign
                     this.isOutOfStock = isOutOfStock
@@ -400,7 +408,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateNotifyMeAndContent(productId: String, upcomingData: Map<String, ProductUpcomingData>?, eligibleTradein: Boolean, freeOngkirImgUrl: String) {
+    private fun updateNotifyMeAndContent(productId: String,
+                                         upcomingData: Map<String, ProductUpcomingData>?, eligibleTradein: Boolean, freeOngkirImgUrl: String) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
@@ -435,7 +444,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        ?: "", selectedUpcoming?.campaignType ?: "",
                         selectedUpcoming?.startDate ?: "")
                 this.freeOngkirImgUrl = freeOngkirImgUrl
             }
@@ -450,7 +459,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
                         selectedUpcoming?.startDate ?: "")
             }
         }
@@ -506,7 +515,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             (mapOfData[data.name] as? ProductRecommendationDataModel)?.run {
                 filterData = data.filterData
                 recomWidgetData = data.recomWidgetData
-                cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels() ?: listOf()
+                cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels()
+                        ?: listOf()
             }
         }
     }
@@ -576,12 +586,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
+    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, isUpcomingType: Boolean) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 this.isProductWarehouse = isProductWarehouse
                 this.isProductInCampaign = isProductInCampaign
                 this.isOutOfStock = isOutOfStock
+                this.isUpcomingType = isUpcomingType
             }
         }
     }
