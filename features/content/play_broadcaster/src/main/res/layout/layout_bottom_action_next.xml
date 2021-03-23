@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:background="@color/play_bg_shadow"
+        android:background="@color/play_dms_bg_shadow"
         app:layout_constraintBottom_toTopOf="@id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

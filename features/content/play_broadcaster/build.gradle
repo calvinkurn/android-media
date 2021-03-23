@@ -30,6 +30,8 @@ android {
     androidExtensions {
         experimental = true
     }
+
+    viewBinding.enabled = true
 }
 
 dependencies {

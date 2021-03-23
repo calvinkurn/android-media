@@ -4,8 +4,9 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.tag.TagRecommendationRowUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagRecommendationViewHolder
-import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
+import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationRowListAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -19,11 +20,10 @@ class TagRecommendationListViewComponent(
 
     private val rvTagsRecommendation: RecyclerView = rootView as RecyclerView
 
-    private val adapter = TagRecommendationListAdapter(this)
+    private val adapter = TagRecommendationRowListAdapter(this)
 
     init {
         rvTagsRecommendation.adapter = adapter
-        rvTagsRecommendation.addItemDecoration(TagItemDecoration(rvTagsRecommendation.context))
     }
 
     override fun onTagClicked(tag: String) {
@@ -31,7 +31,13 @@ class TagRecommendationListViewComponent(
     }
 
     fun setTags(tags: List<String>) {
-        adapter.setItemsAndAnimateChanges(tags)
+        val tagsRow = tags.chunked(TAG_PER_ROW) { TagRecommendationRowUiModel(it.toList()) }
+        adapter.setItemsAndAnimateChanges(tagsRow)
+    }
+
+    companion object {
+
+        private const val TAG_PER_ROW = 7
     }
 
     interface Listener {

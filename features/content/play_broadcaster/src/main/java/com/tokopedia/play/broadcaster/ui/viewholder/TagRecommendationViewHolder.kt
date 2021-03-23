@@ -1,23 +1,20 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
-import android.view.View
-import android.widget.TextView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.ItemTagRecommendationBinding
 
 /**
  * Created by jegul on 18/02/21
  */
 class TagRecommendationViewHolder(
-        itemView: View,
+        private val binding: ItemTagRecommendationBinding,
         private val listener: Listener
-) : BaseViewHolder(itemView) {
-
-    private val tvTagName: TextView = itemView.findViewById(R.id.tv_tag_name)
+) : BaseViewHolder(binding.root) {
 
     fun bind(item: String) {
-        tvTagName.text = item
-        tvTagName.setOnClickListener {
+        binding.tvTagName.text = item
+        binding.tvTagName.setOnClickListener {
             listener.onTagClicked(item)
         }
     }

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.play.broadcaster.databinding.ItemTagRecommendationBinding
 import com.tokopedia.play.broadcaster.ui.viewholder.TagRecommendationViewHolder
 
 /**
@@ -17,6 +18,6 @@ class TagRecommendationAdapterDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): TagRecommendationViewHolder {
-        return TagRecommendationViewHolder(basicView, listener)
+        return TagRecommendationViewHolder(ItemTagRecommendationBinding.bind(basicView), listener)
     }
 }
