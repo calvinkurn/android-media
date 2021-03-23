@@ -46,7 +46,7 @@ class GetShopInfoPeriodUseCase @Inject constructor(
         var shopInfoPeriodUiModel = ShopInfoPeriodUiModel()
         val shopId = requestParams.getInt(SHOP_ID, 0)
 
-        val shopInfoParam = mapOf(SHOP_ID to shopId, SOURCE to SELLER_APP_SOURCE)
+        val shopInfoParam = mapOf(SHOP_ID to listOf(shopId), SOURCE to SELLER_APP_SOURCE)
         val periodTypeParam = mapOf(SHOP_ID to shopId, SOURCE to GetPMPeriodTypeUseCase.GOLD_MERCHANT_SOURCE)
 
         val shopInfoRequest = GraphqlRequest(SHOP_INFO_ID_QUERY, ShopInfoByIDResponse::class.java, shopInfoParam)
