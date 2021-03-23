@@ -310,12 +310,15 @@
     <string name="review_reminder_edit_message_subtitle">Tulis chat Pengingat Ulasan versimu sendiri</string>
     <string name="review_reminder_edit_message_add_buyer">Tambah Nama Pembeli</string>
     <string name="review_reminder_edit_message_button_save">Simpan</string>
-    <string name="review_reminder_item_product_buyer">(%1$d pembeli)</string>
+    <string name="review_reminder_item_product_buyer">(%1$s pembeli)</string>
     <string name="review_reminder_no_products">Belum ada produk yang bisa diulas</string>
     <string name="review_reminder_how_to_title">Cara pakai pengingat ulasan</string>
     <string name="review_reminder_snackbar_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
     <string name="review_reminder_snackbar_sending">Chat sedang dikirim. Cek detail laporannya di tab Performa.</string>
     <string name="review_reminder_button_review_reminder_with_counter">Kirim Pengingat Ulasan (%1$d)</string>
     <string name="review_reminder_button_review_reminder">Kirim Pengingat Ulasan</string>
+    <string name="review_reminder_bottom_sheet_edit_message_label">Wajib</string>
+    <string name="review_reminder_bottom_sheet_edit_message_hint_label">Isi Pesan</string>
+    <string name="review_reminder_bottom_sheet_edit_message_error_message">Oops, sudah melebihi maks. karakter.</string>
 
 </resources>

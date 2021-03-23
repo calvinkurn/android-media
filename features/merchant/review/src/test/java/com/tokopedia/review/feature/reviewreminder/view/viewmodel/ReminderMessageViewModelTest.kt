@@ -15,6 +15,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         val responseWrapper = ProductrevGetReminderCounterResponseWrapper()
         coEvery { productrevGetReminderCounterUseCase.executeOnBackground() } returns responseWrapper
         viewModel.fetchReminderCounter()
+        coVerify { productrevGetReminderCounterUseCase.executeOnBackground() }
         viewModel.getEstimation().verifyValueEquals(responseWrapper.productrevGetReminderCounter)
     }
 
@@ -23,6 +24,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         val errorMessage = anyString()
         coEvery { productrevGetReminderCounterUseCase.executeOnBackground() } throws Throwable(errorMessage)
         viewModel.fetchReminderCounter()
+        coVerify { productrevGetReminderCounterUseCase.executeOnBackground() }
         viewModel.getError().verifyValueEquals(errorMessage)
     }
 
@@ -31,6 +33,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         val responseWrapper = ProductrevGetReminderTemplateResponseWrapper()
         coEvery { productrevGetReminderTemplateUseCase.executeOnBackground() } returns responseWrapper
         viewModel.fetchReminderTemplate()
+        coVerify { productrevGetReminderTemplateUseCase.executeOnBackground() }
         viewModel.getTemplate().verifyValueEquals(responseWrapper.productrevGetReminderTemplate)
     }
 
@@ -39,6 +42,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         val errorMessage = anyString()
         coEvery { productrevGetReminderTemplateUseCase.executeOnBackground() } throws Throwable(errorMessage)
         viewModel.fetchReminderTemplate()
+        coVerify { productrevGetReminderTemplateUseCase.executeOnBackground() }
         viewModel.getError().verifyValueEquals(errorMessage)
     }
 
@@ -47,6 +51,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         val responseWrapper = ProductrevGetReminderListResponseWrapper()
         coEvery { productrevGetReminderListUseCase.executeOnBackground() } returns responseWrapper
         viewModel.fetchProductList()
+        coVerify { productrevGetReminderListUseCase.executeOnBackground() }
         viewModel.getProducts().verifyValueEquals(responseWrapper.productrevGetReminderList.list)
     }
 
@@ -55,6 +60,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         val errorMessage = anyString()
         coEvery { productrevGetReminderListUseCase.executeOnBackground() } throws Throwable(errorMessage)
         viewModel.fetchProductList()
+        coVerify { productrevGetReminderListUseCase.executeOnBackground() }
         viewModel.getError().verifyValueEquals(errorMessage)
     }
 

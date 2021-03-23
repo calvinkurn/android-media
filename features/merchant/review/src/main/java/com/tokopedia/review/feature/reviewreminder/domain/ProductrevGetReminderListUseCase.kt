@@ -11,6 +11,8 @@ class ProductrevGetReminderListUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ProductrevGetReminderListResponseWrapper>(graphqlRepository) {
     companion object {
+        const val LIMIT_VALUE = 20
+
         const val PARAM_LIMIT = "limit"
         const val PARAM_LAST_PRODUCT_ID = "lastProductID"
         const val GET_REMINDER_LIST_QUERY_CLASS_NAME = "ReminderList"
@@ -42,9 +44,9 @@ class ProductrevGetReminderListUseCase @Inject constructor(
         setGraphqlQuery(ReminderList.GQL_QUERY)
     }
 
-    fun setParams(limit: Int, lastProductId: String) {
+    fun setParams(lastProductId: String) {
         setRequestParams(RequestParams.create().apply {
-            putInt(PARAM_LIMIT, limit)
+            putInt(PARAM_LIMIT, LIMIT_VALUE)
             putString(PARAM_LAST_PRODUCT_ID, lastProductId)
         }.parameters)
     }

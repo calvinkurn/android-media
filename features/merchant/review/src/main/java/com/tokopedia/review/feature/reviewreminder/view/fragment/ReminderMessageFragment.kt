@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
 import androidx.core.text.HtmlCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
@@ -23,6 +26,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounter
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderData
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderList
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplate
 import com.tokopedia.review.feature.reviewreminder.di.component.DaggerReviewReminderComponent
 import com.tokopedia.review.feature.reviewreminder.view.adapter.ReviewProductAdapter
@@ -33,6 +37,9 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReminderMessageFragment : BaseDaggerFragment() {
@@ -57,17 +64,20 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     private var textEstimation: Typography? = null
     private var buttonSend: UnifyButton? = null
     private var rvProducts: RecyclerView? = null
-    private var scrollView: ScrollView? = null
     private var cardProducts: CardUnify? = null
     private var cardNoProducts: CardUnify? = null
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     private var bottomSheetHowTo: BottomSheetUnify? = null
     private var bottomSheetEditMessage: EditMessageBottomSheet? = null
     private var dialogSend: DialogUnify? = null
-    private var errorSnackbar: Snackbar? = null
-    private var sendingSnackbar: Snackbar? = null
 
     private var estimation: ProductrevGetReminderCounter? = null
+    private var productrevGetReminderList: ProductrevGetReminderList? = null
+    private var products = emptyList<ProductrevGetReminderData>()
+    private var isLoadProducts = false
+    private var isLoadEstimation = false
+    private var isLoadTemplate = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,14 +110,9 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         textEstimation = view.findViewById(R.id.text_estimation)
         buttonSend = view.findViewById(R.id.button_send)
         rvProducts = view.findViewById(R.id.rv_products)
-        scrollView = view.findViewById(R.id.scroll_view)
         cardProducts = view.findViewById(R.id.card_products)
         cardNoProducts = view.findViewById(R.id.card_no_products)
-
-        errorSnackbar = Toaster.build(view, getString(R.string.review_reminder_snackbar_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "Refresh", View.OnClickListener {
-            fetchData()
-        })
-        sendingSnackbar = Toaster.build(view, getString(R.string.review_reminder_snackbar_sending), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "Oke")
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
 
         initView()
         initBottomSheet()
@@ -134,6 +139,7 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         rvProducts?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = reviewProductAdapter
+            addOnScrollListener(scrollListener)
         }
     }
 
@@ -159,7 +165,16 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                 setPrimaryCTAClickListener {
                     viewModel?.sendReminder(textSampleMessage?.text?.toString())
                     dismiss()
-                    sendingSnackbar?.show()
+                    refreshData()
+                    view?.let {
+                        Toaster.build(
+                                it,
+                                getString(R.string.review_reminder_snackbar_sending),
+                                Snackbar.LENGTH_LONG,
+                                Toaster.TYPE_NORMAL,
+                                "Oke"
+                        ).show()
+                    }
                 }
 
                 setSecondaryCTAText(getString(R.string.review_reminder_dialog_send_button_secondary))
@@ -170,6 +185,10 @@ class ReminderMessageFragment : BaseDaggerFragment() {
 
                 show()
             }
+        }
+
+        swipeRefreshLayout?.setOnRefreshListener {
+            refreshData()
         }
     }
 
@@ -195,7 +214,7 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                 )
                 val coachMark = CoachMark2(requireContext())
                 coachMark.setOnDismissListener { prefs.edit().putBoolean(ReviewConstants.HAS_COACHMARK_REMINDER_MESSAGE, true).apply() }
-                coachMark.showCoachMark(coachMarkItems, scrollView)
+                coachMark.showCoachMark(coachMarkItems)
             }
         }
     }
@@ -208,14 +227,29 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
+        isLoadEstimation = true
+        isLoadTemplate = true
+        isLoadProducts = true
+
         viewModel?.fetchReminderCounter()
         viewModel?.fetchReminderTemplate()
         viewModel?.fetchProductList()
     }
 
+    private fun refreshData() {
+        products = emptyList()
+        fetchData()
+    }
+
     private fun showEditMessage() {
         bottomSheetEditMessage?.message = textSampleMessage?.text?.toString()
         bottomSheetEditMessage?.show(childFragmentManager, TAG_BOTTOM_SHEET_EDIT_MESSAGE)
+    }
+
+    private fun checkRefresh() {
+        if (!isLoadEstimation && !isLoadTemplate && !isLoadProducts) {
+            swipeRefreshLayout?.isRefreshing = false
+        }
     }
 
     private val observerEstimation = Observer<ProductrevGetReminderCounter> { reminderCounter ->
@@ -226,25 +260,71 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         )
         textEstimation?.text = HtmlCompat.fromHtml(stringEstimation, HtmlCompat.FROM_HTML_MODE_COMPACT)
         estimation = reminderCounter
+        isLoadEstimation = false
+        checkRefresh()
     }
 
     private val observerTemplate = Observer<ProductrevGetReminderTemplate> { reminderTemplate ->
         val template = reminderTemplate.template
         textSampleMessage?.text = template
         bottomSheetEditMessage?.message = template
+        isLoadTemplate = false
+        checkRefresh()
     }
 
-    private val observerProducts = Observer<List<ProductrevGetReminderData>> { products ->
-        if (products.isNotEmpty()) {
-            reviewProductAdapter?.updateList(products)
-            cardNoProducts?.visibility = View.GONE
-            cardProducts?.visibility = View.VISIBLE
+    private val observerProducts = Observer<Result<ProductrevGetReminderList>> { result ->
+        when (result) {
+            is Success -> {
+                val data = result.data
+                val list = data.list
+                if (list.isNotEmpty()) {
+                    val mergeList = products + list
+                    reviewProductAdapter?.updateList(mergeList)
+                    products = mergeList
+                }
+                if (products.isNotEmpty()) {
+                    cardNoProducts?.visibility = View.GONE
+                    cardProducts?.visibility = View.VISIBLE
+                } else {
+                    cardNoProducts?.visibility = View.VISIBLE
+                    cardProducts?.visibility = View.GONE
+                }
+                productrevGetReminderList = data
+            }
+            is Fail -> {
+            }
         }
+        isLoadProducts = false
+        checkRefresh()
     }
 
     private val observerError = Observer<String> {
-        errorSnackbar?.run {
-            if (isVisible) show()
+        view?.let {
+            Toaster.build(
+                    it,
+                    getString(R.string.review_reminder_snackbar_error),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    "Refresh",
+                    View.OnClickListener {
+                        refreshData()
+                    }).show()
         }
     }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val hasNext = productrevGetReminderList?.hasNext == true
+
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            if (!isLoadProducts && hasNext && layoutManager.findLastCompletelyVisibleItemPosition() == reviewProductAdapter?.itemCount?.minus(1)) {
+                productrevGetReminderList?.let {
+                    viewModel?.fetchProductList(it.lastProductID)
+                    isLoadProducts = true
+                }
+            }
+        }
+    }
+
 }

@@ -28,13 +28,16 @@ class ReviewProductAdapter : RecyclerView.Adapter<ReviewProductAdapter.ViewHolde
         holder.image.urlSrc = item.productThumbnail
         holder.name.text = item.productName
         holder.rating.text = item.avgRating.toString()
-        holder.buyer.text = context?.getString(R.string.review_reminder_item_product_buyer, item.buyerCount)
-
+        holder.buyer.text = context?.getString(
+                R.string.review_reminder_item_product_buyer,
+                item.buyerCount.toString()
+        )
     }
 
     fun updateList(products: List<ProductrevGetReminderData>) {
         this.products.clear()
         this.products.addAll(products)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

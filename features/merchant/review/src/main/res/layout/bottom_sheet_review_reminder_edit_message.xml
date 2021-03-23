@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
-        app:labelTitle="Wajib"
+        app:labelTitle="@string/review_reminder_bottom_sheet_edit_message_label"
         app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/text_title_edit_message"
         app:layout_constraintLeft_toRightOf="@id/text_title_edit_message"
@@ -42,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@id/layout_add_buyer"
         app:text_area_clearable="false"
         app:text_area_counter="200"
-        app:text_area_label="Isi Pesan" />
+        app:text_area_label="@string/review_reminder_bottom_sheet_edit_message_hint_label" />
 
     <LinearLayout
         android:id="@+id/layout_add_buyer"

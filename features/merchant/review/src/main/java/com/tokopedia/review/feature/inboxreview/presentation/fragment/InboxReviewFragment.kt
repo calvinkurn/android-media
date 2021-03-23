@@ -339,11 +339,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun setButtonReviewReminder(counter: Int = 0) {
-        if (counter > 0)
-            buttonReviewReminder?.text = getString(
-                    R.string.review_reminder_button_review_reminder_with_counter,
-                    counter
-            )
+        buttonReviewReminder?.text = if (counter > 0) {
+            getString(R.string.review_reminder_button_review_reminder_with_counter, counter)
+        } else getString(R.string.review_reminder_button_review_reminder)
     }
 
     private fun observeInboxReview() {
@@ -374,8 +372,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
-    private fun observeReviewReminderEstimation(){
-        observe(inboxReviewViewModel.getEstimation()){
+    private fun observeReviewReminderEstimation() {
+        observe(inboxReviewViewModel.getEstimation()) {
             setButtonReviewReminder(it.totalBuyer)
         }
     }

@@ -6,12 +6,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounter
-import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderData
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderList
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplate
 import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderCounterUseCase
 import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderListUseCase
 import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderTemplateUseCase
 import com.tokopedia.review.feature.reviewreminder.domain.ProductrevSendReminderUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReminderMessageViewModel @Inject constructor(
@@ -28,8 +31,8 @@ class ReminderMessageViewModel @Inject constructor(
     private val template = MutableLiveData<ProductrevGetReminderTemplate>()
     fun getTemplate(): LiveData<ProductrevGetReminderTemplate> = template
 
-    private val products = MutableLiveData<List<ProductrevGetReminderData>>()
-    fun getProducts(): LiveData<List<ProductrevGetReminderData>> = products
+    private val products = MutableLiveData<Result<ProductrevGetReminderList>>()
+    fun getProducts(): LiveData<Result<ProductrevGetReminderList>> = products
 
     private val error = MutableLiveData<String>()
     fun getError(): LiveData<String> = error
@@ -48,12 +51,12 @@ class ReminderMessageViewModel @Inject constructor(
         }, onError = { error.postValue(it.message) })
     }
 
-    fun fetchProductList() {
+    fun fetchProductList(lastProductId: String = "0") {
         launchCatchError(block = {
-            productrevGetReminderListUseCase.setParams(0, "0")
+            productrevGetReminderListUseCase.setParams(lastProductId)
             val responseWrapper = productrevGetReminderListUseCase.executeOnBackground()
-            products.postValue(responseWrapper.productrevGetReminderList.list)
-        }, onError = { error.postValue(it.message) })
+            products.postValue(Success(responseWrapper.productrevGetReminderList))
+        }, onError = { Fail(it) })
     }
 
     fun sendReminder(template: String?) {
