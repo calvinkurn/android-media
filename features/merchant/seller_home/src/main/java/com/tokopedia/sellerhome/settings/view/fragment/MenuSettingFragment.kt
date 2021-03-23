@@ -38,7 +38,6 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
-import com.tokopedia.sellerreview.common.SellerReviewUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
