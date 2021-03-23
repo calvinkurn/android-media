@@ -112,16 +112,7 @@ class ApsaraLivePusherWrapper private constructor(
             return
         }
 
-        try {
-            aliVcLivePusher?.startPreviewAysnc(surfaceView)
-        } catch (exception: IllegalStateException) {
-            if (exception.localizedMessage.orEmpty().contains("start preview", true)
-                    || exception.localizedMessage.orEmpty().contains("should init first", true) ){
-                broadcastErrorToListeners(
-                        PLAY_PUSHER_ERROR_SYSTEM_ERROR,
-                        ApsaraFatalException("Something went wrong, please restart application"))
-            }
-        }
+        safeAction { aliVcLivePusher?.startPreviewAysnc(surfaceView) }
     }
 
     fun switchCamera() {
