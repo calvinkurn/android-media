@@ -117,5 +117,7 @@ data class Product(
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData = ProductTrackerData(),
         @SerializedName("free_shipping")
-        val freeShipping: FreeShipping = FreeShipping()
+        val freeShipping: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_extra")
+        val freeShippingExtra: FreeShipping = FreeShipping()
 )

@@ -633,7 +633,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             visibility = View.VISIBLE
             sortFilterHorizontalScrollView.scrollX = 0
             addItem(items as ArrayList<SortFilterItem>)
-            textView.text = getString(R.string.catalog_filter_text)
+            textView?.text = getString(R.string.catalog_filter_text)
         }
         searchSortFilter?.parentListener = { this.openBottomSheetFilterRevamp() }
         setSortFilterNewNotification(items)

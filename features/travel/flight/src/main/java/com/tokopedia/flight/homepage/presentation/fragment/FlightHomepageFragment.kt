@@ -40,6 +40,7 @@ import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.travelcalendar.singlecalendar.SinglePickCalendarWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -238,7 +239,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                     arrivalAirport,
                     flightClassId
             )
-            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
+            flightCalendarDialog.setListener(object : SinglePickCalendarWidget.ActionListener {
                 override fun onDateSelected(dateSelected: Date) {
                     val errorResourceId = flightHomepageViewModel.validateDepartureDate(dateSelected)
                     if (errorResourceId == -1) {
