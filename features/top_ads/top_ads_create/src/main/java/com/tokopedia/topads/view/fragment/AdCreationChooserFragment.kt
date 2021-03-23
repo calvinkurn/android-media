@@ -119,14 +119,14 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         }
 
         view.top_corner_icon1.setImageResource(R.drawable.icon_otomatis_onboarding)
-        view.icon2.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_1)
-        view.icon3.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_2)
-        view.icon4.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_3)
+        view.icon2.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        view.icon3.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        view.icon4.setImageResource(R.drawable.topads_create_ic_checklist_blue)
 
         view.top_corner_icon2.setImageResource(R.drawable.icon_manual_onboarding)
-        view.icon6.setImageResource(R.drawable.topads_create_ic_iklan_manual_1)
-        view.icon7.setImageResource(R.drawable.topads_create_ic_iklan_manual_2)
-        view.icon8.setImageResource(R.drawable.topads_create_ic_iklan_manual_3)
+        view.icon6.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        view.icon7.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        view.icon8.setImageResource(R.drawable.topads_create_ic_checklist_blue)
 
 
         btn_start_auto_ads.setOnClickListener {
