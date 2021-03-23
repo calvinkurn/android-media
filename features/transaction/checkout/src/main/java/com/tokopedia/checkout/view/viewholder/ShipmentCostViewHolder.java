@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.viewholder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -86,6 +87,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvProductDiscountPrice = itemView.findViewById(R.id.tv_product_discount_price);
     }
 
+    @SuppressLint("StringFormatInvalid")
     public void bindViewHolder(ShipmentCostModel shipmentCost) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
