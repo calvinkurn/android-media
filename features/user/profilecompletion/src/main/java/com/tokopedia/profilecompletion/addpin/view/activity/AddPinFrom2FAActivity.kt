@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFrom2FAFragment
 
-class AddPinFrom2FAActivity :  AddPinActivity() {
+class AddPinFrom2FAActivity : AddPinActivity() {
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {

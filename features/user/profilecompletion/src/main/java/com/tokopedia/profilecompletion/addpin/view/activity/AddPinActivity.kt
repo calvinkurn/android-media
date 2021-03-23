@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFragment
-import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFrom2FAFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
@@ -55,10 +54,8 @@ open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
     }
 
     override fun onBackPressed() {
-        if (fragment != null && fragment is AddPinFragment) {
-            if (!(fragment as AddPinFrom2FAFragment).onBackPressedFromConfirm()) {
-                super.onBackPressed()
-            } else if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) {
+        if (fragment != null) {
+            if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) {
                 super.onBackPressed()
             }
         } else {
@@ -71,7 +68,7 @@ open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
         toolbar = findViewById(toolbarResourceID)
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            if(enableBackBtn) {
+            if (enableBackBtn) {
                 setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
             }
             setDisplayHomeAsUpEnabled(enableBackBtn)
