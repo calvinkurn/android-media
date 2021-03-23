@@ -10,6 +10,7 @@ object OfficialStoreDynamicChannelComponentMapper {
                 id = channel.id,
                 groupId = "",
                 type = "",
+                style = ChannelStyle.ChannelOS,
                 name = channel.name,
                 layout = channel.layout,
                 verticalPosition = verticalPosition,
