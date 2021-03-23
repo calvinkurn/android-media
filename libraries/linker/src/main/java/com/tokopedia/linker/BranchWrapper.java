@@ -1,8 +1,10 @@
 package com.tokopedia.linker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
@@ -46,6 +48,7 @@ public class BranchWrapper implements WrapperInterface {
     private String deferredDeeplinkPath;
     private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     private static boolean isBranchInitialized = false;
+   private RemoteConfig remoteConfig;
 
     @Override
     public void init(Context context) {
@@ -474,18 +477,12 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private void sendCampaignToGTM(Context context, Map<String,Object> param) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (!(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK) && LinkerUtils.APP_OPEN_FROM_BRANCH_LINK)) {
-            return;
-        }
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT)) {
-            TrackApp.getInstance().getGTM().sendCampaign(param);
-        }
-    }
 
     private void CheckBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest){
         Activity activity= ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
+        if(!isBranchUtmOnlyBranchLinkActivated(activity)){
+            return;
+        }
         if(activity != null && activity.getIntent().getData()!= null && activity.getIntent().getData().toString().contains(LinkerConstants.BRANCH_LINK_DOMAIN)){
             if (DeeplinkUTMUtils.isValidCampaignUrl(activity.getIntent().getData())) {
                 sendCampaignGTM(activity, activity.getIntent().getData().toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER);
@@ -500,5 +497,37 @@ public class BranchWrapper implements WrapperInterface {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
         campaign.setScreenName(LinkerConstants.SCREEN_NAME_VALUE);
         sendCampaignToGTM(activity, campaign.getCampaign());
+    }
+
+    private void sendCampaignToGTM(Context context, Map<String,Object> param) {
+        if (context== null) return;
+        if(isBranchUtmOnlyBranchLinkActivated(context)){
+            if(LinkerUtils.APP_OPEN_FROM_BRANCH_LINK){
+               sendCampaignToTrackApp( context, param);
+            }
+        }else {
+            sendCampaignToTrackApp( context, param);
+        }
+    }
+
+    private void sendCampaignToTrackApp(Context context, Map<String,Object> param) {
+        if (isBranchUtmSupportActivated(context)) {
+            TrackApp.getInstance().getGTM().sendCampaign(param);
+        }
+    }
+
+    private Boolean isBranchUtmSupportActivated(Context context) {
+        return getBooleanValue(context,RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT);
+    }
+
+    private Boolean isBranchUtmOnlyBranchLinkActivated(Context context) {
+        return getBooleanValue(context,RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
+    }
+
+    private Boolean getBooleanValue(Context context, String key){
+        if(remoteConfig == null)
+         remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(key);
+
     }
 }
