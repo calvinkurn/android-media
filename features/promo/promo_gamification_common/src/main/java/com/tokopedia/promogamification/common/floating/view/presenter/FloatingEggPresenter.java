@@ -43,7 +43,11 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
         GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.core_gami_floating_query),
                 FloatingButtonResponseEntity.class, false);
         getTokenTokopointsUseCase.addRequest(tokenTokopointsRequest);
-        getTokenTokopointsUseCase.execute(new Subscriber<GraphqlResponse>() {
+        getTokenTokopointsUseCase.execute(getSubscriber());
+    }
+
+    public Subscriber<GraphqlResponse> getSubscriber(){
+        return new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
             }
@@ -70,7 +74,7 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
                     idlingResource.decrement();
                 }
             }
-        });
+        };
     }
 
     @Override
