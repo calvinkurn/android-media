@@ -50,6 +50,7 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         if (channelType.isNotEmpty()) {
             requestParams[paramChannelType] = channelType
         }
+        requestParams[paramChannelLocation] = location
     }
 
     companion object{

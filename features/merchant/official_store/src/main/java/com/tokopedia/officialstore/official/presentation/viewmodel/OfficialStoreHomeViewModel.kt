@@ -35,7 +35,6 @@ import javax.inject.Inject
 class OfficialStoreHomeViewModel @Inject constructor(
         private val getOfficialStoreBannersUseCase: GetOfficialStoreBannerUseCase,
         private val getOfficialStoreBenefitUseCase: GetOfficialStoreBenefitUseCase,
-        private val getOfficialStoreFeaturedShopUseCase: GetOfficialStoreFeaturedUseCase,
         private val getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val userSessionInterface: UserSessionInterface,
@@ -58,8 +57,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
         get() = _officialStoreBenefitResult
 
 
-    val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
-        get() = _officialStoreFeaturedShopResult
+//    val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
+//        get() = _officialStoreFeaturedShopResult
 
     val officialStoreDynamicChannelResult: LiveData<Result<List<OfficialStoreChannel>>>
         get() = _officialStoreDynamicChannelResult
@@ -75,9 +74,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreBenefits>>()
     }
 
-    private val _officialStoreFeaturedShopResult by lazy {
-        MutableLiveData<Result<OfficialStoreFeaturedShop>>()
-    }
+//    private val _officialStoreFeaturedShopResult by lazy {
+//        MutableLiveData<Result<OfficialStoreFeaturedShop>>()
+//    }
 
     private val _officialStoreDynamicChannelResult = MutableLiveData<Result<List<OfficialStoreChannel>>>()
 
@@ -98,13 +97,13 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
-            _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
+//            _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
             getOfficialStoreDynamicChannel(currentSlug, location)
         }) {
             _officialStoreBannersResult.value = Fail(it)
             _officialStoreBenefitResult.value = Fail(it)
-            _officialStoreFeaturedShopResult.value = Fail(it)
+//            _officialStoreFeaturedShopResult.value = Fail(it)
         }
     }
 
@@ -145,17 +144,17 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getOfficialStoreFeaturedShop(categoryId: Int): Result<OfficialStoreFeaturedShop> {
-        return withContext(dispatchers.io()) {
-            try {
-                getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
-                val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
-                Success(featuredShop)
-            } catch (t: Throwable) {
-                Fail(t)
-            }
-        }
-    }
+//    private suspend fun getOfficialStoreFeaturedShop(categoryId: Int): Result<OfficialStoreFeaturedShop> {
+//        return withContext(dispatchers.io()) {
+//            try {
+//                getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
+//                val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
+//                Success(featuredShop)
+//            } catch (t: Throwable) {
+//                Fail(t)
+//            }
+//        }
+//    }
 
     private fun getOfficialStoreDynamicChannel(channelType: String, location: String) {
         launchCatchError(coroutineContext, block = {

@@ -255,20 +255,20 @@ class OfficialHomeFragment :
     }
 
     private fun observeFeaturedShop() {
-        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-
-            }
-            shopPerformanceMonitoring.stopTrace()
-        })
+//        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Success -> {
+//                    swipeRefreshLayout?.isRefreshing = false
+//                    officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
+//                }
+//                is Fail -> {
+//                    swipeRefreshLayout?.isRefreshing = false
+//                    showErrorNetwork(it.throwable)
+//                }
+//
+//            }
+//            shopPerformanceMonitoring.stopTrace()
+//        })
     }
 
     private fun observeDynamicChannel() {
@@ -377,7 +377,6 @@ class OfficialHomeFragment :
     override fun onDestroy() {
         viewModel.officialStoreBannersResult.removeObservers(this)
         viewModel.officialStoreBenefitsResult.removeObservers(this)
-        viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.productRecommendation.removeObservers(this)
         viewModel.flush()
