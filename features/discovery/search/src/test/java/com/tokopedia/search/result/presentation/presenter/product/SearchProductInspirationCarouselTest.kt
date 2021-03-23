@@ -7,8 +7,8 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import io.mockk.*
@@ -104,35 +104,35 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 4 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
+                    assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
                         "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO}"
                     }
                     visitable.assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[1])
                 }
                 9 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST) {
+                    assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST) {
                         "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST}"
                     }
                     visitable.assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[2])
                 }
                 14 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID) {
+                    assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                         "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID}"
                     }
                     visitable.assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[3])
                     visitable.assertCarouselGridHasBanner(true)
                 }
                 else -> {
-                    visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                    visitable.shouldBeInstanceOf<ProductItemDataView>(
                             "visitable list at index $index should be ProductItemViewModel"
                     )
                 }
@@ -140,7 +140,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         }
     }
 
-    private fun InspirationCarouselViewModel.assertInspirationCarouselViewModel(inspirationCarouselData: SearchProductModel.InspirationCarouselData) {
+    private fun InspirationCarouselDataView.assertInspirationCarouselViewModel(inspirationCarouselData: SearchProductModel.InspirationCarouselData) {
         this.layout shouldBe inspirationCarouselData.layout
         this.type shouldBe inspirationCarouselData.type
         this.position shouldBe inspirationCarouselData.position
@@ -165,7 +165,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                 actualProduct.description shouldBe expectedProduct.description
                 actualProduct.inspirationCarouselType shouldBe this.type
                 actualProduct.ratingAverage shouldBe expectedProduct.ratingAverage
-                actualProduct.labelGroupList shouldBe expectedProduct.labelGroupList
+                actualProduct.labelGroupDataList shouldBe expectedProduct.labelGroupList
                 actualProduct.layout shouldBe this.layout
                 actualProduct.originalPrice shouldBe expectedProduct.originalPrice
                 actualProduct.discountPercentage shouldBe expectedProduct.discountPercentage
@@ -177,7 +177,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         }
     }
 
-    private fun InspirationCarouselViewModel.assertCarouselGridHasBanner(shouldAddBannerCard: Boolean) {
+    private fun InspirationCarouselDataView.assertCarouselGridHasBanner(shouldAddBannerCard: Boolean) {
         this.options[0].shouldAddBannerCard() shouldBe shouldAddBannerCard
     }
 
@@ -215,26 +215,26 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 2) {
-                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                         "visitable list at index $index should be InspirationCarouselViewModel"
                 )
-                assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID) {
+                assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                     "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID}"
                 }
                 visitable.assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[4])
                 visitable.assertCarouselGridHasBanner(false)
             }
             else if (index == 7) {
-                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                         "visitable list at index $index should be InspirationCarouselViewModel"
                 )
-                assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
+                assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
                     "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO}"
                 }
                 visitable.assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[5])
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }
@@ -261,7 +261,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     private fun `Then verify inspiration carousel is not shown on first page`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList.any { it is InspirationCarouselViewModel } shouldBe false
+        visitableList.any { it is InspirationCarouselDataView } shouldBe false
     }
 
     private fun `Then verify visitable list has inspiration carousel after 9th product item`(searchProductModel: SearchProductModel) {
@@ -281,13 +281,13 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 1) {
-                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                         "visitable list at index $index should be InspirationCarouselViewModel"
                 )
-                (visitable as InspirationCarouselViewModel).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[0])
+                (visitable as InspirationCarouselDataView).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[0])
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }
@@ -330,19 +330,19 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 4 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    (visitable as InspirationCarouselViewModel).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[1])
+                    (visitable as InspirationCarouselDataView).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[1])
                 }
                 9 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    (visitable as InspirationCarouselViewModel).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[2])
+                    (visitable as InspirationCarouselDataView).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[2])
                 }
                 else -> {
-                    visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                    visitable.shouldBeInstanceOf<ProductItemDataView>(
                             "visitable list at index $index should be ProductItemViewModel"
                     )
                 }
@@ -369,19 +369,19 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 4 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    (visitable as InspirationCarouselViewModel).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[3])
+                    (visitable as InspirationCarouselDataView).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[3])
                 }
                 9 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    (visitable as InspirationCarouselViewModel).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[4])
+                    (visitable as InspirationCarouselDataView).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[4])
                 }
                 else -> {
-                    visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                    visitable.shouldBeInstanceOf<ProductItemDataView>(
                             "visitable list at index $index should be ProductItemViewModel"
                     )
                 }
@@ -432,25 +432,25 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 4 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    (visitable as InspirationCarouselViewModel).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[1])
+                    (visitable as InspirationCarouselDataView).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[1])
                 }
                 5 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    (visitable as InspirationCarouselViewModel).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[0])
+                    (visitable as InspirationCarouselDataView).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[0])
                 }
                 14 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    (visitable as InspirationCarouselViewModel).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[2])
+                    (visitable as InspirationCarouselDataView).assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[2])
                 }
                 else -> {
-                    visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                    visitable.shouldBeInstanceOf<ProductItemDataView>(
                             "visitable list at index $index should be ProductItemViewModel"
                     )
                 }
@@ -473,7 +473,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.size shouldBe 8
 
         visitableList.forEachIndexed { index, visitable ->
-            visitable.shouldBeInstanceOf<ProductItemViewModel>(
+            visitable.shouldBeInstanceOf<ProductItemDataView>(
                     "visitable list at index $index should be ProductItemViewModel"
             )
         }
@@ -512,15 +512,15 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 8) {
-                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
                         "visitable list at index $index should be InspirationCarouselViewModel"
                 )
-                assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
+                assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
                     "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO}"
                 }
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }
