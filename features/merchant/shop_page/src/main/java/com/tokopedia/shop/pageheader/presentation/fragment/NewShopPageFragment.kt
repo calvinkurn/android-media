@@ -182,6 +182,7 @@ class NewShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
+        private const val SOURCE = "shop page"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
@@ -2054,6 +2055,10 @@ class NewShopPageFragment :
 
     override fun getLocalizingAddressHostSourceData(): String {
         return "shop"
+    }
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {
