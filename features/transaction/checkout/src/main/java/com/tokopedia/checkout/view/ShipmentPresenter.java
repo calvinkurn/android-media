@@ -758,8 +758,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     // This is for akamai error case
-    private void clearAllPromo(ValidateUsePromoRequest newValidateUsePromoRequest) {
-        ValidateUsePromoRequest validateUsePromoRequest = ShipmentPresenter.this.lastValidateUsePromoRequest;
+    private void clearAllPromo() {
+        ValidateUsePromoRequest validateUsePromoRequest = lastValidateUsePromoRequest;
+        if (validateUsePromoRequest == null) return;
         ArrayList<String> codes = new ArrayList<>();
         for (String code : validateUsePromoRequest.getCodes()) {
             if (code != null) {
@@ -809,7 +810,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                            Timber.d(e);
                                            if (getView() != null) {
                                                if (e instanceof AkamaiErrorException) {
-                                                   clearAllPromo(validateUsePromoRequest);
+                                                   clearAllPromo();
                                                    getView().showToastError(e.getMessage());
                                                    getView().resetAllCourier();
                                                    getView().cancelAllCourierPromo();
@@ -1080,7 +1081,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (getView() != null) {
                                     mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
                                     if (e instanceof AkamaiErrorException) {
-                                        clearAllPromo(validateUsePromoRequest);
+                                        clearAllPromo();
                                         getView().showToastError(e.getMessage());
                                         getView().resetAllCourier();
                                         getView().cancelAllCourierPromo();
@@ -1181,7 +1182,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (e instanceof CheckPromoCodeException) {
                                         getView().showToastError(e.getMessage());
                                     } else if (e instanceof AkamaiErrorException) {
-                                        clearAllPromo(validateUsePromoRequest);
+                                        clearAllPromo();
                                         getView().showToastError(e.getMessage());
                                         getView().resetAllCourier();
                                         getView().cancelAllCourierPromo();

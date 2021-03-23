@@ -269,19 +269,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun resetBbo() {
-        val logisticPromoViewModel = _orderShipment.logisticPromoViewModel
-        val logisticPromoShipping = _orderShipment.logisticPromoShipping
-        val shippingRecommendationData = _orderShipment.shippingRecommendationData
-        if (shippingRecommendationData != null && logisticPromoViewModel != null && _orderShipment.isApplyLogisticPromo && logisticPromoShipping != null) {
-            shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = false)
-            val shippingDuration = shippingRecommendationData.shippingDurationViewModels.first { it.serviceData.serviceId == logisticPromoShipping.serviceData.serviceId }
-            shippingDuration.isSelected = true
-            shippingDuration.shippingCourierViewModelList.first { it.productData.shipperProductId == logisticPromoShipping.productData.shipperProductId }.isSelected = true
-            _orderShipment = _orderShipment.copy(shippingRecommendationData = shippingRecommendationData,
-                    isApplyLogisticPromo = false,
-                    logisticPromoShipping = null,
-                    logisticPromoTickerMessage = "Tersedia ${logisticPromoViewModel.title}")
-        }
+        _orderShipment = logisticProcessor.resetBbo(_orderShipment)
+        orderShipment.value = _orderShipment
     }
 
     fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
