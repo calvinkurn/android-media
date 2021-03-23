@@ -276,6 +276,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
     }
 
     override fun onCreateView(inflater: LayoutInflater,

@@ -212,6 +212,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 if (resultCode == Activity.RESULT_OK) {
                     isLoginFlow = true
                     setInitialViewState()
+                    val chooseAddressPref = context?.getSharedPreferences(CHOOSE_ADDRESS_PREF, Context.MODE_PRIVATE)
+                    chooseAddressPref?.edit()?.clear()?.apply()
                     viewModel.getDefaultChosenAddress("", source)
                 }
             }
@@ -331,7 +333,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                         } else {
                             setViewState(userSession.isLoggedIn)
                         }
-                    } else if (it.data.addressData.addressId != 0){
+                    } else if (it.data.addressData.cityId != 0){
                         val data = it.data.addressData
                         val localData = ChooseAddressUtils.setLocalizingAddressData(
                                 addressId = data.addressId.toString(),
