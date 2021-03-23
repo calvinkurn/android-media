@@ -63,7 +63,7 @@ def isFirebasePerformanceLogEnabled() {
 
 task generateBundledResourcesHashLiveProdRelease {
 }
-task bundleLiveProdReleaseJsAndAssets{
+task bundleLiveProdReleaseJsAndAssets {
 }
 
 project.ext {
