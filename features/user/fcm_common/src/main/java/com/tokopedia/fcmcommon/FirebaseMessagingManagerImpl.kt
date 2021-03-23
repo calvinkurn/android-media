@@ -7,6 +7,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class FirebaseMessagingManagerImpl @Inject constructor(
@@ -34,6 +35,24 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     override fun isNewToken(token: String): Boolean {
         val prefToken = getTokenFromPref()
         return prefToken != null && token != prefToken
+    }
+
+    override fun syncDelayedFcmToken(listener: FirebaseMessagingManager.SyncListener) {
+        /*
+         * This is to preventing invoke the service before initialize
+         * of the Graphql module.
+         *
+         * Handling this delayed specifically on this service, because
+         * some of case in fcmManager.syncFcmToken(this) may didn't
+         * need to delay.
+         * */
+        GlobalScope.launch {
+            delay(POST_DELAYED)
+
+            withContext(Dispatchers.Main) {
+                syncFcmToken(listener)
+            }
+        }
     }
 
     override fun syncFcmToken(listener: FirebaseMessagingManager.SyncListener) {
@@ -138,6 +157,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     }
 
     companion object {
+        private const val POST_DELAYED = 3000L
         private const val FCM_TOKEN = "pref_fcm_token"
         private const val KEY_NEWEST_TOKEN_FCM = "newest_token_fcm"
 
