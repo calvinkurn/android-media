@@ -91,8 +91,6 @@ public interface ShipmentAdapterActionListener {
 
     void navigateToProtectionMore(String url);
 
-    void onNotifierClicked(String url);
-
     void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
 
     void onProcessToPayment();

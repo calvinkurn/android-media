@@ -211,8 +211,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
     @Inject
-    CodAnalytics mTrackerCod;
-    @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     @Inject
     CornerAnalytics mTrackerCorner;
@@ -2210,15 +2208,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void navigateToProtectionMore(String url) {
         mTrackerPurchaseProtection.eventClickOnPelajari(url);
         CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(), url, getString(R.string.title_activity_checkout_webview));
-    }
-
-    @Override
-    public void onNotifierClicked(String url) {
-        mTrackerCod.eventClickPelajariSelengkapnya();
-        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url,
-                getString(R.string.title_activity_checkout_tnc_webview),
-                CheckoutWebViewActivity.CALLER_CODE_COD);
-        startActivity(intent);
     }
 
     @Override
