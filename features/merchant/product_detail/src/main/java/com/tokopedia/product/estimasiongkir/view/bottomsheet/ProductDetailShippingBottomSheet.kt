@@ -3,7 +3,10 @@ package com.tokopedia.product.estimasiongkir.view.bottomsheet
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -45,6 +48,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     companion object {
         const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
         const val TAG_USP_BOTTOM_SHEET = "TAG_USP_BOTTOM_SHEET"
+        const val SOURCE = "product detail page"
     }
 
     @Inject
@@ -62,26 +66,25 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        viewContainer = View.inflate(context, R.layout.bs_product_shipping_rate_estimate, null)
-        setupBottomSheet(dialog, viewContainer)
-
-        dialog.run {
-            viewContainer?.let {
-                setupRecyclerView(it)
-                setContentView(it)
-            }
-
-            initInjector()
-            initViewModel()
-            observeData()
-        }
+        setupBottomSheet(dialog)
+        initInjector()
+        initViewModel()
     }
 
-    private fun setupBottomSheet(dialog: Dialog, view: View?) {
-        val closeBtn = view?.findViewById<IconUnify>(R.id.shipment_bottom_sheet_close)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewContainer = View.inflate(context, R.layout.bs_product_shipping_rate_estimate, null)
+        viewContainer?.let {
+            setupRecyclerView(it)
+        }
+        val closeBtn = viewContainer?.findViewById<IconUnify>(R.id.shipment_bottom_sheet_close)
         closeBtn?.setOnClickListener {
             dismiss()
         }
+        observeData()
+        return viewContainer
+    }
+
+    private fun setupBottomSheet(dialog: Dialog) {
         val dialogFragment = dialog as BottomSheetDialog
         dialogFragment.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         dialogFragment.behavior.skipCollapsed = true
@@ -122,7 +125,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
             viewModel?.setRatesRequest(it)
         }
 
-        viewModel?.ratesVisitableResult?.observe(this) {
+        viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) {
             it.doSuccessOrFail({
                 adapter?.submitList(it.data)
             }) { throwable ->
@@ -196,6 +199,8 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun getLocalizingAddressHostFragment(): Fragment = this
 
     override fun getLocalizingAddressHostSourceData(): String = KEY_PRODUCT_DETAIL
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
 
     override fun onLocalizingAddressLoginSuccess() {
     }

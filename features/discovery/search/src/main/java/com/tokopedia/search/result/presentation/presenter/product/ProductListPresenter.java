@@ -1649,7 +1649,8 @@ final class ProductListPresenter
                 productViewModel.getResponseCode(),
                 source,
                 getNavSourceForGeneralSearchTracking(),
-                getPageTitleForGeneralSearchTracking()
+                getPageTitleForGeneralSearchTracking(),
+                productViewModel.getTotalData()
         );
     }
 

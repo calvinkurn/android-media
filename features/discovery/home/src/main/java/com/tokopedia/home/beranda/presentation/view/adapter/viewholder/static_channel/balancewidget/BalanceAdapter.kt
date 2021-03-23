@@ -289,6 +289,20 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                     itemView.home_container_action_balance.show()
                     renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
+                    itemView.home_container_balance.handleItemCLickType(
+                            element = element,
+                            ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
+                            rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
+                            bboAction = {listener?.onRefreshTokoPointButtonClicked()},
+                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()}
+                    )
+                    itemView.home_tv_btn_action_balance.handleItemCLickType(
+                            element = element,
+                            ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
+                            rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
+                            bboAction = {listener?.onRefreshTokoPointButtonClicked()},
+                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()}
+                    )
                 }
             }
 
@@ -350,14 +364,14 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         }
 
         private fun View.handleItemCLickType(element: BalanceDrawerItemModel,
-                                             tokopointsAction: () -> Unit,
-                                             ovoWalletAction: () -> Unit,
-                                             rewardsAction: () -> Unit,
-                                             couponsAction: () -> Unit,
-                                             bboAction: () -> Unit,
-                                             walletTopupAction: () -> Unit,
-                                             walletOtherAction: () -> Unit,
-                                             walletPendingAction: () -> Unit) {
+                                             tokopointsAction: () -> Unit = {},
+                                             ovoWalletAction: () -> Unit= {},
+                                             rewardsAction: () -> Unit= {},
+                                             couponsAction: () -> Unit= {},
+                                             bboAction: () -> Unit= {},
+                                             walletTopupAction: () -> Unit= {},
+                                             walletOtherAction: () -> Unit= {},
+                                             walletPendingAction: () -> Unit= {}) {
             setOnClickListener {
                 when (element.drawerItemType) {
                     TYPE_TOKOPOINT -> tokopointsAction.invoke()

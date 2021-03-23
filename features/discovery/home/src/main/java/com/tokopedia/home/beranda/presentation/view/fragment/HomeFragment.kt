@@ -1509,6 +1509,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     }
 
+    override fun onChooseAddressServerDown() {
+
+    }
+
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
 //        homeRecyclerView?.itemAnimator = null
@@ -2444,6 +2448,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         startActivityForResult(RouteManager.getIntent(requireContext(), appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+    }
+
+    override fun isNewNavigation(): Boolean {
+        return isNavRevamp()
     }
 
     private fun observePlayWidgetReminder() {

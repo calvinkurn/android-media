@@ -332,7 +332,8 @@ class TestMainNavViewModel {
                                         roleType = AdminRoleType(
                                                 isLocationAdmin = isLocationAdmin
                                         )
-                                )
+                                ),
+                                status = "1"
                         )
                 )
         val expectedCanGoToSellerAccount = !isLocationAdmin

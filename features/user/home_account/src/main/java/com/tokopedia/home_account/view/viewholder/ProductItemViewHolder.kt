@@ -14,8 +14,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
     fun bind(element: RecommendationItem) {
         with(itemView) {
             val card = this.findViewById<ProductCardGridView>(R.id.product_card_view)
-            card.setProductModel(element.toProductCardModel())
-
+            card.setProductModel(element.toProductCardModel(hasThreeDots = true))
             card.setImageProductViewHintListener(element, object : ViewHintListener {
                 override fun onViewHint() {
                     listener.onProductRecommendationImpression(element, adapterPosition)

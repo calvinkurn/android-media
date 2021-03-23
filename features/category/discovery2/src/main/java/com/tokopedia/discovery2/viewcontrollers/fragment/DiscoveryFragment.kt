@@ -729,7 +729,7 @@ class DiscoveryFragment :
 
     override fun onResume() {
         super.onResume()
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
@@ -831,6 +831,10 @@ class DiscoveryFragment :
 
     override fun getLocalizingAddressHostSourceData(): String {
         return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+    }
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {

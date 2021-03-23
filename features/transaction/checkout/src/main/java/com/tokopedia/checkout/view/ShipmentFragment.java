@@ -68,6 +68,7 @@ import com.tokopedia.logisticCommon.data.analytics.CodAnalytics;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
@@ -1110,7 +1111,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (requestCode == PaymentConstant.REQUEST_CODE) {
             onResultFromPayment(resultCode);
         } else if (requestCode == LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY) {
-            onResultFromAddNewAddress(resultCode);
+            onResultFromAddNewAddress(resultCode, data);
         } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
             onResultFromRequestCodeAddressOptions(resultCode, data);
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
@@ -1266,12 +1267,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void onResultFromAddNewAddress(int resultCode) {
+    private void onResultFromAddNewAddress(int resultCode, Intent data) {
         Activity activity = getActivity();
         if (activity != null) {
             if (resultCode == Activity.RESULT_CANCELED) {
                 activity.finish();
             } else {
+                SaveAddressDataModel addressDataModel = data.getParcelableExtra(LogisticConstant.EXTRA_ADDRESS_NEW);
+                if (addressDataModel != null) {
+                    updateLocalCacheAddressData(addressDataModel);
+                }
                 shipmentPresenter.processInitialLoadCheckoutPage(
                         false, isOneClickShipment(), isTradeIn(), false,
                         false, null, getDeviceId(), getCheckoutLeasingId()
@@ -3048,4 +3053,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             );
         }
     }
+
+    private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
+                    activity,
+                    String.valueOf(saveAddressDataModel.getId()),
+                    String.valueOf(saveAddressDataModel.getCityId()),
+                    String.valueOf(saveAddressDataModel.getDistrictId()),
+                    saveAddressDataModel.getLatitude(),
+                    saveAddressDataModel.getLongitude(),
+                    String.format("%s %s", saveAddressDataModel.getAddressName(), saveAddressDataModel.getReceiverName()),
+                    saveAddressDataModel.getPostalCode()
+            );
+        }
+    }
+
 }

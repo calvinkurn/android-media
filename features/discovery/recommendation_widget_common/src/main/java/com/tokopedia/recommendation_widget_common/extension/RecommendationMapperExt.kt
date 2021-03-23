@@ -85,7 +85,8 @@ fun List<RecommendationItem>.toProductCardModels(): List<ProductCardModel>{
 
 fun RecommendationItem.toProductCardModel(
         hasAddToCartButton: Boolean = false,
-        addToCartButtonType: Int = UnifyButton.Type.TRANSACTION
+        addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+        hasThreeDots: Boolean = false
 ) : ProductCardModel{
     return ProductCardModel(
             slashedPrice = slashedPrice,
@@ -94,7 +95,7 @@ fun RecommendationItem.toProductCardModel(
             productImageUrl = imageUrl,
             isTopAds = isTopAds,
             isWishlistVisible = true,
-            hasThreeDots = true,
+            hasThreeDots = hasThreeDots,
             isWishlisted = isWishlist,
             discountPercentage = discountPercentage,
             reviewCount = countReview,

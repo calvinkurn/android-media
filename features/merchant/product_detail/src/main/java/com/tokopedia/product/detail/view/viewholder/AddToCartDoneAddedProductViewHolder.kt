@@ -21,6 +21,7 @@ class AddToCartDoneAddedProductViewHolder(
 
     override fun bind(element: AddToCartDoneAddedProductDataModel) {
         with(itemView) {
+            free_ongkir_image.gone()
             element.productImageUr?.let {
                 image_view_added_product.loadImageRounded(it, resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8))
             }
@@ -28,8 +29,10 @@ class AddToCartDoneAddedProductViewHolder(
                 addToCartDoneAddedProductListener.onButtonGoToCartClicked()
             }
             element.bebasOngkirUrl?.let {
-                free_ongkir_image.show()
-                free_ongkir_image?.setImageUrl(it)
+                if(it.isNotEmpty()) {
+                    free_ongkir_image.show()
+                    free_ongkir_image?.setImageUrl(it)
+                }
             }
         }
     }

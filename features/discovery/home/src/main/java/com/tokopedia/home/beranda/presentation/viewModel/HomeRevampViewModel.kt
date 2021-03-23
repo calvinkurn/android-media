@@ -40,7 +40,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -808,12 +807,19 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onRefreshTokoPoint() {
         if (!userSession.get().isLoggedIn) return
-        updateHeaderViewModel(
-                tokopointsDrawer = null,
-                tokopointsBBODrawer = null,
-                isTokoPointDataError = false
+        balanceRemoteConfigCondition(
+                isNewBalanceWidget = {
+                    getTokopointDrawerListData()
+                },
+                isOldBalanceWidget = {
+                    updateHeaderViewModel(
+                            tokopointsDrawer = null,
+                            tokopointsBBODrawer = null,
+                            isTokoPointDataError = false
+                    )
+                    getTokopoint()
+                }
         )
-        getTokopoint()
     }
 
     fun onRefreshTokoCash() {
@@ -995,26 +1001,37 @@ open class HomeRevampViewModel @Inject constructor(
             val detectHomeRecom = homeVisitableListData.find { visitable -> visitable is HomeRecommendationFeedDataModel }
             return if (detectHomeRecom != null) {
                 val currentList = homeDataModel.list.toMutableList()
-                currentList.add(detectHomeRecom)
-                homeDataModel.copy(list = currentList)
+                val isAddressChanged =
+                        (detectHomeRecom as? HomeRecommendationFeedDataModel)?.homeChooseAddressData != homeChooseAddressData
+                if (isAddressChanged) {
+                    currentList.remove(detectHomeRecom)
+                    initializeRecomSection(homeDataModel.copy(list = currentList))
+                } else {
+                    currentList.add(detectHomeRecom)
+                    homeDataModel.copy(list = currentList)
+                }
             } else {
-                val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
-                val mutableIterator = visitableMutableList.iterator()
-                for (e in mutableIterator) {
-                    if(e is HomeRetryModel){
-                        mutableIterator.remove()
-                        break
-                    }
-                }
-                if (!homeDataModel.isCache) {
-                    if(visitableMutableList.find { it::class.java == HomeLoadingMoreModel::class.java } == null) visitableMutableList.add(HomeLoadingMoreModel())
-                    getFeedTabData()
-                }
-                homeDataModel.copy(
-                        list = visitableMutableList)
+                initializeRecomSection(homeDataModel)
             }
         }
         return homeDataModel
+    }
+
+    private fun initializeRecomSection(homeDataModel: HomeDataModel): HomeDataModel {
+        val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
+        val mutableIterator = visitableMutableList.iterator()
+        for (e in mutableIterator) {
+            if (e is HomeRetryModel) {
+                mutableIterator.remove()
+                break
+            }
+        }
+        if (!homeDataModel.isCache) {
+            if (visitableMutableList.find { it::class.java == HomeLoadingMoreModel::class.java } == null) visitableMutableList.add(HomeLoadingMoreModel())
+            getFeedTabData()
+        }
+        return homeDataModel.copy(
+                list = visitableMutableList)
     }
 
     fun getRecommendationFeedSectionPosition() = homeVisitableListData.size -1
@@ -1305,7 +1322,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun getFeedTabData() {
-        if (getTabRecommendationJob != null) return
+        if (getTabRecommendationJob?.isActive == true) return
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
             getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
@@ -1319,7 +1336,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             if (findRecommendationModel != null) return@launchCatchError
 
-            val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel()
+            val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel(homeChooseAddressData)
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
@@ -1546,22 +1563,22 @@ open class HomeRevampViewModel @Inject constructor(
         }
 
         launchCatchError(coroutineContext, block = {
-            val tokopointContentDefered = async { getTokopointBalanceContent() }
-            val walletContentDefered = async { getWalletBalanceContent() }
 
             var walletContent: HomeHeaderWalletAction? = null
             var tokopointContent: TokopointsDrawerListHomeData? = null
             var pendingCashback: PendingCashback? = null
 
             try {
-                walletContent = walletContentDefered.await()
+                walletContent = getWalletBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.mapErrorWallet()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
             }
 
             try {
-                tokopointContent = tokopointContentDefered.await()
+                tokopointContent = getTokopointBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
             }
 
@@ -1590,7 +1607,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             tokopointContent?.let {
-                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContentDefered.await())
+                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = getTokopointBalanceContent())
             }
 
             newUpdateHeaderViewModel(homeBalanceModel)
@@ -1608,6 +1625,7 @@ open class HomeRevampViewModel @Inject constructor(
             homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointsDrawerListHome)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }) {
+            homeBalanceModel.mapErrorTokopoints()
             homeBalanceModel.setTokopointBalanceState(state = STATE_ERROR)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }
@@ -1625,6 +1643,7 @@ open class HomeRevampViewModel @Inject constructor(
                 _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
             }
         }){
+            homeBalanceModel.mapErrorWallet()
             homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
             newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
         }
@@ -1954,6 +1973,17 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getAddressData(): HomeChooseAddressData {
         return homeChooseAddressData
+    }
+
+    fun removeChooseAddressWidget() {
+        val homeHeaderOvoDataModel = homeVisitableListData.withIndex().find {
+            it.value is HomeHeaderOvoDataModel
+        }
+        (homeHeaderOvoDataModel?.value as? HomeHeaderOvoDataModel)?.needToShowChooseAddress = false
+        homeHeaderOvoDataModel?.let {
+            homeProcessor.get().sendWithQueueMethod(
+                    UpdateWidgetCommand(homeHeaderOvoDataModel.value, homeHeaderOvoDataModel.index, this))
+        }
     }
 
     fun isAddressDataEmpty(): Boolean {

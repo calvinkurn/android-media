@@ -53,6 +53,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.constant.*
+import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_VALUE_ETALASE_TYPE
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.*
@@ -635,6 +636,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onProductClicked(shopProductUiModel: ShopProductUiModel, @ShopTrackProductTypeDef shopTrackType: Int,
                                   productPosition: Int) {
         if (!isEmptyState) {
+            val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
+                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.clickProductSearchResult(
                     isMyShop,
                     isLogin,
@@ -651,10 +654,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopProductUiModel,
                     productPosition + 1,
                     shopId,
-                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
-                    keyword
-
+                    keyword,
+                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -679,6 +682,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onProductImpression(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int) {
         if (!isEmptyState) {
+            val isEtalaseCampaign = shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
+                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
             shopPageTracking?.impressionProductListSearchResult(
                     isMyShop,
                     isLogin,
@@ -695,9 +700,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopProductUiModel,
                     productPosition + 1,
                     shopId,
-                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
-                    keyword
+                    keyword,
+                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(
@@ -835,7 +841,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 selectedEtalaseName = selectedEtalaseName.takeIf { it.isNotEmpty() } ?: "",
                 selectedSortId = sortId,
                 selectedSortName = selectedSortName,
-                isShowSortFilter = selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                isShowSortFilter = isNeededToShowSortFilter(),
                 filterIndicatorCounter = getIndicatorCount(
                         shopProductFilterParameter?.getMapData()
                 )
@@ -857,6 +863,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             hideLoading()
             endlessRecyclerViewScrollListener.resetState()
         }
+    }
+
+    private fun isNeededToShowSortFilter(): Boolean {
+        return selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_CAMPAIGN &&
+                selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
     }
 
     private fun isEtalaseMatch(model: ShopEtalaseItemDataModel): Boolean {
@@ -937,6 +948,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             onErrorAddToWishList(UserNotLoginException())
         } else {
             shopInfo?.let {
+                val isEtalaseCampaign = threeDotsClickShopProductUiModel?.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN ||
+                        threeDotsClickShopProductUiModel?.etalaseType == ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
+
                 //shopTrackType is always from Product
                 shopPageTracking?.clickWishlistProductResultPage(
                         !productCardOptionsModel.isWishlisted,
@@ -947,8 +961,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                                 it.goldOS.isOfficial == 1,
                                 it.goldOS.isGold == 1, productCardOptionsModel.productId, shopRef
                         ),
-                        threeDotsClickShopProductUiModel?.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                        threeDotsClickShopProductUiModel?.isUpcoming ?: false
+                        isEtalaseCampaign,
+                        threeDotsClickShopProductUiModel?.isUpcoming ?: false,
+                        threeDotsClickShopProductUiModel?.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE
                 )
             }
 
