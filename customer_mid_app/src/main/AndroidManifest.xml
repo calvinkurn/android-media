@@ -17,22 +17,22 @@
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT"/>
             </intent-filter>
-            <intent-filter >
-                <action android:name="android.intent.action.VIEW"/>
+<!--            <intent-filter >-->
+<!--                <action android:name="android.intent.action.VIEW"/>-->
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+<!--                <category android:name="android.intent.category.DEFAULT"/>-->
+<!--                <category android:name="android.intent.category.BROWSABLE"/>-->
 
-                <data
-                    android:host="tokopedia.link"
-                    android:scheme="https"/>
-                <data
-                    android:host="tokopedia-alternate.app.link"
-                    android:scheme="https"/>
-                <data
-                    android:host="tokopedia.app.link"
-                    android:scheme="https"/>
-            </intent-filter>
+<!--                <data-->
+<!--                    android:host="tokopedia.link"-->
+<!--                    android:scheme="https"/>-->
+<!--                <data-->
+<!--                    android:host="tokopedia-alternate.app.link"-->
+<!--                    android:scheme="https"/>-->
+<!--                <data-->
+<!--                    android:host="tokopedia.app.link"-->
+<!--                    android:scheme="https"/>-->
+<!--            </intent-filter>-->
         </activity>
 
         <activity
@@ -61,22 +61,22 @@
 
             </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW"/>-->
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+<!--                <category android:name="android.intent.category.DEFAULT"/>-->
+<!--                <category android:name="android.intent.category.BROWSABLE"/>-->
 
-                <data
-                    android:host="tokopedia.by"
-                    android:pathPattern="/.*"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.by"
-                    android:pathPattern="/.*"
-                    android:scheme="http" />
+<!--                <data-->
+<!--                    android:host="tokopedia.by"-->
+<!--                    android:pathPattern="/.*"-->
+<!--                    android:scheme="https" />-->
+<!--                <data-->
+<!--                    android:host="tokopedia.by"-->
+<!--                    android:pathPattern="/.*"-->
+<!--                    android:scheme="http" />-->
 
-            </intent-filter>
+<!--            </intent-filter>-->
 
         </activity>
 
@@ -123,15 +123,15 @@
         <activity
             android:name="com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW"/>-->
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+<!--                <category android:name="android.intent.category.DEFAULT"/>-->
+<!--                <category android:name="android.intent.category.BROWSABLE"/>-->
 
-                <data android:scheme="tokopedia"/>
-                <data android:scheme="sellerapp"/>
-            </intent-filter>
+<!--                <data android:scheme="tokopedia"/>-->
+<!--                <data android:scheme="sellerapp"/>-->
+<!--            </intent-filter>-->
         </activity>
 
         <activity
