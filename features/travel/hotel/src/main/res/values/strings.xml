@@ -231,6 +231,8 @@
     <string name="hotel_share_add_email">Tambah E-mail</string>
     <string name="hotel_share_empty_email_error">E-mail harus diisi</string>
     <string name="hotel_share_format_email_error">Format e-mail salah</string>
+    <string name="hotel_save_as_image">Simpan gambar</string>
+    <string name="hotel_save_as_image_success">Gambar berhasil disimpan</string>
 
     <string name="hotel_error_no_internet_connection_title">Nggak ada koneksi Internet</string>
     <string name="hotel_error_no_internet_connection_subtitle">"Kamu bisa pindah tempat atau cek paket data / jaringan Wi-Fi."</string>
