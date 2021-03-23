@@ -66,7 +66,7 @@ gradle.projectsEvaluated {
         def variantNameCap = variant.name.capitalize()
         println "variantNameCap ${variantNameCap}"
         tasks.create(name: "generateBundledResourcesHash${variantNameCap}", type: Exec) {}
-        tasks.create(name: "bundle${variantNameCap}${buildTypeCap}JsAndAssets", type: Exec) {}
+        tasks.create(name: "bundle${variantNameCap}JsAndAssets", type: Exec) {}
         android.buildTypes.each { buildType ->
             def buildTypeCap = buildType.name.capitalize()
             println "buildTypeCap ${buildTypeCap}"
