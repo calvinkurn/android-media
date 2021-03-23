@@ -817,9 +817,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             isFirstInitializeFilter = false
             initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
 
-            quickFilterSortHotelSearchMap.chipItems.filter {
+            quickFilterSortHotelSearchMap.chipItems?.filter {
                 it.type == ChipsUnify.TYPE_SELECTED
-            }.forEach {
+            }?.forEach {
                 quickFilterSortHotelSearchMap.indicatorCounter -= 1
             }
 
@@ -972,7 +972,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     //for setup quick filter after click submit in bottom sheet
     private fun setupQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
-        quickFilterSortHotelSearchMap.chipItems.forEach { it.type = ChipsUnify.TYPE_NORMAL }
+        quickFilterSortHotelSearchMap.chipItems?.forEach { it.type = ChipsUnify.TYPE_NORMAL }
         val selectedFiltersMap = selectedFilters.associateBy({ it.name }, { it })
         quickFilters.forEachIndexed { index, quickFilter ->
             if (selectedFiltersMap.containsKey(quickFilter.name)) {
@@ -986,7 +986,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                         if (!contains) break
                     }
-                    if (contains) quickFilterSortHotelSearchMap.chipItems[index].type = ChipsUnify.TYPE_SELECTED
+                    if (contains) quickFilterSortHotelSearchMap.chipItems[index]?.type = ChipsUnify.TYPE_SELECTED
                 }
             }
         }
@@ -1016,8 +1016,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             itemQuickFilter
         }
 
-        quickFilterSortHotelSearchMap.dismissListener = {
-            hotelSearchMapViewModel.addFilter(quickFilters, quickFilterSortHotelSearchMap.chipItems)
+        quickFilterSortHotelSearchMap.chipItems?.let {
+            quickFilterSortHotelSearchMap.dismissListener = {
+                hotelSearchMapViewModel.addFilter(quickFilters, it)
+            }
         }
 
         val sortFilterItem = quickFilters.map {
@@ -1032,11 +1034,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         quickFilterSortHotelSearchMap.addItem(ArrayList(sortFilterItem))
 
-        for ((index, item) in quickFilterSortHotelSearchMap.chipItems.withIndex()) {
-            item.refChipUnify.setOnClickListener {
-                item.toggleSelected()
-                trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
-                hotelSearchMapViewModel.addFilter(quickFilters, quickFilterSortHotelSearchMap.chipItems)
+        quickFilterSortHotelSearchMap.chipItems?.let { sortFilterItemList ->
+            for ((index, item) in sortFilterItemList.withIndex()) {
+                item.refChipUnify.setOnClickListener {
+                    item.toggleSelected()
+                    trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
+                    hotelSearchMapViewModel.addFilter(quickFilters, sortFilterItemList)
+                }
             }
         }
 
