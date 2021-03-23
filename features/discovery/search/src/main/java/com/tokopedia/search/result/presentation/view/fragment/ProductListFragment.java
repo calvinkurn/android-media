@@ -1927,4 +1927,27 @@ public class ProductListFragment
             return false;
         }
     }
+
+    @Override
+    public void onInspirationCarouselChipsClicked(
+            int inspirationCarouselAdapterPosition,
+            @NotNull InspirationCarouselViewModel inspirationCarouselViewModel,
+            @NotNull InspirationCarouselViewModel.Option inspirationCarouselOption
+    ) {
+        if (presenter == null) return;
+
+        presenter.onInspirationCarouselChipsClick(
+                inspirationCarouselAdapterPosition,
+                inspirationCarouselViewModel,
+                inspirationCarouselOption,
+                getSearchParameter().getSearchParameterMap()
+        );
+    }
+
+    @Override
+    public void refreshItemAtIndex(int index) {
+        if (adapter == null) return;
+
+        adapter.refreshItemAtIndex(index);
+    }
 }

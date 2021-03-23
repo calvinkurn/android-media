@@ -20,6 +20,7 @@ private const val inFirstPageNoTopads = "searchproduct/inspirationcarousel/in-fi
 private const val inPosition9 = "searchproduct/inspirationcarousel/in-position-9.json"
 private const val samePosition = "searchproduct/inspirationcarousel/same-position.json"
 private const val unknownLayout = "searchproduct/inspirationcarousel/unknown-layout.json"
+private const val chips = "searchproduct/inspirationcarousel/chips.json"
 
 internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
 
@@ -145,6 +146,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         this.type shouldBe inspirationCarouselData.type
         this.position shouldBe inspirationCarouselData.position
         this.title shouldBe inspirationCarouselData.title
+
+        var expectedOptionPosition = 1
         this.options.listShouldBe(inspirationCarouselData.inspirationCarouselOptions) { actual, expected ->
             actual.title shouldBe expected.title
             actual.url shouldBe expected.url
@@ -152,28 +155,14 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             actual.bannerImageUrl shouldBe expected.bannerImageUrl
             actual.bannerLinkUrl shouldBe expected.bannerLinkUrl
             actual.bannerApplinkUrl shouldBe expected.bannerApplinkUrl
-            actual.product.listShouldBe(expected.inspirationCarouselProducts) { actualProduct, expectedProduct ->
-                actualProduct.id shouldBe expectedProduct.id
-                actualProduct.name shouldBe expectedProduct.name
-                actualProduct.price shouldBe expectedProduct.price
-                actualProduct.priceStr shouldBe expectedProduct.priceStr
-                actualProduct.imgUrl shouldBe expectedProduct.imgUrl
-                actualProduct.rating shouldBe expectedProduct.rating
-                actualProduct.countReview shouldBe expectedProduct.countReview
-                actualProduct.url shouldBe expectedProduct.url
-                actualProduct.applink shouldBe expectedProduct.applink
-                actualProduct.description shouldBe expectedProduct.description
-                actualProduct.inspirationCarouselType shouldBe this.type
-                actualProduct.ratingAverage shouldBe expectedProduct.ratingAverage
-                actualProduct.labelGroupList shouldBe expectedProduct.labelGroupList
-                actualProduct.layout shouldBe this.layout
-                actualProduct.originalPrice shouldBe expectedProduct.originalPrice
-                actualProduct.discountPercentage shouldBe expectedProduct.discountPercentage
-            }
+            actual.product.assert(expected.inspirationCarouselProducts, this.type, this.layout, expectedOptionPosition)
             actual.inspirationCarouselType shouldBe this.type
             actual.layout shouldBe this.layout
             actual.position shouldBe this.position
             actual.carouselTitle shouldBe this.title
+            actual.optionPosition shouldBe expectedOptionPosition
+
+            expectedOptionPosition++
         }
     }
 
@@ -523,6 +512,41 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                 visitable.shouldBeInstanceOf<ProductItemViewModel>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
+            }
+        }
+    }
+
+    @Test
+    fun `Show inspiration carousel chips`() {
+        val searchProductModel = chips.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify view set product list`()
+        `Then assert inspiration carousel chips`(searchProductModel)
+    }
+
+    private fun `Then assert inspiration carousel chips`(searchProductModel: SearchProductModel) {
+        val visitableList = visitableListSlot.captured
+        visitableList.forEachIndexed { index, visitable ->
+            when (index) {
+                4 -> {
+                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                            "visitable list at index $index should be InspirationCarouselViewModel"
+                    )
+                    assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS) {
+                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS}"
+                    }
+
+                    val expectedInspirationCarousel = searchProductModel.searchInspirationCarousel.data[0]
+                    visitable.assertInspirationCarouselViewModel(expectedInspirationCarousel)
+                    visitable.options.forEachIndexed { optionIndex, option ->
+                        val expectedOption = expectedInspirationCarousel.inspirationCarouselOptions[optionIndex]
+                        option.identifier shouldBe expectedOption.identifier
+                        option.isChipsActive shouldBe (optionIndex == 0)
+                    }
+                }
             }
         }
     }

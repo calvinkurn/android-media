@@ -351,9 +351,12 @@ public class ProductViewModelMapper {
             SearchProductModel.InspirationCarouselData data
     ) {
         List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
+        InspirationCarouselProductDataViewMapper mapper = new InspirationCarouselProductDataViewMapper();
 
         for (SearchProductModel.InspirationCarouselOption opt : data.getInspirationCarouselOptions()) {
-            int position = data.getInspirationCarouselOptions().indexOf(opt) + 1;
+            int index = data.getInspirationCarouselOptions().indexOf(opt);
+            int position = index + 1;
+            boolean isChipsActive = index == 0;
             options.add(new InspirationCarouselViewModel.Option(
                     opt.getTitle(),
                     opt.getUrl(),
@@ -361,48 +364,24 @@ public class ProductViewModelMapper {
                     opt.getBannerImageUrl(),
                     opt.getBannerLinkUrl(),
                     opt.getBannerApplinkUrl(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, data.getType(), data.getLayout()),
+                    opt.getIdentifier(),
+                    mapper.convertToInspirationCarouselProductDataView(
+                            opt.getInspirationCarouselProducts(),
+                            position,
+                            data.getType(),
+                            data.getLayout(),
+                            this::convertToLabelGroupList
+                    ),
                     data.getType(),
                     data.getLayout(),
                     data.getPosition(),
-                    data.getTitle()
+                    data.getTitle(),
+                    position,
+                    isChipsActive
             ));
         }
 
         return options;
-    }
-
-    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(
-            List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct,
-            int position,
-            String inspirationCarouselType,
-            String layout
-    ) {
-        List<InspirationCarouselViewModel.Option.Product> products = new ArrayList<>();
-
-        for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
-            products.add(new InspirationCarouselViewModel.Option.Product(
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    product.getPriceStr(),
-                    product.getImgUrl(),
-                    product.getRating(),
-                    product.getCountReview(),
-                    product.getUrl(),
-                    product.getApplink(),
-                    product.getDescription(),
-                    position,
-                    inspirationCarouselType,
-                    product.getRatingAverage(),
-                    convertToLabelGroupList(product.getLabelGroupList()),
-                    layout,
-                    product.getOriginalPrice(),
-                    product.getDiscountPercentage()
-            ));
-        }
-
-        return products;
     }
 
     private List<InspirationCardViewModel> convertToInspirationCardViewModel(SearchProductModel.SearchInspirationWidget searchInspirationWidget) {

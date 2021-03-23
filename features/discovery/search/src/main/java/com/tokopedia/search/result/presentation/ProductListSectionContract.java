@@ -17,6 +17,7 @@ import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.sortfilter.SortFilterItem;
 
@@ -200,6 +201,8 @@ public interface ProductListSectionContract {
         LocalCacheModel getChooseAddressData();
 
         boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData);
+
+        void refreshItemAtIndex(int index);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -259,5 +262,12 @@ public interface ProductListSectionContract {
         void onViewResumed();
 
         void onLocalizingAddressSelected();
+
+        void onInspirationCarouselChipsClick(
+                int adapterPosition,
+                InspirationCarouselViewModel inspirationCarouselViewModel,
+                InspirationCarouselViewModel.Option clickedInspirationCarouselOption,
+                Map<String, Object> searchParameter
+        );
     }
 }

@@ -27,11 +27,14 @@ class InspirationCarouselViewModel(
             val bannerImageUrl: String = "",
             val bannerLinkUrl: String = "",
             val bannerApplinkUrl: String = "",
-            val product: List<Product> = listOf(),
+            val identifier: String = "",
+            var product: List<Product> = listOf(),
             val inspirationCarouselType: String = "",
             val layout: String = "",
             val position: Int = 0,
-            val carouselTitle: String = ""
+            val carouselTitle: String = "",
+            val optionPosition: Int = 0,
+            var isChipsActive: Boolean = false,
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -50,6 +53,8 @@ class InspirationCarouselViewModel(
                 "position", position
             )
         }
+
+        fun hasProducts() = product.isNotEmpty()
 
         class Product(
             val id: String = "",

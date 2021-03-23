@@ -24,8 +24,10 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
+import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
+import com.tokopedia.search.result.presentation.mapper.InspirationCarouselProductDataViewMapper;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
@@ -98,6 +100,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.discovery.common.constants.SearchApiConst.IDENTIFIER;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID;
@@ -108,6 +111,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Inspiratio
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_CURATED;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_GUIDED;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_RELATED;
+import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
@@ -129,7 +133,12 @@ final class ProductListPresenter
     private static final List<String> showSuggestionResponseCodeList = Arrays.asList("3", "6", "7");
     private static final List<String> trackRelatedKeywordResponseCodeList = Arrays.asList("3", "6");
     private static final List<String> showInspirationCarouselLayout =
-            Arrays.asList(LAYOUT_INSPIRATION_CAROUSEL_INFO, LAYOUT_INSPIRATION_CAROUSEL_LIST, LAYOUT_INSPIRATION_CAROUSEL_GRID);
+            Arrays.asList(
+                    LAYOUT_INSPIRATION_CAROUSEL_INFO,
+                    LAYOUT_INSPIRATION_CAROUSEL_LIST,
+                    LAYOUT_INSPIRATION_CAROUSEL_GRID,
+                    LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+            );
     private static final List<String> showInspirationCardType =
             Arrays.asList(TYPE_ANNOTATION, TYPE_CATEGORY, TYPE_GUIDED, TYPE_CURATED, TYPE_RELATED);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
@@ -148,6 +157,7 @@ final class ProductListPresenter
     private Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase;
     private Lazy<UseCase<String>> getProductCountUseCase;
     private Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase;
+    private Lazy<UseCase<InspirationCarouselChipsProductModel>> getInspirationCarouselChipsUseCase;
     private TopAdsUrlHitter topAdsUrlHitter;
     private SchedulersProvider schedulersProvider;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -203,6 +213,8 @@ final class ProductListPresenter
             Lazy<UseCase<String>> getProductCountUseCase,
             @Named(SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
             Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase,
+            @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
+            Lazy<UseCase<InspirationCarouselChipsProductModel>> getInspirationCarouselChipsUseCase,
             TopAdsUrlHitter topAdsUrlHitter,
             SchedulersProvider schedulersProvider,
             Lazy<RemoteConfig> remoteConfig
@@ -215,6 +227,7 @@ final class ProductListPresenter
         this.getDynamicFilterUseCase = getDynamicFilterUseCase;
         this.getProductCountUseCase = getProductCountUseCase;
         this.getLocalSearchRecommendationUseCase = getLocalSearchRecommendationUseCase;
+        this.getInspirationCarouselChipsUseCase = getInspirationCarouselChipsUseCase;
         this.topAdsUrlHitter = topAdsUrlHitter;
         this.schedulersProvider = schedulersProvider;
     }
@@ -2267,6 +2280,111 @@ final class ProductListPresenter
     }
 
     @Override
+    public void onInspirationCarouselChipsClick(
+            int adapterPosition,
+            InspirationCarouselViewModel inspirationCarouselViewModel,
+            InspirationCarouselViewModel.Option clickedInspirationCarouselOption,
+            Map<String, Object> searchParameter
+    ) {
+        if (getView() == null) return;
+
+        changeActiveInspirationCarouselChips(inspirationCarouselViewModel, clickedInspirationCarouselOption);
+
+        getView().refreshItemAtIndex(adapterPosition);
+
+        if (clickedInspirationCarouselOption.hasProducts()) return;
+
+        getInspirationCarouselChipProducts(
+                adapterPosition, clickedInspirationCarouselOption, searchParameter
+        );
+    }
+
+    private void changeActiveInspirationCarouselChips(
+            InspirationCarouselViewModel inspirationCarouselViewModel,
+            InspirationCarouselViewModel.Option clickedInspirationCarouselOption
+    ) {
+        CollectionsKt.forEachIndexed(inspirationCarouselViewModel.getOptions(), (index, option) -> {
+            option.setChipsActive(false);
+            return Unit.INSTANCE;
+        });
+
+        clickedInspirationCarouselOption.setChipsActive(true);
+    }
+
+    private void getInspirationCarouselChipProducts(
+            int adapterPosition,
+            InspirationCarouselViewModel.Option clickedInspirationCarouselOption,
+            Map<String, Object> searchParameter
+    ) {
+        getInspirationCarouselChipsUseCase.get().unsubscribe();
+        getInspirationCarouselChipsUseCase.get().execute(
+                createGetInspirationCarouselChipProductsRequestParams(clickedInspirationCarouselOption, searchParameter),
+                createGetInspirationCarouselChipProductsSubscriber(adapterPosition, clickedInspirationCarouselOption)
+        );
+    }
+
+    private RequestParams createGetInspirationCarouselChipProductsRequestParams(
+            InspirationCarouselViewModel.Option clickedInspirationCarouselOption,
+            Map<String, Object> searchParameter
+    ) {
+        RequestParams requestParams = createInitializeSearchParam(searchParameter);
+        requestParams.putString(IDENTIFIER, clickedInspirationCarouselOption.getIdentifier());
+
+        return requestParams;
+    }
+
+    @NotNull
+    private Subscriber<InspirationCarouselChipsProductModel> createGetInspirationCarouselChipProductsSubscriber(
+            int adapterPosition, InspirationCarouselViewModel.Option clickedInspirationCarouselOption
+    ) {
+        return new Subscriber<InspirationCarouselChipsProductModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(InspirationCarouselChipsProductModel inspirationCarouselChipsProductModel) {
+                getInspirationCarouselChipsSuccess(
+                        adapterPosition, inspirationCarouselChipsProductModel, clickedInspirationCarouselOption
+                );
+            }
+        };
+    }
+
+    private void getInspirationCarouselChipsSuccess(
+            int adapterPosition,
+            InspirationCarouselChipsProductModel inspirationCarouselChipsProductModel,
+            InspirationCarouselViewModel.Option clickedInspirationCarouselOption
+    ) {
+        if (getView() == null) return;
+
+        InspirationCarouselProductDataViewMapper mapper = new InspirationCarouselProductDataViewMapper();
+
+        List<InspirationCarouselViewModel.Option.Product> productList = mapper.convertToInspirationCarouselProductDataView(
+                inspirationCarouselChipsProductModel.getSearchProductCarouselByIdentifier().getProduct(),
+                clickedInspirationCarouselOption.getOptionPosition(),
+                clickedInspirationCarouselOption.getInspirationCarouselType(),
+                clickedInspirationCarouselOption.getLayout(),
+                labelGroupList -> CollectionsKt.map(labelGroupList, labelGroup -> new LabelGroupViewModel(
+                        labelGroup.getPosition(),
+                        labelGroup.getType(),
+                        labelGroup.getTitle(),
+                        labelGroup.getUrl()
+                ))
+        );
+
+        clickedInspirationCarouselOption.setProduct(productList);
+
+        getView().refreshItemAtIndex(adapterPosition);
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
         if (getDynamicFilterUseCase != null) getDynamicFilterUseCase.get().unsubscribe();
@@ -2275,6 +2393,7 @@ final class ProductListPresenter
         if (recommendationUseCase != null) recommendationUseCase.unsubscribe();
         if (getProductCountUseCase != null) getProductCountUseCase.get().unsubscribe();
         if (getLocalSearchRecommendationUseCase != null) getLocalSearchRecommendationUseCase.get().unsubscribe();
+        if (getInspirationCarouselChipsUseCase != null) getInspirationCarouselChipsUseCase.get().unsubscribe();
         if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) unsubscribeCompositeSubscription();
     }
 
