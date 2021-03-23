@@ -30,8 +30,8 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
         val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(ShopPageHeaderLayoutResponse::class.java)
         if (error == null || error.isEmpty()) {
-            return gqlResponse.getData<ShopPageHeaderLayoutResponse>(ShopPageHeaderLayoutResponse::class.java)
-//            return getMockData()!!
+//            return gqlResponse.getData<ShopPageHeaderLayoutResponse>(ShopPageHeaderLayoutResponse::class.java)
+            return getMockData()!!
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
@@ -142,6 +142,49 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
                             ]
                         },
                         {
+                          "widgetID": 3,
+                          "name": "action_button",
+                          "type": "action_button",
+                          "component": [
+                                {
+                                  "name": "catatan_toko",
+                                  "type": "button",
+                                  "data": {
+                                    "__typename": "ButtonComponent",
+                                    "icon": "",
+                                    "buttonType": "",
+                                    "link": "",
+                                    "isBottomSheet": false,
+                                    "label": "☰"
+                                  }
+                                },
+                                {
+                                  "name": "chat",
+                                  "type": "button",
+                                  "data": {
+                                    "__typename": "ButtonComponent",
+                                    "icon": "",
+                                    "buttonType": "",
+                                    "link": "",
+                                    "isBottomSheet": false,
+                                    "label": "Chat"
+                                    }
+                                },
+                                {
+                                  "name": "follow",
+                                  "type": "button",
+                                  "data": {
+                                    "__typename": "ButtonComponent",
+                                    "icon": "",
+                                    "buttonType": "",
+                                    "link": "",
+                                    "isBottomSheet": false,
+                                    "label": "follow"
+                                  }
+                                }
+                              ]
+                           },
+                            {
                             "widgetID": 4,
                             "name": "play",
                             "type": "play",
