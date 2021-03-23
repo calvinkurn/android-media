@@ -99,10 +99,7 @@ import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
@@ -148,6 +145,7 @@ class NewShopPageFragment :
         ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
         ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
         ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+        ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
         ShopHeaderPlayWidgetViewHolder.Listener
 {
 
@@ -336,6 +334,7 @@ class NewShopPageFragment :
                 shopPageTracking,
                 shopPageTrackingSGCPlay,
                 view.context,
+                this,
                 this,
                 this,
                 this,
@@ -1942,6 +1941,12 @@ class NewShopPageFragment :
                 componentPosition,
                 customDimensionShopPage
         )
+    }
+
+    override fun onClickNoteButton() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES_BUYER_VIEW)
+        intent.putExtra("EXTRA_SHOP_ID", "3418893")
+        startActivity(intent)
     }
 
     override fun setFollowStatus(isFollowing: Boolean) {
