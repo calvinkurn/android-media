@@ -14,11 +14,13 @@ import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.promogamification.common.FloatingEggMockResponse
 import com.tokopedia.promogamification.common.R
 import com.tokopedia.promogamification.common.floating.view.activity.FloatingEggActivity
 import com.tokopedia.promotion.common.idling.TkpdIdlingResource
 import com.tokopedia.promotion.common.idling.TkpdIdlingResourceProvider
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -41,6 +43,7 @@ class FloatingEggButtonFragmentAnalyticsTest {
         clearData()
         login()
         setupIdlingResource()
+        setupGraphqlMockResponse(FloatingEggMockResponse())
         launchActivity()
     }
 
