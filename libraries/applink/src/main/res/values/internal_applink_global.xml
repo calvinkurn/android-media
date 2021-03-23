@@ -62,7 +62,7 @@
     <string name="path_home_account_old" translatable="false">/account-home-old</string>
 
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
-    <string name="path_login">/login</string>
+    <string name="path_user_login" translatable="false">/login</string>
     <string name="path_init_register">/init-register</string>
     <string name="path_manage_name">/manage-name</string>
 
@@ -81,6 +81,7 @@
     <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
     <string name="two_factor_register">/two-factor-register</string>
+    <string name="path_term_privacy">/term-privacy/.*\</string>
 
     <string name="old_home_account">/old-home-account</string>
 
@@ -89,8 +90,6 @@
     <string name="path_screen_recorder">/screen-recorder</string>
 
     <string name="path_internal_feedback">/internal-feedback</string>
-
-    <string name="path_term_privacy">/term-privacy/.*\</string>
 
     <!-- Ovo Register -->
     <string name="path_ovo_add_name">/ovo-add-name</string>

@@ -460,7 +460,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check login appLink then should return tokopedia internal login in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/login"
+        assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, expectedDeepLink)
     }
 
     @Test
@@ -567,7 +568,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check register appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.REGISTER, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/init-register"
+        assertEqualsDeepLinkMapper(ApplinkConst.REGISTER, expectedDeepLink)
     }
 
     @Test

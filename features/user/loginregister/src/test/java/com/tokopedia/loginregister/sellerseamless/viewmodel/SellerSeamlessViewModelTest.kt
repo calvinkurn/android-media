@@ -25,54 +25,107 @@ import org.junit.Test
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
+@ExperimentalCoroutinesApi
 class SellerSeamlessViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+    val dispatcher = TestCoroutineDispatcher()
 
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    val dispatcher = Dispatchers.Unconfined
+    lateinit var viewModel: SellerSeamlessViewModel
+    val observerLoginToken = mockk<Observer<Result<LoginToken>>>(relaxed = true)
+    val observerSecurityQuestion = mockk<Observer<Boolean>>(relaxed = true)
 
-
-    private var loginTokenObserver = mockk<Observer<Result<LoginToken>>>(relaxed = true)
-
-    lateinit var seamlessLoginViewModel: SellerSeamlessViewModel
+    val code = "code"
 
     @Before
-    fun setUp() {
-        seamlessLoginViewModel = SellerSeamlessViewModel(
-                userSession,
-                loginTokenUseCase,
-                dispatcher
-        )
+    fun setup() {
+        MockKAnnotations.init(this)
+        mockkObject(AESUtils)
 
-        seamlessLoginViewModel.loginTokenResponse.observeForever(loginTokenObserver)
+        viewModel = SellerSeamlessViewModel(userSession, loginTokenUseCase, dispatcher)
+        viewModel.loginTokenResponse.observeForever(observerLoginToken)
+        viewModel.goToSecurityQuestion.observeForever(observerSecurityQuestion)
+    }
+
+    @After
+    fun tearDown() {
+        viewModel.loginTokenResponse.removeObserver(observerLoginToken)
+        viewModel.goToSecurityQuestion.removeObserver(observerSecurityQuestion)
     }
 
     @Test
-    fun `login seamless success`() {
-        val code = "code"
-        val responseToken = mockk<LoginTokenPojo>(relaxed = true)
-        responseToken.loginToken.accessToken = "123"
-        responseToken.loginToken.refreshToken = "123"
-        responseToken.loginToken.tokenType = "123"
+    fun `login seamless - has logged in`() {
+        val mockEmail = "email"
+        coEvery { userSession.email } returns mockEmail
 
-        objectMockk(AESUtils).use {
-            every { AESUtils.encrypt(any(), any()) } returns "abc1234"
+        viewModel.hasLogin()
+
+        assert(userSession.email.isNotEmpty())
+    }
+
+    @Test
+    fun `login seamless - has not logged in`() {
+        val mockEmail = ""
+        coEvery { userSession.email } returns mockEmail
+
+        viewModel.hasLogin()
+
+        assert(userSession.email.isEmpty())
+    }
+
+    @Test
+    fun `login seamless - success`() {
+        val mockResponseAes = "encryptedString"
+        val mockLoginToken = LoginTokenPojo(LoginToken(
+                accessToken = "accessToken",
+                refreshToken = "refreshToken",
+                tokenType = "tokenType"
+        ))
+
+        coEvery { AESUtils.encryptSeamless(code.toByteArray()) } returns mockResponseAes
+        coEvery { loginTokenUseCase.executeLoginTokenSeamless(any(), any()) } coAnswers {
+            secondArg<LoginTokenSubscriber>().onSuccessLoginToken.invoke(mockLoginToken)
         }
 
-        every { loginTokenUseCase.executeLoginTokenSeamless(any(), any()) } answers {
-            (secondArg() as LoginTokenSubscriber).onSuccessLoginToken(responseToken)
+        viewModel.loginSeamless(code)
+
+        verify { observerLoginToken.onChanged(Success(mockLoginToken.loginToken)) }
+        val result = viewModel.loginTokenResponse.value as Success<LoginToken>
+        assert(result.data == mockLoginToken.loginToken)
+    }
+
+    @Test
+    fun `login seamless - fail`() {
+        val mockResponseAes = "encryptedString"
+        val mockThrowable = Throwable("Opps!")
+
+        coEvery { AESUtils.encryptSeamless(code.toByteArray()) } returns mockResponseAes
+        coEvery { loginTokenUseCase.executeLoginTokenSeamless(any(), any()) } coAnswers {
+            secondArg<LoginTokenSubscriber>().onErrorLoginToken.invoke(mockThrowable)
         }
 
-        /* When */
-//        seamlessLoginViewModel.loginSeamless(code)
+        viewModel.loginSeamless(code)
 
-        /* Then */
-//        verify {
-//            loginTokenObserver.onChanged(Success(responseToken.loginToken))
-//        }
+        verify { observerLoginToken.onChanged(Fail(mockThrowable)) }
+        val result = viewModel.loginTokenResponse.value as Fail
+        assert(result.throwable == mockThrowable)
+    }
+
+    @Test
+    fun `login seamless - goto SQ`() {
+        val mockResponseAes = "encryptedString"
+        coEvery { AESUtils.encryptSeamless(code.toByteArray()) } returns mockResponseAes
+
+        coEvery { loginTokenUseCase.executeLoginTokenSeamless(any(), any()) } coAnswers {
+            secondArg<LoginTokenSubscriber>().onGoToSecurityQuestion.invoke()
+        }
+
+        viewModel.loginSeamless(code)
+
+        verify { observerSecurityQuestion.onChanged(any()) }
     }
 }
