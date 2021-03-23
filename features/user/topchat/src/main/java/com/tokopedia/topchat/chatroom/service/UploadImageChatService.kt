@@ -23,6 +23,7 @@ import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -85,7 +86,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                 }
 
                 override fun getFailedIntent(errorMessage: String): PendingIntent {
-                    val intent = createChatRoomIntent()
+                    val intent = createLocalChatRoomIntent()
                     return PendingIntent.getActivity(this@UploadImageChatService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                 }
             }
@@ -94,6 +95,13 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     private fun createChatRoomIntent(): Intent {
         val intent = RouteManager.getIntent(this, ApplinkConst.TOPCHAT, messageId)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        return intent
+    }
+
+    private fun createLocalChatRoomIntent(): Intent {
+        val intent = Intent(this, TopChatRoomActivity::class.java)
+        intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         return intent
     }
