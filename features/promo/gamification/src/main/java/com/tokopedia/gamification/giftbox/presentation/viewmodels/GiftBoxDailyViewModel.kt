@@ -7,6 +7,7 @@ import com.tokopedia.gamification.giftbox.data.di.MAIN
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.domain.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
@@ -105,7 +106,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDi
         fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
             var ids = arrayListOf<String>()
             response.gamiCrack.benefits?.forEach {
-                if (!it.referenceID.isNullOrEmpty() && it.benefitType == BenefitType.COUPON) {
+                if (!it.referenceID.isNullOrEmpty() && it.displayType == DisplayType.CATALOG) {
                     ids.add(it.referenceID)
                 }
             }

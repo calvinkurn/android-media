@@ -551,7 +551,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val list = giftBoxRewardEntity?.gamiCrack?.benefits
                 if (!list.isNullOrEmpty()) {
                     for (item in list) {
-                        if (item.isAutoApply && item.benefitType == BenefitType.COUPON) {
+                        if (item.isAutoApply) {
                             isAutoApply = true
                             autoApplyMessage = item.autoApplyMsg
                             dummyCode = item.dummyCode
