@@ -18,7 +18,7 @@ import java.util.List;
 
 import kotlin.collections.CollectionsKt;
 
-public class ProductItemViewModel extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
+public class ProductItemDataView extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
 
     private static final String ACTION_FIELD = "/searchproduct - %s";
     private static final String ORGANIC = "organic";
@@ -40,7 +40,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String shopUrl;
     private boolean isWishlisted;
     private boolean isWishlistButtonEnabled = true;
-    private List<BadgeItemViewModel> badgesList;
+    private List<BadgeItemDataView> badgesList;
     private int position;
     private String originalPrice;
     private int discountPercentage;
@@ -54,9 +54,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String topadsWishlistUrl;
     private String topadsClickShopUrl;
     private boolean isNew;
-    private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
-    private List<LabelGroupVariantViewModel> labelGroupVariantList = new ArrayList<>();
-    private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
+    private List<LabelGroupDataView> labelGroupList = new ArrayList<>();
+    private List<LabelGroupVariantDataView> labelGroupVariantList = new ArrayList<>();
+    private FreeOngkirDataView freeOngkirDataView = new FreeOngkirDataView();
     private String boosterList = "";
     private String sourceEngine = "";
     private int minOrder = 1;
@@ -245,11 +245,11 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         isWishlistButtonEnabled = wishlistButtonEnabled;
     }
 
-    public void setBadgesList(List<BadgeItemViewModel> badgesList) {
+    public void setBadgesList(List<BadgeItemDataView> badgesList) {
         this.badgesList = badgesList;
     }
 
-    public List<BadgeItemViewModel> getBadgesList() {
+    public List<BadgeItemDataView> getBadgesList() {
         return badgesList;
     }
 
@@ -313,28 +313,28 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.categoryBreadcrumb = categoryBreadcrumb;
     }
 
-    public void setLabelGroupList(List<LabelGroupViewModel> productLabelGroupList) {
+    public void setLabelGroupList(List<LabelGroupDataView> productLabelGroupList) {
         this.labelGroupList = productLabelGroupList;
     }
 
-    public List<LabelGroupViewModel> getLabelGroupList() {
+    public List<LabelGroupDataView> getLabelGroupList() {
         return this.labelGroupList;
     }
 
-    public void setLabelGroupVariantList(List<LabelGroupVariantViewModel> productLabelGroupVariantList) {
+    public void setLabelGroupVariantList(List<LabelGroupVariantDataView> productLabelGroupVariantList) {
         this.labelGroupVariantList = productLabelGroupVariantList;
     }
 
-    public List<LabelGroupVariantViewModel> getLabelGroupVariantList() {
+    public List<LabelGroupVariantDataView> getLabelGroupVariantList() {
         return this.labelGroupVariantList;
     }
 
-    public void setFreeOngkirViewModel(FreeOngkirViewModel freeOngkirViewModel) {
-        this.freeOngkirViewModel = freeOngkirViewModel;
+    public void setFreeOngkirDataView(FreeOngkirDataView freeOngkirDataView) {
+        this.freeOngkirDataView = freeOngkirDataView;
     }
 
-    public FreeOngkirViewModel getFreeOngkirViewModel() {
-        return freeOngkirViewModel;
+    public FreeOngkirDataView getFreeOngkirDataView() {
+        return freeOngkirDataView;
     }
 
     public void setBoosterList(String boosterList) {
@@ -397,7 +397,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.pageTitle = pageTitle;
     }
 
-    public ProductItemViewModel() {
+    public ProductItemDataView() {
     }
 
     @Override
@@ -443,11 +443,11 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     }
 
     private boolean isFreeOngkirActive() {
-        return freeOngkirViewModel != null && freeOngkirViewModel.isActive();
+        return freeOngkirDataView != null && freeOngkirDataView.isActive();
     }
 
     public boolean hasLabelGroupFulfillment() {
-        return CollectionsKt.any(labelGroupList, labelGroupViewModel -> labelGroupViewModel.getPosition().equals(SearchConstant.ProductCardLabel.LABEL_FULFILLMENT));
+        return CollectionsKt.any(labelGroupList, labelGroupDataView -> labelGroupDataView.getPosition().equals(SearchConstant.ProductCardLabel.LABEL_FULFILLMENT));
     }
 
     private String getActionFieldString() {
@@ -525,10 +525,10 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeString(this.topadsClickUrl);
         dest.writeString(this.topadsWishlistUrl);
         dest.writeTypedList(this.labelGroupList);
-        dest.writeParcelable(this.freeOngkirViewModel, flags);
+        dest.writeParcelable(this.freeOngkirDataView, flags);
     }
 
-    protected ProductItemViewModel(Parcel in) {
+    protected ProductItemDataView(Parcel in) {
         this.productID = in.readString();
         this.warehouseID = in.readString();
         this.productName = in.readString();
@@ -542,7 +542,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.shopCity = in.readString();
         this.isWishlisted = in.readByte() != 0;
         this.isWishlistButtonEnabled = in.readByte() != 0;
-        this.badgesList = in.createTypedArrayList(BadgeItemViewModel.CREATOR);
+        this.badgesList = in.createTypedArrayList(BadgeItemDataView.CREATOR);
         this.position = in.readInt();
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
@@ -554,19 +554,19 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.topadsImpressionUrl = in.readString();
         this.topadsClickUrl = in.readString();
         this.topadsWishlistUrl = in.readString();
-        this.labelGroupList = in.createTypedArrayList(LabelGroupViewModel.CREATOR);
-        this.freeOngkirViewModel = in.readParcelable(FreeOngkirViewModel.class.getClassLoader());
+        this.labelGroupList = in.createTypedArrayList(LabelGroupDataView.CREATOR);
+        this.freeOngkirDataView = in.readParcelable(FreeOngkirDataView.class.getClassLoader());
     }
 
-    public static final Creator<ProductItemViewModel> CREATOR = new Creator<ProductItemViewModel>() {
+    public static final Creator<ProductItemDataView> CREATOR = new Creator<ProductItemDataView>() {
         @Override
-        public ProductItemViewModel createFromParcel(Parcel source) {
-            return new ProductItemViewModel(source);
+        public ProductItemDataView createFromParcel(Parcel source) {
+            return new ProductItemDataView(source);
         }
 
         @Override
-        public ProductItemViewModel[] newArray(int size) {
-            return new ProductItemViewModel[size];
+        public ProductItemDataView[] newArray(int size) {
+            return new ProductItemDataView[size];
         }
     };
 }

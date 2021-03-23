@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-public class TickerViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
+public class TickerDataView implements Parcelable, Visitable<ProductListTypeFactory> {
     private String text;
     private String query;
     private int typeId;
@@ -40,7 +40,7 @@ public class TickerViewModel implements Parcelable, Visitable<ProductListTypeFac
         return typeFactory.type(this);
     }
 
-    public TickerViewModel() {
+    public TickerDataView() {
     }
 
     @Override
@@ -55,21 +55,21 @@ public class TickerViewModel implements Parcelable, Visitable<ProductListTypeFac
         dest.writeInt(this.typeId);
     }
 
-    protected TickerViewModel(Parcel in) {
+    protected TickerDataView(Parcel in) {
         this.text = in.readString();
         this.query = in.readString();
         this.typeId = in.readInt();
     }
 
-    public static final Creator<TickerViewModel> CREATOR = new Creator<TickerViewModel>() {
+    public static final Creator<TickerDataView> CREATOR = new Creator<TickerDataView>() {
         @Override
-        public TickerViewModel createFromParcel(Parcel source) {
-            return new TickerViewModel(source);
+        public TickerDataView createFromParcel(Parcel source) {
+            return new TickerDataView(source);
         }
 
         @Override
-        public TickerViewModel[] newArray(int size) {
-            return new TickerViewModel[size];
+        public TickerDataView[] newArray(int size) {
+            return new TickerDataView[size];
         }
     };
 }

@@ -4,11 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
-data class InspirationCardViewModel(
+data class InspirationCardDataView(
         val title: String = "",
         val type: String = "",
         val position: Int = 0,
-        val options: List<InspirationCardOptionViewModel> = listOf()
+        val optionData: List<InspirationCardOptionDataView> = listOf()
 ) : Visitable<ProductListTypeFactory> {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {

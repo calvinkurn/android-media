@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.model
 
-data class RelatedViewModel(
+data class RelatedDataView(
         val relatedKeyword: String = "",
         val position: Int = 0,
-        val broadMatchViewModelList: List<BroadMatchViewModel> = listOf()
+        val broadMatchDataViewList: List<BroadMatchDataView> = listOf()
 )

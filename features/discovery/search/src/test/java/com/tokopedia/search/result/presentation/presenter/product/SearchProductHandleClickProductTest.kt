@@ -6,7 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.*
 import org.junit.Test
@@ -20,7 +20,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
     private val adapterPosition = 1
     private val userId = "12345678"
     private val className = "SearchClassName"
-    private val capturedProductItemViewModel = slot<ProductItemViewModel>()
+    private val capturedProductItemViewModel = slot<ProductItemDataView>()
     private var suggestedRelatedKeyword = ""
     private val suggestedRelatedKeywordSlot = slot<String>()
 
@@ -31,8 +31,8 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         `Then verify view not doing anything`()
     }
 
-    private fun `When handle product click`(productItemViewModel: ProductItemViewModel?) {
-        productListPresenter.onProductClick(productItemViewModel, adapterPosition)
+    private fun `When handle product click`(productItemDataView: ProductItemDataView?) {
+        productListPresenter.onProductClick(productItemDataView, adapterPosition)
     }
 
     private fun `Then verify view not doing anything`() {
@@ -80,33 +80,33 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         productListPresenter.loadData(searchParameter)
     }
 
-    private fun findProductItemFromVisitableList(isTopAds: Boolean = false, isOrganicAds: Boolean = false): ProductItemViewModel {
+    private fun findProductItemFromVisitableList(isTopAds: Boolean = false, isOrganicAds: Boolean = false): ProductItemDataView {
         val visitableList = visitableListSlot.captured
 
-        return visitableList.find { it is ProductItemViewModel && it.isTopAds == isTopAds && it.isOrganicAds == isOrganicAds } as ProductItemViewModel
+        return visitableList.find { it is ProductItemDataView && it.isTopAds == isTopAds && it.isOrganicAds == isOrganicAds } as ProductItemDataView
     }
 
-    private fun `Then verify view interaction for Top Ads Product`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify view interaction for Top Ads Product`(productItemDataView: ProductItemDataView) {
         verify {
             productListView.className
 
             topAdsUrlHitter.hitClickUrl(
                     className,
-                    productItemViewModel.topadsClickUrl,
-                    productItemViewModel.productID,
-                    productItemViewModel.productName,
-                    productItemViewModel.imageUrl,
+                    productItemDataView.topadsClickUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
                     SearchConstant.TopAdsComponent.TOP_ADS
             )
 
             productListView.sendTopAdsGTMTrackingProductClick(capture(capturedProductItemViewModel))
-            productListView.routeToProductDetail(productItemViewModel, adapterPosition)
+            productListView.routeToProductDetail(productItemDataView, adapterPosition)
         }
     }
 
-    private fun `Then verify position is correct`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify position is correct`(productItemDataView: ProductItemDataView) {
         val product = capturedProductItemViewModel.captured
-        assert(product.position == productItemViewModel.position)
+        assert(product.position == productItemDataView.position)
     }
 
     @Test
@@ -128,10 +128,10 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         every { userSession.userId } returns userId
     }
 
-    private fun `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify view interaction is correct for non Top Ads Product`(productItemDataView: ProductItemDataView) {
         verify {
-            productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot), any())
-            productListView.routeToProductDetail(productItemViewModel, adapterPosition)
+            productListView.sendGTMTrackingProductClick(productItemDataView, userId, capture(suggestedRelatedKeywordSlot), any())
+            productListView.routeToProductDetail(productItemDataView, adapterPosition)
         }
     }
 
@@ -153,21 +153,21 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         `Then verify relatedKeyword`()
     }
 
-    private fun `Then verify view interaction is correct for organic Ads Product`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify view interaction is correct for organic Ads Product`(productItemDataView: ProductItemDataView) {
         verify {
             productListView.className
 
             topAdsUrlHitter.hitClickUrl(
                     className,
-                    productItemViewModel.topadsClickUrl,
-                    productItemViewModel.productID,
-                    productItemViewModel.productName,
-                    productItemViewModel.imageUrl,
+                    productItemDataView.topadsClickUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendGTMTrackingProductClick(productItemViewModel, userId, capture(suggestedRelatedKeywordSlot), any())
-            productListView.routeToProductDetail(productItemViewModel, adapterPosition)
+            productListView.sendGTMTrackingProductClick(productItemDataView, userId, capture(suggestedRelatedKeywordSlot), any())
+            productListView.routeToProductDetail(productItemDataView, adapterPosition)
         }
     }
 }

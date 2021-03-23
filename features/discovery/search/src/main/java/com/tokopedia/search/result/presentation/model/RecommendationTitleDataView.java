@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-public class RecommendationTitleViewModel implements Parcelable , Visitable<ProductListTypeFactory> {
+public class RecommendationTitleDataView implements Parcelable , Visitable<ProductListTypeFactory> {
     private String title;
     private String seeMoreUrl;
     private String pageName;
@@ -28,7 +28,7 @@ public class RecommendationTitleViewModel implements Parcelable , Visitable<Prod
         dest.writeString(title);
     }
 
-    public RecommendationTitleViewModel(String title, String seeMoreUrl, String pageName) {
+    public RecommendationTitleDataView(String title, String seeMoreUrl, String pageName) {
         this.title = title;
         this.seeMoreUrl = seeMoreUrl;
         this.pageName = pageName;
@@ -50,19 +50,19 @@ public class RecommendationTitleViewModel implements Parcelable , Visitable<Prod
         this.pageName = pageName;
     }
 
-    protected RecommendationTitleViewModel(Parcel in) {
+    protected RecommendationTitleDataView(Parcel in) {
         this.title = in.readString();
     }
 
-    public static final Creator<RecommendationTitleViewModel> CREATOR = new Creator<RecommendationTitleViewModel>() {
+    public static final Creator<RecommendationTitleDataView> CREATOR = new Creator<RecommendationTitleDataView>() {
         @Override
-        public RecommendationTitleViewModel createFromParcel(Parcel in) {
-            return new RecommendationTitleViewModel(in);
+        public RecommendationTitleDataView createFromParcel(Parcel in) {
+            return new RecommendationTitleDataView(in);
         }
 
         @Override
-        public RecommendationTitleViewModel[] newArray(int size) {
-            return new RecommendationTitleViewModel[size];
+        public RecommendationTitleDataView[] newArray(int size) {
+            return new RecommendationTitleDataView[size];
         }
     };
 

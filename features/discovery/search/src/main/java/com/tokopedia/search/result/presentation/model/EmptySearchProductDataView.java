@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.model;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-public class EmptySearchProductViewModel implements Visitable<ProductListTypeFactory> {
+public class EmptySearchProductDataView implements Visitable<ProductListTypeFactory> {
 
     private boolean bannerAdsAllowed = true;
     private boolean isFilterActive = false;

@@ -3,33 +3,32 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductViewModel implements Parcelable {
+public class ProductDataView implements Parcelable {
 
-    private List<ProductItemViewModel> productList = new ArrayList<>();
+    private List<ProductItemDataView> productList = new ArrayList<>();
     private String additionalParams = "";
     private String autocompleteApplink;
     private String responseCode;
     private String keywordProcess;
     private String errorMessage;
-    private TickerViewModel tickerModel;
-    private SuggestionViewModel suggestionModel;
+    private TickerDataView tickerModel;
+    private SuggestionDataView suggestionModel;
     private int totalData;
     private int totalItem;
     private boolean isQuerySafe;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
-    private GlobalNavViewModel globalNavViewModel;
-    private List<InspirationCarouselViewModel> inspirationCarouselViewModel = new ArrayList<>();
-    private List<InspirationCardViewModel> inspirationCardViewModel = new ArrayList<>();
+    private GlobalNavDataView globalNavDataView;
+    private List<InspirationCarouselDataView> inspirationCarouselDataView = new ArrayList<>();
+    private List<InspirationCardDataView> inspirationCardDataView = new ArrayList<>();
     private int defaultView;
-    private RelatedViewModel relatedViewModel;
+    private RelatedDataView relatedDataView;
     private String totalDataText = "";
 
     public TopAdsModel getAdsModel() {
@@ -56,7 +55,7 @@ public class ProductViewModel implements Parcelable {
         isQuerySafe = querySafe;
     }
 
-    public ProductViewModel() {
+    public ProductDataView() {
     }
 
     public int getTotalData() {
@@ -75,11 +74,11 @@ public class ProductViewModel implements Parcelable {
         this.totalDataText = totalDataText;
     }
 
-    public List<ProductItemViewModel> getProductList() {
+    public List<ProductItemDataView> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<ProductItemViewModel> productList) {
+    public void setProductList(List<ProductItemDataView> productList) {
         this.productList = productList;
     }
 
@@ -123,44 +122,44 @@ public class ProductViewModel implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
-    public TickerViewModel getTickerModel() {
+    public TickerDataView getTickerModel() {
         return tickerModel;
     }
 
-    public void setTickerModel(TickerViewModel tickerModel) {
+    public void setTickerModel(TickerDataView tickerModel) {
         this.tickerModel = tickerModel;
     }
 
-    public SuggestionViewModel getSuggestionModel() {
+    public SuggestionDataView getSuggestionModel() {
         return suggestionModel;
     }
 
-    public void setSuggestionModel(SuggestionViewModel suggestionModel) {
+    public void setSuggestionModel(SuggestionDataView suggestionModel) {
         this.suggestionModel = suggestionModel;
     }
 
-    public GlobalNavViewModel getGlobalNavViewModel() {
-        return globalNavViewModel;
+    public GlobalNavDataView getGlobalNavDataView() {
+        return globalNavDataView;
     }
 
-    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
-        this.globalNavViewModel = globalNavViewModel;
+    public void setGlobalNavDataView(GlobalNavDataView globalNavDataView) {
+        this.globalNavDataView = globalNavDataView;
     }
 
-    public List<InspirationCarouselViewModel> getInspirationCarouselViewModel() {
-        return inspirationCarouselViewModel;
+    public List<InspirationCarouselDataView> getInspirationCarouselDataView() {
+        return inspirationCarouselDataView;
     }
 
-    public void setInspirationCarouselViewModel(List<InspirationCarouselViewModel> inspirationCarouselViewModel) {
-        this.inspirationCarouselViewModel = inspirationCarouselViewModel;
+    public void setInspirationCarouselDataView(List<InspirationCarouselDataView> inspirationCarouselDataView) {
+        this.inspirationCarouselDataView = inspirationCarouselDataView;
     }
 
-    public List<InspirationCardViewModel> getInspirationCardViewModel() {
-        return inspirationCardViewModel;
+    public List<InspirationCardDataView> getInspirationCardDataView() {
+        return inspirationCardDataView;
     }
 
-    public void setInspirationCardViewModel(List<InspirationCardViewModel> inspirationCardViewModel) {
-        this.inspirationCardViewModel = inspirationCardViewModel;
+    public void setInspirationCardDataView(List<InspirationCardDataView> inspirationCardDataView) {
+        this.inspirationCardDataView = inspirationCardDataView;
     }
 
     public int getDefaultView() {
@@ -175,12 +174,12 @@ public class ProductViewModel implements Parcelable {
         return getProductList().size() + getAdsModel().getData().size();
     }
 
-    public void setRelatedViewModel(RelatedViewModel relatedViewModel) {
-        this.relatedViewModel = relatedViewModel;
+    public void setRelatedDataView(RelatedDataView relatedDataView) {
+        this.relatedDataView = relatedDataView;
     }
 
-    public RelatedViewModel getRelatedViewModel() {
-        return this.relatedViewModel;
+    public RelatedDataView getRelatedDataView() {
+        return this.relatedDataView;
     }
 
     @Override
@@ -202,36 +201,36 @@ public class ProductViewModel implements Parcelable {
         dest.writeByte(this.isQuerySafe ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
-        dest.writeParcelable(this.globalNavViewModel, flags);
+        dest.writeParcelable(this.globalNavDataView, flags);
         dest.writeInt(this.defaultView);
     }
 
-    protected ProductViewModel(Parcel in) {
-        this.productList = in.createTypedArrayList(ProductItemViewModel.CREATOR);
+    protected ProductDataView(Parcel in) {
+        this.productList = in.createTypedArrayList(ProductItemDataView.CREATOR);
         this.additionalParams = in.readString();
         this.autocompleteApplink = in.readString();
         this.responseCode = in.readString();
         this.keywordProcess = in.readString();
-        this.tickerModel = in.readParcelable(TickerViewModel.class.getClassLoader());
-        this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
+        this.tickerModel = in.readParcelable(TickerDataView.class.getClassLoader());
+        this.suggestionModel = in.readParcelable(SuggestionDataView.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();
         this.isQuerySafe = in.readByte() != 0;
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
-        this.globalNavViewModel = in.readParcelable(GlobalNavViewModel.class.getClassLoader());
+        this.globalNavDataView = in.readParcelable(GlobalNavDataView.class.getClassLoader());
         this.defaultView = in.readInt();
     }
 
-    public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
+    public static final Creator<ProductDataView> CREATOR = new Creator<ProductDataView>() {
         @Override
-        public ProductViewModel createFromParcel(Parcel source) {
-            return new ProductViewModel(source);
+        public ProductDataView createFromParcel(Parcel source) {
+            return new ProductDataView(source);
         }
 
         @Override
-        public ProductViewModel[] newArray(int size) {
-            return new ProductViewModel[size];
+        public ProductDataView[] newArray(int size) {
+            return new ProductDataView[size];
         }
     };
 }

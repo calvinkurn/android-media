@@ -5,8 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.*
 import org.junit.Test
@@ -18,7 +17,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val className = "SearchClassName"
-    private val capturedProductItemViewModel = slot<ProductItemViewModel>()
+    private val capturedProductItemViewModel = slot<ProductItemDataView>()
     private var suggestedRelatedKeyword = ""
     private val suggestedRelatedKeywordSlot = slot<String>()
 
@@ -37,8 +36,8 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         every { searchCoachMarkLocalCache.shouldShowBoeCoachmark() } answers { shouldShow }
     }
 
-    private fun `When handle product impressed`(productItemViewModel: ProductItemViewModel?, adapterPosition: Int) {
-        productListPresenter.onProductImpressed(productItemViewModel, adapterPosition)
+    private fun `When handle product impressed`(productItemDataView: ProductItemDataView?, adapterPosition: Int) {
+        productListPresenter.onProductImpressed(productItemDataView, adapterPosition)
     }
 
     private fun `Then verify view not doing anything`() {
@@ -81,26 +80,26 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         productListPresenter.loadData(mapOf())
     }
 
-    private fun findProductItemFromVisitableList(isTopAds: Boolean = false, isOrganicAds: Boolean = false): ProductItemViewModel {
+    private fun findProductItemFromVisitableList(isTopAds: Boolean = false, isOrganicAds: Boolean = false): ProductItemDataView {
         val visitableList = visitableListSlot.captured
 
-        return visitableList.find { it is ProductItemViewModel && it.isTopAds == isTopAds && it.isOrganicAds == isOrganicAds } as ProductItemViewModel
+        return visitableList.find { it is ProductItemDataView && it.isTopAds == isTopAds && it.isOrganicAds == isOrganicAds } as ProductItemDataView
     }
 
-    private fun `Then verify interaction for Top Ads product impression with no coachmark shown`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify interaction for Top Ads product impression with no coachmark shown`(productItemDataView: ProductItemDataView) {
         verify {
             productListView.className
 
             topAdsUrlHitter.hitImpressionUrl(
                     className,
-                    productItemViewModel.topadsImpressionUrl,
-                    productItemViewModel.productID,
-                    productItemViewModel.productName,
-                    productItemViewModel.imageUrl,
+                    productItemDataView.topadsImpressionUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
                     SearchConstant.TopAdsComponent.TOP_ADS
             )
 
-            productListView.sendTopAdsGTMTrackingProductImpression(productItemViewModel)
+            productListView.sendTopAdsGTMTrackingProductImpression(productItemDataView)
         }
 
         verify(exactly = 0) {
@@ -126,9 +125,9 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         productListPresenter.suggestedRelatedKeyword
     }
 
-    private fun `Then verify interaction for product impression with no coach mark shown`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify interaction for product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemViewModel, capture(suggestedRelatedKeywordSlot), any())
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot), any())
         }
 
         verify(exactly = 0) {
@@ -154,16 +153,16 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Then verify relatedKeyword`()
     }
 
-    private fun `Then verify interaction for Organic Ads product impression with no coach mark shown`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify interaction for Organic Ads product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
         verify {
             productListView.className
 
             topAdsUrlHitter.hitImpressionUrl(
                     className,
-                    productItemViewModel.topadsImpressionUrl,
-                    productItemViewModel.productID,
-                    productItemViewModel.productName,
-                    productItemViewModel.imageUrl,
+                    productItemDataView.topadsImpressionUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
@@ -187,16 +186,16 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Then verify interaction for Top Ads product impression with coachmark shown`(productItemViewModel, firstProductPosition)
     }
 
-    private fun `Then verify interaction for Top Ads product impression with coachmark shown`(productItemViewModel: ProductItemViewModel, position: Int) {
+    private fun `Then verify interaction for Top Ads product impression with coachmark shown`(productItemDataView: ProductItemDataView, position: Int) {
         verify {
             productListView.className
 
             topAdsUrlHitter.hitImpressionUrl(
                     className,
-                    productItemViewModel.topadsImpressionUrl,
-                    productItemViewModel.productID,
-                    productItemViewModel.productName,
-                    productItemViewModel.imageUrl,
+                    productItemDataView.topadsImpressionUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
                     SearchConstant.TopAdsComponent.TOP_ADS
             )
 
@@ -219,9 +218,9 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Then verify relatedKeyword`()
     }
 
-    private fun `Then verify interaction for product impression with coach mark shown`(productItemViewModel: ProductItemViewModel, position: Int) {
+    private fun `Then verify interaction for product impression with coach mark shown`(productItemDataView: ProductItemDataView, position: Int) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemViewModel, capture(suggestedRelatedKeywordSlot), any())
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot), any())
             productListView.showOnBoarding(position)
         }
     }

@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.model
 
-data class LabelGroupVariantViewModel(
+data class LabelGroupVariantDataView(
         val title: String = "",
         val type: String = "",
         val typeVariant: String = "",

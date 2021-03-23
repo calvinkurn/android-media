@@ -3,12 +3,11 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
-class InspirationCarouselViewModel(
+class InspirationCarouselDataView(
         val title: String = "",
         val type: String = "",
         val position: Int = 0,
@@ -52,23 +51,23 @@ class InspirationCarouselViewModel(
         }
 
         class Product(
-            val id: String = "",
-            val name: String = "",
-            val price: Int = 0,
-            val priceStr: String = "",
-            val imgUrl: String = "",
-            val rating: Int = 0,
-            val countReview: Int = 0,
-            val url: String = "",
-            val applink: String = "",
-            val description: List<String> = listOf(),
-            val optionPosition: Int = 0,
-            val inspirationCarouselType: String = "",
-            val ratingAverage: String = "",
-            val labelGroupList: List<LabelGroupViewModel> = listOf(),
-            val layout: String = "",
-            val originalPrice: String = "",
-            val discountPercentage: Int = 0
+                val id: String = "",
+                val name: String = "",
+                val price: Int = 0,
+                val priceStr: String = "",
+                val imgUrl: String = "",
+                val rating: Int = 0,
+                val countReview: Int = 0,
+                val url: String = "",
+                val applink: String = "",
+                val description: List<String> = listOf(),
+                val optionPosition: Int = 0,
+                val inspirationCarouselType: String = "",
+                val ratingAverage: String = "",
+                val labelGroupDataList: List<LabelGroupDataView> = listOf(),
+                val layout: String = "",
+                val originalPrice: String = "",
+                val discountPercentage: Int = 0
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -79,12 +78,12 @@ class InspirationCarouselViewModel(
                 return ratingAverage.isNotEmpty() && getLabelIntegrity() != null
             }
 
-            fun getLabelIntegrity(): LabelGroupViewModel? {
+            fun getLabelIntegrity(): LabelGroupDataView? {
                 return findLabelGroup(LABEL_INTEGRITY)
             }
 
-            private fun findLabelGroup(position: String): LabelGroupViewModel? {
-                return labelGroupList.find { it.position == position }
+            private fun findLabelGroup(position: String): LabelGroupDataView? {
+                return labelGroupDataList.find { it.position == position }
             }
 
             fun willShowRating(): Boolean{

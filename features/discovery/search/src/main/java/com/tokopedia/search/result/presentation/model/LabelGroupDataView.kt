@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 
-data class LabelGroupViewModel(
+data class LabelGroupDataView(
     val position: String,
     val type: String,
     val title: String,
@@ -31,12 +31,12 @@ data class LabelGroupViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<LabelGroupViewModel> {
-        override fun createFromParcel(parcel: Parcel): LabelGroupViewModel {
-            return LabelGroupViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<LabelGroupDataView> {
+        override fun createFromParcel(parcel: Parcel): LabelGroupDataView {
+            return LabelGroupDataView(parcel)
         }
 
-        override fun newArray(size: Int): Array<LabelGroupViewModel?> {
+        override fun newArray(size: Int): Array<LabelGroupDataView?> {
             return arrayOfNulls(size)
         }
     }

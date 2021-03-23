@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class FreeOngkirViewModel(
+data class FreeOngkirDataView(
         val isActive: Boolean = false,
         val imageUrl: String = ""
 ): Parcelable {
@@ -22,12 +22,12 @@ data class FreeOngkirViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<FreeOngkirViewModel> {
-        override fun createFromParcel(parcel: Parcel): FreeOngkirViewModel {
-            return FreeOngkirViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<FreeOngkirDataView> {
+        override fun createFromParcel(parcel: Parcel): FreeOngkirDataView {
+            return FreeOngkirDataView(parcel)
         }
 
-        override fun newArray(size: Int): Array<FreeOngkirViewModel?> {
+        override fun newArray(size: Int): Array<FreeOngkirDataView?> {
             return arrayOfNulls(size)
         }
     }

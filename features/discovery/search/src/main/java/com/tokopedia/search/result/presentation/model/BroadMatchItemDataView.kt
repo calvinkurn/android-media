@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 
-data class BroadMatchItemViewModel(
+data class BroadMatchItemDataView(
         val id: String = "",
         val name: String = "",
         val price: Int = 0,
@@ -12,8 +12,8 @@ data class BroadMatchItemViewModel(
         val applink: String = "",
         val priceString: String = "",
         val shopLocation: String = "",
-        val badgeItemViewModelList: List<BadgeItemViewModel> = listOf(),
-        val freeOngkirViewModel: FreeOngkirViewModel = FreeOngkirViewModel(),
+        val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
+        val freeOngkirDataView: FreeOngkirDataView = FreeOngkirDataView(),
         var isWishlisted: Boolean = false,
         val position: Int = 0,
         val alternativeKeyword: String = "",
@@ -22,7 +22,7 @@ data class BroadMatchItemViewModel(
         val topAdsClickUrl: String = "",
         val topAdsWishlistUrl: String = "",
         val ratingAverage: String = "",
-        val labelGroupList: List<LabelGroupViewModel> = listOf()
+        val labelGroupDataList: List<LabelGroupDataView> = listOf()
 ): ImpressHolder() {
 
     fun asImpressionObjectDataLayer(): Any {

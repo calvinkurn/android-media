@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.discovery.common.constants.SearchConstant
 
-data class InspirationCardOptionViewModel(
+data class InspirationCardOptionDataView(
         val text: String = "",
         val img: String = "",
         val url: String = "",

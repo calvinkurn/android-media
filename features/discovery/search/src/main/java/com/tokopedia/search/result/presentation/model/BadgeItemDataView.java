@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class BadgeItemViewModel implements Parcelable {
+public class BadgeItemDataView implements Parcelable {
 
     private String imageUrl;
     private String title;
@@ -33,10 +33,10 @@ public class BadgeItemViewModel implements Parcelable {
         isShown = shown;
     }
 
-    public BadgeItemViewModel() {
+    public BadgeItemDataView() {
     }
 
-    public BadgeItemViewModel(String imageUrl, String title, boolean isShown) {
+    public BadgeItemDataView(String imageUrl, String title, boolean isShown) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.isShown = isShown;
@@ -54,21 +54,21 @@ public class BadgeItemViewModel implements Parcelable {
         dest.writeByte(this.isShown ? (byte) 1 : (byte) 0);
     }
 
-    protected BadgeItemViewModel(Parcel in) {
+    protected BadgeItemDataView(Parcel in) {
         this.imageUrl = in.readString();
         this.title = in.readString();
         this.isShown = in.readByte() != 0;
     }
 
-    public static final Creator<BadgeItemViewModel> CREATOR = new Creator<BadgeItemViewModel>() {
+    public static final Creator<BadgeItemDataView> CREATOR = new Creator<BadgeItemDataView>() {
         @Override
-        public BadgeItemViewModel createFromParcel(Parcel source) {
-            return new BadgeItemViewModel(source);
+        public BadgeItemDataView createFromParcel(Parcel source) {
+            return new BadgeItemDataView(source);
         }
 
         @Override
-        public BadgeItemViewModel[] newArray(int size) {
-            return new BadgeItemViewModel[size];
+        public BadgeItemDataView[] newArray(int size) {
+            return new BadgeItemDataView[size];
         }
     };
 }

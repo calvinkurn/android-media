@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-public class SuggestionViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
+public class SuggestionDataView implements Parcelable, Visitable<ProductListTypeFactory> {
     private String suggestionText = "";
     private String suggestedQuery = "";
     private String suggestion = "";
@@ -40,7 +40,7 @@ public class SuggestionViewModel implements Parcelable, Visitable<ProductListTyp
         return typeFactory.type(this);
     }
 
-    public SuggestionViewModel() {
+    public SuggestionDataView() {
     }
 
     @Override
@@ -55,21 +55,21 @@ public class SuggestionViewModel implements Parcelable, Visitable<ProductListTyp
         dest.writeString(this.suggestion);
     }
 
-    protected SuggestionViewModel(Parcel in) {
+    protected SuggestionDataView(Parcel in) {
         this.suggestionText = in.readString();
         this.suggestedQuery = in.readString();
         this.suggestion = in.readString();
     }
 
-    public static final Creator<SuggestionViewModel> CREATOR = new Creator<SuggestionViewModel>() {
+    public static final Creator<SuggestionDataView> CREATOR = new Creator<SuggestionDataView>() {
         @Override
-        public SuggestionViewModel createFromParcel(Parcel source) {
-            return new SuggestionViewModel(source);
+        public SuggestionDataView createFromParcel(Parcel source) {
+            return new SuggestionDataView(source);
         }
 
         @Override
-        public SuggestionViewModel[] newArray(int size) {
-            return new SuggestionViewModel[size];
+        public SuggestionDataView[] newArray(int size) {
+            return new SuggestionDataView[size];
         }
     };
 }

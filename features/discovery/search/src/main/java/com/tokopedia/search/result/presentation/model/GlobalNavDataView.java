@@ -9,7 +9,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 
 import java.util.List;
 
-public class GlobalNavViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
+public class GlobalNavDataView implements Parcelable, Visitable<ProductListTypeFactory> {
     private String source;
     private String title;
     private String keyword;
@@ -20,7 +20,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
     private boolean isShowTopAds;
     private List<Item> itemList;
 
-    public GlobalNavViewModel(
+    public GlobalNavDataView(
             String source,
             String title,
             String keyword,
@@ -239,7 +239,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
         dest.writeTypedList(this.itemList);
     }
 
-    protected GlobalNavViewModel(Parcel in) {
+    protected GlobalNavDataView(Parcel in) {
         this.source = in.readString();
         this.title = in.readString();
         this.keyword = in.readString();
@@ -250,15 +250,15 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
         this.itemList = in.createTypedArrayList(Item.CREATOR);
     }
 
-    public static final Creator<GlobalNavViewModel> CREATOR = new Creator<GlobalNavViewModel>() {
+    public static final Creator<GlobalNavDataView> CREATOR = new Creator<GlobalNavDataView>() {
         @Override
-        public GlobalNavViewModel createFromParcel(Parcel source) {
-            return new GlobalNavViewModel(source);
+        public GlobalNavDataView createFromParcel(Parcel source) {
+            return new GlobalNavDataView(source);
         }
 
         @Override
-        public GlobalNavViewModel[] newArray(int size) {
-            return new GlobalNavViewModel[size];
+        public GlobalNavDataView[] newArray(int size) {
+            return new GlobalNavDataView[size];
         }
     };
 }

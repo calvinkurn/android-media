@@ -8,7 +8,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CpmViewModel implements Visitable<ProductListTypeFactory> {
+public class CpmDataView implements Visitable<ProductListTypeFactory> {
 
     private CpmModel cpmModel;
 
@@ -17,7 +17,7 @@ public class CpmViewModel implements Visitable<ProductListTypeFactory> {
         return typeFactory.type(this);
     }
 
-    public CpmViewModel() {
+    public CpmDataView() {
     }
 
     public CpmModel getCpmModel() {
