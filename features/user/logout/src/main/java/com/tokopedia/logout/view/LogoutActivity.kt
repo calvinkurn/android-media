@@ -231,16 +231,18 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearWebView() {
-        WebView(applicationContext).clearCache(true)
-        val cookieManager: CookieManager
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            CookieSyncManager.createInstance(this)
-            cookieManager = CookieManager.getInstance()
-            cookieManager.removeAllCookie()
-        } else {
-            cookieManager = CookieManager.getInstance()
-            cookieManager.removeAllCookies {}
-        }
+        try {
+            WebView(applicationContext).clearCache(true)
+            val cookieManager: CookieManager
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                CookieSyncManager.createInstance(this)
+                cookieManager = CookieManager.getInstance()
+                cookieManager.removeAllCookie()
+            } else {
+                cookieManager = CookieManager.getInstance()
+                cookieManager.removeAllCookies {}
+            }
+        } catch (ignored: Exception) {}
     }
 
     companion object {
