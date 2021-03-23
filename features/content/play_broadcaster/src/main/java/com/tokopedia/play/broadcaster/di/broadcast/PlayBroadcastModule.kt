@@ -15,6 +15,8 @@ import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSession
@@ -84,8 +86,14 @@ class PlayBroadcastModule(private val activity: AppCompatActivity) {
 
     @PlayBroadcastScope
     @Provides
-    fun providePlayBroadcastMapper(): PlayBroadcastMapper {
-        return PlayBroadcastUiMapper()
+    fun provideHtmlTextTransformer(): HtmlTextTransformer {
+        return DefaultHtmlTextTransformer()
+    }
+
+    @PlayBroadcastScope
+    @Provides
+    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer): PlayBroadcastMapper {
+        return PlayBroadcastUiMapper(htmlTextTransformer)
 
         /**
          * If you want configurable
