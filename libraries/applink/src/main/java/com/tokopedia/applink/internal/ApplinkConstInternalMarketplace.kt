@@ -261,7 +261,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
 
-
     // AttachInvoiceActivity
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"

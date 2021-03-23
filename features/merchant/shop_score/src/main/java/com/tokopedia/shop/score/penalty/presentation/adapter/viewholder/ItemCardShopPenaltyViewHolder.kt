@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -23,6 +24,7 @@ class ItemCardShopPenaltyViewHolder(view: View): AbstractViewHolder<ItemCardShop
         if (element == null) return
 
         with(itemView) {
+            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             tvContentPenalty?.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
                 //TODO
             }

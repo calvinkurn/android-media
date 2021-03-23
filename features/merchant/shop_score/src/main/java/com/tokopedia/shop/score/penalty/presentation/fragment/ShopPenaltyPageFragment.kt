@@ -5,29 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
+import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
-import kotlinx.android.synthetic.main.item_penalty_filter_list.view.*
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
-class PenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>() {
+class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>() {
 
-    companion object {
-        fun newInstance(): PenaltyPageFragment {
-            return PenaltyPageFragment()
-        }
-    }
+    @Inject
+    lateinit var viewModelShop: ShopPenaltyViewModel
 
     private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory() }
     private val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_penalty_page, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observePenaltyPage()
     }
 
     override fun getScreenName(): String = ""
@@ -38,6 +44,16 @@ class PenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFact
 
     override fun getRecyclerView(view: View): RecyclerView {
         return view.findViewById(R.id.rvPenaltyPage)
+    }
+
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
+        return view.findViewById(R.id.penaltySwipeRefresh)
+    }
+
+    override fun onSwipeRefresh() {
+        swipeToRefresh?.isRefreshing = false
+        clearAllData()
+        loadInitialData()
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -54,5 +70,28 @@ class PenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFact
 
     override fun getAdapterTypeFactory(): PenaltyPageAdapterFactory {
         return penaltyPageAdapterFactory
+    }
+
+    override fun onDestroy() {
+        removeObservers(viewModelShop.penaltyPageData)
+        super.onDestroy()
+    }
+
+    private fun observePenaltyPage() {
+        observe(viewModelShop.penaltyPageData) {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    renderList(it.data)
+                }
+            }
+        }
+        viewModelShop.getPenaltyDummyData()
+    }
+
+    companion object {
+        fun newInstance(): ShopPenaltyPageFragment {
+            return ShopPenaltyPageFragment()
+        }
     }
 }

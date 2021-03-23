@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
@@ -16,6 +17,7 @@ class ItemPenaltyViewHolder(view: View) : AbstractViewHolder<ItemPenaltyUiModel>
         if (element == null) return
 
         with(itemView) {
+            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             tv_title_status_penalty?.text = element.statusPenalty
             tv_end_date_status_penalty?.text = element.endDate
             tv_date_status_penalty?.text = element.statusDate

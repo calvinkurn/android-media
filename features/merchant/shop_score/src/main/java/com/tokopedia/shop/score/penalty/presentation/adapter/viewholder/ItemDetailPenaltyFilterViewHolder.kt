@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
@@ -14,6 +15,8 @@ class ItemDetailPenaltyFilterViewHolder(view: View): AbstractViewHolder<ItemDeta
 
     override fun bind(element: ItemDetailPenaltyFilterUiModel?) {
         with(itemView) {
+            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
             tvPeriodDetailPenalty?.text = element?.periodDetail.orEmpty()
             sortFilterDetailPenalty?.apply {
 

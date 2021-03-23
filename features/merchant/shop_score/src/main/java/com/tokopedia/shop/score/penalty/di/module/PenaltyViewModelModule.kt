@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.shop.score.penalty.presentation.PenaltyViewModel
-import com.tokopedia.shop.score.performance.di.scope.ShopPerformanceScope
+import com.tokopedia.shop.score.penalty.di.scope.PenaltyScope
+import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -13,12 +13,12 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class PenaltyViewModelModule {
 
-    @ShopPerformanceScope
+    @PenaltyScope
     @Binds
     abstract fun bindViewModelPenaltyFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @ViewModelKey(PenaltyViewModel::class)
-    abstract fun penaltyViewModel(penaltyViewModel: PenaltyViewModel): ViewModel
+    @ViewModelKey(ShopPenaltyViewModel::class)
+    abstract fun penaltyViewModel(shopPenaltyViewModel: ShopPenaltyViewModel): ViewModel
 }

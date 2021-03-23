@@ -1,4 +1,4 @@
-package com.tokopedia.shop.score.penalty.presentation
+package com.tokopedia.shop.score.penalty.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +11,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class PenaltyViewModel @Inject constructor(
+class ShopPenaltyViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(coroutineDispatchers.main) {

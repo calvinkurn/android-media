@@ -8,6 +8,7 @@ import com.tokopedia.gm.common.constant.PATTERN_DATE_PARAM
 import com.tokopedia.gm.common.constant.PATTERN_DATE_SHOP_INFO
 import com.tokopedia.gm.common.data.source.cloud.model.PMPeriodTypeResponse
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoByIDResponse
+import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResponse
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,18 +20,17 @@ import kotlin.math.abs
 
 class ShopScoreCommonMapper @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun mapToGetShopInfo(shopInfoByID: ShopInfoByIDResponse.ShopInfoByID,
-                         goldPMSettingInfoData: PMPeriodTypeResponse.GoldGetPMSettingInfo.Data): ShopInfoPeriodUiModel {
+    fun mapToGetShopInfo(shopInfoPeriodWrapperResponse: ShopInfoPeriodWrapperResponse): ShopInfoPeriodUiModel {
         return ShopInfoPeriodUiModel(
                 isOfficialStore = userSession.isShopOfficialStore,
-                joinDate = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty()
+                joinDate = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty()
                         joinDateFormatted (PATTERN_DATE_PARAM),
-                periodType = goldPMSettingInfoData.periodType,
-                isNewSeller = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty()
+                periodType = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodType ?: "",
+                isNewSeller = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty()
                         isNewSeller (NEW_SELLER_DAYS),
-                isEndTenureNewSeller = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty()
+                isEndTenureNewSeller = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty()
                         isEndOfTenureNewSeller (END_OF_TENURE_SEVEN_DAYS),
-                shopAge = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty().totalDays()
+                shopAge = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty().totalDays()
         )
     }
 

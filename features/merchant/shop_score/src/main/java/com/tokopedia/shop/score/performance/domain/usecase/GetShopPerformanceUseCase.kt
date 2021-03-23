@@ -184,7 +184,6 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                         shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse = goldPMGradeBenefitInfoData
                     }
 
-
                 } catch (e: Throwable) {
 
                 }

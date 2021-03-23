@@ -16,9 +16,7 @@ class GetPMPeriodTypeUseCase @Inject constructor(
         val PM_SETTING_INFO_QUERY = """
             query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!){
               goldGetPMSettingInfo(shopID: ${'$'}shopID, source: ${'$'}source) {
-                data{
-                  period_type
-                }
+                 period_type
               }
             }
         """.trimIndent()

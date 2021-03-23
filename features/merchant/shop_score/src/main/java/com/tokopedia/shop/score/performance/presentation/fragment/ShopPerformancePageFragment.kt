@@ -78,7 +78,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
             }
             R.id.menu_warning_shop_perfoemance -> {
-
+                goToPenaltyPage()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -107,7 +107,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onTickerClickedToPenaltyPage() {
-
+        goToPenaltyPage()
     }
 
     override fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String) {
@@ -148,6 +148,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onWatchVideoClicked() {
 
+    }
+
+    private fun goToPenaltyPage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SHOP_PENALTY)
     }
 
     private fun goToPowerMerchantSubscribe() {
@@ -207,12 +211,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun showLoading() {
         shopPerformanceAdapter.showLoading()
-        shopPerformanceSwipeRefresh?.isRefreshing = true
+        shopPerformanceSwipeRefresh?.isRefreshing = false
     }
 
     private fun hideLoading() {
         shopPerformanceAdapter.hideLoading()
-        shopPerformanceSwipeRefresh?.isRefreshing = false
     }
 
     companion object {
