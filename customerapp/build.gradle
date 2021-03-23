@@ -64,9 +64,11 @@ def isFirebasePerformanceLogEnabled() {
 gradle.projectsEvaluated {
     android.applicationVariants.all { variant ->
         def variantNameCap = variant.name.capitalize()
+        println "generateBundledResourcesHash${variantNameCap}"
         tasks.create(name: "generateBundledResourcesHash${variantNameCap}", type: Exec) {}
         android.buildTypes.each { buildType ->
             def buildTypeCap = buildType.name.capitalize()
+            println "bundle${variantNameCap}${buildTypeCap}JsAndAssets"
             tasks.create(name: "bundle${variantNameCap}${buildTypeCap}JsAndAssets", type: Exec) {}
         }
     }
