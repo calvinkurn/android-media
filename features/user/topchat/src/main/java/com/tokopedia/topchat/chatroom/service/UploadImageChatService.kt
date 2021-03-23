@@ -86,7 +86,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
                 override fun getFailedIntent(errorMessage: String): PendingIntent {
                     val intent = createChatRoomIntent()
-                    return PendingIntent.getActivity(this@UploadImageChatService, 0, intent, 0)
+                    return PendingIntent.getActivity(this@UploadImageChatService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                 }
             }
         }
