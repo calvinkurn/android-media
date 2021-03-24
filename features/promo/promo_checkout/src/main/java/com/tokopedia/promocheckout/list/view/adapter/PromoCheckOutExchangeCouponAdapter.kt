@@ -24,6 +24,7 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
         fun onClickRedeemCoupon(catalogId: Int?, slug: String?, title: String, creativeName: String, position: Int)
     }
 
+    private var colorFromResource: String = ""
     var mListener: ListenerCouponExchange
     var items: ArrayList<CatalogListItem>? = null
         private set
@@ -127,7 +128,12 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
                         upperText.append(item.upperTextDesc.get(i))
                     } else {
                         //exclusive case for handling font color of second index.
-                        upperText.append("<font color='#ff5722'>" + item.upperTextDesc.get(i) + "</font>")
+                            try {
+                                colorFromResource = "#" + Integer.toHexString(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400) and  HEX_CODE_TRANSPARENCY)
+                                upperText.append("<font color='${colorFromResource}>" + item.upperTextDesc.get(i) + "</font>")
+                            }catch (e: Throwable){
+                                e.printStackTrace()
+                            }
                     }
                 } else {
                     upperText.append(item.upperTextDesc.get(i)).append(" ")
@@ -191,5 +197,9 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
     }
 
     override fun onViewAttachedToWindow(holder: ViewHolder) {
+    }
+
+    companion object{
+        private const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
     }
 }

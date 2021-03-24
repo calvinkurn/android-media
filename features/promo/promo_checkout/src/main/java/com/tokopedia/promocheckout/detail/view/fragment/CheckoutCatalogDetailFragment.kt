@@ -43,6 +43,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     private val couponRedemptionCode_QUOTA_LIMIT_REACHED = 42022
     private val couponRedemptionCode_PROFILE_INCOMPLETE = 42021
     private val couponRedemptionCode_SUCCESS = 200
+    private var colorFromResource: String = ""
 
     @Inject
     lateinit var mPresenter: CheckoutCatalogDetailPresenter
@@ -237,7 +238,12 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             for (i in 0 until data.upperTextDesc.size) {
                 if (i == textColorIndex) {
                     //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc[i] + "</font>")
+                    try {
+                        colorFromResource = "#" + Integer.toHexString(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Y400) and HEX_CODE_TRANSPARENCY)
+                        upperText.append("<font color='${colorFromResource}'>" + data.upperTextDesc[i] + "</font>")
+                    }catch (e: Throwable){
+                        e.printStackTrace()
+                    }
                 } else {
                     upperText.append(data.upperTextDesc[i]).append(" ")
                 }
@@ -302,6 +308,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
         val REQUEST_CODE_DETAIL_PROMO = 231
+        private const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
         fun newInstance(slug: String?, catalogId: Int?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
                         promo: Promo?): CheckoutCatalogDetailFragment {
             val checkoutcatalogfragment = CheckoutCatalogDetailFragment()
