@@ -29,4 +29,16 @@
         android:layout_marginTop="@dimen/dp_4"
         app:corners="20" />
 
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="128dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="@dimen/dp_4"
+        app:corners="20" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="128dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="@dimen/dp_4"
+        app:corners="20" />
+
 </LinearLayout>
