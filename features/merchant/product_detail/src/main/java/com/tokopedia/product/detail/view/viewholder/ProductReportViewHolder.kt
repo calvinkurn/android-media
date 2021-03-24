@@ -7,7 +7,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.linkTextWithGiven
+import com.tokopedia.product.detail.view.util.boldOrLinkText
 import kotlinx.android.synthetic.main.item_product_report_view_holder.view.*
 
 /**
@@ -22,7 +22,7 @@ class ProductReportViewHolder(val view: View, val listener: DynamicProductDetail
     override fun bind(element: ProductReportDataModel) {
         view.product_report_txt.movementMethod = LinkMovementMethod.getInstance()
         view.product_report_txt.text = view.context.getString(R.string.merchant_product_detail_report_text)
-                .linkTextWithGiven(view.context, view.context.getString(R.string.merchant_product_detail_report_suffix) to {
+                .boldOrLinkText(true, view.context, view.context.getString(R.string.merchant_product_detail_report_suffix) to {
                     listener.reportProductFromComponent(getComponentTrackData(element))
                 })
     }

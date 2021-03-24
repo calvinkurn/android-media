@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofI
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemType
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofChipViewHolder
+import com.tokopedia.unifycomponents.toPx
 
 class MiniSocialProofAdapter(
         private val listener: DynamicProductDetailListener
@@ -41,7 +42,7 @@ class MiniSocialProofAdapter(
     override fun onBindViewHolder(holder: ProductMiniSocialProofChipViewHolder, position: Int) {
         holder.itemView.apply {
             if (position == socialProof.lastIndex && getItemViewType(position) == TYPE_CHIP) {
-                setPadding(0, 0, 8, 0)
+                setPadding(0, 0, 8.toPx(), 0)
             } else {
                 setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
             }
