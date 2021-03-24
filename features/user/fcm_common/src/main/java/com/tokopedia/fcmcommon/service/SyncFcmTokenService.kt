@@ -13,7 +13,8 @@ import javax.inject.Inject
 
 class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncListener {
 
-    @Inject lateinit var fcmManager: FirebaseMessagingManager
+    @Inject
+    lateinit var fcmManager: FirebaseMessagingManager
 
     override fun onCreate() {
         super.onCreate()
