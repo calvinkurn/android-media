@@ -15,6 +15,7 @@ open class MenuItemUiModel(
     settingTypeInfix: String = "",
     open val trackingAlias: String? = null,
     open val iconUnify: Int? = null,
+    open var notificationCount: Int = 0,
     open val clickAction: () -> Unit = {}
 ) : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
 

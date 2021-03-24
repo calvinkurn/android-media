@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -89,7 +90,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[KEY_AFFINITY_LABEL] = banner.name ?: EMPTY_STRING
         map[KEY_CATEGORY_ID] = banner.category ?: EMPTY_STRING
         map[KEY_SHOP_ID] = banner.shopId ?: EMPTY_STRING
-        map[KEY_CAMPAIGN_CODE] = campaignCode
+        map[KEY_CAMPAIGN_CODE] = "${if(banner.campaignCode.isNullOrEmpty()) campaignCode else banner.campaignCode}"
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -139,7 +140,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             componentsItem.name
                     ?: EMPTY_STRING
         } - ${componentsItem.creativeName ?: EMPTY_STRING} - $destinationURL")
-        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $PLAY"
+        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
@@ -154,7 +155,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             componentsItem.name
                     ?: EMPTY_STRING
         } - ${componentsItem.creativeName ?: EMPTY_STRING} - ${widgetPosition + 1}")
-        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $PLAY"
+        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[PAGE_TYPE] = pageType
@@ -168,7 +169,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             componentsItem.name
                     ?: EMPTY_STRING
         } - ${widgetPosition + 1}")
-        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $PLAY"
+        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[PAGE_TYPE] = pageType
@@ -193,7 +194,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             componentsItem.name
                     ?: EMPTY_STRING
         } - ${componentsItem.creativeName ?: EMPTY_STRING} - $destinationURL")
-        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $PLAY"
+        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
@@ -216,7 +217,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                         KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = IMPRESSION_DYNAMIC_BANNER, componentsItem.name
                 ?: EMPTY_STRING)
-        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $PLAY"
+        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
@@ -240,7 +241,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                         KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = IMPRESSION_DYNAMIC_BANNER, componentsItem.name
                 ?: EMPTY_STRING)
-        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $PLAY"
+        map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
@@ -416,7 +417,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[LIST] = productCardItemList
-            productMap[DIMENSION83] = if (it.freeOngkir?.isActive == true) BEBAS_ONGKIR else NONE_OTHER
+            productMap[DIMENSION83] = getProductDime83(it)
             addSourceData(productMap)
             if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
                 productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
@@ -435,6 +436,19 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
         productCardImpressionLabel = EMPTY_STRING
         productCardItemList = EMPTY_STRING
+    }
+
+    private fun getProductDime83(dataItem: DataItem): String {
+        if (dataItem.freeOngkir?.isActive == true) {
+            for (labelGroup in dataItem.labelsGroupList ?: arrayListOf()) {
+                if (labelGroup.position == Constant.LABEL_FULFILLMENT) {
+                    return BEBAS_ONGKIR_EXTRA
+                }
+            }
+            return BEBAS_ONGKIR
+        } else {
+            return NONE_OTHER
+        }
     }
 
     override fun viewProductsList(componentsItems: ComponentsItem, isLogin: Boolean) {
@@ -479,7 +493,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 listMap[KEY_VARIANT] = NONE_OTHER
                 listMap[KEY_POSITION] = componentsItems.position + 1
                 listMap[LIST] = productCardItemList
-                listMap[DIMENSION83] = if (it.freeOngkir?.isActive == true) BEBAS_ONGKIR else NONE_OTHER
+                listMap[DIMENSION83] = getProductDime83(it)
                 addSourceData(listMap)
                 if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
                     listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
@@ -685,6 +699,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[DISCOVERY_SLUG] = pageIdentifier
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = DISCOVERY
+        map[PAGE_SOURCE]= sourceIdentifier
         map[CATEGORY] = EMPTY_STRING
         map[CATEGORY_ID] = EMPTY_STRING
         map[SUB_CATEGORY] = EMPTY_STRING

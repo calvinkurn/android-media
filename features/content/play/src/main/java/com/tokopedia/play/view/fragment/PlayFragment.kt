@@ -28,11 +28,10 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
-import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
@@ -259,24 +258,21 @@ class PlayFragment @Inject constructor(
         }
     }
 
-    fun onNewChannelId(channelId: String?) {
-        if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
-            (activity as PlayNewChannelInteractor).onNewChannel(channelId)
-        }
-    }
-
     private fun processChannelInfo() {
         playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
     }
 
+    //TODO("Somehow when clearing viewpager, onResume is called, and when it happens, channel id is already empty so this might cause crash")
     private fun onPageFocused() {
-        analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
-        playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
-        sendSwipeRoomAnalytic()
+        try {
+            playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
+            sendSwipeRoomAnalytic()
+        } catch (e: Throwable) {}
     }
 
     private fun onPageDefocused() {
-        playViewModel.defocusPage(shouldPauseVideo = !(playViewModel.pipState.isInPiP && activity?.isFinishing == true))
+        playViewModel.defocusPage(shouldPauseVideo = !playViewModel.pipState.isInPiP)
     }
 
     private fun invalidateVideoTopBounds(
@@ -346,7 +342,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeSocketInfo()
-        observeEventUserInfo()
+        observeStatusInfo()
         observeVideoMeta()
         observeChannelInfo()
         observeBottomInsetsState()
@@ -370,19 +366,18 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun observeEventUserInfo() {
+    private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 
-                if (it.shouldAutoSwipeOnFreeze) doAutoSwipe()
+                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && it.shouldAutoSwipeOnFreeze) doAutoSwipe()
 
             } else if (it.statusType.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
             }
             if (it.statusType.isFreeze || it.statusType.isBanned) {
                 unregisterKeyboardListener(requireView())
-                onBottomInsetsViewHidden()
             }
 
             fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
@@ -408,6 +403,7 @@ class PlayFragment @Inject constructor(
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             buttonCloseViewOnStateChanged(bottomInsets = it)
+            fragmentBottomSheetViewOnStateChanged(bottomInsets = it)
 
             if (it.isAnyShown) playNavigation.requestDisableNavigation()
             else playNavigation.requestEnableNavigation()
@@ -540,18 +536,20 @@ class PlayFragment @Inject constructor(
 
     private fun fragmentVideoViewOnStateChanged(
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if (videoPlayer.isYouTube || isFreezeOrBanned) {
+        if (videoPlayer.isYouTube || (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown)) {
             fragmentVideoView.safeRelease()
             fragmentVideoView.hide()
         }
     }
 
     private fun fragmentBottomSheetViewOnStateChanged(
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if (isFreezeOrBanned) {
+        if (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown) {
             fragmentBottomSheetView.safeRelease()
             fragmentBottomSheetView.hide()
         }

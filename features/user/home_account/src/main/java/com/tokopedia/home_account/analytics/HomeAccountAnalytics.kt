@@ -14,6 +14,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PROFILE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_REWARD_SECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOGGLE_ON_GEOLOCATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_OVO_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.CLICK
@@ -250,6 +251,16 @@ class HomeAccountAnalytics(val context: Context, val userSessionInterface: UserS
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_BALANCE,
+                LABEL_EMPTY
+        ))
+    }
+
+    fun eventClickTokopoints() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_TOKOPOINTS,
                 LABEL_EMPTY
         ))
     }
