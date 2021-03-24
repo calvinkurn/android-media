@@ -1,11 +1,14 @@
 package com.tokopedia.kyc_centralized.util
 
 import android.content.Context
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_USING_ENCRYPT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.io.File
-import java.io.IOException
+import java.io.FileInputStream
+import javax.crypto.Cipher
+import javax.crypto.CipherInputStream
 import javax.crypto.SecretKey
+import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 object ImageEncryptionUtil {
@@ -39,7 +42,7 @@ object ImageEncryptionUtil {
         //Create a copy of original file
         try {
             originalFile.copyTo(copyFile)
-        } catch (ex: IOException) {
+        } catch (ex: Exception) {
             ex.printStackTrace()
         }
 
@@ -84,9 +87,22 @@ object ImageEncryptionUtil {
         return to.path
     }
 
+    fun initAesDecrypt(tempIv: ByteArray?, aes: Cipher) {
+        val spec = GCMParameterSpec(IV_SIZE, tempIv)
+        aes.init(Cipher.DECRYPT_MODE, getKey(), spec)
+    }
+
+    fun writeDecryptedImage(originalFilePath: String, decryptedFilePath: String, aes: Cipher) {
+        val fis = FileInputStream(originalFilePath)
+        val out = CipherInputStream(fis, aes)
+        File(decryptedFilePath).outputStream().use {
+            out.copyTo(it)
+        }
+    }
+
     fun isUsingEncrypt(context: Context) : Boolean {
         try {
-            return FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.KYC_USING_ENCRYPT, true)
+            return FirebaseRemoteConfigImpl(context).getBoolean(KYC_USING_ENCRYPT, true)
         } catch (e: Exception) {
             e.printStackTrace()
         }

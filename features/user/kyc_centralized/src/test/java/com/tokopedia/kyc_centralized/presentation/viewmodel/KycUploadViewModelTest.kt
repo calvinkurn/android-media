@@ -3,13 +3,12 @@ package com.tokopedia.kyc_centralized.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
+import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +32,7 @@ class KycUploadViewModelTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = KycUploadViewModel(useCase, TestAppDispatchProvider)
+        viewModel = spyk(KycUploadViewModel(useCase, TestAppDispatchProvider))
     }
 
     @Test
@@ -57,6 +56,7 @@ class KycUploadViewModelTest {
     @Test
     fun `Register - Success upload image and accepted with encrypt`() {
         val livenessData = KycData()
+        val encryptedImagePath = "SuccessPath"
 
         coEvery {
             useCase.uploadImages(any(), any(), any())
@@ -65,9 +65,16 @@ class KycUploadViewModelTest {
             livenessData
         }
 
+        coEvery {
+            viewModel.encryptImage(any(), any())
+        } answers {
+            Success(encryptedImagePath)
+        }
+
         viewModel.uploadImages(ktpPath, facePath, projectId, true)
 
         val result = viewModel.kycResponseLiveData.value
+
         Assert.assertEquals(result, Success(livenessData))
         Assert.assertTrue((result as Success).data.isSuccessRegister)
     }
@@ -86,12 +93,14 @@ class KycUploadViewModelTest {
         viewModel.uploadImages(ktpPath, facePath, projectId, false)
 
         val result = viewModel.kycResponseLiveData.value
+        Assert.assertEquals(result, Success(livenessData))
         Assert.assertFalse((result as Success).data.isSuccessRegister)
     }
 
     @Test
     fun `Register - Success upload image but rejected with encrypt`() {
         val livenessData = KycData()
+        val encryptedImagePath = "SuccessPath"
 
         coEvery {
             useCase.uploadImages(any(), any(), any())
@@ -100,9 +109,17 @@ class KycUploadViewModelTest {
             livenessData
         }
 
+        coEvery {
+            viewModel.encryptImage(any(), any())
+        } answers {
+            Success(encryptedImagePath)
+        }
+
         viewModel.uploadImages(ktpPath, facePath, projectId, true)
 
         val result = viewModel.kycResponseLiveData.value
+
+        Assert.assertEquals(result, Success(livenessData))
         Assert.assertFalse((result as Success).data.isSuccessRegister)
     }
 
@@ -156,8 +173,84 @@ class KycUploadViewModelTest {
             useCase.uploadImages(any(), any(), any())
         } throws exceptionMock
 
+        coEvery {
+            viewModel.encryptImage(any(), any())
+        } answers {
+            Fail(exceptionMock)
+        }
+
         viewModel.uploadImages(ktpPath, facePath, projectId, true)
 
+        val result = viewModel.kycResponseLiveData.value
+
+        Assert.assertTrue(result is Fail)
+    }
+
+    @Test
+    fun `Failed to encrypt Image`() {
+        viewModel.encryptImage(ktpPath, true)
+        val encryptResult = viewModel.encryptImageLiveData.value
+        Assert.assertTrue(encryptResult is Fail)
+    }
+
+    @Test
+    fun `Success decrypt Image`() {
+        val livenessData = KycData()
+        val encryptedImagePath = "SuccessPath"
+        mockkObject(ImageEncryptionUtil)
+        KycUploadViewModel.ivKtp = encryptedImagePath.encodeToByteArray()
+        KycUploadViewModel.ivFace = encryptedImagePath.encodeToByteArray()
+
+        every {
+            ImageEncryptionUtil.writeDecryptedImage(any(), any(), any())
+        } answers {
+            Unit
+        }
+
+        every {
+            ImageEncryptionUtil.initAesDecrypt(any(), any())
+        } answers {
+            Unit
+        }
+
+        every {
+            ImageEncryptionUtil.renameImageToOriginalFileName(any())
+        } answers {
+            encryptedImagePath
+        }
+
+        every {
+            ImageEncryptionUtil.createCopyOfOriginalFile(any())
+        } answers {
+            encryptedImagePath
+        }
+
+        coEvery {
+            useCase.uploadImages(any(), any(), any())
+        } answers {
+            livenessData.isSuccessRegister = false
+            livenessData
+        }
+
+        coEvery {
+            viewModel.encryptImage(any(), any())
+        } answers {
+            Success(encryptedImagePath)
+        }
+
+        viewModel.encryptImage(ktpPath, true)
+        viewModel.encryptImage(facePath, false)
+        viewModel.uploadImages(ktpPath, facePath, projectId, true)
+
+        val result = viewModel.kycResponseLiveData.value
+
+        Assert.assertEquals(result, Success(livenessData))
+        Assert.assertFalse((result as Success).data.isSuccessRegister)
+    }
+
+    @Test
+    fun `Failed to decrypt Image`() {
+        viewModel.uploadImages(ktpPath, facePath, projectId, true)
         val result = viewModel.kycResponseLiveData.value
         Assert.assertTrue(result is Fail)
     }

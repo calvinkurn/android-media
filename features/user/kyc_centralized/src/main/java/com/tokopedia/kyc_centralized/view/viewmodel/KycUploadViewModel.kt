@@ -1,6 +1,5 @@
 package com.tokopedia.kyc_centralized.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -17,9 +16,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import javax.crypto.Cipher
-import javax.crypto.CipherInputStream
 import javax.crypto.CipherOutputStream
-import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
 
 class KycUploadViewModel @Inject constructor(
@@ -56,7 +53,6 @@ class KycUploadViewModel @Inject constructor(
     fun encryptImage(originalFilePath: String, isKtpImage: Boolean) {
         launchCatchError(block = {
             withContext(dispatcher.io()) {
-                Log.d("ENCRYPT-START", "${System.currentTimeMillis()}")
                 val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
                 val fis = FileInputStream(originalFilePath)
                 val aes = Cipher.getInstance(ImageEncryptionUtil.ALGORITHM)
@@ -80,21 +76,16 @@ class KycUploadViewModel @Inject constructor(
                 //Rename encrypted image file to original name
                 val createdFile = ImageEncryptionUtil.renameImageToOriginalFileName(encryptedImagePath)
                 _encryptImage.postValue(Success(createdFile))
-                Log.d("ENCRYPT-END", "${System.currentTimeMillis()}")
-                Log.d("RESULT-ENCRYPT", createdFile)
             }
         }, onError = {
-            Log.d("RESULT-ENCRYPT", it.message.toString())
             it.printStackTrace()
             _encryptImage.postValue(Fail(it))
         })
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    private fun decryptImage(originalFilePath: String, isKtpImage: Boolean): String {
-        Log.d("DECRYPT-START", "${System.currentTimeMillis()}")
+    fun decryptImage(originalFilePath: String, isKtpImage: Boolean): String {
         val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
-        val fis = FileInputStream(originalFilePath)
         val aes = Cipher.getInstance(ImageEncryptionUtil.ALGORITHM)
         //Get the right IV
         val tempIv: ByteArray? = if(isKtpImage) {
@@ -102,13 +93,8 @@ class KycUploadViewModel @Inject constructor(
         } else {
             ivFace
         }
-        val spec = GCMParameterSpec(ImageEncryptionUtil.IV_SIZE, tempIv)
-        aes.init(Cipher.DECRYPT_MODE, ImageEncryptionUtil.getKey(), spec)
-
-        val out = CipherInputStream(fis, aes)
-        File(decryptedFilePath).outputStream().use {
-            out.copyTo(it)
-        }
+        ImageEncryptionUtil.initAesDecrypt(tempIv, aes)
+        ImageEncryptionUtil.writeDecryptedImage(originalFilePath, decryptedFilePath, aes)
 
         //Delete encrypted file and IV
         ImageEncryptionUtil.deleteFile(originalFilePath)
@@ -118,15 +104,12 @@ class KycUploadViewModel @Inject constructor(
             ivFace = null
         }
 
-        val createdFile = ImageEncryptionUtil.renameImageToOriginalFileName(decryptedFilePath)
-        Log.d("DECRYPT-END", "${System.currentTimeMillis()}")
-        Log.d("RESULT-DECRYPT", createdFile)
-
-        return createdFile
+        return ImageEncryptionUtil.renameImageToOriginalFileName(decryptedFilePath)
     }
 
     companion object {
-        private var ivKtp: ByteArray? = null
-        private var ivFace: ByteArray? = null
+        var ivKtp: ByteArray? = null
+        var ivFace: ByteArray? = null
+        const val KYC_USING_ENCRYPT = "android_kyc_enabled_encrypt"
     }
 }
