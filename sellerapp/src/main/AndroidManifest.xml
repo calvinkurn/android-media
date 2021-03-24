@@ -20,7 +20,7 @@
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_sellerapp_launcher_ramadhan"
+        android:icon="@mipmap/ic_launcher_sellerapp_ramadhan"
         android:roundIcon="@mipmap/ic_sellerapp_launcher_ramadhan_round"
         android:label="@string/app_name"
         android:hasCode="true"

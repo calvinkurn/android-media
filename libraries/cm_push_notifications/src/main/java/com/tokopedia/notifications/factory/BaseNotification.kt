@@ -18,6 +18,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.transition.Transition
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
@@ -144,7 +145,7 @@ abstract class BaseNotification internal constructor(
 
     private val drawableLargeIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            R.mipmap.ic_big_notif_seller
+            com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp_ramadhan
         else
             com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp
     internal val bitmapLargeIcon: Bitmap
