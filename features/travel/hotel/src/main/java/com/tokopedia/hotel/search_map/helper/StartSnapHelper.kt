@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.hotel.R
+import kotlin.jvm.Throws
 
 class StartSnapHelper : LinearSnapHelper() {
 
@@ -23,8 +23,8 @@ class StartSnapHelper : LinearSnapHelper() {
         val out = IntArray(2)
 
         if (layoutManager.canScrollHorizontally()) {
-            out[0] = distanceToStart(targetView, getHorizontalHelper(layoutManager))-
-                    targetView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl4)
+            out[0] = distanceToStart(targetView, getHorizontalHelper(layoutManager)) -
+                    targetView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
         } else {
             out[0] = 0
         }
