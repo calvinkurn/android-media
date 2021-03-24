@@ -7,25 +7,25 @@
     android:layout_height="wrap_content">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:layout_width="@dimen/dp_140"
-        android:layout_height="@dimen/dp_140"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/dp_140"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="136dp"
+        android:layout_height="18dp"
         android:layout_marginTop="@dimen/dp_8"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="132dp"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="128dp"
+        android:layout_height="18dp"
         android:layout_marginTop="@dimen/dp_4"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="132dp"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="128dp"
+        android:layout_height="18dp"
         android:layout_marginTop="@dimen/dp_4"
         app:corners="20" />
 
