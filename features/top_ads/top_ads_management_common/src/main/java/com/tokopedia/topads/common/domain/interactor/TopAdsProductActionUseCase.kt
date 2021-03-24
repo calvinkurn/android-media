@@ -41,9 +41,7 @@ const val UPDATE_SINGLE_ADS = """
 }
 """
 @GqlQuery("GetTopadsUpdateSingleAds", UPDATE_SINGLE_ADS)
-class TopAdsProductActionUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : RestRequestUseCase() {
-
-
+class TopAdsProductActionUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
     fun setParams(action: String, adIds: List<String>, selectedFilter: String?): RequestParams {
 

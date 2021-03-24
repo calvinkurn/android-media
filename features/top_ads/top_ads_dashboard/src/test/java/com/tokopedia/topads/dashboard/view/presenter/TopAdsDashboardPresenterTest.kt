@@ -186,13 +186,13 @@ class TopAdsDashboardPresenterTest {
     fun `set product action success`() {
         val expected = "add"
         var actual = ""
-        val onSuccess: (action: String) -> Unit = {
+        val onSuccess: () -> Unit = {
             actual = expected
         }
         every { topAdsProductActionUseCase.execute(any(), any()) } answers {
-            onSuccess.invoke("")
+            onSuccess.invoke()
         }
-        presenter.setProductAction(onSuccess, "", listOf(), res, "")
+        presenter.setProductAction(onSuccess, "", listOf(), "")
         Assert.assertEquals(expected, actual)
     }
 
