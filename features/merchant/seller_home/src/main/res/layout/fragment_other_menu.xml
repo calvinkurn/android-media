@@ -13,7 +13,7 @@
         android:focusableInTouchMode="true"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        app:srcCompat="@drawable/setting_regular_header"
+        app:srcCompat="@drawable/setting_rm_header_background_ramadhan"
         app:layout_constraintTop_toTopOf="parent"/>
 
 <!--    Revert back this component after Ramadhan thematic period finished-->
