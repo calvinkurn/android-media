@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.tokopedia.shop.settings.basicinfo.view.fragment
 
 import android.app.Activity
@@ -34,6 +32,9 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActiv
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
+import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
+import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,7 +45,7 @@ import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopSettingsInfoFragment : BaseDaggerFragment() {
+class ShopSettingsInfoFragment : BaseDaggerFragment(), MenuViewHolder.ItemMenuListener {
 
     companion object {
         const val EXTRA_MESSAGE = "extra_message"
@@ -66,6 +67,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
+    private var bottomSheet: MenuBottomSheet? = null
     private var snackbar: Snackbar? = null
     private var shopId: String = "0"     // 67726 for testing
 
@@ -86,36 +88,30 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun showShopStatusManageMenu() {
-        context?.let { ctx ->
-            shopBasicDataModel?.let { shopBasicDataModel ->
-                val menus = Menus(ctx)
-                menus.setTitle(getString(R.string.shop_settings_manage_status))
-
-                val itemMenusList = ArrayList<Menus.ItemMenus>()
-                if (shopBasicDataModel.isOpen) {
-                    if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
-                        itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
-                    } else {
-                        itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
-                        itemMenusList.add(Menus.ItemMenus(getString(R.string.remove_schedule)))
-                    }
-                    itemMenusList.add(Menus.ItemMenus(getString(R.string.label_close_shop_now)))
+        shopBasicDataModel?.let { shopBasicDataModel ->
+            val itemList = ArrayList<String>()
+            if (shopBasicDataModel.isOpen) {
+                if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
+                    itemList.add(getString(R.string.schedule_your_shop_close))
                 } else {
-                    itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
-                    itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
+                    itemList.add(getString(R.string.change_schedule))
+                    itemList.add(getString(R.string.remove_schedule))
                 }
-                menus.setItemMenuList(itemMenusList)
-                menus.setOnItemMenuClickListener { itemMenus, _ ->
-                    onItemMenuClicked(itemMenus.title)
-                    menus.dismiss()
-                }
-                menus.show()
+                itemList.add(getString(R.string.label_close_shop_now))
+            } else {
+                itemList.add(getString(R.string.change_schedule))
+                itemList.add(getString(R.string.label_open_shop_now))
             }
+            bottomSheet = MenuBottomSheet.newInstance(itemList)
+            bottomSheet?.setTitle(getString(R.string.shop_settings_manage_status))
+            bottomSheet?.setListener(this)
+            bottomSheet?.show(childFragmentManager, "menu_bottom_sheet")
         }
     }
 
-    private fun onItemMenuClicked(itemMenuTitle: String) {
-        when(itemMenuTitle) {
+    override fun onItemMenuClicked(text: String) {
+        bottomSheet?.dismiss()
+        when(text) {
             getString(R.string.label_close_shop_now) -> {
                 shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, true) }
             }
@@ -153,6 +149,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         closeEnd = "",
                         closeNote = ""
                 )
+
             }
             else -> {
                 shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, shopBasicDataModel?.isClosed ?: false) }
