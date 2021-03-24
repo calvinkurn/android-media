@@ -132,6 +132,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl3"
+        android:background="@drawable/bg_shadow_dg_checkout_bottom_view"
+        app:layout_constraintBottom_toTopOf="@id/checkoutBottomViewWidget" />
+
     <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutBottomViewWidget
         android:id="@+id/checkoutBottomViewWidget"
         android:layout_width="match_parent"

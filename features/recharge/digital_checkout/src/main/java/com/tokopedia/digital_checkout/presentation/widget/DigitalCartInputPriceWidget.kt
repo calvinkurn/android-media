@@ -92,7 +92,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
             }
             else -> {
                 if (minPayment > 0L) {
-                    etDigitalCheckoutInputPrice.setError(true)
+                    if (priceInput > 0L) etDigitalCheckoutInputPrice.setError(true)
                     etDigitalCheckoutInputPrice.setMessage(resources
                             .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
                     actionListener?.disableCheckoutButton()
@@ -106,7 +106,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
     }
 
     private fun getFormattedPriceString(price: Long): String {
-        return String.format("%,d", price).replace(",", ".")
+        return if (price > 0L) String.format("%,d", price).replace(",", ".") else ""
     }
 
     private fun setPriceInput(price: Long?) {
@@ -114,7 +114,6 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
             price
         } else {
             priceInput = 0
-            etDigitalCheckoutInputPrice.setError(true)
             actionListener?.disableCheckoutButton()
             return
         }

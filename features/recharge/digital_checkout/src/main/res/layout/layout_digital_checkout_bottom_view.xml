@@ -8,18 +8,11 @@
     android:background="@color/Unify_N0"
     android:focusableInTouchMode="true">
 
-    <View
-        android:id="@+id/shadow"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/bg_shadow_dg_checkout_bottom_view" />
-
     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
         android:id="@+id/digitalPromoBtnView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/shadow" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTotalPaymentLabel"

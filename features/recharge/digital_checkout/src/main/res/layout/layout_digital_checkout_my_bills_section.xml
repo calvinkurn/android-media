@@ -26,9 +26,10 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@id/checkBoxCheckoutMyBills"
-        app:layout_constraintTop_toTopOf="@id/checkBoxCheckoutMyBills"
+        app:layout_constraintTop_toBottomOf="@id/seperator"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_goneMarginRight="@dimen/spacing_lvl4"
         app:layout_goneMarginStart="@dimen/spacing_lvl4"
         app:layout_goneMarginTop="@dimen/unify_space_12"
@@ -52,10 +53,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seperator"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_goneMarginTop="@dimen/unify_space_12" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -73,7 +74,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_2"
-        tools:text="Pembayaran akan dilakukan secara otomatis pada 2 November 2018 dengan OvoCash." />
+        tools:text="Pembayaran akan dilakukan secara " />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivAdditionalFintechImage"
