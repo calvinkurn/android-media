@@ -426,7 +426,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private fun openBottomSheetValidateBOData(data: ValidateShippingEditorModel) {
         bottomSheetBOValidation = BottomSheetUnify()
-        bottomSheetBOValidation?.setTitle(getString(R.string.bottomsheet_v  alidation_title))
+        bottomSheetBOValidation?.setTitle(getString(R.string.bottomsheet_validation_title))
         val viewBottomSheetBOValidation = View.inflate(activity, R.layout.popup_validation_bo, null)
         setUpChildBottomSheetValidateBOData(viewBottomSheetBOValidation, data)
 
