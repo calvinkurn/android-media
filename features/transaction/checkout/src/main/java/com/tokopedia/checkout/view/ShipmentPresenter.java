@@ -1759,7 +1759,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .subscribe(
                         new GetCourierRecommendationSubscriber(
                                 getView(), this, shipperId, spId, itemPosition,
-                                shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
+                                shippingCourierConverter, shipmentCartItemModel,
                                 isInitialLoad, isTradeInDropOff, isForceReload
                         ));
     }
