@@ -6,15 +6,14 @@ import com.tokopedia.mediauploader.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper.mapToSourcePolicy
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.util.CrashlyticsLogger.toCrashlytics
 import com.tokopedia.mediauploader.util.UploadValidatorUtil.getFileExtension
 import com.tokopedia.mediauploader.util.UploaderManager.isSourceMediaNotFound
 import com.tokopedia.mediauploader.util.UploaderManager.mediaErrorMessage
+import com.tokopedia.mediauploader.util.trackToTimber
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CancellationException
 import okhttp3.internal.http2.ConnectionShutdownException
 import okhttp3.internal.http2.StreamResetException
-import timber.log.Timber
 import java.io.File
 import java.io.InterruptedIOException
 import java.net.SocketException
@@ -43,22 +42,22 @@ class UploaderUseCase @Inject constructor(
                 postMediaToHost(fileToUpload, sourcePolicy, sourceId)
             }
         } catch (e: SocketTimeoutException) {
-            setError(TIMEOUT_ERROR, fileToUpload)
+            setError(TIMEOUT_ERROR, sourceId, fileToUpload)
         } catch (e: StreamResetException) {
-            setError(TIMEOUT_ERROR, fileToUpload)
+            setError(TIMEOUT_ERROR, sourceId, fileToUpload)
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
                     e !is SocketException &&
                     e !is InterruptedIOException &&
                     e !is ConnectionShutdownException &&
                     e !is CancellationException) {
-                Timber.w("P1#MEDIA_UPLOADER_ERROR#$sourceId;err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+                trackToTimber(sourceId, Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim())
             }
             // check whether media source is valid
             return if (isSourceMediaNotFound(e)) {
-                setError(SOURCE_NOT_FOUND, fileToUpload)
+                setError(SOURCE_NOT_FOUND, sourceId, fileToUpload)
             } else {
-                setError(NETWORK_ERROR, fileToUpload)
+                setError(NETWORK_ERROR, sourceId, fileToUpload)
             }
         }
     }
@@ -84,7 +83,7 @@ class UploaderUseCase @Inject constructor(
             upload.header.messages.first()
         } else {
             UNKNOWN_ERROR // error handling, when server returned empty error message
-        }, fileToUpload)
+        }, sourceId, fileToUpload)
     }
 
     private suspend inline fun uploadValidation(
@@ -127,9 +126,9 @@ class UploaderUseCase @Inject constructor(
         return mapToSourcePolicy(policyData.dataPolicy)
     }
 
-    private fun setError(message: String, fileToUpload: File): UploadResult {
-        // send purely the error state message into crashlytics
-        toCrashlytics(fileToUpload, message)
+    private fun setError(message: String, sourceId: String, fileToUpload: File): UploadResult {
+        // send purely the error state message with timber
+        trackToTimber(fileToUpload, sourceId, message)
 
         // set the readable error message to the state
         val commonMessage = mediaErrorMessage(message)

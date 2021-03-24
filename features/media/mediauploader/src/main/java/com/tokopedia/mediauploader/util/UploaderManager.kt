@@ -26,30 +26,18 @@ object UploaderManager {
      * "Dimensi gambar maksimum 1000x1000"
      */
     fun mediaErrorMessage(errorMessage: String): String {
-        val requestIdSymbol = "(" // (0-9)
-        val trackerIdSymbol = "<" // <a-z0-9>
+        // check if the string contains "(" and or "<" with regex
+        val pattern = "[(<]".toRegex()
 
-        if (!errorMessage.contains(requestIdSymbol) || !errorMessage.contains(trackerIdSymbol)) {
-            return errorMessage
-        }
+        if (!errorMessage.contains(pattern)) return errorMessage
 
-        val requestIdIndex = when {
-            errorMessage.contains(requestIdSymbol) -> {
-                errorMessage.indexOf(requestIdSymbol)
-            }
-            errorMessage.contains(trackerIdSymbol) -> {
-                errorMessage.indexOf(trackerIdSymbol)
-            }
-            else -> {
-                -1
-            }
-        }
+        val requestIdIndex = errorMessage
+                .indexOfFirst { it.toString().matches(pattern) }
+                .takeIf { it > 0 } ?: errorMessage.length
 
-        return if (requestIdIndex != -1 && requestIdIndex > 0) {
-            errorMessage.substring(0, requestIdIndex)
-        } else {
-            errorMessage
-        }
+        return errorMessage
+                .substring(0, requestIdIndex)
+                .trim()
     }
 
 }
