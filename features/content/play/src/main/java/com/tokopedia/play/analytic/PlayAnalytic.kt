@@ -22,6 +22,7 @@ class PlayAnalytic(
     
     private var channelId: String = ""
     private var channelType: PlayChannelType = PlayChannelType.Unknown
+    private val sessionId: String = generateSwipeSession()
     private var sourceType = ""
 
     fun sendScreen(channelId: String, channelType: PlayChannelType, sourceType: String = "") {
@@ -40,7 +41,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "swipe channel",
-                        KEY_EVENT_LABEL to "${generateSwipeSession()} - $channelId - ${channelType.value} - $sourceType",
+                        KEY_EVENT_LABEL to "$sessionId - $channelId - ${channelType.value} - $sourceType",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
