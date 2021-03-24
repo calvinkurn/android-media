@@ -29,7 +29,7 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
 
     override fun onHandleWork(intent: Intent) {
         try {
-            fcmManager.syncDelayedFcmToken(this)
+            fcmManager.syncFcmToken(this)
         } catch (e: Exception) {
             Timber.e(e)
         }
