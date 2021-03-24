@@ -41,6 +41,7 @@ import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity.Companion.HOTEL_BOOKING_SCREEN_NAME
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
+import com.tokopedia.hotel.common.analytics.SCREEN_NAME_CHECKOUT_PROMO
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
@@ -525,6 +526,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
             booking_pay_now_promo_ticker.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
                 override fun onClickUsePromo() {
+                    trackingHotelUtil.openScreen(context, SCREEN_NAME_CHECKOUT_PROMO)
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
                     intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, cart.appliedVoucher.isCoupon)
                     intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)

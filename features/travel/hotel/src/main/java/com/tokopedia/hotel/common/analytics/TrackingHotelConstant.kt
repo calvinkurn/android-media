@@ -92,3 +92,5 @@ const val LABEL_VIDEO_BANNER = "travel video"
 
 const val REGION_LABEL = "region"
 const val LAST_SEARCH_LABEL = "last search"
+
+const val SCREEN_NAME_CHECKOUT_PROMO = "/hotel/checkoutpromo"
