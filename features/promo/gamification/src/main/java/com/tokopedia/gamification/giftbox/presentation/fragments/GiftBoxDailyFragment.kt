@@ -539,7 +539,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         GtmEvents.clickInfoButton(userSession?.userId)
     }
 
-    fun handleButtonAction() {
+    fun handleButtonAction(redirect:Boolean = true) {
         val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
         if (actionButtonList != null && actionButtonList.isNotEmpty()) {
             val applink = actionButtonList[0].applink
@@ -563,8 +563,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 if (isAutoApply && !autoApplyMessage.isNullOrEmpty() && !dummyCode.isNullOrEmpty()) {
                     viewModel.autoApply(dummyCode)
                 }
-                RouteManager.route(context, applink)
-                GtmEvents.clickClaimButton(tokoButtonContainer.btnSecond.btn.text.toString(), userSession?.userId)
+                if(redirect) {
+                    RouteManager.route(context, applink)
+                    GtmEvents.clickClaimButton(tokoButtonContainer.btnSecond.btn.text.toString(), userSession?.userId)
+                }
             }
         }
 

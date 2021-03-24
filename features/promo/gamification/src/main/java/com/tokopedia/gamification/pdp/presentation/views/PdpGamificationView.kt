@@ -26,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxDailyFragment
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
@@ -48,7 +49,7 @@ class PdpGamificationView : LinearLayout {
     lateinit var recyclerView: RecyclerView
     private lateinit var loadingView: LinearLayout
     private lateinit var viewFlipper: ViewFlipper
-    var fragment: Fragment? = null
+    var fragment: GiftBoxDailyFragment? = null
 
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
@@ -244,6 +245,7 @@ class PdpGamificationView : LinearLayout {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
                 if (position.isNotEmpty()) intent.putExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, position[0])
                 fragment?.startActivityForResult(intent, Wishlist.REQUEST_FROM_PDP)
+                fragment?.handleButtonAction(false)
             }
 
             override fun onProductImpression(item: RecommendationItem) {
