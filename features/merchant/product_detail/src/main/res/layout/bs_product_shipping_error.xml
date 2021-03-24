@@ -35,6 +35,7 @@
         android:layout_marginTop="20dp"
         app:unifyButtonSize="medium"
         app:layout_constraintTop_toBottomOf="@+id/shipping_error_img"
+        android:contentDescription="@null"
         tools:text="Ganti alamat, yuk" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
