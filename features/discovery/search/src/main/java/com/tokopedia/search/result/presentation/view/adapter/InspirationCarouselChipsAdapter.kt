@@ -3,13 +3,13 @@ package com.tokopedia.search.result.presentation.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselChipsItemViewHolder
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 
 class InspirationCarouselChipsAdapter(
         private val inspirationCarouselAdapterPosition: Int,
-        private val inspirationCarouselViewModel: InspirationCarouselViewModel,
+        private val inspirationCarouselViewModel: InspirationCarouselDataView,
         private val inspirationCarouselListener: InspirationCarouselListener,
 ): RecyclerView.Adapter<InspirationCarouselChipsItemViewHolder>() {
 

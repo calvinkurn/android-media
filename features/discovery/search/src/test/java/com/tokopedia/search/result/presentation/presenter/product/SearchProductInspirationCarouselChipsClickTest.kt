@@ -7,7 +7,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
@@ -51,22 +51,22 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
         productListPresenter.loadData(mapOf(SearchApiConst.Q to "samsung"))
     }
 
-    private fun List<Visitable<*>>.findIndexedChipsCarousel(): IndexedValue<InspirationCarouselViewModel> {
+    private fun List<Visitable<*>>.findIndexedChipsCarousel(): IndexedValue<InspirationCarouselDataView> {
         val indexedVisitable = withIndex().find {
-            it.value is InspirationCarouselViewModel
-                    && (it.value as InspirationCarouselViewModel).layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+            it.value is InspirationCarouselDataView
+                    && (it.value as InspirationCarouselDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS
         }!!
 
         return IndexedValue(
                 index = indexedVisitable.index,
-                value = indexedVisitable.value as InspirationCarouselViewModel
+                value = indexedVisitable.value as InspirationCarouselDataView
         )
     }
 
     private fun `When inspiration carousel chips clicked`(
             adapterPosition: Int,
-            inspirationCarouselDataView: InspirationCarouselViewModel,
-            clickedInspirationCarouselOption: InspirationCarouselViewModel.Option
+            inspirationCarouselDataView: InspirationCarouselDataView,
+            clickedInspirationCarouselOption: InspirationCarouselDataView.Option
     ) {
         productListPresenter.onInspirationCarouselChipsClick(
                 adapterPosition,
@@ -163,7 +163,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
     }
 
     private fun `Then verify inspiration carousel option product is updated`(
-            clickedInspirationCarouselOption: InspirationCarouselViewModel.Option,
+            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
             chipsProductsModel:
             InspirationCarouselChipsProductModel,
             position: Int

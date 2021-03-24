@@ -18,7 +18,7 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselChipsAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
@@ -33,7 +33,7 @@ import kotlinx.coroutines.*
 class InspirationCarouselViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel>(itemView), CoroutineScope {
+) : AbstractViewHolder<InspirationCarouselDataView>(itemView), CoroutineScope {
 
     companion object {
         @LayoutRes
@@ -55,7 +55,7 @@ class InspirationCarouselViewHolder(
         }
     }
 
-    override fun bind(element: InspirationCarouselViewModel) {
+    override fun bind(element: InspirationCarouselDataView) {
         bindTitle(element)
 
         if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS)
@@ -64,11 +64,11 @@ class InspirationCarouselViewHolder(
             bindContent(element)
     }
 
-    private fun bindTitle(element: InspirationCarouselViewModel) {
+    private fun bindTitle(element: InspirationCarouselDataView) {
         itemView.inspirationCarousel?.inspirationCarouselTitle?.text = element.title
     }
 
-    private fun bindChipsCarousel(element: InspirationCarouselViewModel) {
+    private fun bindChipsCarousel(element: InspirationCarouselDataView) {
         configureInspirationCarouselChipsVisibility()
 
         bindCarouselChipsList(element)
@@ -81,7 +81,7 @@ class InspirationCarouselViewHolder(
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.gone()
     }
 
-    private fun bindCarouselChipsList(element: InspirationCarouselViewModel) {
+    private fun bindCarouselChipsList(element: InspirationCarouselDataView) {
         itemView.inspirationCarousel?.inspirationCarouselChipsList?.layoutManager = createLayoutManager()
         itemView.inspirationCarousel?.inspirationCarouselChipsList?.adapter = InspirationCarouselChipsAdapter(
                 adapterPosition, element, inspirationCarouselListener
@@ -97,7 +97,7 @@ class InspirationCarouselViewHolder(
         itemView.inspirationCarousel?.inspirationCarouselChipsList?.scrollToPosition(scrollPosition)
     }
 
-    private fun bindChipsCarouselProducts(element: InspirationCarouselViewModel) {
+    private fun bindChipsCarouselProducts(element: InspirationCarouselDataView) {
         val activeOption = element.options.find { it.isChipsActive } ?: return
 
         if (activeOption.hasProducts())
@@ -107,7 +107,7 @@ class InspirationCarouselViewHolder(
     }
 
     private fun bindInspirationCarouselChipProducts(
-            activeOption: InspirationCarouselViewModel.Option
+            activeOption: InspirationCarouselDataView.Option
     ) {
         itemView.inspirationCarousel?.inspirationCarouselChipsShimmeringView?.gone()
         itemView.inspirationCarousel?.inspirationCarouselChipsContent?.visible()
@@ -150,7 +150,7 @@ class InspirationCarouselViewHolder(
         itemView.inspirationCarousel?.inspirationCarouselChipsContent?.gone()
     }
 
-    private fun bindContent(element: InspirationCarouselViewModel) {
+    private fun bindContent(element: InspirationCarouselDataView) {
         configureInspirationCarouselNonChipsVisibility()
 
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
@@ -177,7 +177,7 @@ class InspirationCarouselViewHolder(
         itemView.inspirationCarousel?.inspirationCarouselChipsContent?.gone()
     }
 
-    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselViewModel.Option, productList: List<ProductCardModel>) {
+    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselDataView.Option, productList: List<ProductCardModel>) {
         launch {
             try {
                 layoutManager = createLayoutManager()
@@ -190,15 +190,15 @@ class InspirationCarouselViewHolder(
         }
     }
 
-    private fun createGridProductList(option: InspirationCarouselViewModel.Option): List<Visitable<*>> {
+    private fun createGridProductList(option: InspirationCarouselDataView.Option): List<Visitable<*>> {
         val list = mutableListOf<Visitable<*>>()
         if(option.shouldAddBannerCard()) list.add(createBannerOption(option))
         list.addAll(option.product)
         return list
     }
 
-    private fun createBannerOption(option: InspirationCarouselViewModel.Option): InspirationCarouselViewModel.Option {
-        return InspirationCarouselViewModel.Option(
+    private fun createBannerOption(option: InspirationCarouselDataView.Option): InspirationCarouselDataView.Option {
+        return InspirationCarouselDataView.Option(
                 title = option.title,
                 layout = LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER,
                 bannerImageUrl = option.bannerImageUrl,
@@ -219,7 +219,7 @@ class InspirationCarouselViewHolder(
         layoutParams = carouselLayoutParams
     }
 
-    private fun InspirationCarouselViewModel.Option.Product.toProductCardModel(): ProductCardModel {
+    private fun InspirationCarouselDataView.Option.Product.toProductCardModel(): ProductCardModel {
         return ProductCardModel(
                 productImageUrl = imgUrl,
                 productName = name,
@@ -227,7 +227,7 @@ class InspirationCarouselViewHolder(
                 countSoldRating = ratingAverage,
                 slashedPrice = if (discountPercentage > 0) originalPrice else "",
                 discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
-                labelGroupList = labelGroupList.map { ProductCardModel.LabelGroup(
+                labelGroupList = labelGroupDataList.map { ProductCardModel.LabelGroup(
                         title = it.title,
                         position = it.position,
                         type = it.type,
@@ -241,7 +241,7 @@ class InspirationCarouselViewHolder(
         return list.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
-    private fun configureSeeAllButton(option: InspirationCarouselViewModel.Option) {
+    private fun configureSeeAllButton(option: InspirationCarouselDataView.Option) {
         showSeeAllButton()
         bindSeeAllButtonListener(option)
     }
@@ -250,7 +250,7 @@ class InspirationCarouselViewHolder(
         itemView.inspirationCarouselSeeAllButton?.visibility = View.VISIBLE
     }
 
-    private fun bindSeeAllButtonListener(option: InspirationCarouselViewModel.Option) {
+    private fun bindSeeAllButtonListener(option: InspirationCarouselDataView.Option) {
         itemView.inspirationCarouselSeeAllButton?.setOnClickListener {
             inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
         }

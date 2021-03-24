@@ -4,8 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel.Option
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -28,7 +28,7 @@ class InspirationCarouselChipsItemViewHolder(
 
     fun bind(
             inspirationCarouselAdapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselViewModel,
+            inspirationCarouselViewModel: InspirationCarouselDataView,
             inspirationCarouselOption: Option,
     ) {
         chipsUnify?.chipType = getChipType(inspirationCarouselOption)
@@ -49,7 +49,7 @@ class InspirationCarouselChipsItemViewHolder(
 
     private fun onChipsClicked(
             inspirationCarouselAdapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselViewModel,
+            inspirationCarouselViewModel: InspirationCarouselDataView,
             inspirationCarouselOption: Option,
     ) {
         if (inspirationCarouselOption.isChipsActive) return

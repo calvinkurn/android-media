@@ -6,7 +6,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/Unify_N0">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:background="@color/Unify_N0">
 
             <Button
                 android:id="@+id/courier_btn"
@@ -31,7 +31,7 @@
                 android:paddingRight="@dimen/dp_20"
                 android:text="@string/choose"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/seperator_3"
@@ -50,7 +50,7 @@
                 android:paddingRight="@dimen/dp_20"
                 android:text="@string/choose"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/seperator_4"
@@ -69,7 +69,7 @@
                 android:paddingRight="@dimen/dp_20"
                 android:text="@string/select_payment"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_total_payment_value"
@@ -84,7 +84,7 @@
                 android:fontFamily="sans-serif"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16"
-                android:textColor="@color/orange_red"
+                android:textColor="@color/Unify_Y500"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -100,7 +100,7 @@
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_16"
                 android:text="@string/trade_in_label_wording_payment_total"
-                android:textColor="@color/font_black_secondary_54"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/tv_total_payment_value"
@@ -111,7 +111,7 @@
                 android:id="@+id/seperator_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
-                android:background="@color/light_grey"
+                android:background="@color/Unify_N0"
                 app:layout_constraintTop_toBottomOf="@+id/price_label" />
 
             <View
@@ -119,7 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/light_grey"
+                android:background="@color/Unify_N0"
                 app:layout_constraintTop_toBottomOf="@+id/tv_change_recipient_address" />
 
             <View
@@ -127,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/light_grey"
+                android:background="@color/Unify_N0"
                 app:layout_constraintBottom_toTopOf="@+id/retriever_time_label"
                 app:layout_constraintTop_toBottomOf="@+id/courier_price" />
 
@@ -136,14 +136,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/light_grey"
+                android:background="@color/Unify_N0"
                 app:layout_constraintTop_toBottomOf="@+id/retriever_time" />
 
             <View
                 android:id="@+id/seperator_5"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@color/light_grey"
+                android:background="@color/Unify_N0"
                 app:layout_constraintBottom_toTopOf="@+id/tv_total_payment_label"
                 app:layout_constraintHeight_min="@dimen/dp_8"
                 app:layout_constraintTop_toBottomOf="@+id/terms_text" />
@@ -175,7 +175,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:padding="@dimen/dp_16"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toRightOf="@+id/price_label"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toolbar"
@@ -191,7 +191,7 @@
                 android:paddingTop="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:text="@string/checkout_module_title_shipping_dest"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_1"
@@ -208,7 +208,7 @@
                 android:lineSpacingExtra="4sp"
                 android:maxWidth="180dp"
                 android:paddingLeft="@dimen/dp_16"
-                android:textColor="@color/unify_N700_44"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_shipment_address"
                 app:typographyType="body_2"
@@ -226,7 +226,7 @@
                 android:paddingRight="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_4"
                 android:text="@string/label_main_address"
-                android:textColor="@color/green_nob"
+                android:textColor="@color/Unify_G400"
                 android:visibility="gone"
                 app:layout_constraintLeft_toRightOf="@+id/tv_address_name"
                 app:layout_constraintTop_toTopOf="@+id/tv_address_name"
@@ -288,7 +288,7 @@
                 android:paddingTop="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_12"
                 android:text="@string/label_button_change_address_new"
-                android:textColor="@color/bg_button_green_border_outline"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_recipient_address"
@@ -303,7 +303,7 @@
                 android:paddingTop="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:text="@string/choose_courier"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_2"
                 app:typographyType="heading_5" />
@@ -315,7 +315,7 @@
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:text="@string/retrieval_time"
-                android:textColor="@color/clr_ae31353b"
+                android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/courier_label"
@@ -330,7 +330,7 @@
                 android:paddingTop="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:text="@string/retrieval_time"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_3"
                 app:typographyType="heading_5" />
@@ -342,7 +342,7 @@
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:text="@string/retrieval_time"
-                android:textColor="@color/clr_ae31353b"
+                android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/retriever_time_label"

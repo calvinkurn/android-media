@@ -1,14 +1,14 @@
 package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 
 interface BroadMatchListener {
-    fun onBroadMatchItemClicked(broadMatchItemViewModel: BroadMatchItemViewModel)
+    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
 
-    fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel)
+    fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView)
 
-    fun onBroadMatchThreeDotsClicked(broadMatchItemViewModel: BroadMatchItemViewModel)
+    fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView)
 
-    fun onBroadMatchItemImpressed(broadMatchItemViewModel: BroadMatchItemViewModel)
+    fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
 }

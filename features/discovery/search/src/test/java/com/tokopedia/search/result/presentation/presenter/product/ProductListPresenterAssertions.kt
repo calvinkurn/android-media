@@ -8,7 +8,7 @@ import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.CapturingSlot
 import io.mockk.MockKVerificationScope
@@ -103,7 +103,7 @@ internal fun WishlistTrackingModel.assert(
     keyword shouldBe keyword
 }
 
-internal fun List<InspirationCarouselViewModel.Option.Product>.assert(
+internal fun List<InspirationCarouselDataView.Option.Product>.assert(
         expectedInspirationCarouselProduct: List<InspirationCarouselProduct>,
         inspirationCarouselType: String,
         inspirationCarouselLayout: String,
@@ -122,7 +122,7 @@ internal fun List<InspirationCarouselViewModel.Option.Product>.assert(
         actualProduct.description shouldBe expectedProduct.description
         actualProduct.inspirationCarouselType shouldBe inspirationCarouselType
         actualProduct.ratingAverage shouldBe expectedProduct.ratingAverage
-        actualProduct.labelGroupList.listShouldBe(expectedProduct.labelGroupList) { actualLabelGroup, expectedLabelGroup ->
+        actualProduct.labelGroupDataList.listShouldBe(expectedProduct.labelGroupList) { actualLabelGroup, expectedLabelGroup ->
             actualLabelGroup.title shouldBe expectedLabelGroup.title
             actualLabelGroup.position shouldBe expectedLabelGroup.position
             actualLabelGroup.type shouldBe expectedLabelGroup.type

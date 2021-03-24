@@ -9,7 +9,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -86,7 +86,7 @@ internal open class ProductListPresenterTestFixtures {
             organicPositionStart: Int = 0
     ) {
         val visitableList = visitableListSlot.captured
-        val productItemViewModelList = visitableList.filterIsInstance<ProductItemViewModel>()
+        val productItemViewModelList = visitableList.filterIsInstance<ProductItemDataView>()
 
         val topAdsTemplatePosition = getTopAdsProductPositionByTemplate(searchProductModel)
 
@@ -122,7 +122,7 @@ internal open class ProductListPresenterTestFixtures {
     }
 
     private fun Visitable<*>.assertTopAdsProduct(topAdsProduct: Data, position: Int) {
-        val productItem = this as ProductItemViewModel
+        val productItem = this as ProductItemDataView
 
         productItem.isTopAds shouldBe true
         productItem.topadsClickUrl shouldBe topAdsProduct.productClickUrl
@@ -133,7 +133,7 @@ internal open class ProductListPresenterTestFixtures {
     }
 
     protected fun Visitable<*>.assertOrganicProduct(organicProduct: SearchProductModel.Product, position: Int) {
-        val productItem = this as ProductItemViewModel
+        val productItem = this as ProductItemDataView
 
         productItem.isOrganicAds shouldBe organicProduct.isOrganicAds()
         productItem.position shouldBe position
