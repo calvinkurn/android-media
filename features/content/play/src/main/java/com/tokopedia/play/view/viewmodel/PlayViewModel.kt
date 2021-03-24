@@ -582,11 +582,14 @@ class PlayViewModel @Inject constructor(
     }
 
     fun sendChat(message: String) {
-        if (!userSession.isLoggedIn)
-            return
+        if (!userSession.isLoggedIn) return
+
+        val channelId = mChannelData?.id ?: return
 
         val cleanMessage = message.trimMultipleNewlines()
-        playSocket.send(cleanMessage)
+        playChannelWebSocket.send(
+                playSocketToModelMapper.mapSendChat(cleanMessage, channelId)
+        )
         setNewChat(
                 playUiModelMapper.mapChat(
                         PlayChat(
@@ -675,7 +678,6 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopWebSocket() {
-        playSocket.destroy()
         playChannelWebSocket.close()
     }
 
