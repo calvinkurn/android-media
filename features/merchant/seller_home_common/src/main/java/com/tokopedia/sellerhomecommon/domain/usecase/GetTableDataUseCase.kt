@@ -71,6 +71,7 @@ class GetTableDataUseCase(
                   }
                   error
                   errorMsg
+                  showWidget
                 }
               }
             }

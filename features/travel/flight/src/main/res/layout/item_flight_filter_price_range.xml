@@ -20,12 +20,12 @@
             android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_4" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icFlightFoldableArrow"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24" />
+            app:icon_name="CHEVRON_UP" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

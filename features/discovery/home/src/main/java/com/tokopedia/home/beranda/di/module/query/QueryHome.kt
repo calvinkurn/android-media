@@ -1,9 +1,9 @@
 package com.tokopedia.home.beranda.di.module.query
 
 object QueryHome {
-    val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!, \$param: String!){\n" +
+    val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!, \$param: String!, \$location: String){\n" +
             "    dynamicHomeChannel {\n" +
-            "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token, param: \$param){\n" +
+            "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token, param: \$param, location: \$location){\n" +
             "          id\n" +
             "          group_id\n" +
             "          galaxy_attribution\n" +
@@ -69,6 +69,7 @@ object QueryHome {
             "                title\n" +
             "                position\n" +
             "                type\n" +
+            "                url\n" +
             "              }\n" +
             "              has_buy_button\n" +
             "              rating\n" +
@@ -176,6 +177,7 @@ object QueryHome {
             "                flags(name: \"has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh\"){\n" +
             "                    name\n" +
             "                    is_active\n" +
+            "                    integer_value\n" +
             "                }\n" +
             "            }\n" +
             "        }"
@@ -245,15 +247,17 @@ object QueryHome {
             "          }\n" +
             "        }"
 
-    val recommendationQuery : String = "{\n" +
-            "  get_home_recommendation{\n" +
+    val recommendationQuery : String =
+            "query getRecommendation(\$location: String)\n" +
+            " {\n" +
+            "  get_home_recommendation(location: \$location){\n" +
             "    recommendation_tabs{\n" +
             "      id\n" +
             "      name\n" +
             "      image_url\n" +
             "    }\n" +
             "  }\n" +
-            "}"
+            " }"
 
     val closeChannel = "mutation closeChannel(\$channelID: Int!){\n" +
             "  close_channel(channelID: \$channelID){\n" +
