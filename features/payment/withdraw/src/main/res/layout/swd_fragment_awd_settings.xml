@@ -221,7 +221,7 @@
                 android:layout_marginLeft="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/swd_withdrawal_schedule"
-                android:textColor="#AD31353B"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWDScheduleType"
