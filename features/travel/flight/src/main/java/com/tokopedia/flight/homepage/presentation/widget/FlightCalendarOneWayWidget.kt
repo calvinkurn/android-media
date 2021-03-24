@@ -40,14 +40,17 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
         arguments?.run {
             this.getString(ARG_MIN_DATE)?.let {
                 minCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
+                minDate = minCalendarDate
             }
 
             this.getString(ARG_MAX_DATE)?.let {
                 maxCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
+                maxDate = maxCalendarDate
             }
 
             this.getString(ARG_SELECTED_DATE)?.let {
                 selectedCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
+                selectedDate = selectedCalendarDate
             }
 
             this.getString(ARG_DEPARTURE_CODE)?.let {
