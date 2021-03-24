@@ -376,7 +376,7 @@ class MainNavViewModel @Inject constructor(
                         NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
 
                 //find shimmering and change with result value
-                findExistingEndBuIndexPosition()?.let {
+                findAllTransactionTitle()?.let {
                     updateWidget(transactionListItemViewModel, it)
                 }
             }
@@ -614,6 +614,16 @@ class MainNavViewModel @Inject constructor(
             return _mainNavListVisitable.indexOf(it) + 1
         }
         return INDEX_DEFAULT_ALL_TRANSACTION
+    }
+
+    private fun findAllTransactionTitle(): Int? {
+        val findBUTitle = _mainNavListVisitable.firstOrNull {
+            it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_MY_ACTIVITY
+        }
+        findBUTitle?.let{
+            return _mainNavListVisitable.indexOf(it) + 1
+        }
+        return null
     }
 
     fun findAllTransactionModelEndPosition(): Int? {
