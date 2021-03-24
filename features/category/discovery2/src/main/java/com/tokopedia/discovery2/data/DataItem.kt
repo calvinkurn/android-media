@@ -82,7 +82,7 @@ data class DataItem(
         @SerializedName("image_url_dynamic_mobile")
         val imageUrlDynamicMobile: String? = "",
 
-        @SerializedName("applinks", alternate = ["applink"])
+        @SerializedName("applinks", alternate = ["applink", "appLink"])
         var applinks: String? = "",
 
         @SerializedName("name", alternate = ["text"])

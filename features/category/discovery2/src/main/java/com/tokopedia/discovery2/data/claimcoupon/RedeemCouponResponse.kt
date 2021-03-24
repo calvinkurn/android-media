@@ -10,7 +10,9 @@ data class RedeemCouponResponse(
             @SerializedName("coupons")
             val coupons: List<Coupon?>? = null,
             @SerializedName("reward_points")
-            val rewardPoints: Int? = 0
+            val rewardPoints: Int? = 0,
+            @SerializedName("redeemMessage")
+            val redeemMessage: String? = "",
     ) {
         data class Coupon(
                 @SerializedName("code")
@@ -28,7 +30,9 @@ data class RedeemCouponResponse(
                 @SerializedName("promo_id")
                 val promoId: Int? = 0,
                 @SerializedName("title")
-                val title: String? = ""
+                val title: String? = "",
+                @SerializedName("appLink")
+                val appLink: String? = "",
         )
     }
 }
