@@ -18,7 +18,6 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.encryption)
-    implementation project(rootProject.ext.libraries.logger_common)
     implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.miscDependencies.gson

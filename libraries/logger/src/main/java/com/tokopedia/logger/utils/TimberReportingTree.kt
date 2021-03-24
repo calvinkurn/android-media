@@ -3,8 +3,6 @@ package com.tokopedia.logger.utils
 import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.logger.LogManager
-import com.tokopedia.logger.common.LoggerException
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -12,7 +10,7 @@ import java.util.*
  * Tree that used for Timber in release Version
  * If there is log, it might be sent to logging server
  */
-class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
+class TimberReportingTree {
 
     var userId: String = ""
     var partDeviceId: String = ""
@@ -21,9 +19,11 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     var installerPackageName: String? = ""
     var tagMaps: HashMap<String, Tag> = hashMapOf()
 
-    init {
+    constructor(tags: List<String>) {
         populateTagMaps(tags)
     }
+
+    constructor()
 
     fun setClientLogs(clientLogs: List<String>?) {
         // noop. only has 1 client now.
@@ -35,15 +35,11 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         }
     }
 
-    override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
+    fun log(logPriority: String, tag: String, message: Map<String, String>) {
         globalScopeLaunch({
             val timeStamp = System.currentTimeMillis()
 
-            val loggerExceptionData = (t as? LoggerException)
-            val priority = loggerExceptionData?.priority.orEmpty()
-            val tagKey = loggerExceptionData?.tag.orEmpty()
-            val messageData = loggerExceptionData?.dataException
-            val tagMapKey = StringBuilder(priority).append(DELIMITER_TAG_MAPS).append(tagKey).toString()
+            val tagMapKey = StringBuilder(logPriority).append(DELIMITER_TAG_MAPS).append(tag).toString()
 
             if (LogManager.instance == null) {
                 return@globalScopeLaunch
@@ -51,28 +47,17 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
 
             tagMaps[tagMapKey]?.let {
                 val priorityTag = it.postPriority
-                val classLine = tag ?: ""
-                val messageJson = messageData ?: mapOf()
-                val processedMessage = getMessage(tagKey, timeStamp, classLine, priority, messageJson)
-                LogManager.log(processedMessage, timeStamp, priorityTag, priority)
+                val processedMessage = getMessage(tag, timeStamp, logPriority, message)
+                LogManager.log(processedMessage, timeStamp, priorityTag, logPriority)
             }
         })
-    }
-
-    override fun createStackElementTag(element: StackTraceElement): String {
-        return String.format(
-                "[%s:%s:%s]",
-                super.createStackElementTag(element),
-                element.methodName,
-                element.lineNumber
-        )
     }
 
     private fun getReadableTimeStamp(timeStamp: Long): String {
         return SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US).format(Date(timeStamp))
     }
 
-    private fun getMessage(tag: String, timeStamp: Long, classLine: String, priority: String, message: Map<String, String>): String {
+    private fun getMessage(tag: String, timeStamp: Long, priority: String, message: Map<String, String>): String {
         val mapMessage = mutableMapOf<String, String>()
         val tokenIndex = when (priority) {
             P1 -> Constants.SEVERITY_HIGH - 1
@@ -90,7 +75,6 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             put("vercd", versionCode.toString())
             put("os", Build.VERSION.RELEASE)
             put("device", Build.MODEL)
-            put("cls", classLine)
             put("packageName", scalyrConfig?.packageName.orEmpty())
             put("installer", scalyrConfig?.installer.orEmpty())
             put("debug", scalyrConfig?.debug.toString())

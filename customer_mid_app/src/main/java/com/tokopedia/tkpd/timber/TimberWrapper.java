@@ -70,7 +70,6 @@ public class TimberWrapper {
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
                     timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
                     timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
-                    plantNewTree(timberReportingTree);
                 }
             }
         } catch (Throwable throwable) {

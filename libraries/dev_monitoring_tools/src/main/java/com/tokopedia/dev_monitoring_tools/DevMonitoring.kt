@@ -13,8 +13,8 @@ import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsRemoteConfig
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolFormatter
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolLogger
-import com.tokopedia.logger.common.Priority
-import com.tokopedia.logger.common.ServerLogger
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
 
 /**

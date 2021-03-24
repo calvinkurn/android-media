@@ -26,7 +26,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.logger)
-    implementation project(rootProject.ext.libraries.logger_common)
     implementation project(rootProject.ext.libraries.screenRecorder)
     implementation project(rootProject.ext.libraries.deviceFingerprint)
 
