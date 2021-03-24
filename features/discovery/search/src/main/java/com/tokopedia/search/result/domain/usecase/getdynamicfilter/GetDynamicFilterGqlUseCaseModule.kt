@@ -16,7 +16,7 @@ class GetDynamicFilterGqlUseCaseModule {
     @Provides
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
     fun provideGetDynamicFilterGqlUseCase(
-            dynamicFilterModelMapper: Func1<GraphqlResponse?, DynamicFilterModel?>?
+            dynamicFilterModelMapper: Func1<GraphqlResponse?, DynamicFilterModel?>
     ): UseCase<DynamicFilterModel> {
         return GetDynamicFilterGqlUseCase(GraphqlUseCase(), dynamicFilterModelMapper)
     }

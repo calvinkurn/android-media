@@ -37,7 +37,7 @@ class SearchProductUseCaseModule {
             )
             return SearchProductTDNFirstPageGqlUseCase(
                     GraphqlUseCase(),
-                    searchProductModelMapper!!,
+                    searchProductModelMapper,
                     topAdsImageViewUseCase,
                     CoroutineDispatchersProvider,
                     SearchLogger()
