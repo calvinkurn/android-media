@@ -247,5 +247,4 @@ class SellerHomeViewModel @Inject constructor(
             _shopLocation.value = Fail(it)
         })
     }
-
 }
