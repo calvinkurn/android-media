@@ -1,12 +1,12 @@
 package com.tokopedia.purchase_platform.common.feature.promonoteligible
 
 import android.app.Dialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.unifycomponents.UnifyButton

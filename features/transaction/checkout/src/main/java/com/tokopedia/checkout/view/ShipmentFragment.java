@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -116,6 +117,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener;
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheetNew;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
@@ -197,7 +199,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
     private String cornerId;
-    private PromoNotEligibleBottomsheet promoNotEligibleBottomsheet;
+    private PromoNotEligibleBottomSheetNew promoNotEligibleBottomsheet;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -2553,16 +2555,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     // Keep this method
     private void showPromoNotEligibleDialog(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList, int requestCode) {
-        if (getActivity() != null && promoNotEligibleBottomsheet == null) {
-            promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.Companion.createInstance();
-            promoNotEligibleBottomsheet.setActionListener(this);
-            promoNotEligibleBottomsheet.setDismissListener(() -> checkoutAnalyticsCourierSelection.eventClickBatalOnErrorPromoConfirmation());
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            if (promoNotEligibleBottomsheet == null) {
+                promoNotEligibleBottomsheet = new PromoNotEligibleBottomSheetNew(notEligiblePromoHolderdataList, this);
+            }
+            promoNotEligibleBottomsheet.setDismissListener(() -> {
+                checkoutAnalyticsCourierSelection.eventClickBatalOnErrorPromoConfirmation();
+                return Unit.INSTANCE;
+            });
+            promoNotEligibleBottomsheet.setNotEligiblePromoHolderDataList(notEligiblePromoHolderdataList);
+            promoNotEligibleBottomsheet.show(activity, getParentFragmentManager());
+            checkoutAnalyticsCourierSelection.eventViewPopupErrorPromoConfirmation();
+            PromoRevampAnalytics.INSTANCE.eventCheckoutViewBottomsheetPromoError();
         }
-        promoNotEligibleBottomsheet.setNotEligiblePromoHolderDataList(notEligiblePromoHolderdataList);
-        promoNotEligibleBottomsheet.setCheckoutType(requestCode);
-        promoNotEligibleBottomsheet.show(getFragmentManager(), "");
-        checkoutAnalyticsCourierSelection.eventViewPopupErrorPromoConfirmation();
-        PromoRevampAnalytics.INSTANCE.eventCheckoutViewBottomsheetPromoError();
     }
 
     @Override
@@ -2596,24 +2602,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onShow() {
-        if (promoNotEligibleBottomsheet != null) {
-            BottomSheetBehavior bottomSheetBehavior = promoNotEligibleBottomsheet.getBottomSheetBehavior();
-            if (bottomSheetBehavior != null) {
-                bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                    @Override
-                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                        }
-                    }
-
-                    @Override
-                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-                    }
-                });
-            }
-        }
+//        if (promoNotEligibleBottomsheet != null) {
+//            BottomSheetBehavior bottomSheetBehavior = promoNotEligibleBottomsheet.getBottomSheetBehavior();
+//            if (bottomSheetBehavior != null) {
+//                bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//                    @Override
+//                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+//                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+//
+//                    }
+//                });
+//            }
+//        }
     }
 
     @Override
