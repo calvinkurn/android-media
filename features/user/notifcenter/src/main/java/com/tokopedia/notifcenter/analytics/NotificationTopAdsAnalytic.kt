@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.analytics
 
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -101,7 +102,9 @@ class NotificationTopAdsAnalytic @Inject constructor() {
     }
 
     private fun getDimension83Attribute(recommendationItem: RecommendationItem): String {
-        return if (recommendationItem.isFreeOngkirActive) {
+        return if (recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
+            VALUE_BEBAS_ONGKIR_EXTRA
+        } else if (recommendationItem.isFreeOngkirActive) {
             VALUE_BEBAS_ONGKIR
         } else {
             VALUE_NONE_OTHER
@@ -120,6 +123,7 @@ class NotificationTopAdsAnalytic @Inject constructor() {
     companion object {
         private const val DATA_DIMENSION_83 = "dimension83"
         private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         private const val VALUE_NONE_OTHER = "none / other"
     }
 }

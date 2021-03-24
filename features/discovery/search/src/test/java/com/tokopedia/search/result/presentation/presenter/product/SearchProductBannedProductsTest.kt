@@ -5,7 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.slot
@@ -51,7 +51,7 @@ internal class SearchProductBannedProductsTest: ProductListPresenterTestFixtures
     private fun `Then verify banned products view model`(searchProductModel: SearchProductModel) {
         bannedProductsVisitableList.size shouldBe 1
 
-        val bannedProductsViewModel = bannedProductsVisitableList[0] as BannedProductsEmptySearchViewModel
+        val bannedProductsViewModel = bannedProductsVisitableList[0] as BannedProductsEmptySearchDataView
 
         bannedProductsViewModel.errorMessage shouldBe searchProductModel.searchProduct.header.errorMessage
     }
