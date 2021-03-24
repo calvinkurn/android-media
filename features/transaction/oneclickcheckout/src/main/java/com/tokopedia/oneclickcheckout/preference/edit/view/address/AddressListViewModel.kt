@@ -113,6 +113,16 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
                         destinationLatitude = item.latitude
                         destinationLongitude = item.longitude
                         destinationPostalCode = item.postalCode
+
+                        selectedAddressModel = AddressModel(
+                                addressId = item.id?.toIntOrZero() ?: 0,
+                                cityId = item.cityId?.toIntOrZero() ?: 0,
+                                districtId = item.destinationDistrictId?.toIntOrZero() ?: 0,
+                                latitude = item.latitude,
+                                longitude = item.longitude,
+                                addressName = item.addressName,
+                                receiverName = item.recipientName,
+                                postalCode = item.postalCode)
                     }
                 }
                 addressListModel.listAddress = if (isLoadMore) {

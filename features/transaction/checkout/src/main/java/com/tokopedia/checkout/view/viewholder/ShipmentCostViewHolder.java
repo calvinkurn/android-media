@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.viewholder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -86,6 +87,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvProductDiscountPrice = itemView.findViewById(R.id.tv_product_discount_price);
     }
 
+    @SuppressLint("StringFormatInvalid")
     public void bindViewHolder(ShipmentCostModel shipmentCost) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
@@ -135,8 +137,13 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductDiscount(ShipmentCostModel shipmentCost) {
-        mTvProductDiscountLabel.setText(mTvProductDiscountLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_product_discount));
-        mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount() * -1));
+        if (shipmentCost.getProductDiscountAmount() > 0) {
+            mTvProductDiscountLabel.setText(mTvProductDiscountLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_product_discount));
+            mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount() * -1));
+        } else {
+            mTvProductDiscountLabel.setVisibility(View.GONE);
+            mTvProductDiscountPrice.setVisibility(View.GONE);
+        }
     }
 
     private void renderShippingDiscount(ShipmentCostModel shipmentCost) {
@@ -149,6 +156,9 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
             } else {
                 mTvShippingDiscountPrice.setText(getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, shipmentCost.getShippingDiscountAmount() * -1));
             }
+        } else {
+            mTvShippingDiscountLabel.setVisibility(View.GONE);
+            mTvShippingDiscountPrice.setVisibility(View.GONE);
         }
     }
 
