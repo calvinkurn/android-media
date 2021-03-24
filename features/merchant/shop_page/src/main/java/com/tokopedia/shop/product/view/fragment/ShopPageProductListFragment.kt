@@ -572,7 +572,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun scrollToChangeProductGridSegment() {
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
-        getRecyclerView(view).smoothScrollBy(0, recyclerViewTopPadding * 2)
+        getRecyclerView(view)?.smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopProductAdapter.shopChangeProductGridSegment,
                 shopSortFilterHeight + recyclerViewTopPadding

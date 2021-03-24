@@ -104,7 +104,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     // Use single recycler view to prevent memory leak & OOM caused by nested recyclerview
-    private lateinit var recyclerView: RecyclerView
+    private var recyclerView: RecyclerView? = null
     private lateinit var adapter: PromoCheckoutAdapter
 
     // Main Section
@@ -178,8 +178,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.promo_checkout_marketplace_module_fragment, container, false)
         recyclerView = getRecyclerView(view)
-        recyclerView.addItemDecoration(itemDecorator)
-        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        recyclerView?.addItemDecoration(itemDecorator)
+        (recyclerView?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
@@ -268,7 +268,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun initializeRecyclerViewScrollListener() {
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 
             }
@@ -667,8 +667,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun snapToPromoInput() {
-        recyclerView.layoutManager?.let { layoutManager ->
-            val linearSmoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+        recyclerView?.layoutManager?.let { layoutManager ->
+            val linearSmoothScroller = object : LinearSmoothScroller(recyclerView?.context) {
                 override fun getVerticalSnapPreference(): Int {
                     return SNAP_TO_START
                 }
@@ -939,7 +939,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoListItem(element: PromoListItemUiModel) {
         viewModel.updatePromoListAfterClickPromoItem(element)
-        renderStickyPromoHeader(recyclerView)
+        recyclerView?.let { renderStickyPromoHeader(it) }
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {

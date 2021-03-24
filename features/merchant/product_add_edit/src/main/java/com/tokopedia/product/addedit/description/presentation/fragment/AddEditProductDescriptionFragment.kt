@@ -146,7 +146,7 @@ class AddEditProductDescriptionFragment:
                 inputImage = ""
                 inputTitle = ""
                 inputDescription = ""
-                getRecyclerView(view).post { adapter.notifyItemChanged(position) }
+                getRecyclerView(view)?.post { adapter.notifyItemChanged(position) }
             }
             getVideoYoutube(url, position)
         }
@@ -325,11 +325,11 @@ class AddEditProductDescriptionFragment:
 
     override fun startRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
-        getRecyclerView(view).viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 stopRenderPerformanceMonitoring()
                 stopPerformanceMonitoring()
-                getRecyclerView(view).viewTreeObserver.removeOnGlobalLayoutListener(this)
+                getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -358,7 +358,7 @@ class AddEditProductDescriptionFragment:
             }
         }
 
-        getRecyclerView(view).itemAnimator = object: DefaultItemAnimator() {
+        getRecyclerView(view)?.itemAnimator = object: DefaultItemAnimator() {
             override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
                 return true
             }

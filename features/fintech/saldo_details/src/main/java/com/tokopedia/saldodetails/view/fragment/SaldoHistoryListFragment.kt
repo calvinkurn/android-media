@@ -167,7 +167,7 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     }
 
-    override fun getRecyclerView(view: View): RecyclerView {
+    override fun getRecyclerView(view: View): RecyclerView? {
         this.recyclerView = super.getRecyclerView(view)
         return super.getRecyclerView(view)
     }

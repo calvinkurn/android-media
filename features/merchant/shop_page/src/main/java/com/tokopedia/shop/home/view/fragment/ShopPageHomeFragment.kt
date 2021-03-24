@@ -1804,7 +1804,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
                     if (parent.isNewlyBroadcastSaved() == true) {
                         parent.clearIsNewlyBroadcastSaved()
-                        recyclerView.addOneTimeGlobalLayoutListener {
+                        recyclerView?.addOneTimeGlobalLayoutListener {
                             viewScope.launch {
                                 parent.collapseAppBar()
                                 val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }

@@ -121,7 +121,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         ContextCompat.getDrawable(requireContext(), R.drawable.divider_vertical_product_review)?.let {
             dividerItemDecoration.setDrawable(it)
         }
-        getRecyclerView(view).addItemDecoration(dividerItemDecoration)
+        getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         observeViewModel()
     }
 
@@ -218,7 +218,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun onSmoothScrollToReplyView(adapterPosition: Int) {
         if (adapterPosition != RecyclerView.NO_POSITION) {
-            getRecyclerView(view).smoothScrollToPosition(adapterPosition)
+            getRecyclerView(view)?.smoothScrollToPosition(adapterPosition)
         }
     }
 
