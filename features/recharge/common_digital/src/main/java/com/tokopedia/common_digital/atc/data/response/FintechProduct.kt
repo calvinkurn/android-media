@@ -41,7 +41,11 @@ data class FintechProduct(
 
         @SerializedName("info")
         @Expose
-        var info: FintechProductInfo = FintechProductInfo()
+        var info: FintechProductInfo = FintechProductInfo(),
+
+        @SerializedName("operator_name")
+        @Expose
+        var operatorName: String = ""
 ) : Parcelable {
 
     @Parcelize

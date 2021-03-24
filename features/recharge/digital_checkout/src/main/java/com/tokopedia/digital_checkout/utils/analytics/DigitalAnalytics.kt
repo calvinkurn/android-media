@@ -263,7 +263,7 @@ class DigitalAnalytics {
     private fun constructFintechProduct(fintechProduct: FintechProduct, position: Int): Map<String?, Any?> {
         return DataLayer.mapOf(
                 //will be fill with operator_name
-                DigitalCheckoutTrackingConst.Product.KEY_BRAND, "",
+                DigitalCheckoutTrackingConst.Product.KEY_BRAND, fintechProduct.operatorName,
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, fintechProduct.transactionType,
                 DigitalCheckoutTrackingConst.Product.KEY_ID, fintechProduct.tierId,
                 DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - tebus murah",
@@ -277,7 +277,7 @@ class DigitalAnalytics {
     private fun constructFintechProductOnCheckout(fintechProduct: FintechProduct): Map<String?, Any?> {
         return DataLayer.mapOf(
                 //will be fill with operator_name
-                DigitalCheckoutTrackingConst.Product.KEY_BRAND, "",
+                DigitalCheckoutTrackingConst.Product.KEY_BRAND, fintechProduct.operatorName,
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, fintechProduct.transactionType,
                 DigitalCheckoutTrackingConst.Product.KEY_ID, fintechProduct.tierId,
                 DigitalCheckoutTrackingConst.Product.KEY_NAME, fintechProduct.info.title,
