@@ -234,9 +234,11 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         isLoadTemplate = true
         isLoadProducts = true
 
-        viewModel?.fetchReminderCounter()
-        viewModel?.fetchReminderTemplate()
-        viewModel?.fetchProductList()
+        viewModel?.run {
+            fetchReminderCounter()
+            fetchReminderTemplate()
+            fetchProductList()
+        }
     }
 
     private fun refreshData() {
@@ -308,7 +310,7 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                     getString(R.string.review_reminder_snackbar_error),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    "Refresh",
+                    getString(R.string.review_reminder_snackbar_error_action),
                     View.OnClickListener {
                         refreshData()
                     }).show()
@@ -329,5 +331,4 @@ class ReminderMessageFragment : BaseDaggerFragment() {
             }
         }
     }
-
 }
