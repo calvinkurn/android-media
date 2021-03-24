@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
-import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 
@@ -41,11 +41,11 @@ object PMRegistrationTermHelper {
             }
         } else { //existing seller
             if (shopInfo.isEligibleShopScore) {
-                val textColor = getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 title = context.getString(R.string.pm_shop_score_eligible, textColor, shopInfo.shopScore)
                 description = context.getString(R.string.pm_shop_score_eligible_description, shopInfo.shopScoreThreshold)
             } else {
-                val textColor = getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
+                val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
                 title = context.getString(R.string.pm_shop_score_not_eligible, textColor, shopInfo.shopScore)
                 description = context.getString(R.string.pm_shop_score_not_eligible_description, shopInfo.shopScoreThreshold)
                 ctaText = context.getString(R.string.pm_learn_shop_performance)
@@ -60,16 +60,6 @@ object PMRegistrationTermHelper {
                 clickableText = ctaText,
                 appLinkOrUrl = ctaAppLink
         )
-    }
-
-    private fun getHexColor(context: Context, resColor: Int): String {
-        val hexColor = Integer.toHexString(context.getResColor(resColor))
-        val startIndex = 2
-        return if (hexColor.length > startIndex) {
-            "#" + hexColor.substring(startIndex)
-        } else {
-            "#$hexColor"
-        }
     }
 
     private fun getSecondPmRegistrationTerm(context: Context, shopInfo: PMShopInfoUiModel): RegistrationTermUiModel {

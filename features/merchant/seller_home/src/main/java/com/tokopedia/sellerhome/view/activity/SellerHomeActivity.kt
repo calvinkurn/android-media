@@ -22,7 +22,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.gm.common.constant.PeriodType
+import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
 import com.tokopedia.gm.common.view.bottomsheet.PowerMerchantBottomSheet
+import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -74,12 +77,18 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
     @Inject
     lateinit var remoteConfig: SellerHomeRemoteConfig
+
     @Inject
     lateinit var sellerReviewHelper: SellerReviewHelper
+
+    @Inject
+    lateinit var pmCommonPreferenceManager: PMCommonPreferenceManager
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -399,24 +408,41 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun observePmInterruptData() {
         homeViewModel.pmInterruptData.observe(this, {
             when (it) {
-                is Success -> {
-                    val bottomSheet = (supportFragmentManager.findFragmentByTag(PowerMerchantBottomSheet.TAG)
-                            as? PowerMerchantBottomSheet)
-                            ?: PowerMerchantBottomSheet.createInstance()
-                    if (!bottomSheet.isAdded) {
-                        Handler().post {
-                            bottomSheet.setData(it.data)
-                                    .show(supportFragmentManager)
-                        }
-                    }
-                }
+                is Success -> showPmInterruptBottomSheet(it.data)
                 is Fail -> {
                     val message = "Seller Home Error PM interrupt data"
                     logToCrashlytics(it.throwable, message)
                 }
             }
         })
-        homeViewModel.getPmInterruptInfo()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val hasShowInterruptPopup = pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_INTERRUPT_POPUP, false)
+            if (!hasShowInterruptPopup) {
+                homeViewModel.getPmInterruptInfo()
+            }
+        }
+    }
+
+    private fun showPmInterruptBottomSheet(data: PowerMerchantInterruptUiModel) {
+        val isTransitionPeriod = data.periodType == PeriodType.TRANSITION_PERIOD
+        if (isTransitionPeriod) {
+            val bottomSheet = PowerMerchantBottomSheet.getInstance(supportFragmentManager)
+            if (!bottomSheet.isAdded) {
+                saveFlagHasShowPmInterruptPopup()
+                Handler().post {
+                    bottomSheet.setData(data)
+                            .show(supportFragmentManager)
+                }
+            }
+        }
+    }
+
+    private fun saveFlagHasShowPmInterruptPopup() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_INTERRUPT_POPUP, true)
+            //pmCommonPreferenceManager.apply()
+        }
     }
 
     private fun showNotificationBadge(notifUnreadInt: Int) {

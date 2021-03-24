@@ -6,11 +6,14 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.domain.interactor.GetPMInterruptDataUseCase
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -23,7 +26,7 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val getNotificationUseCase: GetNotificationUseCase,
         private val getSopInfoUseCase: GetShopInfoUseCase,
         private val getPMInterruptDataUseCase: GetPMInterruptDataUseCase,
-        dispatcher: CoroutineDispatchers
+        private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
@@ -49,12 +52,15 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     fun getPmInterruptInfo() {
-        executeCall(_pmInterruptData) {
+        launchCatchError(context = dispatcher.io, block = {
             getPMInterruptDataUseCase.params = GetPMInterruptDataUseCase.createParams(
                     shopId = userSession.shopId,
                     source = PMConstant.PM_SETTING_INFO_SOURCE
             )
-            getPMInterruptDataUseCase.executeOnBackground()
-        }
+            val result = getPMInterruptDataUseCase.executeOnBackground()
+            _pmInterruptData.postValue(Success(result))
+        }, onError = {
+            _pmInterruptData.postValue(Fail(it))
+        })
     }
 }

@@ -36,7 +36,7 @@ class GetPMInterruptDataUseCase @Inject constructor(
         private const val KEY_SHOP_ID = "shopId"
         private const val KEY_SOURCE = "source"
         private val QUERY = """
-            query getPMBottomSheetData(${'$'}shopId: Int!, ${'$'}source: String!) {
+            query getPMInterruptData(${'$'}shopId: Int!, ${'$'}source: String!) {
               goldGetPMGradeBenefitInfo(shop_id: ${'$'}shopId, source: ${'$'}source) {
                 next_monthly_refresh_date
                 current_pm_grade {
@@ -63,6 +63,9 @@ class GetPMInterruptDataUseCase @Inject constructor(
               }
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source:${'$'}source) {
                 period_type
+              }
+              reputation_shops(shop_ids: [${'$'}shopId]) {
+                score
               }
             }
         """.trimIndent()

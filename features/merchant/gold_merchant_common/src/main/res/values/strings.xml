@@ -5,6 +5,15 @@
     <string name="sah_label_pm_shop_level">Level:</string>
     <string name="sah_max_shop_score">/100</string>
     <string name="sah_label_core">Skor:</string>
-    <string name="gmc_power_merchant_bottom_sheet_title">Mulai %1$s, Performa Toko \nkamu diperbarui!</string>
+    <string name="gmc_power_merchant_bottom_sheet_title">Mulai %1$s, Performa Toko kamu \ndiperbarui!</string>
     <string name="gmc_check_your_shop_performance">Cek Performa Tokomu</string>
+    <string name="gmc_pm_grade_title">Kamu mendapatkan Power \nMerchant %1$s!</string>
+    <string name="gmc_pm_grade_description">Grade ini dikonversi dari badge Reputasimu. Pertahankan Performa untuk tetap di grade ini, ya!</string>
+    <string name="gmc_pm_grade_description_risk_tobe_inactive"><![CDATA[Grade ini dikonversi dari badge Reputasimu. Tingkatkan skor <font color="%1$s"><b>min. %2$d</b></font> agar Power Merchant tetap aktif.]]></string>
+    <string name="gmc_pm_grade_no_reputation_description">Pertahankan Performa untuk tetap di grade ini, ya!</string>
+    <string name="gmc_pm_grade_no_reputation_description_at_risk"><![CDATA[Tingkatkan skor <font color="%1$s"><b>min. %2$d</b></font> agar Power Merchant tetap aktif, ya!]]></string>
+    <string name="gmc_pm_potential_grade_title">Dengan gabung Power Merchant, kamu berpotensi jadi PM %1$s!</string>
+    <string name="gmc_pm_potential_grade_description">Dengan skor baru, kamu bisa daftar Power Merchant dengan keuntungan %1$s sesuai Reputasimu, lho!</string>
+    <string name="gmc_pm_potential_grade_no_reputation_title">Kamu bisa jadi Power Merchant %1$s!</string>
+    <string name="gmc_pm_potential_grade_no_reputation_description">Daftar Power Merchant dan kamu bisa dapat keuntungan Power Merchant %1$s!</string>
 </resources>

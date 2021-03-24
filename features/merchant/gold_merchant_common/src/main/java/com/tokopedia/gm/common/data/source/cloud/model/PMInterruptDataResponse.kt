@@ -14,5 +14,7 @@ data class PMInterruptDataResponse(
         @SerializedName("goldGetPMOSStatus")
         val pmStatus: PMShopStatusModel? = null,
         @SerializedName("goldGetPMSettingInfo")
-        val pmSettingInfo: PMSettingInfoModel? = null
+        val pmSettingInfo: PMSettingInfoModel? = null,
+        @SerializedName("reputation_shops")
+        val shopReputation: List<ShopReputationScoreModel>
 )

@@ -18,17 +18,21 @@ class GetPMInterruptDataMapper @Inject constructor() {
         val newFormat = "dd MMMM yyyy"
         val unformattedDate = data.gradeBenefitInfo?.nextMonthlyRefreshDate.orEmpty()
         val pmNewUpdateDateFmt = DateFormatUtils.formatDate(currentFormat, newFormat, unformattedDate)
+        val reputationThreshold = 5
+        val hasReputation = data.shopReputation.firstOrNull()?.score.orZero() >= reputationThreshold
         return PowerMerchantInterruptUiModel(
                 shopScore = data.shopInfo?.shopScore.orZero(),
                 shopScoreThreshold = data.shopInfo?.shopScoreThreshold.orZero(),
                 shopLevel = data.shopInfo?.shopLevel.orZero(),
+                isEligiblePm = data.shopInfo?.isEligiblePm ?: true,
                 pmStatus = data.pmStatus?.data?.powerMerchant?.status.orEmpty(),
                 pmGrade = data.gradeBenefitInfo?.currentPMGrade?.gradeName.orEmpty(),
                 pmGradeBadge = data.gradeBenefitInfo?.currentPMGrade?.imgBadgeUrl.orEmpty(),
                 potentialPmGrade = data.gradeBenefitInfo?.potentialPmGrade?.gradeName.orEmpty(),
                 potentialPmGradeBadge = data.gradeBenefitInfo?.potentialPmGrade?.imgBadgeUrl.orEmpty(),
                 pmNewUpdateDateFmt = pmNewUpdateDateFmt,
-                periodType = data.pmSettingInfo?.periodeType ?: PeriodType.COMMUNICATION_PERIOD
+                periodType = data.pmSettingInfo?.periodeType ?: PeriodType.COMMUNICATION_PERIOD,
+                hasReputation = hasReputation
         )
     }
 }

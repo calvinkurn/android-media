@@ -5,7 +5,7 @@ package com.tokopedia.gm.common.constant
  */
 
 object PMShopGrade {
-    const val UNDEFINED = "undefined"
+    const val NO_GRADE = "no_grade"
     const val BRONZE = "Bronze"
     const val SILVER = "Silver"
     const val GOLD = "Gold"

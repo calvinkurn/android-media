@@ -23,12 +23,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSahPmTitle"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl3"
-        android:gravity="center"
         app:layout_constraintEnd_toStartOf="@+id/guidelineGmcEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineGmcStart"
         app:layout_constraintTop_toTopOf="parent"
@@ -98,6 +97,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guidelineGmcEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineGmcStart"
-        app:layout_constraintTop_toBottomOf="@+id/pmgSahPmCard"
-        app:unifyButtonSize="medium" />
+        app:layout_constraintTop_toBottomOf="@+id/pmgSahPmCard" />
 </androidx.constraintlayout.widget.ConstraintLayout>

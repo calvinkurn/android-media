@@ -23,16 +23,19 @@
                 android:id="@+id/imgSahPmGrade"
                 android:layout_width="@dimen/layout_lvl6"
                 android:layout_height="@dimen/layout_lvl6"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guidelineVerSabPmGrade1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_placeholder="@android:color/transparent"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/icSahPMPotentialPmGrade"
+                android:id="@+id/icSahPmReputationBadge"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
-                android:layout_marginEnd="@dimen/layout_lvl1"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imgSahPMPotentialGradeArrow"
                 app:layout_constraintEnd_toStartOf="@+id/imgSahPMPotentialGradeArrow"
@@ -56,10 +59,10 @@
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/imgSahPMPotentialPmGrade"
+                android:id="@+id/icSahPmGradeBadge"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
-                android:layout_marginStart="@dimen/layout_lvl1"
+                android:layout_marginStart="@dimen/spacing_lvl2"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imgSahPMPotentialGradeArrow"
                 app:layout_constraintStart_toEndOf="@+id/imgSahPMPotentialGradeArrow"
@@ -84,7 +87,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                tools:text="Kamu mendapatkan Power Merchant Bronze!" />
+                tools:text="@string/gmc_pm_grade_title" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSahPmGradeDescription"
@@ -97,7 +100,7 @@
                 app:layout_constraintStart_toStartOf="@+id/guidelineVerSabPmGrade1"
                 app:layout_constraintTop_toBottomOf="@+id/tvSahPmGradeTitle"
                 app:typographyType="body_3"
-                tools:text="Tingkatkan skor min. 60 agar Power Merchant tetap aktif, ya!" />
+                tools:text="Grade ini dikonversi dari badge Reputasimu. Pertahankan Performa untuk tetap di grade ini, ya!" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 </RelativeLayout>

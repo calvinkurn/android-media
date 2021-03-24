@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.gm.common.R
+import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_gmc_power_merchant.view.*
 
@@ -20,8 +22,8 @@ class PowerMerchantBottomSheet : BottomSheetUnify() {
     companion object {
         const val TAG = "SahPowerMerchantBottomSheet"
 
-        fun createInstance(): PowerMerchantBottomSheet {
-            return PowerMerchantBottomSheet().apply {
+        fun getInstance(fm: FragmentManager): PowerMerchantBottomSheet {
+            return (fm.findFragmentByTag(TAG) as? PowerMerchantBottomSheet) ?: PowerMerchantBottomSheet().apply {
                 clearContentPadding = true
                 showHeader = false
                 showCloseIcon = false
@@ -60,7 +62,7 @@ class PowerMerchantBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        if (data != null) {
+        data?.let {
             show(fm, TAG)
         }
     }
@@ -75,6 +77,20 @@ class PowerMerchantBottomSheet : BottomSheetUnify() {
             tvSahPmTitle.text = context.getString(R.string.gmc_power_merchant_bottom_sheet_title, data.pmNewUpdateDateFmt)
             slvSahPmShopLevel.show(data.shopLevel)
             tvSahPmShopScore.text = data.shopScore.toString()
+            pmgSahPmCard.show(data)
+
+            setShopScoreTextColor()
+        }
+    }
+
+    private fun setShopScoreTextColor() = childView?.run {
+        data?.let {
+            val textColor = if (it.shopScore >= it.shopScoreThreshold) {
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            } else {
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R600)
+            }
+            tvSahPmShopScore.setTextColor(textColor)
         }
     }
 }
