@@ -515,7 +515,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_fragment_rv?.scrollToPosition(0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData()
-        setupSettingList()
         getFirstRecommendation()
     }
 
