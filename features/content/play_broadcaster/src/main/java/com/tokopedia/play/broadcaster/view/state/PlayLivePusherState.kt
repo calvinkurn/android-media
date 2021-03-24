@@ -6,12 +6,12 @@ package com.tokopedia.play.broadcaster.view.state
  */
 sealed class PlayLivePusherState {
     object Connecting: PlayLivePusherState()
-    object Started: PlayLivePusherState()
-    object Resumed: PlayLivePusherState()
-    object Paused: PlayLivePusherState()
-    data class Stopped(val shouldNavigate: Boolean): PlayLivePusherState()
+    object Start: PlayLivePusherState()
+    data class Resume(val isResumed: Boolean): PlayLivePusherState()
+    object Pause: PlayLivePusherState()
+    data class Stop(val shouldNavigate: Boolean): PlayLivePusherState()
     data class Error(val errorState: PlayLivePusherErrorState, val throwable: Throwable): PlayLivePusherState()
-    object Unknown: PlayLivePusherState()
+//    object Unknown: PlayLivePusherState()
 }
 
 sealed class PlayLivePusherErrorState {

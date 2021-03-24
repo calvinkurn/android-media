@@ -11,10 +11,10 @@ interface PlayChannelLiveStateListener : PlayLiveStateListener {
 
     override fun onStateChanged(state: PlayLivePusherState) {
         when(state) {
-            is PlayLivePusherState.Started,
-            is PlayLivePusherState.Resumed -> onChannelStateChanged(PlayChannelStatusType.Live)
-            is PlayLivePusherState.Paused -> onChannelStateChanged(PlayChannelStatusType.Pause)
-            is PlayLivePusherState.Stopped -> onChannelStateChanged(PlayChannelStatusType.Stop)
+            is PlayLivePusherState.Start -> onChannelStateChanged(PlayChannelStatusType.Live)
+            is PlayLivePusherState.Resume -> if (state.isResumed) onChannelStateChanged(PlayChannelStatusType.Live)
+            is PlayLivePusherState.Pause -> onChannelStateChanged(PlayChannelStatusType.Pause)
+            is PlayLivePusherState.Stop -> onChannelStateChanged(PlayChannelStatusType.Stop)
         }
     }
 

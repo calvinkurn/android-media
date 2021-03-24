@@ -358,7 +358,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun handleLiveInfoState(state: PlayLivePusherState) {
         if (!isVisible) return
         when (state) {
-            is PlayLivePusherState.Started -> {
+            is PlayLivePusherState.Start -> {
                 openBroadcastLivePage()
                 btnStartLive.setLoading(false)
                 parentViewModel.setFirstTimeLiveStreaming()

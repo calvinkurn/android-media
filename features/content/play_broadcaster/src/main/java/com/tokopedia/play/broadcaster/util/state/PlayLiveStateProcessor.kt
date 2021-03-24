@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.util.state
 
-import android.content.Context
-import android.content.SharedPreferences
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
+import com.tokopedia.play.broadcaster.util.state.observer.PlayLiveStateObserver
 import com.tokopedia.play.broadcaster.util.timer.PlayCountDownTimer
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
@@ -14,28 +14,28 @@ import javax.inject.Inject
  * Created by mzennis on 16/03/21.
  */
 class PlayLiveStateProcessor(
+        private val lifecycleOwner: LifecycleOwner,
         private val livePusherWrapper: ApsaraLivePusherWrapper,
         private val countDownTimer: PlayCountDownTimer
-) {
+): PlayLiveStateObserver.Listener {
 
-    class Factory @Inject constructor() {
+    class Factory @Inject constructor(
+            private val lifecycleOwner: LifecycleOwner
+    ) {
         fun create(
                 livePusherWrapper: ApsaraLivePusherWrapper,
                 countDownTimer: PlayCountDownTimer
         ): PlayLiveStateProcessor {
-            return PlayLiveStateProcessor(livePusherWrapper, countDownTimer)
+            return PlayLiveStateProcessor(
+                    lifecycleOwner = lifecycleOwner,
+                    livePusherWrapper = livePusherWrapper,
+                    countDownTimer = countDownTimer
+            )
         }
     }
 
     private val mListeners = mutableListOf<PlayLiveStateListener>()
-
-    private var mPauseDuration: Long? = null
-
-    private val localStorage: SharedPreferences
-        get() = livePusherWrapper.context.getSharedPreferences(PlayCountDownTimer.PLAY_BROADCAST_PREFERENCE, Context.MODE_PRIVATE)
-
-    private val localStorageEditor: SharedPreferences.Editor
-        get() = localStorage.edit()
+    private val liveStateObserver = PlayLiveStateObserver(livePusherWrapper, listener = this)
 
     init {
         livePusherWrapper.addListener(object : ApsaraLivePusherWrapper.Listener{
@@ -47,10 +47,11 @@ class PlayLiveStateProcessor(
                 handleError(code, throwable)
             }
         })
+        addLifecycleObserver()
     }
 
     fun setPauseDuration(duration: Long) {
-        mPauseDuration = duration
+        liveStateObserver.setPauseDuration(duration)
     }
 
     fun addStateListener(listener: PlayLiveStateListener) {
@@ -61,33 +62,33 @@ class PlayLiveStateProcessor(
         mListeners.remove(listener)
     }
 
+    override fun onReachMaximumPauseDuration() {
+        broadcastState(PlayLivePusherState.Stop(shouldNavigate = true))
+    }
+
+    override fun onShouldContinueLiveStreaming() {
+        broadcastState(PlayLivePusherState.Resume(isResumed = false))
+    }
+
     private fun handleState(state: ApsaraLivePusherState) {
         when(state) {
             ApsaraLivePusherState.Connecting -> broadcastState(PlayLivePusherState.Connecting)
             ApsaraLivePusherState.Start -> {
-                broadcastState(PlayLivePusherState.Started)
+                broadcastState(PlayLivePusherState.Start)
             }
             ApsaraLivePusherState.Resume -> {
-                if (isReachMaximumPauseDuration()) {
-                    broadcastState(PlayLivePusherState.Stopped(shouldNavigate = true))
-                } else {
-                    broadcastState(PlayLivePusherState.Resumed)
-                    countDownTimer.resume()
-                }
+                broadcastState(PlayLivePusherState.Resume(isResumed = true))
+                countDownTimer.resume()
             }
             ApsaraLivePusherState.Pause -> {
-                broadcastState(PlayLivePusherState.Paused)
+                broadcastState(PlayLivePusherState.Pause)
                 countDownTimer.pause()
-                setLastPauseMillis()
             }
-            ApsaraLivePusherState.Restart -> broadcastState(PlayLivePusherState.Resumed)
-            ApsaraLivePusherState.Recovered -> broadcastState(PlayLivePusherState.Resumed)
-            else -> removeLastPauseMillis()
+            ApsaraLivePusherState.Restart -> broadcastState(PlayLivePusherState.Resume(isResumed = true))
+            ApsaraLivePusherState.Recovered -> broadcastState(PlayLivePusherState.Resume(isResumed = true))
+            ApsaraLivePusherState.Stop -> removeLifecycleObserver()
+            else -> {}
         }
-    }
-
-    private fun removeLastPauseMillis() {
-        localStorageEditor.remove(KEY_PAUSE_TIME)?.apply()
     }
 
     private fun handleError(code: Int, throwable: Throwable) {
@@ -108,29 +109,11 @@ class PlayLiveStateProcessor(
         mListeners.forEach { it.onStateChanged(state) }
     }
 
-    private fun setLastPauseMillis() {
-        localStorageEditor.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())?.apply()
+    private fun addLifecycleObserver() {
+        lifecycleOwner.lifecycle.addObserver(liveStateObserver)
     }
 
-    private fun isReachMaximumPauseDuration(): Boolean {
-        val maxPauseMillis = mPauseDuration
-        if (maxPauseMillis != null) {
-            val lastPauseMillis = localStorage.getLong(KEY_PAUSE_TIME, 0L)
-            if (lastPauseMillis > 0 && reachMaximumPauseDuration(lastPauseMillis, maxPauseMillis)) {
-                localStorageEditor.remove(KEY_PAUSE_TIME)?.apply()
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun reachMaximumPauseDuration(lastMillis: Long, maxPauseMillis: Long): Boolean {
-        val currentMillis = System.currentTimeMillis()
-        return ((currentMillis - lastMillis) > maxPauseMillis)
-    }
-
-    companion object {
-
-        const val KEY_PAUSE_TIME = "play_broadcast_pause_time"
+    private fun removeLifecycleObserver() {
+        lifecycleOwner.lifecycle.removeObserver(liveStateObserver)
     }
 }

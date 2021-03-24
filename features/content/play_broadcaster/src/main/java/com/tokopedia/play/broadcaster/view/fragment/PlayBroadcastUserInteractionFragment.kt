@@ -31,7 +31,6 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
-import com.tokopedia.play.broadcaster.view.state.LivePusherTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
@@ -127,11 +126,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         actionBarView.rootView.requestApplyInsetsWhenAttached()
         ivShareLink.requestApplyInsetsWhenAttached()
         viewTimer.requestApplyInsetsWhenAttached()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (parentViewModel.pusherState is PlayLivePusherState.Paused) showDialogContinueLiveStreaming()
     }
 
     private fun initView(view: View) {
@@ -371,12 +365,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         errorLiveNetworkLossView.hide()
         when (state) {
             is PlayLivePusherState.Connecting -> showLoading(true)
-            is PlayLivePusherState.Started -> showLoading(false)
-//            is PlayLivePusherState.Paused -> {
-//                showLoading(false)
-//                showDialogContinueLiveStreaming()
-//            }
-            is PlayLivePusherState.Stopped -> {
+            is PlayLivePusherState.Start -> showLoading(false)
+            is PlayLivePusherState.Stop -> {
                 showLoading(false)
                  if (state.shouldNavigate) navigateToSummary()
             }
@@ -384,11 +374,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 showLoading(false)
                 handleLivePushError(state)
             }
-            PlayLivePusherState.Resumed -> {
+            is PlayLivePusherState.Resume -> {
                 showLoading(false)
-                showToaster(
+                if (state.isResumed) showToaster(
                         message = getString(R.string.play_live_broadcast_network_recover),
                         type = Toaster.TYPE_NORMAL)
+                else showDialogContinueLiveStreaming()
             }
         }
     }

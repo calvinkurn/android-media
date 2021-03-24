@@ -16,14 +16,12 @@ import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.*
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
@@ -329,11 +327,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun configureChannelType(channelType: ChannelType) {
         if (isRecreated) return
         when (channelType) {
-            ChannelType.Pause -> {
-                showDialogContinueLiveStreaming()
-                openBroadcastActivePage()
-                analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
-            }
+            ChannelType.Pause -> openBroadcastActivePage()
             ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
             else -> openBroadcastSetupPage()
         }
@@ -406,24 +400,24 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         ).show()
     }
 
-    private fun showDialogContinueLiveStreaming() {
-        getDialog(
-                actionType = DialogUnify.HORIZONTAL_ACTION,
-                title = getString(R.string.play_dialog_continue_live_title),
-                desc = getString(R.string.play_dialog_continue_live_desc),
-                primaryCta = getString(R.string.play_next),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    viewModel.startPushStream()
-                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
-                },
-                secondaryCta = getString(R.string.play_broadcast_end),
-                secondaryListener = { dialog ->
-                    dialog.dismiss()
-                    viewModel.stopPushStream(shouldNavigate = true)
-                }
-        ).show()
-    }
+//    private fun showDialogContinueLiveStreaming() {
+//        getDialog(
+//                actionType = DialogUnify.HORIZONTAL_ACTION,
+//                title = getString(R.string.play_dialog_continue_live_title),
+//                desc = getString(R.string.play_dialog_continue_live_desc),
+//                primaryCta = getString(R.string.play_next),
+//                primaryListener = { dialog ->
+//                    dialog.dismiss()
+//                    viewModel.startPushStream()
+//                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
+//                },
+//                secondaryCta = getString(R.string.play_broadcast_end),
+//                secondaryListener = { dialog ->
+//                    dialog.dismiss()
+//                    viewModel.stopPushStream(shouldNavigate = true)
+//                }
+//        ).show()
+//    }
 
     private fun showDialogWhenActiveOnOtherDevices() {
         getDialog(

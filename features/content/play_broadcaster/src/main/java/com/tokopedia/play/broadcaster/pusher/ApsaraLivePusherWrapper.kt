@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.alivc.live.pusher.*
 import com.tokopedia.play.broadcaster.pusher.config.ApsaraLivePusherConfig
@@ -57,6 +58,8 @@ class ApsaraLivePusherWrapper private constructor(
 
     private var aliVcLivePusher: AlivcLivePusher? = null
     private var apsaraLivePusherState: ApsaraLivePusherState = ApsaraLivePusherState.Idle
+
+    private val livePusherObserver: LifecycleObserver = PlayLivePusherObserver(this)
 
     private val livePusherStateProcessor = object : ApsaraLivePusherStateProcessor {
         override fun onStateChanged(state: ApsaraLivePusherState) {
@@ -165,6 +168,7 @@ class ApsaraLivePusherWrapper private constructor(
     }
 
     fun destroy() {
+        removeLifecycleObserver()
         safeAction { aliVcLivePusher?.destroy() }
     }
 
@@ -185,9 +189,11 @@ class ApsaraLivePusherWrapper private constructor(
     }
 
     private fun configureLifecycleObserver() {
-        lifecycleOwner.lifecycle.addObserver(
-                PlayLivePusherObserver(this)
-        )
+        lifecycleOwner.lifecycle.addObserver(livePusherObserver)
+    }
+
+    private fun removeLifecycleObserver() {
+        lifecycleOwner.lifecycle.removeObserver(livePusherObserver)
     }
 
     private fun broadcastStateToListeners(state: ApsaraLivePusherState) {
