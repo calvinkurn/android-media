@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
@@ -23,9 +25,10 @@ class ItemDetailPerformanceViewHolder(view: View,
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
             setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            if (element?.isDividerShow == false) {
+            separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
+
+            if (element?.isDividerHide == true) {
                 cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
-                separatorItemDetail?.hide()
                 cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 8.toPx())
             }
             tvTitlePerformanceProgress?.text = element?.titleDetailPerformance.orEmpty()
@@ -48,5 +51,4 @@ class ItemDetailPerformanceViewHolder(view: View,
             }
         }
     }
-
 }

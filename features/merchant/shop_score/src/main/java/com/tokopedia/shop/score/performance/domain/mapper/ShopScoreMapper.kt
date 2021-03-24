@@ -335,7 +335,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     private fun mapToItemDetailPerformanceUiModel(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
             val shopScoreLevelSize = shopScoreLevelList?.filter { it.identifier != PENALTY_IDENTIFIER }?.size.orZero()
-            shopScoreLevelList?.filter { it.identifier != PENALTY_IDENTIFIER }?.mapIndexed { index, shopScoreDetail ->
+            shopScoreLevelList?.filter { it.identifier != PENALTY_IDENTIFIER }?.forEachIndexed { index, shopScoreDetail ->
 
                 val targetDetailPerformanceText = when (shopScoreDetail.identifier) {
                     CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> "${shopScoreDetail.nextMinValue} $minuteText"
@@ -350,7 +350,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         valueDetailPerformance = shopScoreDetail.rawValue.toString(),
                         colorValueDetailPerformance = shopScoreDetail.colorText,
                         targetDetailPerformance = targetDetailPerformanceText,
-                        isDividerShow = index + 1 < shopScoreLevelSize,
+                        isDividerHide = index + 1 == shopScoreLevelSize,
                         identifierDetailPerformance = shopScoreDetail.identifier
                 ))
             }
