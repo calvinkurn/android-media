@@ -11,7 +11,7 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -44,7 +44,7 @@ class TopChatRoomPresenterStub @Inject constructor(
         chatToggleBlockChat: ChatToggleBlockChatUseCase,
         chatBackgroundUseCase: ChatBackgroundUseCase,
         sharedPref: SharedPreferences,
-        dispatchers: TopchatCoroutineContextProvider
+        dispatchers: CoroutineDispatchers
 ) : TopChatRoomPresenter(tkpdAuthInterceptor,
         fingerprintInterceptor,
         userSession,
