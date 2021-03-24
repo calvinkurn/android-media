@@ -1467,8 +1467,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
             val productPrice = viewModel.productInputModel.detailInputModel.price
             val productSuggestedPrice = it.suggestedPrice.toBigDecimal().toBigInteger()
+            val priceWhenLoaded = SharedPreferencesUtil.getPriceWhenLoaded(requireActivity())
 
-            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0 && it.price > it.suggestedPrice
+            // hide/ show price recommendation
+            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0
+                    && priceWhenLoaded > it.suggestedPrice.toBigDecimal().toBigInteger()
+
+            // display suggestion only when price recomendation visible
             if (productPriceRecommendation?.isVisible == true) {
                 val minText = it.suggestedPriceMin.getCurrencyFormatted()
                 val maxText = it.suggestedPriceMax.getCurrencyFormatted()
@@ -1478,6 +1483,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productPriceRecommendation?.description = descriptionText
             }
 
+            // expand/ collapse price recommendation
             if (productPrice <= productSuggestedPrice) {
                 productPriceRecommendation?.setSuggestedPriceSelected()
             }
