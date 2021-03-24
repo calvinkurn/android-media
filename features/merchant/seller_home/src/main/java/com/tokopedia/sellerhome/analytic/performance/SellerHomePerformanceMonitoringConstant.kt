@@ -17,4 +17,5 @@ object SellerHomePerformanceMonitoringConstant {
     const val SELLER_HOME_BAR_CHART_TRACE = "seller_home_widget_bar_chart"
     const val SELLER_HOME_MULTI_LINE_GRAPH_TRACE = "seller_home_widget_multi_line_graph"
     const val SELLER_HOME_ANNOUNCEMENT_TRACE = "seller_home_widget_announcement"
+    const val SELLER_HOME_TICKER_TRACE = "seller_home_widget_ticker"
 }

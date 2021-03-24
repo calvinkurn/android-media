@@ -151,4 +151,7 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.buyerorder)
     implementation project(rootProject.ext.features.snapshot)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
 }

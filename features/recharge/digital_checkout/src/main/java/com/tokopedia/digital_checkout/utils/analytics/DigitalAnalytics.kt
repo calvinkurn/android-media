@@ -173,7 +173,7 @@ class DigitalAnalytics {
                                 DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.STEP, "1",
                                         DigitalCheckoutTrackingConst.Label.OPTION, DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP1),
                                 DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))),
-                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE)
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE)
         )
     }
 
@@ -209,7 +209,7 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.Label.OPTION, DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(
                         *products.toTypedArray()))),
-                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE
+                        DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE
                 )
         )
     }

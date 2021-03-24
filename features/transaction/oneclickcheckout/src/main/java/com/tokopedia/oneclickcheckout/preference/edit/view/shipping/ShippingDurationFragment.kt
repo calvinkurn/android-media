@@ -57,11 +57,13 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
+        private const val ARG_ADDRESS_STATE = "address_state"
 
-        fun newInstance(isEdit: Boolean = false): ShippingDurationFragment {
+        fun newInstance(isEdit: Boolean = false, addressState: Int): ShippingDurationFragment {
             val shippingDurationFragment = ShippingDurationFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            bundle.putInt(ARG_ADDRESS_STATE, addressState)
             shippingDurationFragment.arguments = bundle
             return shippingDurationFragment
         }
@@ -177,7 +179,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                 if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                     parent.goBack()
                 } else {
-                    parent.addFragment(PaymentMethodFragment.newInstance())
+                    val addressState = arguments?.getInt(ARG_ADDRESS_STATE) ?: 0
+                    parent.addFragment(PaymentMethodFragment.newInstance(addressState = addressState))
                 }
             }
 

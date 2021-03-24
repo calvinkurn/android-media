@@ -137,7 +137,7 @@ class ShipmentPresenterChangeShippingAddressTest {
                 .build())
 
         // When
-        presenter.changeShippingAddress(recipientAddressModel, false, false, true, true)
+        presenter.changeShippingAddress(recipientAddressModel, null, false, false, true, true)
 
         // Then
         verifySequence {
@@ -159,7 +159,7 @@ class ShipmentPresenterChangeShippingAddressTest {
                 .build())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
+        presenter.changeShippingAddress(RecipientAddressModel(), null, false, false, true, true)
 
         // Then
         verifySequence {
@@ -179,7 +179,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
+        presenter.changeShippingAddress(RecipientAddressModel(), null, false, false, true, true)
 
         // Then
         verifySequence {
@@ -199,7 +199,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         val recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
             locationDataModel = LocationDataModel().apply {
-                addrId = 1
+                addrId = "1"
             }
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
@@ -223,7 +223,7 @@ class ShipmentPresenterChangeShippingAddressTest {
                 .build())
 
         // When
-        presenter.changeShippingAddress(recipientAddressModel, false, true, true, true)
+        presenter.changeShippingAddress(recipientAddressModel, null, false, true, true, true)
 
         // Then
         verifySequence {
@@ -250,7 +250,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(shippingAddressData)
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
+        presenter.changeShippingAddress(RecipientAddressModel(), null, false, false, true, true)
 
         // Then
         verifySequence {

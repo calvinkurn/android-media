@@ -162,7 +162,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getCart(it.data)
-                is Fail -> closeViewWithMessageAlert(it.throwable.message)
+                is Fail -> closeViewWithMessageAlert(it.throwable.message ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         })
 
@@ -176,7 +176,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
         })
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            closeViewWithMessageAlert(it)
+            closeViewWithMessageAlert(it ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
         })
 
         viewModel.isSuccessCancelVoucherCart.observe(viewLifecycleOwner, Observer {
@@ -319,7 +319,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
                 viewEmptyState.setDescription(getString(com.tokopedia.globalerror.R.string.error500Desc))
             } else {
                 viewEmptyState.setTitle(getString(R.string.digital_checkout_empty_state_title))
-                viewEmptyState.setImageUrl(TRANSACTION_FAILED_IMG_URL)
+                viewEmptyState.setImageUrl(getString(R.string.digital_cart_default_error_img_url))
                 viewEmptyState.setDescription(message)
             }
 
@@ -357,7 +357,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
                 getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener { /** do nothing **/ }).show()
     }
 
-    private fun closeViewWithMessageAlert(message: String?) {
+    private fun closeViewWithMessageAlert(message: String) {
         loaderCheckout.visibility = View.GONE
 
         if (cartPassData?.isFromPDP == true) {
@@ -366,7 +366,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         } else {
-            showError(message ?: "")
+            showError(message)
         }
     }
 
@@ -582,9 +582,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
 
         private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
-
-
-        private const val TRANSACTION_FAILED_IMG_URL = "https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png"
 
         private const val REQUEST_CODE_OTP = 1001
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16

@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.pdp.domain.usecase
 
+import android.content.Context
 import com.tokopedia.gamification.pdp.domain.GAMI_PRODUCT_RECOM_WIDGET_QUERY
 import com.tokopedia.gamification.pdp.domain.Mapper
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -10,10 +11,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 @GqlQuery("GamiProductRecomWidgetQuery", GAMI_PRODUCT_RECOM_WIDGET_QUERY)
-class GamingRecommendationProductUseCase @Inject constructor(graphqlUseCase: GraphqlUseCase,
+class GamingRecommendationProductUseCase @Inject constructor(context: Context,
+                                                             graphqlUseCase: GraphqlUseCase,
                                                              val userSession: UserSessionInterface,
                                                              val mapper: Mapper)
-    : GetRecommendationUseCase(GamiProductRecomWidgetQuery.GQL_QUERY, graphqlUseCase, userSession) {
+    : GetRecommendationUseCase(context,GamiProductRecomWidgetQuery.GQL_QUERY, graphqlUseCase, userSession) {
     var useEmptyShopId = false
 
     fun getRequestParams(pageNumber: Int, shopId: String, pageName: String): RequestParams {
