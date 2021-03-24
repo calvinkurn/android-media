@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,8 +32,16 @@ class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
             itemView.img_carousell_recharge_home_page.loadImage(element.mediaUrl)
             itemView.setOnClickListener {
-                if(element.applink.isNotEmpty())
-                onItemBindListener.onRechargeSectionItemClicked(element)
+                if(element.applink.isNotEmpty()){
+                    try {
+                        val uri = Uri.parse(element.applink)
+                        if (uri.pathSegments.size >= 1){
+                            onItemBindListener.onRechargeSectionItemClicked(element)
+                        }
+                    } catch (e: Exception){
+
+                    }
+                }
             }
         }
 
