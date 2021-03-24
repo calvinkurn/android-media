@@ -110,8 +110,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         goToPenaltyPage()
     }
 
-    override fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String) {
-        val bottomSheetDetail = BottomSheetPerformanceDetail.createInstance(titlePerformanceDetail)
+    override fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String, identifierPerformanceDetail: String) {
+        val bottomSheetDetail = BottomSheetPerformanceDetail.createInstance(titlePerformanceDetail, identifierPerformanceDetail)
         bottomSheetDetail.show(childFragmentManager)
     }
 

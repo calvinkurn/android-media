@@ -39,8 +39,8 @@ class CardTooltipLevelAdapter: RecyclerView.Adapter<CardTooltipLevelAdapter.Card
 
         fun bind(data: CardTooltipLevelUiModel) {
             with(itemView) {
-                tv_title_level_card?.text = context.getString(data.title)
-                tv_description_level_card?.text = MethodChecker.fromHtml(context.getString(data.desc))
+                tv_title_level_card?.text = data.title?.let { context.getString(it) }
+                tv_description_level_card?.text = MethodChecker.fromHtml(data.desc?.let { context.getString(it) })
                 if (data.isMyShop) {
                     cardLevelInformation?.setCardBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200))
                     levelLabel?.show()

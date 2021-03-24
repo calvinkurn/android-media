@@ -81,12 +81,6 @@ class ShopPerformanceViewModel @Inject constructor(
         })
     }
 
-    fun getShopPerformancePageDummy() {
-        launch {
-//            _shopPerformancePage.value = Success(shopScoreMapper.mapToShopPerformanceVisitableDummy())
-        }
-    }
-
     fun getShopPerformanceDetail(titlePerformance: String) {
         launch {
             _shopPerformanceDetail.value = shopScoreMapper.mapToShopPerformanceDetail(titlePerformance)

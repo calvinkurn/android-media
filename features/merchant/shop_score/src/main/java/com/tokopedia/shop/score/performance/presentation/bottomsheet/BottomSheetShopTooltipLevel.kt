@@ -69,7 +69,7 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        isFullpage = true
         initView(view)
         setRecyclerView()
         observeShopInfoLevel()

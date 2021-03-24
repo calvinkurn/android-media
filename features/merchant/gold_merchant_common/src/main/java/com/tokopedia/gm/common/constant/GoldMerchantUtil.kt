@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.constant
 
+import com.tokopedia.gm.common.constant.GoldMerchantUtil.diffDays
 import com.tokopedia.kotlin.extensions.view.orZero
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,5 +21,13 @@ object GoldMerchantUtil {
         val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
         val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
         return diff.toInt()
+    }
+
+    fun String.isTenureNewSeller(): Boolean {
+        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale.getDefault())
+        val joinDate = simpleDateFormat.parse(this)
+        val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
+        val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
+        return (diff in START_TENURE_EIGHTY_THREE until NEW_SELLER_DAYS)
     }
 }

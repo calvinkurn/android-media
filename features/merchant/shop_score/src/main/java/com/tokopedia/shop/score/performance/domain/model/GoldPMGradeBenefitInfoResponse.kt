@@ -25,9 +25,6 @@ data class GoldPMGradeBenefitInfoResponse(
                 @SerializedName("grade_name")
                 val gradeName: String = "",
                 @Expose
-                @SerializedName("image_badge_background_mobile_url")
-                val imageBadgeBackgroundMobileUrl: String = "",
-                @Expose
                 @SerializedName("image_badge_url")
                 val imageBadgeUrl: String = "",
                 @Expose
@@ -39,9 +36,6 @@ data class GoldPMGradeBenefitInfoResponse(
                 @Expose
                 @SerializedName("grade_name")
                 val gradeName: String = "",
-                @Expose
-                @SerializedName("image_badge_background_mobile_url")
-                val imageBadgeBackgroundMobileUrl: String = "",
                 @Expose
                 @SerializedName("image_badge_url")
                 val imageBadgeUrl: String = ""

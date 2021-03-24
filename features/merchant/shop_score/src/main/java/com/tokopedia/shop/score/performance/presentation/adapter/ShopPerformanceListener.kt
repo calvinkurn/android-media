@@ -7,7 +7,8 @@ interface ShopPerformanceListener {
 }
 
 interface ItemShopPerformanceListener {
-    fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String)
+    fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String,
+                                         identifierPerformanceDetail: String)
 }
 
 interface ItemPotentialRegularMerchantListener {

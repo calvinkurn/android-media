@@ -37,13 +37,11 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                         current_pm_grade {
                           grade_name
                           image_badge_url
-                          image_badge_background_mobile_url
                           last_updated_date
                         }
                         potential_pm_grade {
                           grade_name
                           image_badge_url               
-                          image_badge_background_mobile_url
                         }
                 }
             }
@@ -139,14 +137,12 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                 try {
                     val gqlResponse = gqlRepository.getReseponse(requests)
 
-                    if (!gqlResponse.getError(ShopScoreLevelResponse::class.java).isNullOrEmpty()) {
-                        val shopScoreLevelData = gqlResponse.getData<ShopScoreLevelResponse>(ShopScoreLevelResponse::class.java).shopScoreLevel
-                        shopScoreWrapperResponse.shopScoreLevelResponse = shopScoreLevelData
-                    }
-                    if (!gqlResponse.getError(ShopLevelTooltipResponse::class.java).isNullOrEmpty()) {
-                        val shopLevelTooltipData = gqlResponse.getData<ShopLevelTooltipResponse>(ShopLevelTooltipResponse::class.java).shopLevel
-                        shopScoreWrapperResponse.shopScoreTooltipResponse = shopLevelTooltipData
-                    }
+                    val shopScoreLevelData = gqlResponse.getData<ShopScoreLevelResponse>(ShopScoreLevelResponse::class.java).shopScoreLevel
+                    shopScoreWrapperResponse.shopScoreLevelResponse = shopScoreLevelData
+
+                    val shopLevelTooltipData = gqlResponse.getData<ShopLevelTooltipResponse>(ShopLevelTooltipResponse::class.java).shopLevel
+                    shopScoreWrapperResponse.shopScoreTooltipResponse = shopLevelTooltipData
+
                 } catch (e: Throwable) {
                 }
             }
@@ -161,28 +157,24 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
 
                 try {
                     val gqlResponse = gqlRepository.getReseponse(requests)
-                    if (!gqlResponse.getError(ShopScoreLevelResponse::class.java).isNullOrEmpty()) {
-                        val shopScoreLevelData = gqlResponse.getData<ShopScoreLevelResponse>(ShopScoreLevelResponse::class.java).shopScoreLevel
-                        shopScoreWrapperResponse.shopScoreLevelResponse = shopScoreLevelData
-                    }
-                    if (!gqlResponse.getError(ShopLevelTooltipResponse::class.java).isNullOrEmpty()) {
-                        val shopLevelTooltipData = gqlResponse.getData<ShopLevelTooltipResponse>(ShopLevelTooltipResponse::class.java).shopLevel
-                        shopScoreWrapperResponse.shopScoreTooltipResponse = shopLevelTooltipData
-                    }
-                    if (!gqlResponse.getError(GoldGetPMStatusResponse::class.java).isNullOrEmpty()) {
-                        val goldPMStatusData = gqlResponse.getData<GoldGetPMStatusResponse>(GoldGetPMStatusResponse::class.java).goldGetPMOSStatus
-                        shopScoreWrapperResponse.goldGetPMStatusResponse = goldPMStatusData
-                    }
 
-                    if (!gqlResponse.getError(GoldGetPMShopInfoResponse::class.java).isNullOrEmpty()) {
-                        val goldGetPMShopInfoData = gqlResponse.getData<GoldGetPMShopInfoResponse>(GoldGetPMShopInfoResponse::class.java).goldGetPMShopInfo
-                        shopScoreWrapperResponse.goldGetPMShopInfoResponse = goldGetPMShopInfoData
-                    }
+                    val shopScoreLevelData = gqlResponse.getData<ShopScoreLevelResponse>(ShopScoreLevelResponse::class.java).shopScoreLevel
+                    shopScoreWrapperResponse.shopScoreLevelResponse = shopScoreLevelData
 
-                    if (!gqlResponse.getError(GoldPMGradeBenefitInfoResponse::class.java).isNullOrEmpty()) {
-                        val goldPMGradeBenefitInfoData = gqlResponse.getData<GoldPMGradeBenefitInfoResponse>(GoldPMGradeBenefitInfoResponse::class.java).goldGetPMGradeBenefitInfo
-                        shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse = goldPMGradeBenefitInfoData
-                    }
+                    val shopLevelTooltipData = gqlResponse.getData<ShopLevelTooltipResponse>(ShopLevelTooltipResponse::class.java).shopLevel
+                    shopScoreWrapperResponse.shopScoreTooltipResponse = shopLevelTooltipData
+
+                    val goldPMStatusData = gqlResponse.getData<GoldGetPMStatusResponse>(GoldGetPMStatusResponse::class.java).goldGetPMOSStatus
+                    shopScoreWrapperResponse.goldGetPMStatusResponse = goldPMStatusData
+
+
+                    val goldGetPMShopInfoData = gqlResponse.getData<GoldGetPMShopInfoResponse>(GoldGetPMShopInfoResponse::class.java).goldGetPMShopInfo
+                    shopScoreWrapperResponse.goldGetPMShopInfoResponse = goldGetPMShopInfoData
+
+
+                    val goldPMGradeBenefitInfoData = gqlResponse.getData<GoldPMGradeBenefitInfoResponse>(GoldPMGradeBenefitInfoResponse::class.java).goldGetPMGradeBenefitInfo
+                    shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse = goldPMGradeBenefitInfoData
+
 
                 } catch (e: Throwable) {
 

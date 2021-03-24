@@ -6,7 +6,7 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformance
 data class ItemStatusRMUiModel(val statusGradePM: String = "",
                                val updateDatePotential: String = "",
                                val badgeGradePM: String = "",
-                               @StringRes val bgGradePM: Int = 0
+                               @StringRes val bgGradePM: Int? = null
 ) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

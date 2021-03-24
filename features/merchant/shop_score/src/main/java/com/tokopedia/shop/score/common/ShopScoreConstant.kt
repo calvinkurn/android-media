@@ -22,13 +22,14 @@ object ShopScoreConstant {
     const val COUNT_DAYS_NEW_SELLER = 90
     const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
 
-    const val ORDER_SUCCESS_RATE = "Tingkat kesuksesan pesanan"
-    const val CHAT_DISCUSSION_REPLY_SPEED = "Kecepatan membalas chat dan diskusi"
-    const val CHAT_DISCUSSION_SPEED = "Tingkat membalas chat dan diskusi"
-    const val SPEED_SENDING_ORDERS = "Kecepatan mengirim pesanan"
-    const val PRODUCT_REVIEW_WITH_FOUR_STARS = "Ulasan produk dengan bintang 4+"
-    const val TOTAL_BUYER = "Total Pembeli"
-    const val OPEN_TOKOPEDIA_SELLER = "Membuka Tokopedia Seller"
+    const val CHAT_DISCUSSION_REPLY_SPEED_KEY = "chat_and_discussion_reply_speed"
+    const val CHAT_DISCUSSION_SPEED_KEY = "chat_and_discussion_reply_rate"
+    const val TOTAL_BUYER_KEY = "cnt_unique_buyer"
+    const val OPEN_TOKOPEDIA_SELLER_KEY = "ct_active_days"
+    const val ORDER_SUCCESS_RATE_KEY = "finish_rate"
+    const val SPEED_SENDING_ORDERS_KEY = "median_verified_to_shipping_minute"
+    const val PRODUCT_REVIEW_WITH_FOUR_STARS_KEY = "percent_good_rating"
+
 
     const val READ_TIPS_MORE_INFO_URL = "https://seller.tokopedia.com/edu/fitur-pengaturan-stok-produk-terbaru/"
     const val SET_OPERATIONAL_HOUR_SHOP_URL = "https://seller.tokopedia.com/edu/atur-jadwal-toko/"
@@ -82,5 +83,9 @@ object ShopScoreConstant {
     const val PRODUCT_VIOLATION = "Pelanggaran produk"
     const val TRANSACTION_MANIPULATION = "Manipulasi Transaksi"
 
+    val targetText = "Target"
+    val minuteText = "menit"
+    val percentText = "%"
+    val dayText = "hari"
 
 }

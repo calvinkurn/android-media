@@ -38,7 +38,7 @@ class ItemPotentialPMBenefitAdapter : RecyclerView.Adapter<ItemPotentialPMBenefi
         fun bind(data: SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel) {
             with(itemView) {
                 iv_potential_pm_benefit?.loadImage(data.iconPotentialPMUrl)
-                tv_potential_pm_benefit?.text = MethodChecker.fromHtml(context.getString(data.titlePotentialPMU))
+                tv_potential_pm_benefit?.text = MethodChecker.fromHtml(data.titlePotentialPM?.let { context.getString(it) })
             }
         }
     }

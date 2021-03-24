@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.BROADCAST_CHAT_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.BRONZE_SCORE
-import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED
-import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED
+import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED_KEY
+import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.COUNT_DAYS_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.DIAMOND_SCORE
 import com.tokopedia.shop.score.common.ShopScoreConstant.DISCOUNT_SHOP_URL
@@ -35,13 +35,13 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.IC_SPECIAL_RELEASE_FEAT
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_TOP_ADS_FEATURE_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_VOUCHER_EXCLUSIVE_FEATURE_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.NO_GRADE_SCORE
-import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER
-import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE
+import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
+import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PM_ACTIVE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PM_INACTIVE_TEXT
-import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS
+import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SET_OPERATIONAL_HOUR_SHOP_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_ADMIN_URL
@@ -63,11 +63,15 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SIXTY_NINE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ZERO
 import com.tokopedia.shop.score.common.ShopScoreConstant.SILVER_SCORE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPECIAL_RELEASE_URL
-import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS
+import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.STILL_POTENTIAL_PM
-import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER
+import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.UP_POTENTIAL_PM
+import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
+import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
+import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
+import com.tokopedia.shop.score.common.ShopScoreConstant.targetText
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -78,10 +82,10 @@ import javax.inject.Inject
 class ShopScoreMapper @Inject constructor(private val userSession: UserSessionInterface,
                                           @ApplicationContext val context: Context?) {
 
-    fun mapToShopPerformanceDetail(titlePerformanceDetail: String): ShopPerformanceDetailUiModel {
+    fun mapToShopPerformanceDetail(identifierPerformanceDetail: String): ShopPerformanceDetailUiModel {
         val shopPerformanceDetailUiModel = ShopPerformanceDetailUiModel()
-        when (titlePerformanceDetail) {
-            ORDER_SUCCESS_RATE -> {
+        when (identifierPerformanceDetail) {
+            ORDER_SUCCESS_RATE_KEY -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_success_order
                     descTips = R.string.desc_tips_success_order
@@ -89,7 +93,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     urlLink = READ_TIPS_MORE_INFO_URL
                 }
             }
-            CHAT_DISCUSSION_REPLY_SPEED -> {
+            CHAT_DISCUSSION_REPLY_SPEED_KEY -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_speed_reply_chat
                     descTips = R.string.desc_tips_speed_reply_chat
@@ -97,13 +101,13 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     urlLink = SET_OPERATIONAL_HOUR_SHOP_URL
                 }
             }
-            CHAT_DISCUSSION_SPEED -> {
+            CHAT_DISCUSSION_SPEED_KEY -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_level_reply_chat
                     descTips = R.string.desc_tips_level_reply_chat
                 }
             }
-            SPEED_SENDING_ORDERS -> {
+            SPEED_SENDING_ORDERS_KEY -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_speed_process_order
                     descTips = R.string.desc_tips_speed_process_order
@@ -111,19 +115,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     urlLink = SPEED_SENDING_ORDERS_URL
                 }
             }
-            PRODUCT_REVIEW_WITH_FOUR_STARS -> {
+            PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_review_product
                     descTips = R.string.desc_tips_review_product
                 }
             }
-            TOTAL_BUYER -> {
+            TOTAL_BUYER_KEY -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_total_buyer
                     descTips = R.string.desc_tips_total_buyer
                 }
             }
-            OPEN_TOKOPEDIA_SELLER -> {
+            OPEN_TOKOPEDIA_SELLER_KEY -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_open_seller_app
                     descTips = R.string.desc_tips_open_seller_app
@@ -180,29 +184,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
         return shopScoreVisitableList
     }
-
-//    fun mapToShopPerformanceVisitableDummy(): List<BaseShopPerformance> {
-//        return mutableListOf<BaseShopPerformance>().apply {
-//            val isNewSeller = mapToTimerNewSellerUiModel().second
-//            if (isNewSeller) add(mapToTimerNewSellerUiModel().first)
-//            add(mapToHeaderShopPerformance())
-//            add(mapToSectionPeriodDetailPerformanceUiModel())
-//            addAll(mapToItemDetailPerformanceUiModel())
-//            add(mapToItemRecommendationPMUiModel())
-//            if (userSession.isGoldMerchant) {
-//                add(mapToTransitionPeriodReliefUiModel())
-//            }
-//            add(mapToCardPotentialBenefit())
-//            if (!userSession.isShopOfficialStore && !userSession.isGoldMerchant) {
-//                add(mapToItemCurrentStatusRMUiModel())
-//            }
-//            if (userSession.isGoldMerchant) {
-//                add(mapToItemPotentialStatusPMUiModel(true))
-//            }
-//            //faq for communication period
-//            add(SectionFaqUiModel(mapToItemFaqUiModel()))
-//        }
-//    }
 
     private fun mapToHeaderShopPerformance(shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?, isNewSeller: Boolean): HeaderShopPerformanceUiModel {
         val headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
@@ -353,23 +334,25 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     private fun mapToItemDetailPerformanceUiModel(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
-            shopScoreLevelList?.mapIndexed { index, shopScoreDetail ->
-                if (index + 1 == shopScoreLevelList.size) {
-                    add(ItemDetailPerformanceUiModel(
-                            titleDetailPerformance = shopScoreDetail.title,
-                            valueDetailPerformance = shopScoreDetail.rawValue.toString(),
-                            colorValueDetailPerformance = shopScoreDetail.colorText,
-                            targetDetailPerformance = shopScoreDetail.nextMinValue.toString(),
-                            lastPosition = shopScoreLevelList.size
-                    ))
-                } else {
-                    add(ItemDetailPerformanceUiModel(
-                            titleDetailPerformance = shopScoreDetail.title,
-                            valueDetailPerformance = shopScoreDetail.rawValue.toString(),
-                            colorValueDetailPerformance = shopScoreDetail.colorText,
-                            targetDetailPerformance = shopScoreDetail.nextMinValue.toString(),
-                    ))
+            val shopScoreLevelSize = shopScoreLevelList?.filter { it.identifier != PENALTY_IDENTIFIER }?.size.orZero()
+            shopScoreLevelList?.filter { it.identifier != PENALTY_IDENTIFIER }?.mapIndexed { index, shopScoreDetail ->
+
+                val targetDetailPerformanceText = when (shopScoreDetail.identifier) {
+                    CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> "${shopScoreDetail.nextMinValue} $minuteText"
+                    ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
+                        "${shopScoreDetail.nextMinValue}$percentText"
+                    OPEN_TOKOPEDIA_SELLER_KEY -> "${shopScoreDetail.nextMinValue} $dayText"
+                    else -> ""
                 }
+
+                add(ItemDetailPerformanceUiModel(
+                        titleDetailPerformance = shopScoreDetail.title,
+                        valueDetailPerformance = shopScoreDetail.rawValue.toString(),
+                        colorValueDetailPerformance = shopScoreDetail.colorText,
+                        targetDetailPerformance = targetDetailPerformanceText,
+                        isDividerShow = index + 1 < shopScoreLevelSize,
+                        identifierDetailPerformance = shopScoreDetail.identifier
+                ))
             }
         }
     }
@@ -656,17 +639,17 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         itemPotentialPMBenefitList.apply {
             add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
                     iconPotentialPMUrl = IC_ORDER_PM_URL,
-                    titlePotentialPMU = R.string.text_item_potential_pm_benefit_1
+                    titlePotentialPM = R.string.text_item_potential_pm_benefit_1
             ))
 
             add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
                     iconPotentialPMUrl = IC_INCOME_PM_URL,
-                    titlePotentialPMU = R.string.text_item_potential_pm_benefit_2
+                    titlePotentialPM = R.string.text_item_potential_pm_benefit_2
             ))
 
             add(SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
                     iconPotentialPMUrl = IC_PM_VISITED_URL,
-                    titlePotentialPMU = R.string.text_item_potential_pm_benefit_3
+                    titlePotentialPM = R.string.text_item_potential_pm_benefit_3
             ))
         }
         return itemPotentialPMBenefitList
@@ -690,7 +673,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
         }
 
-        val bgPowerMerchant = when (currentPMGrade?.gradeName) {
+        val bgPowerMerchant = when (currentPMGrade?.gradeName?.toLowerCase(Locale.getDefault())) {
             GRADE_BRONZE_PM -> {
                 R.drawable.bg_header_bronze
             }
@@ -703,7 +686,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             GRADE_DIAMOND_PM -> {
                 R.drawable.bg_header_diamond
             }
-            else -> 0
+            else -> null
         }
         val descStatus = when (statusPowerMerchant) {
             PM_ACTIVE -> {
@@ -712,7 +695,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         context?.getString(R.string.desc_up_still_pm_status, statusPM, potentialPMGrade?.gradeName).orEmpty()
                     }
                     DOWN_POTENTIAL_PM -> {
-                        context?.getString(R.string.desc_down_pm_status, statusPM).orEmpty()
+                        context?.getString(R.string.desc_down_pm_status, potentialPMGrade?.gradeName).orEmpty()
                     }
                     else -> ""
                 }
@@ -758,7 +741,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             GRADE_DIAMOND_PM -> {
                 R.drawable.bg_header_diamond
             }
-            else -> 0
+            else -> null
         }
         return ItemStatusRMUiModel(updateDatePotential = updateDate, badgeGradePM = badgePM, bgGradePM = backgroundPM, statusGradePM = statusPM)
     }

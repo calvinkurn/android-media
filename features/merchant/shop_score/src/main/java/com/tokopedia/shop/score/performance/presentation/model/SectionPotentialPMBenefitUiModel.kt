@@ -13,6 +13,6 @@ data class SectionPotentialPMBenefitUiModel(
 
     data class ItemPotentialPMBenefitUIModel(
             val iconPotentialPMUrl: String = "",
-            @StringRes val titlePotentialPMU: Int = 0
+            @StringRes val titlePotentialPM: Int? = null
     )
 }
