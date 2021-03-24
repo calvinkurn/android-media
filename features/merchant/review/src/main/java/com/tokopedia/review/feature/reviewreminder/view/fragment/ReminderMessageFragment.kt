@@ -299,6 +299,7 @@ class ReminderMessageFragment : BaseDaggerFragment() {
             is Fail -> {
             }
         }
+        buttonSend?.isEnabled = products.isNotEmpty()
         isLoadProducts = false
         checkRefresh()
     }
