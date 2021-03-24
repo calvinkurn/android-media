@@ -31,6 +31,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
+import com.tokopedia.unifycomponents.HtmlLinkHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,6 @@ public class InboxReputationDetailItemViewHolder extends
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_item;
     private static final int MAX_CHAR = 50;
-    private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
     private static final String BY = "Oleh";
 
     private static final int MENU_EDIT = 101;
@@ -390,9 +390,8 @@ public class InboxReputationDetailItemViewHolder extends
     private Spanned getReview(String review) {
         if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
-            return MethodChecker
-                    .fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + MORE_DESCRIPTION);
+            return new HtmlLinkHelper(context, subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
+                    + context.getString(R.string.review_expand)).getSpannedString();
         } else {
             return MethodChecker.fromHtml(review);
         }

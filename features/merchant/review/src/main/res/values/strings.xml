@@ -252,6 +252,7 @@
         <item>Semua</item>
         <item>Belum Dibaca</item>
     </string-array>
+    <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
     <!-- incentive -->
     <string name="incentive_review_pending">Dapatkan Hadiah Points</string>
