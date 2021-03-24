@@ -285,7 +285,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         }
     }
 
-    private Spanned getReview(String review) {
+    private CharSequence getReview(String review) {
         if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
             return new HtmlLinkHelper(context, subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "

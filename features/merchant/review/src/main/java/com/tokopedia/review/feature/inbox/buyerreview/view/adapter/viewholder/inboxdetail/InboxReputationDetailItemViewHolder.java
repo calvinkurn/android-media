@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.i
 
 import android.content.Context;
 import android.text.Editable;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -387,7 +386,7 @@ public class InboxReputationDetailItemViewHolder extends
         return TimeConverter.generateTimeYearly(reviewTime.replace("WIB", ""));
     }
 
-    private Spanned getReview(String review) {
+    private CharSequence getReview(String review) {
         if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
             return new HtmlLinkHelper(context, subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
