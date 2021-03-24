@@ -51,7 +51,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
@@ -163,7 +162,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
     private CodModel codData;
     private CampaignTimerUi campaignTimer;
-    private Token token;
     private ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel;
     private ValidateUsePromoRequest lastValidateUsePromoRequest;
     private Gson gson;
@@ -594,10 +592,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
-
-        token = new Token();
-        token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
-        token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
@@ -1879,11 +1873,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             campaignTimer.setGtmUserId(userSessionInterface.getUserId());
             return campaignTimer;
         }
-    }
-
-    @Override
-    public Token getKeroToken() {
-        return token;
     }
 
     @NotNull

@@ -15,7 +15,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
@@ -154,9 +153,6 @@ public interface ShipmentContract {
     interface AnalyticsActionListener {
         void sendAnalyticsChoosePaymentMethodFailed(String errorMessage);
 
-        @Deprecated
-        void sendAnalyticsChoosePaymentMethodCourierNotComplete();
-
         void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                     Map<String, String> tradeInCustomDimension,
                                                     String transactionId,
@@ -185,8 +181,6 @@ public interface ShipmentContract {
         void sendAnalyticsPromoRedState();
 
         void sendAnalyticsDropshipperNotComplete();
-
-        void sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(String isBlackbox);
 
         void sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration();
 
@@ -302,8 +296,6 @@ public interface ShipmentContract {
         CodModel getCodData();
 
         CampaignTimerUi getCampaignTimer();
-
-        Token getKeroToken();
 
         boolean isShowOnboarding();
 
