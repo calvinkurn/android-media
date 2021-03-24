@@ -59,6 +59,10 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return ItemShopPerformanceErrorViewHolder.LAYOUT
     }
 
+    override fun type(itemLevelScoreProjectUiModel: ItemLevelScoreProjectUiModel): Int {
+        return ItemLevelScoreProjectViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: LoadingModel?): Int {
         return ShopPerformanceShimmerViewHolder.LAYOUT
     }
@@ -77,6 +81,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(parent, itemTimerNewSellerListener)
             SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(parent)
             ItemShopPerformanceErrorViewHolder.LAYOUT -> ItemShopPerformanceErrorViewHolder(parent)
+            ItemLevelScoreProjectViewHolder.LAYOUT -> ItemLevelScoreProjectViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }

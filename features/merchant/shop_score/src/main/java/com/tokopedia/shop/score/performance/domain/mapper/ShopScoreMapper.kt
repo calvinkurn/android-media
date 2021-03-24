@@ -142,9 +142,11 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
         shopScoreVisitableList.apply {
-            if (shopInfoPeriodUiModel.isNewSeller) {
-                add(mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
-            }
+//            if (shopInfoPeriodUiModel.isNewSeller) {
+//                add(mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
+//            }
+            add(mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
+            add(ItemLevelScoreProjectUiModel())
             add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopInfoPeriodUiModel.isNewSeller))
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {

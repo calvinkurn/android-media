@@ -15,4 +15,5 @@ interface ShopPerformanceTypeFactory {
     fun type(timerNewSellerUiModel: ItemTimerNewSellerUiModel): Int
     fun type(sectionFaqUiModel: SectionFaqUiModel): Int
     fun type(itemShopPerformanceErrorUiModel: ItemShopPerformanceErrorUiModel): Int
+    fun type(itemLevelScoreProjectUiModel: ItemLevelScoreProjectUiModel): Int
 }
