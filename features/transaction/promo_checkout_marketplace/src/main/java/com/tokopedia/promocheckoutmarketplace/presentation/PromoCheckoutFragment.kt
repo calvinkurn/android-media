@@ -917,9 +917,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             val scrollPosition = if (adapter.list.size > promoWithCoachMarkIndex) promoWithCoachMarkIndex + 1 else promoWithCoachMarkIndex
-            recyclerView.smoothScrollToPosition(scrollPosition)
+            recyclerView?.smoothScrollToPosition(scrollPosition)
             Handler().postDelayed({
-                val holder = recyclerView.findViewHolderForAdapterPosition(promoWithCoachMarkIndex)
+                val holder = recyclerView?.findViewHolderForAdapterPosition(promoWithCoachMarkIndex)
                 val coachMarkData = adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel
                 holder?.let {
                     val coachMarkItem = arrayListOf(
@@ -934,7 +934,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     context?.let {
                         promoCoachMark = CoachMark2(it)
                         promoCoachMark.showCoachMark(coachMarkItem)
-                        recyclerView.addOnScrollListener(coachMarkRecyclerListener)
+                        recyclerView?.addOnScrollListener(coachMarkRecyclerListener)
                         localCacheHandler.apply {
                             putBoolean(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true)
                             applyEditor()
