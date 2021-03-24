@@ -512,7 +512,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateComparisonDataModel(context: Context, data: RecommendationWidget) {
+    fun updateComparisonDataModel(data: RecommendationWidget) {
         val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
         if (recomModel != null) {
             updateData(data.pageName) {

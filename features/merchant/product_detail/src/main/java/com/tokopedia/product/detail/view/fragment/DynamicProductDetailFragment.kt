@@ -134,6 +134,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
@@ -1549,8 +1550,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                if (it.data.layoutType == "Comparison-Widget") {
-                    pdpUiUpdater?.updateComparisonDataModel(requireContext(), it.data)
+                if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
+                    pdpUiUpdater?.updateComparisonDataModel(it.data)
                     updateUi()
                 } else {
                     pdpUiUpdater?.updateRecommendationData(it.data)
