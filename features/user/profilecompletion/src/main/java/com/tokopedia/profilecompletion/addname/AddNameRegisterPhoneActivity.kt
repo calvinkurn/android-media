@@ -36,6 +36,7 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         rollanceType = RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_KEY)
         super.onCreate(savedInstanceState)
     }
