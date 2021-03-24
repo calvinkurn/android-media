@@ -7,14 +7,14 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.model.TickerDataView;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.jetbrains.annotations.NotNull;
 
-public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
+public class TickerViewHolder extends AbstractViewHolder<TickerDataView> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_ticker_layout;
@@ -29,11 +29,11 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     }
 
     @Override
-    public void bind(final TickerViewModel element) {
+    public void bind(final TickerDataView element) {
         bindTickerView(element);
     }
 
-    private void bindTickerView(TickerViewModel element) {
+    private void bindTickerView(TickerDataView element) {
         if (tickerListener == null || tickerListener.isTickerHasDismissed()
                 || TextUtils.isEmpty(element.getText())) {
             itemView.setVisibility(View.GONE);

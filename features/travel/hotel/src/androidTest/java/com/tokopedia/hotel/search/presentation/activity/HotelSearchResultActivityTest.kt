@@ -101,7 +101,7 @@ class HotelSearchResultActivityTest {
     private fun clickOnSortAndFilter() {
         Thread.sleep(3000)
 
-        onView(AllOf.allOf(withText("Filters"))).perform(click())
+        onView(AllOf.allOf(withText("Filter"))).perform(click())
         onView(AllOf.allOf(withId(R.id.hotel_selection_chip_title), withText("3"))).perform(click())
         Thread.sleep(2000)
         onView(withId(R.id.hotel_filter_submit_button)).perform(click())

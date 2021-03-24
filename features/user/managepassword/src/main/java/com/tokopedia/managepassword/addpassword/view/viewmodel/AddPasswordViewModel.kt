@@ -3,11 +3,15 @@ package com.tokopedia.managepassword.addpassword.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
+import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordData
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
+import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2UseCase
 import com.tokopedia.managepassword.common.ManagePasswordConstant
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,12 +21,14 @@ import javax.inject.Inject
 
 class AddPasswordViewModel @Inject constructor(
         private val usecase: AddPasswordUseCase,
+        private val addPasswordV2UseCase: AddPasswordV2UseCase,
         private val getProfileCompletionUseCase: GetProfileCompletionUseCase,
+        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val _response = MutableLiveData<Result<AddPasswordResponseModel>>()
-    val response: LiveData<Result<AddPasswordResponseModel>>
+    private val _response = MutableLiveData<Result<AddPasswordData>>()
+    val response: LiveData<Result<AddPasswordData>>
         get() = _response
 
     private val _validatePassword = MutableLiveData<Result<String>>()
@@ -50,13 +56,39 @@ class AddPasswordViewModel @Inject constructor(
             usecase.params = createRequestParams(password, confirmationPassword)
             usecase.submit(onSuccess = {
                 if (it.addPassword.isSuccess) {
-                    _response.postValue(Success(it))
+                    _response.postValue(Success(it.addPassword))
                 } else {
                     _response.postValue(Fail(Throwable(it.addPassword.errorMessage)))
                 }
             }, onError = {
                 _response.postValue(Fail(it))
             })
+        }, {
+            _response.postValue(Fail(it))
+        })
+    }
+
+    fun createPasswordV2(password: String, confirmationPassword: String) {
+        launchCatchError(coroutineContext, {
+            val key = generatePublicKeyUseCase.executeOnBackground().keyData
+            if(key.hash.isNotEmpty()) {
+                val decodedKey = key.key.decodeBase64()
+                val encryptedPassword = RsaUtils.encrypt(password, decodedKey, true)
+                val encryptedConfirmPassword = RsaUtils.encrypt(confirmationPassword, decodedKey, true)
+
+                addPasswordV2UseCase.setParams(encryptedPassword, encryptedConfirmPassword, key.hash)
+                addPasswordV2UseCase.submit(onSuccess = {
+                    if (it.addPassword.isSuccess) {
+                        _response.postValue(Success(it.addPassword))
+                    } else {
+                        _response.postValue(Fail(Throwable(it.addPassword.errorMessage)))
+                    }
+                }, onError = {
+                    _response.postValue(Fail(it))
+                })
+            } else {
+                _response.postValue(Fail(Throwable("")))
+            }
         }, {
             _response.postValue(Fail(it))
         })
