@@ -32,7 +32,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_2" />
+            app:typographyType="heading_2"
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
@@ -55,9 +56,9 @@
             android:layout_marginRight="@dimen/dp_16"
             android:visibility="gone"
             app:descriptionText="@string/topads_create_ticker_desc_actiivate"
-            app:layout_constraintTop_toBottomOf="@+id/subtitle"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subtitle"
             app:tickerShapeType="loose"
             app:tickerType="announcement"
             app:titleText="@string/topads_create_ticker_title_activate"
@@ -68,33 +69,31 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ticker_info">
 
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/top_corner_bg1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_16">
-
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/top_corner_bg1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|top"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_22"
                     android:gravity="start"
                     android:text="@string/topads_common_iklan_otomatis"
                     android:textColor="@color/black"
@@ -114,23 +113,15 @@
                     app:typographyType="body_3"
                     tools:layout_editor_absoluteX="16dp" />
 
-                <com.tokopedia.unifycomponents.CardUnify
-                    android:layout_width="@dimen/dp_60"
-                    android:layout_height="@dimen/dp_60"
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/top_corner_icon1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:background="@color/white"
-                    app:cardCornerRadius="@dimen/dp_16"
-                    app:cardUseCompatPadding="true"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.tokopedia.unifycomponents.ImageUnify
-                        android:id="@+id/top_corner_icon1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
-                </com.tokopedia.unifycomponents.CardUnify>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon2"
@@ -148,7 +139,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:gravity="start"
                     android:text="@string/iklan_otomatis_desc1"
                     app:layout_constraintStart_toEndOf="@+id/icon2"
@@ -172,7 +163,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:gravity="start"
                     android:text="@string/iklan_otomatis_desc2"
                     android:textColor="@color/black"
@@ -196,7 +187,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:gravity="start"
                     android:text="@string/iklan_otomatis_desc3"
                     android:textColor="@color/black"
@@ -208,7 +199,8 @@
                     android:id="@+id/btn_start_auto_ads"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_36"
+                    android:layout_marginBottom="@dimen/dp_16"
                     android:text="@string/mulai_iklan_otomatis"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -227,6 +219,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             app:cardCornerRadius="@dimen/dp_8"
@@ -235,24 +228,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/card1">
 
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/top_corner_bg2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_16">
-
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/top_corner_bg2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography9"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_22"
                     android:text="@string/iklan_manual"
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -269,23 +261,16 @@
                     app:layout_constraintTop_toBottomOf="@id/typography9"
                     app:typographyType="body_3" />
 
-                <com.tokopedia.unifycomponents.CardUnify
-                    android:layout_width="@dimen/dp_60"
-                    android:layout_height="@dimen/dp_60"
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/top_corner_icon2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:background="@color/white"
-                    app:cardCornerRadius="@dimen/dp_16"
-                    app:cardUseCompatPadding="true"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.tokopedia.unifycomponents.ImageUnify
-                        android:id="@+id/top_corner_icon2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
-                </com.tokopedia.unifycomponents.CardUnify>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon6"
@@ -304,7 +289,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:gravity="start"
                     android:text="@string/iklan_manual_desc1"
                     app:layout_constraintStart_toEndOf="@+id/icon6"
@@ -327,7 +312,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_24"
                     android:text="@string/iklan_manual_desc2"
                     app:layout_constraintStart_toEndOf="@+id/icon7"
                     app:layout_constraintTop_toBottomOf="@+id/desc_1"
@@ -349,7 +334,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_24"
                     android:text="@string/iklan_manual_desc3"
                     app:layout_constraintStart_toEndOf="@+id/icon8"
                     app:layout_constraintTop_toBottomOf="@+id/desc_2"
@@ -359,7 +344,8 @@
                     android:id="@+id/btn_start_manual_ads"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_36"
+                    android:layout_marginBottom="@dimen/dp_16"
                     android:gravity="center"
                     android:text="@string/mulai_iklan_manual"
                     app:layout_constraintBottom_toBottomOf="parent"
