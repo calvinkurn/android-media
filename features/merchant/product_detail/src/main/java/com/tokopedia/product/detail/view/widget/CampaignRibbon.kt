@@ -217,9 +217,9 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     fun renderUpComingCampaignRibbon(upcomingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
         showCampaignRibbonType1()
         val gradientDrawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
-            context.getDrawable(R.drawable.bg_gradient_default_npl)
+            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_npl)
         } else {
-            context.getDrawable(R.drawable.bg_gradient_default_flash_sale_by_seller)
+            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_red)
         }
         // render campaign ribbon background
         gradientDrawable?.run { campaignRibbonLayout1?.background = gradientDrawable }
@@ -408,12 +408,12 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
         } catch (ex: Exception) {
             // return default gradient when the color parsing process is failed
-            var firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_to_green_gradient_color)
-            var secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_from_green_gradient_color)
+            var firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_default_green_bg_start_gradient_color)
+            var secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_default_green_bg_end_gradient_color)
             when (campaignTypes) {
                 SLASH_PRICE -> {
-                    firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_to_red_gradient_color)
-                    secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_from_red_gradient_color)
+                    firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_default_red_bg_start_gradient_color)
+                    secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_default_red_bg_end_gradient_color)
                 }
             }
             GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
