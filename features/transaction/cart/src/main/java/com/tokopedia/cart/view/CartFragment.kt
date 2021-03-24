@@ -2111,6 +2111,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         cartListData?.shoppingSummaryData?.promoValue = lastApplyData.benefitSummaryInfo.finalBenefitAmount
+    }
+
+    private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
+        cartListData?.lastApplyShopGroupSimplifiedData = lastApplyData
+    }
+
+    private fun renderPromoSummaryFromStickyPromo(lastApplyData: LastApplyUiModel) {
         cartListData?.promoSummaryData?.details?.clear()
         cartListData?.promoSummaryData?.details?.addAll(
                 lastApplyData.additionalInfo.usageSummaries.map {
@@ -2123,10 +2130,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     )
                 }.toList()
         )
-    }
-
-    private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
-        cartListData?.lastApplyShopGroupSimplifiedData = lastApplyData
     }
 
     private fun getAllPromosApplied(lastApplyData: LastApplyUiModel): List<String> {
@@ -3394,6 +3397,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
         val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
         renderPromoCheckoutButton(lastApplyUiModel)
+        renderPromoSummaryFromStickyPromo(lastApplyUiModel)
         if (promoUiModel.globalSuccess) {
             setLastApplyDataToShopGroup(lastApplyUiModel)
         }
