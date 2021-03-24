@@ -66,6 +66,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+
 }
 
 project.ext {
