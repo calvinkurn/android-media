@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -62,6 +63,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
+
+    @RelaxedMockK
+    lateinit var productPriceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -121,7 +125,9 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase, annotationCategoryUseCase, userSession)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase,
+                getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase,
+                annotationCategoryUseCase, productPriceSuggestionSuggestedPriceGetUseCase, userSession)
     }
 
     @Test
@@ -909,6 +915,7 @@ class AddEditProductDetailViewModelTest {
             } returns listOf()
 
             viewModel.getShopShowCasesUseCase()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 getShopEtalaseUseCase.executeOnBackground()
