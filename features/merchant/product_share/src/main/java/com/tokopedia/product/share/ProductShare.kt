@@ -37,14 +37,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     var imageProcess = 0L
     var resourceReady = 0L
     var err: MutableList<Throwable> = mutableListOf()
-    var linkerErrorLog: LinkerError? = null
 
     private fun resetLog() {
         branchTime = 0L
         imageProcess = 0L
         resourceReady = 0L
         err = mutableListOf()
-        linkerErrorLog = null
     }
 
     fun share(data: ProductData, preBuildImage: () -> Unit, postBuildImage: () -> Unit, isLog: Boolean = false) {
@@ -106,10 +104,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     fun logExceptionToFirebase(e: Throwable) {
-        try {
-            FirebaseCrashlytics.getInstance().recordException(ProductShareException(e))
-        } catch (ignored: Exception) {
-        }
+        FirebaseCrashlytics.getInstance().recordException(ProductShareException(e))
     }
 
     private fun openIntentShare(file: File?, title: String?, shareContent: String, shareUri: String) {
@@ -156,7 +151,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }
 
                 override fun onError(linkerError: LinkerError) {
-                    linkerErrorLog = linkerError
                     postBuildImage?.invoke()
                     openIntentShareDefault(file, data)
                     if (isLog) {
@@ -167,6 +161,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         } else {
             postBuildImage?.invoke()
             openIntentShareDefault(file, data)
+            if (isLog) {
+                log(mode, resourceReady, imageProcess, branchTime, err, null)
+            }
         }
     }
 
