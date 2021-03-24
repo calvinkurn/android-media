@@ -3,9 +3,9 @@
   "mode": "subset",
   "query": [
     {
-      "event": "luckyEggView",
+      "event": "luckyEggClick",
       "eventCategory": "lucky egg - homepage entry point",
-      "eventAction": "impression on egg",
+      "eventAction": "click egg on homepage",
       "eventLabel": "{{.*}}"
     }
   ]
