@@ -119,6 +119,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        changeCloseButtonSize()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setInitialViewState()
@@ -560,6 +565,18 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun onBottomSheetShown() {
         hasBottomSheetShown = true
         showGpsPopUp()
+    }
+
+    private fun changeCloseButtonSize() {
+        context?.also { context ->
+            bottomSheetClose.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close_choose_address))
+                layoutParams.apply {
+                    width = context.resources.getDimension(R.dimen.choose_address_close).toInt()
+                    height = context.resources.getDimension(R.dimen.choose_address_close).toInt()
+                }
+            }
+        }
     }
 
     interface ChooseAddressBottomSheetListener {
