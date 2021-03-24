@@ -65,8 +65,10 @@ dependencies {
     implementation rootProject.ext.testDependencies.androidAnnotation
     implementation rootProject.ext.debugToolsDependencies.chuck
 
-    testImplementation rootProject.ext.unifyDependencies.principles
-    androidTestImplementation rootProject.ext.unifyDependencies.principles
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
