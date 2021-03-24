@@ -217,7 +217,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     fun renderUpComingCampaignRibbon(upcomingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
         showCampaignRibbonType1()
         val gradientDrawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
-            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_npl)
+            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_blue)
         } else {
             ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_red)
         }
