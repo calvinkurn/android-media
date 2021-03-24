@@ -7,6 +7,7 @@ interface FeedbackInboxReviewListener {
     fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, productId: String, position: Int)
     fun onBackgroundMarginIsReplied(isNotReplied: Boolean)
     fun onInFullReviewClicked(feedbackId: String, productId: String)
+    fun isFirstTimeSeeKejarUlasan(): Boolean
 }
 
 interface GlobalErrorStateListener {

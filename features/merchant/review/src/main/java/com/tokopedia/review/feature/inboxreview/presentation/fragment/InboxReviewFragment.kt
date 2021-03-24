@@ -44,6 +44,7 @@ import com.tokopedia.review.feature.inboxreview.presentation.model.InboxReviewUi
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.viewmodel.InboxReviewViewModel
+import com.tokopedia.review.feature.inboxreview.util.InboxReviewPreference
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
@@ -76,6 +77,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var inboxReviewPreference: InboxReviewPreference
 
     private val inboxReviewViewModel: InboxReviewViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxReviewViewModel::class.java)
@@ -274,6 +278,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     override fun onInFullReviewClicked(feedbackId: String, productId: String) {
         InboxReviewTracking.eventClickInFullReview(feedbackId, getQuickFilter(),
                 inboxReviewViewModel.userSession.shopId.orEmpty(), productId)
+    }
+
+    override fun isFirstTimeSeeKejarUlasan(): Boolean {
+        val isFirstTimeSeeKejarUlasan = inboxReviewPreference.isFirstTimeSeeKejarUlasan(inboxReviewViewModel.userSession.userId)
+        if(isFirstTimeSeeKejarUlasan) {
+            inboxReviewPreference.setFirstTimeSeeKejarUlasan(inboxReviewViewModel.userSession.userId)
+        }
+        return isFirstTimeSeeKejarUlasan
     }
 
     override fun onBackgroundMarginIsReplied(isNotReplied: Boolean) {

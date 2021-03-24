@@ -150,7 +150,8 @@ object InboxReviewMapper {
                 reviewTime = data.reviewTime,
                 reviewerName = data.username,
                 variantName = data.variantName,
-                sellerUser = data.sellerUser
+                sellerUser = data.sellerUser,
+                isKejarUlasan = data.isKejarUlasan
         )
     }
 
