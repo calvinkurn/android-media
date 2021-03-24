@@ -40,9 +40,10 @@ android {
 }
 
 dependencies {
+    debugImplementation project(rootProject.ext.libraries.tkpdabstraction)
+
 	implementation rootProject.ext.unifyDependencies.principles
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
