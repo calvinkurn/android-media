@@ -594,8 +594,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
                     if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
                         backToDetailPage(1, buyerRequestCancelResponse.message.first(), "", "")
-                    } else if (buyerRequestCancelResponse.success == 0 && buyerRequestCancelResponse.message.isNotEmpty()) {
-                        showToaster(buyerRequestCancelResponse.message.first(), Toaster.TYPE_ERROR)
+                    } else if (buyerRequestCancelResponse.success == 0) {
+                        if (buyerRequestCancelResponse.popup.title.isNotEmpty() && buyerRequestCancelResponse.popup.body.isNotEmpty()) {
+                            showPopup(buyerRequestCancelResponse.popup)
+                        } else if (buyerRequestCancelResponse.message.isNotEmpty()) {
+                            showToaster(buyerRequestCancelResponse.message.first(), Toaster.TYPE_ERROR)
+                        }
                     }
                 }
                 is Fail -> {
@@ -703,6 +707,16 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         view?.let { v ->
             toaster.build(v, msg, Toaster.LENGTH_SHORT, type, BuyerConsts.ACTION_OK).show()
         }
+    }
+
+    private fun showPopup(dataPopup: BuyerRequestCancelData.Data.BuyerRequestCancel.Popup) {
+        val dialogUnify = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION) }
+        dialogUnify?.apply {
+            setTitle(dataPopup.title)
+            setDescription(dataPopup.body)
+            setImageDrawable(R.drawable.ic_terkirim)
+        }
+        dialogUnify?.show()
     }
 
     private fun renderTicker(tickerInfo: TickerInfo) {
