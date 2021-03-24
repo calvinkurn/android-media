@@ -70,7 +70,7 @@ class TopAdsProductActionUseCase @Inject constructor(graphqlRepository: GraphqlR
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest = java.util.ArrayList<RestRequest>()
         val token = object : TypeToken<DataResponse<ProductActionResponse>>() {}.type
-        val query = GetTopadsGroupListQuery.GQL_QUERY
+        val query = GetTopadsUpdateSingleAds.GQL_QUERY
         val request = GraphqlRequest(query, ProductActionResponse::class.java, requestParams?.parameters)
         val headers = java.util.HashMap<String, String>()
         headers["Content-Type"] = "application/json"
