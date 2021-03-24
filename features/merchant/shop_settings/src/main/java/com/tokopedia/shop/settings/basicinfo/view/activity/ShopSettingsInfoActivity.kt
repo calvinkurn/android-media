@@ -2,15 +2,14 @@ package com.tokopedia.shop.settings.basicinfo.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop.settings.R
 
 /**
@@ -35,10 +34,10 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
     }
 
     private fun setupUI() {
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        findViewById<Toolbar>(R.id.toolbar)?.let {
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        findViewById<HeaderUnify>(R.id.header)?.let {
             setSupportActionBar(it)
-            supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.color.transparent))
+            it.isShowShadow = true
             it.title = getString(R.string.shop_settings_info)
         }
     }

@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
@@ -16,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
@@ -29,7 +29,6 @@ import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewMode
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
@@ -50,6 +49,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
             }
         }
     }
+
+    private var header: HeaderUnify? = null
 
     @Inject
     lateinit var viewModel: ShopScheduleViewModel
@@ -162,18 +163,13 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     }
 
     private fun setupUI() {
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        findViewById<Toolbar>(R.id.toolbar)?.let {
-            setSupportActionBar(it)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.color.transparent))
-            it.title = getString(R.string.shop_settings_shop_status)
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        header = findViewById<HeaderUnify>(R.id.header)?.apply {
+            setSupportActionBar(this)
+            title = getString(R.string.shop_settings_shop_status)
         }
 
-        val tvSave: Typography? = findViewById(R.id.tvSave)
-        tvSave?.apply {
-            visibility = View.VISIBLE
-            isEnabled = true
+        header?.actionTextView?.apply {
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             setOnClickListener { onSaveButtonClicked() }
         }

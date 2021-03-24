@@ -23,6 +23,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
@@ -33,9 +34,7 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActiv
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
-import com.tokopedia.shop.settings.common.widget.Menus
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -218,6 +217,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupToolbar() {
+        activity?.findViewById<HeaderUnify>(R.id.header)?.apply {
+            actionTextView?.hide()
+        }
+    }
+
     private fun dismissToaster() {
         snackbar?.dismiss()
     }
@@ -331,11 +336,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
             }
         })
-    }
-
-    private fun setupToolbar() {
-        val tvSave: Typography? = activity?.findViewById(R.id.tvSave)
-        tvSave?.hide()
     }
 
     override fun onResume() {
@@ -494,7 +494,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    fun showSubmitLoading(message: String) {
+    private fun showSubmitLoading(message: String) {
         progressDialog = progressDialog ?: ProgressDialog(context)
         progressDialog!!.run {
             if (isShowing) {
@@ -506,7 +506,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    fun hideSubmitLoading() {
+    private fun hideSubmitLoading() {
         if (progressDialog?.isShowing == true) {
             progressDialog!!.dismiss()
             progressDialog = null
