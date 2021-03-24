@@ -1,15 +1,13 @@
 package com.tokopedia.purchase_platform.common.feature.bottomsheet
 
 import android.content.Context
-import android.view.View
+import android.view.LayoutInflater
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.purchase_platform.common.R
+import com.tokopedia.purchase_platform.common.databinding.LayoutGeneralBottomSheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 
 class GeneralBottomSheet {
 
@@ -17,9 +15,10 @@ class GeneralBottomSheet {
     private var desc: String = ""
     private var buttonText: String = ""
     private var iconRes: Int = 0
-    private var buttonOnClickListener: View.OnClickListener = View.OnClickListener {  }
+    private var buttonOnClickListener: (BottomSheetUnify) -> Unit = {}
 
     var bottomSheet: BottomSheetUnify? = null
+        private set
 
     fun setTitle(title: String) {
         this.title = title
@@ -33,7 +32,7 @@ class GeneralBottomSheet {
         this.buttonText = buttonText
     }
 
-    fun setButtonOnClickListener(onClickListener: View.OnClickListener) {
+    fun setButtonOnClickListener(onClickListener: (BottomSheetUnify) -> Unit) {
         this.buttonOnClickListener = onClickListener
     }
 
@@ -46,22 +45,32 @@ class GeneralBottomSheet {
             showCloseIcon = false
             showHeader = false
             showKnob = true
+            isHideable = true
             isDragable = true
+            isSkipCollapseState = true
             overlayClickDismiss = true
             clearContentPadding = true
-            val childView = View.inflate(context, R.layout.layout_general_bottom_sheet, null)
-            setupChildView(childView)
-            setChild(childView)
+            val binding = LayoutGeneralBottomSheetBinding.inflate(LayoutInflater.from(context), null ,false)
+            setupChildView(binding)
+            setChild(binding.root)
         }
         bottomSheet?.show(fragmentManager, "")
     }
 
-    private fun setupChildView(childView: View) {
-        childView.findViewById<Typography>(R.id.tv_title).text = title
-        childView.findViewById<Typography>(R.id.tv_desc).text = desc
-        childView.findViewById<ImageUnify>(R.id.iv_icon).loadImageDrawable(iconRes)
-        val button = childView.findViewById<UnifyButton>(R.id.btn_action)
-        button.text = buttonText
-        button.setOnClickListener(buttonOnClickListener)
+    private fun setupChildView(binding: LayoutGeneralBottomSheetBinding) {
+        binding.tvTitle.text = title
+        binding.tvDesc.text = desc
+        if (iconRes > 0) {
+            binding.ivIcon.loadImageDrawable(iconRes)
+        } else {
+            binding.ivIcon.gone()
+        }
+        binding.btnAction.text = buttonText
+        binding.btnAction.setOnClickListener {
+            val currentBottomSheet = bottomSheet
+            if (currentBottomSheet != null) {
+                buttonOnClickListener.invoke(currentBottomSheet)
+            }
+        }
     }
 }

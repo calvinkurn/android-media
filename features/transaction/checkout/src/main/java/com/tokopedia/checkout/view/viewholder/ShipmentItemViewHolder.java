@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,7 +36,6 @@ import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
-import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
@@ -52,13 +50,13 @@ import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
-import com.tokopedia.utils.image.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +64,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -1528,13 +1527,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void showBottomSheet(Context context, String title, String message, int image) {
-        Tooltip tooltip = new Tooltip(context);
-        tooltip.setTitle(title);
-        tooltip.setDesc(message);
-        tooltip.setTextButton(context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
-        tooltip.setIcon(image);
-        tooltip.getBtnAction().setOnClickListener(v -> tooltip.dismiss());
-        tooltip.show();
+        GeneralBottomSheet generalBottomSheet = new GeneralBottomSheet();
+        generalBottomSheet.setTitle(title);
+        generalBottomSheet.setDesc(message);
+        generalBottomSheet.setButtonText(context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
+        generalBottomSheet.setIcon(image);
+        generalBottomSheet.setButtonOnClickListener(bottomSheetUnify -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+        generalBottomSheet.show(context, mActionListener.getCurrentFragmentManager());
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, long price) {

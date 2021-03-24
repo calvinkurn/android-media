@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view;
 
+import androidx.fragment.app.FragmentManager;
+
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
@@ -120,4 +122,6 @@ public interface ShipmentAdapterActionListener {
     void onClickSwapInIndomaret();
 
     void onSwapInUserAddress();
+
+    FragmentManager getCurrentFragmentManager();
 }

@@ -10,6 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/iv_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toStartOf="@+id/iv_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
@@ -34,6 +36,7 @@
         android:layout_height="@dimen/dp_75"
         android:layout_gravity="center_vertical"
         android:foregroundGravity="center_vertical"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

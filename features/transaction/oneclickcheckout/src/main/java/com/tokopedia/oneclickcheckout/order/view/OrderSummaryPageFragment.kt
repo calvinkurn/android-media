@@ -847,15 +847,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
 
             override fun onClickInsuranceInfo(title: String, message: String, image: Int) {
-                context?.also {
+                context?.also { ctx ->
                     GeneralBottomSheet().apply {
                         setTitle(title)
                         setDesc(message)
                         setButtonText(getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
                         setIcon(image)
-                        setButtonOnClickListener { bottomSheet?.dismiss() }
-                        show(it, parentFragmentManager)
-                    }
+                        setButtonOnClickListener { it.dismiss() }
+                    }.show(ctx, parentFragmentManager)
                 }
             }
         }

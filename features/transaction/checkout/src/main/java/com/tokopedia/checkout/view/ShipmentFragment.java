@@ -58,7 +58,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
-import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
@@ -98,6 +97,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
@@ -1969,18 +1969,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null) {
             checkoutAnalyticsCourierSelection.eventViewCourierImpressionErrorCourierNoAvailable();
 
-            Tooltip tooltip = new Tooltip(getActivity());
-            tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
-            tooltip.setDesc(message);
-            tooltip.setTextButton(getActivity().getString(R.string.label_no_courier_bottomsheet_button));
-            tooltip.setIcon(R.drawable.checkout_module_ic_dropshipper);
-            tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    tooltip.dismiss();
-                }
+            GeneralBottomSheet generalBottomSheet = new GeneralBottomSheet();
+            generalBottomSheet.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
+            generalBottomSheet.setDesc(message);
+            generalBottomSheet.setButtonText(getActivity().getString(R.string.label_no_courier_bottomsheet_button));
+            generalBottomSheet.setIcon(R.drawable.checkout_module_ic_dropshipper);
+            generalBottomSheet.setButtonOnClickListener(bottomSheet -> {
+                bottomSheet.dismiss();
+                return Unit.INSTANCE;
             });
-            tooltip.show();
+            generalBottomSheet.show(getActivity(), getParentFragmentManager());
         }
 
         if (isTradeIn()) {
@@ -3033,6 +3031,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onSwapInUserAddress() {
         checkoutTradeInAnalytics.eventTradeInClickTukarDiAlamatmu();
+    }
+
+    @Override
+    public FragmentManager getCurrentFragmentManager() {
+        return getParentFragmentManager();
     }
 
     @Override

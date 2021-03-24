@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
+
+import kotlin.Unit;
 
 /**
  * @author Irfan Khoirul on 13/07/18.
@@ -51,13 +53,16 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void showBottomSheet(ShipmentDonationModel shipmentDonationModel) {
-        Tooltip tooltip = new Tooltip(llContainer.getContext());
-        tooltip.setTitle(shipmentDonationModel.getDonation().getTitle());
-        tooltip.setDesc(shipmentDonationModel.getDonation().getDescription());
-        tooltip.setTextButton(llContainer.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
-        tooltip.setIcon(R.drawable.checkout_module_ic_donation);
-        tooltip.getBtnAction().setOnClickListener(v -> tooltip.dismiss());
-        tooltip.show();
+        GeneralBottomSheet generalBottomSheet = new GeneralBottomSheet();
+        generalBottomSheet.setTitle(shipmentDonationModel.getDonation().getTitle());
+        generalBottomSheet.setDesc(shipmentDonationModel.getDonation().getDescription());
+        generalBottomSheet.setButtonText(llContainer.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
+        generalBottomSheet.setIcon(R.drawable.checkout_module_ic_donation);
+        generalBottomSheet.setButtonOnClickListener(bottomSheetUnify -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+        generalBottomSheet.show(llContainer.getContext(), shipmentAdapterActionListener.getCurrentFragmentManager());
     }
 
 }
