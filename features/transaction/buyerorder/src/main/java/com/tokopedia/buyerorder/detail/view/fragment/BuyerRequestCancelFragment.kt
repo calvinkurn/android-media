@@ -710,13 +710,16 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun showPopup(dataPopup: BuyerRequestCancelData.Data.BuyerRequestCancel.Popup) {
-        val dialogUnify = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION) }
-        dialogUnify?.apply {
-            setTitle(dataPopup.title)
-            setDescription(dataPopup.body)
-            setImageDrawable(R.drawable.ic_terkirim)
+        val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION) }
+        dialog?.setTitle(dataPopup.title)
+        dialog?.setDescription(dataPopup.body)
+        dialog?.setImageDrawable(R.drawable.ic_terkirim)
+        dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
+        dialog?.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                activity?.finish()
         }
-        dialogUnify?.show()
+        dialog?.show()
     }
 
     private fun renderTicker(tickerInfo: TickerInfo) {
