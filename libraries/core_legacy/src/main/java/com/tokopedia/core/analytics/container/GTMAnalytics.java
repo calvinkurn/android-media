@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -1080,7 +1081,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     it.remove();
                 }
             }
-            NewRelic.recordBreadcrumb(eventName, map);
+            Log.e("NEWRELIC", NewRelic.recordBreadcrumb(eventName, map) +" <-- is success");
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
