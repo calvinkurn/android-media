@@ -31,6 +31,7 @@ class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
             itemView.img_carousell_recharge_home_page.loadImage(element.mediaUrl)
             itemView.setOnClickListener {
+                if(element.applink.isNotEmpty())
                 onItemBindListener.onRechargeSectionItemClicked(element)
             }
         }
