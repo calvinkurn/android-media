@@ -59,7 +59,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
                         throwable = null,
-                        revampData = orderData.revampData
+                        revampData = orderData.revampData,
+                        addressState = AddressState(orderData.errorCode, orderData.preference.address.state, orderData.popUpMessage)
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -70,7 +71,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         orderPromo = OrderPromo(),
                         globalEvent = null,
                         throwable = t,
-                        revampData = OccRevampData()
+                        revampData = OccRevampData(),
+                        addressState = AddressState()
                 )
             }
         }
@@ -203,5 +205,6 @@ class ResultGetOccCart(
         var orderPromo: OrderPromo,
         var globalEvent: OccGlobalEvent?,
         var throwable: Throwable?,
-        var revampData: OccRevampData
+        var revampData: OccRevampData,
+        var addressState: AddressState
 )

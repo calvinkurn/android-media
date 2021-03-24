@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.newrelic
 
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import com.tokopedia.config.GlobalConfig
@@ -28,13 +29,13 @@ class SellerHomeNewRelic @Inject constructor() {
     private var isNewRelicDataSent: Boolean = false
 
     fun sendSellerHomeNewRelicData(
-            context: Context?,
+            application: Application,
             screenName: String,
             userId: String,
             performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring?) {
-        if (!isNewRelicDataSent) {
-            isNewRelicDataSent = true
-            context?.run {
+        application.applicationContext?.run {
+            if (!isNewRelicDataSent) {
+                isNewRelicDataSent = true
                 val data = mutableMapOf<String, Any>(
                         KEY_EVENT_TYPE to ANDROID,
                         KEY_APP_VERSION to GlobalConfig.VERSION_NAME,
@@ -42,7 +43,7 @@ class SellerHomeNewRelic @Inject constructor() {
                         KEY_DEVICE_ID to GlobalConfig.DEVICE_ID,
                         KEY_DEVICE_NAME to Build.MODEL,
                         KEY_DEVICE_TYPE to ANDROID,
-                        KEY_NETWORK_TYPE to DeviceConnectionInfo.getConnectionType(context).orEmpty(),
+                        KEY_NETWORK_TYPE to DeviceConnectionInfo.getConnectionType(this).orEmpty(),
                         KEY_OS to ANDROID,
                         KEY_OS_VERSION to Build.VERSION.RELEASE,
                         KEY_PAGE_NAME to screenName,
@@ -68,7 +69,7 @@ class SellerHomeNewRelic @Inject constructor() {
                 data.putWidgetPLTDuration(WIDGET_NAME_PROGRESS, performanceMonitoringSellerHomePlt?.getProgressWidgetNetworkDuration().orZero())
                 data.putWidgetPLTDuration(WIDGET_NAME_TABLE, performanceMonitoringSellerHomePlt?.getTableWidgetNetworkDuration().orZero())
                 data.putWidgetPLTDuration(WIDGET_NAME_TICKER, performanceMonitoringSellerHomePlt?.getTickerWidgetNetworkDuration().orZero())
-                NewRelic.getInstance(context).sendData(data)
+                NewRelic.getInstance(application).sendData(data)
             }
         }
     }

@@ -2,26 +2,31 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
+import android.text.*
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import androidx.annotation.DimenRes
+import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.info.model.description.DescriptionData
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -67,7 +72,8 @@ object ProductDetailUtil {
 
 }
 
-fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {
+fun String.boldOrLinkText(isLink: Boolean, context: Context,
+                          vararg textToBold: Pair<String, () -> Unit>): SpannableString {
     val builder = SpannableString(this)
 
     if (this.isNotEmpty() || this.isNotBlank()) {
@@ -95,7 +101,8 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.isUnderlineText = false
-                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        ds.color = MethodChecker.getColor(context, textColor)
                     }
                 }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
@@ -103,6 +110,29 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
     }
 
     return builder
+}
+
+fun String.renderHtmlBold(context: Context): CharSequence? {
+    if (this.isEmpty()) return null
+    val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)
+    val spanHandler = SpannableStringBuilder(spannedHtmlString)
+    val styleSpanArr = spanHandler.getSpans(0, spannedHtmlString.length, StyleSpan::class.java)
+    val boldSpanArr: MutableList<StyleSpan> = mutableListOf()
+    styleSpanArr.forEach {
+        if (it.style == Typeface.BOLD) {
+            boldSpanArr.add(it)
+        }
+    }
+
+    boldSpanArr.forEach {
+        val boldStart = spanHandler.getSpanStart(it)
+        val boldEnd = spanHandler.getSpanEnd(it)
+
+        spanHandler.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spanHandler.setSpan(UnifyCustomTypefaceSpan(getTypeface(context, "RobotoBold.ttf")), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+    }
+
+    return spanHandler
 }
 
 internal fun Long.getRelativeDateByMinute(context: Context): String {
@@ -297,3 +327,50 @@ fun View?.showToasterError(message: String,
     }
 }
 
+internal fun View?.animateExpand() = this?.run {
+    val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
+    val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+    val targetHeight = measuredHeight
+
+    // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+    layoutParams.height = 1
+    show()
+    val animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            layoutParams.height = if (interpolatedTime == 1f) ConstraintLayout.LayoutParams.WRAP_CONTENT
+            else (targetHeight * interpolatedTime).toInt()
+            alpha = interpolatedTime
+            requestLayout()
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+    animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    startAnimation(animation)
+}
+
+internal fun View?.animateCollapse() = this?.run {
+    val initialHeight = measuredHeight
+    val animation: Animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            if (interpolatedTime == 1f) {
+                gone()
+            } else {
+                layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                alpha = 1.0f - interpolatedTime
+                requestLayout()
+            }
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+    animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    startAnimation(animation)
+}

@@ -1,5 +1,6 @@
 package com.tokopedia.pocnewrelic
 
+import android.app.Application
 import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.pocnewrelic.datasource.NewRelicDataSource
@@ -13,10 +14,10 @@ class NewRelic private constructor(context: Context) {
         private var instance: NewRelic? = null
 
         @JvmStatic
-        fun getInstance(context: Context): NewRelic {
+        fun getInstance(application: Application): NewRelic {
             var instance = instance
             if (instance == null) {
-                instance = createInstance(context)
+                instance = createInstance(application.applicationContext)
             }
             return instance
         }

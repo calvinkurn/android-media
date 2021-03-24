@@ -625,7 +625,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
         activity?.let {
             (it as LoadTimeMonitoringActivity).loadTimeMonitoringListener?.onStopPltMonitoring()
-            newRelic.sendSellerHomeNewRelicData(it.applicationContext, screenName, userSession.userId, performanceMonitoringSellerHomePlt)
+            newRelic.sendSellerHomeNewRelicData(it.application, screenName, userSession.userId, performanceMonitoringSellerHomePlt)
         }
     }
 

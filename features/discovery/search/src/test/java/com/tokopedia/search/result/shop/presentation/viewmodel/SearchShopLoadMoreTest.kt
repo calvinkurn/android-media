@@ -9,7 +9,7 @@ import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
 import org.junit.Test
 
-internal class SearchShopLoadMoreTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopLoadMoreTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `View load more and visible, and has next page`() {
