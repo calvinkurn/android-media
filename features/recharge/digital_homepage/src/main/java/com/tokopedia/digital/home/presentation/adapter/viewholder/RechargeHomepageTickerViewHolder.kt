@@ -40,7 +40,6 @@ class RechargeHomepageTickerViewHolder(itemView: View, val listener: RechargeHom
                                 }
 
                                 override fun onDismiss() {
-                                    val a = "a"
                                 }
                             })
                 }
