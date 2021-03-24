@@ -105,6 +105,7 @@ object DigitalCheckoutQueries {
                 link_text
                 link_url
                 tooltip_text
+                icon_url
               }
             }
             atc_source

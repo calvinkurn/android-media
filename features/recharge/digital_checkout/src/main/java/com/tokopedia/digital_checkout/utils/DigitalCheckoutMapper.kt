@@ -178,7 +178,6 @@ object DigitalCheckoutMapper {
         digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
         digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
 
-        if (requestCheckoutDataParameter.isFintechProductChecked) digitalCheckoutDataParameter.isFintechProductChecked = true
         if (requestCheckoutDataParameter.isSubscriptionChecked) digitalCheckoutDataParameter.isSubscriptionChecked = true
 
         return digitalCheckoutDataParameter
@@ -209,18 +208,18 @@ object DigitalCheckoutMapper {
 
         attributes.subscribe = checkoutData.isSubscriptionChecked
 
-        if (checkoutData.isFintechProductChecked) {
-            fintechProduct?.run {
-                attributes.fintechProduct = listOf(RequestBodyCheckout.FintechProductCheckout(
-                        transactionType = transactionType,
-                        tierId = tierId.toIntOrZero(),
-                        userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
-                        fintechAmount = fintechAmount.toLong(),
-                        fintechPartnerAmount = fintechPartnerAmount.toLong(),
-                        productName = info.title
-                ))
-            }
+        val fintechProductsCheckout = mutableListOf<RequestBodyCheckout.FintechProductCheckout>()
+        checkoutData.fintechProducts.values.forEach { fintech ->
+            fintechProductsCheckout.add(RequestBodyCheckout.FintechProductCheckout(
+                    transactionType = fintech.transactionType,
+                    tierId = fintech.tierId.toIntOrZero(),
+                    userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
+                    fintechAmount = fintech.fintechAmount.toLong(),
+                    fintechPartnerAmount = fintech.fintechPartnerAmount.toLong(),
+                    productName = fintech.info.title
+            ))
         }
+        attributes.fintechProduct = fintechProductsCheckout
 
         requestBodyCheckout.attributes = attributes
         requestBodyCheckout.relationships = CheckoutRelationships(

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -178,7 +177,7 @@ class DigitalCartActivityWithSubscriptionTest {
         onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
         onView(withId(R.id.tvCheckoutSummaryTitle)).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Subtotal Tagihan"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("This is purchase Protection"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("purchase-protection"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 10.000"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(matches(isDisplayed()))
 
@@ -186,7 +185,7 @@ class DigitalCartActivityWithSubscriptionTest {
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
 
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("This is purchase Protection"))).check(doesNotExist())
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("purchase-protection"))).check(doesNotExist())
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(doesNotExist())
     }
 
