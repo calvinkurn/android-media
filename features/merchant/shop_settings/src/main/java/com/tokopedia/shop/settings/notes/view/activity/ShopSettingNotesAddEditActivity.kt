@@ -21,7 +21,7 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
     private var shopNote = ShopNoteUiModel()
 
     private val saveTextView: Typography? by lazy {
-        toolbar?.findViewById<Typography>(R.id.tvSave)
+        toolbar?.findViewById(R.id.tvSave)
     }
 
     companion object {

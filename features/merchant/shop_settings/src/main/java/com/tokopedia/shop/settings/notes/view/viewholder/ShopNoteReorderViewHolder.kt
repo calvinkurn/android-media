@@ -16,36 +16,36 @@ import com.tokopedia.unifyprinciples.Typography
 class ShopNoteReorderViewHolder(itemView: View,
                                 private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopNoteUiModel>(itemView) {
 
-    private val tvNoteName: Typography
-    private val tvLastUpdate: Typography
-    private val handler: View
-
-    init {
-        tvNoteName = itemView.findViewById(R.id.tvNoteName)
-        tvLastUpdate = itemView.findViewById(R.id.tvLastUpdate)
-        handler = itemView.findViewById(R.id.ivReorder)
-    }
+    private var tvNoteName: Typography? = null
+    private var tvLastUpdate: Typography? = null
+    private var ivReorder: View? = null
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(shopNoteUiModel: ShopNoteUiModel) {
-        tvNoteName.text = shopNoteUiModel.title
-        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteUiModel.updateTimeUTC)
+        itemView.apply {
+            tvNoteName = findViewById(R.id.tvNoteName)
+            tvLastUpdate = findViewById(R.id.tvLastUpdate)
+            ivReorder = findViewById(R.id.ivReorder)
 
-        if (shopNoteUiModel.terms) {
-            handler.visibility = View.GONE
-        } else {
-            handler.setOnTouchListener { _, event ->
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    onStartDragListener?.onStartDrag(this@ShopNoteReorderViewHolder)
+            tvNoteName?.text = shopNoteUiModel.title
+            tvLastUpdate?.text = toReadableString(FORMAT_DATE_TIME, shopNoteUiModel.updateTimeUTC)
+
+            if (shopNoteUiModel.terms) {
+                ivReorder?.visibility = View.GONE
+                background = context.getDrawable(R.color.Unify_N700_20)
+            } else {
+                ivReorder?.setOnTouchListener { _, event ->
+                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                        onStartDragListener?.onStartDrag(this@ShopNoteReorderViewHolder)
+                    }
+                    false
                 }
-                false
+                ivReorder?.visibility = View.VISIBLE
             }
-            handler.visibility = View.VISIBLE
         }
     }
 
     companion object {
-
         val LAYOUT = R.layout.item_shop_note_reorder
     }
 

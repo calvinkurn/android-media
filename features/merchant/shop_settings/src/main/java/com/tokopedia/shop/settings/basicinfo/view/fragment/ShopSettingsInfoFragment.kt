@@ -109,7 +109,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), MenuViewHolder.ItemMenuLi
         }
     }
 
-    override fun onItemMenuClicked(text: String) {
+    override fun onItemMenuClicked(text: String, position: Int) {
         bottomSheet?.dismiss()
         when(text) {
             getString(R.string.label_close_shop_now) -> {

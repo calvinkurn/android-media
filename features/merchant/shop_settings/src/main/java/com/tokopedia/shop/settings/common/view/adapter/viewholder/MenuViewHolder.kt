@@ -16,7 +16,7 @@ class MenuViewHolder(private val listener: ItemMenuListener?, view: View): BaseV
             val tpMenu: Typography = findViewById(R.id.tp_menu)
             tpMenu.text = text
         }.setOnClickListener {
-            listener?.onItemMenuClicked(text)
+            listener?.onItemMenuClicked(text, adapterPosition)
         }
     }
 
@@ -25,6 +25,6 @@ class MenuViewHolder(private val listener: ItemMenuListener?, view: View): BaseV
     }
 
     interface ItemMenuListener {
-        fun onItemMenuClicked(text: String)
+        fun onItemMenuClicked(text: String, position: Int)
     }
 }
