@@ -47,7 +47,25 @@ class KycUploadViewModelTest {
             livenessData
         }
 
-        viewModel.uploadImages(ktpPath, facePath, projectId)
+        viewModel.uploadImages(ktpPath, facePath, projectId, false)
+
+        val result = viewModel.kycResponseLiveData.value
+        Assert.assertEquals(result, Success(livenessData))
+        Assert.assertTrue((result as Success).data.isSuccessRegister)
+    }
+
+    @Test
+    fun `Register - Success upload image and accepted with encrypt`() {
+        val livenessData = KycData()
+
+        coEvery {
+            useCase.uploadImages(any(), any(), any())
+        } answers {
+            livenessData.isSuccessRegister = true
+            livenessData
+        }
+
+        viewModel.uploadImages(ktpPath, facePath, projectId, true)
 
         val result = viewModel.kycResponseLiveData.value
         Assert.assertEquals(result, Success(livenessData))
@@ -65,7 +83,24 @@ class KycUploadViewModelTest {
             livenessData
         }
 
-        viewModel.uploadImages(ktpPath, facePath, projectId)
+        viewModel.uploadImages(ktpPath, facePath, projectId, false)
+
+        val result = viewModel.kycResponseLiveData.value
+        Assert.assertFalse((result as Success).data.isSuccessRegister)
+    }
+
+    @Test
+    fun `Register - Success upload image but rejected with encrypt`() {
+        val livenessData = KycData()
+
+        coEvery {
+            useCase.uploadImages(any(), any(), any())
+        } answers {
+            livenessData.isSuccessRegister = false
+            livenessData
+        }
+
+        viewModel.uploadImages(ktpPath, facePath, projectId, true)
 
         val result = viewModel.kycResponseLiveData.value
         Assert.assertFalse((result as Success).data.isSuccessRegister)
@@ -77,11 +112,11 @@ class KycUploadViewModelTest {
         val exceptionMock = Exception("Oops!")
 
         coEvery {
-            viewModelMock.uploadImages(any(), any(), any())
+            viewModelMock.uploadImages(any(), any(), any(), any())
         } throws exceptionMock
 
         assertFailsWith<Exception> {
-            viewModelMock.uploadImages(ktpPath, facePath, projectId)
+            viewModelMock.uploadImages(ktpPath, facePath, projectId, true)
         }
     }
 
@@ -91,11 +126,11 @@ class KycUploadViewModelTest {
         val exceptionMock = Exception("Oops!")
 
         coEvery {
-            viewModelMock.uploadImages(any(), any(), any())
+            viewModelMock.uploadImages(any(), any(), any(), any())
         } throws exceptionMock
 
         assertFailsWith<Exception> {
-            viewModelMock.uploadImages("", "", "")
+            viewModelMock.uploadImages("", "", "", true)
         }
     }
 
@@ -107,7 +142,21 @@ class KycUploadViewModelTest {
             useCase.uploadImages(any(), any(), any())
         } throws exceptionMock
 
-        viewModel.uploadImages(ktpPath, facePath, projectId)
+        viewModel.uploadImages(ktpPath, facePath, projectId, false)
+
+        val result = viewModel.kycResponseLiveData.value
+        Assert.assertTrue(result is Fail)
+    }
+
+    @Test
+    fun `Register - Failed upload image and get exception with encrypt`() {
+        val exceptionMock = mockk<Exception>(relaxed = true)
+
+        coEvery {
+            useCase.uploadImages(any(), any(), any())
+        } throws exceptionMock
+
+        viewModel.uploadImages(ktpPath, facePath, projectId, true)
 
         val result = viewModel.kycResponseLiveData.value
         Assert.assertTrue(result is Fail)
