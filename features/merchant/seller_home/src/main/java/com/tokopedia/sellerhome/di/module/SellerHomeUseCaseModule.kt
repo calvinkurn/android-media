@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.di.module
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
@@ -7,7 +8,6 @@ import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhomecommon.domain.mapper.*
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.user.session.UserSessionInterface

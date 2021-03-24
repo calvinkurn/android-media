@@ -21,7 +21,8 @@ class CarouselMapper @Inject constructor(): BaseResponseMapper<GetCarouselDataRe
                         mapItemRemoteModelToItemUiModel(item)
                     },
                     error = it.errorMsg,
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget
             )
         }
     }

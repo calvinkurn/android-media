@@ -69,6 +69,7 @@ class GetCardDataUseCase(
                   description
                   error
                   errorMsg
+                  showWidget
                 }
               }
             }

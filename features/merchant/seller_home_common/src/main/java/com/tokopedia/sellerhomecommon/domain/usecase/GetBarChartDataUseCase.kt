@@ -88,6 +88,7 @@ class GetBarChartDataUseCase(
                     }
                   }
                   errorMsg
+                  showWidget
                 }
               }
             }

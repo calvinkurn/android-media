@@ -21,7 +21,8 @@ class TickerMapper @Inject constructor() : BaseResponseMapper<GetTickerResponse,
                     type = it.tickerType ?: 0,
                     redirectUrl = SellerHomeCommonUtils.extractUrls(it.message.orEmpty())
                             .getOrNull(0)
-                            .orEmpty()
+                            .orEmpty(),
+                    isFromCache = fromCache
             )
         }
     }

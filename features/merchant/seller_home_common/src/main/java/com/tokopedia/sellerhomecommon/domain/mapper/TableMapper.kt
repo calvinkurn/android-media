@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -33,7 +34,8 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
                     dataKey = it.dataKey,
                     error = it.errorMsg,
                     dataSet = getTableDataSet(it.data),
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

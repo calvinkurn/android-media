@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
@@ -33,7 +34,8 @@ class LineGraphMapper @Inject constructor(): BaseResponseMapper<GetLineGraphData
                                 yVal = xyModel.yVal.orZero()
                         )
                     },
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

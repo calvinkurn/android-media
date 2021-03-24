@@ -69,6 +69,7 @@ class GetProgressDataUseCase constructor(
                   subtitle
                   error
                   errorMsg
+                  showWidget
                 }
               }
             }

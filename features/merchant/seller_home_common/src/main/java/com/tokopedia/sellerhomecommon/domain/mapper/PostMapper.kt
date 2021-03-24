@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.presentation.model.PostCtaDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
@@ -30,7 +31,8 @@ class PostMapper @Inject constructor(): BaseResponseMapper<GetPostDataResponse, 
                             appLink = it.cta?.appLink.orEmpty()
                     ),
                     error = it.error.orEmpty(),
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

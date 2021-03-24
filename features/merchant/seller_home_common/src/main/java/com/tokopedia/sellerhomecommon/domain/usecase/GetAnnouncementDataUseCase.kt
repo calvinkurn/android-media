@@ -60,6 +60,7 @@ class GetAnnouncementDataUseCase(
                   dataKey
                   errorMsg
                   title
+                  showWidget
                   subtitle
                   imageUrl
                   button {

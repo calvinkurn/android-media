@@ -2,7 +2,6 @@ package com.tokopedia.homenav.mainnav.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactory
@@ -39,7 +38,7 @@ class MainNavModule {
     fun provideAccountHeaderMapper(@ApplicationContext context: Context,
                                    userSession: UserSessionInterface
     ) = AccountHeaderMapper(
-            context, userSession
+            userSession
     )
 
     @MainNavScope

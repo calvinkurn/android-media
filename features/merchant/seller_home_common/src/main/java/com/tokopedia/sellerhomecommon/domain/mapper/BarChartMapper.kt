@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.sellerhomecommon.domain.model.*
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
@@ -22,7 +23,8 @@ class BarChartMapper @Inject constructor(): BaseResponseMapper<GetBarChartDataRe
                             yAxis = getAxis(it.data.axes.yLabel).distinctBy { axis -> axis.value },
                             summary = mapBarChartSummary(it.data.summary)
                     ),
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

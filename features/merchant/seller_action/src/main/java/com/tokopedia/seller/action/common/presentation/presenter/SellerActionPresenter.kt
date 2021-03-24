@@ -1,12 +1,10 @@
 package com.tokopedia.seller.action.common.presentation.presenter
 
 import android.net.Uri
-import com.tokopedia.kotlin.extensions.convertFormatDate
-import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.seller.action.common.interfaces.SellerActionContract
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
+import com.tokopedia.seller.action.common.provider.SellerActionProvider
 import com.tokopedia.seller.action.order.domain.model.SellerActionOrderCode
 import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import kotlinx.coroutines.GlobalScope
@@ -16,7 +14,8 @@ import javax.inject.Inject
 
 class SellerActionPresenter @Inject constructor(
         private val sliceMainOrderListUseCase: SliceMainOrderListUseCase,
-        private val dispatcher: SellerActionDispatcherProvider
+        private val dispatcher: SellerActionDispatcherProvider,
+        private val provider: SellerActionProvider
 ): SellerActionContract.Presenter {
 
     private var view: SellerActionContract.View? = null
@@ -38,9 +37,12 @@ class SellerActionPresenter @Inject constructor(
     }
 
     private suspend fun getSliceMainOrderList(sliceUri: Uri, date: String?) {
-        val filteredDate = date?.let {
-            convertFormatDate(it, SellerActionConst.SLICE_DATE_FORMAT, SellerActionConst.REQUEST_DATE_FORMAT)
-        } ?: Date().toFormattedString(SellerActionConst.REQUEST_DATE_FORMAT)
+        val filteredDate =
+                if (date == null) {
+                    provider.getDefaultDate()
+                } else {
+                    provider.getFormattedDate(date)
+                }
         with(sliceMainOrderListUseCase) {
             params = SliceMainOrderListUseCase.createRequestParam(filteredDate, filteredDate, SellerActionOrderCode.STATUS_CODE_DEFAULT)
             view?.onSuccessGetOrderList(sliceUri, sliceMainOrderListUseCase.executeOnBackground())

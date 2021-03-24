@@ -78,6 +78,7 @@ class GetPostDataUseCase(
                   }
                   error
                   errorMsg
+                  showWidget
                 }
               }
             }
