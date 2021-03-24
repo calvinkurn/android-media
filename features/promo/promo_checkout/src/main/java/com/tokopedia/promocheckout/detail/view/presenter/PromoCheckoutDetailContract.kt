@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
@@ -21,6 +22,7 @@ interface PromoCheckoutDetailContract {
         fun onSuccessCancelPromo()
         fun showProgressLoading()
         fun hideProgressLoading()
+        fun getContext(): Context?
     }
 
     interface Presenter : CustomerPresenter<View> {

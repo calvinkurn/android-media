@@ -10,7 +10,7 @@ open class HotelCheckVoucherMapper @Inject constructor() {
     fun mapData(data: HotelCheckVoucher): DataUiModel {
         return DataUiModel(
                 success = true,
-                message = MessageUiModel("#ade3af", "green", data.message),
+                message = MessageUiModel(data.messageColor, "green", data.message),
                 codes = listOf(data.voucherCode),
                 titleDescription = data.titleDescription,
                 discountAmount = data.discountAmountPlain.toInt(),

@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.detail.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -78,6 +79,8 @@ class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
                 .inject(this)
         promoCheckoutDetailHotelPresenter.attachView(this)
     }
+
+    override fun getContext(): Context? = context
 
     override fun onDestroy() {
         promoCheckoutDetailHotelPresenter.detachView()

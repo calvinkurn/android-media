@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
@@ -18,12 +19,22 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
                                         private val cancelVoucherUseCase: FlightCancelVoucherUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailHotelContract.Presenter {
 
+    override fun attachView(view: PromoCheckoutDetailContract.View) {
+        super.attachView(view)
+        view.getContext()
+    }
+
     override fun checkVoucher(promoCode: String, cartID: String) {
         view.showProgressLoading()
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, cartID), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
                 val checkVoucherData = objects.getData<HotelCheckVoucher.Response>(HotelCheckVoucher.Response::class.java).response
+                try {
+                    if(view.getContext() != null) checkVoucherData.messageColor = "#" + Integer.toHexString( ContextCompat.getColor(view.getContext()!!, com.tokopedia.unifyprinciples.R.color.Unify_G200) and HEX_CODE_TRANSPARENCY)
+                }catch (e: Throwable){
+                    e.printStackTrace()
+                }
                 if (checkVoucherData.isSuccess) {
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
                 } else {
@@ -98,5 +109,9 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
         super.detachView()
+    }
+
+    companion object {
+        private const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
     }
 }
