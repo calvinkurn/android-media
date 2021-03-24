@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
@@ -67,6 +65,7 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     private var cardProducts: CardUnify? = null
     private var cardNoProducts: CardUnify? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var nestedScrollView: NestedScrollView? = null
 
     private var dialogSend: DialogUnify? = null
 
@@ -111,6 +110,7 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         cardProducts = view.findViewById(R.id.card_products)
         cardNoProducts = view.findViewById(R.id.card_no_products)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        nestedScrollView = view.findViewById(R.id.nested_scroll_view)
 
         initView()
         setupViewInteraction()
@@ -166,7 +166,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                                 "Oke"
                         ).show()
                     }
-                    refreshData()
                 }
 
                 setSecondaryCTAText(getString(R.string.review_reminder_dialog_send_button_secondary))
@@ -206,6 +205,18 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                 )
                 val coachMark = CoachMark2(requireContext())
                 coachMark.setOnDismissListener { prefs.edit().putBoolean(ReviewConstants.HAS_COACHMARK_REMINDER_MESSAGE, true).apply() }
+                coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                        if (currentIndex == 2) {
+                            coachMark.hideCoachMark()
+                            val childView = coachMarkItem.anchorView
+                            val scrollTo = (childView.parent.parent.parent as View).top + childView.top
+                            nestedScrollView?.smoothScrollTo(0, scrollTo)
+                            coachMark.showCoachMark(coachMarkItems, null, currentIndex)
+                        }
+                    }
+
+                })
                 coachMark.showCoachMark(coachMarkItems)
             }
         }
