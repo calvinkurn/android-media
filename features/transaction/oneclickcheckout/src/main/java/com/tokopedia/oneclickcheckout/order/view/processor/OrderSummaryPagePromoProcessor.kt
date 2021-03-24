@@ -305,17 +305,21 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
     private fun handlePromoThrowable(throwable: Throwable, validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
         if (throwable is AkamaiErrorException) {
-            val allPromoCodes = arrayListOf<String>()
-            validateUsePromoRequest.orders.first()?.codes?.also {
-                allPromoCodes.addAll(it)
-            }
-            validateUsePromoRequest.codes.forEach {
-                if (it != null) {
-                    allPromoCodes.add(it)
+            try {
+                val allPromoCodes = arrayListOf<String>()
+                validateUsePromoRequest.orders.first()?.codes?.also {
+                    allPromoCodes.addAll(it)
                 }
+                validateUsePromoRequest.codes.forEach {
+                    if (it != null) {
+                        allPromoCodes.add(it)
+                    }
+                }
+                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, allPromoCodes, true)
+                clearCacheAutoApplyStackUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().single()
+            } catch (t: Throwable) {
+                //ignore throwable
             }
-            clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, allPromoCodes, true)
-            clearCacheAutoApplyStackUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().single()
             return true
         }
         return false

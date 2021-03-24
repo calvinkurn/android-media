@@ -528,13 +528,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     shipmentCartItemModel.setSelectedShipmentDetailData(null);
                     shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-                    updateShipmentCostModel();
-                    updateInsuranceTncVisibility();
                     notifyItemChanged(position);
                     eligibleNewShippingExperience = shipmentCartItemModel.isEligibleNewShippingExperience();
                 }
             }
         }
+        updateShipmentCostModel();
+        updateInsuranceTncVisibility();
         if (eligibleNewShippingExperience) {
             updateShippingCompletionTickerVisibility();
         }

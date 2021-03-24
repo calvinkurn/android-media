@@ -71,7 +71,6 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopU
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -457,7 +456,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     progressDialog?.dismiss()
                     if (activity != null) {
                         val messageData = it.message
-                        val priceValidationDialog = DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                        val priceValidationDialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
                         priceValidationDialog.setTitle(messageData.title)
                         priceValidationDialog.setDescription(messageData.desc)
                         priceValidationDialog.setPrimaryCTAText(messageData.action)
