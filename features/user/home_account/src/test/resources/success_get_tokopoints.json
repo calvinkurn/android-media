@@ -1,0 +1,53 @@
+{
+  "tokopointsDrawerList": {
+    "offFlag": false,
+    "drawerList": [
+      {
+        "type": "",
+        "iconImageURL": "",
+        "redirectURL": "",
+        "redirectAppLink": "",
+        "sectionContent": []
+      },
+      {
+        "type": "",
+        "iconImageURL": "",
+        "redirectURL": "",
+        "redirectAppLink": "",
+        "sectionContent": []
+      },
+      {
+        "type": "TokoPoints",
+        "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/05/kupon-sayaxxxhdpi.png",
+        "redirectURL": "https://www.tokopedia.com/rewards",
+        "redirectAppLink": "tokopedia://rewards",
+        "sectionContent": [
+          {
+            "type": "text",
+            "textAttributes": {
+              "text": "Rp1.000.000",
+              "color": "#31353B",
+              "isBold": true
+            },
+            "tagAttributes": {
+              "text": "",
+              "backgroundColor": ""
+            }
+          },
+          {
+            "type": "text",
+            "textAttributes": {
+              "text": "(100.000 Points)",
+              "color": "#31353B",
+              "isBold": false
+            },
+            "tagAttributes": {
+              "text": "",
+              "backgroundColor": ""
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

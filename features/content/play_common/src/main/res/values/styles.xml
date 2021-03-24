@@ -5,9 +5,14 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowSoftInputMode">stateAlwaysHidden|stateHidden</item>
+        <item name="isLightTheme">false</item>
     </style>
 
     <style name="PlayPlaceholder">
+        <item name="android:background">@drawable/bg_play_placeholder</item>
+    </style>
+
+    <style name="PlayPlaceholderLight">
         <item name="android:background">@drawable/bg_play_placeholder</item>
     </style>
 

@@ -319,9 +319,7 @@ class DigitalCartViewModel @Inject constructor(
                     val responseCheckoutData = data.data as ResponseCheckout
                     val checkoutData = DigitalCheckoutMapper.mapToPaymentPassData(responseCheckoutData)
 
-                    _showLoading.postValue(false)
                     _paymentPassData.postValue(checkoutData)
-
                 }) {
                     handleError(it)
                 }

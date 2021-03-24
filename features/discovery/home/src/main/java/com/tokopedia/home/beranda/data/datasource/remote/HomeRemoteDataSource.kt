@@ -45,6 +45,7 @@ class HomeRemoteDataSource(
                                       token: String = "",
                                       numOfChannel: Int = 0,
                                       params: String = "",
+                                      locationParams: String = "",
                                       doQueryHash: Boolean = false
     ): HomeChannelData = getHomeDynamicChannelsRepository.getDynamicChannelData(
             GetHomeDynamicChannelsRepository.buildParams(
@@ -52,6 +53,7 @@ class HomeRemoteDataSource(
                     token = token,
                     numOfChannel = numOfChannel,
                     queryParams = params,
+                    locationParams = locationParams,
                     doQueryHash = doQueryHash
             )
     )
