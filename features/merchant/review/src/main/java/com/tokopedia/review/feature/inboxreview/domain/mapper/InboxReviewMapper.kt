@@ -67,7 +67,8 @@ object InboxReviewMapper {
                             invoiceID = it.invoiceID.orEmpty(),
                             sellerUser = userSession.name,
                             isReplied = inboxReviewResponse.filterBy?.getStatusFilter(prefixStatus)?.isAnswered
-                                    ?: false
+                                    ?: false,
+                            isKejarUlasan = it.isKejarUlasan
                     )
             )
         }

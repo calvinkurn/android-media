@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
@@ -53,6 +54,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             setFeedbackReply(element)
             setupFeedbackReview(element.reviewText, element.feedbackId.toString(), element.productID.toString())
             setImageAttachment(element)
+            showKejarUlasanLabel(element.isKejarUlasan)
         }
     }
 
@@ -171,6 +173,10 @@ class InboxReviewFeedbackViewHolder(view: View,
             tvReplyDate?.show()
             tvReplyComment?.show()
         }
+    }
+
+    private fun showKejarUlasanLabel(isKejarUlasan: Boolean) {
+        itemView.kejarUlasanLabel?.showWithCondition(isKejarUlasan)
     }
 
 }

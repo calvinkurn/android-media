@@ -272,6 +272,6 @@
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
 
     <!-- Kejar Ulasan -->
-    <string name="pursue_reviews_label">Kejar Ulasan</string>
+    <string name="kejar_ulasan_label">Kejar Ulasan</string>
 
 </resources>
