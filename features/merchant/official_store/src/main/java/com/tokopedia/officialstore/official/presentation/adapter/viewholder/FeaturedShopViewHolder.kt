@@ -12,7 +12,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.Shop
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter.OnItemClickListener
 
 class FeaturedShopViewHolder(
@@ -27,7 +27,7 @@ class FeaturedShopViewHolder(
         calculateImageSize()
     }
 
-    fun bind(shop: Shop) {
+    fun bind(shop: Grid) {
         imageView?.let {
             Glide.with(it.context)
                 .load(shop.imageUrl)
@@ -62,7 +62,7 @@ class FeaturedShopViewHolder(
         }
     }
 
-    private fun setOnClickListener(shop: Shop) {
+    private fun setOnClickListener(shop: Grid) {
         itemView.setOnClickListener {
             if (adapterPosition > RecyclerView.NO_POSITION) {
                 onItemClickListener?.onItemClick(adapterPosition, shop)

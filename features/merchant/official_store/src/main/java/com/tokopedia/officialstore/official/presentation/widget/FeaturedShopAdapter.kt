@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.Shop
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.FeaturedShopViewHolder
 
-class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop> = ArrayList()) :
+class FeaturedShopAdapter(private val context: Context, var shopList: List<Grid> = ArrayList()) :
         RecyclerView.Adapter<FeaturedShopViewHolder>() {
 
     var onItemClickListener: OnItemClickListener? = null
@@ -30,6 +30,6 @@ class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop>
     }
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int, shop: Shop)
+        fun onItemClick(position: Int, shop: Grid)
     }
 }

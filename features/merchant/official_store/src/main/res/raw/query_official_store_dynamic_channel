@@ -49,6 +49,10 @@ query dynamicHomeChannel($type: String, $location: String) {
                     isActive
                     imageUrl
                 }
+                shop{
+                    shopID
+                }
+                campaignCode
                 labelGroup {
                     position
                     title

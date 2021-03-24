@@ -7,14 +7,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
-import com.tokopedia.officialstore.common.listener.FeaturedShopListener
-import com.tokopedia.officialstore.official.data.model.Shop
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.viewmodel_official_featured_shop.view.*
 
-class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopDataModel>(view){
+class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFeaturedShopDataModel>(view){
 
     private var adapter: FeaturedShopAdapter? = null
 
@@ -31,28 +30,25 @@ class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener)
             officialStoreTracking?.eventClickAllFeaturedBrand(
                     element.categoryName.toEmptyStringIfNull())
 
-            RouteManager.route(it.context, element?.headerShop?.link)
+            RouteManager.route(it.context, element.channel.header?.applink)
         }
 
-        itemView.link_featured_shop?.text = element?.headerShop?.ctaText
-        itemView.title_featured_shop?.text = element?.headerShop?.title
+        itemView.title_featured_shop?.text = element.channel.header?.name
 
-        element?.featuredShop?.let {
+        element.channel.grids.let {
             adapter?.shopList = it
             adapter?.notifyDataSetChanged()
 
             it.forEachIndexed { index, shop ->
                 element.listener.onShopImpression(
-                        element.categoryName,
                         index + 1,
                         shop
                 )
             }
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
-                override fun onItemClick(position: Int, shop: Shop) {
+                override fun onItemClick(position: Int, shop: Grid) {
                     element.listener.onShopClick(
-                            element.categoryName,
                             position,
                             shop
                     )

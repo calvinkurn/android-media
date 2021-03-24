@@ -44,7 +44,6 @@ import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
@@ -188,7 +187,6 @@ class OfficialHomeFragment :
         super.onViewCreated(view, savedInstanceState)
         observeBannerData()
         observeBenefit()
-        observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
         resetData()
@@ -256,23 +254,6 @@ class OfficialHomeFragment :
         })
     }
 
-    private fun observeFeaturedShop() {
-//        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, {
-//            when (it) {
-//                is Success -> {
-//                    swipeRefreshLayout?.isRefreshing = false
-//                    officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
-//                }
-//                is Fail -> {
-//                    swipeRefreshLayout?.isRefreshing = false
-//                    showErrorNetwork(it.throwable)
-//                }
-//
-//            }
-//            shopPerformanceMonitoring.stopTrace()
-//        })
-    }
-
     private fun observeDynamicChannel() {
         viewModel.officialStoreDynamicChannelResult.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -281,6 +262,8 @@ class OfficialHomeFragment :
                     officialHomeMapper.mappingDynamicChannel(
                             result.data,
                             adapter,
+                            category?.title ?: "",
+                            this,
                             remoteConfig
                     )
                 }
@@ -785,7 +768,7 @@ class OfficialHomeFragment :
     override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
         tracking?.trackerObj?.sendEnhanceEcommerceEvent(
                 OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
-        RouteManager.route(context, channel.channelBanner?.applink.orEmpty())
+        RouteManager.route(context, channel.channelBanner.applink)
     }
 
     override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
@@ -843,32 +826,32 @@ class OfficialHomeFragment :
         setPerformanceListenerForRecyclerView()
     }
 
-    override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
+    override fun onShopImpression(position: Int, shopData: Grid) {
         tracking?.eventImpressionFeatureBrand(
-                categoryName,
+                category?.title ?: "",
                 position,
-                shopData.name.orEmpty(),
-                shopData.imageUrl.orEmpty(),
-                shopData.additionalInformation.orEmpty(),
-                shopData.featuredBrandId.orEmpty(),
+                shopData.name,
+                shopData.imageUrl,
+                shopData.attribution,
+                shopData.id.toString(),
                 viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty()
+                shopData.shop.shopId.toString()
         )
     }
 
-    override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
+    override fun onShopClick(position: Int, shopData: Grid) {
         tracking?.eventClickFeaturedBrand(
-                categoryName,
+                category?.title ?: "",
                 position,
-                shopData.name.orEmpty(),
-                shopData.url.orEmpty(),
-                shopData.additionalInformation.orEmpty(),
-                shopData.featuredBrandId.orEmpty(),
+                shopData.name,
+                shopData.applink,
+                shopData.attribution,
+                shopData.id.toString(),
                 viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty(),
-                shopData.campaignCode.orEmpty()
+                shopData.shop.shopId.toString(),
+                shopData.campaignCode
         )
-        RouteManager.route(context, shopData.url)
+        RouteManager.route(context, shopData.applink)
     }
 
     private fun initFirebasePerformanceMonitoring() {

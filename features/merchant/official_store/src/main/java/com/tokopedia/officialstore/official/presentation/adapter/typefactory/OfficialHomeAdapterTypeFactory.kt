@@ -51,7 +51,7 @@ class OfficialHomeAdapterTypeFactory(
     }
 
     override fun type(officialFeaturedShopDataModel: OfficialFeaturedShopDataModel): Int {
-        return if (officialFeaturedShopDataModel.featuredShop.isEmpty())
+        return if (officialFeaturedShopDataModel.channel.grids.isEmpty())
             HideViewHolder.LAYOUT
         else
             OfficialFeaturedShopViewHolder.LAYOUT
@@ -125,7 +125,7 @@ class OfficialHomeAdapterTypeFactory(
             OfficialLoadingMoreViewHolder.LAYOUT -> OfficialLoadingMoreViewHolder(view)
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(view)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(view)
-            OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(view, featuredShopListener)
+            OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(view)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(view, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(view, dcEventHandler)
             MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(

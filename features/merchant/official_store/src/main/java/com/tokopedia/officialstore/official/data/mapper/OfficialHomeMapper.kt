@@ -14,7 +14,6 @@ import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
-import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
@@ -34,7 +33,6 @@ class OfficialHomeMapper (
     companion object {
         private const val BANNER_POSITION = 0
         private const val BENEFIT_POSITION = 1
-        private const val FEATURE_SHOP_POSITION = 2
     }
 
     fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
@@ -62,28 +60,7 @@ class OfficialHomeMapper (
         }
     }
 
-    fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?, listener: FeaturedShopListener) {
-        listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialFeaturedShopDataModel }
-
-            val officialFeaturedShop = OfficialFeaturedShopDataModel(
-                    featuredShop.featuredShops,
-                    featuredShop.header,
-                    categoryName.toEmptyStringIfNull(),
-                    listener
-            )
-            if(index == -1) {
-                if(size < FEATURE_SHOP_POSITION) add(officialFeaturedShop)
-                else add(FEATURE_SHOP_POSITION, officialFeaturedShop)
-            } else {
-                set(index, officialFeaturedShop)
-            }
-
-            adapter?.submitList(this.toMutableList())
-        }
-    }
-
-    fun mappingDynamicChannel(officialStoreChannels: List<OfficialStoreChannel>, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
+    fun mappingDynamicChannel(officialStoreChannels: List<OfficialStoreChannel>, adapter: OfficialHomeAdapter?, categoryName: String, listener: FeaturedShopListener, remoteConfig: RemoteConfig?) {
         if (officialStoreChannels.isNotEmpty()) {
 
             val availableScreens: Set<String>
@@ -122,6 +99,14 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> {
                             views.add(MixTopDataModel(
                                     OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                        }
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND -> {
+                            val officialFeaturedShop = OfficialFeaturedShopDataModel(
+                                    officialStore.channel,
+                                    categoryName,
+                                    listener
+                            )
+                            views.add(officialFeaturedShop)
                         }
                         else -> views.add(DynamicChannelDataModel(officialStore))
                     }
