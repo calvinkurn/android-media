@@ -705,17 +705,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner?, position: Int) {
         promo?.let {
             trackingHotelUtil.hotelClickBanner(context, it, position, HOMEPAGE_SCREEN_NAME)
-            when {
-                RouteManager.isSupportApplink(context, it.attribute.appUrl) -> {
-                    RouteManager.route(context, it.attribute.appUrl)
-                }
-                getRegisteredNavigation(context!!, it.attribute.appUrl).isNotEmpty() -> {
-                    RouteManager.route(context, getRegisteredNavigation(context!!, it.attribute.appUrl))
-                }
-                it.attribute.webUrl.isNotEmpty() -> {
-                    RouteManager.route(context, it.attribute.webUrl)
-                }
-                else -> {
+            context?.let { ctx ->
+                when {
+                    RouteManager.isSupportApplink(ctx, it.attribute.appUrl) -> {
+                        RouteManager.route(ctx, it.attribute.appUrl)
+                    }
+                    getRegisteredNavigation(ctx, it.attribute.appUrl).isNotEmpty() -> {
+                        RouteManager.route(ctx, getRegisteredNavigation(ctx, it.attribute.appUrl))
+                    }
+                    it.attribute.webUrl.isNotEmpty() -> {
+                        RouteManager.route(ctx, it.attribute.webUrl)
+                    }
+                    else -> {
+                    }
                 }
             }
         }
