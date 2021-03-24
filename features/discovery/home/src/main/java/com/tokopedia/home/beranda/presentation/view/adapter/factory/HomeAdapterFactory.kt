@@ -63,8 +63,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
                          private val bannerComponentListener: BannerComponentListener,
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
-                         private val legoSixAutoListener: Lego6AutoBannerListener,
-                         private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener
+                         private val legoSixAutoListener: Lego6AutoBannerListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -330,7 +329,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             EmptyBannerViewHolder.LAYOUT -> viewHolder = EmptyBannerViewHolder(view, listener)
-            HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener, chooseAddressWidgetListener)
+            HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)

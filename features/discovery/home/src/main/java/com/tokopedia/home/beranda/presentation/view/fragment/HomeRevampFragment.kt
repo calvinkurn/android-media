@@ -16,7 +16,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
@@ -80,11 +79,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -109,7 +110,9 @@ import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -119,8 +122,8 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -217,6 +220,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val DEFAULT_UTM_SOURCE = "home_notif"
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
         private const val REQUEST_CODE_PLAY_ROOM = 256
+        private const val REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET = 258
+        private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 257
         private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
 
         var HIDE_TICKER = false
@@ -309,7 +314,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
-    private var isLightThemeStatusBar = true
+    private var isLightThemeStatusBar = false
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
     private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
@@ -322,11 +327,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
+    private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
     private var useNewInbox = false
     private val bannerCarouselCallback = BannerComponentCallback(context, this)
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private var chooseAddressWidgetInitialized: Boolean = false
 
     private fun isNavRevamp(): Boolean {
         return try {
@@ -373,7 +380,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
-        requestStatusBarDark()
     }
 
     private fun createDaggerComponent(){
@@ -389,16 +395,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         else{
             initHomePageFlows()
         }
-    }
-
-    private fun requestStatusBarDark() {
-        isLightThemeStatusBar = false
-        mainParentStatusBarListener?.requestStatusBarDark()
-    }
-
-    private fun requestStatusBarLight() {
-        isLightThemeStatusBar = true
-        mainParentStatusBarListener?.requestStatusBarLight()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -593,7 +589,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     onChooseAddressUpdated()
                 },
                 ifChooseAddressNotActive = {
-                    viewModel.get().getAddressData().isActive = false
+                    getHomeViewModel().getAddressData().isActive = false
                 }
         )
 
@@ -620,120 +616,153 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showNavigationOnboarding() {
         activity?.let {
-            val bottomSheet = BottomSheetUnify()
-            val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
-            onboardingView.onboarding_button.setOnClickListener {
-                bottomSheet.dismiss()
-                showCoachMark()
-            }
+            if (!bottomSheetIsShowing) {
+                val bottomSheet = BottomSheetUnify()
+                val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
+                onboardingView.onboarding_button.setOnClickListener {
+                    bottomSheet.dismiss()
+                    if (!coachMarkIsShowing) showCoachMark()
+                }
 
-            bottomSheet.setOnDismissListener {
-                if (!coachMarkIsShowing) showCoachMark()
-            }
+                bottomSheet.setOnDismissListener {
+                    if (!coachMarkIsShowing) showCoachMark()
+                }
 
-            bottomSheet.setTitle("")
-            bottomSheet.setChild(onboardingView)
-            bottomSheet.clearAction()
-            bottomSheet.setCloseClickListener {
-                bottomSheet.dismiss()
+                bottomSheet.setTitle("")
+                bottomSheet.setChild(onboardingView)
+                bottomSheet.clearAction()
+                bottomSheet.setCloseClickListener {
+                    bottomSheet.dismiss()
+                }
+                childFragmentManager.run {
+                    bottomSheet.show(this, "onboarding navigation")
+                    bottomSheetIsShowing = true
+                }
+                saveFirstViewNavigationFalse()
             }
-            childFragmentManager.run {
-                bottomSheet.show(this, "onboarding navigation")
-            }
-            saveFirstViewNavigationFalse()
         }
     }
 
     private fun ArrayList<CoachMark2Item>.buildHomeCoachmark() {
         //add navigation
-        val globalNavIcon = navToolbar?.getGlobalNavIconView()
-        globalNavIcon?.let {
-            this.add(
-                    CoachMark2Item(
-                            globalNavIcon,
-                            getString(R.string.onboarding_coachmark_title),
-                            getString(R.string.onboarding_coachmark_description)
-                    )
-            )
+        if (!isNavigationCoachmarkShown(requireContext())) {
+            val globalNavIcon = navToolbar?.getGlobalNavIconView()
+            globalNavIcon?.let {
+                this.add(
+                        CoachMark2Item(
+                                globalNavIcon,
+                                getString(R.string.onboarding_coachmark_title),
+                                getString(R.string.onboarding_coachmark_description)
+                        )
+                )
+            }
         }
 
         //inbox
-        val inboxIcon = navToolbar?.getInboxIconView()
-        inboxIcon?.let {
-            this.add(
-                    CoachMark2Item(
-                            inboxIcon,
-                            getString(R.string.onboarding_coachmark_inbox_title),
-                            getString(R.string.onboarding_coachmark_inbox_description)
-                    )
-            )
-        }
+//        if (!isInboxCoachmarkShown(requireContext())) {
+//            val inboxIcon = navToolbar?.getInboxIconView()
+//            inboxIcon?.let {
+//                this.add(
+//                        CoachMark2Item(
+//                                inboxIcon,
+//                                getString(R.string.onboarding_coachmark_inbox_title),
+//                                getString(R.string.onboarding_coachmark_inbox_description)
+//                        )
+//                )
+//            }
+//        }
 
         //add location
-        val needShowLocalization = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext()) ?: false
-        if (needShowLocalization) {
+        if (isLocalizingAddressNeedShowCoachMark(requireContext())) {
             val chooseLocationWidget = getLocationWidgetView()
             chooseLocationWidget?.let {
-                this.add(
-                        ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
-                )
+                if (it.isVisible) {
+                    this.add(
+                            ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
+                    )
+                }
             }
         }
         //add balance widget
         //uncomment this to activate balance widget coachmark
-//        val balanceWidget = getBalanceWidgetView()
-//        balanceWidget?.let {
-//            this.add(
-//                    CoachMark2Item(
-//                            balanceWidget,
-//                            getString(R.string.onboarding_coachmark_wallet_title),
-//                            getString(R.string.onboarding_coachmark_wallet_description)
-//                    )
-//            )
-//        }
+
+        if (!isBalanceWidgetCoachmarkShown(requireContext())) {
+            val balanceWidget = getBalanceWidgetView()
+            balanceWidget?.let {
+                this.add(
+                        CoachMark2Item(
+                                balanceWidget,
+                                getString(R.string.onboarding_coachmark_wallet_title),
+                                getString(R.string.onboarding_coachmark_wallet_description)
+                        )
+                )
+            }
+        }
     }
 
     private fun showCoachMark() {
-        coachMarkIsShowing = true
-        val coachMarkItem = ArrayList<CoachMark2Item>()
-        val coachMark = CoachMark2(requireContext())
+        context?.let {
+            coachMarkIsShowing = true
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(it)
 
-        coachMarkItem.buildHomeCoachmark()
-        coachMark.setStepListener(object: CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (coachMarkItem.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true)) {
-                    ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(requireContext())
+            coachMarkItem.buildHomeCoachmark()
+            coachMark.setStepListener(object: CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    coachMarkItem.setCoachmarkShownPref()
                 }
+            })
+            //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+            //will be removed along the coachmark removal in the future
+            try {
+                if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                    coachMark.showCoachMark(step = coachMarkItem, index = 0)
+                    coachMarkItem[0].setCoachmarkShownPref()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        })
-        //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-        //will be removed along the coachmark removal in the future
-        try {
-            if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                coachMark.showCoachMark(step = coachMarkItem, index = 0)
+        }
+    }
+
+    private fun CoachMark2Item.setCoachmarkShownPref() {
+        when {
+            this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
+                setChooseAddressCoachmarkShown(requireContext())
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_title), ignoreCase = true) -> {
+                setNavigationCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
+                setInboxCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
+                setBalanceWidgetCoachmarkShown(requireContext())
+            }
         }
     }
 
     private fun getLocationWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
-        if (view != null && view is HomeHeaderOvoViewHolder) {
-            val locationView = view.itemView.widget_choose_address.findViewById<View>(R.id.text_chosen_address)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            val locationView = it.itemView.widget_choose_address
             if (locationView.isVisible)
-                return locationView
+                return locationView.findViewById(R.id.text_chosen_address)
         }
         return null
     }
 
     private fun getBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
-        if (view != null && view is HomeHeaderOvoViewHolder) {
-            if (view.itemView.view_ovo.isVisible)
-                return view.itemView.view_ovo
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            if (it.itemView.view_balance_widget.isVisible)
+                return getBalanceWidgetViewTokoPointsOnly(it.itemView.view_balance_widget)
         }
         return null
+    }
+
+    private fun getBalanceWidgetViewTokoPointsOnly(balanceWidgetView: BalanceWidgetView): View? {
+        return balanceWidgetView.getTokopointsView()
     }
 
     private fun isValidToShowCoachMark(): Boolean {
@@ -854,6 +883,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     AbTestPlatform.NAVIGATION_VARIANT_OLD
                 }
         )
+
+        //TODO: Register remote config to turn off and on new balance widget
+        getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
@@ -992,6 +1024,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
     }
 
+    override fun onStop() {
+        super.onStop()
+        chooseAddressWidgetInitialized = false
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (::playWidgetCoordinator.isInitialized) {
@@ -1046,7 +1083,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeRechargeRecommendation()
         observeIsNeedRefresh()
         observeSearchHint()
-        observePlayWidgetToggleReminder()
+        observePlayWidgetReminder()
+        observePlayWidgetReminderEvent()
         observeRechargeBUWidget()
     }
 
@@ -1193,6 +1231,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
+
+        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(requireContext())
+        if (isChooseAddressShow) {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        } else {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        }
+
         Glide.with(requireContext())
                 .load(backgroundUrl)
                 .fitCenter()
@@ -1279,6 +1329,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
+            (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
+                Handler().postDelayed({
+                        val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() ?: false
+                        if (!coachMarkIsShowing && !bottomSheetIsShowing &&isBalanceWidgetNotEmpty)
+                            showCoachMark()
+                    }, 2000)
+            }
         }
     }
 
@@ -1308,11 +1365,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             when (fixedIconColor) {
                 FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
                 FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
-            }
-            if (offsetAlpha >= 150) {
-                if (isLightThemeStatusBar) requestStatusBarDark()
-            } else {
-                if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
         if (offsetAlpha >= 255) {
@@ -1397,8 +1449,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 RechargeBUWidgetCallback(context, this),
                 bannerCarouselCallback,
                 DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this),
-                ChooseAddressWidgetCallback(context, this, this)
+                Lego6AutoBannerComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1613,12 +1664,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-            REQUEST_CODE_PLAY_ROOM -> {
-                if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)
-                        && data.hasExtra(EXTRA_CHANNEL_ID))
-                            viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
+            REQUEST_CODE_PLAY_ROOM -> if (data != null) {
+                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
+                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+                getHomeViewModel().updateBannerTotalView(channelId, totalView)
             }
-            PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE -> if (data != null) notifyPlayWidgetTotalView(data)
+            REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET -> if (data != null) notifyPlayWidgetTotalView(data)
+            REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
+                val lastEvent = getHomeViewModel().playWidgetReminderEvent?.value
+                if (lastEvent != null) getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(lastEvent.first, lastEvent.second)
+            }
         }
     }
 
@@ -1645,7 +1700,25 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 HomeChooseAddressData(isActive = true)
                         .setLocalCacheModel(localCacheModel)
         )
-        Toast.makeText(requireContext(), "Address changed to : "+localCacheModel?.label?:"", Toast.LENGTH_SHORT).show()
+        chooseAddressWidgetInitialized = false
+    }
+
+    override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
+        if (!chooseAddressWidgetInitialized) {
+            chooseAddressWidget.bindChooseAddress(ChooseAddressWidgetCallback(context, this, this))
+            chooseAddressWidget.run {
+                visibility = if (needToShowChooseAddress) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+            chooseAddressWidgetInitialized = true
+        }
+    }
+
+    override fun onChooseAddressServerDown() {
+        getHomeViewModel().removeChooseAddressWidget()
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce
@@ -1709,6 +1782,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_ONBOARDING_NAVIGATION, true)
+    }
+
+    private fun remoteConfigIsNewBalanceWidget(): Boolean {
+        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
     }
 
     private fun needToShowGeolocationComponent() {
@@ -2007,6 +2084,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onDynamicChannelRetryClicked() {
         getHomeViewModel().onDynamicChannelRetryClicked()
+    }
+
+    override fun isNewNavigation(): Boolean {
+        return isNavRevamp()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -2578,48 +2659,43 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onWidgetOpenAppLink(view: View, appLink: String) {
+        startActivityForResult(RouteManager.getIntent(requireContext(), appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+    }
+
+    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+        getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(channelId, reminderType)
+    }
+
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
         getHomeViewModel().getPlayWidget()
     }
 
-    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, remind: Boolean, position: Int) {
-        if(getHomeViewModel().getUserId().isNotEmpty()) {
-            getHomeViewModel().setToggleReminderPlayWidget(channelId, remind, position)
-        } else {
-            adapter?.updatePlayWidgetReminder(PlayWidgetReminderUiModel(
-                    remind = remind,
-                    success = false,
-                    position = position
-            ))
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
-    override fun onWidgetOpenAppLink(view: View, appLink: String) {
-        val intent = RouteManager.getIntent(requireContext(), appLink)
-        startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
-    }
-
-    private fun observePlayWidgetToggleReminder() {
-        getHomeViewModel().playWidgetToggleReminderObservable.observe(viewLifecycleOwner, Observer {
-            if (it.success) {
-                showToaster(
-                        if(it.remind) {
-                            getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                        } else {
-                            getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
-                        }, TYPE_NORMAL)
-            } else {
-                adapter?.updatePlayWidgetReminder(it)
-                showToaster(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), TYPE_ERROR)
+    private fun observePlayWidgetReminder() {
+        getHomeViewModel().playWidgetReminderObservable.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Result.Status.SUCCESS -> if (it.data != null) showToaster(
+                        if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                        else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                        , TYPE_NORMAL)
+                Result.Status.ERROR -> showToaster(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), TYPE_ERROR)
+                else -> {}
             }
         })
     }
 
+    private fun observePlayWidgetReminderEvent() {
+        getHomeViewModel().playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
+        })
+    }
+
     private fun notifyPlayWidgetTotalView(data: Intent) {
-        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
-        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-        adapter?.updatePlayWidgetTotalView(PlayWidgetTotalViewUiModel(channelId, totalView))
+        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID)
+        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW)
+
+        if (channelId == null || totalView == null) return
+        getHomeViewModel().updatePlayWidgetTotalView(channelId, totalView)
     }
 
     private fun playWidgetOnVisibilityChanged(

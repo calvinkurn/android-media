@@ -22,7 +22,7 @@ class ChooseAddressWidgetCallback(
     }
 
     override fun onLocalizingAddressServerDown() {
-
+        homeCategoryListener.onChooseAddressServerDown()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
@@ -35,6 +35,10 @@ class ChooseAddressWidgetCallback(
 
     override fun getLocalizingAddressHostSourceData(): String {
         return "home"
+    }
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return "home page"
     }
 
     override fun onLocalizingAddressLoginSuccess() {

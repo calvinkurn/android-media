@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
-import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
@@ -124,6 +123,15 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         hideGimmick
                         isCheckImei
                         isUsingOvo
+                        background
+                        campaignIdentifier
+                        paymentInfoWording
+                      }
+                      thematicCampaign{
+                        campaignName
+                        icon
+                        background
+                        additionalInfo
                       }
                       stock {
                         useStock
@@ -243,6 +251,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           campaignID
                           campaignType
                           campaignTypeName
+                          campaignIdentifier
+                          background
                           discountPercentage
                           originalPrice
                           discountPrice
@@ -257,6 +267,12 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           isCheckImei
                           isUsingOvo
                           minOrder
+                        }
+                        thematicCampaign{
+                          campaignName
+                          icon
+                          background
+                          additionalInfo
                         }
                       }
                     }
@@ -278,18 +294,11 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
     }
 
     var requestParams = RequestParams.EMPTY
-    var forceRefresh = false
-    var enableCaching = false
 
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(GraphqlRequest(QUERY, ProductDetailLayout::class.java, requestParams.parameters))
-        if (enableCaching) {
-            gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
-        } else {
-            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                    .Builder(CacheType.ALWAYS_CLOUD).build())
-        }
+        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
 

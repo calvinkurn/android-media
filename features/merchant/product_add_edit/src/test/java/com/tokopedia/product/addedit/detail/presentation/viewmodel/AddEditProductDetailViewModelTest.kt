@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -30,6 +31,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
@@ -63,7 +65,13 @@ class AddEditProductDetailViewModelTest {
     lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
 
     @RelaxedMockK
+    lateinit var productPriceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase
+
+    @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
+
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -112,8 +120,14 @@ class AddEditProductDetailViewModelTest {
         getPrivateField(viewModel, "mIsProductStockInputError") as MutableLiveData<Boolean>
     }
 
+    private val stockAllocationDefaultMessage: String by lazy {
+        (getPrivateField(viewModel, "stockAllocationDefaultMessage") as? String) ?: "invalid"
+    }
+
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase, annotationCategoryUseCase)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase,
+                getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase,
+                annotationCategoryUseCase, productPriceSuggestionSuggestedPriceGetUseCase, userSession)
     }
 
     @Test
@@ -901,6 +915,7 @@ class AddEditProductDetailViewModelTest {
             } returns listOf()
 
             viewModel.getShopShowCasesUseCase()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 getShopEtalaseUseCase.executeOnBackground()
@@ -1058,6 +1073,82 @@ class AddEditProductDetailViewModelTest {
         viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
         val specificationText = viewModel.specificationText.getOrAwaitValue()
         Assert.assertTrue(specificationText.isEmpty())
+    }
+
+    @Test
+    fun `when is not shop admin or not shop owner, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopOwner } returns false
+
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner and doesn't have multi location shop, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns true
+        every { userSession.isShopOwner } returns false
+        every { userSession.isMultiLocationShop } returns false
+
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner and has multi location shop, but not is editing or adding, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
+
+        viewModel.isAdding = false
+        viewModel.isEditing = false
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner, has multi location shop, and is editing, stock message should be present`() {
+        val editMessage = "edit"
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
+        every { provider.getEditProductMultiLocationMessage() } returns editMessage
+
+        viewModel.isEditing = true
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage == editMessage)
+        assert(viewModel.productStockMessage == editMessage)
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner, has multi location shop, and is adding, but is not editing, stock message should be present`() {
+        val addMessage = "add"
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
+        every { provider.getAddProductMultiLocationMessage() } returns addMessage
+
+        viewModel.isEditing = false
+        viewModel.isAdding = true
+        viewModel.setupMultiLocationShopValues()
+
+        assert(stockAllocationDefaultMessage == addMessage)
+        assert(viewModel.productStockMessage == addMessage)
+    }
+
+    @Test
+    fun `when either is shop admin or shop owner and not has multi location shop, stock message should be empty`() {
+        every { userSession.isShopAdmin } returns true
+        every { userSession.isShopOwner } returns false
+
+        assert(stockAllocationDefaultMessage.isEmpty())
     }
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {

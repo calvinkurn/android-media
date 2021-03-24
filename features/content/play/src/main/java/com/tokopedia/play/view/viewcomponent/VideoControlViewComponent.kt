@@ -22,19 +22,21 @@ class VideoControlViewComponent(
     private val pcvVideo = rootView as PlayerControlView
     private val timeBar = pcvVideo.findViewById<DefaultTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
 
+    private val scrubListener = object : TimeBar.OnScrubListener {
+        override fun onScrubMove(timeBar: TimeBar, position: Long) {
+        }
+
+        override fun onScrubStart(timeBar: TimeBar, position: Long) {
+            listener.onStartSeeking(this@VideoControlViewComponent)
+        }
+
+        override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
+            listener.onEndSeeking(this@VideoControlViewComponent)
+        }
+    }
+
     init {
-        timeBar.addListener(object : TimeBar.OnScrubListener {
-            override fun onScrubMove(timeBar: TimeBar, position: Long) {
-            }
-
-            override fun onScrubStart(timeBar: TimeBar, position: Long) {
-                listener.onStartSeeking(this@VideoControlViewComponent)
-            }
-
-            override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
-                listener.onEndSeeking(this@VideoControlViewComponent)
-            }
-        })
+        timeBar.addListener(scrubListener)
     }
 
     override fun show() {
@@ -52,6 +54,7 @@ class VideoControlViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         pcvVideo.player = null
+        timeBar.removeListener(scrubListener)
     }
 
     interface Listener {

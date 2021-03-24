@@ -25,7 +25,7 @@ object ChooseAddressTracking : BaseTrackerConst() {
     private const val CLICK_TAMBAH_ALAMAT_PENGIRIMANMU = "click tambah alamat pengirimanmu"
     private const val CLICK_MASUK = "click masuk"
     private const val CLICK_PILIH_KOTA_ATAU_KECAMATAN = "click pilih kota atau kecamatan"
-    private const val CLICK_CHIPS_KOTA_POPULER = "click chips kota populer"
+    private const val CLICK_CHIPS_KOTA_POPULER = "clik chips kota populer"
     private const val CLICK_FIELD_SEARCH = "click field search"
     private const val CLICK_SUGGESTION_FROM_DROPDOWN = "click sugesstion from the dropdown"
     private const val CLICK_GUNAKAN_LOKASI_INI = "click gunakan lokasi ini"
@@ -157,12 +157,12 @@ object ChooseAddressTracking : BaseTrackerConst() {
                 .build())
     }
 
-    fun onClickButtonPilihAlamat(userId: String) {
+    fun onClickButtonPilihAlamat(userId: String, state: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ADDRESS_LIST_PAGE)
                 .appendEventAction(CLICK_BUTTON_PILIH_ALAMAT)
-                .appendEventLabel("")
+                .appendEventLabel(state)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
@@ -173,7 +173,7 @@ object ChooseAddressTracking : BaseTrackerConst() {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ADDRESS_LIST_PAGE)
-                .appendEventAction(CLICK_TAMBAH_ALAMAT_PENGIRIMANMU)
+                .appendEventAction(CLICK_TAMBAH_ALAMAT)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
@@ -199,7 +199,7 @@ object ChooseAddressTracking : BaseTrackerConst() {
     fun onClickPilihKotaKecamatan(userId: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory(KOTA_KECAMATAN_PAGE)
+                .appendEventCategory(BOTTOMSHEET_CHOOSE_ADDRESS)
                 .appendEventAction(CLICK_PILIH_KOTA_ATAU_KECAMATAN)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)

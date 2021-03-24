@@ -10,7 +10,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ChooseAddressViewModel
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 
@@ -18,12 +18,14 @@ internal class ChooseAddressViewHolder(
         itemView: View,
         private val chooseAddressListener: ChooseAddressListener,
         private val searchNavigationListener: SearchNavigationClickListener,
-): AbstractViewHolder<ChooseAddressViewModel>(itemView) {
+): AbstractViewHolder<ChooseAddressDataView>(itemView) {
 
     companion object {
         @JvmField
         @LayoutRes
         val LAYOUT = R.layout.search_result_product_choose_address_layout
+
+        private const val SOURCE = "search page"
     }
 
     private var chooseAddressContainer: ConstraintLayout? = null
@@ -61,14 +63,21 @@ internal class ChooseAddressViewHolder(
 
             override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
 
+            override fun getLocalizingAddressHostSourceTrackingData() = SOURCE
+
             override fun onLocalizingAddressLoginSuccess() {
 
             }
         })
     }
 
-    override fun bind(element: ChooseAddressViewModel?) {
+    override fun bind(element: ChooseAddressDataView?) {
+        bindChooseAddressWidget()
         bindChangeViewButton()
+    }
+
+    private fun bindChooseAddressWidget() {
+        chooseAddressWidget?.updateWidget()
     }
 
     private fun bindChangeViewButton() {
@@ -77,7 +86,7 @@ internal class ChooseAddressViewHolder(
         }
     }
 
-    override fun bind(element: ChooseAddressViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: ChooseAddressDataView?, payloads: MutableList<Any>) {
         val payload = payloads.getOrNull(0) ?: return
 
         when(payload) {

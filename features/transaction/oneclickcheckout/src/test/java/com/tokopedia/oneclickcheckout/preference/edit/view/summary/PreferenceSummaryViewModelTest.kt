@@ -38,7 +38,7 @@ class PreferenceSummaryViewModelTest {
 
     @Before
     fun setUp() {
-        preferenceSummaryViewModel = PreferenceSummaryViewModel(getPreferenceByIdUseCase, createPreferenceUseCase, deletePreferenceUseCase, updatePreferenceUseCase, chosenAddressRequestHelper)
+        preferenceSummaryViewModel = PreferenceSummaryViewModel(getPreferenceByIdUseCase, createPreferenceUseCase, deletePreferenceUseCase, updatePreferenceUseCase)
     }
 
     @Test
@@ -121,7 +121,7 @@ class PreferenceSummaryViewModelTest {
     fun `Create Preference Success`() {
         every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
 
-        preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0)
+        preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0, AddressModel(), false)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
 
@@ -136,7 +136,7 @@ class PreferenceSummaryViewModelTest {
 
         every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
 
-        preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0)
+        preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0, AddressModel(), false)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
 
@@ -154,7 +154,7 @@ class PreferenceSummaryViewModelTest {
             (secondArg() as ((String) -> Unit)).invoke(successMessage)
         }
 
-        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0)
+        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0, AddressModel(), false)
 
         assertEquals(OccState.Success(successMessage), preferenceSummaryViewModel.editResult.value)
     }
@@ -169,7 +169,7 @@ class PreferenceSummaryViewModelTest {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0)
+        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0, AddressModel(), false)
 
         assertEquals(OccState.Failed(Failure(response)), preferenceSummaryViewModel.editResult.value)
     }
@@ -184,7 +184,7 @@ class PreferenceSummaryViewModelTest {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0)
+        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0, AddressModel(), false)
 
         //consume failure
         (preferenceSummaryViewModel.editResult.value as OccState.Failed).getFailure()

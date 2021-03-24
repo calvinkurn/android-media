@@ -12,6 +12,6 @@ fun LocalCacheModel.toQueryParam(queryParam: String): String{
     val lat = "user_lat=" + this.lat
     val long = "user_long=" + this.long
     val postCode = "user_postCode=" + this.postal_code
-    return if(queryParam.isEmpty()) "" else "$queryParam&" +
+    return (if(queryParam.isEmpty()) "" else "$queryParam&") +
             "%s&%s&%s&%s&%s&%s".format(addressId, cityId, districtId, lat, long, postCode)
 }

@@ -31,6 +31,8 @@
     <string name="stock_habis">Stok Habis</string>
     <string name="action_preorder">PreOrder</string>
     <string name="label_oke_pdp">Oke</string>
+    <string name="label_ends_in">Berakhir dalam</string>
+    <string name="label_product_sold_out">Terjual habis! Cek barang lainnya yuk</string>
 
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
@@ -156,6 +158,7 @@
     <string name="terjual_single_text_template_builder">%1s barang laku terjual</string>
     <string name="wishlist_single_text_template_builder">%1s orang menyukai barang ini</string>
     <string name="view_single_text__template_builder">%1s orang melihat barang ini</string>
+    <string name="label_buyer_photos">Foto Pembeli</string>
 
     <!--Mini Shop Info-->
     <string name="label_desc_os">Pasti Ori • Pasti Ready • Garansi 7 Hari</string>
@@ -268,11 +271,9 @@
     <string name="pdp_shipping_simulation_label">Simulasi Pengiriman</string>
     <string name="pdp_shipping_available_cod_label">Bisa COD</string>
     <string name="pdp_shipping_estimation_builder">Estimasi tiba %1s</string>
-    <string name="pdp_shipping_to_builder">Dikirim ke %1s</string>
-    <string name="pdp_shipping_to_simple_builder">Dikirim %1s</string>
+    <string name="pdp_shipping_to_builder">Dikirim ke <![CDATA[<b>%1s</b>]]></string>
     <string name="pdp_shipping_from_builder">Dari %1s</string>
     <string name="pdp_shipping_weight_builder"><![CDATA[Berat satuan: <b>%1s</b>]]></string>
-    <string name="pdp_html_bracket"><![CDATA[%1s]]></string>
 
     <string name="pdp_shipping_cod_label">COD</string>
     <string name="pdp_shipping_sameday_label">Same Day</string>

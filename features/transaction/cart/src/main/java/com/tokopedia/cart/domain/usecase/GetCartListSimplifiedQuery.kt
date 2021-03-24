@@ -732,5 +732,5 @@ fun getQueryCartRevamp(): String {
             }
           }
         }
-    """
+    """.trimIndent()
 }

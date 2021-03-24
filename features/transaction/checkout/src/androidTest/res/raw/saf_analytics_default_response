@@ -52,7 +52,7 @@
                   "shipping_id": 0,
                   "sp_id": 0,
                   "is_insurance": false,
-                  "is_fulfillment_service": true,
+                  "is_fulfillment_service": false,
                   "cart_string": "2661965-0-7377294-123297113",
                   "has_promo_list": false,
                   "shipment_information": {

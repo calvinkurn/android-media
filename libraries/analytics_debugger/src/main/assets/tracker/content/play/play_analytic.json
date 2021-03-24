@@ -324,6 +324,100 @@
       "currentSite": "{{.*}}",
       "userId": "{{.*}}",
       "businessUnit": "play"
+    },
+    {
+      "eventAction": "impression on merchant voucher",
+      "event": "viewGroupChatIris",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click on merchant voucher",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view on featured product",
+      "event": "view_item_list",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod) - featured product tagging}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "item_variant": "{{.*}}",
+          "index": "{{\\d+(.\\d+)?}}"
+        }
+      ],
+      "item_list": "/groupchat - featured product",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click",
+      "event": "select_content",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod) - featured product tagging}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "item_variant": "{{.*}}",
+          "index": "{{\\d+(.\\d+)?}}"
+        }
+      ],
+      "item_list": "/groupchat - featured product",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click copy on private voucher",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "impression on private voucher",
+      "event": "viewGroupChatIris",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click product pinned message",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
     }
   ]
 }

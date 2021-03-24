@@ -147,7 +147,7 @@ data class AdditionalInfo(
         @SerializedName("masked_number")
         val maskedNumber: String,
         @SerializedName("installment_info")
-        val installmentInfo: String,
+        val installmentInfo: String?,
         @SerializedName("interest")
         val interest: Float,
         @SerializedName("revenue")

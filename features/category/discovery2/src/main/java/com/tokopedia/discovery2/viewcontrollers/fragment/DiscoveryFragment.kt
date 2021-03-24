@@ -47,6 +47,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -64,6 +65,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -84,6 +86,7 @@ import java.net.UnknownHostException
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 const val PAGE_REFRESH_LOGIN = 35771
+private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
@@ -110,6 +113,7 @@ class DiscoveryFragment :
     private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var chooseAddressWidgetDivider: View? = null
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -181,6 +185,7 @@ class DiscoveryFragment :
 
     private fun initChooseAddressWidget(view: View) {
         chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
+        chooseAddressWidgetDivider = view.findViewById(R.id.divider_view)
         chooseAddressWidget?.bindChooseAddress(this)
         context?.let {
             if (ChooseAddressUtils.isRollOutUser(it)) {
@@ -267,10 +272,6 @@ class DiscoveryFragment :
         fetchDiscoveryPageData()
     }
 
-    private fun bindStickyViewHolder() {
-        recyclerView.rebindStickyViewHolder()
-    }
-
     private fun setUpObserver() {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, {
             when (it) {
@@ -278,7 +279,6 @@ class DiscoveryFragment :
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
-                        bindStickyViewHolder()
                         if (listComponent.isNullOrEmpty()) {
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
@@ -348,6 +348,7 @@ class DiscoveryFragment :
             context?.let {
                 if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
                     chooseAddressWidget?.show()
+                    chooseAddressWidgetDivider?.show()
                     if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
@@ -355,6 +356,7 @@ class DiscoveryFragment :
                     fetchUserLatestAddressData()
                 }else{
                     chooseAddressWidget?.hide()
+                    chooseAddressWidgetDivider?.hide()
                 }
             }
         })
@@ -364,6 +366,7 @@ class DiscoveryFragment :
         chooseAddressWidget?.let {
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 val coachMark = CoachMark2(requireContext())
+                coachMark.isOutsideTouchable = true
                 coachMarkItem.add(
                         CoachMark2Item(
                                 it,
@@ -622,6 +625,12 @@ class DiscoveryFragment :
         showVerificationBottomSheet()
     }
 
+    fun openPlay(componentPosition: Int = -1, appLink: String) {
+        this.componentPosition = componentPosition
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, OPEN_PLAY_CHANNEL)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -645,6 +654,14 @@ class DiscoveryFragment :
                 if (resultCode == Activity.RESULT_OK) {
                     refreshPage()
                 }
+            }
+            OPEN_PLAY_CHANNEL -> {
+                if (data == null)
+                    return
+                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
+                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
             }
         }
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
@@ -712,7 +729,7 @@ class DiscoveryFragment :
 
     override fun onResume() {
         super.onResume()
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
@@ -724,6 +741,7 @@ class DiscoveryFragment :
         })
         context?.let {
             if (ChooseAddressUtils.isRollOutUser(it) && discoveryViewModel.getAddressVisibilityValue()) {
+                updateChooseAddressWidget()
                 checkAddressUpdate()
             }
         }
@@ -788,18 +806,22 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
+        updateChooseAddressWidget()
         checkAddressUpdate()
     }
 
     override fun onLocalizingAddressServerDown() {
-        chooseAddressWidget?.gone()
+        chooseAddressWidget?.hide()
+        chooseAddressWidgetDivider?.hide()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
         if(isRollOutUser && discoveryViewModel.getAddressVisibilityValue()){
             chooseAddressWidget?.show()
+            chooseAddressWidgetDivider?.show()
         }else{
-            chooseAddressWidget?.gone()
+            chooseAddressWidget?.hide()
+            chooseAddressWidgetDivider?.hide()
         }
     }
 
@@ -809,6 +831,10 @@ class DiscoveryFragment :
 
     override fun getLocalizingAddressHostSourceData(): String {
         return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+    }
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -833,5 +859,9 @@ class DiscoveryFragment :
                 }
             }
         }
+    }
+
+    private fun updateChooseAddressWidget(){
+        chooseAddressWidget?.updateWidget()
     }
 }

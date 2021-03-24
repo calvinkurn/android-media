@@ -110,17 +110,18 @@ class ManageAddressViewModel @Inject constructor(
             _result.value = ManageAddressState.Success("Success")
             isClearData = true
             searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
+            getStateChosenAddress("address")
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")
         })
     }
 
-    fun setDefaultPeopleAddress(id: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
-        setDefaultPeopleAddressUseCase.execute(id.toInt(), {
+    fun setDefaultPeopleAddress(id: String, setAsStateChosenAddress: Boolean, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
+        setDefaultPeopleAddressUseCase.execute(id.toInt(), setAsStateChosenAddress = setAsStateChosenAddress, onSuccess = {
             _setDefault.value = ManageAddressState.Success("Success")
             isClearData = true
             searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
-        },  {
+        }, onError = {
             _setDefault.value  = ManageAddressState.Fail(it, "")
         })
     }

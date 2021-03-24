@@ -367,6 +367,12 @@ data class DataItem(
         @SerializedName("carousel_component_id")
         var flashTimerTargetComponent: String = "",
 
+        @SerializedName("play_id")
+        var playWidgetPlayID: String? = null,
+
+        @SerializedName("campaign_code")
+        var campaignCode: String? = null,
+
         var shopAdsClickURL: String? = "",
 
         var shopAdsViewURL: String? = "",

@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.viewholder
 
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -152,6 +153,8 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
                     setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     setWeight(Typography.REGULAR)
                     setType(Typography.SMALL)
+                    gravity = Gravity.END
+                    maxWidth = resources.getDimensionPixelSize(R.dimen.max_cashback_desc_width)
                     text = lastApplyUsageSummary.currencyDetailsStr
                 }
 

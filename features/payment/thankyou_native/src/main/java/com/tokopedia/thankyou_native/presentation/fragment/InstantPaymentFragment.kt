@@ -45,7 +45,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         viewModelProvider.get(CheckWhiteListViewModel::class.java)
     }
 
-    override fun getLoadingView(): View? = loadingView
+    override fun getLoadingView(): View? = loadingLayout
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
@@ -142,9 +142,11 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         if (gatewayAdditionalData != null) {
             tvInstallmentInfo.text = gatewayAdditionalData.value ?: ""
             tvInstallmentInfo.visible()
-        } else if (thanksPageData.additionalInfo.installmentInfo.isNotBlank()) {
+        } else if (!thanksPageData.additionalInfo.installmentInfo.isNullOrBlank()) {
             tvInstallmentInfo.text = thanksPageData.additionalInfo.installmentInfo
             tvInstallmentInfo.visible()
+        }else{
+            tvInstallmentInfo.gone()
         }
 
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
@@ -193,12 +195,12 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     private fun onSingleAuthRegisterFail() {
-        loadingView.gone()
+        loadingLayout.gone()
         showErrorOnUI(getString(R.string.thank_enable_single_authentication_error)) { enableSingleAuthentication() }
     }
 
     private fun onSuccessFullyRegister() {
-        loadingView.gone()
+        loadingLayout.gone()
         showToaster(getString(R.string.thank_enable_single_authentication_success))
     }
 
@@ -225,7 +227,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private fun enableSingleAuthentication() {
         if (::dialogUnify.isInitialized)
             dialogUnify.cancel()
-        loadingView.visible()
+        loadingLayout.visible()
         checkWhiteListViewModel.registerForSingleAuth()
     }
 

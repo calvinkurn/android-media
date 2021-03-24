@@ -5,8 +5,8 @@
     android:id="@+id/cl_play_live_ended"
     android:layout_width="@dimen/layout_lvl0"
     android:layout_height="@dimen/layout_lvl0"
-    android:paddingBottom="@dimen/spacing_lvl4"
     android:background="@color/play_dms_video_background"
+    android:paddingBottom="@dimen/spacing_lvl4"
     tools:layout_height="match_parent"
     tools:layout_width="match_parent"
     >
@@ -32,7 +32,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.28"
+        app:layout_constraintGuide_percent="0.40"
         />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_onboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_live_ended_title"
+        app:srcCompat="@drawable/ic_play_onboarding" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

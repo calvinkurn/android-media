@@ -1,5 +1,5 @@
-mutation validate_use_promo_revamp($params: PromoStackRequest) {
-  validate_use_promo_revamp(params: $params) {
+mutation validate_use_promo_revamp($params: PromoStackRequest, $chosen_address: ChosenAddressParam) {
+  validate_use_promo_revamp(params: $params, chosen_address: $chosen_address) {
      status
      message
      error_code

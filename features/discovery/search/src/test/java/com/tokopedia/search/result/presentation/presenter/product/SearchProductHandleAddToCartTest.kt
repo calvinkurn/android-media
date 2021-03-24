@@ -6,7 +6,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.safeCastRupiahToInt
 import io.mockk.*
@@ -77,10 +77,10 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
         addToCartDataLayer["shop_type"] shouldBe "reguler"
     }
 
-    private fun List<Visitable<*>>.findProductItemWith(productId: String, isAds: Boolean): ProductItemViewModel {
+    private fun List<Visitable<*>>.findProductItemWith(productId: String, isAds: Boolean): ProductItemDataView {
         return find {
-            it is ProductItemViewModel && it.productID == productId && it.isAds == isAds
-        } as ProductItemViewModel
+            it is ProductItemDataView && it.productID == productId && it.isAds == isAds
+        } as ProductItemDataView
     }
 
     private fun Map<String, Any>.verify(productItem: SearchProductModel.Product) {
@@ -120,7 +120,7 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
     @Test
     fun `Handle add to cart for non login user`() {
         val indexedProductItem = visitableList.getIndexedProductItem(false)
-        val productItemViewModel = indexedProductItem.value as ProductItemViewModel
+        val productItemViewModel = indexedProductItem.value as ProductItemDataView
         val position = indexedProductItem.index
 
         `Given view click three dots`(productItemViewModel, position)
@@ -131,15 +131,15 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
         `Then verify view launch login page`()
     }
 
-    private fun `Given view click three dots`(productItemViewModel: ProductItemViewModel, position: Int) {
+    private fun `Given view click three dots`(productItemDataView: ProductItemDataView, position: Int) {
         every { productListView.showProductCardOptions(capture(productCardOptionsModelSlot)) } just runs
 
-        productListPresenter.onThreeDotsClick(productItemViewModel, position)
+        productListPresenter.onThreeDotsClick(productItemDataView, position)
     }
 
     private fun <T> List<T>.getIndexedProductItem(isAds: Boolean): IndexedValue<T> {
         return withIndex().find {
-            it.value is ProductItemViewModel && ((it.value as ProductItemViewModel).isAds == isAds)
+            it.value is ProductItemDataView && ((it.value as ProductItemDataView).isAds == isAds)
         }!!
     }
 
@@ -167,7 +167,7 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
     @Test
     fun `Handle add to cart success for organic product`() {
         val indexedProductItem = visitableList.getIndexedProductItem(false)
-        val productItemViewModel = indexedProductItem.value as ProductItemViewModel
+        val productItemViewModel = indexedProductItem.value as ProductItemDataView
         val position = indexedProductItem.index
 
         `Given view click three dots`(productItemViewModel, position)
@@ -178,11 +178,11 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
         `Then verify add to cart success view interaction for organic product`(productItemViewModel)
     }
 
-    private fun `Then verify add to cart success view interaction for organic product`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify add to cart success view interaction for organic product`(productItemDataView: ProductItemDataView) {
         verify {
             productListView.trackSuccessAddToCartEvent(
                     false,
-                    productItemViewModel.getProductAsATCObjectDataLayer(cartId)
+                    productItemDataView.getProductAsATCObjectDataLayer(cartId)
             )
             productListView.showAddToCartSuccessMessage()
         }
@@ -205,7 +205,7 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
     @Test
     fun `Handle add to cart success for top ads product`() {
         val indexedProductItem = visitableList.getIndexedProductItem(true)
-        val productItemViewModel = indexedProductItem.value as ProductItemViewModel
+        val productItemViewModel = indexedProductItem.value as ProductItemDataView
         val position = indexedProductItem.index
 
         `Given view click three dots`(productItemViewModel, position)
@@ -216,19 +216,19 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
         `Then verify add to cart success view interaction for top ads product`(productItemViewModel)
     }
 
-    private fun `Then verify add to cart success view interaction for top ads product`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify add to cart success view interaction for top ads product`(productItemDataView: ProductItemDataView) {
         verify {
             productListView.trackSuccessAddToCartEvent(
                     true,
-                    productItemViewModel.getProductAsATCObjectDataLayer(cartId)
+                    productItemDataView.getProductAsATCObjectDataLayer(cartId)
             )
             productListView.showAddToCartSuccessMessage()
             topAdsUrlHitter.hitClickUrl(
                     className,
-                    productItemViewModel.topadsClickUrl,
-                    productItemViewModel.productID,
-                    productItemViewModel.productName,
-                    productItemViewModel.imageUrl,
+                    productItemDataView.topadsClickUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
                     SearchConstant.TopAdsComponent.TOP_ADS
             )
         }
@@ -242,7 +242,7 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
     @Test
     fun `Handle add to cart failed`() {
         val indexedProductItem = visitableList.getIndexedProductItem(true)
-        val productItemViewModel = indexedProductItem.value as ProductItemViewModel
+        val productItemViewModel = indexedProductItem.value as ProductItemDataView
         val position = indexedProductItem.index
 
         `Given view click three dots`(productItemViewModel, position)
