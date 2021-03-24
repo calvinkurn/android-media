@@ -292,6 +292,15 @@ public class DeveloperOptionActivity extends BaseActivity {
         String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2";
         String KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN";
 
+
+        String PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK";
+        String PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV";
+        String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
+        String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
+
+        String PREFERENCE_NAME = "coahmark_choose_address";
+        String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
+
         buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -302,7 +311,19 @@ public class DeveloperOptionActivity extends BaseActivity {
                         .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, true)
                         .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, false).apply();
 
-                Toast.makeText(DeveloperOptionActivity.this, "Onboarding reset ssuccessfully!", Toast.LENGTH_SHORT).show();
+
+                SharedPreferences homePref = getSharedPreferences(
+                        PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE);
+                homePref.edit().putBoolean(PREF_KEY_HOME_COACHMARK_NAV, false)
+                        .putBoolean(PREF_KEY_HOME_COACHMARK_INBOX, false)
+                        .putBoolean(PREF_KEY_HOME_COACHMARK_BALANCE, false).apply();
+
+
+                SharedPreferences chooseAddressPref = getSharedPreferences(
+                        PREFERENCE_NAME, Context.MODE_PRIVATE);
+                chooseAddressPref.edit().putBoolean(EXTRA_IS_COACHMARK, true).apply();
+
+                Toast.makeText(DeveloperOptionActivity.this, "Onboarding and home coachmark reset ssuccessfully!", Toast.LENGTH_SHORT).show();
             }
         });
 
