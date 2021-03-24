@@ -2,7 +2,8 @@ package com.tokopedia.rechargegeneral.di
 
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
-import com.tokopedia.rechargegeneral.util.RechargeGeneralDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import dagger.Module
 import dagger.Provides
 
@@ -18,7 +19,7 @@ class RechargeGeneralModule {
 
     @RechargeGeneralScope
     @Provides
-    fun provideDispatcher(): RechargeGeneralDispatchersProvider = RechargeGeneralDispatchersProvider()
+    fun provideDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @RechargeGeneralScope
     @Provides
