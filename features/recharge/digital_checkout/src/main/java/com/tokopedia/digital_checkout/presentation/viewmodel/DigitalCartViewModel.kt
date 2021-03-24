@@ -281,9 +281,9 @@ class DigitalCartViewModel @Inject constructor(
 
     fun updateCheckoutSummaryWithFintechProduct(fintechProduct: FintechProduct, isChecked: Boolean) {
         if (isChecked) {
-            paymentSummary.addToSummary(Payment(fintechProduct.info.title, getStringIdrFormat(fintechProduct.fintechAmount)))
+            paymentSummary.addToSummary(Payment(fintechProduct.transactionType, getStringIdrFormat(fintechProduct.fintechAmount)))
         } else {
-            paymentSummary.removeFromSummary(fintechProduct.info.title)
+            paymentSummary.removeFromSummary(fintechProduct.transactionType)
         }
         _payment.postValue(paymentSummary)
     }
@@ -326,6 +326,16 @@ class DigitalCartViewModel @Inject constructor(
 
                     _showLoading.postValue(false)
                     _paymentPassData.postValue(checkoutData)
+
+                    requestCheckoutParam.fintechProducts.let { fintech ->
+                        if (fintech.isNotEmpty()) {
+                            fintech.values.forEach {
+                                if (it.info.iconUrl.isNotEmpty()) {
+                                    analytics.eventProceedCheckoutTebusMurah(it, userSession.userId)
+                                }
+                            }
+                        }
+                    }
 
                 }) {
                     handleError(it)

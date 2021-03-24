@@ -331,9 +331,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     private fun showPromoTicker() {
         renderDefaultEmptyPromoView()
 
-        checkoutBottomViewWidget.setDigitalPromoButtonListener {
-            onClickUsePromo()
-        }
+        checkoutBottomViewWidget.setDigitalPromoButtonListener { onClickUsePromo() }
 
         checkoutBottomViewWidget.setButtonChevronIconListener {
             if (checkoutBottomViewWidget.promoButtonDescription.isNotEmpty()) {
@@ -436,6 +434,16 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
         digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
 
         viewModel.onSubscriptionChecked(isChecked)
+    }
+
+    override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
+        digitalAnalytics.eventTebusMurahImpression(fintechProduct, position, userSession.userId)
+    }
+
+    override fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean) {
+        if (isChecked) digitalAnalytics.eventTebusMurahChecked(fintechProduct, position, userSession.userId)
+        else digitalAnalytics.eventTebusMurahUnchecked(fintechProduct, userSession.userId)
+        viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }
 
     override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean) {

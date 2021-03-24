@@ -151,8 +151,8 @@
             "opt_in": false,
             "check_box_disabled": false,
             "allow_ovo_points": false,
-            "fintech_amount": 500,
-            "fintech_partner_amount": 500,
+            "fintech_amount": 1000,
+            "fintech_partner_amount": 1000,
             "info": {
               "title": "Fintech product 2",
               "subtitle": " Rp 1000",

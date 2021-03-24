@@ -7,7 +7,6 @@ import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -130,7 +129,7 @@ class DigitalCartActivityTest {
         // Checkout Summary
         onView(withId(R.id.tvCheckoutSummaryTitle)).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Subtotal Tagihan"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Yuk mulai nabung emas"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("egold"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 12.500"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(matches(isDisplayed()))
 

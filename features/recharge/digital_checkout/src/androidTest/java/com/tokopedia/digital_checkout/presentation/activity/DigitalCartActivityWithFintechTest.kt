@@ -206,8 +206,27 @@ class DigitalCartActivityWithFintechTest {
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(isChecked()))
 
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Yuk mulai nabung emas"))).check(matches(isDisplayed()))
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isChecked()))
+
+        onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
+
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("egold"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(matches(isDisplayed()))
+
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("emoney"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 1.000"))).check(matches(isDisplayed()))
+
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 14.000")))
+
+        //untick and tick tebus murah
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isNotChecked()))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
+
+        Thread.sleep(1000)
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isChecked()))
     }
 
     @After
@@ -228,7 +247,7 @@ class DigitalCartActivityWithFintechTest {
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 14.000")))
     }
 
     companion object {

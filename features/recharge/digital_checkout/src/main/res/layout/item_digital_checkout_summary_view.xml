@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="@dimen/dp_16"
     android:paddingStart="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12">
+    android:paddingBottom="@dimen/dp_12"
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCheckoutSummaryTitle"
@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/digital_checkout_summary_title"
         app:typographyType="body_2"
-        app:typographyWeight="bold"/>
+        app:typographyWeight="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCheckoutSummary"
