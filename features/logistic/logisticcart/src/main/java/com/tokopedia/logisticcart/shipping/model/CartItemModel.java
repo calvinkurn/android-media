@@ -58,7 +58,7 @@ public class CartItemModel implements Parcelable {
     private boolean protectionCheckboxDisabled;
     private String preOrderInfo;
     private boolean freeShipping;
-    private String freeShippingBadgeUrl;
+    private boolean freeShippingExtra;
     private boolean showTicker;
     private String tickerMessage;
 
@@ -411,12 +411,12 @@ public class CartItemModel implements Parcelable {
         this.freeShipping = freeShipping;
     }
 
-    public String getFreeShippingBadgeUrl() {
-        return freeShippingBadgeUrl;
+    public boolean isFreeShippingExtra() {
+        return freeShippingExtra;
     }
 
-    public void setFreeShippingBadgeUrl(String freeShippingBadgeUrl) {
-        this.freeShippingBadgeUrl = freeShippingBadgeUrl;
+    public void setFreeShippingExtra(boolean freeShippingExtra) {
+        this.freeShippingExtra = freeShippingExtra;
     }
 
     public boolean isShowTicker() {
@@ -586,7 +586,7 @@ public class CartItemModel implements Parcelable {
         dest.writeString(this.diagnosticId);
         dest.writeByte(this.protectionCheckboxDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
-        dest.writeString(this.freeShippingBadgeUrl);
+        dest.writeByte(this.freeShippingExtra ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showTicker ? (byte) 1: (byte) 0);
         dest.writeString(this.tickerMessage);
         dest.writeString(this.productAlertMessage);
@@ -629,7 +629,7 @@ public class CartItemModel implements Parcelable {
         this.diagnosticId = in.readString();
         this.protectionCheckboxDisabled = in.readByte() != 0;
         this.freeShipping = in.readByte() != 0;
-        this.freeShippingBadgeUrl = in.readString();
+        this.freeShippingExtra = in.readByte() != 0;
         this.showTicker = in.readByte() != 0;
         this.tickerMessage = in.readString();
         this.productAlertMessage = in.readString();

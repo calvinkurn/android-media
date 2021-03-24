@@ -4,19 +4,22 @@ import android.content.res.Resources
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.chat_common.data.SendableViewModel
-
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.attachinvoice.data.model.GetInvoicesResponsePojo
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.DEFAULT_LIMIT
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.IS_SHOW_ALL
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.KEYWORD_KEY
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.LIMIT
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.MESSAGE_ID_KEY
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.PAGE_KEY
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.START_TIME
 import com.tokopedia.chatbot.domain.pojo.invoicelist.api.GetInvoiceListPojo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-
-import javax.inject.Inject
-
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.HashMap
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by Hendri on 21/03/18.
@@ -37,13 +40,6 @@ constructor(val resources: Resources,
     }
 
     companion object {
-        val KEYWORD_KEY = "keyword"
-        val PAGE_KEY = "page"
-        val LIMIT = "limit"
-        val IS_SHOW_ALL = "showAll"
-        val START_TIME = "startTime"
-        val MESSAGE_ID_KEY = "msgId"
-        const val DEFAULT_LIMIT = 10
 
         fun createRequestParam(query: String, page: Int, messageId: Int): HashMap<String, Any> {
             val param = RequestParams.create()

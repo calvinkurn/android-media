@@ -21,7 +21,8 @@ class CarouselMapper @Inject constructor() {
                         mapItemRemoteModelToItemUiModel(item)
                     },
                     error = it.errorMsg,
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget
             )
         }
     }

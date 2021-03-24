@@ -9,14 +9,6 @@ android:descendantFocusability="blocksDescendants"
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<com.tokopedia.unifyprinciples.Typography
-    android:layout_marginStart="@dimen/dp_16"
-    android:id="@+id/transaction_title"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/title_transaction_section"
-    app:typographyType="heading_4"/>
-
     <com.tokopedia.unifycomponents.LocalLoad
         android:layout_width="match_parent"
         android:id="@+id/localload_transaction"
