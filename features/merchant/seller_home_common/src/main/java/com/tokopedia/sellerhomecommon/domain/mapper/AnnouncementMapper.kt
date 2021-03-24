@@ -16,7 +16,7 @@ class AnnouncementMapper @Inject constructor() {
             AnnouncementDataUiModel(
                     dataKey = it.dataKey.orEmpty(),
                     error = it.errorMsg.orEmpty(),
-                    title = it.subtitle.orEmpty(),
+                    title = it.title.orEmpty(),
                     showWidget = it.showWidget.orFalse(),
                     subtitle = it.subtitle.orEmpty(),
                     appLink = it.cta?.appLink.orEmpty(),
