@@ -23,9 +23,12 @@ class RecommendationModule {
 
     @Provides
     @SearchScope
-    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
-                                        graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
+    fun provideGetRecommendationUseCase(
+        @SearchContext context: Context,
+        @Named("recommendationQuery") recomQuery: String,
+        graphqlUseCase: GraphqlUseCase,
+        userSessionInterface: UserSessionInterface
+    ): GetRecommendationUseCase {
+        return GetRecommendationUseCase(context, recomQuery, graphqlUseCase, userSessionInterface)
     }
 }
