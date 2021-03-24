@@ -53,6 +53,10 @@ class PdpComparisonWidgetViewHolder(
                                         stickyTitleModel.recommendationItem.productId.toString())
                             }
                         }
+
+                        override fun onStickyTitleShow(isShowing: Boolean) {
+
+                        }
                     }
             )
         }
@@ -71,32 +75,9 @@ class PdpComparisonWidgetViewHolder(
                     recommendationItem.productId.toString(),
                     recommendationItem.name, recommendationItem.imageUrl)
         }
-
-        listener.eventRecommendationImpression(
-                recommendationItem,
-                position,
-                recommendationItem.pageName,
-                recommendationItem.name,
-                componentTrackDataModel?: ComponentTrackDataModel())
     }
 
     override fun onProductCardClicked(recommendationItem: RecommendationItem, comparisonListModel: ComparisonListModel, position: Int) {
-        val topAdsClickUrl = recommendationItem.clickUrl
-        if (recommendationItem.isTopAds) {
-            listener.sendTopAdsClick(
-                    topAdsClickUrl,
-                    recommendationItem.productId.toString(),
-                    recommendationItem.name,
-                    recommendationItem.imageUrl)
-        }
-
-        listener.eventRecommendationClick(
-                recommendationItem,
-                position,
-                recommendationItem.pageName,
-                recommendationItem.name,
-                componentTrackDataModel?: ComponentTrackDataModel())
-
         view.context?.run {
             RouteManager.route(this,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,

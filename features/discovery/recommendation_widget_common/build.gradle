@@ -44,6 +44,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.analytics)
 
+    implementation project(rootProject.ext.features.topAdsSdk)
+
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 

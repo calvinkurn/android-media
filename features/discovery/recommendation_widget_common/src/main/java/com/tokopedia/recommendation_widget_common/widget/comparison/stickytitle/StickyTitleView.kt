@@ -62,4 +62,5 @@ class StickyTitleView: FrameLayout{
 
 interface StickyTitleInterface {
     fun onStickyTitleClick(stickyTitleModel: StickyTitleModel)
+    fun onStickyTitleShow(isShowing: Boolean)
 }

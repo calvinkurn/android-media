@@ -131,7 +131,7 @@ object ProductRecommendationTracking: BaseTrackerConst() {
         return Product(
                 name = it.name,
                 id = it.productId.toString(),
-                productPrice = it.price,
+                productPrice = it.priceInt.toString(),
                 brand = Value.NONE_OTHER,
                 category = it.categoryBreadcrumbs.toLowerCase(),
                 variant = Value.NONE_OTHER,

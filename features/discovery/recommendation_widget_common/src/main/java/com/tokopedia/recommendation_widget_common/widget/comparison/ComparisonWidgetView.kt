@@ -28,6 +28,7 @@ class ComparisonWidgetView: FrameLayout, ComparisonWidgetScrollInterface  {
     private var specOnScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
     private var comparisonListModel: ComparisonListModel? = null
     private var stickyTitleViewBinded: StickyTitleView? = null
+    private var stickyTitleInterface: StickyTitleInterface? = null
     private var adapter: ComparisonWidgetAdapter? = null
     private var disableScrollTemp: Boolean = false
 
@@ -118,6 +119,7 @@ class ComparisonWidgetView: FrameLayout, ComparisonWidgetScrollInterface  {
                     }
                 })
                 this.stickyTitleViewBinded = stickyTitleView
+                this.stickyTitleInterface = stickyTitleInterface
             }
         }
     }
@@ -141,8 +143,10 @@ class ComparisonWidgetView: FrameLayout, ComparisonWidgetScrollInterface  {
                 val elapsedProductCardHeight = -((it.comparisonWidgetConfig.productCardHeight)) + calculateActionBar()
                 if (Y < elapsedProductCardHeight) {
                     stickyTitleViewBinded?.showStickyTitle()
+                    stickyTitleInterface?.onStickyTitleShow(true)
                 } else {
                     stickyTitleViewBinded?.hideStickyTitle()
+                    stickyTitleInterface?.onStickyTitleShow(false)
                 }
             }
 

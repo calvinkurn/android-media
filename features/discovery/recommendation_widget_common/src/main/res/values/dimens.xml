@@ -4,7 +4,7 @@
     <dimen name="product_card_carousel_see_more_width">128dp</dimen>
     <dimen name="product_card_flashsale_width">136dp</dimen>
 
-    <dimen name="comparison_summary_text_height">14dp</dimen>
+    <dimen name="comparison_summary_text_height">12dp</dimen>
     <dimen name="comparison_title_text_height">20dp</dimen>
 
     <dimen name="comparison_specs_content_width">140dp</dimen>
