@@ -21,14 +21,13 @@ class ItemPenaltyViewHolder(view: View) : AbstractViewHolder<ItemPenaltyUiModel>
         with(itemView) {
             penaltyIndicator?.background = getColoredIndicator(context, element.colorPenalty)
             tv_title_status_penalty?.text = element.statusPenalty
+            if (element.colorPenalty.isNotBlank()) {
+                tv_title_status_penalty?.setTextColor(Color.parseColor(element.colorPenalty))
+            }
             tv_end_date_status_penalty?.text = element.endDate
             tv_date_status_penalty?.text = element.statusDate
-            tv_title_transaction_penalty?.apply {
-                text = element.transactionPenalty
-                if (element.colorPenalty.isNotBlank()) {
-                    setTextColor(Color.parseColor(element.colorPenalty))
-                }
-            }
+            tv_title_transaction_penalty?.text = element.transactionPenalty
+
             tv_invoice_transaction_penalty?.text = element.descPenalty
 
             ic_transaction_penalty_to_detail?.setOnClickListener {

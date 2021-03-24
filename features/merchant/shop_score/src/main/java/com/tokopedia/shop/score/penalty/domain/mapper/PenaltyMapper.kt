@@ -69,14 +69,15 @@ class PenaltyMapper @Inject constructor() {
 
     private fun mapToItemPenaltyList(): List<ItemPenaltyUiModel> {
         return mutableListOf<ItemPenaltyUiModel>().apply {
-            add(ItemPenaltyUiModel(statusPenalty = "Sedang berlangsung",
+            add(ItemPenaltyUiModel(
+                    statusPenalty = "Sedang berlangsung",
                     statusDate = "27 jan 2021", endDate = "8 Mei 2021",
                     transactionPenalty = "Cash advance",
                     descPenalty = "INV/20210126/XX/V/553738285",
                     colorPenalty = "#E02954"
             ))
             add(ItemPenaltyUiModel(statusPenalty = "Penalti selesai",
-                    statusDate = "25 jan 2021", endDate = "10 Mei 2021",
+                    statusDate = "Sejak 25 jan 2021", endDate = "10 Mei 2021",
                     transactionPenalty = "Pelanggaran Produk",
                     descPenalty = "INV/20210126/XX/V/553738285",
                     colorPenalty = "#8D96AA"
