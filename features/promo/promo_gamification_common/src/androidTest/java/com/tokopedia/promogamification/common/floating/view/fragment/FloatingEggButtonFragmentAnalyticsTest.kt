@@ -50,12 +50,9 @@ class FloatingEggButtonFragmentAnalyticsTest {
     @Test
     fun test_impression() {
         Espresso.onView(ViewMatchers.withId(R.id.vg_floating_egg)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        val luckyEggImpressionQuery = "tracker/promo/promo_gamification_common/lucky_egg_impression.json"
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, luckyEggImpressionQuery), hasAllSuccess())
-
         Espresso.onView(ViewMatchers.withId(R.id.vg_floating_egg)).perform(ViewActions.click())
-        val luckyEggClickQuery = "tracker/promo/promo_gamification_common/lucky_egg_click.json"
+
+        val luckyEggClickQuery = "tracker/promo/promo_gamification_common/lucky_egg_trackers.json"
         MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, luckyEggClickQuery), hasAllSuccess())
     }
 
