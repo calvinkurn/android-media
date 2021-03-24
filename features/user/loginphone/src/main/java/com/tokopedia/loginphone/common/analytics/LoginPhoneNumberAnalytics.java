@@ -56,6 +56,7 @@ public class LoginPhoneNumberAnalytics {
         static final String PHONE = "phone";
         static final String TOKOCASH = "Tokocash";
         static final String LOGIN_SUCCESS = "login success";
+        static final String REGISTER_SUCCESS = "register success";
     }
 
     public void sendScreen(Activity activity, String screenName) {
@@ -89,12 +90,12 @@ public class LoginPhoneNumberAnalytics {
                 Label.LOGIN_SUCCESS));
     }
 
-    public void eventSuccessLoginPhoneNumberFBSmartRegister() {
+    public void eventSuccessFbPhoneNumber() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_REGISTER,
                 Category.REGISTER_PAGE,
                 Action.CLICK_ON_BUTTON_FACEBOOK,
-                Label.LOGIN_SUCCESS));
+                Label.REGISTER_SUCCESS));
     }
 
     public void trackVerifyOtpClick(String mode) {

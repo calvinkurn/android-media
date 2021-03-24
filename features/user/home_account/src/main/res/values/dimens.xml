@@ -31,7 +31,7 @@
     <dimen name="home_account_shimmer_text_radius_large">8</dimen>
 
     <dimen name="home_account_dp_2">2dp</dimen>
-
+    <dimen name="home_account_dp_5">5dp</dimen>
     <dimen name="home_account_dp_6">6dp</dimen>
     <dimen name="home_account_dp_8">8dp</dimen>
     <dimen name="home_account_dp_9">9dp</dimen>
@@ -40,7 +40,6 @@
     <dimen name="home_account_dp_14">14dp</dimen>
     <dimen name="home_account_dp_18">18dp</dimen>
     <dimen name="home_account_dp_16">16dp</dimen>
-
     <dimen name="home_account_dp_20">20dp</dimen>
     <dimen name="home_account_dp_22">22dp</dimen>
     <dimen name="home_account_dp_26">26dp</dimen>

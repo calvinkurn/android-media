@@ -1,10 +1,10 @@
 package com.tokopedia.search.result.presentation.view.listener;
 
-import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.model.TickerDataView;
 
 public interface TickerListener {
 
-    void onTickerClicked(TickerViewModel tickerViewModel);
+    void onTickerClicked(TickerDataView tickerDataView);
 
     void onTickerDismissed();
 

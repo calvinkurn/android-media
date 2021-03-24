@@ -107,6 +107,7 @@ abstract class BaseTrackerConst {
             val variant: String,
             val productPosition: String,
             val isFreeOngkir: Boolean,
+            val isFreeOngkirExtra: Boolean = false,
             val channelId: String = "",
             val persoType: String = "",
             val isTopAds: Boolean? = false,
@@ -137,6 +138,7 @@ abstract class BaseTrackerConst {
         private const val IDR = "IDR"
         private const val LIST = "list"
         private const val FREE_ONGKIR = "bebas ongkir"
+        private const val FREE_ONGKIR_EXTRA = "bebas ongkir extra"
         private const val NONE = "none / other"
 
 
@@ -263,7 +265,7 @@ abstract class BaseTrackerConst {
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
-            map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
+            map[KEY_DIMENSION_83] = checkBebasOngkir(product)
             map[KEY_DIMENSION_40] = setNewList(product, list)
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
@@ -276,6 +278,14 @@ abstract class BaseTrackerConst {
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_82] = NONE
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
             return map
+        }
+
+        private fun checkBebasOngkir(product: Product): String{
+            return when {
+                product.isFreeOngkirExtra -> FREE_ONGKIR_EXTRA
+                product.isFreeOngkir -> FREE_ONGKIR
+                else -> NONE
+            }
         }
 
         private fun setNewList(product: Product?, list: String): String{

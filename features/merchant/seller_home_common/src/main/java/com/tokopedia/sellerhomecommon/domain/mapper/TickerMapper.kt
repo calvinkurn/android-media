@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class TickerMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(tickers: List<TickerItemModel>): List<TickerItemUiModel> {
+    fun mapRemoteModelToUiModel(tickers: List<TickerItemModel>, fromCache: Boolean): List<TickerItemUiModel> {
         return tickers.map {
             TickerItemUiModel(
                     color = it.color.orEmpty(),
@@ -21,7 +21,8 @@ class TickerMapper @Inject constructor() {
                     type = it.tickerType ?: 0,
                     redirectUrl = SellerHomeCommonUtils.extractUrls(it.message.orEmpty())
                             .getOrNull(0)
-                            .orEmpty()
+                            .orEmpty(),
+                    isFromCache = fromCache
             )
         }
     }

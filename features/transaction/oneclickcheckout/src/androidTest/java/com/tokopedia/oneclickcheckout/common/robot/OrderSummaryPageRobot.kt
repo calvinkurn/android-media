@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -173,6 +175,7 @@ class OrderSummaryPageRobot {
 
     fun assertProductCard(shopName: String,
                           shopLocation: String,
+                          hasShopLocationImg: Boolean,
                           hasShopBadge: Boolean,
                           productName: String,
                           productPrice: String,
@@ -181,6 +184,14 @@ class OrderSummaryPageRobot {
                           productQty: Int) {
         onView(withId(R.id.tv_shop_name)).perform(scrollTo()).check(matches(withText(shopName)))
         onView(withId(R.id.tv_shop_location)).check(matches(withText(shopLocation)))
+        onView(withId(R.id.iu_image_fulfill)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (hasShopLocationImg) {
+                assertEquals(View.VISIBLE, view.visibility)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
         onView(withId(R.id.iv_shop)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (hasShopBadge) {
@@ -200,7 +211,7 @@ class OrderSummaryPageRobot {
                 assertEquals(productSlashPrice, (view as Typography).text)
             }
         }
-        onView(withId(R.id.iv_free_shipping)).check { view, noViewFoundException ->
+        onView(withId(R.id.iu_free_shipping)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (isFreeShipping) {
                 assertEquals(View.VISIBLE, view.visibility)
