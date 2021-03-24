@@ -106,7 +106,10 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     fun logExceptionToFirebase(e: Throwable) {
-        FirebaseCrashlytics.getInstance().recordException(ProductShareException(e))
+        try {
+            FirebaseCrashlytics.getInstance().recordException(ProductShareException(e))
+        } catch (ignored: Exception) {
+        }
     }
 
     private fun openIntentShare(file: File?, title: String?, shareContent: String, shareUri: String) {
@@ -201,4 +204,4 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 }
 
-class ProductShareException(e: Throwable): Throwable(e)
+class ProductShareException(e: Throwable) : Throwable(e)
