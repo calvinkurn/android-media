@@ -2,6 +2,7 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.MockResponseProvider
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
@@ -11,103 +12,91 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.verify
+import io.mockk.verifySequence
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 import rx.Observable
 import rx.observers.AssertableSubscriber
 import java.lang.reflect.Type
 
-/**
- * Created by Irfan Khoirul on 2019-11-12.
- */
+class AddToCartUseCaseTest {
 
-class AddToCartUseCaseTest : Spek({
-    val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
-    val addToCartdataMapper = mockk<AddToCartDataMapper>()
-    val addToCartUseCase by memoized {
-        AddToCartUseCase("mock_query", graphqlUseCase, addToCartdataMapper)
+    @MockK
+    private lateinit var addToCartDataMapper: AddToCartDataMapper
+
+    @MockK
+    private lateinit var chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper
+
+    @MockK(relaxUnitFun = true)
+    private lateinit var graphqlUseCase: GraphqlUseCase
+
+    private lateinit var addToCartUseCase: AddToCartUseCase
+
+    lateinit var subscriber: AssertableSubscriber<AddToCartDataModel>
+    private val requestParam = RequestParams.create().apply {
+        putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartRequestParams())
     }
 
-    every { addToCartdataMapper.mapAddToCartResponse(any()) } returns AddToCartDataModel(status = "OK", data = DataModel(success = 1))
+    val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST";
 
-    beforeEachGroup {
-        mockkObject(AddToCartBaseAnalytics)
+    @Before
+    fun before() {
+        MockKAnnotations.init(this)
+        addToCartUseCase = AddToCartUseCase("mock_query", graphqlUseCase, addToCartDataMapper, chosenAddressAddToCartRequestHelper)
+    }
 
-        every { AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any()) } just Runs
-        every {
+    @Test
+    fun addToCartUseCaseRun_Success() {
+        // Given
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = AddToCartGqlResponse::class.java
+        result[objectType] = MockResponseProvider.getResponseAtcSuccess()
+
+        every { graphqlUseCase.createObservable(any()) } returns
+                Observable.just(GraphqlResponse(result, errors, false))
+
+        // When
+        subscriber = addToCartUseCase.createObservable(requestParam).test()
+
+        // Then
+
+        // request param is not empty
+        Assert.assertTrue(requestParam.parameters.isNotEmpty())
+
+        // request param has field `REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST`
+        Assert.assertNotNull(requestParam.getObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST))
+
+        // should run sequence task
+        verifySequence {
+            graphqlUseCase.clearRequest()
+            graphqlUseCase.addRequest(any())
+            graphqlUseCase.createObservable(any())
+        }
+
+        // should not give error
+        subscriber.assertNoErrors()
+
+        // should has 1 value
+        subscriber.assertValueCount(1)
+
+        // value should be success AddToCartDataModel
+        subscriber.assertValue(AddToCartDataModel(status = "OK", data = DataModel(success = 1)))
+
+        // should run analytics
+        verify {
+            AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
             AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
                     any(), any(), any(), any(), any(), any(), any())
-        } just Runs
-    }
-
-    afterEachGroup {
-        unmockkObject(AddToCartBaseAnalytics)
-    }
-
-    Feature("AddToCartUseCase") {
-        lateinit var subscriber: AssertableSubscriber<AddToCartDataModel>
-        lateinit var requestParam: RequestParams
-        val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST";
-
-        Scenario("use case run successfully") {
-
-            Given("given api response") {
-                val result = HashMap<Type, Any>()
-                val errors = HashMap<Type, List<GraphqlError>>()
-                val objectType = AddToCartGqlResponse::class.java
-                result[objectType] = MockResponseProvider.getResponseAtcSuccess()
-                every { graphqlUseCase.createObservable(any()) } returns
-                        Observable.just(GraphqlResponse(result, errors, false))
-            }
-
-            When("create observable") {
-                requestParam = RequestParams.create()
-                requestParam.putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartRequestParams())
-                subscriber = addToCartUseCase.createObservable(requestParam).test()
-            }
-
-            Then("request param is not empty") {
-                assertTrue(requestParam.parameters.isNotEmpty())
-            }
-
-            Then("request param has field $REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") {
-                assertNotNull(requestParam.getObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST))
-            }
-
-            Then("should run sequence task") {
-                verifySequence {
-                    graphqlUseCase.clearRequest()
-                    graphqlUseCase.addRequest(any())
-                    graphqlUseCase.createObservable(any())
-                }
-            }
-
-            Then("should not give error") {
-                subscriber.assertNoErrors()
-            }
-
-            Then("should has 1 value") {
-                subscriber.assertValueCount(1)
-            }
-
-            Then("value should be success AddToCartDataModel") {
-                subscriber.assertValue(AddToCartDataModel(status = "OK", data = DataModel(success = 1)))
-            }
-
-            Then("should run analytics") {
-                verify {
-                    AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
-                    AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
-                            any(), any(), any(), any(), any(), any(), any())
-                }
-            }
-
-            Then("should complete") {
-                subscriber.assertCompleted()
-            }
         }
+
+        // should complete
+        subscriber.assertCompleted()
     }
-})
+
+}

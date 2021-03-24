@@ -67,7 +67,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.attachment?.type ?: "",
                 pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
-                helpFullQuestionPojo.helpfulQuestion
+                helpFullQuestionPojo.helpfulQuestion,
+                pojo.source
         )
     }
 
@@ -84,7 +85,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.attachment?.type ?: "",
                 pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
-                csatAttributesPojo.csat
+                csatAttributesPojo.csat,
+                pojo.source
         )
     }
 
@@ -174,7 +176,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             pojo: ChatActionBalloonSelectionAttachmentAttributes): List<ChatActionBubbleViewModel> {
         val result = ArrayList<ChatActionBubbleViewModel>()
         for (item in pojo.chatActions) {
-            result.add(ChatActionBubbleViewModel(item.text, item.value, item.action))
+            result.add(ChatActionBubbleViewModel(item.text, item.value, item.action, hexColor = item.hexColor, iconUrl = item.iconUrl))
         }
         return result
     }
@@ -192,7 +194,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.attachment!!.id,
                 TYPE_QUICK_REPLY,
                 pojo.message.timeStampUnixNano,
-                convertToQuickReplyList(pojoAttribute)
+                convertToQuickReplyList(pojoAttribute),
+                pojo.source
         )
     }
 

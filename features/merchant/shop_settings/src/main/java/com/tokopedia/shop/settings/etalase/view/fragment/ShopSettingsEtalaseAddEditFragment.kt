@@ -3,7 +3,6 @@ package com.tokopedia.shop.settings.etalase.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -13,17 +12,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
-import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.etalase.data.PowerMerchantAccessModel
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
+import com.tokopedia.shop.settings.etalase.view.bottomsheet.PowerMerchantAccessBottomSheet
 import com.tokopedia.shop.settings.etalase.view.viewmodel.ShopSettingsEtalaseAddEditViewModel
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -31,9 +32,10 @@ import kotlinx.android.synthetic.main.fragment_shop_etalase_add_edit.*
 import javax.inject.Inject
 
 class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
-        MerchantCommonBottomSheet.BottomSheetListener {
+        PowerMerchantAccessBottomSheet.BottomSheetListener {
     @Inject
     lateinit var viewModel: ShopSettingsEtalaseAddEditViewModel
+    private var tfEtalaseLabel: TextFieldUnify? = null
     private var isEdit: Boolean = false
     private var etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()
     private var listEtalaseModel: List<ShopEtalaseModel>? = null
@@ -70,28 +72,31 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tfEtalaseLabel = view.findViewById(R.id.text_etalase_label)
+
         arguments?.let {
             isEdit = it.getBoolean(PARAM_IS_EDIT, false)
             etalase = it.getParcelable(PARAM_SHOP_ETALASE) ?: ShopEtalaseUiModel()
         }
 
         if (isEdit) {
-            edit_text_title.setText(etalase.name)
-            edit_text_title.setSelection(edit_text_title.text.length)
+            tfEtalaseLabel?.textFieldInput?.let {
+                it.setText(etalase.name)
+                it.text?.apply { it.setSelection(length) }
+            }
         }
 
-        edit_text_title.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                val text = s?.toString()
-                if (TextUtils.isEmpty(text)) {
-                    isValid = false
-                    text_input_layout_title.error = getString(R.string.shop_etalase_title_required)
-                } else {
-                    isValid = true
-                    text_input_layout_title.setErrorEnabled(false)
-                }
+        tfEtalaseLabel?.textFieldInput?.afterTextChanged {
+            if (TextUtils.isEmpty(it)) {
+                isValid = false
+                tfEtalaseLabel?.setError(true)
+                tfEtalaseLabel?.setMessage(getString(R.string.shop_etalase_title_required))
+            } else {
+                isValid = true
+                tfEtalaseLabel?.setError(false)
+                tfEtalaseLabel?.setMessage("")
             }
-        })
+        }
         getEtalaseList()
         observeData()
     }
@@ -116,13 +121,14 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
 
     fun saveAddEditEtalase() {
         if (isValid) {
-            etalase.name = edit_text_title.text.toString().trim()
+            etalase.name = tfEtalaseLabel?.textFieldInput?.text.toString().trim()
             getEtalaseList()
             if (!isEtalaseDuplicate(etalase.name)) {
                 showLoading()
                 viewModel.saveShopEtalase(etalase, isEdit)
             } else {
-                edit_text_title.error = context?.getString(R.string.shop_etalase_title_already_exist)
+                tfEtalaseLabel?.setError(true)
+                tfEtalaseLabel?.setMessage(getString(R.string.shop_etalase_title_already_exist))
             }
         }
     }
@@ -196,14 +202,13 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     private fun showBottomSheet(title: String, imageUrl: String, description: String, buttonName: String) {
-        val model = MerchantCommonBottomSheet.BottomSheetModel(
+        val model = PowerMerchantAccessModel(
                 title,
                 description,
                 imageUrl,
-                buttonName,
-                ""
+                buttonName
         )
-        val bottomSheet = MerchantCommonBottomSheet.newInstance(model)
+        val bottomSheet = PowerMerchantAccessBottomSheet.newInstance(model)
         bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager, "merchant_warning_bottom_sheet")
     }
@@ -218,11 +223,11 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        progress_bar?.visibility = View.VISIBLE
+        loader?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        progress_bar?.visibility = View.GONE
+        loader?.visibility = View.GONE
     }
 
     private fun isEtalaseCountAtMax(): Boolean {

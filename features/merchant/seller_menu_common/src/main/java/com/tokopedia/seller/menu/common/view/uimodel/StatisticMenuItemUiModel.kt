@@ -11,7 +11,7 @@ data class StatisticMenuItemUiModel(
         override val title: String = "",
         override val iconUnify: Int? = null,
         override val clickAction: () -> Unit = {}
-) : MenuItemUiModel(title, null, clickApplink, "", "", null, iconUnify, clickAction) {
+) : MenuItemUiModel(title, null, clickApplink, "", "", null, iconUnify, 0, clickAction) {
 
     override fun type(typeFactory: OtherMenuTypeFactory): Int {
         return typeFactory.type(this)

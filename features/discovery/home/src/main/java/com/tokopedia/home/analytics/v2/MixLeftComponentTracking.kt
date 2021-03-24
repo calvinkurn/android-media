@@ -28,6 +28,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
     private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
     private const val CLICK_MIX_LEFT_LOADMORE_CARD = "click view all card on dynamic channel left carousel"
 
+
     private fun getMixLeftClickLoadMore(channel: ChannelModel, userId: String): HashMap<String, Any> {
         return DataLayer.mapOf(
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
@@ -74,7 +75,8 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         variant = Value.NONE_OTHER,
                         productPosition = (position + 1).toString(),
                         channelId = channel.id,
-                        isFreeOngkir = grid.isFreeOngkirActive,
+                        isFreeOngkir = grid.isFreeOngkirActive && !grid.labelGroup.hasLabelGroupFulfillment(),
+                        isFreeOngkirExtra = grid.isFreeOngkirActive && grid.labelGroup.hasLabelGroupFulfillment(),
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
                         isTopAds = grid.isTopads,
@@ -108,7 +110,8 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         variant = Value.NONE_OTHER,
                         productPosition = (position + 1).toString(),
                         channelId = channel.id,
-                        isFreeOngkir = grid.isFreeOngkirActive,
+                        isFreeOngkir = grid.isFreeOngkirActive && !grid.labelGroup.hasLabelGroupFulfillment(),
+                        isFreeOngkirExtra = grid.isFreeOngkirActive && grid.labelGroup.hasLabelGroupFulfillment(),
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
                         isTopAds = grid.isTopads,
@@ -146,7 +149,8 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                 variant = Value.NONE_OTHER,
                                 productPosition = (position + 1).toString(),
                                 channelId = channel.id,
-                                isFreeOngkir = grid.isFreeOngkirActive,
+                                isFreeOngkir = grid.isFreeOngkirActive && !grid.labelGroup.hasLabelGroupFulfillment(),
+                                isFreeOngkirExtra = grid.isFreeOngkirActive && grid.labelGroup.hasLabelGroupFulfillment(),
                                 persoType = channel.trackingAttributionModel.persoType,
                                 categoryId = channel.trackingAttributionModel.categoryId,
                                 isTopAds = grid.isTopads,
@@ -191,6 +195,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                 .appendScreen(Screen.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
+
                 .build()
     }
 

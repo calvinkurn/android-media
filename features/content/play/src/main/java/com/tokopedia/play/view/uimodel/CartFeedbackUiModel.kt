@@ -17,7 +17,7 @@ data class CartFeedbackUiModel(
         val cartId: String,
 
         @TrackingField
-        val product: ProductLineUiModel,
+        val product: PlayProductUiModel.Product,
 
         @TrackingField
         val bottomInsetsType: BottomInsetsType
