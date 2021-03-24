@@ -6,10 +6,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.HIGH
-import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.LOW
-import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.MEDIUM
 import kotlinx.android.synthetic.main.topads_create_layout_budget_list_item.view.*
+
+const val LOW = "low"
+const val HIGH = "high"
+const val MEDIUM = "mid"
+const val UNKNOWN = "baru"
+const val KALI = "kali"
 
 class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
 
@@ -49,7 +52,7 @@ class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int)
                 HIGH -> view.resources.getString(R.string.topads_common_keyword_competition_high)
                 else -> view.resources.getString(R.string.topads_common_keyword_competition_low)
             }
-            view.keywordData?.text = MethodChecker.fromHtml(String.format(view.context.getString(R.string.topads_create_keyword_data), competition, item.data.totalSearch))
+            view.keywordData?.text = MethodChecker.fromHtml(String.format(view.context.getString(R.string.topads_create_keyword_data), competition, item.data.totalSearch + KALI))
             view.keywordName.text = item.data.keyword
             view.typeKeyword.text = item.data.keywordType
             if (item.data.bidSuggest != "0")

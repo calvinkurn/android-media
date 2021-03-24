@@ -2,10 +2,7 @@ package com.tokopedia.topads.common.view.sheet
 
 import android.os.Bundle
 import android.text.Html
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.common.R
@@ -51,8 +48,6 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
         shopID = UserSession(view.context).shopId
-
-        getDatafromArguments()
         initView()
         sendAnalyticsData()
         budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
@@ -84,16 +79,16 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private fun sendAnalyticsData() {
         budget.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
 
-                if (hasFocus) {
-                    if (fromEdit != 1) {
-                        val eventLabel = "$shopID - $name - $EVENT_CLICK_BUDGET_CREATE"
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET_CREATE, eventLabel, userID)
-                    } else {
-                        val eventLabel = "$groupId - $name - $EVENT_CLICK_BUDGET_CREATE"
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_BUDGET_CREATE, eventLabel, userID)
-                    }
+            if (hasFocus) {
+                if (fromEdit != 1) {
+                    val eventLabel = "$shopID - $name - $EVENT_CLICK_BUDGET_CREATE"
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET_CREATE, eventLabel, userID)
+                } else {
+                    val eventLabel = "$groupId - $name - $EVENT_CLICK_BUDGET_CREATE"
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_BUDGET_CREATE, eventLabel, userID)
                 }
             }
+        }
 
 
         title_1.setOnCheckedChangeListener { _, isChecked ->
@@ -132,7 +127,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         name = arguments?.getString(KEYWORD_NAME) ?: ""
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
-        typeSheet = arguments?.getString("type")?:""
+        typeSheet = arguments?.getString("type") ?: ""
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
@@ -163,8 +158,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                 val eventLabel = "$shopID - $name - ${budget.textFieldInput.text} - ${getSelectedSortId()}"
 
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SUBMIT_BUTTON, eventLabel, userID)
-            }
-            else {
+            } else {
                 val eventLabel = "$groupId - $name - ${budget.textFieldInput.text} - ${getSelectedSortId()}"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_SUBMIT_BUTTON, eventLabel, userID)
             }
@@ -197,15 +191,14 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun prepareViewForCreate() {
-        if(typeSheet.isNotEmpty()){
+        if (typeSheet.isNotEmpty()) {
             divider?.gone()
             txtTypeKey?.gone()
             radio_group?.gone()
             divider1?.gone()
             btnDeleteKeyword?.gone()
             btnSave?.text = getString(R.string.lanjutkan)
-            activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-            btnSave?.setMargin(16,24,16,16)
+            btnSave?.setMargin(16, 24, 16, 16)
         }
 
     }
@@ -230,15 +223,19 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        getDatafromArguments()
         initChildLayout()
-        return super.onCreateView(inflater, container, savedInstanceState)
+        super.onCreate(savedInstanceState)
+
     }
 
     private fun initChildLayout() {
         contentView = View.inflate(context, R.layout.topads_common_edit_key_bid_sheet, null)
         showHeader = false
         showCloseIcon = false
+        if (typeSheet.isNotEmpty())
+            isKeyboardOverlap = false
         setChild(contentView)
     }
 }

@@ -11,7 +11,6 @@ import kotlinx.android.parcel.Parcelize
 open class CreateManualAdsStepperModel(
         var groupName: String = "",
         var selectedProductIds: MutableList<String> = mutableListOf(),
-        var STAGE: Int = 0,
         var selectedKeywordStage: MutableList<KeywordDataItem> = mutableListOf(),
         var minSuggestBidKeyword: String = "0", // for keywords
         var suggestedBidPerClick: String = "0", // for Default

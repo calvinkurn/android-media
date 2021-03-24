@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -52,6 +53,8 @@ private const val CLICK_BUDGET = "click - biaya non kata kunci box"
 private const val EVENT_CLICK_BUDGET = "biaya yang diinput"
 private const val CLICK_SETUP_KEY = "click - setup keyword"
 
+
+const val COUNT_TO_BE_SHOWN = 5
 class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     @Inject
@@ -96,18 +99,17 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onDeleteItem(position: Int) {
+        ticker?.gone()
         bidInfoAdapter.items.removeAt(position)
         bidInfoAdapter.notifyItemRemoved(position)
         updateString()
         setCount()
-
     }
 
     private fun prepareView() {
         addKeyword?.setOnClickListener {
             val intent = Intent(context, KeywordSUggestionActivity::class.java)
             stepperModel?.selectedKeywordStage = getItemSelected()
-            stepperModel?.STAGE = 1
             intent.putExtra("model", stepperModel)
             startActivityForResult(intent, 47)
         }
@@ -184,6 +186,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         stepperModel?.maxBid = maxBid
         stepperModel?.minBid = minBid
         stepperModel?.minSuggestBidKeyword = minSuggestKeyword
+        stepperModel?.selectedKeywordStage = getItemSelected()
         if (stepperModel?.redirectionToSummary == false)
             stepperListener?.goToNextPage(stepperModel)
         else {
@@ -213,9 +216,6 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (stepperModel?.selectedKeywordStage?.isNotEmpty() != false) {
-            setRestoreValue()
-        }
         val dummyId: MutableList<Long> = mutableListOf()
         val productIds = stepperModel?.selectedProductIds?.map {
             it.toLong()
@@ -228,18 +228,27 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onEmptySuggestion)
         val list: MutableList<String>? = stepperModel?.selectedProductIds
         val productId = list?.joinToString(",")
-        viewModel.getSuggestionKeyword(productId
-                ?: "", 0, this::onSuccessSuggestionKeyword, this::onEmptySuggestion)
+        if (stepperModel?.selectedKeywordStage?.isNotEmpty() != false) {
+            setRestoreValue()
+        }else {
+            viewModel.getSuggestionKeyword(productId
+                    ?: "", 0, this::onSuccessSuggestionKeyword, this::onEmptySuggestion)
+        }
     }
 
     private fun onSuccessSuggestionKeyword(keywords: List<KeywordData>) {
         val keyList: MutableList<KeywordDataItem> = mutableListOf()
+        var count = 0
         keywords.forEach { key ->
-
-            key.keywordData.forEach {
+            if(count == COUNT_TO_BE_SHOWN)
+                return@forEach
+            key.keywordData.forEachIndexed {index, it->
+                count++
+                if(count >= COUNT_TO_BE_SHOWN) {
+                    return@forEachIndexed
+                }
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
                 keyList.add(it)
-
             }
         }
         bidInfoAdapter.notifyDataSetChanged()
@@ -252,6 +261,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun setRestoreValue() {
+        ticker?.gone()
+        setCount()
         stepperModel?.selectedKeywordStage?.forEach { it ->
             bidInfoAdapter.items.add(BidInfoItemViewModel(it))
         }

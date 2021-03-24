@@ -25,8 +25,8 @@ import com.tokopedia.topads.common.data.model.Group
 import com.tokopedia.topads.common.data.model.InputCreateGroup
 import com.tokopedia.topads.common.data.model.KeywordsItem
 import com.tokopedia.topads.common.data.response.DepositAmount
-import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -54,6 +54,7 @@ private const val CLICK_IKLANKAN_BUTTON = "click-iklankan manual"
 private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: %s"
 
 const val DEBOUNCE_CONST: Long = 200
+const val DAILYBUDGET_FACTOR = 1000
 
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
@@ -156,11 +157,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_submit.setOnClickListener {
-            loading?.visibility = View.VISIBLE
-            btn_submit?.isEnabled = false
-            val map = convertToParam(view)
-            viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
-            sendAnalyticEvent()
+            if (groupInput?.textFieldInput?.text?.isNotEmpty() == true) {
+                loading?.visibility = View.VISIBLE
+                btn_submit?.isEnabled = false
+                val map = convertToParam(view)
+                viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
+                sendAnalyticEvent()
+            } else {
+                onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
+            }
         }
         setGroupName()
         suggestion = (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
@@ -207,7 +212,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     coroutineScope.launch {
                         delay(DEBOUNCE_CONST)
                         val text = s.toString().trim()
-                        viewModel.validateGroup(text, ::onSuccessGroupName)
+                        if (text.isNotEmpty()) {
+                            viewModel.validateGroup(text, ::onSuccessGroupName)
+                        }
 
                     }
                 }
@@ -249,7 +256,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(2, stepperModel)
         }
-//        group_name?.text = stepperModel?.groupName
     }
 
     private fun setLink() {
@@ -287,6 +293,11 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                         && daily_budget.isVisible) {
                     daily_budget.setError(true)
                     daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                    validation2 = false
+                    actionEnable()
+                }else if(input % DAILYBUDGET_FACTOR!=0){
+                    daily_budget.setError(true)
+                    daily_budget.setMessage(String.format(getString(R.string.topads_common_error_multiple_50), DAILYBUDGET_FACTOR))
                     validation2 = false
                     actionEnable()
                 } else if (input > MAXIMUM_LIMIT && daily_budget.isVisible) {
