@@ -138,7 +138,6 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     }
 
     companion object {
-        private const val POST_DELAYED = 3000L
         private const val FCM_TOKEN = "pref_fcm_token"
         private const val KEY_NEWEST_TOKEN_FCM = "newest_token_fcm"
 
