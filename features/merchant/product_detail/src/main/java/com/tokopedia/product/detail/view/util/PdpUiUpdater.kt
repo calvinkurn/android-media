@@ -414,7 +414,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
                         selectedUpcoming?.startDate ?: "")
                 shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
                 this.freeOngkirImgUrl = freeOngkirImgUrl
@@ -430,7 +430,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
                         selectedUpcoming?.startDate ?: "")
             }
         }
@@ -444,7 +444,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.campaignType ?: "",
+                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
                         selectedUpcoming?.startDate ?: "")
                 this.freeOngkirImgUrl = freeOngkirImgUrl
             }

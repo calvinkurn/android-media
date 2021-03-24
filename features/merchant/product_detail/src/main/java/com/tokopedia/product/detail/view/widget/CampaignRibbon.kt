@@ -47,7 +47,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     // upcoming components - structure type 1
     private var campaignRibbonType1View: View? = null
-    private var campaignRibbonLayout1: View? = null
     private var campaignNameViews1: Typography? = null
     private var timerView1: TimerUnifySingle? = null
     private var regulatoryInfoLayout1: View? = null
@@ -55,7 +54,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     // ongoing components - structure type 2
     private var campaignRibbonType2View: View? = null
-    private var campaignRibbonLayout2: View? = null
     private var campaignLogoView2: ImageView? = null
     private var campaignNameView2: Typography? = null
     private var timerView2: TimerUnifySingle? = null
@@ -66,7 +64,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     // slash price / thematic only components - structure type 3
     private var campaignRibbonType3View: View? = null
-    private var campaignRibbonLayout3: View? = null
     private var campaignLogoView3: ImageView? = null
     private var campaignNameViews3: Typography? = null
     private var timerView3: TimerUnifySingle? = null
@@ -90,14 +87,12 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun collectViewReferences(rootView: View) {
         // TYPE 1 PROPERTIES
         campaignRibbonType1View = rootView.findViewById(R.id.campaign_ribbon_type_1)
-        campaignRibbonLayout1 = campaignRibbonType1View?.findViewById(R.id.campaign_ribbon_layout_s1)
         campaignNameViews1 = campaignRibbonType1View?.findViewById(R.id.tpg_campaign_name_s1)
         timerView1 = campaignRibbonType1View?.findViewById(R.id.tus_timer_view_s1)
         regulatoryInfoLayout1 = campaignRibbonType1View?.findViewById(R.id.regulatory_info_layout_s1)
         remindMeButton1 = campaignRibbonType1View?.findViewById(R.id.remind_me_button_s1)
         // TYPE 2 PROPERTIES
         campaignRibbonType2View = rootView.findViewById(R.id.campaign_ribbon_type_2)
-        campaignRibbonLayout2 = campaignRibbonType2View?.findViewById(R.id.campaign_ribbon_layout_s2)
         campaignLogoView2 = campaignRibbonType2View?.findViewById(R.id.iu_campaign_logo_s2)
         campaignNameView2 = campaignRibbonType2View?.findViewById(R.id.tpg_campaign_name_s2)
         timerView2 = campaignRibbonType2View?.findViewById(R.id.tus_timer_view_s2)
@@ -107,7 +102,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         regulatoryInfoView2 = campaignRibbonType2View?.findViewById(R.id.tgp_regulatory_info_s2)
         // TYPE 3 PROPERTIES
         campaignRibbonType3View = rootView.findViewById(R.id.campaign_ribbon_type_3)
-        campaignRibbonLayout3 = campaignRibbonType3View?.findViewById(R.id.campaign_ribbon_layout_s3)
         campaignLogoView3 = campaignRibbonType3View?.findViewById(R.id.iu_campaign_logo_s3)
         campaignNameViews3 = campaignRibbonType3View?.findViewById(R.id.tpg_campaign_name_s3)
         timerView3 = campaignRibbonType3View?.findViewById(R.id.tus_timer_view_s3)
@@ -157,7 +151,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             // render campaign ribbon background
             val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
             val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes, SLASH_PRICE)
-            campaignRibbonLayout3?.background = gradientDrawable
+            campaignRibbonType3View?.background = gradientDrawable
             // show count down wording
             endsInWordingView3?.show()
             // render ongoing count down timer
@@ -175,7 +169,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
         if (thematicCampaign.background.isNotBlank()) {
-            campaignRibbonLayout3?.background = getGradientDrawableForBackGround(thematicCampaign.background)
+            campaignRibbonType3View?.background = getGradientDrawableForBackGround(thematicCampaign.background)
         }
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
@@ -222,7 +216,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_red)
         }
         // render campaign ribbon background
-        gradientDrawable?.run { campaignRibbonLayout1?.background = gradientDrawable }
+        gradientDrawable?.run { campaignRibbonType1View?.background = gradientDrawable }
         // render campaign name
         val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
         campaignNameViews1?.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
@@ -301,7 +295,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render campaign ribbon background
         val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
         val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-        campaignRibbonLayout2?.background = gradientDrawable
+        campaignRibbonType2View?.background = gradientDrawable
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
             campaignLogoView2?.loadImage(thematicCampaign.icon)
