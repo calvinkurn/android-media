@@ -41,7 +41,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
@@ -77,6 +76,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
 import javax.inject.Inject
