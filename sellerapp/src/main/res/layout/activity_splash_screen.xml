@@ -8,7 +8,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_ramadhan_seller_splash_screen"
+        app:srcCompat="@drawable/logo_tkpd_white"
         android:layout_gravity="center" />
 
 </LinearLayout>
