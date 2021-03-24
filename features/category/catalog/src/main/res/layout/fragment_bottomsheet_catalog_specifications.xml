@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="@dimen/dp_4"
-                app:tabBackground="@color/white"
+                app:tabBackground="@color/Unify_N0"
                 app:tabIndicatorColor="@color/Unify_G500"
                 app:tabIndicatorFullWidth="true"
                 app:tabMode="fixed"
