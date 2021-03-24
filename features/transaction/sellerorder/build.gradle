@@ -63,6 +63,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
 
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

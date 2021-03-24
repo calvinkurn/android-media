@@ -1,0 +1,97 @@
+package com.tokopedia.sellerorder.list.presentation.fragments.tablet
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.detail.presentation.fragment.tablet.SomDetailFragment
+import kotlinx.android.synthetic.main.fragment_som_container.*
+
+class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener {
+    companion object {
+        @JvmStatic
+        fun newInstance(bundle: Bundle): SomContainerFragment {
+            return SomContainerFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SomConsts.FILTER_STATUS_ID, bundle.getString(SomConsts.FILTER_STATUS_ID))
+                    putBoolean(SomConsts.FROM_WIDGET_TAG, bundle.getBoolean(SomConsts.FROM_WIDGET_TAG))
+                    putString(SomConsts.TAB_ACTIVE, bundle.getString(SomConsts.TAB_ACTIVE))
+                    putString(SomConsts.TAB_STATUS, bundle.getString(SomConsts.TAB_STATUS))
+                    putString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH, bundle.getString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH))
+                    putInt(SomConsts.FILTER_ORDER_TYPE, bundle.getInt(SomConsts.FILTER_ORDER_TYPE))
+                }
+            }
+        }
+    }
+
+    private var somListFragment: SomListFragment? = null
+    private var somDetailFragment: SomDetailFragment? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_som_container, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        attachFragments()
+    }
+
+    override fun onOrderClicked(orderId: String) {
+        attachDetailFragment(orderId)
+    }
+
+    override fun onRefreshSelectedOrder(orderId: String) {
+        somDetailFragment?.let {
+            it.setOrderIdToShow(orderId)
+        }
+    }
+
+    private fun attachFragments() {
+        initiateListFragment()
+        attachListFragment()
+    }
+
+    private fun initiateListFragment() {
+        somListFragment = SomListFragment.newInstance(arguments
+                ?: Bundle.EMPTY).apply {
+            setSomListOrderListener(this@SomContainerFragment)
+        }
+    }
+
+    private fun initiateDetailFragment(orderId: String): SomDetailFragment {
+        val somDetailFragment = SomDetailFragment.newInstance(Bundle().apply {
+            putString(SomConsts.PARAM_ORDER_ID, orderId)
+        })
+        this.somDetailFragment = somDetailFragment
+        return somDetailFragment
+    }
+
+    private fun attachListFragment() {
+        somListFragment?.let {
+            childFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentList, it)
+                    .commit()
+        }
+    }
+
+    private fun attachDetailFragment(orderId: String) {
+        if (somDetailFragment == null) {
+            initiateDetailFragment(orderId).let {
+                childFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentDetail, it)
+                        .commit()
+            }
+        } else {
+            onRefreshSelectedOrder(orderId)
+        }
+        fragmentDetail?.show()
+        ivSomDetailWelcomeIllustration?.gone()
+        tvSomDetailWelcome?.gone()
+    }
+}

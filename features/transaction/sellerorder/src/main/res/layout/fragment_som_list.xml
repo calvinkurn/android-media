@@ -19,6 +19,16 @@
         android:visibility="gone"
         app:constraint_referenced_ids="bulkActionCheckBoxContainer,dividerMultiSelect" />
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/som_list_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true" />
+
     <!--  start success views  -->
 
     <com.tokopedia.unifycomponents.ticker.Ticker
@@ -27,7 +37,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:enableAutoSlide="true"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/som_list_toolbar"
         app:tickerType="announcement" />
 
     <com.tokopedia.unifycomponents.SearchBarUnify
@@ -245,11 +255,11 @@
         android:id="@+id/somAdminPermissionView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
-        app:globalerrors_type="PAGE_NOT_FOUND"/>
+        app:globalerrors_type="PAGE_NOT_FOUND"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,7 @@ import android.text.style.StyleSpan
 import android.view.*
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -151,12 +152,12 @@ import kotlin.collections.HashMap
 /**x
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment(),
+open class SomDetailFragment : BaseDaggerFragment(),
         RefreshHandler.OnRefreshHandlerListener,
         SomBottomSheetRejectOrderAdapter.ActionListener,
         SomDetailAdapter.ActionListener,
         SomBottomSheetRejectReasonsAdapter.ActionListener,
-        SomBottomSheetCourierProblemsAdapter.ActionListener {
+        SomBottomSheetCourierProblemsAdapter.ActionListener, Toolbar.OnMenuItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -168,7 +169,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private var somToaster: Snackbar? = null
 
-    private var orderId = ""
+    protected var orderId = ""
     private var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
     private var dynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice? = SomDynamicPriceResponse.GetSomDynamicPrice()
     private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
@@ -196,7 +197,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
-    private var menu: Menu? = null
+    protected var menu: Menu? = null
 
     private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
@@ -262,6 +263,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(false)
         return inflater.inflate(R.layout.fragment_som_detail, container, false)
     }
 
@@ -293,11 +295,6 @@ class SomDetailFragment : BaseDaggerFragment(),
         connectionMonitor?.end()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        this.menu = menu
-        inflater.inflate(R.menu.chat_menu, menu)
-    }
-
     private fun checkUserRole() {
         showLoading()
         if (connectionMonitor?.isConnected == true) {
@@ -326,7 +323,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun loadDetail() {
+    protected fun loadDetail() {
         showLoading()
         if (connectionMonitor?.isConnected == true) {
             activity?.let {
@@ -462,7 +459,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingUserRoles() {
-        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, { result ->
+        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
                     result.data.let { (isSomDetailEligible, isReplyChatEligible) ->
@@ -1411,6 +1408,16 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.som_action_chat -> {
+                doClickChat()
+                true
+            }
+            else -> false
+        }
+    }
+
     private fun openWebview(url: String) {
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
@@ -1497,12 +1504,13 @@ class SomDetailFragment : BaseDaggerFragment(),
         refreshHandler?.finishRefresh()
     }
 
-    private fun setupToolbar() {
+    protected open fun setupToolbar() {
         activity?.run {
             (this as? AppCompatActivity)?.run {
-                supportActionBar?.hide()
-                setSupportActionBar(som_detail_toolbar)
+                som_detail_toolbar?.inflateMenu(R.menu.chat_menu)
                 som_detail_toolbar?.title = getString(R.string.title_som_detail)
+                som_detail_toolbar?.isShowBackButton = false
+                som_detail_toolbar?.setOnMenuItemClickListener(this@SomDetailFragment)
             }
         }
     }

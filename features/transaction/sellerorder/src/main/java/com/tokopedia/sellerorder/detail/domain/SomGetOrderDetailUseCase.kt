@@ -14,6 +14,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 /**
@@ -48,6 +49,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
             getSomDetailResponse.somDynamicPriceResponse = requireNotNull(gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice)
             Success(getSomDetailResponse)
         } catch (e: Throwable) {
+            if (e is CancellationException) throw e
             Fail(e)
         }
     }

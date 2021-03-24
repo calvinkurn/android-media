@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.sellerorder.common.domain.usecase.*
+import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomEditRefNumUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
@@ -15,8 +18,8 @@ import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 /**
@@ -53,8 +56,11 @@ class SomDetailViewModel @Inject constructor(
     val somDetailChatEligibility: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _somDetailChatEligibility
 
+    private var loadDetailJob: Job? = null
+
     fun loadDetailOrder(orderId: String) {
-        launchCatchError(block = {
+        loadDetailJob?.cancel()
+        loadDetailJob = launchCatchError(block = {
             val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toLongOrZero())
             somGetOrderDetailUseCase.setParamDynamicPrice(dynamicPriceParam)
             val somGetOrderDetail = somGetOrderDetailUseCase.execute(orderId)

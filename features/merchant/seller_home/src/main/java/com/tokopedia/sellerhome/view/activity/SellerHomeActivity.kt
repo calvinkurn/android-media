@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -24,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -99,6 +101,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setActivityOrientation()
         initInjector()
         initSellerHomePlt()
         super.onCreate(savedInstanceState)
@@ -110,8 +113,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         setupBottomNav()
         setupNavigator()
 
-        val initialPage = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
-        setupDefaultPage(initialPage)
+        setupDefaultPage(savedInstanceState)
 
         // if redirected from any seller migration entry point, no need to show the update dialog
         val isRedirectedFromSellerMigrationEntryPoint = !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank()
@@ -236,8 +238,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         }
     }
 
-    private fun setupDefaultPage(@FragmentType initialPageType: Int) {
-        if (intent?.data == null) {
+    private fun setupDefaultPage(savedInstanceState: Bundle?) {
+        if (intent?.data == null || savedInstanceState != null) {
+            val initialPageType = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
             showToolbar(initialPageType)
             showInitialPage(initialPageType)
             checkForSellerAppReview(initialPageType)
@@ -384,7 +387,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun observeIsRoleEligible() {
-        homeViewModel.isRoleEligible.observe(this) { result ->
+        homeViewModel.isRoleEligible.observe(this, Observer { result ->
             if (result is Success) {
                 result.data.let { isRoleEligible ->
                     if (!isRoleEligible) {
@@ -393,7 +396,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                     }
                 }
             }
-        }
+        })
     }
 
     private fun showNotificationBadge(notifUnreadInt: Int) {
@@ -466,6 +469,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             lifecycleScope.launch(Dispatchers.IO) {
                 sellerReviewHelper.checkForReview(this@SellerHomeActivity, supportFragmentManager)
             }
+        }
+    }
+
+    private fun setActivityOrientation() {
+        if (DeviceScreenInfo.isTablet(this)) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         }
     }
 }

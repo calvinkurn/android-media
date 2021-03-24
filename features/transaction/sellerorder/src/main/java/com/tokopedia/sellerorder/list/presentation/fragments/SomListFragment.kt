@@ -10,15 +10,18 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
-import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -38,6 +41,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -45,6 +50,16 @@ import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CHANGE_COURIER
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_DETAIL
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
@@ -58,6 +73,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
+import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -74,17 +90,6 @@ import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkAcceptOrde
 import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkPrintDialog
 import com.tokopedia.sellerorder.list.presentation.filtertabs.SomListSortFilterTab
 import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CHANGE_COURIER
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_DETAIL
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
-import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -104,13 +109,13 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
-class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
+open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListAdapterTypeFactory>(), SomListSortFilterTab.SomListSortFilterTabClickListener,
         TickerCallback, TickerPagerCallback, TextWatcher,
         SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope,
         SomListBulkProcessOrderBottomSheet.SomListBulkProcessOrderBottomSheetListener,
         SomFilterBottomSheet.SomFilterFinishListener,
-        SomListOrderEmptyViewHolder.SomListEmptyStateListener, SomListBulkPrintDialog.SomListBulkPrintDialogClickListener {
+        SomListOrderEmptyViewHolder.SomListEmptyStateListener, SomListBulkPrintDialog.SomListBulkPrintDialogClickListener, Toolbar.OnMenuItemClickListener {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -248,7 +253,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var filterOrderType: Int = 0
     private var skipSearch: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
     private var coachMarkIndexToShow: Int = 0
-    private var selectedOrderId: String = ""
     private var tabActive: String = ""
     private var canDisplayOrderData = false
     private var canMultiAcceptOrder = false
@@ -259,9 +263,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var errorToaster: Snackbar? = null
     private var commonToaster: Snackbar? = null
     private var textChangeJob: Job? = null
-    private var menu: Menu? = null
     private var filterDate = ""
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
+
+    protected var selectedOrderId: String = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -291,7 +296,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(false)
         return inflater.inflate(R.layout.fragment_som_list, container, false)
     }
 
@@ -314,52 +319,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         observeBulkAcceptOrder()
         observeBulkAcceptOrderStatus()
         observeIsAdminEligible()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
-        inflater.inflate(R.menu.menu_som_list, menu)
-        if (!canDisplayOrderData) {
-            hideWaitingPaymentOrderListMenu()
-        }
-        this.menu = menu
-        tryReshowCoachMark()
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        if (canDisplayOrderData) {
-            val waitingPaymentCounterResult = viewModel.waitingPaymentCounterResult.value
-            if (waitingPaymentCounterResult is Success) {
-                if (!isWaitingPaymentOrderPageOpened && waitingPaymentCounterResult.data.amount > 0) {
-                    showDottedWaitingPaymentOrderListMenu()
-                } else {
-                    showWaitingPaymentOrderListMenu()
-                }
-            } else {
-                showWaitingPaymentOrderListMenuShimmer()
-            }
-        }
-        super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if ((item.itemId == R.id.som_list_action_waiting_payment_order) && viewModel.waitingPaymentCounterResult.value !is Fail) {
-            activity?.invalidateOptionsMenu()
-            goToWaitingPaymentOrderListPage()
-            val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
-            if (waitingPaymentOrderCounterResult is Success) {
-                SomAnalytics.eventClickWaitingPaymentOrderCard(
-                        tabActive,
-                        waitingPaymentOrderCounterResult.data.amount,
-                        userSession.userId,
-                        userSession.shopId)
-            }
-            isWaitingPaymentOrderPageOpened = true
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -568,7 +527,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
         selectedOrderId = order.orderId
-        goToSomOrderDetail(this, order)
+        goToSomOrderDetail(this, selectedOrderId)
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
 
@@ -737,6 +696,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         showWaitingPaymentOrderListMenuShimmer()
         rvSomList?.layoutManager = somListLayoutManager
         bulkActionCheckBoxContainer.layoutTransition.enableTransitionType(CHANGING)
+        setupToolbar()
         setupSearchBar()
         setupListeners()
     }
@@ -831,7 +791,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     showToasterError(view)
                 }
             }
-            activity?.invalidateOptionsMenu()
+            updateToolbarMenu()
         })
     }
 
@@ -993,7 +953,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun observeIsAdminEligible() {
-        viewModel.isOrderManageEligible.observe(viewLifecycleOwner) { result ->
+        viewModel.isOrderManageEligible.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
                 is Success -> {
                     result.data.let { (isSomListEligible, isMultiAcceptEligible) ->
@@ -1011,7 +971,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     showGlobalError(result.throwable)
                 }
             }
-        }
+        })
     }
 
     private fun showOnProgressAcceptAllOrderDialog(orderCount: Int) {
@@ -1384,15 +1344,15 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun showWaitingPaymentOrderListMenuShimmer() {
         if (canDisplayOrderData) {
-            menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = true
-            menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
+            som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = true
+            som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
         }
     }
 
     private fun showWaitingPaymentOrderListMenu() {
         context?.let {
-            menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
-            menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
+            som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
+            som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
                 icon = DottedNotification(it, R.drawable.ic_som_list_waiting_payment_button_icon, false)
                 isVisible = true
             }
@@ -1401,8 +1361,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun showDottedWaitingPaymentOrderListMenu() {
         context?.let {
-            menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
-            menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
+            som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
+            som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
                 icon = DottedNotification(it, R.drawable.ic_som_list_waiting_payment_button_icon, true)
                 isVisible = true
             }
@@ -1411,8 +1371,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun hideWaitingPaymentOrderListMenu() {
         context?.let {
-            menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
-            menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
+            som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
+            som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
         }
     }
 
@@ -1877,7 +1837,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         return arrayListOf<CoachMark2Item>().apply {
             add(CoachMark2Item(firstNewOrderView, getString(R.string.som_list_coachmark_new_order_card_title), getString(R.string.som_list_coachmark_new_order_card_description)))
             add(CoachMark2Item(sortFilterSomList, getString(R.string.som_list_coachmark_sort_filter_title), getString(R.string.som_list_coachmark_sort_filter_description)))
-            if (menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
+            if (som_list_toolbar?.menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible == true) {
                 activity?.findViewById<View>(R.id.som_list_action_waiting_payment_order)?.let {
                     add(CoachMark2Item(it, getString(R.string.som_list_coachmark_waiting_payment_title), getString(R.string.som_list_coachmark_waiting_payment_description)))
                 }
@@ -2082,5 +2042,54 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
+    private fun updateToolbarMenu() {
+        if (canDisplayOrderData) {
+            val waitingPaymentCounterResult = viewModel.waitingPaymentCounterResult.value
+            if (waitingPaymentCounterResult is Success) {
+                if (!isWaitingPaymentOrderPageOpened && waitingPaymentCounterResult.data.amount > 0) {
+                    showDottedWaitingPaymentOrderListMenu()
+                } else {
+                    showWaitingPaymentOrderListMenu()
+                }
+            } else {
+                showWaitingPaymentOrderListMenuShimmer()
+            }
+        } else {
+            hideWaitingPaymentOrderListMenu()
+        }
+    }
+
     private fun isOrderWithCancellationRequest(order: SomListOrderUiModel) = order.cancelRequest == 1 && order.cancelRequestStatus != 0
+
+    protected open fun setupToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                som_list_toolbar?.inflateMenu(R.menu.menu_som_list)
+                som_list_toolbar?.title = getString(R.string.title_som_list)
+                som_list_toolbar?.setOnMenuItemClickListener(this@SomListFragment)
+                updateToolbarMenu()
+                tryReshowCoachMark()
+            }
+        }
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        return if ((item?.itemId == R.id.som_list_action_waiting_payment_order) && viewModel.waitingPaymentCounterResult.value !is Fail) {
+            goToWaitingPaymentOrderListPage()
+            val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
+            if (waitingPaymentOrderCounterResult is Success) {
+                SomAnalytics.eventClickWaitingPaymentOrderCard(
+                        tabActive,
+                        waitingPaymentOrderCounterResult.data.amount,
+                        userSession.userId,
+                        userSession.shopId)
+            }
+            isWaitingPaymentOrderPageOpened = true
+            updateToolbarMenu()
+            true
+        } else {
+            false
+        }
+    }
 }
