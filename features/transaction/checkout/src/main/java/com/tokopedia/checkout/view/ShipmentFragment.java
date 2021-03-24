@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -21,7 +20,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -117,8 +115,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheetNew;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet;
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
@@ -126,6 +123,7 @@ import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper;
 import com.tokopedia.utils.time.TimeHelper;
 
 import java.util.ArrayList;
@@ -199,7 +197,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
     private String cornerId;
-    private PromoNotEligibleBottomSheetNew promoNotEligibleBottomsheet;
+    private PromoNotEligibleBottomSheet promoNotEligibleBottomsheet;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -2558,7 +2556,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         FragmentActivity activity = getActivity();
         if (activity != null) {
             if (promoNotEligibleBottomsheet == null) {
-                promoNotEligibleBottomsheet = new PromoNotEligibleBottomSheetNew(notEligiblePromoHolderdataList, this);
+                promoNotEligibleBottomsheet = new PromoNotEligibleBottomSheet(notEligiblePromoHolderdataList, this);
             }
             promoNotEligibleBottomsheet.setDismissListener(() -> {
                 checkoutAnalyticsCourierSelection.eventClickBatalOnErrorPromoConfirmation();
@@ -2899,7 +2897,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         VoucherLogisticItemUiModel log = new VoucherLogisticItemUiModel();
                         log.setCode(promoCheckoutVoucherOrdersItemUiModel.getCode());
                         log.setCouponDesc(promoCheckoutVoucherOrdersItemUiModel.getTitleDescription());
-                        log.setCouponAmount(Utils.getFormattedCurrency(promoCheckoutVoucherOrdersItemUiModel.getDiscountAmount()));
+                        log.setCouponAmount(getFormattedCurrency(promoCheckoutVoucherOrdersItemUiModel.getDiscountAmount()));
                         log.setCouponAmountRaw(promoCheckoutVoucherOrdersItemUiModel.getDiscountAmount());
                         MessageUiModel messageUiModel = new MessageUiModel();
                         messageUiModel.setColor(promoCheckoutVoucherOrdersItemUiModel.getMessageUiModel().getColor());
@@ -2921,6 +2919,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
+    }
+
+    private String getFormattedCurrency(int price) {
+        if (price == 0) {
+            return "";
+        }
+        return com.tokopedia.utils.currency.CurrencyFormatUtil.INSTANCE.getThousandSeparatorString(price, false, 0).getFormattedString();
     }
 
     @Override
