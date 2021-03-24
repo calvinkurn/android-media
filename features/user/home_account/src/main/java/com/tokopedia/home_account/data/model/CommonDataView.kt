@@ -16,5 +16,9 @@ data class CommonDataView(
         var isChecked: Boolean = false,
         var endText: String = "",
         val urlIcon: String = "",
+        val isTitleBold: Boolean = false,
+        val isBodyBold: Boolean = false,
+        val titleColor: String = "",
+        val bodyColor: String = "",
         override var type: Int = CommonViewHolder.TYPE_DEFAULT
 ): BaseItemDataView()

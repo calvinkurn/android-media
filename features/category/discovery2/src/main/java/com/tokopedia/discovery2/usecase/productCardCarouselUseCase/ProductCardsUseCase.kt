@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMap
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -11,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
@@ -38,7 +40,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.data,
                             productsLimit,
                             componentId,
-                            pageEndPoint),
+                            pageEndPoint,
+                            it.userAddressData),
                     pageEndPoint, it.name)
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
@@ -66,7 +69,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.data,
                             productsLimit,
                             componentId,
-                            pageEndPoint),
+                            pageEndPoint,
+                            component.userAddressData),
                     pageEndPoint,
                     component1.name)
 
@@ -99,7 +103,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.data,
                             productsLimit,
                             componentId,
-                            pageEndPoint),
+                            pageEndPoint,
+                            it.userAddressData),
                     pageEndPoint,
                     it.name)
             if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
@@ -116,7 +121,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                                      data: List<DataItem>?,
                                      productsPerPage: Int,
                                      componentId: String,
-                                     pageEndPoint: String): MutableMap<String, Any> {
+                                     pageEndPoint: String,
+                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
@@ -160,6 +166,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 queryParameterMap[RPC_FILTER_KEU + item.filterKey] = item.filterValue
             }
         }
+
+        queryParameterMap.putAll(addAddressQueryMap(userAddressData))
         return queryParameterMap
     }
 }

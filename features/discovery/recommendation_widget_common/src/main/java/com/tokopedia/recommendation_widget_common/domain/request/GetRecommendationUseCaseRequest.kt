@@ -53,6 +53,7 @@ internal class GetRecommendationUseCaseRequest {
                             position
                             title
                             type
+                            url
                         }
                         badges {
                           title
@@ -120,6 +121,12 @@ internal class GetRecommendationUseCaseRequest {
                               title
                               color
                           }
+                          labelgroup{
+                            position
+                            title
+                            type
+                            url
+                          }
                           badges {
                               title
                               imageUrl
@@ -129,6 +136,10 @@ internal class GetRecommendationUseCaseRequest {
                               quantityMax
                               quantityMin
                               priceString
+                          }
+                          freeOngkir{
+                            isActive
+                            imageUrl
                           }
                           rating
                           ratingAverage
