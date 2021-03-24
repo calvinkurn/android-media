@@ -33,7 +33,7 @@ class InspirationCarouselChipsItemViewHolder(
     ) {
         chipsUnify?.chipType = getChipType(inspirationCarouselOption)
         chipsUnify?.chipSize = ChipsUnify.SIZE_MEDIUM
-        chipsUnify?.chipText = inspirationCarouselOption.carouselTitle
+        chipsUnify?.chipText = inspirationCarouselOption.title
         chipsUnify?.setOnClickListener {
             onChipsClicked(
                     inspirationCarouselAdapterPosition,

@@ -76,12 +76,18 @@ class InspirationCarouselViewHolder(
     }
 
     private fun configureInspirationCarouselChipsVisibility() {
-        itemView.inspirationCarousel?.inspirationCarouselChipsList?.visible()
         itemView.inspirationCarousel?.inspirationCarouselSeeAllButton?.gone()
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.gone()
     }
 
     private fun bindCarouselChipsList(element: InspirationCarouselDataView) {
+        if (element.options.size == 1) {
+            itemView.inspirationCarousel?.inspirationCarouselChipsList?.gone()
+            return
+        }
+
+        itemView.inspirationCarousel?.inspirationCarouselChipsList?.visible()
+
         itemView.inspirationCarousel?.inspirationCarouselChipsList?.layoutManager = createLayoutManager()
         itemView.inspirationCarousel?.inspirationCarouselChipsList?.adapter = InspirationCarouselChipsAdapter(
                 adapterPosition, element, inspirationCarouselListener
