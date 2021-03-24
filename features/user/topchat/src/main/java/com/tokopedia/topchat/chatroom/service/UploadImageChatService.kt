@@ -103,6 +103,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         val intent = Intent(this, TopChatRoomActivity::class.java)
         intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         return intent
     }
 
