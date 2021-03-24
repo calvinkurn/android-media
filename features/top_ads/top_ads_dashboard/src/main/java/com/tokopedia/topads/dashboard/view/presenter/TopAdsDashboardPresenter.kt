@@ -216,7 +216,12 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                 val token = object : TypeToken<DataResponse<GroupActionResponse?>>() {}.type
                 val restResponse: RestResponse? = typeResponse[token]
                 val response = restResponse?.getData() as DataResponse<GroupActionResponse>
-                response.data.topAdsEditGroupBulk?.data?.action?.let { onSuccess(it) }
+                if (response.data.topAdsEditGroupBulk?.errors?.isEmpty() == true) {
+                    response.data.topAdsEditGroupBulk?.data?.action?.let { onSuccess(it) }
+                } else {
+                    view?.onError(response.data.topAdsEditGroupBulk?.errors?.firstOrNull()?.detail
+                            ?: "")
+                }
             }
 
             override fun onError(e: Throwable) {
@@ -231,11 +236,14 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.executeQuerySafeMode(
                 {
-                    onSuccess(action)
+                    if (it.topadsUpdateSingleAds.errors.isNullOrEmpty())
+                        onSuccess(action)
+                    else
+                        view?.onError(it.topadsUpdateSingleAds.errors.firstOrNull()?.detail ?: "")
                 },
                 {
+                    view?.onError(it.message?:"")
                     it.printStackTrace()
-
                 })
     }
 

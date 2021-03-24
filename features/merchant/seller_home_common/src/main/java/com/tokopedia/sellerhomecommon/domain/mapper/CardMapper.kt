@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.CardDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import javax.inject.Inject
@@ -18,7 +19,8 @@ class CardMapper @Inject constructor() {
                     error = it.errorMsg.orEmpty(),
                     state = it.state.orEmpty(),
                     value = if (it.value.isNullOrBlank()) "0" else it.value,
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

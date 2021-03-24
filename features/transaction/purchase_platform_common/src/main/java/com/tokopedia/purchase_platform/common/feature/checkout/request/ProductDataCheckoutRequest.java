@@ -48,6 +48,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
     private String isFulfillment;
     private boolean isDiscountedPrice;
     private boolean isFreeShipping;
+    private boolean isFreeShippingExtra;
     private int campaignId;
 
     public ProductDataCheckoutRequest() {
@@ -83,6 +84,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         isFulfillment = builder.isFulfillment;
         isDiscountedPrice = builder.isDiscountedPrice;
         isFreeShipping = builder.isFreeShipping;
+        isFreeShippingExtra = builder.isFreeShippingExtra;
         campaignId = builder.campaignId;
     }
 
@@ -277,6 +279,9 @@ public class ProductDataCheckoutRequest implements Parcelable {
     public boolean isFreeShipping() {
         return isFreeShipping;
     }
+    public boolean isFreeShippingExtra() {
+        return isFreeShippingExtra;
+    }
 
     public void setPromoCode(String promoCode) {
         this.promoCode = promoCode;
@@ -344,6 +349,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         private String isFulfillment;
         private boolean isDiscountedPrice;
         private boolean isFreeShipping;
+        private boolean isFreeShippingExtra;
         private int campaignId;
 
         public Builder() {
@@ -491,6 +497,11 @@ public class ProductDataCheckoutRequest implements Parcelable {
 
         public Builder isFreeShipping(boolean val) {
             isFreeShipping = val;
+            return this;
+        }
+
+        public Builder isFreeShippingExtra(boolean val) {
+            isFreeShippingExtra = val;
             return this;
         }
 

@@ -42,16 +42,17 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     private var interactionListener: InteractionListener? = null
 
     override fun setupView(view: View?) {
-        progressBar = view!!.findViewById<ProgressBar>(R.id.progress_bar)
-        containerLayout = view.findViewById<RelativeLayout>(R.id.container)
-        categoryTextView = view.findViewById<AppCompatTextView>(R.id.tv_category_name)
-        detailHolderView = view.findViewById<DigitalCartDetailHolderView>(R.id.view_cart_detail)
-        checkoutHolderView = view.findViewById<DigitalCartCheckoutHolderView>(R.id.view_checkout_holder)
-        checkoutHolderView = view.findViewById<DigitalCartCheckoutHolderView>(R.id.view_checkout_holder)
-        inputPriceContainer = view.findViewById<LinearLayout>(R.id.input_price_container)
-        inputPriceHolderView = view.findViewById<InputPriceHolderView>(R.id.input_price_holder_view)
-        mybillSubscription = view.findViewById(R.id.subscription_mybill)
-        mybillEgold = view.findViewById(R.id.egold_mybill)
+        progressBar = requireView().findViewById<ProgressBar>(R.id.progress_bar)
+        containerLayout = requireView().findViewById<RelativeLayout>(R.id.container)
+        categoryTextView = requireView().findViewById<AppCompatTextView>(R.id.tv_category_name)
+        detailHolderView = requireView().findViewById<DigitalCartDetailHolderView>(R.id.view_cart_detail)
+        checkoutHolderView = requireView().findViewById<DigitalCartCheckoutHolderView>(R.id.view_checkout_holder)
+        checkoutHolderView = requireView().findViewById<DigitalCartCheckoutHolderView>(R.id.view_checkout_holder)
+        inputPriceContainer = requireView().findViewById<LinearLayout>(R.id.input_price_container)
+        inputPriceHolderView = requireView().findViewById<InputPriceHolderView>(R.id.input_price_holder_view)
+        mybillSubscription = requireView().findViewById(R.id.subscription_mybill)
+        mybillEgold = requireView().findViewById(R.id.egold_mybill)
+        emptyState = requireView().findViewById(R.id.empty_state)
 
         mybillEgold.setOnMoreInfoClickedListener(this)
     }
@@ -62,7 +63,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO)
+        cartDigitalInfoData = requireArguments().getParcelable(ARG_CART_INFO)
         super.onCreate(savedInstanceState)
     }
 
