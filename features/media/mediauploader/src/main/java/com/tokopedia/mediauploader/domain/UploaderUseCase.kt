@@ -40,9 +40,9 @@ class UploaderUseCase @Inject constructor(
                 postMedia(fileToUpload, sourcePolicy, sourceId)
             }
         } catch (e: SocketTimeoutException) {
-            UploadResult.Error(TIMEOUT_ERROR)
+            UploadResult.Error(TIMEOUT_ERROR, fileToUpload)
         } catch (e: StreamResetException) {
-            UploadResult.Error(TIMEOUT_ERROR)
+            UploadResult.Error(TIMEOUT_ERROR, fileToUpload)
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
                     e !is SocketException &&
@@ -53,9 +53,9 @@ class UploaderUseCase @Inject constructor(
             }
             // check whether media source is valid
             return if (isSourceMediaNotFound(e)) {
-                UploadResult.Error(SOURCE_NOT_FOUND)
+                UploadResult.Error(SOURCE_NOT_FOUND, fileToUpload)
             } else {
-                UploadResult.Error(NETWORK_ERROR)
+                UploadResult.Error(NETWORK_ERROR, fileToUpload)
             }
         }
     }
@@ -88,7 +88,8 @@ class UploaderUseCase @Inject constructor(
                     upload.header.messages.first()
                 } else {
                     UNKNOWN_ERROR // error handling, when server returned empty error message
-                }
+                },
+                fileToUpload
         )
     }
 
