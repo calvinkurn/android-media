@@ -46,7 +46,7 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
 
     override fun getNewFragment() = ShopSettingsEtalaseAddEditFragment.createInstance(isEdit, etalase)
 
-    override fun getLayoutRes() = R.layout.activity_shop_setting_address_add_new
+    override fun getLayoutRes() = R.layout.activity_shop_settings_add_new
 
     override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
@@ -56,7 +56,6 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
             isShowShadow = true
             setSupportActionBar(this)
             actionTextView?.apply {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 setOnClickListener { (fragment as? ShopSettingsEtalaseAddEditFragment)?.saveAddEditEtalase() }
                 gone()
             }

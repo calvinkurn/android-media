@@ -74,7 +74,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_setting_note
+        return R.layout.activity_shop_settings_note
     }
 
     override fun goToReorderFragment(shopNoteUiModels: ArrayList<ShopNoteUiModel>) {

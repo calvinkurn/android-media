@@ -170,7 +170,6 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         }
 
         header?.actionTextView?.apply {
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             setOnClickListener { onSaveButtonClicked() }
         }
     }

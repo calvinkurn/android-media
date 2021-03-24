@@ -24,7 +24,7 @@ import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
 import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
-import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity
+import com.tokopedia.shop.settings.notes.view.activity.ShopSettingsNotesAddEditActivity
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter
@@ -168,7 +168,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     private fun goToEditNote(shopNoteUiModel: ShopNoteUiModel) {
         context?.let {
-            val intent = ShopSettingNotesAddEditActivity.createIntent(it,
+            val intent = ShopSettingsNotesAddEditActivity.createIntent(it,
                     shopNoteUiModel.terms, true, shopNoteUiModel)
             startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE)
         }
@@ -191,7 +191,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
             }
         }
         context?.let {
-            val intent = ShopSettingNotesAddEditActivity.createIntent(it,
+            val intent = ShopSettingsNotesAddEditActivity.createIntent(it,
                     isTerms, false, ShopNoteUiModel())
             startActivityForResult(intent, REQUEST_CODE_ADD_NOTE)
         }
@@ -227,6 +227,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                         }
                     }
                 }
+                bottomSheet.dismiss()
             }
         })
         bottomSheet.showHeader = false

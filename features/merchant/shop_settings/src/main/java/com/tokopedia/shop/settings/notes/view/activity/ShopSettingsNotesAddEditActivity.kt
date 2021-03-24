@@ -3,26 +3,21 @@ package com.tokopedia.shop.settings.notes.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
-import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
-import com.tokopedia.unifyprinciples.Typography
 
-class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
+class ShopSettingsNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
     private var isEdit = false
     private var isReturnablePolicy = false
     private var shopNote = ShopNoteUiModel()
-
-    private val saveTextView: Typography? by lazy {
-        toolbar?.findViewById(R.id.tvSave)
-    }
 
     companion object {
         private const val PARAM_IS_RETURNABLE_POLICY = "IS_RETURNABLE_POLICY"
@@ -31,7 +26,7 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
 
         @JvmStatic
         fun createIntent(context: Context, isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteUiModel = ShopNoteUiModel()) =
-                Intent(context, ShopSettingNotesAddEditActivity::class.java)
+                Intent(context, ShopSettingsNotesAddEditActivity::class.java)
                         .putExtra(PARAM_SHOP_NOTE, shopNoteModel)
                         .putExtra(PARAM_IS_RETURNABLE_POLICY, isReturnablePolicy)
                         .putExtra(PARAM_IS_EDIT, isEdit)
@@ -44,17 +39,17 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
 
         super.onCreate(savedInstanceState)
 
-        saveTextView?.run {
-            setOnClickListener { (fragment as ShopSettingsNotesAddEditFragment).saveAddEditNote() }
-            visibility = View.VISIBLE
-        }
+        setupToolbar()
 
         supportActionBar?.setTitle(if (!isEdit) R.string.shop_settings_add_note else R.string.shop_settings_edit_note)
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     override fun getNewFragment() = ShopSettingsNotesAddEditFragment.createInstance(isReturnablePolicy, isEdit, shopNote)
 
-    override fun getLayoutRes() = R.layout.activity_shop_setting_address_add_new
+    override fun getLayoutRes() = R.layout.activity_shop_settings_add_new
+
+    override fun getParentViewResourceID(): Int = R.id.parent_view
 
     override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
@@ -66,15 +61,13 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
                 .commit()
     }
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        setContentView(layoutRes)
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowTitleEnabled(true)
-            supportActionBar!!.title = this.title
+    private fun setupToolbar() {
+        findViewById<HeaderUnify>(R.id.header)?.apply {
+            isShowShadow = true
+            setSupportActionBar(this)
+            actionTextView?.apply {
+                setOnClickListener { (fragment as ShopSettingsNotesAddEditFragment).saveAddEditNote() }
+            }
         }
     }
 }
