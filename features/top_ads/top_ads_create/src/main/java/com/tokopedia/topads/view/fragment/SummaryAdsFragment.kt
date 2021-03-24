@@ -214,6 +214,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                         val text = s.toString().trim()
                         if (text.isNotEmpty()) {
                             viewModel.validateGroup(text, ::onSuccessGroupName)
+                        } else {
+                            onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
                         }
 
                     }
@@ -295,7 +297,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
                     validation2 = false
                     actionEnable()
-                }else if(input % DAILYBUDGET_FACTOR!=0){
+                } else if (input % DAILYBUDGET_FACTOR != 0) {
                     daily_budget.setError(true)
                     daily_budget.setMessage(String.format(getString(R.string.topads_common_error_multiple_50), DAILYBUDGET_FACTOR))
                     validation2 = false

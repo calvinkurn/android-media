@@ -3,7 +3,6 @@ package com.tokopedia.topads.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -234,6 +233,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             viewModel.getSuggestionKeyword(productId
                     ?: "", 0, this::onSuccessSuggestionKeyword, this::onEmptySuggestion)
         }
+        setCount()
     }
 
     private fun onSuccessSuggestionKeyword(keywords: List<KeywordData>) {
@@ -407,7 +407,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
         budget.setError(bool)
-        budget.setMessage(Html.fromHtml(String.format(error, bid)))
+        budget.setMessage(MethodChecker.fromHtml(String.format(error, bid)))
     }
 
 }

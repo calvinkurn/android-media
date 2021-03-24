@@ -23,7 +23,7 @@ import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
-import com.tokopedia.topads.view.adapter.bidinfo.viewholder.UNKNOWN
+import com.tokopedia.topads.view.adapter.bidinfo.viewholder.UNKNOWN_SEARCH
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.view.adapter.keyword.KeywordSearchAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
@@ -278,7 +278,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         val item = KeywordDataItem()
         item.keyword = searchBar.searchBarTextField.text.toString()
         item.onChecked = true
-        item.totalSearch = UNKNOWN
+        item.totalSearch = UNKNOWN_SEARCH
         keywordSearchAdapter.items.add(0, item)
         keywordSearchAdapter.notifyItemInserted(0)
         addToMainList(0)
