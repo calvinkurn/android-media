@@ -8,6 +8,7 @@ import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
  */
 
 data class HomeNavTitleDataModel (
+        val identifier: Int = 0,
         val title: String = "",
         val applink: String = ""
 ) : HomeNavVisitable {
