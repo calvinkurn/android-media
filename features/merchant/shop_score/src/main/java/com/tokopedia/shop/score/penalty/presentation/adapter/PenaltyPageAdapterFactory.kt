@@ -10,7 +10,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUi
 import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 
-class PenaltyPageAdapterFactory: BaseAdapterTypeFactory(), PenaltyTypeFactory {
+class PenaltyPageAdapterFactory(private val dateFilterPenaltyListener: FilterPenaltyListener): BaseAdapterTypeFactory(), PenaltyTypeFactory {
 
     override fun type(itemCardShopPenaltyUiModel: ItemCardShopPenaltyUiModel): Int {
         return ItemCardShopPenaltyViewHolder.LAYOUT
@@ -35,7 +35,7 @@ class PenaltyPageAdapterFactory: BaseAdapterTypeFactory(), PenaltyTypeFactory {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ItemCardShopPenaltyViewHolder.LAYOUT -> ItemCardShopPenaltyViewHolder(parent)
-            ItemDetailPenaltyFilterViewHolder.LAYOUT -> ItemDetailPenaltyFilterViewHolder(parent)
+            ItemDetailPenaltyFilterViewHolder.LAYOUT -> ItemDetailPenaltyFilterViewHolder(parent, dateFilterPenaltyListener)
             ItemPenaltyViewHolder.LAYOUT -> ItemPenaltyViewHolder(parent)
             ItemPenaltyShimmerViewHolder.LAYOUT -> ItemPenaltyShimmerViewHolder(parent)
             ItemPenaltyEmptyViewHolder.LAYOUT -> ItemPenaltyEmptyViewHolder(parent)

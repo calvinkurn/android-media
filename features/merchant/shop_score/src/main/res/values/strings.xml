@@ -35,7 +35,11 @@
     <string name="title_level_performance">Level %s</string>
     <string name="maximum_score_performance">/100</string>
     <string name="title_pm_value">Power Merchant %s</string>
+    
+    <string name="period_date_detail_penalty">Periode %s</string>
 
+    <string name="title_penalty_date_filter">Pilih tanggal</string>
+    <string name="title_penalty_sort_filter">Filter</string>
 
     <string name="title_period_performance_detail">%1s | Update selanjutnya: %2s</string>
     <string name="desc_transition_period_relief">Hingga %s Power Merchant-mu akan tetap aktif walaupun skor di bawah 60. Setelah itu, pertahankan skor min. 60 agar tetap aktif, ya!</string>
@@ -302,5 +306,6 @@
     <string name="title_next_update_pm_section">Update Berikutnya</string>
     <string name="menu_title_info_shop_performance">Menu Info Shop Performance</string>
     <string name="menu_title_warning_shop_performance">Menu Warning Shop Performance</string>
+    <string name="title_detail_penalty_label">Detail Pelanggaran</string>
 
 </resources>

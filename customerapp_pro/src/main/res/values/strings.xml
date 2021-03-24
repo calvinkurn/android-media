@@ -182,7 +182,7 @@
 
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
-    <string name="title_shop_performance">Shop Perfomance</string>
+    <string name="title_shop_performance">Performa Toko</string>
 
     <!-- Review   -->
     <string name="review_text">Ulasan</string>

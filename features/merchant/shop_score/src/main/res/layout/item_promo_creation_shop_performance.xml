@@ -73,10 +73,11 @@
             android:id="@+id/ivRecommendedPromo"
             android:layout_width="@dimen/shop_performance_promo_creation_icon_size"
             android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
+            android:layout_marginTop="@dimen/layout_lvl1"
             android:adjustViewBounds="true"
-            tools:background="@drawable/ic_squircle_recommendation" />
+            android:padding="@dimen/dp_12"
+            android:background="@drawable/ic_squircle_recommendation" />
 
     </FrameLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

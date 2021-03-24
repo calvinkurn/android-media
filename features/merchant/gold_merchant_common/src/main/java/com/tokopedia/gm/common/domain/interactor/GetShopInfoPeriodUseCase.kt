@@ -20,6 +20,7 @@ class GetShopInfoPeriodUseCase @Inject constructor(
     companion object {
         const val SHOP_ID = "shopIDs"
         const val SHOP_INFO_INPUT = "input"
+        const val SHOP_ID_PM = "shopID"
         const val SOURCE = "source"
         val SHOP_INFO_ID_QUERY = """
             query shopInfoByID(${'$'}input: ParamShopInfoByID!) {
@@ -50,7 +51,7 @@ class GetShopInfoPeriodUseCase @Inject constructor(
         val shopId = requestParams.getInt(SHOP_ID, 0)
 
         val shopInfoParam = mapOf(SHOP_INFO_INPUT to ParamShopInfoByID(shopIDs = listOf(shopId)))
-        val periodTypeParam = mapOf(SHOP_ID to shopId, SOURCE to GetPMPeriodTypeUseCase.GOLD_MERCHANT_SOURCE)
+        val periodTypeParam = mapOf(SHOP_ID_PM to shopId, SOURCE to GetPMPeriodTypeUseCase.GOLD_MERCHANT_SOURCE)
 
         val shopInfoRequest = GraphqlRequest(SHOP_INFO_ID_QUERY, ShopInfoByIDResponse::class.java, shopInfoParam)
         val periodTypeRequest = GraphqlRequest(GetPMPeriodTypeUseCase.PM_SETTING_INFO_QUERY, PMPeriodTypeResponse::class.java, periodTypeParam)

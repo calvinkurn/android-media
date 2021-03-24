@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -13,18 +14,22 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
+import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
+import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>() {
+class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
+        FilterPenaltyListener, PenaltyDateFilterBottomSheet.CalenderListener {
 
     @Inject
     lateinit var viewModelShop: ShopPenaltyViewModel
 
-    private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory() }
+    private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory(this) }
     private val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,6 +38,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         observePenaltyPage()
     }
 
@@ -53,7 +59,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     override fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = false
         clearAllData()
-        loadInitialData()
+        viewModelShop.getPenaltyDummyData()
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -65,6 +71,24 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun loadData(page: Int) {
+
+    }
+
+    override fun onDateClick() {
+        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance()
+        bottomSheetDateFilter.setCalendarListener(this)
+        bottomSheetDateFilter.show(childFragmentManager)
+    }
+
+    override fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem, position: Int) {
+
+    }
+
+    override fun onParentSortFilterClick() {
+
+    }
+
+    override fun onSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
 
     }
 

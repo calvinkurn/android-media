@@ -24,9 +24,6 @@ data class ShopScoreLevelResponse(
         )
         data class Result(
                 @Expose
-                @SerializedName("shopID")
-                val shopID: String = "",
-                @Expose
                 @SerializedName("shopLevel")
                 val shopLevel: Int = 0,
                 @Expose

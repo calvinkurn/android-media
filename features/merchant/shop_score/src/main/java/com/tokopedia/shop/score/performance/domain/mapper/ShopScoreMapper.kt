@@ -147,9 +147,11 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail))
             }
 
-            if (shopScoreResult?.shopScore.orZero() >= SHOP_SCORE_EIGHTY) {
-                add(mapToItemRecommendationPMUiModel(shopScoreResult?.shopLevel.orZero()))
-            }
+//            if (shopScoreResult?.shopScore.orZero() >= SHOP_SCORE_EIGHTY) {
+//                add(mapToItemRecommendationPMUiModel(shopScoreResult?.shopLevel.orZero()))
+//            }
+            add(mapToItemRecommendationPMUiModel())
+
 
             when {
                 userSession.isShopOfficialStore || shopInfoPeriodUiModel.isNewSeller -> {
@@ -209,90 +211,126 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
                     when (shopScoreLevelResponse?.shopLevel) {
                         SHOP_SCORE_LEVEL_ONE -> {
-                            titleHeaderShopService = context?.getString(R.string.title_keep_up_level_1) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_keep_up_level_1) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_keep_up_level_1)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_keep_up_level_1)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_TWO -> {
-                            titleHeaderShopService = context?.getString(R.string.title_keep_up_level_2) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_keep_up_level_2) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_keep_up_level_2)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_keep_up_level_2)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
-                            titleHeaderShopService = context?.getString(R.string.title_keep_up_level_3) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_keep_up_level_3) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_keep_up_level_3)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_keep_up_level_3)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_FOUR -> {
-                            titleHeaderShopService = context?.getString(R.string.title_keep_up_level_4) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_keep_up_level_4) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_keep_up_level_4)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_keep_up_level_4)
+                                    ?: ""
                         }
                     }
                 }
                 in SHOP_SCORE_SEVENTY..SHOP_SCORE_SEVENTY_NINE -> {
                     when (shopScoreLevelResponse?.shopLevel) {
                         SHOP_SCORE_LEVEL_ONE -> {
-                            titleHeaderShopService = context?.getString(R.string.title_good_level_1) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_good_level_1) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_good_level_1)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_good_level_1)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_TWO -> {
-                            titleHeaderShopService = context?.getString(R.string.title_good_level_2) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_good_level_2) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_good_level_2)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_good_level_2)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
-                            titleHeaderShopService = context?.getString(R.string.title_good_level_3) ?: "-"
-                            descHeaderShopService = context?.getString(R.string.desc_good_level_3) ?: "-"
+                            titleHeaderShopService = context?.getString(R.string.title_good_level_3)
+                                    ?: "-"
+                            descHeaderShopService = context?.getString(R.string.desc_good_level_3)
+                                    ?: "-"
                         }
                         SHOP_SCORE_LEVEL_FOUR -> {
-                            titleHeaderShopService = context?.getString(R.string.title_good_level_4) ?: "-"
-                            descHeaderShopService = context?.getString(R.string.desc_good_level_4) ?: "-"
+                            titleHeaderShopService = context?.getString(R.string.title_good_level_4)
+                                    ?: "-"
+                            descHeaderShopService = context?.getString(R.string.desc_good_level_4)
+                                    ?: "-"
                         }
                     }
                 }
                 in SHOP_SCORE_EIGHTY..SHOP_SCORE_EIGHTY_NINE -> {
                     when (shopScoreLevelResponse?.shopLevel) {
                         SHOP_SCORE_LEVEL_ONE -> {
-                            titleHeaderShopService = context?.getString(R.string.title_great_level_1) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_great_level_1) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_great_level_1)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_great_level_1)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_TWO -> {
-                            titleHeaderShopService = context?.getString(R.string.title_great_level_2) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_great_level_2) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_great_level_2)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_great_level_2)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
-                            titleHeaderShopService = context?.getString(R.string.title_great_level_3) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_great_level_3) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_great_level_3)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_great_level_3)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_FOUR -> {
-                            titleHeaderShopService = context?.getString(R.string.title_great_level_4) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_great_level_4) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_great_level_4)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_great_level_4)
+                                    ?: ""
                         }
                     }
                 }
                 in SHOP_SCORE_NINETY..SHOP_SCORE_ONE_HUNDRED -> {
                     when (shopScoreLevelResponse?.shopLevel) {
                         SHOP_SCORE_LEVEL_ONE -> {
-                            titleHeaderShopService = context?.getString(R.string.title_perfect_level_1) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_perfect_level_1) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_perfect_level_1)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_perfect_level_1)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_TWO -> {
-                            titleHeaderShopService = context?.getString(R.string.title_perfect_level_2) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_perfect_level_2) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_perfect_level_2)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_perfect_level_2)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
-                            titleHeaderShopService = context?.getString(R.string.title_perfect_level_3) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_perfect_level_3) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_perfect_level_3)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_perfect_level_3)
+                                    ?: ""
                         }
                         SHOP_SCORE_LEVEL_FOUR -> {
-                            titleHeaderShopService = context?.getString(R.string.title_perfect_level_4) ?: ""
-                            descHeaderShopService = context?.getString(R.string.desc_perfect_level_4) ?: ""
+                            titleHeaderShopService = context?.getString(R.string.title_perfect_level_4)
+                                    ?: ""
+                            descHeaderShopService = context?.getString(R.string.desc_perfect_level_4)
+                                    ?: ""
                         }
                     }
                 }
                 in SHOP_SCORE_FIFTY..SHOP_SCORE_FIFTY_NINE -> {
-                    titleHeaderShopService = context?.getString(R.string.title_performance_approaching) ?: ""
-                    descHeaderShopService = context?.getString(R.string.desc_performance_approaching) ?: ""
+                    titleHeaderShopService = context?.getString(R.string.title_performance_approaching)
+                            ?: ""
+                    descHeaderShopService = context?.getString(R.string.desc_performance_approaching)
+                            ?: ""
                 }
                 in SHOP_SCORE_ZERO..SHOP_SCORE_FORTY_NINE -> {
-                    titleHeaderShopService = context?.getString(R.string.title_performance_below) ?: ""
-                    descHeaderShopService = context?.getString(R.string.desc_performance_below) ?: ""
+                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
+                            ?: ""
+                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
+                            ?: ""
                 }
             }
 

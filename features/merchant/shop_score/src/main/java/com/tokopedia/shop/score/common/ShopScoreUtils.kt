@@ -1,12 +1,20 @@
 package com.tokopedia.shop.score.common
 
+import android.content.Context
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.LightingColorFilter
+import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
+import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import java.text.SimpleDateFormat
+import java.util.*
 
 object ShopScoreUtils {
 
@@ -37,4 +45,33 @@ fun SortFilterItem.toggle() {
     } else {
         ChipsUnify.TYPE_NORMAL
     }
+}
+
+fun getNowTimeStamp(): Long {
+    val date = Calendar.getInstance(getLocale())
+    return date.timeInMillis
+}
+
+fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
+    val sdf = SimpleDateFormat(pattern, locale)
+    return sdf.format(timeMillis)
+}
+
+fun getLocale(): Locale {
+    return Locale("id")
+}
+
+fun getNPastMonthTimeStamp(monthBefore: Int): Date {
+    val date = Calendar.getInstance(getLocale())
+    date.set(Calendar.MONTH, date.get(Calendar.MONTH) - monthBefore)
+    return date.time
+}
+
+fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
+    val color = if (colorHex.length > 1) Color.parseColor(colorHex)
+    else MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+    val drawable = MethodChecker.getDrawable(context, R.drawable.ic_penalty_indicator)
+    val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+    drawable.colorFilter = filter
+    return drawable
 }
