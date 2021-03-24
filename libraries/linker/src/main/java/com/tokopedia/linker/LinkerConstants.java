@@ -113,7 +113,8 @@ public interface LinkerConstants {
     String UTM_MEDIUM = "utm_medium";
     String UTM_CAMPAIGN = "utm_campaign";
     String UTM_TERM = "utm_term";
-    String SCREEN_NAME = "screenName";
+    String SCREEN_NAME_KEY = "screenName";
+    String SCREEN_NAME_VALUE = "Deeplink Page";
 
     String CONTENT = "content";
     String CONTENT_TYPE = "content_type";
@@ -125,4 +126,5 @@ public interface LinkerConstants {
     String LEVEL3_ID = "level3_id";
     String SKU = "sku";
     String CONTENT_ID = "content_id";
+    String BRANCH_LINK_DOMAIN="tokopedia.link/";
 }
