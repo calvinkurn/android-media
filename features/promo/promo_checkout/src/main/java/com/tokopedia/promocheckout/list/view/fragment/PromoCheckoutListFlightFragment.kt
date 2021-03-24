@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
-import android.content.Context
 import android.os.Bundle
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity
@@ -37,8 +36,6 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
     override fun initInjector() {
         getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
-
-    override fun getContext(): Context? = context
 
     override fun onDestroyView() {
         promoCheckoutListFlightPresenter.detachView()

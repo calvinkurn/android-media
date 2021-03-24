@@ -2,12 +2,10 @@ package com.tokopedia.promocheckout.detail.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -79,8 +77,6 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
                 .inject(this)
         promoCheckoutDetailFlightPresenter.attachView(this)
     }
-
-    override fun getContext(): Context? = context
 
     override fun onDestroy() {
         promoCheckoutDetailFlightPresenter.detachView()

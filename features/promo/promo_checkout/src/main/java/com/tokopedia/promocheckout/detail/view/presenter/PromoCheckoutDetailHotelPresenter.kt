@@ -19,11 +19,6 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
                                         private val cancelVoucherUseCase: FlightCancelVoucherUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailHotelContract.Presenter {
 
-    override fun attachView(view: PromoCheckoutDetailContract.View) {
-        super.attachView(view)
-        view.getContext()
-    }
-
     override fun checkVoucher(promoCode: String, cartID: String) {
         view.showProgressLoading()
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, cartID), object : Subscriber<GraphqlResponse>() {

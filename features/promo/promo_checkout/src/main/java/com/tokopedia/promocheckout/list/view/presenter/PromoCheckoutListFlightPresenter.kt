@@ -16,11 +16,6 @@ import rx.Subscriber
 class PromoCheckoutListFlightPresenter(private val checkVoucherUseCase: FlightCheckVoucherUseCase,
                                        val checkVoucherMapper: FlightCheckVoucherMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListFlightContract.Presenter {
 
-    override fun attachView(view: PromoCheckoutListContract.View) {
-        super.attachView(view)
-        view.context
-    }
-
     override fun checkPromoCode(cartID: String, promoCode: String) {
         view.showProgressLoading()
 
