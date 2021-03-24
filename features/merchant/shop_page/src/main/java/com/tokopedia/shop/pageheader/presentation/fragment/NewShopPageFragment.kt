@@ -209,7 +209,9 @@ class NewShopPageFragment :
             isUsingNewNavigation()
         } ?: -1
     private val iconTabShowcaseInactive: Int
-        get() = R.drawable.ic_shop_tab_showcase_inactive
+        get() = R.drawable.ic_shop_tab_showcase_inactive.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_shop_tab_showcase_inactive_old
     private val iconTabShowcaseActive: Int
         get() = R.drawable.ic_shop_tab_showcase_active
     private val iconTabFeedInactive: Int

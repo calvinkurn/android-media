@@ -5,8 +5,8 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
+import com.tokopedia.shop.showcase.domain.model.ShopFeaturedShowcase
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -38,13 +38,13 @@ class ShopPageFeaturedShowcaseViewHolder(
         }
     }
 
-    fun bind(list: List<ShopEtalaseModel>) {
+    fun bind(list: List<ShopFeaturedShowcase>) {
 
         val element = list[adapterPosition]
 
         // set card content
         showcaseId = element.id
-        ivShowcaseImg?.setImageUrl(element.imageUrl ?: "")
+        ivShowcaseImg?.setImageUrl(element.imageUrl)
         tvShowcaseName?.text = element.name
         tvShowcaseCount?.text = itemView.context.getString(
                 R.string.shop_page_showcase_featured_product_count_text,
@@ -54,7 +54,7 @@ class ShopPageFeaturedShowcaseViewHolder(
         setItemMargin(adapterPosition, list)
     }
 
-    private fun setItemMargin(position: Int, list: List<ShopEtalaseModel>) {
+    private fun setItemMargin(position: Int, list: List<ShopFeaturedShowcase>) {
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT

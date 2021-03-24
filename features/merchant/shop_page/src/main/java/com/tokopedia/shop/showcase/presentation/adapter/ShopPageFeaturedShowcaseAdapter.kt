@@ -4,8 +4,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
+import com.tokopedia.shop.showcase.domain.model.ShopFeaturedShowcase
 import com.tokopedia.shop.showcase.presentation.adapter.viewholder.ShopPageFeaturedShowcaseViewHolder
 
 /**
@@ -15,7 +15,7 @@ class ShopPageFeaturedShowcaseAdapter(
         private val shopShowcaseListImageListener: ShopShowcaseListImageListener
 ) : RecyclerView.Adapter<ShopPageFeaturedShowcaseViewHolder>() {
 
-    private var showcaseFeaturedList: List<ShopEtalaseModel> = listOf()
+    private var showcaseFeaturedList: List<ShopFeaturedShowcase> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopPageFeaturedShowcaseViewHolder {
         return ShopPageFeaturedShowcaseViewHolder(
@@ -32,7 +32,7 @@ class ShopPageFeaturedShowcaseAdapter(
         holder.bind(showcaseFeaturedList)
     }
 
-    fun updateFeaturedShowcaseDataset(newList: List<ShopEtalaseModel>) {
+    fun updateFeaturedShowcaseDataset(newList: List<ShopFeaturedShowcase>) {
         showcaseFeaturedList = newList
         notifyDataSetChanged()
     }
