@@ -17,19 +17,7 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.E
 
 public class ShipmentActivity extends BaseCheckoutActivity {
 
-    private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     private ShipmentFragment shipmentFragment;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        checkoutAnalyticsCourierSelection = new CheckoutAnalyticsCourierSelection();
-    }
-
-    @Override
-    protected void initInjector() {
-
-    }
 
     @Override
     protected void setupBundlePass(Bundle extras) {
