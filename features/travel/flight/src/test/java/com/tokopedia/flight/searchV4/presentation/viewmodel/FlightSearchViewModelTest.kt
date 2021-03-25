@@ -10,6 +10,7 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.*
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.promo_chips.model.AirlinePrice
 import com.tokopedia.flight.promo_chips.model.FlightLowestPrice
 import com.tokopedia.flight.promo_chips.usecase.FlightLowestPriceUseCase
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
@@ -1180,5 +1181,57 @@ class FlightSearchViewModelTest {
         errorList[0].id shouldBe fakeEntity.id
         errorList[0].status shouldBe fakeEntity.status
         errorList[0].title shouldBe fakeEntity.title
+    }
+
+    @Test
+    fun onPromotionChipsClickedTrackWhenLoggedIn_oneWay() {
+        // given
+        val position = 0
+        val airlinePrice: AirlinePrice = PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        val isReturn = false
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
+
+        // when
+        flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice = airlinePrice, isReturnTrip = isReturn)
+
+        // then
+        verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
+                FlightAnalytics.Screen.HOMEPAGE, any(), isReturn) }
+    }
+
+    @Test
+    fun onPromotionChipsClickedTrackWhenLoggedIn_returnTrip() {
+        // given
+        val position = 0
+        val airlinePrice: AirlinePrice = PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        val isReturn = true
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
+
+        // when
+        flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice = airlinePrice, isReturnTrip = isReturn)
+
+        // then
+        verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
+                FlightAnalytics.Screen.HOMEPAGE, any(), isReturn) }
+    }
+
+    @Test
+    fun onPromotionChipsClickedTrackWhenNotLoggedIn() {
+        // given
+        val position = 0
+        val airlinePrice: AirlinePrice = PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        val isReturn = false
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+        coEvery { userSession.isLoggedIn } returns false
+        // when
+        flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice = airlinePrice, isReturnTrip = isReturn)
+
+        // then
+        verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
+                FlightAnalytics.Screen.HOMEPAGE, any(), isReturn) }
     }
 }
