@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -62,6 +63,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
+import com.tokopedia.play_common.util.extension.changeConstraint
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -636,6 +638,7 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
             pinnedViewOnStateChanged(pinnedModel = it)
             productFeaturedViewOnStateChanged(pinnedModel = it)
+            quickReplyViewOnStateChanged(pinnedModel = it)
         })
     }
 
@@ -1124,7 +1127,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun chatListViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
     ) {
         if (channelType.isLive && !bottomInsets.isAnyBottomSheetsShown) chatListView?.show() else chatListView?.hide()
     }
@@ -1251,7 +1254,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun quickReplyViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value
     ) {
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
@@ -1259,6 +1263,27 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
             quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
+
+        val quickReplyViewId = quickReplyView?.id ?: return
+        when (pinnedModel) {
+            is PlayPinnedUiModel.PinnedProduct -> {
+                val pinnedVoucherViewId = pinnedVoucherView?.id
+                if (pinnedVoucherViewId != null) {
+                    view?.changeConstraint {
+                        connect(quickReplyViewId, ConstraintSet.BOTTOM, R.id.view_topmost_like, ConstraintSet.TOP)
+                    }
+                }
+            }
+            is PlayPinnedUiModel.PinnedMessage -> {
+                val sendChatViewId = sendChatView?.id
+                if (sendChatViewId != null) {
+                    view?.changeConstraint {
+                        connect(quickReplyViewId, ConstraintSet.BOTTOM, sendChatViewId, ConstraintSet.TOP)
+                    }
+                }
+            }
+            else -> {}
+        }
     }
 
     private fun immersiveBoxViewOnStateChanged(
