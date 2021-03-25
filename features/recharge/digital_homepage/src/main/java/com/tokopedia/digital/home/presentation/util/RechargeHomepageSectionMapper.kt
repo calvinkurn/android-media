@@ -60,10 +60,10 @@ object RechargeHomepageSectionMapper {
 
     fun mapInitialHomepageSections(sections: List<RechargeHomepageSectionSkeleton.Item>): List<RechargeHomepageSections.Section> {
         val sectionsList = mutableListOf<RechargeHomepageSections.Section>()
-        for (i in 0..sections.size-1){
-            sectionsList.add(RechargeHomepageSections.Section(sections.get(i).id, template = sections.get(i).template))
-            if(sections.get(i).template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER) ||
-                    sections.get(i).template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER_EMPTY)){
+        for (section in sections){
+            sectionsList.add(RechargeHomepageSections.Section(section.id, template = section.template))
+            if(section.template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER) ||
+                    section.template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER_EMPTY)){
                 sectionsList.add(RechargeHomepageSections.Section(RechargeHomepageViewModel.ID_TICKER, template = RechargeHomepageViewModel.SECTION_TICKER))
             }
         }
@@ -228,10 +228,10 @@ object RechargeHomepageSectionMapper {
                     it.name,
                     it.content,
                     when(it.type){
-                        "info" -> Ticker.TYPE_INFORMATION
-                        "success" -> Ticker.TYPE_ANNOUNCEMENT
-                        "danger" -> Ticker.TYPE_ERROR
-                        "warning" -> Ticker.TYPE_WARNING
+                        TickerRechargeEnum.INFO.type -> Ticker.TYPE_INFORMATION
+                        TickerRechargeEnum.SUCCESS.type -> Ticker.TYPE_ANNOUNCEMENT
+                        TickerRechargeEnum.DANGER.type -> Ticker.TYPE_ERROR
+                        TickerRechargeEnum.WARNING.type -> Ticker.TYPE_WARNING
                         else -> Ticker.TYPE_INFORMATION
                     },
                     true

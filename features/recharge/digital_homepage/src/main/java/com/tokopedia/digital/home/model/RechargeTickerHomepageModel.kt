@@ -9,8 +9,12 @@ data class RechargeTickerHomepageModel(
         @Expose
         val rechargeTickers: List<RechargeTicker> = listOf(),
 ) : RechargeHomepageSectionModel{
+    companion object{
+        const val TICKER_VISITABLE_ID = "0"
+    }
+
     override fun visitableId(): String {
-        return "1"
+        return TICKER_VISITABLE_ID
     }
 
     override fun equalsWith(b: Any?): Boolean {
