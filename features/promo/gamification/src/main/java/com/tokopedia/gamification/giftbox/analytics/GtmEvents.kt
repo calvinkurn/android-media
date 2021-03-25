@@ -404,8 +404,9 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_KE_HOME_BUTTON
         updateCommonItemsForBackButtonDialog(userId,map)
         getTracker().sendGeneralEvent(map)
+    }
 
-    }//3
+    //3
     fun impressionRpZeroDialog(userId: String?){
         val map = mutableMapOf<String,Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
@@ -433,6 +434,7 @@ object GtmEvents {
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
+        getTracker().sendGeneralEvent(map)
     }
 
     fun impressionProductRecom(userId: String?){
@@ -445,5 +447,7 @@ object GtmEvents {
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
+        getTracker().sendGeneralEvent(map)
     }
+
 }
