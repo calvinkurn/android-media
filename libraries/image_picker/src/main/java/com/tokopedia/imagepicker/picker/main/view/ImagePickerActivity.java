@@ -137,7 +137,9 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
 
-        getSupportActionBar().setTitle(imagePickerBuilder.getTitle());
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(imagePickerBuilder.getTitle());
+        }
 
         setupPreview();
         setupViewPager();
