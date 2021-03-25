@@ -45,7 +45,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             try {
                 val userSession = getUserSession(applicationContext)
                 if (userSession.userId.isEmpty()) {
-                    Result.success()
+                    return@withContext Result.success()
                 }
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
