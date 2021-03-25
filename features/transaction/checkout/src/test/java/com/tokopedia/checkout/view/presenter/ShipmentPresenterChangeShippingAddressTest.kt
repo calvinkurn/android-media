@@ -237,7 +237,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         val errorMessages = ArrayList<String>().apply {
             add("Error Message")
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = true, messages = errorMessages))
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = false, messages = errorMessages))
 
         // When
         presenter.changeShippingAddress(RecipientAddressModel(), null, false, false, true, true)
