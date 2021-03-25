@@ -32,7 +32,7 @@ class ShopNoteReorderViewHolder(itemView: View,
 
             if (shopNoteUiModel.terms) {
                 ivReorder?.visibility = View.GONE
-                background = context.getDrawable(R.color.Unify_N700_20)
+                background = context.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
             } else {
                 ivReorder?.setOnTouchListener { _, event ->
                     if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
