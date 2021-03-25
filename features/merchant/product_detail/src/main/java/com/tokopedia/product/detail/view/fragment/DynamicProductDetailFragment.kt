@@ -1552,10 +1552,19 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             data.doSuccessOrFail({
                 val enableComparisonWidget = remoteConfig()?.getBoolean(
                         RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?:true
+
                 if (enableComparisonWidget) {
                     if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
-                        pdpUiUpdater?.updateComparisonDataModel(it.data)
-                        updateUi()
+                        comparisonWidgetAbTestCondition(
+                                ifComparisonWidget = {
+                                    pdpUiUpdater?.updateComparisonDataModel(it.data)
+                                    updateUi()
+                                },
+                                ifDefaultRecom = {
+                                    pdpUiUpdater?.updateRecommendationData(it.data)
+                                    updateUi()
+                                }
+                        )
                     } else {
                         pdpUiUpdater?.updateRecommendationData(it.data)
                         updateUi()
@@ -3397,6 +3406,21 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
+    //Will be delete soon
+    override fun isComparisonWidget(): Boolean {
+        return try {
+            getAbTestPlatform()?.let {
+                val comparisonWidgetRollanceValue = it.getString(AbTestPlatform.RECOM_COMPARISON_WIDGET, "")
+                return (comparisonWidgetRollanceValue == AbTestPlatform.RECOM_VARIANT_COMPARISON_1)
+                        || (comparisonWidgetRollanceValue == AbTestPlatform.RECOM_VARIANT_COMPARISON_2)
+            }
+            return false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
     override fun getFragmentTrackingQueue(): TrackingQueue? {
         return trackingQueue
     }
@@ -3406,6 +3430,14 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             ifNavRevamp.invoke()
         } else if (isNavOld()) {
             ifNavOld.invoke()
+        }
+    }
+
+    private fun comparisonWidgetAbTestCondition(ifComparisonWidget: () -> Unit = {}, ifDefaultRecom: () -> Unit = {}) {
+        if (isComparisonWidget()) {
+            ifComparisonWidget.invoke()
+        } else if (isNavOld()) {
+            ifDefaultRecom.invoke()
         }
     }
 
