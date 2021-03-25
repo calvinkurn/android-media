@@ -81,23 +81,25 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
                         userSessionInterface = userSessionInterface,
                         recommendationTrackingModel = recommendationTrackingModel
                 )
-                rootView.rv_comparison_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                rootView.rv_comparison_widget.adapter = adapter
-                rootView.btn_collapse.setOnClickListener {
-                    ProductRecommendationTracking.getClickSpecDetailTracking(
-                            eventClick = recommendationTrackingModel.eventClick,
-                            eventCategory = recommendationTrackingModel.eventCategory,
-                            isLoggedIn = userSessionInterface.isLoggedIn,
-                            recomTitle = recommendationTrackingModel.headerTitle,
-                            pageName = comparisonListModel.recommendationWidget.pageName,
-                            userId = userSessionInterface.userId
-                    )
-                    onSpecDetailsClick(comparisonListModel)
-                }
-                rootView.comparison_widget_container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-                stickyTitleView?.let {
-                    this@ComparisonWidgetView.stickyTitleViewBinded = stickyTitleView
-                    bindStickyTitleView(stickyTitleInterface)
+                launch(Dispatchers.Main) {
+                    rootView.rv_comparison_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    rootView.rv_comparison_widget.adapter = adapter
+                    rootView.btn_collapse.setOnClickListener {
+                        ProductRecommendationTracking.getClickSpecDetailTracking(
+                                eventClick = recommendationTrackingModel.eventClick,
+                                eventCategory = recommendationTrackingModel.eventCategory,
+                                isLoggedIn = userSessionInterface.isLoggedIn,
+                                recomTitle = recommendationTrackingModel.headerTitle,
+                                pageName = comparisonListModel.recommendationWidget.pageName,
+                                userId = userSessionInterface.userId
+                        )
+                        onSpecDetailsClick(comparisonListModel)
+                    }
+                    rootView.comparison_widget_container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+                    stickyTitleView?.let {
+                        this@ComparisonWidgetView.stickyTitleViewBinded = stickyTitleView
+                        bindStickyTitleView(stickyTitleInterface)
+                    }
                 }
             }
         }
