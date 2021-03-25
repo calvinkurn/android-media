@@ -405,20 +405,17 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         val viewBottomSheetWarehouseInactive = View.inflate(context, R.layout.bottomsheet_courier_inactive, null)
         setupChildCourierInactive(viewBottomSheetWarehouseInactive, uiContentModel.headerLocation, uiContentModel.warehouses.size, data)
 
+
         if (bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE) {
-            bottomSheetCourierInactive?.apply {
-                setTitle(data.uiContent.header)
-                setCloseClickListener { dismiss() }
-                setChild(viewBottomSheetWarehouseInactive)
-                setOnDismissListener { dismiss() }
-            }
+            bottomSheetCourierInactive?.setTitle(data.uiContent.header)
         } else {
-            bottomSheetCourierInactive?.apply {
-                setTitle(getString(R.string.bottomsheet_inactive_title))
-                setCloseClickListener { dismiss() }
-                setChild(viewBottomSheetWarehouseInactive)
-                setOnDismissListener { dismiss() }
-            }
+            bottomSheetCourierInactive?.setTitle(getString(R.string.bottomsheet_inactive_title))
+        }
+
+        bottomSheetCourierInactive?.apply {
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetWarehouseInactive)
+            setOnDismissListener { dismiss() }
         }
 
         fragmentManager?.let {
@@ -429,11 +426,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private fun openBottomSheetValidateBOData(data: ValidateShippingEditorModel) {
         bottomSheetBOValidation = BottomSheetUnify()
+        bottomSheetBOValidation?.setTitle(getString(R.string.bottomsheet_validation_title))
         val viewBottomSheetBOValidation = View.inflate(activity, R.layout.popup_validation_bo, null)
         setUpChildBottomSheetValidateBOData(viewBottomSheetBOValidation, data)
 
         bottomSheetBOValidation?.apply {
-            setTitle(getString(R.string.bottomsheet_validation_title))
             setCloseClickListener { dismiss() }
             setChild(viewBottomSheetBOValidation)
             setOnDismissListener { dismiss() }

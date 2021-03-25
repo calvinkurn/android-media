@@ -257,7 +257,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun handleAppLink(intent: Intent?) {
-        DeepLinkHandler.handleAppLink(intent) { page ->
+        DeepLinkHandler.handleAppLink(this, intent) { page ->
             val pageType = page.type
 
             when (pageType) {
@@ -446,7 +446,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (intent.data == null) {
             initPerformanceMonitoringSellerHome()
         } else {
-            DeepLinkHandler.handleAppLink(intent) {
+            DeepLinkHandler.handleAppLink(this, intent) {
                 if (it.type == FragmentType.HOME) {
                     initPerformanceMonitoringSellerHome()
                 } else if (it.type == FragmentType.ORDER) {

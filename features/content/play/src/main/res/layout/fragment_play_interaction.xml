@@ -55,6 +55,27 @@
         />
 
     <include
+        android:id="@+id/view_product_featured"
+        layout="@layout/view_product_featured"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        />
+
+    <View
+        android:id="@+id/view_topmost_like"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginBottom="@dimen/play_offset_44"
+        app:layout_constraintBottom_toBottomOf="@id/view_like"
+        />
+
+    <include
         android:id="@+id/view_like"
         layout="@layout/view_like"
         android:layout_width="wrap_content"
@@ -64,6 +85,17 @@
         app:layout_constraintBottom_toBottomOf="@id/pcv_video"
         app:layout_constraintEnd_toEndOf="@id/space_size"
         tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_pinned_voucher"
+        layout="@layout/view_pinned_voucher"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
         />
 
     <include
@@ -90,7 +122,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
+        app:layout_constraintBottom_toTopOf="@id/view_pinned_voucher"
         app:layout_constraintEnd_toStartOf="@id/view_like"
         app:layout_constraintStart_toStartOf="@id/space_size"
         tools:visibility="visible"
@@ -148,27 +180,6 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_onboarding"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35"
-        />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_onboarding"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:alpha="0"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gl_onboarding"
-        app:srcCompat="@drawable/ic_play_onboarding"
-        tools:alpha="1"
-        tools:visibility="visible" />
-
     <include
         android:id="@+id/view_toolbar"
         layout="@layout/view_toolbar"
@@ -201,7 +212,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_send_chat"
+        app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
         app:layout_constraintEnd_toEndOf="@id/space_size"
         app:layout_constraintStart_toStartOf="@id/space_size"
         tools:visibility="visible"

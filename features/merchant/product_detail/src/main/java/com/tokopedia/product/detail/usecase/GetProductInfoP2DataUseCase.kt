@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -33,15 +34,16 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String, deviceId: String): RequestParams =
+        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
                     putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
+                    putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
                 }
 
-        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
-          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation) {
+          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation) {
             error {
               Code
               Message
@@ -342,6 +344,47 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     }
                 }
             }
+            uniqueSellingPoint{
+              bebasOngkirExtra{
+                icon
+              }
+            }
+            bebasOngkir{
+                  products{
+                    productID
+                    boType
+                  }
+                  images{
+                    boType
+                    imageURL
+                    tokoCabangImageURL
+                  }
+            }
+            ratesEstimate{
+              warehouseID
+              products
+              bottomsheet {
+                title
+                iconURL
+                subtitle
+                buttonCopy
+              }
+              data {
+                totalService
+                courierLabel
+                cheapestShippingPrice
+                destination
+                icon
+                title
+                subtitle
+                eTAText
+                errors{
+                  Code
+                  Message
+                  DevMessage       
+                }
+              }
+            }
             merchantVoucherSummary{
                 title{
                     text
@@ -471,10 +514,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it })
             p2UiData.nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo })
             p2UiData.upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" }
-            p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) }?.filter { it.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE } ?: listOf()
+            p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) }?.filter { it.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE }
+                    ?: listOf()
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
+            p2UiData.ratesEstimate = ratesEstimate
             p2UiData.restrictionInfo = restrictionInfo
+            p2UiData.bebasOngkir = bebasOngkir
+            p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)

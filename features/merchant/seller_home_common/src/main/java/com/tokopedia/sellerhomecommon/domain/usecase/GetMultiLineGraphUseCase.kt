@@ -59,6 +59,7 @@ class GetMultiLineGraphUseCase (
                   dataKey
                   error
                   errorMsg
+                  showWidget
                   data {
                     metrics {
                       error

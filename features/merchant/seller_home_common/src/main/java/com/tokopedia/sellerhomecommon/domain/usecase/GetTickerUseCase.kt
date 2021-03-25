@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetTickerResponse
@@ -23,7 +24,7 @@ class GetTickerUseCase(
         val errors = gqlResponse.getError(GetTickerResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetTickerResponse>()
-            return mapper.mapRemoteModelToUiModel(data.ticker?.tickers.orEmpty())
+            return mapper.mapRemoteModelToUiModel(data.ticker?.tickers.orEmpty(), cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }
