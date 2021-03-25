@@ -48,7 +48,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAllShowcaseTitle"
@@ -94,8 +95,8 @@
             android:id="@+id/rvAllShowcase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
             android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
             android:visibility="gone"
             tools:visibility="visible"
             />

@@ -344,8 +344,8 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
                         } else {
                             // render featured showcase section
                             renderFeaturedShowcaseSection(
-                                    featuredShowcaseList = response.featuredShowcaseList,
-                                    errorResponse = response.getFeaturedShowcaseErrorResponse
+                                    featuredShowcaseList = response.featuredShowcaseUiModelResponse.featuredShowcaseList,
+                                    errorResponse = response.featuredShowcaseUiModelResponse.errorResponse
                             )
                         }
 
@@ -377,7 +377,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
                     // render featured showcase section
                     renderFeaturedShowcaseSection(
                             featuredShowcaseList = response.featuredShowcaseList,
-                            errorResponse = response.getFeaturedShowcaseErrorResponse
+                            errorResponse = response.errorResponse
                     )
                 }
                 is Fail -> {
@@ -395,7 +395,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
                     val response = it.data
 
                     // render all showcase section
-                    renderAllShowcaseSection(response.allShowcaseList)
+                    renderAllShowcaseSection(response)
                 }
                 is Fail -> {
                     // all showcase section error, show local load
