@@ -96,10 +96,6 @@ import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.showcase.ShowCaseBuilder
-import com.tokopedia.showcase.ShowCaseContentPosition
-import com.tokopedia.showcase.ShowCaseDialog
-import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -1531,33 +1527,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         context?.let {
             Toast.makeText(it, R.string.profile_after_post, Toast.LENGTH_LONG).show()
         }
-    }
-
-    private fun showShowCaseDialog(view: View?) {
-        val showCaseTag = this::class.java.simpleName
-        val showCaseDialog = createShowCaseDialog()
-        val showcases = ArrayList<ShowCaseObject>()
-        showcases.add(ShowCaseObject(
-                view,
-                getString(R.string.profile_showcase_title),
-                getString(R.string.profile_showcase_description),
-                ShowCaseContentPosition.UNDEFINED))
-        showCaseDialog.show(this.activity, showCaseTag, showcases)
-    }
-
-    private fun createShowCaseDialog(): ShowCaseDialog {
-        return ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.profile_showcase_black)
-                .shadowColorRes(R.color.profile_showcase_shadow)
-                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_14)
-                .nextStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
-                .finishStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
-                .clickable(true)
-                .useArrow(true)
-                .build()
     }
 
     private fun checkShouldChangeUsername(link: String, doIfNotChange: () -> Unit) {
