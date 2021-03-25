@@ -114,7 +114,7 @@ abstract class BaseProductDetailScreenShotTest {
             override fun createMockModel(context: Context): MockModelConfig {
                 addMockResponse("pdpGetLayout", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_get_layout), FIND_BY_CONTAINS)
                 addMockResponse("GetPdpGetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_p2_get_data), FIND_BY_CONTAINS)
-                addMockResponse("ImageReview", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_p2_other), FIND_BY_CONTAINS)
+                addMockResponse("discussionMostHelpful", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_p2_other), FIND_BY_CONTAINS)
                 addMockResponse("productRecommendation", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_get_recom), FIND_BY_CONTAINS)
                 return this
             }
