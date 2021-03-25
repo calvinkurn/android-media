@@ -278,7 +278,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun renderCartBasedOnParamState() {
         viewModel.requestCheckoutParam.let { param ->
             //render input user
-            inputPriceHolderView?.setPriceInput(viewModel.requestCheckoutParam.userInputPriceValue)
+            if (param.userInputPriceValue != null) {
+                inputPriceHolderView?.setPriceInput(param.userInputPriceValue)
+            }
 
             //render fintechProduct & subscription
             if (param.isSubscriptionChecked) myBillsAdapter.setActiveSubscriptions()
@@ -287,6 +289,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun getDigitalIdentifierParam(): RequestBodyIdentifier = DeviceUtil.getDigitalIdentifierParam(requireActivity())
+
 
     private fun initViews() {
         // init recyclerview
