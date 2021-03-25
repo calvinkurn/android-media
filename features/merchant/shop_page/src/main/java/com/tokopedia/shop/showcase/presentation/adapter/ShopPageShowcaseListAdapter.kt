@@ -3,7 +3,7 @@ package com.tokopedia.shop.showcase.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.R
+import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageViewHolder
