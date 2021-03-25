@@ -70,6 +70,7 @@ import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
+import static com.tokopedia.webview.ConstantKt.STAGING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 
@@ -136,7 +137,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
      */
     @NonNull
     protected String getUrl() {
-        if (url.contains(JS_TOKOPEDIA) || url.contains(JS_STAGING_TOKOPEDIA)) {
+        String env = TokopediaUrl.Companion.getInstance().getTYPE().getValue();
+        if (url.contains(JS_TOKOPEDIA)  || (url.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
             return url;
         } else if (isTokopediaUrl) {
             String gcmId = userSession.getDeviceId();
