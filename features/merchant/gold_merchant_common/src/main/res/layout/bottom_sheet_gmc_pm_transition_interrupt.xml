@@ -25,9 +25,7 @@
         android:id="@+id/tvSahPmTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl3"
-        android:layout_marginEnd="@dimen/layout_lvl3"
         app:layout_constraintEnd_toStartOf="@+id/guidelineGmcEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineGmcStart"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,6 +41,41 @@
         app:layout_constraintStart_toStartOf="@+id/guidelineGmcStart"
         app:layout_constraintTop_toBottomOf="@+id/tvSahPmTitle" />
 
+    <View
+        android:id="@+id/verViewGmc"
+        android:layout_width="1dp"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:background="@color/Unify_N75"
+        app:layout_constraintBottom_toBottomOf="@+id/slvSahPmShopLevel"
+        app:layout_constraintStart_toEndOf="@+id/slvSahPmShopLevel"
+        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPmLabelShopScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:text="@string/sah_label_core"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSahPmShopScore"
+        app:layout_constraintStart_toStartOf="@+id/verViewGmc"
+        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel"
+        app:typographyType="body_1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPmShopScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintStart_toEndOf="@+id/tvSahPmLabelShopScore"
+        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="70" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSahPmLabelShopScoreMax"
         android:layout_width="wrap_content"
@@ -51,32 +84,9 @@
         android:text="@string/sah_max_shop_score"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/tvSahPmShopScore"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineGmcEnd"
+        app:layout_constraintStart_toEndOf="@+id/tvSahPmShopScore"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvSahPmShopScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700"
-        app:layout_constraintEnd_toStartOf="@+id/tvSahPmLabelShopScoreMax"
-        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel"
-        app:typographyType="heading_2"
-        app:typographyWeight="bold"
-        tools:text="70" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvSahPmLabelShopScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:text="@string/sah_label_core"
-        android:textColor="@color/Unify_N700_68"
-        app:layout_constraintBottom_toBottomOf="@+id/tvSahPmShopScore"
-        app:layout_constraintEnd_toStartOf="@+id/tvSahPmShopScore"
-        app:layout_constraintTop_toTopOf="@+id/slvSahPmShopLevel"
-        app:typographyType="body_1" />
 
     <com.tokopedia.gm.common.widget.PowerMerchantGradeView
         android:id="@+id/pmgSahPmCard"

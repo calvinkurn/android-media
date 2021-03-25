@@ -7,23 +7,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.gm.common.R
-import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_gmc_power_merchant.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_gmc_pm_transition_interrupt.view.*
 
 /**
  * Created By @ilhamsuaib on 20/03/21
  */
 
-class PowerMerchantBottomSheet : BottomSheetUnify() {
+class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val TAG = "SahPowerMerchantBottomSheet"
 
-        fun getInstance(fm: FragmentManager): PowerMerchantBottomSheet {
-            return (fm.findFragmentByTag(TAG) as? PowerMerchantBottomSheet) ?: PowerMerchantBottomSheet().apply {
+        fun getInstance(fm: FragmentManager): PMTransitionInterruptBottomSheet {
+            return (fm.findFragmentByTag(TAG) as? PMTransitionInterruptBottomSheet) ?: PMTransitionInterruptBottomSheet().apply {
                 clearContentPadding = true
                 showHeader = false
                 showCloseIcon = false
@@ -45,7 +44,7 @@ class PowerMerchantBottomSheet : BottomSheetUnify() {
     }
 
     private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
-        val view = inflater.inflate(R.layout.bottom_sheet_gmc_power_merchant, container, false)
+        val view = inflater.inflate(R.layout.bottom_sheet_gmc_pm_transition_interrupt, container, false)
         childView = view
         setChild(view)
     }
@@ -56,7 +55,7 @@ class PowerMerchantBottomSheet : BottomSheetUnify() {
         setupView()
     }
 
-    fun setData(data: PowerMerchantInterruptUiModel): PowerMerchantBottomSheet {
+    fun setData(data: PowerMerchantInterruptUiModel): PMTransitionInterruptBottomSheet {
         this.data = data
         return this
     }

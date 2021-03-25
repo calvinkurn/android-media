@@ -36,7 +36,6 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val sellerAdminUseCase: SellerAdminUseCase,
         private val authorizeChatAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
-        dispatcher: CoroutineDispatchers
         private val getPMInterruptDataUseCase: GetPMInterruptDataUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {

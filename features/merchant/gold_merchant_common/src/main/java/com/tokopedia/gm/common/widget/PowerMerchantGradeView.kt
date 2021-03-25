@@ -40,7 +40,7 @@ class PowerMerchantGradeView : RelativeLayout {
             else -> {
                 when {
                     data.isEligiblePm -> setupCardRmWithEligiblePm(data)
-                    else -> setupCardRmWithNoEligiblePm(data)
+                    else -> setupCardRmWithNoEligiblePm()
                 }
             }
         }
@@ -73,8 +73,17 @@ class PowerMerchantGradeView : RelativeLayout {
         tvSahPmGradeTitle.text = cardTitle
     }
 
-    private fun setupCardRmWithNoEligiblePm(data: PowerMerchantInterruptUiModel) {
+    private fun setupCardRmWithNoEligiblePm() {
+        imgSahPmGrade.visible()
+        icSahPmReputationBadge.gone()
+        imgSahPMPotentialGradeArrow.gone()
+        icSahPmGradeBadge.gone()
+        imgSahPmGrade.loadImageDrawable(R.drawable.ic_gmc_toped)
 
+        tvSahPmGradeTitle.gone()
+        val cardDescription = context.getString(R.string.gmc_pm_regular_merchant_registration)
+        setCardDescriptionText(cardDescription)
+        tvSahPmGradeDescription.setMargin(0, 0, 0, 0)
     }
 
     private fun setupCardForPmWithReputation(data: PowerMerchantInterruptUiModel) {

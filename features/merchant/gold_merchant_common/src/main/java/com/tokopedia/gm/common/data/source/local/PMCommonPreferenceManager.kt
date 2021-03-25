@@ -13,7 +13,7 @@ class PMCommonPreferenceManager(
     companion object {
         private const val PREF_NAME = "pm_common_shared_preferences"
 
-        const val KEY_HAS_SHOW_INTERRUPT_POPUP = "key_has_show_interrupt_popup"
+        const val KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP = "key_has_show_transition_interrupt_popup"
     }
 
     private val sp: SharedPreferences by lazy {

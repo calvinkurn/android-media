@@ -25,7 +25,8 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
-import com.tokopedia.gm.common.view.bottomsheet.PowerMerchantBottomSheet
+import com.tokopedia.gm.common.view.bottomsheet.PMFinalInterruptBottomSheet
+import com.tokopedia.gm.common.view.bottomsheet.PMTransitionInterruptBottomSheet
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
@@ -62,6 +63,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
@@ -432,23 +434,42 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             }
         })
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val hasShowInterruptPopup = pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_INTERRUPT_POPUP, false)
-            if (!hasShowInterruptPopup) {
-                homeViewModel.getPmInterruptInfo()
+        homeViewModel.getPmInterruptInfo()
+    }
+
+    private fun showPmInterruptBottomSheet(data: PowerMerchantInterruptUiModel) {
+        when (data.periodType) {
+            PeriodType.FINAL_PERIOD -> showFinalPmInterruptPage(data)
+            PeriodType.TRANSITION_PERIOD -> showTransitionPmInterruptPage(data)
+            else -> {
+                //show interrupt popup
             }
         }
     }
 
-    private fun showPmInterruptBottomSheet(data: PowerMerchantInterruptUiModel) {
-        val isTransitionPeriod = data.periodType == PeriodType.TRANSITION_PERIOD
-        if (isTransitionPeriod) {
-            val bottomSheet = PowerMerchantBottomSheet.getInstance(supportFragmentManager)
-            if (!bottomSheet.isAdded) {
-                saveFlagHasShowPmInterruptPopup()
-                Handler().post {
-                    bottomSheet.setData(data)
-                            .show(supportFragmentManager)
+    private fun showFinalPmInterruptPage(data: PowerMerchantInterruptUiModel) {
+        val bottomSheet = PMFinalInterruptBottomSheet.getInstance(supportFragmentManager)
+        if (!bottomSheet.isAdded) {
+            Handler().post {
+                bottomSheet.setData(data)
+                        .show(supportFragmentManager)
+            }
+        }
+    }
+
+    private fun showTransitionPmInterruptPage(data: PowerMerchantInterruptUiModel) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val hasShowInterruptPopup = pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP, false)
+            if (!hasShowInterruptPopup) {
+                withContext(Dispatchers.Main) {
+                    val bottomSheet = PMTransitionInterruptBottomSheet.getInstance(supportFragmentManager)
+                    if (!bottomSheet.isAdded) {
+                        saveFlagHasShowPmInterruptPopup()
+                        Handler().post {
+                            bottomSheet.setData(data)
+                                    .show(supportFragmentManager)
+                        }
+                    }
                 }
             }
         }
@@ -456,7 +477,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun saveFlagHasShowPmInterruptPopup() {
         lifecycleScope.launch(Dispatchers.IO) {
-            pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_INTERRUPT_POPUP, true)
+            pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP, true)
             //pmCommonPreferenceManager.apply()
         }
     }

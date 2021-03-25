@@ -245,7 +245,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun renderPMActiveState(data: PMFinalPeriodUiModel) {
         val widgets = mutableListOf<BaseWidgetUiModel>()
-        widgets.add(WidgetQuitSubmissionUiModel)
+        widgets.add(WidgetQuitSubmissionUiModel(data.expiredTime))
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
