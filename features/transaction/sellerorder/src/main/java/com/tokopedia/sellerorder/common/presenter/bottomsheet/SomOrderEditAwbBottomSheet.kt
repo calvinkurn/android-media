@@ -1,37 +1,33 @@
 package com.tokopedia.sellerorder.common.presenter.bottomsheet
 
-import android.os.Bundle
+import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 
-class SomOrderEditAwbBottomSheet: BottomSheetUnify() {
-
-    companion object {
-        const val TAG = "SomOrderEditAwbBottomSheet"
-    }
+class SomOrderEditAwbBottomSheet(context: Context) : SomBottomSheet(context) {
 
     private var listener: SomOrderEditAwbBottomSheetListener? = null
+    private var childView: View? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setTitle(SomConsts.TITLE_UBAH_RESI)
-        isFullpage = false
-        setCloseClickListener { dismiss() }
-        val viewBottomSheetUbahResi = View.inflate(context, R.layout.bottomsheet_cancel_order, null).apply {
+    init {
+        childView = inflate(context, R.layout.bottomsheet_cancel_order, null).apply {
             tf_cancel_notes?.setLabelStatic(true)
-            tf_cancel_notes?.setMessage(getString(R.string.change_no_resi_notes))
-            tf_cancel_notes?.textFieldInput?.hint = getString(R.string.change_no_resi_hint)
+            tf_cancel_notes?.setMessage(context.getString(R.string.change_no_resi_notes))
+            tf_cancel_notes?.textFieldInput?.hint = context.getString(R.string.change_no_resi_hint)
             btn_cancel_order_canceled?.setOnClickListener { dismiss() }
-            btn_cancel_order_confirmed?.text = getString(R.string.change_no_resi_btn_ubah)
+            btn_cancel_order_confirmed?.text = context.getString(R.string.change_no_resi_btn_ubah)
             btn_cancel_order_confirmed?.setOnClickListener {
                 dismiss()
                 listener?.onEditAwbButtonClicked(tf_cancel_notes?.textFieldInput?.text.toString())
             }
         }
-        setChild(viewBottomSheetUbahResi)
+    }
+
+    fun init(view: ViewGroup) {
+        super.init(view, requireNotNull(childView), true)
     }
 
     fun setListener(listener: SomOrderEditAwbBottomSheetListener) {

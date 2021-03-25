@@ -870,14 +870,22 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionUbahNoResi() {
-        SomOrderEditAwbBottomSheet().apply {
-            setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
-                override fun onEditAwbButtonClicked(cancelNotes: String) {
-                    doEditAwb(cancelNotes)
+        view?.let {
+            if (it is ViewGroup) {
+                SomOrderEditAwbBottomSheet(it.context).apply {
+                    setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+                        override fun onEditAwbButtonClicked(cancelNotes: String) {
+                            doEditAwb(cancelNotes)
+                        }
+                    })
+                    init(it)
+                    setTitle(SomConsts.TITLE_UBAH_RESI)
+                    show()
                 }
-            })
-            show(this@SomDetailFragment.childFragmentManager, SomOrderEditAwbBottomSheet.TAG)
+                return
+            }
         }
+        showErrorToaster("Terjadi kesalahan, silahkan coba lagi.")
     }
 
     private fun doEditAwb(shippingRef: String) {
@@ -913,31 +921,38 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showBuyerRequestCancelBottomSheet(it)
     }
 
-    private fun showBuyerRequestCancelBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {
-        SomOrderRequestCancelBottomSheet().apply {
-            setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                override fun onAcceptOrder() {
-                    setActionAcceptOrder(orderId)
-                }
+    private fun showBuyerRequestCancelBottomSheet(button: SomDetailOrder.Data.GetSomDetail.Button) {
+        view?.let {
+            if (it is ViewGroup) {
+                SomOrderRequestCancelBottomSheet(it.context).apply {
+                    setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
+                        override fun onAcceptOrder() {
+                            setActionAcceptOrder(orderId)
+                        }
 
-                override fun onRejectOrder(reasonBuyer: String) {
-                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
-                    val orderRejectRequest = SomRejectRequestParam(
-                            orderId = detailResponse?.orderId.orEmpty(),
-                            rCode = "0",
-                            reason = reasonBuyer
-                    )
-                    doRejectOrder(orderRejectRequest)
-                }
+                        override fun onRejectOrder(reasonBuyer: String) {
+                            SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
+                            val orderRejectRequest = SomRejectRequestParam(
+                                    orderId = detailResponse?.orderId.orEmpty(),
+                                    rCode = "0",
+                                    reason = reasonBuyer
+                            )
+                            doRejectOrder(orderRejectRequest)
+                        }
 
-                override fun onRejectCancelRequest() {
-                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
-                    rejectCancelOrder()
+                        override fun onRejectCancelRequest() {
+                            SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
+                            rejectCancelOrder()
+                        }
+                    })
+                    init(it, button.popUp, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()), detailResponse?.statusCode.orZero())
+                    setTitle(it.context.getString(R.string.som_request_cancel_bottomsheet_title))
+                    show()
                 }
-            })
-            init(it.popUp, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()), detailResponse?.statusCode.orZero())
-            show(this@SomDetailFragment.childFragmentManager, SomOrderRequestCancelBottomSheet.TAG)
+                return
+            }
         }
+        showErrorToaster("Terjadi kesalahan, silahkan coba lagi.")
     }
 
     override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {

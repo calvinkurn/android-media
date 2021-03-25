@@ -11,6 +11,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 abstract class SomBottomSheet(context: Context) : View(context) {
+
+    companion object {
+        private const val TAG_OVERLAY_VIEW = "tag_overlay_view"
+    }
+
     private var overlayLayout: View? = null
     private var bottomSheetLayout: View? = null
     private var bottomSheetBehavior: BottomSheetBehavior<out View>? = null
@@ -20,14 +25,15 @@ abstract class SomBottomSheet(context: Context) : View(context) {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun showOverlay(view: ViewGroup) {
-        val overlayLayout = getOverlayLayout()
+        val overlayLayout = getOverlayLayout(view)
         this.overlayLayout = overlayLayout
         addOverlayLayoutToParent(view, overlayLayout)
     }
 
-    private fun getOverlayLayout(): View {
-        return overlayLayout ?: View(context).apply {
-            setOnOverlayClickListener()
+    private fun getOverlayLayout(view: ViewGroup): View {
+        return overlayLayout ?: view.findViewWithTag(TAG_OVERLAY_VIEW) ?: View(context).apply {
+            tag = TAG_OVERLAY_VIEW
+            setOnOverlayClickListener(this)
             setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         }
@@ -39,17 +45,16 @@ abstract class SomBottomSheet(context: Context) : View(context) {
         }
     }
 
-    private fun setOnOverlayClickListener() {
-        setOnClickListener {
+    private fun setOnOverlayClickListener(overlayLayout: View) {
+        overlayLayout.setOnClickListener {
             if (dismissOnClickOverlay) {
                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-                gone()
             }
         }
     }
 
     private fun getBottomSheetCallback(): BottomSheetBehavior.BottomSheetCallback {
-        return bottomSheetCallback ?: object: BottomSheetBehavior.BottomSheetCallback() {
+        return bottomSheetCallback ?: object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // noop
             }
@@ -64,16 +69,25 @@ abstract class SomBottomSheet(context: Context) : View(context) {
     }
 
     protected fun init(view: ViewGroup, childView: View, showOverlay: Boolean) {
+        childView.tag = this::class.java.simpleName
         if (showOverlay) {
             showOverlay(view)
         }
-        val bottomSheetLayout: View? = bottomSheetLayout ?: inflate(context, com.tokopedia.unifycomponents.R.layout.bottom_sheet_layout, view)
-        val bottomSheetWrapper: ViewGroup? = bottomSheetLayout?.findViewById<ViewGroup>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.apply {
-            addView(childView)
+        val bottomSheetLayout: View = bottomSheetLayout
+                ?: view.findViewById<ViewGroup>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.parent as? View
+                ?: inflate(context, com.tokopedia.unifycomponents.R.layout.bottom_sheet_layout, view)
+        val bottomSheetWrapper: ViewGroup? = bottomSheetLayout.findViewById<ViewGroup>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.apply {
+            getChildAt(childCount - 1)?.let {
+                if (it.tag != null && it.tag != this::class.java.simpleName) {
+                    removeView(it)
+                }
+                addView(childView)
+            }
         }
-        val bottomSheetBehavior = bottomSheetBehavior ?: BottomSheetBehavior.from(requireNotNull(bottomSheetWrapper)).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
+        val bottomSheetBehavior = bottomSheetBehavior
+                ?: BottomSheetBehavior.from(requireNotNull(bottomSheetWrapper)).apply {
+                    state = BottomSheetBehavior.STATE_HIDDEN
+                }
         this.bottomSheetLayout = bottomSheetLayout
         this.bottomSheetBehavior = bottomSheetBehavior
     }

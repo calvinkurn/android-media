@@ -14,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -552,32 +551,38 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     override fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel) {
-        selectedOrderId = order.orderId
-        SomOrderRequestCancelBottomSheet().apply {
-            setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                override fun onAcceptOrder() {
-                    onAcceptOrderButtonClicked(selectedOrderId)
-                }
+        view?.let {
+            if (it is ViewGroup) {
+                selectedOrderId = order.orderId
+                SomOrderRequestCancelBottomSheet(it.context).apply {
+                    setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
+                        override fun onAcceptOrder() {
+                            onAcceptOrderButtonClicked(selectedOrderId)
+                        }
 
-                override fun onRejectOrder(reasonBuyer: String) {
-                    SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
-                    val orderRejectRequest = SomRejectRequestParam(
-                            orderId = selectedOrderId,
-                            rCode = "0",
-                            reason = reasonBuyer
-                    )
-                    rejectOrder(orderRejectRequest)
-                }
+                        override fun onRejectOrder(reasonBuyer: String) {
+                            SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
+                            val orderRejectRequest = SomRejectRequestParam(
+                                    orderId = selectedOrderId,
+                                    rCode = "0",
+                                    reason = reasonBuyer
+                            )
+                            rejectOrder(orderRejectRequest)
+                        }
 
-                override fun onRejectCancelRequest() {
-                    SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
-                    rejectCancelOrder(selectedOrderId)
+                        override fun onRejectCancelRequest() {
+                            SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
+                            rejectCancelOrder(selectedOrderId)
+                        }
+                    })
+                    init(it, order.buttons.firstOrNull()?.popUp ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
+                    setTitle(it.context.getString(R.string.som_request_cancel_bottomsheet_title))
+                    show()
                 }
-            })
-            init(order.buttons.firstOrNull()?.popUp
-                    ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
-            show(this@SomListFragment.childFragmentManager, SomOrderRequestCancelBottomSheet.TAG)
+                return
+            }
         }
+        showCommonToaster(view, "Terjadi kesalahan, silahkan coba lagi.")
     }
 
     override fun onViewComplaintButtonClicked(order: SomListOrderUiModel) {
@@ -585,15 +590,23 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     override fun onEditAwbButtonClicked(orderId: String) {
-        SomOrderEditAwbBottomSheet().apply {
-            setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
-                override fun onEditAwbButtonClicked(cancelNotes: String) {
-                    val invoice = getOrderBy(orderId)
-                    viewModel.editAwb(orderId, cancelNotes, invoice)
+        view?.let {
+            if (it is ViewGroup) {
+                SomOrderEditAwbBottomSheet(it.context).apply {
+                    setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+                        override fun onEditAwbButtonClicked(cancelNotes: String) {
+                            val invoice = getOrderBy(orderId)
+                            viewModel.editAwb(orderId, cancelNotes, invoice)
+                        }
+                    })
+                    init(it)
+                    setTitle(SomConsts.TITLE_UBAH_RESI)
+                    show()
                 }
-            })
-            show(this@SomListFragment.childFragmentManager, SomOrderEditAwbBottomSheet.TAG)
+                return
+            }
         }
+        showCommonToaster(view, "Terjadi kesalahan, silahkan coba lagi.")
     }
 
     override fun onChangeCourierClicked(orderId: String) {
@@ -1654,49 +1667,53 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     // disini suf
     private fun showBulkAcceptOrderBottomSheet() {
         view?.let {
-            if (it !is ViewGroup) return
-            if (somListBulkProcessOrderBottomSheet == null) {
-                somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet(it.context).apply {
-                    init(it, true)
+            if (it is ViewGroup) {
+                if (somListBulkProcessOrderBottomSheet == null) {
+                    somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet(it.context)
                 }
-            }
-            somListBulkProcessOrderBottomSheet?.let {
-                val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
-                    add(SomListBulkProcessOrderDescriptionUiModel(getString(R.string.som_list_bottom_sheet_bulk_accept_order_description), false))
-                    addAll(getOrdersProducts(adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked }))
+                somListBulkProcessOrderBottomSheet?.let { bottomSheet ->
+                    val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
+                        add(SomListBulkProcessOrderDescriptionUiModel(getString(R.string.som_list_bottom_sheet_bulk_accept_order_description), false))
+                        addAll(getOrdersProducts(adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked }))
+                    }
+                    bottomSheet.init(it, true)
+                    bottomSheet.setTitle(getString(R.string.som_list_bulk_accept_order_button))
+                    bottomSheet.setItems(items)
+                    bottomSheet.showButtonAction()
+                    bottomSheet.setListener(this@SomListFragment)
+                    bottomSheet.show()
                 }
-                it.setTitle(getString(R.string.som_list_bulk_accept_order_button))
-                it.setItems(items)
-                it.showButtonAction()
-                it.setListener(this@SomListFragment)
-                it.show()
+                return
             }
         }
+        showCommonToaster(view, "Terjadi kesalahan, silahkan coba lagi.")
     }
 
     private fun showBulkProcessOrderBottomSheet() {
-        view?.let {
-            if (it !is ViewGroup) return
-            if (somListBulkProcessOrderBottomSheet == null) {
-                somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet(it.context).apply {
-                    init(it, true)
+        view?.let { fragmentView ->
+            if (fragmentView is ViewGroup) {
+                if (somListBulkProcessOrderBottomSheet == null) {
+                    somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet(fragmentView.context)
                 }
-            }
-            somListBulkProcessOrderBottomSheet?.let {
-                val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
-                    add(SomListBulkProcessOrderMenuItemUiModel(
-                            KEY_PRINT_AWB,
-                            getString(R.string.som_list_bulk_print_button),
-                            true
-                    ))
+                somListBulkProcessOrderBottomSheet?.let { bottomSheet ->
+                    val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
+                        add(SomListBulkProcessOrderMenuItemUiModel(
+                                KEY_PRINT_AWB,
+                                getString(R.string.som_list_bulk_print_button),
+                                true
+                        ))
+                    }
+                    bottomSheet.init(fragmentView, true)
+                    bottomSheet.setTitle(getString(R.string.som_list_bulk_confirm_shipping_order_button))
+                    bottomSheet.setItems(items)
+                    bottomSheet.hideButtonAction()
+                    bottomSheet.setListener(this@SomListFragment)
+                    bottomSheet.show()
                 }
-                it.setTitle(getString(R.string.som_list_bulk_confirm_shipping_order_button))
-                it.setItems(items)
-                it.hideButtonAction()
-                it.setListener(this@SomListFragment)
-                it.show()
+                return
             }
         }
+        showCommonToaster(view, "Terjadi kesalahan, silahkan coba lagi.")
     }
 
     private fun getOrdersProducts(orders: List<SomListOrderUiModel>): List<SomListBulkProcessOrderProductUiModel> {
