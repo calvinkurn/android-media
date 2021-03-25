@@ -481,7 +481,7 @@ open class AddToCartDoneBottomSheet :
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
         if (productCardOptionsModel == null) return
-        val toasterOffset = resources.getDimensionPixelOffset(R.dimen.spacing_lvl8)
+        val toasterOffset = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)
         Toaster.toasterCustomBottomHeight = toasterOffset
         val wishlistResult = productCardOptionsModel.wishlistResult
         if (wishlistResult.isUserLoggedIn) {
