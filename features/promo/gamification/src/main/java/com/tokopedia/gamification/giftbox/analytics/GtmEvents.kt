@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
+import timber.log.Timber
 
 object GtmEvents {
 
@@ -281,7 +282,11 @@ object GtmEvents {
                 productVariant,
                 productPrice)
 
-        getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
+        try {
+            getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
+        }catch (th:Throwable){
+            Timber.e(th)
+        }
     }
 
     private fun getItemsMapList(productId: String,
@@ -333,7 +338,11 @@ object GtmEvents {
                 productVariant,
                 productPrice)
 
-        getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
+        try {
+            getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
+        }catch (th:Throwable){
+            Timber.e(th)
+        }
     }
 
     private fun convertToBundle(data: Map<String, Any>): Bundle {
