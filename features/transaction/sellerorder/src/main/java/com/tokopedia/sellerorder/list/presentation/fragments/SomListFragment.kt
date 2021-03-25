@@ -2069,13 +2069,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 som_list_toolbar?.title = getString(R.string.title_som_list)
                 som_list_toolbar?.isShowBackButton = showBackButton()
                 som_list_toolbar?.setOnMenuItemClickListener(this@SomListFragment)
+                som_list_toolbar?.setNavigationOnClickListener {
+                    onBackPressed()
+                }
                 updateToolbarMenu()
                 tryReshowCoachMark()
             }
         }
     }
 
-    protected open fun showBackButton(): Boolean = true
+    protected open fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return if ((item?.itemId == R.id.som_list_action_waiting_payment_order) && viewModel.waitingPaymentCounterResult.value !is Fail) {

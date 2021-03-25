@@ -40,14 +40,4 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
             loadDetail()
         }
     }
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.som_action_chat -> {
-                doClickChat()
-                true
-            }
-            else -> false
-        }
-    }
 }

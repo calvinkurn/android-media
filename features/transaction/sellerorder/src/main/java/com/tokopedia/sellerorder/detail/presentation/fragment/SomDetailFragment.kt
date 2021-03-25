@@ -223,7 +223,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    fun doClickChat() {
+    private fun doClickChat() {
         SomAnalytics.eventClickChatOnHeaderDetail(detailResponse?.statusCode.toString(), detailResponse?.statusText.toString())
         goToAskBuyer()
     }
@@ -1507,9 +1507,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun setupToolbar() {
         activity?.run {
             (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
                 som_detail_toolbar?.inflateMenu(R.menu.chat_menu)
                 som_detail_toolbar?.title = getString(R.string.title_som_detail)
                 som_detail_toolbar?.isShowBackButton = showBackButton()
+                som_detail_toolbar?.setNavigationOnClickListener {
+                    onBackPressed()
+                }
                 som_detail_toolbar?.setOnMenuItemClickListener(this@SomDetailFragment)
             }
         }
