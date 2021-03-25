@@ -1,19 +1,11 @@
 package com.tokopedia.topads.view.activity
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
-import com.tokopedia.topads.common.getSellerMigrationFeatureName
-import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
-import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
