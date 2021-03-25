@@ -217,10 +217,12 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        viewModel?.getEstimation()?.observe(viewLifecycleOwner, observerEstimation)
-        viewModel?.getTemplate()?.observe(viewLifecycleOwner, observerTemplate)
-        viewModel?.getProducts()?.observe(viewLifecycleOwner, observerProducts)
-        viewModel?.getError()?.observe(viewLifecycleOwner, observerError)
+        viewModel?.run {
+            getEstimation().observe(viewLifecycleOwner, observerEstimation)
+            getTemplate().observe(viewLifecycleOwner, observerTemplate)
+            getProducts().observe(viewLifecycleOwner, observerProducts)
+            getError().observe(viewLifecycleOwner, observerError)
+        }
     }
 
     private fun fetchData() {
