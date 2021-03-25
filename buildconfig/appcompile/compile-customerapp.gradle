@@ -11,7 +11,6 @@ include "features:category:common_tradein"
 include "features:category:common_category"
 include "features:category:kategori"
 include "features:category:category_levels"
-include "features:discovery2:hotlist"
 include "features:category:find_native"
 
 include "features:content:affiliate"
