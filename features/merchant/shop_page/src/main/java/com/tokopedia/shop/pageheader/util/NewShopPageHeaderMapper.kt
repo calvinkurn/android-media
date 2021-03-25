@@ -29,12 +29,12 @@ object NewShopPageHeaderMapper {
                 listShopHeaderWidget,
                 SHOP_BASIC_INFO,
                 SHOP_NAME
-        ).text.getOrNull(0)?.textHtml.orEmpty()
+        )?.text?.getOrNull(0)?.textHtml.orEmpty()
         val shopAvatar = getShopHeaderWidgetComponentData<ShopHeaderImageOnlyComponentUiModel>(
                 listShopHeaderWidget,
                 SHOP_BASIC_INFO,
                 SHOP_LOGO
-        ).image
+        )?.image.orEmpty()
         return NewShopPageP1HeaderData(
                 shopInfoOsData.data.isOfficial,
                 shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
@@ -52,12 +52,12 @@ object NewShopPageHeaderMapper {
             listShopHeaderWidgetData: List<ShopHeaderWidgetUiModel>,
             widgetName: String,
             componentName: String
-    ): T{
+    ): T?{
         return listShopHeaderWidgetData.firstOrNull {
             it.name == widgetName
         }?.components?.firstOrNull {
             it.name == componentName
-        } as T
+        } as T?
     }
 
     private var headerComponentPosition: Int = -1
