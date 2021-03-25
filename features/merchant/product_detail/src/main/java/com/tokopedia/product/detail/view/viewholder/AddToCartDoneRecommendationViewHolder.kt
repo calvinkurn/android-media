@@ -56,7 +56,7 @@ class AddToCartDoneRecommendationViewHolder(
                             recommendationListener.onThreeDotsClick(product, adapterPosition, carouselProductCardPosition)
                         }
                     },
-                    productCardModelList = products.map { it.toProductCardModel() }
+                    productCardModelList = products.map { it.toProductCardModel(hasThreeDots = true) }
 
             )
             visible()
