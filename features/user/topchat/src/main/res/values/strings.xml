@@ -119,7 +119,8 @@ yang ditemukan</string>
 
     <string name="seller_empty_chat_subtitle">Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.</string>
     <string name="buyer_empty_chat_subtitle">Coba ngobrol dengan teman penjual, yuk!</string>
-    <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
+    <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca!</string>
+    <string name="empty_chat_read_all_subtitle">Kalau ada chat baru buat kamu, bakal muncul disini.</string>
     <string name="empty_chat_smart_reply">Belum ada chat yang dibalas Smart Reply</string>
 
     <!--Delete Chat Popup-->
@@ -199,4 +200,10 @@ yang ditemukan</string>
     <string name="title_topchat_review_other">Ulasan Lain</string>
     <string name="title_topchat_review_success">Terima kasih sudah bantu calon pembeli lain lewat ulasanmu.</string>
     <string name="title_topchat_see_cart">Lihat Keranjang</string>
+
+    <string name="topchat_dms_hex_empty_stock_color_bg">#AD31353B</string>
+    <string name="topchat_desc_dual_announcement_first_image">First Banner Announcement</string>
+    <string name="topchat_desc_dual_announcement_second_image">Second Banner Announcement</string>
+    <string name="topchat_desc_close_invoice_preview">Close Invoice Preview</string>
+    <string name="topchat_desc_voucher_type">Voucher Type</string>
 </resources>

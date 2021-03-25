@@ -7,6 +7,7 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class RecommendationViewHolder constructor(
@@ -34,39 +35,7 @@ class RecommendationViewHolder constructor(
     }
 
     private fun bindProductCardUi(element: RecommendationUiModel) {
-        productCard?.setProductModel(
-                ProductCardModel(
-                        slashedPrice = element.recommendationItem.slashedPrice,
-                        productName = element.recommendationItem.name,
-                        formattedPrice = element.recommendationItem.price,
-                        productImageUrl = element.recommendationItem.imageUrl,
-                        isTopAds = element.recommendationItem.isTopAds,
-                        discountPercentage = element.recommendationItem.discountPercentage,
-                        reviewCount = element.recommendationItem.countReview,
-                        ratingCount = element.recommendationItem.rating,
-                        shopLocation = element.recommendationItem.location,
-                        shopBadgeList = element.recommendationItem
-                                .badgesUrl
-                                .map {
-                                    ProductCardModel.ShopBadge(imageUrl = it
-                                            ?: "")
-                                },
-                        freeOngkir = ProductCardModel.FreeOngkir(
-                                isActive = element.recommendationItem.isFreeOngkirActive,
-                                imageUrl = element.recommendationItem.freeOngkirImageUrl
-                        ),
-                        labelGroupList = element.recommendationItem
-                                .labelGroupList
-                                .map { recommendationLabel ->
-                                    ProductCardModel.LabelGroup(
-                                            position = recommendationLabel.position,
-                                            title = recommendationLabel.title,
-                                            type = recommendationLabel.type
-                                    )
-                                },
-                        hasThreeDots = true
-                )
-        )
+        productCard?.setProductModel(element.recommendationItem.toProductCardModel())
     }
 
     private fun bindProductCardImpression(element: RecommendationUiModel) {

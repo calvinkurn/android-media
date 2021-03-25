@@ -6,8 +6,7 @@ import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultCode
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultData
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -58,7 +57,7 @@ class DiscomActivityTest {
     @Test
     fun givenValidQueryReturnsRequiredResults() {
         val testQuery = "jak"
-        onView(withId(R.id.edit_text_search)).perform(typeText(testQuery))
+        onView(withId(R.id.edit_text_search)).perform(typeText(testQuery), closeSoftKeyboard())
 
         // Bad, can't implement idling resource on baselistfragment's search delay
         Thread.sleep(DiscomFragment.DEBOUNCE_DELAY_IN_MILIS)
@@ -83,10 +82,12 @@ class DiscomActivityTest {
         return Intent(InstrumentationRegistry.getInstrumentation().targetContext,
                 DiscomActivity::class.java).also {
             it.data = Uri.parse(ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
+            it.putExtra(IS_LOCALIZATION, false)
         }
     }
 
     companion object {
         const val GET_DISTRICT_KET = "KeroDistrictRecommendation"
+        const val IS_LOCALIZATION = "is_localization"
     }
 }

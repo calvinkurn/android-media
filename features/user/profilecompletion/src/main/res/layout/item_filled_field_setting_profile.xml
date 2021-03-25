@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/subtitleFilled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,11 +34,10 @@
                 android:gravity="center"
                 android:visibility="gone"
                 app:labelType="general_light_green"
-                app:labelTitle="\u2713  Terverifikasi"
-                />
+                app:labelTitle="\u2713  Terverifikasi" />
         </RelativeLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/valueFilled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,8 +46,8 @@
             android:textSize="@dimen/fontSize_lvl4"
             android:visibility="gone"/>
     </LinearLayout>
-
-    <TextView
+  
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnEdit"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

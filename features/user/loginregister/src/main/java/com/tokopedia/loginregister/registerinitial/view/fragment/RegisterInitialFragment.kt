@@ -36,8 +36,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
+import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
@@ -76,8 +76,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
@@ -86,6 +84,7 @@ import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -196,10 +195,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun getScreenName(): String {
         return RegisterAnalytics.SCREEN_REGISTER_INITIAL
-    }
-
-    private fun getAbTestingRemoteConfig(): RemoteConfig {
-        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
     private fun useOvoRegister(): Boolean = enableOvoRegister
@@ -1082,9 +1077,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun showLoadingDiscover() {
-        val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
+        val pb = layoutInflater.inflate(R.layout.loader_socmed_container, null, false)
         val lastPos = socmedButtonsContainer.childCount - 1
-        if (socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
+        if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
             socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
         }
         emailExtension?.hide()
@@ -1130,7 +1125,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun dismissLoadingDiscover() {
         val lastPos = socmedButtonsContainer.childCount - 1
-        if (socmedButtonsContainer.getChildAt(lastPos) is ProgressBar) {
+        if (socmedButtonsContainer.getChildAt(lastPos) is LoaderUnify) {
             socmedButtonsContainer.removeViewAt(socmedButtonsContainer.childCount - 1)
         }
     }
