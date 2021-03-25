@@ -42,11 +42,11 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         return withContext(Dispatchers.IO) {
             val result: Result
             var resultInit: Pair<String, String>?
+            val userSession = getUserSession(applicationContext)
+            if (userSession.userId.isEmpty()) {
+                return@withContext Result.success()
+            }
             try {
-                val userSession = getUserSession(applicationContext)
-                if (userSession.userId.isEmpty()) {
-                    return@withContext Result.success()
-                }
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
                         VisorFingerprintInstance.initToken(applicationContext,
