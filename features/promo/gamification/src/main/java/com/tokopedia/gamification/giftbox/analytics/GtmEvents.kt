@@ -434,4 +434,16 @@ object GtmEvents {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
     }
+
+    fun impressionProductRecom(userId: String?){
+        val map = mutableMapOf<String,Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_PRODUCT_RECOM
+        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
+        map[GiftBoxTrackerConstants.SCREEN_NAME] = GiftBoxTrackerConstants.DAILY_GIFT_BOX
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+    }
 }

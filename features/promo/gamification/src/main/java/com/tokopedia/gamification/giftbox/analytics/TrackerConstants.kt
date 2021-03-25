@@ -57,6 +57,7 @@ object GiftBoxAction {
     const val VIEW_RP_0_POP_UP = "view popup back 0rp"
     const val CLICK_CEK_DAFTAR_HADIAH_BUTTON = "click cek daftar hadiah button"
     const val CLICK_KE_HOME_BUTTON = "click ke home button"
+    const val VIEW_PRODUCT_RECOM = "view product recommendation"
 }
 
 object GiftBoxLabel {

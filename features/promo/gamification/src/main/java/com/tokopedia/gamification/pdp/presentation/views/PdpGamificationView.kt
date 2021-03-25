@@ -188,9 +188,21 @@ class PdpGamificationView : LinearLayout {
     }
 
     fun updateList(oldSize: Int, list: List<Recommendation>) {
+        var isFirstLoad = false
+        if(oldSize == 0 && list.isNotEmpty()){
+            isFirstLoad = true
+        }
+
         dataList.addAll(oldSize, list)
         adapter.notifyItemRangeInserted(oldSize, list.size)
         scrollListener.updateStateAfterGetData()
+        sendPdpRecomImpressionEvent(isFirstLoad)
+    }
+
+    private fun sendPdpRecomImpressionEvent(isFirstLoad:Boolean){
+        if(isFirstLoad) {
+            GtmEvents.impressionProductRecom(userId)
+        }
     }
 
     fun getRecommendationParams(pageName: String, shopId: String, isShopIdEmpty: Boolean) {
