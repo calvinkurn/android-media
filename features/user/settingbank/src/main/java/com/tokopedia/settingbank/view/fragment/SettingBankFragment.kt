@@ -52,10 +52,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private lateinit var settingBankViewModel: SettingBankViewModel
 
-    private lateinit var tncBottomSheet: BankTNCBottomSheet
-
-    private lateinit var confirmAccountBottomSheet: AccountConfirmationBottomSheet
-
     @Inject
     lateinit var bankAccountListAdapter: BankAccountListAdapter
 
@@ -129,11 +125,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun loadTermsAndCondition() {
-        if (::tncBottomSheet.isInitialized) {
-            openTNCBottomSheet(tncBottomSheet.templateData)
-        } else {
-            settingBankViewModel.loadTermsAndCondition()
-        }
+        settingBankViewModel.loadTermsAndCondition()
     }
 
     private fun startObservingViewModels() {
@@ -183,9 +175,9 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun onBankAccountLoadingFailed(throwable: Throwable) {
-        if(throwable is MessageErrorException){
+        if (throwable is MessageErrorException) {
             showGlobalError(GlobalError.SERVER_ERROR, ::loadUserBankAccountList)
-        }else{
+        } else {
             showGlobalError(GlobalError.NO_CONNECTION, ::loadUserBankAccountList)
         }
     }
@@ -207,15 +199,9 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun openCheckDataBottomSheet(kycInfo: KYCInfo) {
-        if (!::confirmAccountBottomSheet.isInitialized) {
-            activity?.let {
-                confirmAccountBottomSheet = AccountConfirmationBottomSheet(it, kycInfo, bankSettingAnalytics)
-            }
+        confirmBankAccount?.let { bankAccount ->
+            AccountConfirmationBottomSheet.showBottomSheet(bankAccount, kycInfo, activity)
         }
-        if (::confirmAccountBottomSheet.isInitialized)
-            confirmBankAccount?.let {
-                confirmAccountBottomSheet.show(bankAccount = it)
-            }
     }
 
     private fun handleDeleteBankAccountState(result: Result<String>) {
@@ -244,17 +230,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun openTNCBottomSheet(templateData: TemplateData?) {
         templateData?.let {
-            if (::tncBottomSheet.isInitialized) {
-                tncBottomSheet.templateData = it
-                activity?.let {
-                    tncBottomSheet.show(templateData)
-                }
-            } else {
-                activity?.let {activity->
-                    tncBottomSheet = BankTNCBottomSheet(activity)
-                    tncBottomSheet.show(templateData)
-                }
-            }
+            BankTNCBottomSheet.showBankTNCBottomSheet(it, activity)
         }
     }
 
@@ -339,7 +315,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             R.id.menu_info -> {
                 bankSettingAnalytics.eventOnToolbarTNCClick()
                 loadTermsAndCondition()
@@ -349,12 +325,11 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.let { it.inflate(getMenuRes(), menu) }
+        inflater.inflate(getMenuRes(), menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun getMenuRes(): Int = R.menu.menu_info_add_bank_account
-
 
     override fun deleteBankAccount(bankAccount: BankAccount) {
         bankSettingAnalytics.eventDeleteAccountClick()
@@ -366,9 +341,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         getKYCInfoForUser(bankAccount)
     }
 
-
     private fun openDeleteConfirmationPopUp(bankAccount: BankAccount) {
-        activity?.let { activity->
+        activity?.let { activity ->
             deleteBankAccount = bankAccount
             val dialogBuilder = AlertDialog.Builder(activity)
             val inflater = activity.layoutInflater
@@ -399,12 +373,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun getKYCInfoForUser(bankAccount: BankAccount) {
         confirmBankAccount = bankAccount
-        if (::confirmAccountBottomSheet.isInitialized) {
-            confirmAccountBottomSheet.show(bankAccount)
-        } else {
-            progress_bar.visible()
-            settingBankViewModel.getKYCInfo()
-        }
+        progress_bar.visible()
+        settingBankViewModel.getKYCInfo()
     }
 
 }

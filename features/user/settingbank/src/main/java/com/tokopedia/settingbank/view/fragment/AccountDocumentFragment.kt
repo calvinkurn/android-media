@@ -116,6 +116,9 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         startObservingViewModels()
         setBankAccountData()
         setDocKycUI()
+        progressBar.setOnClickListener {
+            //no implementation required
+        }
     }
 
     private fun setBankAccountData() {

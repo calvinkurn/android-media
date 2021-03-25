@@ -6,18 +6,19 @@ import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
@@ -35,7 +36,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_bank_v2.*
+import kotlinx.android.synthetic.main.fragment_add_bank.*
 import javax.inject.Inject
 
 
@@ -57,7 +58,6 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private lateinit var addAccountViewModel: AddAccountViewModel
 
-    private lateinit var tncBottomSheet: BankTNCBottomSheet
     private lateinit var confirmationDialog: AlertDialog
 
     val builder: AddBankRequest.Builder = AddBankRequest.Builder()
@@ -112,18 +112,23 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_bank_v2, container, false)
+        return inflater.inflate(R.layout.fragment_add_bank, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setDownArrowBankName()
+        //setDownArrowBankName()
         setRestoredFragmentState()
         etBankAccountNumber.textChangedListener(onTextChangeExt = ::onTextChanged)
         setTncText()
         startObservingViewModels()
         setBankName()
-        etBankName.setOnClickListener { openBankListForSelection() }
+        tf.textAreaInput.apply {
+            isClickable = false
+            isFocusable = false
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, getDimens(com.tokopedia.unifycomponents.R.dimen.unify_font_16).toFloat())
+            setOnClickListener { openBankListForSelection() }
+        }
         btnPeriksa.setOnClickListener { checkAccountNumber() }
         add_account_button.setOnClickListener { onClickAddBankAccount() }
         setAccountNumberInputFilter()
@@ -171,12 +176,12 @@ class AddBankFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setDownArrowBankName() {
+    /*private fun setDownArrowBankName() {
         context?.let {
             etBankName.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     ContextCompat.getDrawable(it, com.tokopedia.design.R.drawable.ic_arrow_down_grey), null)
         }
-    }
+    }*/
 
     private fun startObservingViewModels() {
         addAccountViewModel.validateAccountNumberStateLiveData.observe(viewLifecycleOwner, Observer {
@@ -344,7 +349,8 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun setBankName() {
         if (::bank.isInitialized) {
             builder.bank(bank.bankID, bank.bankName)
-            etBankName.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
+            //etBankName.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
+            tf.textAreaInput.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
         }
     }
 
@@ -388,7 +394,7 @@ class AddBankFragment : BaseDaggerFragment() {
         activity?.let { it ->
             val addBankRequest = builder.build()
             val dialogBuilder = AlertDialog.Builder(it)
-            val inflater = activity!!.layoutInflater
+            val inflater = it.layoutInflater
             val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
             (dialogView.findViewById(R.id.heading) as TextView).text = getString(R.string.sbank_confirm_add_bank_account)
             val description = context?.resources?.getString(R.string.sbank_add_bank_confirm, bank.abbreviation,
@@ -519,15 +525,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun openTNCBottomSheet(templateData: TemplateData?) {
         templateData?.let {
-            if (::tncBottomSheet.isInitialized) {
-                tncBottomSheet.templateData = it
-                activity?.let {
-                    tncBottomSheet.show(templateData)
-                }
-            } else {
-                tncBottomSheet = BankTNCBottomSheet(activity!!)
-                tncBottomSheet.show(templateData)
-            }
+            BankTNCBottomSheet.showBankTNCBottomSheet(templateData, activity)
         }
     }
 

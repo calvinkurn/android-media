@@ -25,7 +25,7 @@ import com.tokopedia.settingbank.view.viewState.OnBankListLoaded
 import com.tokopedia.settingbank.view.viewState.OnBankListLoadingError
 import com.tokopedia.settingbank.view.viewState.OnBankSearchResult
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.fragment_choose_bank_v2.*
+import kotlinx.android.synthetic.main.fragment_choose_bank.*
 import java.util.*
 import javax.inject.Inject
 
@@ -75,7 +75,7 @@ class SelectBankFragment : BottomSheetUnify(), SearchInputView.Listener, SearchI
     }
 
     private fun setChild() {
-        childView = LayoutInflater.from(context).inflate(R.layout.fragment_choose_bank_v2,
+        childView = LayoutInflater.from(context).inflate(R.layout.fragment_choose_bank,
                 null, false)
         setChild(childView)
     }

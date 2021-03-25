@@ -26,7 +26,30 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/dp_16" />
 
+    <com.tokopedia.unifycomponents.TextAreaUnify
+        android:id="@+id/tf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toTopOf="@+id/guidelineTop"
+        app:text_area_clearable="false"
+        app:text_area_label="@string/bank_name_title"
+        app:text_area_label_static="false"
+        app:text_field_placeholder="@string/bank_name_title" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
+        app:icon_name="CHEVRON_DOWN"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintTop_toTopOf="@+id/tf"
+        app:layout_constraintEnd_toEndOf="@+id/tf" />
+
+<!--
     <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/wrapperBankName"
         style="@style/HintTextInputLayout"
@@ -37,7 +60,7 @@
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toTopOf="@+id/guidelineTop">
+        app:layout_constraintTop_toBottomOf="@+id/tf">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etBankName"
@@ -49,7 +72,35 @@
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/sp_16" />
 
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>-->
+
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/wrapperBankAccountNumber"
+        style="@style/HintTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/sp_16"
+        android:layout_marginRight="@dimen/sp_16"
+        android:clickable="false"
+        android:hint="@string/account_number_title"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/btnPeriksa"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tf">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etBankAccountNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="01234567890"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/sp_16" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/wrapperManualAccountHolderName"
@@ -77,31 +128,6 @@
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
 
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/wrapperBankAccountNumber"
-        style="@style/HintTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_39"
-        android:layout_marginEnd="@dimen/sp_16"
-        android:layout_marginRight="@dimen/sp_16"
-        android:clickable="false"
-        android:hint="@string/account_number_title"
-        android:textColorHint="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/btnPeriksa"
-        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/wrapperBankName">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etBankAccountNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="01234567890"
-            android:inputType="number"
-            android:singleLine="true"
-            android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/sp_16" />
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <TextView
         android:id="@+id/tvAccountHolderNameTag"
@@ -216,23 +242,22 @@
         app:layout_constraintGuide_begin="111dp" />
 
     <RelativeLayout
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl6"
-           android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true" />
 
     </RelativeLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
