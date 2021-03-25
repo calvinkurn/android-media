@@ -1,8 +1,8 @@
 package com.tokopedia.shop.showcase.presentation.adapter
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
@@ -19,7 +19,11 @@ class ShopPageShowcaseListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShowcaseListImageViewHolder {
         return ShopShowcaseListImageViewHolder(
-                itemView = parent.inflateLayout(R.layout.item_shop_showcase_list_image),
+                itemView = LayoutInflater.from(parent.context).inflate(
+                        R.layout.item_shop_showcase_list_image,
+                        parent,
+                        false
+                ),
                 listener = shopShowcaseListImageListener
         )
     }
