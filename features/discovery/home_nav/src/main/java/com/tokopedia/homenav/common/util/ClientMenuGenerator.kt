@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,6 +32,10 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val APPLINK_MY_BILLS = "tokopedia://webview?url=https://www.tokopedia.com/mybills/"
         const val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
         const val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
+
+        const val IDENTIFIER_TITLE_MY_ACTIVITY = 100
+        const val IDENTIFIER_TITLE_ALL_CATEGORIES = 101
+        const val IDENTIFIER_TITLE_HELP_CENTER = 102
     }
 
 
@@ -56,6 +61,18 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             ID_OPEN_SHOP_TICKER -> return getOpenShopTicker()
         }
         return HomeNavTickerDataModel()
+    }
+
+    fun getSectionTitle(identifier: Int): HomeNavTitleDataModel {
+        return HomeNavTitleDataModel(
+                identifier = identifier,
+                title = when (identifier) {
+                    IDENTIFIER_TITLE_MY_ACTIVITY -> context.getString(R.string.title_transaction_section)
+                    IDENTIFIER_TITLE_ALL_CATEGORIES -> context.getString(R.string.title_category_section)
+                    IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
+                    else -> ""
+                }
+        )
     }
 
     private fun getWishlistUserMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {

@@ -19,7 +19,6 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.ResponseErrorException
@@ -37,6 +36,7 @@ import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
