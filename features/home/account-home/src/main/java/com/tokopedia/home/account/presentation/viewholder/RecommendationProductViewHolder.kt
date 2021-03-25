@@ -8,7 +8,7 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 
 /**
  * @author devarafikry on 24/07/19.
@@ -23,35 +23,7 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
     override fun bind(element: RecommendationProductViewModel) {
         productCardView.run {
             setProductModel(
-                    ProductCardModel(
-                            slashedPrice = element.product.slashedPrice,
-                            productName = element.product.name,
-                            formattedPrice = element.product.price,
-                            productImageUrl = element.product.imageUrl,
-                            isTopAds = element.product.isTopAds,
-                            discountPercentage = element.product.discountPercentage.toString(),
-                            reviewCount = element.product.countReview,
-                            ratingCount = element.product.rating,
-                            shopLocation = element.product.location,
-                            isWishlistVisible = true,
-                            isWishlisted = element.product.isWishlist,
-                            shopBadgeList = element.product.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it
-                                        ?: "")
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = element.product.isFreeOngkirActive,
-                                    imageUrl = element.product.freeOngkirImageUrl
-                            ),
-                            labelGroupList = element.product.labelGroupList.map { recommendationLabel ->
-                                ProductCardModel.LabelGroup(
-                                        position = recommendationLabel.position,
-                                        title = recommendationLabel.title,
-                                        type = recommendationLabel.type
-                                )
-                            },
-                            hasThreeDots = true
-                    )
+                    element.product.toProductCardModel(hasThreeDots = true)
             )
             setImageProductViewHintListener(element.product, object : ViewHintListener {
                 override fun onViewHint() {

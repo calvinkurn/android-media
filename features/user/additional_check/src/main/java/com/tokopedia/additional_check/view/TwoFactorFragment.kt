@@ -35,6 +35,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
     private val ADD_PIN_REQ_CODE = 2
 
     private val twoFactorTracker = TwoFactorTracker()
+    private var validateToken: String = ""
 
     var model: TwoFactorResult? = TwoFactorResult()
 
@@ -85,7 +86,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
             }
             mView?.btn_two_factor?.setOnClickListener {
                 twoFactorTracker.clickButtonPageAddPin()
-                goToAddPin()
+                goToAddPin(validateToken)
             }
         }
     }
@@ -119,12 +120,13 @@ class TwoFactorFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun goToAddPin(){
+    private fun goToAddPin(validateToken: String){
         context?.run {
             val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN)
             i.putExtras(Bundle().apply {
                 putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
                 putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
             })
             startActivityForResult(i, ADD_PIN_REQ_CODE)
         }
@@ -149,7 +151,8 @@ class TwoFactorFragment: BaseDaggerFragment() {
             }
             ADD_PHONE_REQ_CODE -> {
                 if(resultCode == Activity.RESULT_OK) {
-                    goToAddPin()
+                    validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
+                    goToAddPin(validateToken)
                 }
             }
         }

@@ -1,7 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
@@ -9,7 +8,6 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
@@ -57,9 +55,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.TITLE_UOH_ETICKET;
 import static com.tokopedia.home.account.constant.SettingConstant.POWER_MERCHANT_URL;
-import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
-import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
+import static com.tokopedia.home.account.constant.SettingConstant.SELLER_CENTER_URL;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
@@ -370,7 +366,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onSellerCenterInfoClicked() {
-        openApplink(ApplinkConst.SELLER_CENTER);
+        openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, SELLER_CENTER_URL));
     }
 
     @Override

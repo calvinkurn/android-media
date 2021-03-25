@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.BlendMode
@@ -8,9 +9,12 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
+import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
+import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -103,6 +107,8 @@ class Utils {
                         userId: String? = "0",
                         addCountFilters: Boolean = false): Map<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
+            val component = getComponent(componentId, pageIdentifier)
+
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
@@ -110,6 +116,9 @@ class Utils {
             val filtersMasterMapParam = mutableMapOf<String, String?>()
             discoComponentQuery?.let {
                 filtersMasterMapParam.putAll(it)
+            }
+            component?.let {
+                filtersMasterMapParam.putAll(addAddressQueryMap(it.userAddressData))
             }
             if (addCountFilters && selectedFilterMapParameter != null) {
                 val filtersMap = selectedFilterMapParameter as MutableMap<String, String?>
@@ -134,6 +143,19 @@ class Utils {
             if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
 
             return queryParameterMap
+        }
+
+        fun addAddressQueryMap(userAddressData: LocalCacheModel?): MutableMap<String, String> {
+            val addressQueryParameterMap = mutableMapOf<String, String>()
+            userAddressData?.let {
+                if(it.address_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_ADDRESS_ID] = it.address_id
+                if(it.city_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_CITY_ID] = it.city_id
+                if(it.district_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_DISTRICT_ID] = it.district_id
+                if(it.lat.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] = it.lat
+                if(it.long.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] = it.long
+                if(it.postal_code.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] = it.postal_code
+            }
+            return addressQueryParameterMap
         }
 
         fun isFutureSale(saleStartDate: String): Boolean {
@@ -244,6 +266,12 @@ class Utils {
             return if(isAllKeyNullOrEmpty) url else {"$url?$queryString"}
         }
 
-        
+
+        fun getDisplayMetric(context: Context?): DisplayMetrics {
+            val displayMetrics = DisplayMetrics()
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+            return displayMetrics
+        }
+
     }
 }

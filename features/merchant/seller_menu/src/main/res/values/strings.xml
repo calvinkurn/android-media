@@ -9,4 +9,26 @@
     <string name="seller_menu_product_cta">Tambah Produk</string>
     <string name="seller_menu_notifications">Notifications</string>
     <string name="seller_menu_inbox">Inbox</string>
+
+    //Admin revamp
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
+    <string name="admin_no_permission_oops">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
+    <string name="admin_no_permission_contact_shop_owner">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
+    <string name="admin_no_permission_back_to_seller_account">Kembali ke Akun Toko</string>
+    <string name="admin_no_permission_product_list_title">Kamu tidak punya izin untuk mengakses halaman Produk</string>
+    <string name="admin_no_permission_product_add_title">Kamu tidak punya izin untuk menambahkan produk</string>
+    <string name="admin_no_permission_product_add_desc">Hubungi pemilik toko untuk bisa menambahkan produk, ya.</string>
+    <string name="admin_no_permission_order_title">Kamu tidak punya izin untuk mengakses halaman Penjualan</string>
+    <string name="admin_title_balance">Detail Saldo</string>
+    <string name="admin_title_shop_score">Skor Performa Toko</string>
+    <string name="admin_title_order">Penjualan</string>
+    <string name="admin_title_product_add">Tambah Produk</string>
+    <string name="admin_title_product_list">Daftar Produk</string>
+    <string name="admin_title_review">Ulasan</string>
+    <string name="admin_title_discussion">Diskusi</string>
+    <string name="admin_title_complaint">Pesanan Dikomplain</string>
+    <string name="admin_title_shop_setting">Pengaturan Toko</string>
+    <string name="admin_title_statistic">Statistik Toko</string>
+    <string name="admin_title_ads_and_promotion">Iklan dan Promosi</string>
+    <string name="admin_error_refresh_page">Refresh Halaman</string>
 </resources>

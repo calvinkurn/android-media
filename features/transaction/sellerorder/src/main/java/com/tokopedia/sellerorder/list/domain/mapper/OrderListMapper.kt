@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import javax.inject.Inject
@@ -12,12 +13,13 @@ class OrderListMapper @Inject constructor() {
                     cancelRequestNote = it.cancelRequestNote,
                     cancelRequestOriginNote = it.cancelRequestOriginNote,
                     cancelRequestTime = it.cancelRequestTime,
+                    cancelRequestStatus = it.cancelRequestStatus,
                     deadlineColor = it.deadlineColor,
                     deadlineText = it.deadlineText,
                     orderId = it.orderId,
                     orderProduct = mapProductList(it.orderProduct),
                     orderResi = it.orderResi,
-                    orderStatusId = it.orderStatusId,
+                    orderStatusId = it.orderStatusId.takeIf { it.isNotBlank() }?.toInt().orZero(),
                     status = it.status,
                     statusColor = it.statusColor,
                     statusIndicatorColor = it.statusIndicatorColor,

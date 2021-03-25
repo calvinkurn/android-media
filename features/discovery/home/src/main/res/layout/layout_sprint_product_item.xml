@@ -31,7 +31,7 @@
                 android:id="@+id/channel_discount"
                 style="@style/TextView.Nano"
                 android:textStyle="bold"
-                android:textColor="@color/discount_color_selector"
+                android:textColor="@drawable/discount_color_selector"
                 android:background="@drawable/home_channel_discount_bg"
                 android:paddingTop="@dimen/label_padding_top_bottom"
                 android:paddingBottom="@dimen/label_padding_top_bottom"
