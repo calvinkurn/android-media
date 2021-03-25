@@ -659,8 +659,6 @@ class PlayViewModel @Inject constructor(
 
             socketJob = launch {
                 playChannelWebSocket.listenAsFlow()
-                        .flowOn(dispatchers.computation)
-                        .buffer()
                         .collect {
                             handleWebSocketResponse(it, channelId, socketCredential)
                         }
@@ -974,14 +972,14 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleWebSocketMessage(message: WebSocketResponse, channelId: String) {
+    private suspend fun handleWebSocketMessage(message: WebSocketResponse, channelId: String) = withContext(dispatchers.main) {
         val result = withContext(dispatchers.computation) {
             val socketMapper = PlaySocketMapper(message)
             socketMapper.mapping()
         }
         when (result) {
             is TotalLike -> {
-                val currentLikeInfo = _observableLikeInfo.value ?: return
+                val currentLikeInfo = _observableLikeInfo.value ?: return@withContext
                 val mappedResult = playSocketToModelMapper.mapTotalLike(result)
 
                 _observableLikeInfo.value = if (currentLikeInfo is PlayLikeInfoUiModel.Complete) currentLikeInfo.copy(
@@ -999,7 +997,7 @@ class PlayViewModel @Inject constructor(
                 setNewChat(playUiModelMapper.mapChat(result))
             }
             is PinnedMessage -> {
-                val currentPinnedMessage = _observablePinnedMessage.value ?: return
+                val currentPinnedMessage = _observablePinnedMessage.value ?: return@withContext
                 val mappedResult = playSocketToModelMapper.mapPinnedMessage(result)
                 _observablePinnedMessage.value = currentPinnedMessage.copy(
                         id = mappedResult.id,

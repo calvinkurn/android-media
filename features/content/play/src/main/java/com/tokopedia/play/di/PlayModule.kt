@@ -151,10 +151,11 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface): PlayWebSocket {
+    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatcherProvider): PlayWebSocket {
         return PlayWebSocketImpl(
                 OkHttpClient.Builder(),
-                userSession
+                userSession,
+                dispatchers
         )
     }
 }
