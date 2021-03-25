@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
@@ -198,7 +199,14 @@ class AccountHeaderViewHolder(itemView: View,
             tvShopInfo.run {
                 visible()
                 setText(shopInfo, TextView.BufferType.SPANNABLE)
-                setOnClickListener { onShopClicked(element.canGoToSellerAccount) }
+                setOnClickListener {
+                    if (element.hasShop)
+                        onShopClicked(element.canGoToSellerAccount)
+                    else {
+                        RouteManager.route(context, ApplinkConst.CREATE_SHOP)
+                        TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
+                    }
+                }
             }
             val str = tvShopInfo.text as Spannable
             str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
