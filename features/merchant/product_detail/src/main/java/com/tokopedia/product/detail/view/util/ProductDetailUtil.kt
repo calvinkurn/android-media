@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
@@ -24,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.info.model.description.DescriptionData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
@@ -373,4 +375,16 @@ internal fun View?.animateCollapse() = this?.run {
 
     animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
     startAnimation(animation)
+}
+
+internal fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+    val productCardOptionsModel = ProductCardOptionsModel()
+    productCardOptionsModel.hasWishlist = true
+    productCardOptionsModel.isWishlisted = isWishlist
+    productCardOptionsModel.productId = productId.toString()
+    productCardOptionsModel.isTopAds = isTopAds
+    productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+    productCardOptionsModel.productPosition = position
+    productCardOptionsModel.screenName = header
+    return productCardOptionsModel
 }
