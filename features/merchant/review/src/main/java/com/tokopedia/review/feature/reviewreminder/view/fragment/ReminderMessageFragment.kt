@@ -35,9 +35,6 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReminderMessageFragment : BaseDaggerFragment() {
@@ -71,8 +68,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     private var productrevGetReminderList: ProductrevGetReminderList? = null
     private var products = emptyList<ProductrevGetReminderData>()
     private var isLoadProducts = false
-    private var isLoadEstimation = false
-    private var isLoadTemplate = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -222,17 +217,16 @@ class ReminderMessageFragment : BaseDaggerFragment() {
             getTemplate().observe(viewLifecycleOwner, observerTemplate)
             getProducts().observe(viewLifecycleOwner, observerProducts)
             getError().observe(viewLifecycleOwner, observerError)
+            getFetchingStatus().observe(viewLifecycleOwner, observerFetchingStatus)
         }
     }
 
     private fun fetchData() {
-        isLoadEstimation = true
-        isLoadTemplate = true
-        isLoadProducts = true
-
         viewModel?.run {
             fetchReminderCounter()
             fetchReminderTemplate()
+
+            isLoadProducts = true
             fetchProductList()
         }
     }
@@ -248,12 +242,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         bottomSheetEditMessage.show(childFragmentManager, TAG_BOTTOM_SHEET_EDIT_MESSAGE)
     }
 
-    private fun checkRefresh() {
-        if (!isLoadEstimation && !isLoadTemplate && !isLoadProducts) {
-            swipeRefreshLayout?.isRefreshing = false
-        }
-    }
-
     private val observerEstimation = Observer<ProductrevGetReminderCounter> { reminderCounter ->
         val stringEstimation = getString(
                 R.string.review_reminder_estimation,
@@ -262,42 +250,33 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         )
         textEstimation?.text = HtmlCompat.fromHtml(stringEstimation, HtmlCompat.FROM_HTML_MODE_COMPACT)
         estimation = reminderCounter
-        isLoadEstimation = false
-        checkRefresh()
     }
 
     private val observerTemplate = Observer<ProductrevGetReminderTemplate> { reminderTemplate ->
         val template = reminderTemplate.template
         textSampleMessage?.text = template
-        isLoadTemplate = false
-        checkRefresh()
     }
 
-    private val observerProducts = Observer<Result<ProductrevGetReminderList>> { result ->
-        when (result) {
-            is Success -> {
-                val data = result.data
-                val list = data.list
-                if (list.isNotEmpty()) {
-                    val mergeList = products + list
-                    reviewProductAdapter?.updateList(mergeList)
-                    products = mergeList
-                }
-                if (products.isNotEmpty()) {
-                    cardNoProducts?.visibility = View.GONE
-                    cardProducts?.visibility = View.VISIBLE
-                } else {
-                    cardNoProducts?.visibility = View.VISIBLE
-                    cardProducts?.visibility = View.GONE
-                }
-                productrevGetReminderList = data
-            }
-            is Fail -> {
-            }
+    private val observerProducts = Observer<ProductrevGetReminderList> { data ->
+        val list = data.list
+        if (list.isNotEmpty()) {
+            val mergeList = products + list
+            reviewProductAdapter?.updateList(mergeList)
+            products = mergeList
         }
+        if (products.isNotEmpty()) {
+            cardNoProducts?.visibility = View.GONE
+            cardProducts?.visibility = View.VISIBLE
+        } else {
+            cardNoProducts?.visibility = View.VISIBLE
+            cardProducts?.visibility = View.GONE
+        }
+        productrevGetReminderList = data
+
         buttonSend?.isEnabled = products.isNotEmpty()
+
         isLoadProducts = false
-        checkRefresh()
+
     }
 
     private val observerError = Observer<String> {
@@ -312,6 +291,10 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                         refreshData()
                     }).show()
         }
+    }
+
+    private val observerFetchingStatus = Observer<Boolean> {
+        swipeRefreshLayout?.isRefreshing = it
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
