@@ -330,10 +330,6 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.requestPiPBrowsingPage()
     }
 
-    override fun onPinnedProductActionClicked(view: PinnedViewComponent) {
-        doClickPinnedProduct()
-    }
-
     /**
      * VideoSettings View Component Listener
      */
@@ -636,6 +632,10 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
             pinnedViewOnStateChanged(pinnedModel = it)
             productFeaturedViewOnStateChanged(pinnedModel = it)
+            if (it is PlayPinnedUiModel.PinnedProduct
+                    && it.productTags is PlayProductTagsUiModel.Complete) {
+                sendTrackerImpressionPinnedProduct(it.productTags)
+            }
         })
     }
 
@@ -881,10 +881,6 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
     }
 
-    private fun doClickPinnedProduct() {
-        viewModel.doInteractionEvent(InteractionEvent.ClickPinnedProduct)
-    }
-
     private fun doClickFollow(partnerId: Long, followAction: PartnerFollowAction) {
         viewModel.doInteractionEvent(InteractionEvent.Follow(partnerId, followAction))
     }
@@ -909,10 +905,6 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> shouldComposeChat()
-            InteractionEvent.ClickPinnedProduct -> {
-                openProductSheet()
-                analytic.clickPinnedProduct()
-            }
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
             is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
@@ -1182,7 +1174,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
                     pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
                     productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
-                    sendTrackerImpressionPinnedProduct(pinnedModel.productTags)
                 }
 
                 if (!bottomInsets.isAnyShown) {
