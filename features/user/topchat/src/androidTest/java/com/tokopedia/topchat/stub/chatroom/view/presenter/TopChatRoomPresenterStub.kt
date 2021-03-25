@@ -10,7 +10,9 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
@@ -97,7 +99,8 @@ class TopChatRoomPresenterStub @Inject constructor(
     override fun startUploadImages(image: ImageUploadViewModel) {
         //always upload with service
         view?.addDummyMessage(image)
-        UploadImageChatServiceStub.dummyMap[thisMessageId]?.add(image)
+        val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
+        UploadImageChatService.dummyMap.add(uploadImageDummy)
         UploadImageChatServiceStub.enqueueWork(view.context, image, thisMessageId)
     }
 

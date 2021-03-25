@@ -49,22 +49,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
-    companion object {
-        const val JOB_ID_UPLOAD_IMAGE = 813
-        const val IMAGE = "image"
-        const val ERROR_MESSAGE = "errorMessage"
-        const val MESSAGE_ID = "messageId"
-        const val BROADCAST_UPLOAD_IMAGE = "BROADCAST_UPLOAD_IMAGE"
-        var dummyMap = arrayListOf<UploadImageDummy>()
-
-        fun enqueueWork(context: Context, image: ImageUploadViewModel, messageId: String) {
-            val intent = Intent(context, UploadImageChatService::class.java)
-            intent.putExtra(IMAGE, image)
-            intent.putExtra(MESSAGE_ID, messageId)
-            enqueueWork(context, UploadImageChatService::class.java, JOB_ID_UPLOAD_IMAGE, intent)
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
         inject()
@@ -200,7 +184,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         val bundle = Bundle()
         bundle.putString(MESSAGE_ID, messageId)
         bundle.putString(ERROR_MESSAGE, ErrorHandler.getErrorMessage(this, throwable))
-        bundle.putSerializable(IMAGE, image)
+        bundle.putInt(RETRY_POSITION, position?: -1)
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR)
 
         result.putExtras(bundle)
@@ -210,25 +194,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
         val errorMessage = ErrorHandler.getErrorMessage(this@UploadImageChatService, throwable)
         notificationManager?.onFailedUpload(errorMessage)
-    }
-
-    @Synchronized
-    private fun removeDummyOnList(dummy: Visitable<*>) {
-        val tmpDummy: Int? = findDummy(dummy)
-        tmpDummy?.let {tmp ->
-            dummyMap.removeAt(tmp)
-        }
-    }
-
-    private fun findDummy(dummy: Visitable<*>): Int? {
-        for(i in 0 until dummyMap.size) {
-            val temp = (dummyMap[i].visitable as SendableViewModel)
-            if (temp.startTime == (dummy as SendableViewModel).startTime
-                    && temp.messageId == (dummy as SendableViewModel).messageId) {
-                return i
-            }
-        }
-        return null
     }
 
     override fun onDestroy() {
@@ -247,4 +212,40 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = dispatcher.io + SupervisorJob()
+
+    companion object {
+        const val JOB_ID_UPLOAD_IMAGE = 813
+        const val IMAGE = "image"
+        const val RETRY_POSITION = "retryPosition"
+        const val ERROR_MESSAGE = "errorMessage"
+        const val MESSAGE_ID = "messageId"
+        const val BROADCAST_UPLOAD_IMAGE = "BROADCAST_UPLOAD_IMAGE"
+        var dummyMap = arrayListOf<UploadImageDummy>()
+
+        fun enqueueWork(context: Context, image: ImageUploadViewModel, messageId: String) {
+            val intent = Intent(context, UploadImageChatService::class.java)
+            intent.putExtra(IMAGE, image)
+            intent.putExtra(MESSAGE_ID, messageId)
+            enqueueWork(context, UploadImageChatService::class.java, JOB_ID_UPLOAD_IMAGE, intent)
+        }
+
+        @Synchronized
+        fun removeDummyOnList(dummy: Visitable<*>) {
+            val tmpDummy: Int? = findDummy(dummy)
+            tmpDummy?.let {tmp ->
+                dummyMap.removeAt(tmp)
+            }
+        }
+
+        private fun findDummy(dummy: Visitable<*>): Int? {
+            for(i in 0 until dummyMap.size) {
+                val temp = (dummyMap[i].visitable as SendableViewModel)
+                if (temp.startTime == (dummy as SendableViewModel).startTime
+                        && temp.messageId == (dummy as SendableViewModel).messageId) {
+                    return i
+                }
+            }
+            return null
+        }
+    }
 }

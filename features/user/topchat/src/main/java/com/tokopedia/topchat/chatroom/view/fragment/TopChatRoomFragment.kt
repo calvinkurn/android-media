@@ -471,9 +471,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         for (dummy in UploadImageChatService.dummyMap) {
             if(dummy.messageId == messageId) {
                 dummy.visitable?.let {
-                    when(dummy.isFail) {
-                        true -> getViewState().showRetryUploadImages(it as ImageUploadViewModel, true)
-                        false -> addDummyMessage(it)
+                    addDummyMessage(it)
+                    if(dummy.isFail) {
+                        getViewState().showRetryUploadImages(it as ImageUploadViewModel, true)
                     }
                 }
             }
@@ -615,6 +615,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, R.string.resend, null)
         bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, R.string.delete, null)
         bottomSheetBuilder.expandOnStart(true).setItemClickListener {
+            UploadImageChatService.removeDummyOnList(element)
             when (it.itemId) {
                 InboxMessageConstant.RESEND -> {
                     presenter.startUploadImages(element)
@@ -1772,8 +1773,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onErrorUploadImageWS(intent: Intent) {
         if(messageId == getResultMessageId(intent)) {
             val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
-            val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
-            onErrorUploadImage(errorMessage, image)
+            val position = intent.getIntExtra(UploadImageChatService.RETRY_POSITION, -1)
+            if(position > -1 && position < UploadImageChatService.dummyMap.size) {
+                val dummyTarget = UploadImageChatService.dummyMap[position]
+                onErrorUploadImage(errorMessage, dummyTarget.visitable as ImageUploadViewModel)
+            }
         }
     }
 
