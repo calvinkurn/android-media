@@ -33,6 +33,8 @@ class PdpSimulationFragmentTest {
     private val gtmLogDBSource = GtmLogDBSource(context)
     var idlingResource: TkpdIdlingResource? = null
 
+    private val isCreditCardModeAvailable: Boolean = true
+
     @Before
     fun setUp() {
         clearData()
@@ -43,6 +45,11 @@ class PdpSimulationFragmentTest {
             addMockResponse(PAYLATER_KEY, InstrumentationMockHelper.getRawString(context, R.raw.paylaterproduct), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(APPLICATION_KEY, InstrumentationMockHelper.getRawString(context, R.raw.applicationstatusdata), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(SIMULATION_KEY, InstrumentationMockHelper.getRawString(context, R.raw.simulationtabledata), MockModelConfig.FIND_BY_CONTAINS)
+           /* if (isCreditCardModeAvailable) {
+                addMockResponse(CC_SIMULATION_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ccsimulationdata), MockModelConfig.FIND_BY_CONTAINS)
+                addMockResponse(CC_META_INFO_KEY, InstrumentationMockHelper.getRawString(context, R.raw.pdpmetainfo), MockModelConfig.FIND_BY_CONTAINS)
+                addMockResponse(CC_BANK_CARD_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.bankcardlistdata), MockModelConfig.FIND_BY_CONTAINS)
+            }*/
         }
     }
 
@@ -76,6 +83,11 @@ class PdpSimulationFragmentTest {
         }
     }
 
+    @Test
+    fun cc_dummy() {
+        actionTest {
+        }
+    }
 
     private fun clearData() {
         gtmLogDBSource.deleteAll().toBlocking()
@@ -84,7 +96,7 @@ class PdpSimulationFragmentTest {
     private fun launchActivity() {
         val bundle = Bundle()
         bundle.putInt(PRODUCT_PRICE, 1000000)
-        bundle.putString(PARAM_PRODUCT_URL, "email")
+        bundle.putString(PARAM_PRODUCT_URL, "https://dummyurl.com")
         val intent = Intent(context, PdpSimulationActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)
@@ -106,8 +118,13 @@ class PdpSimulationFragmentTest {
         const val PAYLATER_KEY = "paylater_getActiveProduct"
         const val APPLICATION_KEY = "getUserApplicationStatus"
         const val SIMULATION_KEY = "paylater_getSimulation"
-        const val PAY_LATER_ANALYTICS = "tracker/fintech/pdpsimulation/paylater.json"
-        const val PAY_LATER_IMPRESSION_ANALYTICS = "tracker/fintech/pdpsimulation/product_info_impression.json"
+        const val CC_SIMULATION_KEY = "cc_fetchpdpcreditcardsimulation"
+        const val CC_META_INFO_KEY = "cc_fetchpdpinfometadata"
+        const val CC_BANK_CARD_LIST_KEY = "cc_fetchbankcardlist"
+        const val PAY_LATER_ANALYTICS = "tracker/fintech/pdpsimulation/paylater_tracking.json"
+        const val CC_ANALYTICS = "tracker/fintech/pdpsimulation/credit_card_tracking.json"
+        const val CC_UNAVAILABLE_ANALYTICS = "tracker/fintech/pdpsimulation/credit_card_not_available_tracking.json"
+        const val PAY_LATER_IMPRESSION_ANALYTICS = "tracker/fintech/pdpsimulation/product_info_tracking.json"
 
     }
 }

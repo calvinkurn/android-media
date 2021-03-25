@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.creditcard.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.creditcard.domain.model.BankCardListItem
@@ -25,13 +26,15 @@ class CreditCardViewModel @Inject constructor(
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
     private val _creditCardSimulationResultLiveData = MutableLiveData<Result<CreditCardSimulationResult>>()
-    val creditCardSimulationResultLiveData : LiveData<Result<CreditCardSimulationResult>> = _creditCardSimulationResultLiveData
+    val creditCardSimulationResultLiveData: LiveData<Result<CreditCardSimulationResult>> = _creditCardSimulationResultLiveData
     private val _creditCardPdpMetaInfoLiveData = MutableLiveData<Result<CreditCardPdpMetaData>>()
-    val creditCardPdpMetaInfoLiveData : LiveData<Result<CreditCardPdpMetaData>> = _creditCardPdpMetaInfoLiveData
+    val creditCardPdpMetaInfoLiveData: LiveData<Result<CreditCardPdpMetaData>> = _creditCardPdpMetaInfoLiveData
     private val _creditCardBankResultLiveData = MutableLiveData<Result<ArrayList<BankCardListItem>>>()
-    val creditCardBankResultLiveData : LiveData<Result<ArrayList<BankCardListItem>>> = _creditCardBankResultLiveData
+    val creditCardBankResultLiveData: LiveData<Result<ArrayList<BankCardListItem>>> = _creditCardBankResultLiveData
+    private var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
 
     fun getCreditCardSimulationData(amount: Float) {
+        idlingResourceProvider?.increment()
         creditCardSimulationUseCase.cancelJobs()
         if (creditCardSimulationResultLiveData.value !is Success) {
             creditCardSimulationUseCase.getCreditCardSimulationData(
@@ -43,6 +46,7 @@ class CreditCardViewModel @Inject constructor(
     }
 
     fun getCreditCardTncData() {
+        idlingResourceProvider?.increment()
         creditCardPdpMetaInfoUseCase.cancelJobs()
         if (creditCardPdpMetaInfoLiveData.value !is Success)
             creditCardPdpMetaInfoUseCase.getPdpMetaData(
@@ -52,6 +56,7 @@ class CreditCardViewModel @Inject constructor(
     }
 
     fun getBankCardList() {
+        idlingResourceProvider?.increment()
         creditCardBankDataUseCase.cancelJobs()
         if (creditCardBankResultLiveData.value !is Success)
             creditCardBankDataUseCase.getBankCardList(
@@ -63,7 +68,10 @@ class CreditCardViewModel @Inject constructor(
     private fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
         creditCardSimulationMapperUseCase.parseSimulationData(pdpCreditCardSimulationData, onSuccess = {
             when (it) {
-                is StatusApiSuccess -> _creditCardSimulationResultLiveData.value = Success(it.data)
+                is StatusApiSuccess -> {
+                    idlingResourceProvider?.decrement()
+                    _creditCardSimulationResultLiveData.value = Success(it.data)
+                }
                 StatusApiFail -> onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
                 StatusCCNotAvailable -> onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
             }
@@ -73,26 +81,32 @@ class CreditCardViewModel @Inject constructor(
     }
 
     private fun onCreditCardSimulationError(throwable: Throwable) {
+        idlingResourceProvider?.decrement()
         _creditCardSimulationResultLiveData.value = Fail(throwable)
     }
 
     private fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {
         creditCardTncMapperUseCase.parseTncData(creditCardPdpMetaData, onSuccess = {
+            idlingResourceProvider?.decrement()
             _creditCardPdpMetaInfoLiveData.value = Success(it)
         }, onError = {
+            idlingResourceProvider?.decrement()
             _creditCardPdpMetaInfoLiveData.value = Fail(it)
         })
     }
 
     private fun onPdpInfoMetaDataError(throwable: Throwable) {
+        idlingResourceProvider?.decrement()
         _creditCardPdpMetaInfoLiveData.value = Fail(throwable)
     }
 
     private fun onBankCardListDataSuccess(creditCardBankList: ArrayList<BankCardListItem>) {
+        idlingResourceProvider?.decrement()
         _creditCardBankResultLiveData.value = Success(creditCardBankList)
     }
 
     private fun onBankCardListDataError(throwable: Throwable) {
+        idlingResourceProvider?.decrement()
         _creditCardBankResultLiveData.value = Fail(throwable)
     }
 

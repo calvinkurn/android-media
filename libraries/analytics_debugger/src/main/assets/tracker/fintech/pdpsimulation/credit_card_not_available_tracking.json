@@ -1,0 +1,16 @@
+{
+  "readme": "Fintech Credit Card Not Available Impression",
+  "mode": "exact",
+  "query": [
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim cc - impression harga tidak sesuai cc",
+      "event": "viewFintechMicrositeIris",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "Fintech",
+      "currentSite": "tokopediafintech"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "data": {
+    "cc_fetchpdpinfometadata": {
+      "cta_redir_url": "https://staging.tokopedia.com/kartu-kredit",
+      "cta_redir_applink": "tokopedia://kartu-kredit",
+      "cta_redir_label": "Pelajari Selengkapnya",
+      "pdp_info_content": [
+        {
+          "title": "Cicilan bunga 0%",
+          "description": "",
+          "content_parse": "bullet",
+          "content": "[\"Pembayaran dengan sistem cicilan 0%, berlaku untuk pemegang kartu kredit berlogo Visa, Mastercard, JCB, dan American Express\", \"1 (satu) akun pengguna dan satu kartu kredit hanya bisa mengikuti promo cicilan 0% sebanyak 1 (satu) kali per hari.\", \"Promo cicilan 0% tidak bisa digabung dengan promo lain yang sedang berlangsung di Tokopedia\"]",
+          "notes": []
+        },
+        {
+          "title": "Minimum transaksi",
+          "description": "Berikut ini daftar min. transaksi untuk penggunaan kartu kredit:",
+          "content_parse": "table_min_transaction",
+          "content": "{\"table_data\":[[\"Durasi Cicilan\",\"Min. Total Transaksi\"],[\"3 Bulan\",\"Rp500.000\"],[\"6 Bulan\",\"Rp500.000\"],[\"12 Bulan*\",\"Rp500.000\"],[\"18 Bulan\",\"Rp3.000.000\"],[\"24 Bulan\",\"Rp5.000.000\"]]}",
+          "notes": [
+            "Khusus BRI, min. transaksi untuk cicilan selama 12 bulan adalah Rp3.000.000"
+          ]
+        },
+        {
+          "title": "Biaya layanan",
+          "description": "",
+          "content_parse": "table_service_fee",
+          "content": "{\"table_data\":[[\"Durasi Cicilan\",\"Biaya Layanan Official Store\",\"Biaya Layanan Non Official Store\"],[\"Sekali Bayar\",\"-\",\"1,5%\"],[\"3 Bulan\",\"2,5%\",\"2,5%\"],[\"6 Bulan\",\"3,5%\",\"3,5%\"],[\"12 Bulan*\",\"6%\",\"6%\"],[\"18 Bulan\",\"8%\",\"8%\"],[\"24 Bulan\",\"10%\",\"10%\"]]}",
+          "notes": [
+            "Biaya layanan ini diberlakukan untuk tujuan pemeliharaan sistem dan peningkatan layanan dalam bertransaksi melalui Tokopedia."
+          ]
+        }
+      ]
+    }
+  }
+}

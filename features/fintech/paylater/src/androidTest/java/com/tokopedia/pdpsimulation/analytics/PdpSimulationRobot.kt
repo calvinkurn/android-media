@@ -19,6 +19,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterPaymentMethodViewHolder
 import com.tokopedia.pdpsimulation.test.R
 import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.unifycomponents.ContentSwitcherUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import org.hamcrest.core.AllOf
 
@@ -52,6 +53,11 @@ class PdpSimulationRobot {
                 withId(R.id.paylaterDaftarWidget),
                 isDisplayed()))
         ).perform(ViewActions.click())
+    }
+
+    fun testCCTabChangeEvent(position: Int) {
+        onView(CommonMatcher.firstView(withId(R.id.modeSwitcher))).perform(setModeSwitcher(true))
+        testClickTabs(position)
     }
 
     infix fun assertTest(action: PdpSimulationRobot.() -> Unit) = PdpSimulationRobot().apply(action)
@@ -90,6 +96,19 @@ class PdpSimulationRobot {
             override fun perform(uiController: UiController, view: View) {
                 val pager = view as ViewPager
                 pager.pageMargin = 0
+            }
+        }
+    }
+
+    private fun setModeSwitcher(isChecked: Boolean): ViewAction {
+        return object : ViewAction {
+            override fun getDescription() = "with tab at index"
+
+            override fun getConstraints() = AllOf.allOf(isDisplayed(), ViewMatchers.isAssignableFrom(ContentSwitcherUnify::class.java))
+
+            override fun perform(uiController: UiController, view: View) {
+                val modeSwitcher = view as ContentSwitcherUnify
+                modeSwitcher.isChecked = isChecked
             }
         }
     }

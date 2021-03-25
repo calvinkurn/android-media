@@ -1,5 +1,5 @@
 {
-  "readme": "Fintech Credit Card Impression and Click Tracker",
+  "readme": "Fintech Credit Card Click Tracker",
   "mode": "exact",
   "query": [
     {
@@ -8,16 +8,6 @@
       "eventCategory": "fin - info page",
       "eventAction": "sim cc - click tab",
       "event": "clickFintechMicrosite",
-      "eventLabel": "{{.*}}",
-      "businessUnit": "Fintech",
-      "currentSite": "tokopediafintech"
-    },
-    {
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "eventCategory": "fin - info page",
-      "eventAction": "sim cc - impression harga tidak sesuai cc",
-      "event": "viewFintechMicrositeIris",
       "eventLabel": "{{.*}}",
       "businessUnit": "Fintech",
       "currentSite": "tokopediafintech"
