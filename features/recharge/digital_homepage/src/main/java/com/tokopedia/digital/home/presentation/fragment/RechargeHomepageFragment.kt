@@ -224,18 +224,17 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         viewModel.rechargeHomepageSections.observe(viewLifecycleOwner, Observer {
             hideLoading()
-
-            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it, tickerList)
-            val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
-                homeComponent.visitableId()?.toInt()
-            }
-            homeComponentsData = it.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
-            adapter.renderList(mappedData)
+            renderList(it)
         })
 
-        viewModel.rechargeTickerHomepageModel.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> tickerList = it.data
+        viewModel.rechargeTickerHomepageModel.observe(viewLifecycleOwner, Observer { tickerListResult ->
+            when (tickerListResult) {
+                is Success -> {
+                    viewModel.rechargeHomepageSections.value?.let {
+                        tickerList = tickerListResult.data
+                        renderList(it)
+                    }
+                }
                 is Fail -> tickerList =  RechargeTickerHomepageModel()
             }
         })
@@ -408,6 +407,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                     requireContext(), platformId, enablePersonalize,
                     sectionIds, viewModel.getSearchBarPlaceholder()))
         }
+    }
+
+    private fun renderList(sections: List<RechargeHomepageSections.Section>){
+        val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList)
+        val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
+            homeComponent.visitableId()?.toInt()
+        }
+        homeComponentsData = sections.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
+        adapter.renderList(mappedData)
     }
 
     fun onBackPressed() {
