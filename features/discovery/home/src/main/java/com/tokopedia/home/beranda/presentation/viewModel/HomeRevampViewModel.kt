@@ -550,13 +550,15 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getSuggestedReview() {
         if(getSuggestedReviewJob?.isActive == true) return
-        if (!isNeedShowGeoLocation && userSession.get().isLoggedIn) {
+        if (userSession.get().isLoggedIn) {
             getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
                 val data = getHomeReviewSuggestedUseCase.get().executeOnBackground()
                 insertSuggestedReview(data)
             }) {
                 onRemoveSuggestedReview()
             }
+        } else {
+            onRemoveSuggestedReview()
         }
     }
 
