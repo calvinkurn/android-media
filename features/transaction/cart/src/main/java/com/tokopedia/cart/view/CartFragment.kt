@@ -3,6 +3,7 @@ package com.tokopedia.cart.view
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -854,6 +855,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setToolbarShadowVisibility(false)
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun initNavigationToolbar(view: View) {
         activity?.let {
             val statusBarBackground = view.findViewById<View>(R.id.status_bar_bg)
@@ -916,6 +918,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickTopNavMenuNavToolbar(userSession.userId)
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun initBasicToolbar(view: View) {
         activity?.let {
             val args = arguments?.getString(CartFragment::class.java.simpleName)
@@ -2111,6 +2114,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         cartListData?.shoppingSummaryData?.promoValue = lastApplyData.benefitSummaryInfo.finalBenefitAmount
+    }
+
+    private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
+        cartListData?.lastApplyShopGroupSimplifiedData = lastApplyData
+    }
+
+    private fun renderPromoSummaryFromStickyPromo(lastApplyData: LastApplyUiModel) {
         cartListData?.promoSummaryData?.details?.clear()
         cartListData?.promoSummaryData?.details?.addAll(
                 lastApplyData.additionalInfo.usageSummaries.map {
@@ -2123,10 +2133,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     )
                 }.toList()
         )
-    }
-
-    private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
-        cartListData?.lastApplyShopGroupSimplifiedData = lastApplyData
     }
 
     private fun getAllPromosApplied(lastApplyData: LastApplyUiModel): List<String> {
@@ -3394,6 +3400,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
         val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
         renderPromoCheckoutButton(lastApplyUiModel)
+        renderPromoSummaryFromStickyPromo(lastApplyUiModel)
         if (promoUiModel.globalSuccess) {
             setLastApplyDataToShopGroup(lastApplyUiModel)
         }
