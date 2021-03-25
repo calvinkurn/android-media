@@ -1,4 +1,4 @@
-package com.tokopedia.flight.promo_chips.adapter
+package com.tokopedia.flight.promo_chips.presentation.widget.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.flight.R
-import com.tokopedia.flight.promo_chips.adapter.viewholder.FlightPromoChipsViewHolder
-import com.tokopedia.flight.promo_chips.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.presentation.widget.adapter.viewholder.FlightPromoChipsViewHolder
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 
 /**
  * Created by astidhiyaa on 16/02/21.

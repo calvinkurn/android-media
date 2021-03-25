@@ -1,4 +1,4 @@
-package com.tokopedia.flight.common.util
+package com.tokopedia.flight.promo_chips.data
 
 /**
  * author by astidhiyaa on 12/03/2021

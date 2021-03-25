@@ -1,4 +1,4 @@
-package com.tokopedia.flight.promo_chips.model
+package com.tokopedia.flight.promo_chips.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

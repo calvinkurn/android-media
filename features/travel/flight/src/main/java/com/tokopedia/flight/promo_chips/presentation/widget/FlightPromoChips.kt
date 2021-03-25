@@ -1,4 +1,4 @@
-package com.tokopedia.flight.promo_chips.widget
+package com.tokopedia.flight.promo_chips.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.flight.R
-import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapter
-import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapterTypeFactory
-import com.tokopedia.flight.promo_chips.adapter.viewholder.FlightPromoChipsViewHolder
-import com.tokopedia.flight.promo_chips.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.presentation.widget.adapter.FlightPromoChipsAdapter
+import com.tokopedia.flight.promo_chips.presentation.widget.adapter.FlightPromoChipsAdapterTypeFactory
+import com.tokopedia.flight.promo_chips.presentation.widget.adapter.viewholder.FlightPromoChipsViewHolder
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.unifycomponents.BaseCustomView
 
 /**

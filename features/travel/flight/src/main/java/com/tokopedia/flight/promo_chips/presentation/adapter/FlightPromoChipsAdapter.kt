@@ -1,10 +1,10 @@
-package com.tokopedia.flight.promo_chips.adapter
+package com.tokopedia.flight.promo_chips.presentation.widget.adapter
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.flight.promo_chips.adapter.viewholder.FlightPromoChipsViewHolder
+import com.tokopedia.flight.promo_chips.presentation.widget.adapter.viewholder.FlightPromoChipsViewHolder
 
 /**
  * Created by astidhiyaa on 16/02/21.

@@ -1,10 +1,10 @@
-package com.tokopedia.flight.promo_chips.adapter.viewholder
+package com.tokopedia.flight.promo_chips.presentation.widget.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
-import com.tokopedia.flight.promo_chips.adapter.FlightPromoChipsAdapter
-import com.tokopedia.flight.promo_chips.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.presentation.widget.adapter.FlightPromoChipsAdapter
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.item_flight_promo_chips.view.*
 

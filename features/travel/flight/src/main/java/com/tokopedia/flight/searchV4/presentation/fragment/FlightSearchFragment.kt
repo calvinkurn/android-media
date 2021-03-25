@@ -31,8 +31,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
-import com.tokopedia.flight.promo_chips.model.AirlinePrice
-import com.tokopedia.flight.promo_chips.widget.FlightPromoChips
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.presentation.widget.FlightPromoChips
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.searchV4.di.FlightSearchComponent

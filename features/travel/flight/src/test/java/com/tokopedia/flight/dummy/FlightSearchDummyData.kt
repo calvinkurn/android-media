@@ -1,9 +1,9 @@
 package com.tokopedia.flight.dummy
 
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.flight.promo_chips.model.AirlinePrice
-import com.tokopedia.flight.promo_chips.model.DataPromoChips
-import com.tokopedia.flight.promo_chips.model.FlightLowestPrice
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.data.model.DataPromoChips
+import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
 import com.tokopedia.flight.searchV4.data.cloud.single.Route
 import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel

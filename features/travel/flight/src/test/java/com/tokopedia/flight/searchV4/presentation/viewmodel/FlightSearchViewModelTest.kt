@@ -10,9 +10,9 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.*
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
-import com.tokopedia.flight.promo_chips.model.AirlinePrice
-import com.tokopedia.flight.promo_chips.model.FlightLowestPrice
-import com.tokopedia.flight.promo_chips.usecase.FlightLowestPriceUseCase
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
+import com.tokopedia.flight.promo_chips.domain.FlightLowestPriceUseCase
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchErrorEntity
 import com.tokopedia.flight.searchV4.domain.*

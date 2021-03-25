@@ -12,12 +12,12 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightLowestPriceQuery
+import com.tokopedia.flight.promo_chips.data.FlightLowestPriceQuery
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.promo_chips.model.AirlinePrice
-import com.tokopedia.flight.promo_chips.model.FlightLowestPrice
-import com.tokopedia.flight.promo_chips.model.FlightLowestPriceArgs
-import com.tokopedia.flight.promo_chips.usecase.FlightLowestPriceUseCase
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
+import com.tokopedia.flight.promo_chips.data.model.FlightLowestPriceArgs
+import com.tokopedia.flight.promo_chips.domain.FlightLowestPriceUseCase
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest

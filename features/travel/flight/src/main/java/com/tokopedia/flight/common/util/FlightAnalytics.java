@@ -9,7 +9,7 @@ import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel;
 import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel;
-import com.tokopedia.flight.promo_chips.model.AirlinePrice;
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice;
 import com.tokopedia.flight.searchV4.data.cloud.single.Route;
 import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel;
 import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel;
