@@ -882,7 +882,6 @@ final class ProductListPresenter
 
                 if (isShowBroadMatchWithEmptyLocalSearch()) {
                     List<Visitable> visitableList = new ArrayList<>();
-                    visitableList.add(new SeparatorDataView());
                     addBroadMatchToVisitableList(visitableList);
 
                     getView().addProductList(visitableList);

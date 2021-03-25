@@ -193,14 +193,13 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         }
 
         val visitableList = visitableListSlot.captured
-        visitableList[0].shouldBeInstanceOf<SeparatorDataView>()
-        visitableList[1].shouldBeInstanceOf<SuggestionDataView>()
+        visitableList[0].shouldBeInstanceOf<SuggestionDataView>()
 
         val otherRelated = searchProductModel.searchProduct.data.related.otherRelatedList
         visitableList.filterIsInstance<BroadMatchDataView>().size shouldBe otherRelated.size
 
         var index = visitableList.indexOfFirst { it is BroadMatchDataView }
-        index shouldBe 2
+        index shouldBe 1
 
         repeat(otherRelated.size) {
             val visitable = visitableList[index]
