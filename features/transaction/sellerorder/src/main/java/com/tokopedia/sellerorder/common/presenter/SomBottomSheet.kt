@@ -1,0 +1,96 @@
+package com.tokopedia.sellerorder.common.presenter
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.BottomSheetUnify
+
+abstract class SomBottomSheet(context: Context) : View(context) {
+    private var overlayLayout: View? = null
+    private var bottomSheetLayout: View? = null
+    private var bottomSheetBehavior: BottomSheetBehavior<out View>? = null
+    private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
+
+    protected var dismissOnClickOverlay: Boolean = true
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun showOverlay(view: ViewGroup) {
+        val overlayLayout = getOverlayLayout()
+        this.overlayLayout = overlayLayout
+        addOverlayLayoutToParent(view, overlayLayout)
+    }
+
+    private fun getOverlayLayout(): View {
+        return overlayLayout ?: View(context).apply {
+            setOnOverlayClickListener()
+            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        }
+    }
+
+    private fun addOverlayLayoutToParent(view: ViewGroup, overlayLayout: View) {
+        if (view.indexOfChild(overlayLayout) == -1) {
+            view.addView(overlayLayout)
+        }
+    }
+
+    private fun setOnOverlayClickListener() {
+        setOnClickListener {
+            if (dismissOnClickOverlay) {
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                gone()
+            }
+        }
+    }
+
+    private fun getBottomSheetCallback(): BottomSheetBehavior.BottomSheetCallback {
+        return bottomSheetCallback ?: object: BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // noop
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> overlayLayout?.gone()
+                    else -> overlayLayout?.show()
+                }
+            }
+        }
+    }
+
+    protected fun init(view: ViewGroup, childView: View, showOverlay: Boolean) {
+        if (showOverlay) {
+            showOverlay(view)
+        }
+        val bottomSheetLayout: View? = bottomSheetLayout ?: inflate(context, com.tokopedia.unifycomponents.R.layout.bottom_sheet_layout, view)
+        val bottomSheetWrapper: ViewGroup? = bottomSheetLayout?.findViewById<ViewGroup>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.apply {
+            addView(childView)
+        }
+        val bottomSheetBehavior = bottomSheetBehavior ?: BottomSheetBehavior.from(requireNotNull(bottomSheetWrapper)).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        this.bottomSheetLayout = bottomSheetLayout
+        this.bottomSheetBehavior = bottomSheetBehavior
+    }
+
+    fun setTitle(title: String) {
+        BottomSheetUnify.bottomSheetBehaviorTitle(requireNotNull(bottomSheetLayout), title)
+    }
+
+    fun show() {
+        val bottomSheetCallback = getBottomSheetCallback()
+        this.bottomSheetCallback = bottomSheetCallback
+        bottomSheetBehavior?.addBottomSheetCallback(bottomSheetCallback)
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    fun dismiss() {
+        overlayLayout?.gone()
+        requireNotNull(bottomSheetBehavior).state = BottomSheetBehavior.STATE_HIDDEN
+    }
+}

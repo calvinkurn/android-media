@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -1650,40 +1651,51 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
+    // disini suf
     private fun showBulkAcceptOrderBottomSheet() {
-        if (somListBulkProcessOrderBottomSheet == null) {
-            somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet()
-        }
-        somListBulkProcessOrderBottomSheet?.let {
-            val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
-                add(SomListBulkProcessOrderDescriptionUiModel(getString(R.string.som_list_bottom_sheet_bulk_accept_order_description), false))
-                addAll(getOrdersProducts(adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked }))
+        view?.let {
+            if (it !is ViewGroup) return
+            if (somListBulkProcessOrderBottomSheet == null) {
+                somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet(it.context).apply {
+                    init(it, true)
+                }
             }
-            it.setTitle(getString(R.string.som_list_bulk_accept_order_button))
-            it.setItems(items)
-            it.showButtonAction()
-            it.setListener(this@SomListFragment)
-            it.show(childFragmentManager, TAG_BOTTOM_SHEET_BULK_ACCEPT)
+            somListBulkProcessOrderBottomSheet?.let {
+                val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
+                    add(SomListBulkProcessOrderDescriptionUiModel(getString(R.string.som_list_bottom_sheet_bulk_accept_order_description), false))
+                    addAll(getOrdersProducts(adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked }))
+                }
+                it.setTitle(getString(R.string.som_list_bulk_accept_order_button))
+                it.setItems(items)
+                it.showButtonAction()
+                it.setListener(this@SomListFragment)
+                it.show()
+            }
         }
     }
 
     private fun showBulkProcessOrderBottomSheet() {
-        if (somListBulkProcessOrderBottomSheet == null) {
-            somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet()
-        }
-        somListBulkProcessOrderBottomSheet?.let {
-            val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
-                add(SomListBulkProcessOrderMenuItemUiModel(
-                        KEY_PRINT_AWB,
-                        getString(R.string.som_list_bulk_print_button),
-                        true
-                ))
+        view?.let {
+            if (it !is ViewGroup) return
+            if (somListBulkProcessOrderBottomSheet == null) {
+                somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet(it.context).apply {
+                    init(it, true)
+                }
             }
-            it.setTitle(getString(R.string.som_list_bulk_confirm_shipping_order_button))
-            it.setItems(items)
-            it.hideButtonAction()
-            it.setListener(this@SomListFragment)
-            it.show(childFragmentManager, TAG_BOTTOM_SHEET_BULK_ACCEPT)
+            somListBulkProcessOrderBottomSheet?.let {
+                val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
+                    add(SomListBulkProcessOrderMenuItemUiModel(
+                            KEY_PRINT_AWB,
+                            getString(R.string.som_list_bulk_print_button),
+                            true
+                    ))
+                }
+                it.setTitle(getString(R.string.som_list_bulk_confirm_shipping_order_button))
+                it.setItems(items)
+                it.hideButtonAction()
+                it.setListener(this@SomListFragment)
+                it.show()
+            }
         }
     }
 
