@@ -468,17 +468,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupDummyData() {
-        UploadImageChatService.dummyMap[messageId]?.let {
-            for (dummy in it) {
-                addDummyMessage(dummy)
-            }
-        }
-    }
-
-    private fun removeDummyData() {
-        UploadImageChatService.dummyMap[messageId]?.let {
-            for (dummy in it) {
-                removeDummy(dummy)
+        for (dummy in UploadImageChatService.dummyMap) {
+            if(dummy.messageId == messageId) {
+                dummy.visitable?.let {
+                    when(dummy.isFail) {
+                        true -> getViewState().showRetryUploadImages(it as ImageUploadViewModel, true)
+                        false -> addDummyMessage(it)
+                    }
+                }
             }
         }
     }
@@ -1776,8 +1773,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if(messageId == getResultMessageId(intent)) {
             val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
             val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
-            showToasterError(errorMessage)
-            removeDummy(image)
+            onErrorUploadImage(errorMessage, image)
         }
     }
 

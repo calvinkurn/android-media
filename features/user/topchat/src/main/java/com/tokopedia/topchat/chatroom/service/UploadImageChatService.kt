@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
@@ -54,7 +55,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         const val ERROR_MESSAGE = "errorMessage"
         const val MESSAGE_ID = "messageId"
         const val BROADCAST_UPLOAD_IMAGE = "BROADCAST_UPLOAD_IMAGE"
-        var dummyMap = hashMapOf<String, ArrayList<Visitable<*>>>()
+        var dummyMap = arrayListOf<UploadImageDummy>()
 
         fun enqueueWork(context: Context, image: ImageUploadViewModel, messageId: String) {
             val intent = Intent(context, UploadImageChatService::class.java)
@@ -180,7 +181,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     private fun sendSuccessBroadcast(image: ImageUploadViewModel) {
         val result = Intent(BROADCAST_UPLOAD_IMAGE)
-
         val bundle = Bundle()
         bundle.putString(MESSAGE_ID, messageId)
         bundle.putSerializable(IMAGE, image)
@@ -191,8 +191,12 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     }
 
     private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
-        val result = Intent(BROADCAST_UPLOAD_IMAGE)
+        val position = findDummy(image)
+        position?.let {
+            dummyMap[it].isFail = true
+        }
 
+        val result = Intent(BROADCAST_UPLOAD_IMAGE)
         val bundle = Bundle()
         bundle.putString(MESSAGE_ID, messageId)
         bundle.putString(ERROR_MESSAGE, ErrorHandler.getErrorMessage(this, throwable))
@@ -203,7 +207,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
 
         firebaseLogError(throwable)
-        removeDummyOnList(image)
 
         val errorMessage = ErrorHandler.getErrorMessage(this@UploadImageChatService, throwable)
         notificationManager?.onFailedUpload(errorMessage)
@@ -211,20 +214,21 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     @Synchronized
     private fun removeDummyOnList(dummy: Visitable<*>) {
-        var tmpDummy: Visitable<*>? = null
-        dummyMap[messageId]?.let {
-            for(i in 0 until it.size) {
-                val temp = (it[i] as SendableViewModel)
-                if (temp.startTime == (dummy as SendableViewModel).startTime
-                        && temp.messageId == (dummy as SendableViewModel).messageId) {
-                    tmpDummy = it[i]
-                    break
-                }
-            }
-            tmpDummy?.let {tmp ->
-                it.remove(tmp)
+        val tmpDummy: Int? = findDummy(dummy)
+        tmpDummy?.let {tmp ->
+            dummyMap.removeAt(tmp)
+        }
+    }
+
+    private fun findDummy(dummy: Visitable<*>): Int? {
+        for(i in 0 until dummyMap.size) {
+            val temp = (dummyMap[i].visitable as SendableViewModel)
+            if (temp.startTime == (dummy as SendableViewModel).startTime
+                    && temp.messageId == (dummy as SendableViewModel).messageId) {
+                return i
             }
         }
+        return null
     }
 
     override fun onDestroy() {

@@ -37,6 +37,7 @@ import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
@@ -176,10 +177,6 @@ open class TopChatRoomPresenter @Inject constructor(
         val subscription = rxWebSocket?.subscribe(subscriber)
 
         mSubscription?.add(subscription)
-
-        if(UploadImageChatService.dummyMap[thisMessageId] == null) {
-            UploadImageChatService.dummyMap[thisMessageId] = arrayListOf()
-        }
     }
 
     override fun destroyWebSocket() {
@@ -343,7 +340,8 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun startUploadImages(image: ImageUploadViewModel) {
         if(isEnableUploadImageService()) {
             view?.addDummyMessage(image)
-            UploadImageChatService.dummyMap[thisMessageId]?.add(image)
+            val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
+            UploadImageChatService.dummyMap.add(uploadImageDummy)
             UploadImageChatService.enqueueWork(view.context, image, thisMessageId)
         } else {
             processDummyMessage(image)
