@@ -321,6 +321,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         try {
             val styledStockWording = MethodChecker.fromHtml(stockWording)
             stockTypography?.text = styledStockWording
+            stockTypography?.show()
         } catch (ex: Exception) {
             stockTypography?.hide()
         }
