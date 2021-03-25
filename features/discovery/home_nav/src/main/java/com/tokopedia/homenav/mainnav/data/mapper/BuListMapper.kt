@@ -8,7 +8,6 @@ class BuListMapper {
 
     fun mapToBuListModel(categoryData: List<DynamicHomeIconEntity.Category>?): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.add(SeparatorDataModel())
         categoryData?.toVisitable()?.let { visitableList.addAll(it) }
         return visitableList
     }
