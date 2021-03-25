@@ -50,6 +50,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
+import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
@@ -74,9 +75,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import timber.log.Timber;
-
-import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
-import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
 
 public class DeveloperOptionActivity extends BaseActivity {
 
@@ -523,12 +521,12 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        SharedPreferences cache = getSharedPreferences(CHUCK_ENABLED);
+        SharedPreferences cache = getSharedPreferences(DevOptConfig.CHUCK_ENABLED);
 
-        toggleChuck.setChecked(cache.getBoolean(IS_CHUCK_ENABLED, false));
+        toggleChuck.setChecked(cache.getBoolean(DevOptConfig.IS_CHUCK_ENABLED, false));
 
         toggleChuck.setOnCheckedChangeListener((compoundButton, state) -> {
-            cache.edit().putBoolean(IS_CHUCK_ENABLED, state).apply();
+            cache.edit().putBoolean(DevOptConfig.IS_CHUCK_ENABLED, state).apply();
         });
 
         vGoToScreenRecorder.setOnClickListener(new OneOnClick() {

@@ -45,10 +45,7 @@ public class TimberWrapper {
     }
 
     public static void initByRemoteConfig(@NonNull Context context, @NonNull RemoteConfig remoteConfig) {
-        boolean isDebug = GlobalConfig.DEBUG;
-        if (!isDebug) {
-            plantTimberReleaseTree(context, remoteConfig);
-        }
+        plantTimberReleaseTree(context, remoteConfig);
     }
 
     private static void plantTimberReleaseTree(Context context, @NonNull RemoteConfig remoteConfig) {
