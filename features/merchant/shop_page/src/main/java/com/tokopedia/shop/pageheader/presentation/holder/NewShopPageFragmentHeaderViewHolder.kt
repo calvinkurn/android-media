@@ -438,6 +438,10 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         return shopPageHeaderAdapter?.isPlayWidgetPlaceholderAvailable() ?: false
     }
 
+    fun updateShopName(shopName: String) {
+        shopPageHeaderAdapter?.setShopName(MethodChecker.fromHtml(shopName).toString())
+    }
+
 //    /**
 //     * Fetch the animation from http URL and play the animation
 //     */
