@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 class GeneratedHost(
         @SerializedName("server_id")
         @Expose
-        private val serverId: Int = 0,
+        private val serverId: String? = null,
 
         @SerializedName("upload_host")
         @Expose
@@ -16,7 +16,7 @@ class GeneratedHost(
 
         @SerializedName("user_id")
         @Expose
-        private val userId: Int = 0,
+        private val userId: String? = null,
 
         @SerializedName("message")
         @Expose
@@ -36,18 +36,18 @@ class GeneratedHost(
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeInt(serverId)
+        dest.writeString(serverId)
         dest.writeString(uploadHost)
-        dest.writeInt(userId)
+        dest.writeString(userId)
         dest.writeString(message)
         dest.writeString(status)
         dest.writeStringList(messageError)
     }
 
     protected constructor(parcel: Parcel) : this(
-            serverId = parcel.readInt(),
+            serverId = parcel.readString(),
             uploadHost = parcel.readString(),
-            userId = parcel.readInt(),
+            userId = parcel.readString(),
             message = parcel.readString(),
             status = parcel.readString(),
             messageError = parcel.createStringArrayList()

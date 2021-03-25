@@ -9,7 +9,6 @@ import com.tokopedia.search.result.network.interceptor.DebugInterceptorModule
 import com.tokopedia.search.di.scope.SearchScope
 import dagger.Provides
 import retrofit2.Retrofit
-import com.tokopedia.search.result.network.service.BrowseApi
 import com.tokopedia.search.di.qualifier.SearchQualifier
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
