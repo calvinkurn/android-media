@@ -37,6 +37,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginEnd="@dimen/margin_vs"
+                android:contentDescription="@null"
                 android:visibility="gone">
             </ImageView>
             <TextView
