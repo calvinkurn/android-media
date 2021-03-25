@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.analytic.ShopPageShowcaseTracking
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -72,6 +73,9 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var shopPageShowcaseTracking: ShopPageShowcaseTracking
 
     private val shopPageShowcaseViewModel: ShopPageShowcaseViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopPageShowcaseViewModel::class.java)
