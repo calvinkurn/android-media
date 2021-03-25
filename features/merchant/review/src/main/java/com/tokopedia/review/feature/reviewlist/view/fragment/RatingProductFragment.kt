@@ -185,7 +185,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        initTickerReviewProduct()
+        initTickerReviewReminder()
         initSearchBar()
         initViewBottomSheet()
         initChipsSort(view)
@@ -769,10 +769,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    private fun initTickerReviewProduct() {
+    private fun initTickerReviewReminder() {
         prefs?.let {
             if (!it.getBoolean(ReviewConstants.HAS_TICKER_REVIEW_REMINDER, false)) {
-                tickerInboxReview?.apply {
+                tickerReviewReminder?.apply {
                     setHtmlDescription(getString(R.string.review_reminder_ticker_description))
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -787,7 +787,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     show()
                 }
             } else {
-                tickerInboxReview.hide()
+                tickerReviewReminder.hide()
             }
         }
     }

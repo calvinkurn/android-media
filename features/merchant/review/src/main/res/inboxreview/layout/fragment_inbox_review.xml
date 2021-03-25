@@ -84,6 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_4"
             android:alpha="0.2"
+            android:contentDescription="@string/review_reminder_content_description_top_shadow"
             android:scaleY="-1"
             android:src="@drawable/top_bar_shadow"
             app:layout_constraintBottom_toTopOf="@id/footer_reminder_message" />
@@ -92,11 +93,11 @@
             android:id="@+id/buttonReviewReminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/review_reminder_button_review_reminder"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_8"
+            android:text="@string/review_reminder_button_review_reminder"
             app:unifyButtonSize="large"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />

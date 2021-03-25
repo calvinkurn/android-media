@@ -321,5 +321,6 @@
     <string name="review_reminder_bottom_sheet_edit_message_hint_label">Isi Pesan</string>
     <string name="review_reminder_bottom_sheet_edit_message_error_message">Oops, sudah melebihi maks. karakter.</string>
     <string name="review_reminder_snackbar_error_action">Refresh</string>
+    <string name="review_reminder_content_description_top_shadow">Top Shadow</string>
 
 </resources>

@@ -67,8 +67,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var nestedScrollView: NestedScrollView? = null
 
-    private var dialogSend: DialogUnify? = null
-
     private var estimation: ProductrevGetReminderCounter? = null
     private var productrevGetReminderList: ProductrevGetReminderList? = null
     private var products = emptyList<ProductrevGetReminderData>()
@@ -120,10 +118,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-        dialogSend = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setPrimaryCTAText(getString(R.string.review_reminder_dialog_send_button_primary))
-            setSecondaryCTAText(getString(R.string.review_reminder_dialog_send_button_secondary))
-        }
 
         rvProducts?.apply {
             layoutManager = LinearLayoutManager(context)
