@@ -63,6 +63,7 @@ object IconList {
         ): IconToolbar {
             return IconToolbar(
                     id = ID_INBOX,
+                    imageRes = ID_INBOX,
                     applink = ApplinkConst.INBOX,
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
