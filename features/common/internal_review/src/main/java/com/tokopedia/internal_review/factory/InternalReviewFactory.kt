@@ -9,13 +9,10 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.internal_review.analytics.CustomerReviewTracking
 import com.tokopedia.internal_review.analytics.ReviewTracking
 import com.tokopedia.internal_review.analytics.SellerReviewTracking
+import com.tokopedia.internal_review.common.InternalReviewHelper
 import com.tokopedia.internal_review.common.ReviewRemoteConfig
 import com.tokopedia.internal_review.common.SellerReviewCacheHandler
-import com.tokopedia.internal_review.common.InternalReviewHelper
 import com.tokopedia.internal_review.domain.usecase.SendReviewUseCase
-import com.tokopedia.internal_review.view.bottomsheet.FeedbackBottomSheet
-import com.tokopedia.internal_review.view.bottomsheet.RatingBottomSheet
-import com.tokopedia.internal_review.view.bottomsheet.ThankYouBottomSheet
 import com.tokopedia.internal_review.view.viewmodel.ReviewViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
@@ -46,24 +43,6 @@ fun createReviewViewModel(storeOwner: ViewModelStoreOwner) : ReviewViewModel {
     val viewModelFactory = ReviewViewModelFactory(reviewUseCase, dispatcher)
 
     return ViewModelProvider(storeOwner, viewModelFactory).get(ReviewViewModel::class.java)
-}
-
-fun createReviewFeedbackBottomSheet(context: Context) : FeedbackBottomSheet {
-    val userSession = UserSession(context)
-    val reviewTracking = createReviewTracking(userSession)
-    return FeedbackBottomSheet(reviewTracking, userSession)
-}
-
-fun createReviewRatingBottomSheet(context: Context) : RatingBottomSheet {
-    val userSession = UserSession(context)
-    val reviewTracking = createReviewTracking(userSession)
-    return RatingBottomSheet(reviewTracking, userSession)
-}
-
-fun createReviewThankyouBottomSheet(context: Context) : ThankYouBottomSheet {
-    val userSession = UserSession(context)
-    val reviewTracking = createReviewTracking(userSession)
-    return ThankYouBottomSheet(reviewTracking, userSession)
 }
 
 

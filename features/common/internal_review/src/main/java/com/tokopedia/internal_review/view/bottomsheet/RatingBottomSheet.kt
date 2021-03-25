@@ -13,11 +13,9 @@ import com.tokopedia.internal_review.analytics.ReviewTracking
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.internal_review.common.Const
 import com.tokopedia.internal_review.common.InternalReviewUtils
-import com.tokopedia.internal_review.factory.createReviewRatingBottomSheet
 import com.tokopedia.internal_review.factory.createReviewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sir_rating_bottom_sheet.view.*
 import java.net.UnknownHostException
 
@@ -25,15 +23,14 @@ import java.net.UnknownHostException
  * Created By @ilhamsuaib on 20/01/21
  */
 
-class RatingBottomSheet(tracker: ReviewTracking,
-                        userSession: UserSessionInterface) : BaseBottomSheet(tracker, userSession) {
+class RatingBottomSheet : BaseBottomSheet() {
 
     companion object {
         const val TAG = "SirRatingBottomSheet"
         private const val PAGE_NAME = "popup rating"
 
-        fun createInstance(context: Context): RatingBottomSheet {
-            return createReviewRatingBottomSheet(context).apply {
+        fun createInstance(): RatingBottomSheet {
+            return RatingBottomSheet().apply {
                 showCloseIcon = false
                 showHeader = false
             }

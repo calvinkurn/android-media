@@ -11,22 +11,26 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.R
 import com.tokopedia.internal_review.analytics.ReviewTracking
 import com.tokopedia.internal_review.common.Const
+import com.tokopedia.internal_review.factory.createReviewTracking
 import com.tokopedia.internal_review.view.model.SendReviewParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.UserSession
 import java.net.UnknownHostException
 
 /**
  * Created By @ilhamsuaib on 22/01/21
  */
 
-abstract class BaseBottomSheet constructor(val tracker: ReviewTracking,
-                                           val userSession: UserSessionInterface) : BottomSheetUnify() {
+abstract class BaseBottomSheet : BottomSheetUnify() {
 
     private var onDestroyCallback: (() -> Unit)? = null
     protected var childView: View? = null
     protected var isSubmitted = false
+
+    val userSession by lazy { UserSession(context?.applicationContext) }
+    val tracker by lazy { createReviewTracking(userSession) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -125,7 +125,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
-    private val reviewHelper by lazy { createReviewHelper(context) }
+    private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
     private var endlessRecyclerViewScrollListener: HomeAccountEndlessScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var trackingQueue: TrackingQueue? = null

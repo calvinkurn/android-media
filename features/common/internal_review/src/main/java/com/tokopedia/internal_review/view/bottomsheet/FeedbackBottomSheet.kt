@@ -12,11 +12,9 @@ import com.tokopedia.internal_review.analytics.ReviewTracking
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.internal_review.common.Const
 import com.tokopedia.internal_review.common.InternalReviewUtils
-import com.tokopedia.internal_review.factory.createReviewFeedbackBottomSheet
 import com.tokopedia.internal_review.factory.createReviewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sir_feedback_bottom_sheet.view.*
 import java.net.UnknownHostException
 
@@ -24,16 +22,15 @@ import java.net.UnknownHostException
  * Created By @ilhamsuaib on 22/01/21
  */
 
-class FeedbackBottomSheet(tracker: ReviewTracking,
-                          userSession: UserSessionInterface) : BaseBottomSheet(tracker, userSession) {
+class FeedbackBottomSheet : BaseBottomSheet() {
 
     companion object {
         const val TAG = "SirFeedbackBottomSheet"
         private const val KEY_RATING = "key_rating"
         private const val PAGE_NAME = "popup feedback"
 
-        fun createInstance(context: Context, rating: Int): FeedbackBottomSheet {
-            return createReviewFeedbackBottomSheet(context).apply {
+        fun createInstance(rating: Int): FeedbackBottomSheet {
+            return FeedbackBottomSheet().apply {
                 showCloseIcon = false
                 showHeader = false
                 arguments = Bundle().apply {

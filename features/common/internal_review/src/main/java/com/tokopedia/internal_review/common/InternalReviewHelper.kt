@@ -109,7 +109,7 @@ class InternalReviewHelper constructor(
         }
 
         val ratingBottomSheet = (fm.findFragmentByTag(RatingBottomSheet.TAG) as? RatingBottomSheet)
-                ?: RatingBottomSheet.createInstance(context)
+                ?: RatingBottomSheet.createInstance()
 
         ratingBottomSheet.setOnDestroyListener {
             popupAlreadyShown = false
@@ -138,7 +138,7 @@ class InternalReviewHelper constructor(
         if (fm.isStateSaved || !InternalReviewUtils.getConnectionStatus(context)) return
 
         val feedbackBottomSheet = (fm.findFragmentByTag(FeedbackBottomSheet.TAG) as? FeedbackBottomSheet)
-                ?: FeedbackBottomSheet.createInstance(context, rating)
+                ?: FeedbackBottomSheet.createInstance(rating)
 
         feedbackBottomSheet.setOnSubmittedListener {
             handler.postDelayed({
@@ -154,7 +154,7 @@ class InternalReviewHelper constructor(
         if (fm.isStateSaved) return
 
         val thankYouBottomSheet = (fm.findFragmentByTag(ThankYouBottomSheet.TAG) as? ThankYouBottomSheet)
-                ?: ThankYouBottomSheet.createInstance(context)
+                ?: ThankYouBottomSheet.createInstance()
 
         showBottomSheet(fm, thankYouBottomSheet)
     }

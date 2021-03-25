@@ -97,7 +97,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
-    private val reviewHelper by lazy { createReviewHelper(context) }
+    private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

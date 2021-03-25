@@ -73,7 +73,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
 
-    private val sellerReviewHelper by lazy { createReviewHelper(this@SellerHomeActivity) }
+    private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
