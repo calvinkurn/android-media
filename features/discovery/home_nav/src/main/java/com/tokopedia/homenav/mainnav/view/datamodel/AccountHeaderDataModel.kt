@@ -114,11 +114,18 @@ data class AccountHeaderDataModel(
 
     fun setUserShopName(shopName: String = "", shopId: String = "", shopOrderCount: Int, isError: Boolean = false, isLoading: Boolean = false) {
         this.hasShop = shopId != DEFAULT_SHOP_ID_NOT_OPEN
-        this.shopName = if(hasShop) shopName else DEFAULT_SHOP_ID_NOT_OPEN_TEXT
-        this.shopId = shopId
-        this.shopOrderCount = shopOrderCount
         this.isGetShopError = isError
         this.isGetShopLoading = isLoading
+        if (hasShop) {
+            this.shopName =shopName
+            this.shopId = shopId
+            this.shopOrderCount = shopOrderCount
+        } else {
+            this.shopName = DEFAULT_SHOP_ID_NOT_OPEN_TEXT
+            this.shopId = DEFAULT_SHOP_ID_NOT_OPEN
+            this.shopOrderCount = 0
+        }
+
     }
 
     fun setAdminData(adminRoleText: String?, canGoToSellerAccount: Boolean) {

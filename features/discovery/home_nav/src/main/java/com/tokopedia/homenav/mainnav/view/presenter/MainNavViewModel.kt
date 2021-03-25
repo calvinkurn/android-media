@@ -439,8 +439,6 @@ class MainNavViewModel @Inject constructor(
                     it.getMenu(ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
-            val showOpenShopTicker = userSession.get().isLoggedIn && !userSession.get().hasShop()
-            if (showOpenShopTicker) transactionDataList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
             return transactionDataList
         }
         return listOf()
