@@ -79,7 +79,6 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                             ),
                             androidPageName = recommendationTrackingModel.androidPageName,
                             headerTitle = recommendationTrackingModel.headerTitle,
-                            chipsTitle = comparisonModel.productCardModel.productName,
                             recomPageName = comparisonModel.recommendationItem.pageName,
                             isTopads = comparisonModel.recommendationItem.isTopAds,
                             widgetType = comparisonModel.recommendationItem.type,

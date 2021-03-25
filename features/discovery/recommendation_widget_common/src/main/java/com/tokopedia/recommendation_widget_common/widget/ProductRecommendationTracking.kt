@@ -18,7 +18,7 @@ object ProductRecommendationTracking: BaseTrackerConst() {
             recommendationItems: List<RecommendationItem>,
             androidPageName: String,
             headerTitle: String,
-            chipsTitle: String,
+            chipsTitle: String = "",
             recomPageName: String,
             recommendationType: String,
             isTopads: Boolean,
