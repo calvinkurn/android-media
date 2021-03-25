@@ -14,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by hendry on 16/08/18.
  */
 class ShopNoteReorderViewHolder(itemView: View,
-                                private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopNoteUiModel>(itemView) {
+                                private var onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopNoteUiModel>(itemView) {
 
     private var tvNoteName: Typography? = null
     private var tvLastUpdate: Typography? = null
@@ -30,18 +30,13 @@ class ShopNoteReorderViewHolder(itemView: View,
             tvNoteName?.text = shopNoteUiModel.title
             tvLastUpdate?.text = toReadableString(FORMAT_DATE_TIME, shopNoteUiModel.updateTimeUTC)
 
-            if (shopNoteUiModel.terms) {
-                ivReorder?.visibility = View.GONE
-                background = context.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
-            } else {
-                ivReorder?.setOnTouchListener { _, event ->
-                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                        onStartDragListener?.onStartDrag(this@ShopNoteReorderViewHolder)
-                    }
-                    false
+            ivReorder?.setOnTouchListener { _, event ->
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    onStartDragListener?.onStartDrag(this@ShopNoteReorderViewHolder)
                 }
-                ivReorder?.visibility = View.VISIBLE
+                false
             }
+            ivReorder?.visibility = View.VISIBLE
         }
     }
 

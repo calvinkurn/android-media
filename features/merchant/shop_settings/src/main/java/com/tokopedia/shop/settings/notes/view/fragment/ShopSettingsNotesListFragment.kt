@@ -48,6 +48,8 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     private var shopNoteModels: ArrayList<ShopNoteUiModel>? = null
     private var shopNoteAdapter: ShopNoteAdapter? = null
     private var progressDialog: ProgressDialog? = null
+    private var addNoteBottomSheet: MenuBottomSheet? = null
+    private var iconMoreBottomSheet: MenuBottomSheet? = null
     private var shopNoteIdToDelete: String? = null
     private var needReload: Boolean = false
 
@@ -119,20 +121,20 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
         context?.let {
             val itemList = arrayListOf<String>()
             itemList.addAll(resources.getStringArray(R.array.shop_note_type))
-            val bottomSheet = MenuBottomSheet.newInstance(itemList)
-            bottomSheet.setListener(object : MenuViewHolder.ItemMenuListener {
+            addNoteBottomSheet = MenuBottomSheet.newInstance(itemList)
+            addNoteBottomSheet?.setListener(object : MenuViewHolder.ItemMenuListener {
                 override fun onItemMenuClicked(text: String, position: Int) {
                     if (position == 0) {
                         goToAddNote(false)
                     } else {
                         goToAddNote(true)
                     }
-                    bottomSheet.dismiss()
+                    addNoteBottomSheet?.dismiss()
                 }
                 override fun itemMenuSize(): Int = itemList.size
             })
-            bottomSheet.showHeader = false
-            bottomSheet.show(childFragmentManager, "menu_bottom_sheet")
+            addNoteBottomSheet?.showHeader = false
+            addNoteBottomSheet?.show(childFragmentManager, "menu_bottom_sheet")
         }
     }
 
@@ -205,8 +207,8 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     override fun onIconMoreClicked(shopNoteUiModel: ShopNoteUiModel) {
         val itemList = arrayListOf<String>()
         itemList.addAll(resources.getStringArray(R.array.shop_note_menu_more))
-        val bottomSheet = MenuBottomSheet.newInstance(itemList)
-        bottomSheet.setListener(object : MenuViewHolder.ItemMenuListener {
+        iconMoreBottomSheet = MenuBottomSheet.newInstance(itemList)
+        iconMoreBottomSheet?.setListener(object : MenuViewHolder.ItemMenuListener {
             override fun onItemMenuClicked(text: String, position: Int) {
                 if (position == 0) {
                     goToEditNote(shopNoteUiModel)
@@ -228,20 +230,18 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                         }
                     }
                 }
-                bottomSheet.dismiss()
+                iconMoreBottomSheet?.dismiss()
             }
             override fun itemMenuSize(): Int = itemList.size
         })
-        bottomSheet.showHeader = false
-        bottomSheet.show(childFragmentManager, "menu_bottom_sheet")
+        iconMoreBottomSheet?.showHeader = false
+        iconMoreBottomSheet?.show(childFragmentManager, "menu_bottom_sheet")
     }
 
     override fun onSuccessGetShopNotes(shopNoteModels: ArrayList<ShopNoteUiModel>) {
         this.shopNoteModels = shopNoteModels
         renderList(shopNoteModels, false)
-        activity?.let {
-            it.invalidateOptionsMenu()
-        }
+        activity?.invalidateOptionsMenu()
     }
 
     override fun onErrorGetShopNotes(throwable: Throwable) {
