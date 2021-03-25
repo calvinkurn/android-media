@@ -36,7 +36,7 @@ class ChangeShippingAddressGqlUseCase @Inject constructor(@Named(CHANGE_SHIPPING
                     if (gqlResponse != null) {
                         SetShippingAddressData().apply {
                             isSuccess = gqlResponse.changeShippingAddressResponse.dataResponse.success == 1
-                            messages = gqlResponse.changeShippingAddressResponse.dataResponse.messages
+                            messages = gqlResponse.changeShippingAddressResponse.dataResponse.messages ?: emptyList()
                         }
                     } else {
                         throw CartResponseErrorException(CART_ERROR_GLOBAL)
