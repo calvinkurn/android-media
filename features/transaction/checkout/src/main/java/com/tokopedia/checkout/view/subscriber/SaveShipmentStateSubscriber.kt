@@ -4,13 +4,13 @@ import com.tokopedia.checkout.domain.model.saveshipmentstate.SaveShipmentStateDa
 import rx.Subscriber
 import timber.log.Timber
 
-class SaveShipmentStateSubscriber : Subscriber<SaveShipmentStateData?>() {
+class SaveShipmentStateSubscriber : Subscriber<SaveShipmentStateData>() {
     override fun onCompleted() {}
     override fun onError(e: Throwable) {
         Timber.d(e)
     }
 
-    override fun onNext(saveShipmentStateData: SaveShipmentStateData?) {
+    override fun onNext(saveShipmentStateData: SaveShipmentStateData) {
         // No-op
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.model.cartsingleshipment;
+package com.tokopedia.checkout.view.uimodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
