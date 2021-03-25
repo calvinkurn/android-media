@@ -47,6 +47,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDat
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrationReviewModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
+import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener;
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity;
 import com.tokopedia.user.session.UserSession;
 
@@ -61,7 +62,7 @@ import javax.inject.Inject;
  */
 
 public class InboxReputationFragment extends BaseDaggerFragment
-        implements InboxReputation.View, SearchInputView.Listener, SellerMigrationReviewViewHolder.SellerMigrationReviewClickListener {
+        implements InboxReputation.View, SearchInputView.Listener, SellerMigrationReviewViewHolder.SellerMigrationReviewClickListener, OnTabChangeListener {
 
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     public final static String PARAM_TAB = "tab";
@@ -514,5 +515,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     appLinks);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onTabChange(int position) {
+        // No Op
     }
 }

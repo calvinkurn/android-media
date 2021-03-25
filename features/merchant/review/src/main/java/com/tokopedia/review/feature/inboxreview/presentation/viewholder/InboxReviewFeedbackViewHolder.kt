@@ -5,8 +5,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
@@ -177,11 +175,13 @@ class InboxReviewFeedbackViewHolder(view: View,
     private fun showKejarUlasanLabel(isKejarUlasan: Boolean) {
         with(itemView) {
             kejarUlasanLabel?.showWithCondition(isKejarUlasan)
-            kejarUlasanLabel?.isVisibleOnTheScreen(onViewVisible = {
-                if(feedbackInboxReviewListener.isFirstTimeSeeKejarUlasan()) {
-                    CoachMark2(context).showCoachMark(arrayListOf(CoachMark2Item(kejarUlasanLabel, context.getString(R.string.kejar_ulasan_coach_mark_title), context.getString(R.string.kejar_ulasan_coach_mark_subtitle), CoachMark2.POSITION_TOP)))
-                }
-            }, onViewNotVisible = {})
+            if(isKejarUlasan) {
+                kejarUlasanLabel?.isVisibleOnTheScreen(onViewVisible = {
+                    feedbackInboxReviewListener.showCoachMark(kejarUlasanLabel)
+                }, onViewNotVisible = {
+                    feedbackInboxReviewListener.hideCoachMark()
+                })
+            }
         }
     }
 

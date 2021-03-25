@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
@@ -30,9 +32,9 @@ import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
 import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity
+import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
-
 import com.tokopedia.review.feature.inboxreview.di.component.InboxReviewComponent
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInboxReviewListener
@@ -48,7 +50,6 @@ import com.tokopedia.review.feature.inboxreview.util.InboxReviewPreference
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
-
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.*
@@ -56,12 +57,11 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_inbox_review.*
-import kotlinx.coroutines.isActive
 import javax.inject.Inject
 
 class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(),
         HasComponent<InboxReviewComponent>,
-        FeedbackInboxReviewListener, GlobalErrorStateListener {
+        FeedbackInboxReviewListener, GlobalErrorStateListener, OnTabChangeListener {
 
     companion object {
         fun createInstance(): InboxReviewFragment {
@@ -111,6 +111,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private var prefs: SharedPreferences? = null
 
+    private var coachmark: CoachMark2? = null
+    private var coachmarkItems: ArrayList<CoachMark2Item> = arrayListOf()
+
     override fun getScreenName(): String {
         return getString(R.string.title_inbox_review)
     }
@@ -134,6 +137,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         initSortFilterInboxReview()
         initRatingFilterList()
         setupMarginSortFilter()
+        initCoachMark()
     }
 
     override fun onResume() {
@@ -280,14 +284,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 inboxReviewViewModel.userSession.shopId.orEmpty(), productId)
     }
 
-    override fun isFirstTimeSeeKejarUlasan(): Boolean {
-        val isFirstTimeSeeKejarUlasan = inboxReviewPreference.isFirstTimeSeeKejarUlasan(inboxReviewViewModel.userSession.userId)
-        if(isFirstTimeSeeKejarUlasan) {
-            inboxReviewPreference.setFirstTimeSeeKejarUlasan(inboxReviewViewModel.userSession.userId)
-        }
-        return isFirstTimeSeeKejarUlasan
-    }
-
     override fun onBackgroundMarginIsReplied(isNotReplied: Boolean) {
         val paramsMargin = sortFilterInboxReview?.layoutParams as? LinearLayout.LayoutParams
         if (isNotReplied) {
@@ -299,6 +295,32 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onActionGlobalErrorStateClicked() {
         loadInitialData()
+    }
+
+    override fun showCoachMark(view: View?) {
+        context?.let {
+            if(isFirstTimeSeeKejarUlasan()) {
+                if(coachmarkItems.isEmpty()) {
+                    if(view != null) {
+                        coachmarkItems = createCoachMarkItems(view)
+                    }
+                }
+                if(coachmarkItems.isNotEmpty()) {
+                    coachmark?.showCoachMark(coachmarkItems, null, 0)
+                    coachmark?.setOnDismissListener {
+                        setFirstTimeSeeKejarUlasan()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onTabChange(position: Int) {
+        coachmark?.dismissCoachMark()
+    }
+
+    override fun hideCoachMark() {
+        coachmark?.hideCoachMark()
     }
 
     private fun setupMarginSortFilter() {
@@ -635,4 +657,22 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         val ratingFilter = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
         return statusFilter > 0 || ratingFilter > 0
     }
+
+    private fun createCoachMarkItems(kejarUlasanLabel: View): ArrayList<CoachMark2Item> {
+        return arrayListOf(CoachMark2Item(kejarUlasanLabel, context?.getString(R.string.kejar_ulasan_coach_mark_title) ?: "", context?.getString(R.string.kejar_ulasan_coach_mark_subtitle) ?: "", CoachMark2.POSITION_TOP))
+    }
+
+    private fun isFirstTimeSeeKejarUlasan(): Boolean {
+        return inboxReviewPreference.isFirstTimeSeeKejarUlasan(inboxReviewViewModel.userSession.userId)
+
+    }
+
+    private fun setFirstTimeSeeKejarUlasan() {
+        inboxReviewPreference.setFirstTimeSeeKejarUlasan(inboxReviewViewModel.userSession.userId)
+    }
+
+    private fun initCoachMark() {
+        coachmark = context?.let { CoachMark2(it) }
+    }
+
 }

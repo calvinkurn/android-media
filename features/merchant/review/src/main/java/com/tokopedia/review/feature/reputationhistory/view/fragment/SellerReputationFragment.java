@@ -34,6 +34,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
 import com.tokopedia.review.R;
 import com.tokopedia.review.ReviewInstance;
+import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener;
 import com.tokopedia.review.feature.reputationhistory.di.DaggerSellerReputationComponent;
 import com.tokopedia.review.feature.reputationhistory.di.SellerReputationModule;
 import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
@@ -67,7 +68,7 @@ import rx.schedulers.Schedulers;
  */
 public class SellerReputationFragment extends BaseDaggerFragment
         implements SellerReputationView, RetryDataBinder.OnRetryListener,
-        DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult {
+        DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult, OnTabChangeListener {
 
     public static final String TAG = "SellerReputationFragmen";
 
@@ -692,5 +693,10 @@ public class SellerReputationFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return AppScreen.SCREEN_SELLER_REP_HISTORY;
+    }
+
+    @Override
+    public void onTabChange(int position) {
+        //  No Op
     }
 }
