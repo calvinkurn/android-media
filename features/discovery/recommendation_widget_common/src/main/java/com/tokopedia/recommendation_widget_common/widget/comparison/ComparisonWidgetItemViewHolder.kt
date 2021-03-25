@@ -23,7 +23,7 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
             comparisonListModel: ComparisonListModel,
             comparisonWidgetInterface: ComparisonWidgetInterface,
             recommendationTrackingModel: RecommendationTrackingModel,
-            trackingQueue: TrackingQueue,
+            trackingQueue: TrackingQueue?,
             userSession: UserSessionInterface
     ) {
         view.specsView.setSpecsInfo(comparisonModel.specsModel)
@@ -72,7 +72,7 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                         product.imageUrl
                 )
             }
-            trackingQueue.putEETracking(
+            trackingQueue?.putEETracking(
                     ProductRecommendationTracking.getImpressionProductTracking(
                             recommendationItems = listOf(
                                     comparisonModel.recommendationItem

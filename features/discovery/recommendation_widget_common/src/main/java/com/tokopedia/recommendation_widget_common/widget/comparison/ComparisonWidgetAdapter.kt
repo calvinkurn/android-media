@@ -12,7 +12,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class ComparisonWidgetAdapter(
         var comparisonListModel: ComparisonListModel,
         val comparisonWidgetInterface: ComparisonWidgetInterface,
-        val trackingQueue: TrackingQueue,
+        val trackingQueue: TrackingQueue?,
         val recommendationTrackingModel: RecommendationTrackingModel,
         val userSessionInterface: UserSessionInterface
 ): RecyclerView.Adapter<ComparisonWidgetItemViewHolder>() {

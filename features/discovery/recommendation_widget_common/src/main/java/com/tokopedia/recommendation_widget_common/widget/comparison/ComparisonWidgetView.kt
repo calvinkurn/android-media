@@ -37,7 +37,6 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
     private var adapter: ComparisonWidgetAdapter? = null
     private var disableScrollTemp: Boolean = false
 
-    private var trackingQueue = TrackingQueue(context)
     private var userSessionInterface = UserSession(context)
 
     private val masterJob = SupervisorJob()
@@ -60,7 +59,8 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
             stickyTitleView: StickyTitleView?,
             comparisonWidgetInterface: ComparisonWidgetInterface,
             recommendationTrackingModel: RecommendationTrackingModel,
-            stickyTitleInterface: StickyTitleInterface
+            stickyTitleInterface: StickyTitleInterface,
+            trackingQueue: TrackingQueue?
     ) {
         launch {
             try {

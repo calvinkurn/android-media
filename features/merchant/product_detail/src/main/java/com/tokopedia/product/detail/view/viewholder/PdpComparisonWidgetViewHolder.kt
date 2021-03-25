@@ -54,7 +54,8 @@ class PdpComparisonWidgetViewHolder(
                     override fun onStickyTitleShow(isShowing: Boolean) {
 
                     }
-                }
+                },
+                listener.getFragmentTrackingQueue()
         )
         this.componentTrackDataModel = getComponentTrackData(element)
     }

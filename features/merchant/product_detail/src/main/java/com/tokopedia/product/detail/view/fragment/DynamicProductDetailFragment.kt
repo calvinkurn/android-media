@@ -3397,6 +3397,10 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
+    override fun getFragmentTrackingQueue(): TrackingQueue? {
+        return trackingQueue
+    }
+
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
         if (!isNavOld()) {
             ifNavRevamp.invoke()
