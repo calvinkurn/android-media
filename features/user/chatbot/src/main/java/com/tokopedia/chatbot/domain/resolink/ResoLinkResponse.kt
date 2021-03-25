@@ -25,7 +25,7 @@ data class ResoLinkResponse(
             ) {
                 data class Reso(
                     @SerializedName("id")
-                    val id: Int?
+                    val id: String?
                 )
             }
         }
