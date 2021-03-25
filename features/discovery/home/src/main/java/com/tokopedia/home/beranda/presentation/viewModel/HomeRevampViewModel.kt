@@ -541,11 +541,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getReviewData() {
-        if (isNeedShowGeoLocation) {
-            onRemoveSuggestedReview()
-        } else {
-            getSuggestedReview()
-        }
+        getSuggestedReview()
     }
 
     private fun getSuggestedReview() {
