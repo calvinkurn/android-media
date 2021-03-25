@@ -667,18 +667,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         //inbox
-//        if (!isInboxCoachmarkShown(requireContext())) {
-//            val inboxIcon = navToolbar?.getInboxIconView()
-//            inboxIcon?.let {
-//                this.add(
-//                        CoachMark2Item(
-//                                inboxIcon,
-//                                getString(R.string.onboarding_coachmark_inbox_title),
-//                                getString(R.string.onboarding_coachmark_inbox_description)
-//                        )
-//                )
-//            }
-//        }
+        if (!isInboxCoachmarkShown(requireContext())) {
+            val inboxIcon = navToolbar?.getInboxIconView()
+            inboxIcon?.let {
+                this.add(
+                        CoachMark2Item(
+                                inboxIcon,
+                                getString(R.string.onboarding_coachmark_inbox_title),
+                                getString(R.string.onboarding_coachmark_inbox_description)
+                        )
+                )
+            }
+        }
 
         //add location
         if (isLocalizingAddressNeedShowCoachMark(requireContext())) {

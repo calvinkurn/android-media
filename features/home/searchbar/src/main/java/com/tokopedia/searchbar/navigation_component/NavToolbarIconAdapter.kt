@@ -138,7 +138,7 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
         return null
     }
     fun getInboxIconPosition(): Int? {
-        val model = iconConfig.iconList.find { it.id == IconList.ID_MESSAGE }
+        val model = iconConfig.iconList.find { it.id == IconList.ID_INBOX }
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
