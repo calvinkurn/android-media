@@ -217,11 +217,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_INFO_BUTTON
-        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
-        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
-        userId?.let {
-            map[GiftBoxTrackerConstants.USER_ID] = userId
-        }
+        updateCommonItems(userId,map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -231,11 +227,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_REWARD_DETAIL
-        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
-        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
-        userId?.let {
-            map[GiftBoxTrackerConstants.USER_ID] = userId
-        }
+        updateCommonItems(userId,map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -245,11 +237,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_T_AND_C
-        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
-        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
-        userId?.let {
-            map[GiftBoxTrackerConstants.USER_ID] = userId
-        }
+        updateCommonItems(userId,map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -259,11 +247,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_PRODUCT_RECOM
-        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
-        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
-        userId?.let {
-            map[GiftBoxTrackerConstants.USER_ID] = userId
-        }
+        updateCommonItems(userId,map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -282,8 +266,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_PRODUCT
         map[GiftBoxTrackerConstants.EVENT_LABEL] = productId
-        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
-        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
+        updateCommonItems(userId,map)
         val loginText:String = if (userId.isNullOrEmpty()) {
             "nonlogin"
         } else {
@@ -297,10 +280,6 @@ object GtmEvents {
                 productName,
                 productVariant,
                 productPrice)
-
-        userId?.let {
-            map[GiftBoxTrackerConstants.USER_ID] = userId
-        }
 
         getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
     }
@@ -338,8 +317,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_PRODUCT
         map[GiftBoxTrackerConstants.EVENT_LABEL] = productId
-        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
-        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
+        updateCommonItems(userId,map)
         val loginText = if (userId.isNullOrEmpty()) {
             "nonlogin"
         } else {
@@ -355,9 +333,6 @@ object GtmEvents {
                 productVariant,
                 productPrice)
 
-        userId?.let {
-            map[GiftBoxTrackerConstants.USER_ID] = userId
-        }
         getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
     }
 
@@ -392,7 +367,8 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_CEK_DAFTAR_HADIAH_BUTTON
-        updateCommonItemsForBackButtonDialog(userId,map)
+        updateCommonItemsForBackButtonDialog(map)
+        updateCommonItems(userId,map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -402,7 +378,8 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_KE_HOME_BUTTON
-        updateCommonItemsForBackButtonDialog(userId,map)
+        updateCommonItemsForBackButtonDialog(map)
+        updateCommonItems(userId,map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -412,12 +389,16 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_RP_0_POP_UP
-        updateCommonItemsForBackButtonDialog(userId,map)
+        updateCommonItemsForBackButtonDialog(map)
+        updateCommonItems(userId,map)
         getTracker().sendGeneralEvent(map)
     }
 
-    private fun updateCommonItemsForBackButtonDialog(userId: String?,map:MutableMap<String,Any>){
+    private fun updateCommonItemsForBackButtonDialog(map:MutableMap<String,Any>){
         map[GiftBoxTrackerConstants.EVENT_LABEL] = ""
+    }
+
+    private fun updateCommonItems(userId: String?,map:MutableMap<String,Any>){
         map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
         map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
         userId?.let {
@@ -426,15 +407,14 @@ object GtmEvents {
     }
 
     fun openDailyGiftBoxPage(userId: String?){
-        val map = mutableMapOf<String,Any>()
+        val map = mutableMapOf<String,String>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.OPEN_SCREEN
         map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
         map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
-        map[GiftBoxTrackerConstants.SCREEN_NAME] = GiftBoxTrackerConstants.DAILY_GIFT_BOX
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
-        getTracker().sendGeneralEvent(map)
+        getTracker().sendScreenAuthenticated(GiftBoxTrackerConstants.DAILY_GIFT_BOX,map)
     }
 
     fun impressionProductRecom(userId: String?){
@@ -442,11 +422,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_PRODUCT_RECOM
-        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
-        map[GiftBoxTrackerConstants.SCREEN_NAME] = GiftBoxTrackerConstants.DAILY_GIFT_BOX
-        userId?.let {
-            map[GiftBoxTrackerConstants.USER_ID] = userId
-        }
+        updateCommonItems(userId,map)
         getTracker().sendGeneralEvent(map)
     }
 
