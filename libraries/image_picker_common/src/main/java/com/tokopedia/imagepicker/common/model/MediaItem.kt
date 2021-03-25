@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import java.io.File
+import com.tokopedia.utils.image.ImageProcessingUtil
+
 
 class MediaItem(val id: Long,
                 @Deprecated("should use content Uri instead")
@@ -33,20 +35,9 @@ class MediaItem(val id: Long,
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     private fun calculateWidthAndHeight(context: Context) {
         if (_width == 0L || _height == 0L) {
-            val widthHeight: Pair<Int, Int> = getWidthAndHeight(File(contentUri.path))
+            val widthHeight: Pair<Int, Int> = ImageProcessingUtil.getWidthAndHeight(contentUri.path.toString())
             _width = widthHeight.first.toLong()
             _height = widthHeight.second.toLong()
-        }
-    }
-
-    private fun getWidthAndHeight(file: File): Pair<Int, Int> {
-        return try {
-            val options = BitmapFactory.Options()
-            options.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(file.absolutePath, options)
-            options.outWidth to options.outHeight
-        } catch (e: Exception) {
-            0 to 0
         }
     }
 

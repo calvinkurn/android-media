@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.homecredit.R;
+import com.tokopedia.iconunify.IconUnify;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,7 +59,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     private int flashIndex;
     private List<Flash> supportedFlashList;
     public FrameLayout cameraLayout;
-    public ImageView flashControl;
+    public IconUnify flashControl;
     public ImageView buttonCancel;
 
     private Size mCaptureNativeSize;
@@ -122,9 +123,9 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         if (flashEnum == Flash.AUTO.ordinal()) {
             flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_on_flash));
+            flashControl.setImage(IconUnify.FLASH_ON, null, null, null, null);
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_off_flash));
+            flashControl.setImage(IconUnify.FLASH_OFF, null, null, null, null);
         }
     }
 

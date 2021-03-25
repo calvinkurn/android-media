@@ -287,7 +287,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         tvPlayGalleryAlbumLabel?.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
         if (albumItem.isAll && albumItem.isEmpty) {
             showToaster(
-                    message = getString(R.string.error_no_media_storage),
+                    message = getString(com.tokopedia.imagepicker.common.R.string.error_no_media_storage),
                     type = Toaster.TYPE_ERROR
             )
         } else {
