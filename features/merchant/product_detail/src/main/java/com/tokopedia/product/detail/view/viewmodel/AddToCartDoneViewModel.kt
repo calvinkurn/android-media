@@ -74,10 +74,6 @@ class AddToCartDoneViewModel @Inject constructor(
         }
     }
 
-    fun updateWishlist(isAddToWishlist: Boolean, position: Int){
-
-    }
-
     fun addWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {
         addWishListUseCase.createObservable(productId,
                 userSessionInterface.userId, object : WishListActionListener {
