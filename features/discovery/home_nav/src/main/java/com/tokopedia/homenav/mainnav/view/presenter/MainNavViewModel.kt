@@ -419,9 +419,7 @@ class MainNavViewModel @Inject constructor(
             firstSectionList.add(SeparatorDataModel())
 
             val secondSectionList = listOf(
-                    it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_RECENT_VIEW, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_SUBSCRIPTION, sectionId = MainNavConst.Section.USER_MENU)
+                    it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU)
             )
             val completeList = firstSectionList.plus(secondSectionList)
             return completeList
