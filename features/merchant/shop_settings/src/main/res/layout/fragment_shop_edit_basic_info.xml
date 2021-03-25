@@ -96,6 +96,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="60"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_edit_name_input_label" />
@@ -107,6 +108,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="24"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_edit_domain_input_label"
@@ -139,6 +141,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="48"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_slogan_label" />
@@ -150,6 +153,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="140"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_description_label" />

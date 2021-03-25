@@ -39,6 +39,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:theme="@style/TextDarkMode"
         app:text_field_input_type="text"
         app:text_field_label="@string/shop_close_note"
         app:text_field_counter="@integer/max_slogan_char"/>

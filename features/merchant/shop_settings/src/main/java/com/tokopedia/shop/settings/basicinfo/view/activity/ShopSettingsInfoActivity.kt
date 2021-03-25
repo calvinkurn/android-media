@@ -2,6 +2,10 @@ package com.tokopedia.shop.settings.basicinfo.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -39,6 +43,12 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
             setSupportActionBar(it)
             it.isShowShadow = true
             it.title = getString(R.string.shop_settings_info)
+            val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                it.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            }else{
+                it.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
         }
     }
 
