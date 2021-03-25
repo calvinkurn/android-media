@@ -432,7 +432,6 @@ class MainNavViewModel @Inject constructor(
             val transactionDataList: MutableList<Visitable<*>> = mutableListOf(
                     SeparatorDataModel(),
                     it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
-                    it.getMenu(ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(ID_TICKET, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
