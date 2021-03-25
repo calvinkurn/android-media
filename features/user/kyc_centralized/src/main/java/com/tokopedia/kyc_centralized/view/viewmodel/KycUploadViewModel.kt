@@ -12,11 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import javax.crypto.Cipher
-import javax.crypto.CipherOutputStream
 import javax.inject.Inject
 
 class KycUploadViewModel @Inject constructor(
@@ -38,8 +34,8 @@ class KycUploadViewModel @Inject constructor(
                 var finalKtp = ktpPath
                 var finalFace = facePath
                 if(isUsingEncrypt) {
-                    ivKtp?.let { finalKtp = decryptImage(ktpPath, isKtpImage = true) }
-                    ivFace?.let { finalFace = decryptImage(facePath, isKtpImage = false) }
+                    ivKtp?.let { finalKtp = decryptImageKtp(ktpPath) }
+                    ivFace?.let { finalFace = decryptImageFace(facePath) }
                 }
                 val kycUploadResult = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
                 _kycResponse.postValue(Success(kycUploadResult))
@@ -49,32 +45,14 @@ class KycUploadViewModel @Inject constructor(
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    fun encryptImage(originalFilePath: String, isKtpImage: Boolean) {
+    fun encryptImageKtp(originalFilePath: String) {
         launchCatchError(block = {
             withContext(dispatcher.io()) {
                 val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
-                val fis = FileInputStream(originalFilePath)
-                val aes = Cipher.getInstance(ImageEncryptionUtil.ALGORITHM)
-                aes.init(Cipher.ENCRYPT_MODE, ImageEncryptionUtil.getKey())
-                //save the IV for decrypt
-                if(isKtpImage) {
-                    ivKtp = aes.iv
-                } else {
-                    ivFace = aes.iv
-                }
-
-                val fs = FileOutputStream(File(encryptedImagePath))
-                val out = CipherOutputStream(fs, aes)
-                out.write(fis.readBytes(1024 * 1024))
-                out.flush()
-                out.close()
-
-                //Delete original file
-                ImageEncryptionUtil.deleteFile(originalFilePath)
-
-                //Rename encrypted image file to original name
-                val createdFile = ImageEncryptionUtil.renameImageToOriginalFileName(encryptedImagePath)
+                val aes = ImageEncryptionUtil.initAesEncrypt()
+                //save the Ktp IV for decrypt
+                ivKtp = aes.iv
+                val createdFile = writeEncryptedResult(originalFilePath, encryptedImagePath, aes)
                 _encryptImage.postValue(Success(createdFile))
             }
         }, onError = {
@@ -83,28 +61,55 @@ class KycUploadViewModel @Inject constructor(
         })
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    fun decryptImage(originalFilePath: String, isKtpImage: Boolean): String {
-        val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
-        val aes = Cipher.getInstance(ImageEncryptionUtil.ALGORITHM)
-        //Get the right IV
-        val tempIv: ByteArray? = if(isKtpImage) {
-            ivKtp
-        } else {
-            ivFace
-        }
-        ImageEncryptionUtil.initAesDecrypt(tempIv, aes)
-        ImageEncryptionUtil.writeDecryptedImage(originalFilePath, decryptedFilePath, aes)
+    fun encryptImageFace(originalFilePath: String) {
+        launchCatchError(block = {
+            withContext(dispatcher.io()) {
+                val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
+                val aes = ImageEncryptionUtil.initAesEncrypt()
+                //save the Face IV for decrypt
+                ivFace = aes.iv
+                val createdFile = writeEncryptedResult(originalFilePath, encryptedImagePath, aes)
+                _encryptImage.postValue(Success(createdFile))
+            }
+        }, onError = {
+            it.printStackTrace()
+            _encryptImage.postValue(Fail(it))
+        })
+    }
 
-        //Delete encrypted file and IV
+    private fun writeEncryptedResult(originalFilePath: String, encryptedImagePath: String, aes: Cipher): String {
+        ImageEncryptionUtil.writeEncryptedImage(originalFilePath, encryptedImagePath, aes)
+        return deleteAndRenameResult(originalFilePath, encryptedImagePath)
+    }
+
+    private fun deleteAndRenameResult(originalFilePath: String, resultFilePath: String): String {
+        //Delete original file
         ImageEncryptionUtil.deleteFile(originalFilePath)
-        if(isKtpImage) {
-            ivKtp = null
-        } else {
-            ivFace = null
-        }
+        //Rename encrypted image file to original name
+        return ImageEncryptionUtil.renameImageToOriginalFileName(resultFilePath)
+    }
 
-        return ImageEncryptionUtil.renameImageToOriginalFileName(decryptedFilePath)
+    private fun decryptImageKtp(originalFilePath: String): String {
+        val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
+        val aes = ImageEncryptionUtil.initAesDecrypt(ivKtp)
+        val resultPath = writeDecryptedResult(originalFilePath, decryptedFilePath, aes)
+        //delete the IV
+        ivKtp = null
+        return resultPath
+    }
+
+    private fun decryptImageFace(originalFilePath: String): String {
+        val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
+        val aes = ImageEncryptionUtil.initAesDecrypt(ivFace)
+        val resultPath = writeDecryptedResult(originalFilePath, decryptedFilePath, aes)
+        //delete the IV
+        ivFace = null
+        return resultPath
+    }
+
+    private fun writeDecryptedResult(originalFilePath: String, decryptedFilePath: String, aes: Cipher): String {
+        ImageEncryptionUtil.writeDecryptedImage(originalFilePath, decryptedFilePath, aes)
+        return deleteAndRenameResult(originalFilePath, decryptedFilePath)
     }
 
     companion object {

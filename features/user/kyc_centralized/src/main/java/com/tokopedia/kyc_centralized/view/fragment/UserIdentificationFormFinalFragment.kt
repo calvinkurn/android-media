@@ -208,7 +208,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun encryptImage() {
         if(isUsingEncrypt()) {
             uploadButton?.isEnabled = false
-            kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), isKtpImage = false)
+            kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
         }
     }
 
@@ -402,7 +402,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 retakeActionCode = RETAKE_KTP
                 stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
                 if(isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImage(stepperModel?.ktpFile.toEmptyStringIfNull(), isKtpImage = true)
+                    kycUploadViewModel.encryptImageKtp(stepperModel?.ktpFile.toEmptyStringIfNull())
                 } else {
                     goToLivenessOrSelfie()
                 }
@@ -415,7 +415,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     stepperModel?.faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
                 }
                 if(isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), isKtpImage = false)
+                    kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
                 } else {
                     uploadKycFiles()
                 }

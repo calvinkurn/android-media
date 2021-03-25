@@ -5,22 +5,24 @@ import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
+import javax.crypto.CipherOutputStream
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 object ImageEncryptionUtil {
     private const val TEMP_IMAGE_TAG = "temp_"
-    private var salt = "A%D*G-KaPdRgUkXp2s5v8y/B?E(H+MbQ"
-    const val ALGORITHM = "AES/GCM/NoPadding"
-    const val IV_SIZE = 128
+    private const val SALT = "A%D*G-KaPdRgUkXp2s5v8y/B?E(H+MbQ"
+    private const val ALGORITHM = "AES/GCM/NoPadding"
+    private const val IV_SIZE = 128
 
-    fun getKey(): SecretKey? {
+    private fun getKey(): SecretKey? {
         var secretKey: SecretKey? = null
         try {
-            secretKey = SecretKeySpec(salt.toBytes(), ALGORITHM)
+            secretKey = SecretKeySpec(SALT.toBytes(), ALGORITHM)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -87,9 +89,27 @@ object ImageEncryptionUtil {
         return to.path
     }
 
-    fun initAesDecrypt(tempIv: ByteArray?, aes: Cipher) {
+    fun initAesEncrypt(): Cipher {
+        val aes = Cipher.getInstance(ALGORITHM)
+        aes.init(Cipher.ENCRYPT_MODE, getKey())
+        return aes
+    }
+
+    fun initAesDecrypt(tempIv: ByteArray?): Cipher {
+        val aes = Cipher.getInstance(ALGORITHM)
         val spec = GCMParameterSpec(IV_SIZE, tempIv)
         aes.init(Cipher.DECRYPT_MODE, getKey(), spec)
+
+        return aes
+    }
+
+    fun writeEncryptedImage(originalFilePath: String, encryptedImagePath: String, aes: Cipher) {
+        val fis = FileInputStream(originalFilePath)
+        val fs = FileOutputStream(File(encryptedImagePath))
+        val out = CipherOutputStream(fs, aes)
+        out.write(fis.readBytes(1024 * 1024))
+        out.flush()
+        out.close()
     }
 
     fun writeDecryptedImage(originalFilePath: String, decryptedFilePath: String, aes: Cipher) {
