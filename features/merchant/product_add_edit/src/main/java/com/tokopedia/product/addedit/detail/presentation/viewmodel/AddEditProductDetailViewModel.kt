@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.detail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -38,13 +39,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import java.math.BigInteger
 import javax.inject.Inject
 
+@FlowPreview
 class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
@@ -57,9 +59,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
-
     var isAdding = false
-
     var isDrafting = false
 
     var isReloadingShowCase = false
@@ -89,6 +89,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
     var isProductNameChanged = false
+    private val mProductNameInputLiveData = MutableLiveData<String>()
     private val mIsProductNameInputError = MutableLiveData<Boolean>()
     val isProductNameInputError: LiveData<Boolean>
         get() = mIsProductNameInputError
@@ -190,6 +191,17 @@ class AddEditProductDetailViewModel @Inject constructor(
     val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
         get() = mProductPriceRecommendation
 
+    init {
+        launch {
+            mProductNameInputLiveData.asFlow()
+                    .debounce(1000)
+                    .distinctUntilChanged()
+                    .collect {
+                        validateProductNameInput(it)
+                    }
+        }
+    }
+
     private fun isInputValid(): Boolean {
 
         // by default the product photos are never empty
@@ -231,6 +243,11 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun validateProductPhotoInput(productPhotoCount: Int) {
         mIsProductPhotoError.value = productPhotoCount == 0
+    }
+
+    fun setProductNameInput(string: String) {
+        isProductNameChanged = true
+        mProductNameInputLiveData.value = string
     }
 
     fun validateProductNameInput(productNameInput: String) {
