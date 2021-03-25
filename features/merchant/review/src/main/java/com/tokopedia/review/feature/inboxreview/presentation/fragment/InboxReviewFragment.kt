@@ -316,11 +316,15 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     override fun onTabChange(position: Int) {
-        coachmark?.dismissCoachMark()
+        dismissCoachMark()
     }
 
     override fun hideCoachMark() {
         coachmark?.hideCoachMark()
+    }
+
+    private fun dismissCoachMark() {
+        coachmark?.dismissCoachMark()
     }
 
     private fun setupMarginSortFilter() {
@@ -537,6 +541,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         fragmentManager?.let {
             bottomSheet?.show(it, TAG_FILTER_RATING)
         }
+        dismissCoachMark()
     }
 
 
@@ -591,6 +596,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         endlessRecyclerViewScrollListener?.resetState()
         isFilter = hasFiltered()
+        dismissCoachMark()
     }
 
     private fun updatedFilterRatingInboxReview(filterRatingList: List<ListItemRatingWrapper>) {
