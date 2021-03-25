@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
@@ -28,6 +29,7 @@ class InboxReviewFeedbackViewHolder(view: View,
     }
 
     private var reviewInboxFeedbackImageAdapter: InboxReviewFeedbackImageAdapter? = null
+    private val impressHolder = ImpressHolder()
 
     override fun bind(element: FeedbackInboxUiModel) {
         reviewInboxFeedbackImageAdapter = InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
@@ -176,11 +178,9 @@ class InboxReviewFeedbackViewHolder(view: View,
         with(itemView) {
             kejarUlasanLabel?.showWithCondition(isKejarUlasan)
             if(isKejarUlasan) {
-                kejarUlasanLabel?.isVisibleOnTheScreen(onViewVisible = {
+                itemView.kejarUlasanLabel.addOnImpressionListener(impressHolder) {
                     feedbackInboxReviewListener.showCoachMark(kejarUlasanLabel)
-                }, onViewNotVisible = {
-                    feedbackInboxReviewListener.hideCoachMark()
-                })
+                }
             }
         }
     }
