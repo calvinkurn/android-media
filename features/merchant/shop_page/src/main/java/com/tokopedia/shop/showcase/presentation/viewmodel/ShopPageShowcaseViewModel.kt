@@ -8,9 +8,12 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.showcase.domain.model.GetFeaturedShowcase
 import com.tokopedia.shop.showcase.domain.model.GetFeaturedShowcaseRequestParams
+import com.tokopedia.shop.showcase.domain.model.ShopFeaturedShowcase
 import com.tokopedia.shop.showcase.domain.usecase.GetFeaturedShowcaseUseCase
+import com.tokopedia.shop.showcase.presentation.model.FeaturedShowcaseUiModel
 import com.tokopedia.shop.showcase.presentation.model.ShowcasesBuyerUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -34,13 +37,18 @@ class ShopPageShowcaseViewModel @Inject constructor(
         get() = _showcasesBuyerUiModel
     private val _showcasesBuyerUiModel = MutableLiveData<Result<ShowcasesBuyerUiModel>>()
 
-    val featuredShowcaseList: LiveData<Result<GetFeaturedShowcase>>
+    val featuredShowcaseList: LiveData<Result<ShowcasesBuyerUiModel>>
         get() = _featuredShowcaseList
-    private val _featuredShowcaseList = MutableLiveData<Result<GetFeaturedShowcase>>()
+    private val _featuredShowcaseList = MutableLiveData<Result<ShowcasesBuyerUiModel>>()
 
-    val showcaseList: LiveData<Result<List<ShopEtalaseModel>>>
+    val showcaseList: LiveData<Result<ShowcasesBuyerUiModel>>
         get() = _showcaseList
-    private val _showcaseList = MutableLiveData<Result<List<ShopEtalaseModel>>>()
+    private val _showcaseList = MutableLiveData<Result<ShowcasesBuyerUiModel>>()
+
+    val userId: String?
+        get() = userSession.userId
+
+    fun isMyShop(shopId: String) = userSession.shopId == shopId
 
     fun getShowcasesInitialData(shopId: String) {
         launchCatchError(block = {
@@ -70,10 +78,15 @@ class ShopPageShowcaseViewModel @Inject constructor(
             )
 
             featuredShowcaseAsyncCall.await()?.let { featuredShowcaseResponse ->
-                showcasesBuyerUiModelResponse.getFeaturedShowcase = featuredShowcaseResponse
+
+                showcasesBuyerUiModelResponse.getFeaturedShowcaseErrorResponse = featuredShowcaseResponse.error
+                showcasesBuyerUiModelResponse.featuredShowcaseList = mapToFeaturedShowcaseUiModel(
+                        featuredShowcaseResponse.result
+                )
+
             }
             allShowcaseAsyncCall.await()?.let { allShowcaseList ->
-                showcasesBuyerUiModelResponse.allShowcaseList = allShowcaseList
+                showcasesBuyerUiModelResponse.allShowcaseList = mapToShopEtalaseUiModel(allShowcaseList)
             }
 
             _showcasesBuyerUiModel.postValue(Success(showcasesBuyerUiModelResponse))
@@ -86,8 +99,13 @@ class ShopPageShowcaseViewModel @Inject constructor(
     fun getFeaturedShowcaseList(shopId: String) {
         launchCatchError(block = {
             withContext(dispatcherProvider.io) {
-                val featuredShowcaseList = getFeaturedShowcaseListCall(shopId)
-                _featuredShowcaseList.postValue(Success(featuredShowcaseList))
+                val featuredShowcaseResponse = getFeaturedShowcaseListCall(shopId)
+                val showcasesBuyerUiModelResponse = ShowcasesBuyerUiModel()
+                showcasesBuyerUiModelResponse.getFeaturedShowcaseErrorResponse = featuredShowcaseResponse.error
+                showcasesBuyerUiModelResponse.featuredShowcaseList = mapToFeaturedShowcaseUiModel(
+                        featuredShowcaseResponse.result
+                )
+                _featuredShowcaseList.postValue(Success(showcasesBuyerUiModelResponse))
             }
         }) {
             _featuredShowcaseList.postValue(Fail(it))
@@ -98,7 +116,9 @@ class ShopPageShowcaseViewModel @Inject constructor(
         launchCatchError(block = {
             withContext(dispatcherProvider.io) {
                 val showcaseList = getAllShowcaseListCall(shopId)
-                _showcaseList.postValue(Success(showcaseList))
+                val showcasesBuyerUiModel = ShowcasesBuyerUiModel()
+                showcasesBuyerUiModel.allShowcaseList = mapToShopEtalaseUiModel(showcaseList)
+                _showcaseList.postValue(Success(showcasesBuyerUiModel))
             }
         }) {
             _showcaseList.postValue(Fail(it))
@@ -123,6 +143,35 @@ class ShopPageShowcaseViewModel @Inject constructor(
                 isOwner = ShopUtil.isMyShop(shopId, userSession.shopId)
         )
         return getShopEtalaseByShopUseCase.createObservable(requestParams).toBlocking().first()
+    }
+
+    private fun mapToFeaturedShowcaseUiModel(
+            featuredShowcaseList: List<ShopFeaturedShowcase>
+    ): List<FeaturedShowcaseUiModel> {
+
+        return featuredShowcaseList.map {
+            FeaturedShowcaseUiModel().apply {
+                id = it.id
+                name = it.name
+                count = it.count
+                imageUrl = it.imageUrl
+            }
+        }
+
+    }
+
+    private fun mapToShopEtalaseUiModel(
+            allShowcaseList: List<ShopEtalaseModel>
+    ): List<ShopEtalaseUiModel> {
+
+        return allShowcaseList.map {
+            ShopEtalaseUiModel().apply {
+                id = it.id
+                name = it.name
+                count = it.count
+                imageUrl = it.imageUrl
+            }
+        }
     }
 
 }

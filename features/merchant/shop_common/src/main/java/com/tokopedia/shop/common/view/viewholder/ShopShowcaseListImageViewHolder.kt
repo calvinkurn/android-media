@@ -2,16 +2,19 @@ package com.tokopedia.shop.common.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopShowcaseListImageViewHolder(
         itemView: View,
-        listener: ShopShowcaseListImageListener
+        private val listener: ShopShowcaseListImageListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var showcaseImage: ImageUnify? = null
@@ -25,16 +28,10 @@ class ShopShowcaseListImageViewHolder(
         tvShowcaseName = itemView.findViewById(R.id.tvShowcaseName)
         tvShowcaseCount = itemView.findViewById(R.id.tvShowcaseCount)
         showcaseCampaignLabel = itemView.findViewById(R.id.showcaseCampaignLabel)
-
-        // init listeners
-        itemView.setOnClickListener {
-            listener.onShowcaseListItemSelected(showcaseId)
-        }
     }
 
-    fun bind(element: ShopEtalaseModel) {
+    fun bind(element: ShopEtalaseUiModel) {
         showcaseId = element.id
-        showcaseImage?.setImageUrl(element.imageUrl ?: "")
         tvShowcaseName?.text = element.name
         tvShowcaseCount?.text = itemView.context.getString(
                 R.string.shop_page_showcase_product_count_text,
@@ -46,6 +43,29 @@ class ShopShowcaseListImageViewHolder(
             View.GONE
         }
         showcaseCampaignLabel?.setLabel(getCampaignLabelTitle(element.type))
+
+        // try catch to avoid crash ImageUnify on loading image with Glide
+        try {
+            if (showcaseImage?.context?.isValidGlideContext() == true) {
+                showcaseImage?.setImageUrl(element.imageUrl)
+            }
+        } catch (e: Throwable) {
+        }
+
+        // showcase item impressed listener
+        showcaseImage?.addOnImpressionListener(
+                holder = element,
+                listener = object : ViewHintListener {
+                    override fun onViewHint() {
+                        listener.onShowcaseListItemImpressed(element, adapterPosition)
+                    }
+                }
+        )
+
+        // showcase item click listener
+        itemView.setOnClickListener {
+            listener.onShowcaseListItemSelected(element, adapterPosition)
+        }
     }
 
     private fun isShowCampaignLabel(type: Int): Boolean {
@@ -71,5 +91,6 @@ class ShopShowcaseListImageViewHolder(
 }
 
 interface ShopShowcaseListImageListener {
-    fun onShowcaseListItemSelected(showcaseId: String)
+    fun onShowcaseListItemSelected(element: ShopEtalaseUiModel, position: Int)
+    fun onShowcaseListItemImpressed(element: ShopEtalaseUiModel, position: Int)
 }

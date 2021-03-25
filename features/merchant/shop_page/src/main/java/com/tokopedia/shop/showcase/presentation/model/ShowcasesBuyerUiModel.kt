@@ -1,11 +1,12 @@
 package com.tokopedia.shop.showcase.presentation.model
 
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.showcase.domain.model.GetFeaturedShowcase
+import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
+import com.tokopedia.shop.showcase.domain.model.ShopFeaturedShowcaseError
 
 data class ShowcasesBuyerUiModel(
-        var getFeaturedShowcase: GetFeaturedShowcase? = null,
-        var allShowcaseList: List<ShopEtalaseModel> = listOf(),
+        var getFeaturedShowcaseErrorResponse: ShopFeaturedShowcaseError = ShopFeaturedShowcaseError(),
+        var featuredShowcaseList: List<FeaturedShowcaseUiModel> = listOf(),
+        var allShowcaseList: List<ShopEtalaseUiModel> = listOf(),
         var isFeaturedShowcaseError: Boolean = false,
         var isAllShowcaseError: Boolean = false
 )

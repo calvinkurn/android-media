@@ -1177,7 +1177,9 @@ class NewShopPageFragment :
             val shopPageShowcaseFragment = ShopPageShowcaseFragment.createInstance(
                     shopId,
                     shopRef,
-                    shopAttribution
+                    shopAttribution,
+                    shopPageHeaderDataModel?.isOfficial ?: false,
+                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
             )
             add(ShopPageTabModel(
                     getString(R.string.shop_info_title_tab_showcase),

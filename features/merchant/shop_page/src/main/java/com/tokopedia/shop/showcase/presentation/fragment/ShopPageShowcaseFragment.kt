@@ -23,16 +23,19 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageShowcaseTracking
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.showcase.di.component.DaggerShopPageShowcaseComponent
 import com.tokopedia.shop.showcase.di.component.ShopPageShowcaseComponent
-import com.tokopedia.shop.showcase.domain.model.GetFeaturedShowcase
+import com.tokopedia.shop.showcase.domain.model.ShopFeaturedShowcaseError
 import com.tokopedia.shop.showcase.presentation.adapter.ShopPageFeaturedShowcaseAdapter
 import com.tokopedia.shop.showcase.presentation.adapter.ShopPageShowcaseListAdapter
+import com.tokopedia.shop.showcase.presentation.adapter.viewholder.ShopPageFeaturedShowcaseListener
+import com.tokopedia.shop.showcase.presentation.model.FeaturedShowcaseUiModel
 import com.tokopedia.shop.showcase.presentation.viewmodel.ShopPageShowcaseViewModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
@@ -45,6 +48,7 @@ import javax.inject.Inject
  */
 class ShopPageShowcaseFragment : BaseDaggerFragment(),
         HasComponent<ShopPageShowcaseComponent>,
+        ShopPageFeaturedShowcaseListener,
         ShopShowcaseListImageListener {
 
     companion object {
@@ -52,6 +56,8 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val KEY_SHOP_REF = "SHOP_REF"
         private const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
+        private const val KEY_IS_OS = "IS_OS"
+        private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         private const val DEFAULT_SHOP_ID = "0"
         private const val SHOWCASE_REQUEST_CODE = 201
 
@@ -59,13 +65,17 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         fun createInstance(
                 shopId: String,
                 shopRef: String,
-                shopAttribution: String?
+                shopAttribution: String?,
+                isOfficialStore: Boolean,
+                isGoldMerchant: Boolean
         ): ShopPageShowcaseFragment = ShopPageShowcaseFragment().apply {
             // set arguments bundle
             arguments = Bundle().apply {
                 putString(KEY_SHOP_ID, shopId)
                 putString(KEY_SHOP_REF, shopRef)
                 putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
+                putBoolean(KEY_IS_OS, isOfficialStore)
+                putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
             }
         }
 
@@ -79,6 +89,10 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     private val shopPageShowcaseViewModel: ShopPageShowcaseViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopPageShowcaseViewModel::class.java)
+    }
+
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
 
     private var showcaseShimmerView: LinearLayout? = null
@@ -96,6 +110,8 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     private var shopId: String = DEFAULT_SHOP_ID
     private var shopRef: String = ""
     private var shopAttribution: String? = ""
+    private var isOfficialStore: Boolean = false
+    private var isGoldMerchant: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -149,9 +165,54 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         component?.inject(this)
     }
 
-    override fun onShowcaseListItemSelected(showcaseId: String) {
+    override fun onFeaturedShowcaseClicked(element: FeaturedShowcaseUiModel, position: Int) {
+        // track click featured showcase item
+        shopPageShowcaseTracking.clickFeaturedShowcaseItem(
+                featuredShowcase = element,
+                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
+                position = position,
+                customDimensionShopPage = customDimensionShopPage,
+                userId = shopPageShowcaseViewModel.userId.orEmpty()
+        )
+
         // open showcase product result list page
-        goToShowcaseProductListResult(showcaseId, true)
+        goToShowcaseProductListResult(element.id, true)
+    }
+
+    override fun onFeaturedShowcaseImpressed(element: FeaturedShowcaseUiModel, position: Int) {
+        // track featured showcase item impression
+        shopPageShowcaseTracking.featuredShowcaseItemImpressed(
+                featuredShowcase = element,
+                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
+                position = position,
+                customDimensionShopPage = customDimensionShopPage,
+                userId = shopPageShowcaseViewModel.userId.orEmpty()
+        )
+    }
+
+    override fun onShowcaseListItemSelected(element: ShopEtalaseUiModel, position: Int) {
+        // track click all showcase item
+        shopPageShowcaseTracking.clickAllShowcaseItem(
+                allShowcaseItem = element,
+                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
+                position = position,
+                customDimensionShopPage = customDimensionShopPage,
+                userId = shopPageShowcaseViewModel.userId.orEmpty()
+        )
+
+        // open showcase product result list page
+        goToShowcaseProductListResult(element.id, true)
+    }
+
+    override fun onShowcaseListItemImpressed(element: ShopEtalaseUiModel, position: Int) {
+        // track featured showcase item impression
+        shopPageShowcaseTracking.showcaseItemImpressed(
+                showcaseItem = element,
+                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
+                position = position,
+                customDimensionShopPage = customDimensionShopPage,
+                userId = shopPageShowcaseViewModel.userId.orEmpty()
+        )
     }
 
     private fun initView(view: View?) {
@@ -175,6 +236,14 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
         // search showcase icon on click listener
         icShowcaseSearch?.setOnClickListener {
+
+            // track click search icon
+            shopPageShowcaseTracking.clickSearchIcon(
+                    shopPageShowcaseViewModel.isMyShop(shopId),
+                    customDimensionShopPage,
+                    shopPageShowcaseViewModel.userId.orEmpty()
+            )
+
             goToShopShowcaseList()
         }
 
@@ -233,6 +302,8 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
             shopId = args.getString(KEY_SHOP_ID, DEFAULT_SHOP_ID)
             shopRef = args.getString(KEY_SHOP_REF, "")
             shopAttribution = args.getString(KEY_SHOP_ATTRIBUTION, "")
+            isOfficialStore = args.getBoolean(KEY_IS_OS, false)
+            isGoldMerchant = args.getBoolean(KEY_IS_GOLD_MERCHANT, false)
         }
     }
 
@@ -265,17 +336,17 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
                     if (response.isFeaturedShowcaseError && response.isAllShowcaseError) {
                         // both showcases section error, show global error
                         showGlobalError()
-                    }
-                    else {
+                    } else {
                         // check for featured showcase section
                         if (response.isFeaturedShowcaseError) {
                             // featured showcase section error, show local load
                             showFeaturedSectionLocalLoad()
                         } else {
-                            response.getFeaturedShowcase?.let { featuredShowcaseResponse ->
-                                // render featured showcase section
-                                renderFeaturedShowcaseSection(featuredShowcaseResponse)
-                            }
+                            // render featured showcase section
+                            renderFeaturedShowcaseSection(
+                                    featuredShowcaseList = response.featuredShowcaseList,
+                                    errorResponse = response.getFeaturedShowcaseErrorResponse
+                            )
                         }
 
                         // check for all showcase section
@@ -304,7 +375,10 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
                     val response = it.data
 
                     // render featured showcase section
-                    renderFeaturedShowcaseSection(response)
+                    renderFeaturedShowcaseSection(
+                            featuredShowcaseList = response.featuredShowcaseList,
+                            errorResponse = response.getFeaturedShowcaseErrorResponse
+                    )
                 }
                 is Fail -> {
                     // featured showcase section error, show local load
@@ -321,7 +395,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
                     val response = it.data
 
                     // render all showcase section
-                    renderAllShowcaseSection(response)
+                    renderAllShowcaseSection(response.allShowcaseList)
                 }
                 is Fail -> {
                     // all showcase section error, show local load
@@ -332,25 +406,28 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     }
 
-    private fun renderFeaturedShowcaseSection(featuredShowcaseResponse: GetFeaturedShowcase) {
+    private fun renderFeaturedShowcaseSection(
+            featuredShowcaseList: List<FeaturedShowcaseUiModel>,
+            errorResponse: ShopFeaturedShowcaseError
+    ) {
         // if featured showcase response code is OK (200), but got error message
         // show local load for featured showcase section
-        if (featuredShowcaseResponse.error.errorMessage.isNotEmpty()) {
-            showFeaturedSectionLocalLoad(title = featuredShowcaseResponse.error.errorMessage)
+        if (errorResponse.errorMessage.isNotEmpty()) {
+            showFeaturedSectionLocalLoad(title = errorResponse.errorMessage)
         } else {
-            if (featuredShowcaseResponse.result.isEmpty()) {
+            if (featuredShowcaseList.isEmpty()) {
                 // featured showcase response code is OK (200), but no data
                 // hide the section
                 hideFeaturedShowcaseSection()
             } else {
                 // show featured showcase section
-                featuredShowcaseAdapter?.updateFeaturedShowcaseDataset(featuredShowcaseResponse.result)
+                featuredShowcaseAdapter?.updateFeaturedShowcaseDataset(featuredShowcaseList)
                 shouldShowFeaturedShowcaseLocalLoad(false)
             }
         }
     }
 
-    private fun renderAllShowcaseSection(list: List<ShopEtalaseModel>) {
+    private fun renderAllShowcaseSection(list: List<ShopEtalaseUiModel>) {
         if (list.isNotEmpty()) {
             // show all showcase section if data is not empty
             allShowcaseListAdapter?.updateShowcaseList(list)

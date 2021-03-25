@@ -42,7 +42,7 @@ data class ShopEtalaseModel(@SerializedName("id")
                             val rules: List<ShopEtalaseRules> = listOf(),
                             @SerializedName("imageURL")
                             @Expose
-                            val imageUrl: String? = "",
+                            val imageUrl: String = "",
                             var isChecked: Boolean = false,
 ) : Parcelable
 

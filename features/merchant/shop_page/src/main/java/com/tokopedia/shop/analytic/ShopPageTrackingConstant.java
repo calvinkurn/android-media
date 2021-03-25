@@ -56,6 +56,7 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_SEARCH_PRODUCT_CLICK_CART_BUTTON = "click cart button - search result";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
     public static final String CLICK_SEARCH = "click search";
+    public static final String CLICK_SEARCH_ETALASE = "click search etalase";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase shop";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY = "click %1s - etalase shop - no result";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia";
@@ -162,6 +163,8 @@ public class ShopPageTrackingConstant {
     public static final String NON_LOGIN = "non login";
     public static final String SELECTED_ETALASE_CHIP = "etalase chip %1s";
     public static final String ETALASE_SECTION = "etalase %1s";
+    public static final String FEATURED_ETALASE = "featured etalase";
+    public static final String ALL_SHOWCASE_LIST = "semua etalase list";
     public static final String WISHLIST = "wishlist";
     public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
     public static final String CLICK_ADD_TO_CART = "click add to cart";

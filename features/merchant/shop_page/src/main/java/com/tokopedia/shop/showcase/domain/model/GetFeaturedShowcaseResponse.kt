@@ -16,10 +16,10 @@ data class GetFeaturedShowcaseResponse(
 data class GetFeaturedShowcase(
         @SerializedName("result")
         @Expose
-        val result: List<ShopFeaturedShowcase>,
+        val result: List<ShopFeaturedShowcase> = listOf(),
         @SerializedName("error")
         @Expose
-        val error: ShopFeaturedShowcaseError
+        val error: ShopFeaturedShowcaseError = ShopFeaturedShowcaseError()
 )
 
 data class ShopFeaturedShowcase(
@@ -44,7 +44,7 @@ data class ShopFeaturedShowcase(
 )
 
 data class ShopFeaturedShowcaseError(
-    @SerializedName("message")
-    @Expose
-    val errorMessage: String = ""
+        @SerializedName("message")
+        @Expose
+        val errorMessage: String = ""
 )

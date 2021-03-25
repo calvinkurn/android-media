@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.common.R
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageViewHolder
 
@@ -15,7 +15,7 @@ class ShopPageShowcaseListAdapter(
         private val shopShowcaseListImageListener: ShopShowcaseListImageListener
 ) : RecyclerView.Adapter<ShopShowcaseListImageViewHolder>() {
 
-    private var showcaseList: List<ShopEtalaseModel> = listOf()
+    private var showcaseList: List<ShopEtalaseUiModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShowcaseListImageViewHolder {
         return ShopShowcaseListImageViewHolder(
@@ -36,7 +36,7 @@ class ShopPageShowcaseListAdapter(
         holder.bind(showcaseList[position])
     }
 
-    fun updateShowcaseList(list: List<ShopEtalaseModel>) {
+    fun updateShowcaseList(list: List<ShopEtalaseUiModel>) {
         this.showcaseList = list
         notifyDataSetChanged()
     }
