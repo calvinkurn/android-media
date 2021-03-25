@@ -18,12 +18,7 @@ class TimberReportingTree {
     var versionCode: Int = 0
     var installerPackageName: String? = ""
     var tagMaps: HashMap<String, Tag> = hashMapOf()
-
-    constructor(tags: List<String>) {
-        populateTagMaps(tags)
-    }
-
-    constructor()
+    var tagMapsNewRelic: HashMap<String, Tag> = hashMapOf()
 
     fun setClientLogs(clientLogs: List<String>?) {
         // noop. only has 1 client now.
@@ -44,6 +39,8 @@ class TimberReportingTree {
             if (LogManager.instance == null) {
                 return@globalScopeLaunch
             }
+
+            tagMaps.putAll(tagMapsNewRelic)
 
             tagMaps[tagMapKey]?.let {
                 val priorityTag = it.postPriority
@@ -96,7 +93,7 @@ class TimberReportingTree {
         return Gson().toJson(this)
     }
 
-    private fun populateTagMaps(tags: List<String>?) {
+    fun setPopulateTagMaps(tags: List<String>?) {
         if (tags == null) {
             return
         }
@@ -119,6 +116,29 @@ class TimberReportingTree {
         }
     }
 
+    fun setPopulateTagMapsNewRelic(tags: List<String>?) {
+        if (tags == null) {
+            return
+        }
+        for (tag in tags) {
+            val tagSplit = tag.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
+            if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
+                continue
+            }
+            tagSplit[2].toDoubleOrNull()?.let {
+                val randomNumber = Random().nextDouble() * MAX_RANDOM_NUMBER
+                if (randomNumber <= it) {
+                    val tagKey = StringBuilder()
+                            .append(tagSplit[0])
+                            .append(DELIMITER_TAG_MAPS)
+                            .append(tagSplit[1])
+                            .toString()
+                    tagMapsNewRelic[tagKey] = Tag(getPriority(tagSplit[3]))
+                }
+            }
+        }
+    }
+
     companion object {
         const val DELIMITER_TAG_MAPS = "#"
         const val DELIMITER = ","
@@ -136,6 +156,14 @@ class TimberReportingTree {
 
         const val PRIORITY_ONLINE = 2
         const val PRIORITY_OFFLINE = 1
+
+        @Volatile private var INSTANCE: TimberReportingTree? = null
+
+        fun getInstance(): TimberReportingTree {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: TimberReportingTree().also { INSTANCE = it }
+            }
+        }
     }
 
 }

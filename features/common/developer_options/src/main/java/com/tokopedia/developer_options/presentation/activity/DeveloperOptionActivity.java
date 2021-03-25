@@ -58,8 +58,9 @@ import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.logger.common.LoggerException;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
@@ -415,16 +416,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                 TimberWrapper.initByRemoteConfig(this, remoteConfigValue);
                 Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
             } else {
-                Timber.uprootAll();
-                Timber.plant(new Timber.DebugTree() {
-                    @Override
-                    protected String createStackElementTag(@NotNull StackTraceElement element) {
-                        return String.format("[%s:%s:%s]",
-                                super.createStackElementTag(element),
-                                element.getMethodName(),
-                                element.getLineNumber());
-                    }
-                });
                 Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
             }
         });
@@ -466,9 +457,17 @@ public class DeveloperOptionActivity extends BaseActivity {
                         }
                     }
 
-                    Timber.w(new LoggerException(priority, tag, messageMap));
-                    Toast.makeText(DeveloperOptionActivity.this,
-                            timberMessage + " has been sent", Toast.LENGTH_LONG).show();
+                    Priority priorityLogger = null;
+                    if (priority.equals("P1")) {
+                        priorityLogger = Priority.P1;
+                    } else if (priority.equals("P2")) {
+                        priorityLogger = Priority.P2;
+                    }
+                    if (priorityLogger != null) {
+                        ServerLogger.INSTANCE.log(priorityLogger, tag, messageMap);
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                timberMessage + " has been sent", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });

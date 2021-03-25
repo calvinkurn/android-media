@@ -21,8 +21,6 @@ import com.tokopedia.user.session.UserSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import timber.log.Timber;
-
 /**
  * Wrap for timber library
  * Initialize this in application level
@@ -42,30 +40,25 @@ public class TimberWrapper {
         initConfig(application);
     }
 
-    public static void initConfig(@NonNull Context context){
+    public static void initConfig(@NonNull Context context) {
         initByRemoteConfig(context, new FirebaseRemoteConfigImpl(context));
     }
 
-    public static void initByRemoteConfig(@NonNull Context context, @NonNull RemoteConfig remoteConfig){
-        Timber.uprootAll();
-        boolean isDebug = GlobalConfig.DEBUG;
-        if (isDebug) {
-            Timber.plant(new TimberDebugTree());
-        } else {
-            String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
-            if (!TextUtils.isEmpty(logConfigString)) {
-                DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
-                if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
-                    UserSession userSession = new UserSession(context);
-                    TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
-                    timberReportingTree.setUserId(userSession.getUserId());
-                    timberReportingTree.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
-                    timberReportingTree.setVersionName(GlobalConfig.RAW_VERSION_NAME);
-                    timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
-                    timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
-                    timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
-                    Timber.plant(timberReportingTree);
-                }
+    public static void initByRemoteConfig(@NonNull Context context, @NonNull RemoteConfig remoteConfig) {
+        String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
+        if (!TextUtils.isEmpty(logConfigString)) {
+            DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
+            if (dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
+                UserSession userSession = new UserSession(context);
+                TimberReportingTree timberReportingTree = TimberReportingTree.Companion.getInstance();
+                timberReportingTree.setPopulateTagMaps(dataLogConfig.getTags());
+                timberReportingTree.setPopulateTagMapsNewRelic(dataLogConfig.getTags());
+                timberReportingTree.setUserId(userSession.getUserId());
+                timberReportingTree.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
+                timberReportingTree.setVersionName(GlobalConfig.RAW_VERSION_NAME);
+                timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
+                timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
+                timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
             }
         }
     }
@@ -73,7 +66,7 @@ public class TimberWrapper {
     private static List<ScalyrConfig> getScalyrConfigList(Context context) {
         List<ScalyrConfig> scalyrConfigList = new ArrayList<>();
         for (int i = 0; i < PRIORITY_LENGTH; i++) {
-            scalyrConfigList.add(getScalyrConfig(context, i+1));
+            scalyrConfigList.add(getScalyrConfig(context, i + 1));
         }
         return scalyrConfigList;
     }
