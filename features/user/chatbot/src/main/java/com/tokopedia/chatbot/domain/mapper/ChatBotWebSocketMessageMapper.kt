@@ -71,7 +71,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.attachment?.type ?: "",
                 pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
-                stickyActionButtonPojo.stickedButtonActions
+                stickyActionButtonPojo.stickedButtonActions,
+                pojo.source
         )
     }
 

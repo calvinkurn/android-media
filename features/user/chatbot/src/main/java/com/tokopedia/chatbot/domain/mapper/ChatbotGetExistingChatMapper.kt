@@ -244,7 +244,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 chatItemPojoByDateByTime.attachment.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
                 chatItemPojoByDateByTime.msg,
-                stickyActionButtonPojo.stickedButtonActions
+                stickyActionButtonPojo.stickedButtonActions,
+                chatItemPojoByDateByTime.source
         )
     }
 
