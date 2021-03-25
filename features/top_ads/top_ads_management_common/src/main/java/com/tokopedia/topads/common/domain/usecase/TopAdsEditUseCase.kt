@@ -7,7 +7,6 @@ import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -33,7 +32,7 @@ import javax.inject.Inject
 
 @GqlQuery("EditGroupQuery", EDIT_GROUP_QUERY)
 
-class TopAdsEditUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : RestRequestUseCase() {
+class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
     fun setParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?) : RequestParams {
 

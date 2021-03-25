@@ -7,7 +7,6 @@ import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -16,7 +15,6 @@ import com.tokopedia.topads.common.data.internal.ParamObject.ACTION
 import com.tokopedia.topads.common.data.internal.ParamObject.ADS
 import com.tokopedia.topads.common.data.internal.ParamObject.PRICE_BID
 import com.tokopedia.topads.common.data.response.ProductActionResponse
-import com.tokopedia.topads.common.domain.usecase.GetTopadsGroupListQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

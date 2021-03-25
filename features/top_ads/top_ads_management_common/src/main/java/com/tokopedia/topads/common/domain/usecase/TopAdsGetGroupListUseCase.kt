@@ -7,7 +7,6 @@ import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
@@ -17,7 +16,6 @@ import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.internal.ParamObject.SINGLE_ROW
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
-import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -52,7 +50,7 @@ const val GROUP_LIST_QUERY = """
 """
 
 @GqlQuery("GetTopadsGroupListQuery", GROUP_LIST_QUERY)
-class TopAdsGetGroupListUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : RestRequestUseCase() {
+class TopAdsGetGroupListUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
 
     fun setParamsForKeyWord(search: String): RequestParams{
