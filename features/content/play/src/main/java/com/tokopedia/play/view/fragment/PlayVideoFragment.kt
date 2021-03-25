@@ -19,8 +19,10 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
+import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.PlayViewerPiPCoordinator
+import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
@@ -35,6 +37,7 @@ import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
+import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -45,6 +48,7 @@ import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -68,6 +72,7 @@ class PlayVideoFragment @Inject constructor(
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, this) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
+    private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
@@ -225,7 +230,8 @@ class PlayVideoFragment @Inject constructor(
                         source = playParentViewModel.source,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
-                        videoOrientation = playViewModel.videoOrientation,
+                        videoPlayer = videoMeta.videoPlayer,
+                        videoStream = videoMeta.videoStream,
                         stopOnClose = pipState.mode == PiPMode.WatchInPip
                 ),
                 pipAdapter = pipAdapter,
@@ -261,6 +267,7 @@ class PlayVideoFragment @Inject constructor(
         observeBottomInsetsState()
         observeStatusInfo()
         observePiPEvent()
+        observeOnboarding()
     }
 
     private fun showVideoThumbnail() {
@@ -321,6 +328,12 @@ class PlayVideoFragment @Inject constructor(
             if (it.peekContent() == PiPState.Stop) removePiP()
         })
     }
+
+    private fun observeOnboarding() {
+        playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
+            if (!orientation.isLandscape) onboardingView?.showAnimated()
+        })
+    }
     //endregion
 
     private fun handleVideoStateChanged(state: PlayViewerVideoState) {
@@ -343,9 +356,9 @@ class PlayVideoFragment @Inject constructor(
             pipState: PiPState = playViewModel.pipState,
             state: PlayViewerVideoState = playViewModel.viewerVideoState,
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
-        if (isFreezeOrBanned) {
+        if (isFreezeOrBanned && !playViewModel.bottomInsets.isAnyBottomSheetsShown) {
             videoView.setPlayer(null)
             videoView.hide()
             return

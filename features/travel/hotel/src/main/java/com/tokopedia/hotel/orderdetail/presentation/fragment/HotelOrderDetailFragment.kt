@@ -45,6 +45,7 @@ import com.tokopedia.hotel.orderdetail.data.model.TitleContent
 import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
+import com.tokopedia.hotel.orderdetail.presentation.activity.SeeInvoiceActivity
 import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
 import com.tokopedia.hotel.orderdetail.presentation.adapter.TitleTextAdapter
 import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
@@ -244,7 +245,13 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
             if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
                 invoice_see_button.setOnClickListener {
-                    RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+                    startActivity(
+                            SeeInvoiceActivity.newInstance(
+                                    requireContext(),
+                                    orderDetail.invoice.invoiceUrl,
+                                    orderDetail.invoice.invoiceRefNum
+                            )
+                    )
                 }
             }
         }
@@ -292,10 +299,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             room_info.text = propertyDetail.room.first().content
 
             for (amenity in propertyDetail.room.first().amenities) {
-                val amenityTextView = TextView(context)
-                amenityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                amenityTextView.text = amenity.content
-                room_amenities.addView(amenityTextView)
+                if (context != null) {
+                    val amenityTextView = Typography(requireContext())
+                    amenityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    amenityTextView.text = amenity.content
+                    room_amenities.addView(amenityTextView)
+                }
             }
         }
 
@@ -383,8 +392,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-        if (orderDetail.contactUs.helpText.isNotBlank()) {
-            val helpLabel = TextView(context)
+        if (orderDetail.contactUs.helpText.isNotBlank() && context != null) {
+            val helpLabel = Typography(requireContext())
             helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
 

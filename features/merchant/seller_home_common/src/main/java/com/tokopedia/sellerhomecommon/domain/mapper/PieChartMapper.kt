@@ -24,7 +24,8 @@ class PieChartMapper @Inject constructor() {
                             item = mapPieChartItem(it.data.item),
                             summary = mapPieChartSummary(it.data.summary)
                     ),
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget
             )
         }
     }

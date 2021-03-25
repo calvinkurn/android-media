@@ -9,19 +9,16 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.common.presenter.activities.BaseSomActivity
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
@@ -34,10 +31,9 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
 
     companion object {
         @JvmStatic
-        fun createIntent(context: Context, orderId: String, userRoles: SomGetUserRoleUiModel) = Intent(context, SomDetailActivity::class.java)
+        fun createIntent(context: Context, orderId: String) = Intent(context, SomDetailActivity::class.java)
                 .putExtras(Bundle().apply {
                     putString(PARAM_ORDER_ID, orderId)
-                    putParcelable(PARAM_USER_ROLES, userRoles)
                 })
     }
 
