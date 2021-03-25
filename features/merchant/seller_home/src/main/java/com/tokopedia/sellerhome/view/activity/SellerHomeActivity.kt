@@ -320,9 +320,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun showToolbar(@FragmentType pageType: Int = FragmentType.HOME) {
-        val pageTitle = navigator?.getPageTitle(pageType)
-        supportActionBar?.title = pageTitle
-        if (pageType != FragmentType.OTHER) {
+        if (pageType != FragmentType.OTHER && pageType != FragmentType.ORDER) {
+            val pageTitle = navigator?.getPageTitle(pageType)
+            supportActionBar?.title = pageTitle
             sahToolbar?.show()
         } else {
             sahToolbar?.hide()

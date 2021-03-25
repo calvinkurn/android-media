@@ -32,17 +32,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
-    override fun setupToolbar() {
-        activity?.run {
-            (this as? AppCompatActivity)?.run {
-                supportActionBar?.hide()
-                som_detail_toolbar?.inflateMenu(R.menu.chat_menu)
-                som_detail_toolbar?.title = getString(R.string.title_som_detail)
-                som_detail_toolbar?.setOnMenuItemClickListener(this@SomDetailFragment)
-                menu = som_detail_toolbar?.menu
-            }
-        }
-    }
+    override fun showBackButton(): Boolean = false
 
     fun setOrderIdToShow(orderId: String) {
         if (orderId != this.orderId) {

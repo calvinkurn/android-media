@@ -1504,16 +1504,18 @@ open class SomDetailFragment : BaseDaggerFragment(),
         refreshHandler?.finishRefresh()
     }
 
-    protected open fun setupToolbar() {
+    private fun setupToolbar() {
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 som_detail_toolbar?.inflateMenu(R.menu.chat_menu)
                 som_detail_toolbar?.title = getString(R.string.title_som_detail)
-                som_detail_toolbar?.isShowBackButton = false
+                som_detail_toolbar?.isShowBackButton = showBackButton()
                 som_detail_toolbar?.setOnMenuItemClickListener(this@SomDetailFragment)
             }
         }
     }
+
+    protected open fun showBackButton(): Boolean = true
 
     private fun setChatButtonEnabled(isEnabled: Boolean) {
         menu?.findItem(R.id.som_action_chat)?.run {

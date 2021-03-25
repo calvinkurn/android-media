@@ -32,6 +32,8 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
 
+    override fun showBackButton(): Boolean = false
+
     fun setSomListOrderListener(listener: SomListClickListener) {
         this.somListOrderListener = listener
     }

@@ -2061,18 +2061,21 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun isOrderWithCancellationRequest(order: SomListOrderUiModel) = order.cancelRequest == 1 && order.cancelRequestStatus != 0
 
-    protected open fun setupToolbar() {
+    private fun setupToolbar() {
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
                 som_list_toolbar?.inflateMenu(R.menu.menu_som_list)
                 som_list_toolbar?.title = getString(R.string.title_som_list)
+                som_list_toolbar?.isShowBackButton = showBackButton()
                 som_list_toolbar?.setOnMenuItemClickListener(this@SomListFragment)
                 updateToolbarMenu()
                 tryReshowCoachMark()
             }
         }
     }
+
+    protected open fun showBackButton(): Boolean = true
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return if ((item?.itemId == R.id.som_list_action_waiting_payment_order) && viewModel.waitingPaymentCounterResult.value !is Fail) {

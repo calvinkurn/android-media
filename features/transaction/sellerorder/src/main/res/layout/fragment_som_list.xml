@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_is_show_back_button="true"
+
         app:unify_header_is_show_shadow="true" />
 
     <!--  start success views  -->
