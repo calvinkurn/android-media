@@ -15,6 +15,8 @@ data class Grid(
         @Expose @SerializedName("slashedPrice") val slashedPrice: String,
         @Expose @SerializedName("discount") val discount: String,
         @Expose @SerializedName("imageUrl") val imageUrl: String,
+        @Expose @SerializedName("productImageUrl") val productImageUrl: String,
+        @Expose @SerializedName("back_color") val backColor: String,
         @Expose @SerializedName("rating") val rating: Int,
         @Expose @SerializedName("ratingAverage") val ratingAverage: String,
         @Expose @SerializedName("count_review") val countReview: Int,

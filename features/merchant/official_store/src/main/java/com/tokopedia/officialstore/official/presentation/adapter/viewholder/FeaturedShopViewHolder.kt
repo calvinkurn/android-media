@@ -1,9 +1,12 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout.LayoutParams
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -14,29 +17,44 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter.OnItemClickListener
+import com.tokopedia.unifyprinciples.Typography
 
 class FeaturedShopViewHolder(
     itemView: View,
     private val onItemClickListener: OnItemClickListener?
 ) : RecyclerView.ViewHolder(itemView) {
 
+    private val container: ConstraintLayout? = itemView.findViewById(R.id.featured_shop_background)
     private val imageView: ImageView? = itemView.findViewById(R.id.image_featured_shop)
+    private val itemDesc: Typography? = itemView.findViewById(R.id.title_featured_shop)
+    private val itemLogo: ImageView? = itemView.findViewById(R.id.logo_featured_shop)
     private val imageLoading: ImageView? = itemView.findViewById(R.id.image_featured_loading)
-
-    init {
-        calculateImageSize()
-    }
+    private val template = "%s %s"
 
     fun bind(shop: Grid) {
+        try {
+            container?.setBackgroundColor(Color.parseColor(shop.backColor))
+        }catch (ex: Exception){
+        }
         imageView?.let {
             Glide.with(it.context)
-                .load(shop.imageUrl)
+                .load(shop.productImageUrl)
                 .dontAnimate()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .listener(imageRequestListener())
                 .into(it)
         }
+        itemLogo?.let{
+            Glide.with(it.context)
+                    .load(shop.imageUrl)
+                    .dontAnimate()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .listener(imageRequestListener())
+                    .into(it)
+        }
+        itemDesc?.text = shop.label
 
         setOnClickListener(shop)
     }
@@ -70,17 +88,4 @@ class FeaturedShopViewHolder(
         }
     }
 
-    private fun calculateImageSize() {
-        val display = itemView.context.resources.displayMetrics
-        val screenWidth = display.widthPixels
-
-        val aspectRatio = 1.85 / 1
-        val imageWidth = screenWidth / 2
-        val imageHeight = (imageWidth / aspectRatio).toInt()
-
-        LayoutParams(LayoutParams.MATCH_PARENT, imageHeight).let { layoutParams ->
-            imageView?.layoutParams = layoutParams
-            imageLoading?.layoutParams = layoutParams
-        }
-    }
 }

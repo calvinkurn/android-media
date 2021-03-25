@@ -70,7 +70,8 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
                         DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP
+                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND
                 )
                 availableLegoBannerScreens = setOf(
                         DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
@@ -83,7 +84,8 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
                         DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE,
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP
+                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND
                 )
             }
 
