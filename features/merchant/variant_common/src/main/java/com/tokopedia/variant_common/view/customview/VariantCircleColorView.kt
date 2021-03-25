@@ -87,7 +87,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun drawInnerCircle(canvas: Canvas?) {
-        if (innerCirclePaint.color == ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) {
+        if (innerCirclePaint.color == ContextCompat.getColor(context, R.color.variant_common_white_dms)) {
             canvas?.drawCircle(
                     width.toFloat() / 2,
                     height.toFloat() / 2,
