@@ -13,15 +13,15 @@
     <dimen name="comparison_specs_margin_start">8dp</dimen>
     <dimen name="comparison_specs_margin_end">8dp</dimen>
 
-    <dimen name="comparison_widget_margin_start">16dp</dimen>
-    <dimen name="comparison_widget_margin_end">16dp</dimen>
+    <dimen name="comparison_widget_margin_start">14dp</dimen>
+    <dimen name="comparison_widget_margin_end">14dp</dimen>
     <dimen name="comparison_wdiget_collapsed_height">360dp</dimen>
     <dimen name="comparison_widget_product_card_width">132dp</dimen>
 
     <dimen name="comparison_widget_collapsed_height">580dp</dimen>
 
     <dimen name="sticky_title_height">68dp</dimen>
-    <dimen name="widget_comparison_item_width">140dp</dimen>
-    <dimen name="widget_sticky_title_item_width">132dp</dimen>
+    <dimen name="widget_comparison_item_width">132dp</dimen>
+    <dimen name="widget_sticky_title_item_width">126dp</dimen>
     <dimen name="widget_sticky_title_item_spacing">4dp</dimen>
 </resources>
