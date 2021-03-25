@@ -1,5 +1,6 @@
 package com.tokopedia.topads.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -35,20 +36,5 @@ class AdCreationChooserActivity : BaseSimpleActivity(), HasComponent<CreateAdsCo
     override fun getComponent(): CreateAdsComponent {
         return DaggerCreateAdsComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        if (intent.extras?.get(TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP) != true) {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
-                if (isFromPdpSellerMigration(intent?.extras)) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(intent?.extras))
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(intent?.extras))
-                }
-            }
-
-            startActivity(intent)
-        }
-        finish()
     }
 }
