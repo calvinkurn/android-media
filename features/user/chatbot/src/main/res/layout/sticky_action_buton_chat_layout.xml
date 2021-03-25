@@ -79,10 +79,10 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="Beli"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="ghost" />
+            app:unifyButtonVariant="ghost"
+            tools:text="beli"/>
 
     </LinearLayout>
 
