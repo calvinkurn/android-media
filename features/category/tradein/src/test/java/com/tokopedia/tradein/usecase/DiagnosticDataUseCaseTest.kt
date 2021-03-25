@@ -3,6 +3,8 @@ package com.tokopedia.tradein.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.model.ValidateTradePDP
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tradein.model.DeviceDiagGQL
 import com.tokopedia.tradein.model.DeviceDiagParams
@@ -85,12 +87,11 @@ class DiagnosticDataUseCaseTest {
 
     @Test
     fun getDiagnosticData() {
-        val graphqlResponse = mockk<GraphqlResponse>(relaxed = true)
         val deviceDiagGQL = mockk<DeviceDiagGQL>(relaxed = true)
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            coEvery { tradeInRepository.getGQLData(any(), any(), any(), any()) } returns graphqlResponse
+            coEvery { tradeInRepository.getGQLData(any(), DeviceDiagGQL::class.java, any(), CacheType.ALWAYS_CLOUD)} returns deviceDiagGQL
 
             val variable = diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
 
