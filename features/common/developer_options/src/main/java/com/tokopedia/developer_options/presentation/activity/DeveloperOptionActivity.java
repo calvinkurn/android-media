@@ -57,7 +57,6 @@ import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenS
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
-import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -73,8 +72,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import timber.log.Timber;
 
 public class DeveloperOptionActivity extends BaseActivity {
 
@@ -97,7 +94,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private AppCompatTextView abTestRollenceEditorStartButton;
-    private ToggleButton toggleTimberDevOption;
     private Spinner spinnerEnvironmentChooser;
 
     private View sendTimberButton;
@@ -243,9 +239,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
-
-        toggleTimberDevOption = findViewById(R.id.toggle_timber_dev_options);
-        toggleTimberDevOption.setChecked(false);
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
@@ -403,19 +396,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             userSession.setFirstTimeUser(true);
             getSharedPreferences(CACHE_FREE_RETURN).edit().clear().apply();
             Toast.makeText(this, "Reset Onboarding", Toast.LENGTH_SHORT).show();
-        });
-
-        toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
-                String remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_CUSTOMER_APP;
-                if (GlobalConfig.isSellerApp()) {
-                    remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_SELLER_APP;
-                }
-                TimberWrapper.initByRemoteConfig(this, remoteConfigValue);
-                Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
-            }
         });
 
         sendTimberButton.setOnClickListener(new View.OnClickListener() {

@@ -30,7 +30,8 @@ public class TimberWrapper {
 
     private static final int PRIORITY_LENGTH = 2;
 
-    private static final String REMOTE_CONFIG_KEY_LOG = "android_seller_app_log_config";
+    private static final String REMOTE_CONFIG_SCALRY_KEY_LOG = "android_customer_log_config_scalyr";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customer_log_config_new_relic";
 
     public static void init(Application application) {
         LogManager.init(application);
@@ -45,14 +46,16 @@ public class TimberWrapper {
     }
 
     public static void initByRemoteConfig(@NonNull Context context, @NonNull RemoteConfig remoteConfig) {
-        String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
-        if (!TextUtils.isEmpty(logConfigString)) {
-            DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
+        String logScalyrConfigString = remoteConfig.getString(REMOTE_CONFIG_SCALRY_KEY_LOG);
+        String logNewRelicConfigString = remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
+        TimberReportingTree timberReportingTree = TimberReportingTree.Companion.getInstance();
+        if (!TextUtils.isEmpty(logScalyrConfigString)) {
+            DataLogConfig dataLogConfig = new Gson().fromJson(logScalyrConfigString, DataLogConfig.class);
+            DataLogConfig dataLogConfigNewRelic = new Gson().fromJson(logNewRelicConfigString, DataLogConfig.class);
             if (dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
                 UserSession userSession = new UserSession(context);
-                TimberReportingTree timberReportingTree = TimberReportingTree.Companion.getInstance();
                 timberReportingTree.setPopulateTagMaps(dataLogConfig.getTags());
-                timberReportingTree.setPopulateTagMapsNewRelic(dataLogConfig.getTags());
+                timberReportingTree.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.getTags());
                 timberReportingTree.setUserId(userSession.getUserId());
                 timberReportingTree.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
                 timberReportingTree.setVersionName(GlobalConfig.RAW_VERSION_NAME);
