@@ -81,7 +81,7 @@ public abstract class BaseNotificationFactory {
 
     protected int getDrawableIcon() {
         if (GlobalConfig.isSellerApp()) {
-            return R.mipmap.ic_statusbar_notif_seller;
+            return com.tokopedia.notification.common.R.mipmap.ic_statusbar_notif_seller;
         } else {
             return R.mipmap.ic_statusbar_notif_customer;
         }

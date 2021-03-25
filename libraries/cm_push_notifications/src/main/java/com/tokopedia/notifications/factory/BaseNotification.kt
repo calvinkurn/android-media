@@ -138,7 +138,7 @@ abstract class BaseNotification internal constructor(
 
     internal val drawableIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            R.mipmap.ic_statusbar_notif_seller
+            com.tokopedia.notification.common.R.mipmap.ic_statusbar_notif_seller
         else
             R.mipmap.ic_statusbar_notif_customer
 
