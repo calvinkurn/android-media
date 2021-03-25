@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.common.travel.constant.TravelSortOption
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
@@ -14,6 +15,7 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightLowestPriceQuery
 import com.tokopedia.flight.common.util.FlightRequestUtil
+import com.tokopedia.flight.promo_chips.model.AirlinePrice
 import com.tokopedia.flight.promo_chips.model.FlightLowestPrice
 import com.tokopedia.flight.promo_chips.model.FlightLowestPriceArgs
 import com.tokopedia.flight.promo_chips.usecase.FlightLowestPriceUseCase
@@ -486,6 +488,12 @@ class FlightSearchViewModel @Inject constructor(
             }
             it.printStackTrace()
         }
+    }
+
+    fun onPromotionChipsClicked(position: Int, airlinePrice: AirlinePrice, isReturnTrip: Boolean) {
+        flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice,flightSearchPassData,
+                FlightAnalytics.Screen.HOMEPAGE,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "", isReturnTrip)
     }
 
     companion object {

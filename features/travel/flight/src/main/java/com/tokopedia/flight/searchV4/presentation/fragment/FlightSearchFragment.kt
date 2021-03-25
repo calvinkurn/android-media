@@ -781,6 +781,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private val promoChipsListener = object : FlightPromoChips.PromoChipsListener {
         override fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int) {
+            flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice, isReturnTrip())
             flightSearchViewModel.filterModel.airlineList = mutableListOf(airlinePrice.airlineID)
             clearAllData()
             fetchSortAndFilterData()
