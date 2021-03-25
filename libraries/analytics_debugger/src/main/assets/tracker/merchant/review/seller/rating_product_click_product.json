@@ -1,5 +1,5 @@
 {
-  "readme": "Rating Product - click filter",
+  "readme": "Rating Product - click product",
   "mode": "exact",
   "query": [
     {
@@ -27,9 +27,19 @@
       "shopId": "{{.+}}",
       "screenName": "rating produk",
       "event": "clickReview",
-      "eventAction": "click - filter on rating product page",
+      "eventAction": "scroll - rating product page",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
+    },
+    {
+      "eventCategory": "ulasan - rating produk",
+      "shopId": "{{.+}}",
+      "screenName": "rating produk",
+      "position": "{{.+}}",
+      "event": "clickReview",
+      "eventAction": "click - product on rating product",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
     }
   ]
 }

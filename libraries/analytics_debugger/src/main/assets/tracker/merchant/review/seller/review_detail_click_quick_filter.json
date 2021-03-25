@@ -1,5 +1,5 @@
 {
-  "readme": "Review Detail - click filter star",
+  "readme": "Review Detail - click quick filter",
   "mode": "exact",
   "query": [
     {
@@ -15,15 +15,15 @@
       "sessionIris": "{{.*}}"
     },
     {
-      "event": "clickReview",
       "eventCategory": "review detail page",
-      "eventAction": "click - star filter",
-      "eventLabel": "{{star:.*}}",
+      "productId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "review detail page",
       "isActive": "{{true|false}}",
-      "shopId": "{{\\d{1,}}}",
-      "productId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
-      "screenName": "review detail page"
+      "event": "clickReview",
+      "eventAction": "click - quick filter on review detail page",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{filterBy:.*}}"
     }
   ]
 }

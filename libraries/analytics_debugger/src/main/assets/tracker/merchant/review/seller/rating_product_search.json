@@ -1,18 +1,7 @@
 {
-  "readme": "Rating Product - click filter",
+  "readme": "Rating Product - click search",
   "mode": "exact",
   "query": [
-    {
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "appsflyerId": "{{.*}}",
-      "shopId": "{{.*}}",
-      "screenName": "rating produk",
-      "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
-    },
     {
       "eventCategory": "ulasan - rating produk",
       "shopId": "{{.+}}",
@@ -27,9 +16,18 @@
       "shopId": "{{.+}}",
       "screenName": "rating produk",
       "event": "clickReview",
-      "eventAction": "click - filter on rating product page",
+      "eventAction": "click - search bar on rating product page",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
+    },
+    {
+      "eventCategory": "ulasan - rating produk",
+      "shopId": "{{.+}}",
+      "screenName": "rating produk",
+      "event": "clickReview",
+      "eventAction": "click - search by keyword on rating product page",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "keyword:{{.*}}"
     }
   ]
 }

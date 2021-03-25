@@ -1,5 +1,5 @@
 {
-  "readme": "Review Detail - click filter star",
+  "readme": "Review Detail - click image on product review",
   "mode": "exact",
   "query": [
     {
@@ -15,15 +15,13 @@
       "sessionIris": "{{.*}}"
     },
     {
-      "event": "clickReview",
       "eventCategory": "review detail page",
-      "eventAction": "click - star filter",
-      "eventLabel": "{{star:.*}}",
-      "isActive": "{{true|false}}",
-      "shopId": "{{\\d{1,}}}",
-      "productId": "{{\\d{1,}}}",
+      "screenName": "review detail page",
+      "event": "clickReview",
+      "eventAction": "click - image on product review",
       "sessionIris": "{{.{1,}}}",
-      "screenName": "review detail page"
+      "eventLabel": "{{.*}}"
     }
   ]
 }
+
