@@ -34,7 +34,6 @@ import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
 import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,7 +44,7 @@ import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopSettingsInfoFragment : BaseDaggerFragment(), MenuViewHolder.ItemMenuListener {
+class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     companion object {
         const val EXTRA_MESSAGE = "extra_message"
@@ -104,12 +103,19 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), MenuViewHolder.ItemMenuLi
             }
             bottomSheet = MenuBottomSheet.newInstance(itemList)
             bottomSheet?.setTitle(getString(R.string.shop_settings_manage_status))
-            bottomSheet?.setListener(this)
+            bottomSheet?.setListener(object : MenuViewHolder.ItemMenuListener {
+                override fun onItemMenuClicked(text: String, position: Int) {
+                    itemMenuClicked(text, position)
+                }
+
+                override fun itemMenuSize(): Int = itemList.size
+
+            })
             bottomSheet?.show(childFragmentManager, "menu_bottom_sheet")
         }
     }
 
-    override fun onItemMenuClicked(text: String, position: Int) {
+    private fun itemMenuClicked(text: String, position: Int) {
         bottomSheet?.dismiss()
         when(text) {
             getString(R.string.label_close_shop_now) -> {

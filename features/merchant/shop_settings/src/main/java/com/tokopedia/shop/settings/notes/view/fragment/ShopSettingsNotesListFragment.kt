@@ -129,6 +129,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                     }
                     bottomSheet.dismiss()
                 }
+                override fun itemMenuSize(): Int = itemList.size
             })
             bottomSheet.showHeader = false
             bottomSheet.show(childFragmentManager, "menu_bottom_sheet")
@@ -229,6 +230,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                 }
                 bottomSheet.dismiss()
             }
+            override fun itemMenuSize(): Int = itemList.size
         })
         bottomSheet.showHeader = false
         bottomSheet.show(childFragmentManager, "menu_bottom_sheet")
