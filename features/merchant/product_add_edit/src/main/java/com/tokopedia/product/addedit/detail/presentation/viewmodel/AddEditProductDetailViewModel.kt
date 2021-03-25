@@ -191,17 +191,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
         get() = mProductPriceRecommendation
 
-    init {
-        launch {
-            mProductNameInputLiveData.asFlow()
-                    .debounce(1000)
-                    .distinctUntilChanged()
-                    .collect {
-                        validateProductNameInput(it)
-                    }
-        }
-    }
-
     private fun isInputValid(): Boolean {
 
         // by default the product photos are never empty
@@ -248,6 +237,19 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun setProductNameInput(string: String) {
         isProductNameChanged = true
         mProductNameInputLiveData.value = string
+    }
+
+    fun setProductNameInputAsFlow() {
+        launchCatchError(block = {
+            mProductNameInputLiveData.asFlow()
+                    .debounce(1000)
+                    .distinctUntilChanged()
+                    .collect {
+                        validateProductNameInput(it)
+                    }
+        }, onError = {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
     }
 
     fun validateProductNameInput(productNameInput: String) {
