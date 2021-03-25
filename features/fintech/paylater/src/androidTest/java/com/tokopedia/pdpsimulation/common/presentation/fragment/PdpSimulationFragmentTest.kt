@@ -19,7 +19,6 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 import org.junit.*
 import org.junit.runner.RunWith
 
@@ -54,13 +53,7 @@ class PdpSimulationFragmentTest {
     }
 
     @Test
-    fun doSomething() {
-        val a = 0
-        Assert.assertEquals(0, a)
-    }
-
-    @Test
-    fun check_register_widget_visible_on_top() {
+    fun check_pay_later_click_impressions() {
         actionTest {
             testClickTabs(1)
             testClickTabs(0)
@@ -68,23 +61,20 @@ class PdpSimulationFragmentTest {
             testClickPayLaterItem(0)
         } assertTest {
             validate(gtmLogDBSource, context, PAY_LATER_ANALYTICS)
+            clearData()
         }
-        print("PDP simulation test")
     }
 
     @Test
-    fun dummy() {
+    fun check_product_info_impression() {
         actionTest {
             testClickTabs(1)
-            subtitle()
-            /*testPayLaterActionButtons(R.id.btnHowToUse)
-            testPayLaterActionButtons(R.id.btnSeeMore)*/
+            testPayLaterProductActionImpressions()
         } assertTest {
-            validate(gtmLogDBSource, context, PAY_LATER_ANALYTICS)
+            validate(gtmLogDBSource, context, PAY_LATER_IMPRESSION_ANALYTICS)
+            clearData()
         }
-        print("PDP simulation test")
     }
-
 
 
     private fun clearData() {
@@ -117,6 +107,7 @@ class PdpSimulationFragmentTest {
         const val APPLICATION_KEY = "getUserApplicationStatus"
         const val SIMULATION_KEY = "paylater_getSimulation"
         const val PAY_LATER_ANALYTICS = "tracker/fintech/pdpsimulation/paylater.json"
+        const val PAY_LATER_IMPRESSION_ANALYTICS = "tracker/fintech/pdpsimulation/product_info_impression.json"
 
     }
 }
