@@ -36,7 +36,8 @@ object ComparisonWidgetMapper {
                     specsModel = SpecsMapper.mapToSpecsListModel(
                             it.value.specs, isEdgeStart, isEdgeEnd, context, specsConfig),
                         productCardModel = it.value.toProductCardModel(),
-                        recommendationItem = it.value
+                        recommendationItem = it.value,
+                        isCurrentItem = checkIseCurrentItem(it.index)
                 )
             },
                 comparisonWidgetConfig = ComparisonWidgetConfig(
@@ -44,6 +45,10 @@ object ComparisonWidgetMapper {
                         collapsedHeight = collapsedHeight
                 )
         )
+    }
+
+    private fun checkIseCurrentItem(index: Int): Boolean {
+        return index == 0
     }
 
     private fun getCollapsedSpecsHeight(heightPositionMap: MutableMap<Int, Int>): Int {

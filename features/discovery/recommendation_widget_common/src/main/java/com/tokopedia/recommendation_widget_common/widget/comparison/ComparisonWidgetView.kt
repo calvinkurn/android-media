@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModel
@@ -22,8 +23,12 @@ import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.view_comparison_widget.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
-class ComparisonWidgetView: FrameLayout, ComparisonWidgetScrollInterface  {
+class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollInterface  {
 
     private var specOnScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
     private var comparisonListModel: ComparisonListModel? = null
@@ -34,6 +39,9 @@ class ComparisonWidgetView: FrameLayout, ComparisonWidgetScrollInterface  {
 
     private var trackingQueue = TrackingQueue(context)
     private var userSessionInterface = UserSession(context)
+
+    private val masterJob = SupervisorJob()
+    override val coroutineContext = masterJob + Dispatchers.IO
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -48,45 +56,49 @@ class ComparisonWidgetView: FrameLayout, ComparisonWidgetScrollInterface  {
     }
 
     fun setComparisonWidgetData(
-            comparisonListModel: ComparisonListModel,
+            recommendationWidget: RecommendationWidget,
             stickyTitleView: StickyTitleView?,
             comparisonWidgetInterface: ComparisonWidgetInterface,
             recommendationTrackingModel: RecommendationTrackingModel,
             stickyTitleInterface: StickyTitleInterface
     ) {
-        rootView.tv_header_title.text = comparisonListModel.recommendationWidget.title
-        if (comparisonListModel.recommendationWidget.seeMoreAppLink.isNotEmpty()) {
-            rootView.btn_see_more.visible()
-        } else {
-            rootView.btn_see_more.gone()
-        }
-
-        if (this.adapter == null) {
-            this.comparisonListModel = comparisonListModel
-            this.adapter = ComparisonWidgetAdapter(
-                    comparisonListModel = comparisonListModel,
-                    comparisonWidgetInterface = comparisonWidgetInterface,
-                    trackingQueue = trackingQueue,
-                    userSessionInterface = userSessionInterface,
-                    recommendationTrackingModel = recommendationTrackingModel
-            )
-            rootView.rv_comparison_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            rootView.rv_comparison_widget.adapter = adapter
-            rootView.btn_collapse.setOnClickListener {
-                ProductRecommendationTracking.getClickSpecDetailTracking(
-                        eventClick = recommendationTrackingModel.eventClick,
-                        eventCategory = recommendationTrackingModel.eventCategory,
-                        isLoggedIn = userSessionInterface.isLoggedIn,
-                        recomTitle = recommendationTrackingModel.headerTitle,
-                        pageName = comparisonListModel.recommendationWidget.pageName,
-                        userId = userSessionInterface.userId
-                )
-                onSpecDetailsClick(comparisonListModel)
+        launch {
+            val comparisonListModel =
+                    ComparisonWidgetMapper.mapToComparisonWidgetModel(recommendationWidget, context)
+            rootView.tv_header_title.text = comparisonListModel.recommendationWidget.title
+            if (comparisonListModel.recommendationWidget.seeMoreAppLink.isNotEmpty()) {
+                rootView.btn_see_more.visible()
+            } else {
+                rootView.btn_see_more.gone()
             }
-            rootView.comparison_widget_container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-            stickyTitleView?.let {
-                this.stickyTitleViewBinded = stickyTitleView
-                bindStickyTitleView(stickyTitleInterface)
+
+            if (this@ComparisonWidgetView.adapter == null) {
+                this@ComparisonWidgetView.comparisonListModel = comparisonListModel
+                this@ComparisonWidgetView.adapter = ComparisonWidgetAdapter(
+                        comparisonListModel = comparisonListModel,
+                        comparisonWidgetInterface = comparisonWidgetInterface,
+                        trackingQueue = trackingQueue,
+                        userSessionInterface = userSessionInterface,
+                        recommendationTrackingModel = recommendationTrackingModel
+                )
+                rootView.rv_comparison_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                rootView.rv_comparison_widget.adapter = adapter
+                rootView.btn_collapse.setOnClickListener {
+                    ProductRecommendationTracking.getClickSpecDetailTracking(
+                            eventClick = recommendationTrackingModel.eventClick,
+                            eventCategory = recommendationTrackingModel.eventCategory,
+                            isLoggedIn = userSessionInterface.isLoggedIn,
+                            recomTitle = recommendationTrackingModel.headerTitle,
+                            pageName = comparisonListModel.recommendationWidget.pageName,
+                            userId = userSessionInterface.userId
+                    )
+                    onSpecDetailsClick(comparisonListModel)
+                }
+                rootView.comparison_widget_container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+                stickyTitleView?.let {
+                    this@ComparisonWidgetView.stickyTitleViewBinded = stickyTitleView
+                    bindStickyTitleView(stickyTitleInterface)
+                }
             }
         }
     }

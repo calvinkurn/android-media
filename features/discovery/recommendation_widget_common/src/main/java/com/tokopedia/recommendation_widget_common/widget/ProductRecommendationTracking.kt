@@ -25,7 +25,8 @@ object ProductRecommendationTracking: BaseTrackerConst() {
             widgetType: String,
             productId: String = "",
             position: Int,
-            isLoggedIn: Boolean
+            isLoggedIn: Boolean,
+            anchorProductId: String = ""
     ): HashMap<String, Any> {
         val trackingBuilder =
                 BaseTrackerBuilder()
@@ -41,7 +42,7 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                                         headerTitle,
                                         chipsTitle
                                 ),
-                                list = buildRecommendationList(recomPageName, recommendationType, isTopads, widgetType, productId),
+                                list = buildRecommendationList(recomPageName, recommendationType, isTopads, widgetType, anchorProductId),
                                 products = recommendationItems.map {
                                     mapRecommendationItemToProductTracking(it, position)
                                 }
@@ -62,7 +63,8 @@ object ProductRecommendationTracking: BaseTrackerConst() {
             widgetType: String,
             productId: String,
             position: Int,
-            isLoggedIn: Boolean
+            isLoggedIn: Boolean,
+            anchorProductId: String
     ): HashMap<String, Any> {
         val trackingBuilder =
                 BaseTrackerBuilder()
@@ -78,7 +80,7 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                                         headerTitle,
                                         chipsTitle
                                 ),
-                                list = buildRecommendationList(recomPageName, recommendationType, isTopads, widgetType, productId),
+                                list = buildRecommendationList(recomPageName, recommendationType, isTopads, widgetType, anchorProductId),
                                 products = recommendationItems.map {
                                     mapRecommendationItemToProductTracking(it, position)
                                 }
@@ -116,14 +118,14 @@ object ProductRecommendationTracking: BaseTrackerConst() {
         return trackerBuilder.build() as HashMap<String, Any>
     }
 
-    private fun buildRecommendationList(recomPageName: String, recommendationType: String, isTopads: Boolean, widgetType: String, productId: String): String {
+    private fun buildRecommendationList(recomPageName: String, recommendationType: String, isTopads: Boolean, widgetType: String, anchorProductId: String): String {
         return String.format(
                 EVENT_LIST_PRODUCT,
                 recomPageName,
                 recommendationType,
                 if (isTopads) VALUE_IS_TOPADS else "",
                 widgetType,
-                productId
+                anchorProductId
         )
     }
 

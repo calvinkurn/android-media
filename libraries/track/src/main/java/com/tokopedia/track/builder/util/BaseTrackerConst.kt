@@ -195,7 +195,7 @@ abstract class BaseTrackerConst {
                     CURRENCY_CODE, IDR,
                     CLICK, DataLayer.mapOf(
                     ACTION_FIELD, DataLayer.mapOf(
-                    LIST, setNewList(products.firstOrNull(), list)
+                    LIST, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list
             ),
                     PRODUCTS, getProductsClick(products, list)
             )

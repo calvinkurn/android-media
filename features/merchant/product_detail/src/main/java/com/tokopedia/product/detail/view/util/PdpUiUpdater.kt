@@ -25,7 +25,6 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetDataModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetMapper
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.variant_common.model.VariantCategory
@@ -521,11 +520,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
         } else {
-            mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
-                    "",
-                    data.pageName,
-                    data
-            )
+            updateData(data.pageName) {
+                mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
+                        "",
+                        data.pageName,
+                        data
+                )
+            }
         }
     }
 

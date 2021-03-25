@@ -39,9 +39,9 @@ object SpecsMapper {
 
     fun getColorBasedOnPosition(position: Int): Int {
         return if (position % 2 == 0) {
-            R.color.Unify_N50
+            com.tokopedia.unifyprinciples.R.color.Unify_N50
         } else {
-            R.color.Unify_N0
+            com.tokopedia.unifyprinciples.R.color.Unify_N0
         }
     }
 

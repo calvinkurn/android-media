@@ -28,35 +28,38 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
     ) {
         view.specsView.setSpecsInfo(comparisonModel.specsModel)
         view.productCardView.setProductModel(comparisonModel.productCardModel)
-        view.productCardView.setOnClickListener {
-            if (comparisonModel.recommendationItem.isTopAds) {
-                val product = comparisonModel.recommendationItem
-                TopAdsUrlHitter(context).hitClickUrl(
-                        CLASS_NAME,
-                        product.clickUrl,
-                        product.productId.toString(),
-                        product.name,
-                        product.imageUrl
-                )
-            }
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                    ProductRecommendationTracking.getClickProductTracking(
-                            recommendationItems = listOf(
-                                    comparisonModel.recommendationItem
-                            ),
-                            androidPageName = recommendationTrackingModel.androidPageName,
-                            headerTitle = recommendationTrackingModel.headerTitle,
-                            chipsTitle = comparisonModel.productCardModel.productName,
-                            recomPageName = comparisonModel.recommendationItem.pageName,
-                            isTopads = comparisonModel.recommendationItem.isTopAds,
-                            widgetType = comparisonModel.recommendationItem.type,
-                            productId = comparisonModel.recommendationItem.productId.toString(),
-                            position = (adapterPosition+1),
-                            isLoggedIn = userSession.isLoggedIn,
-                            recommendationType = comparisonModel.recommendationItem.recommendationType
+        if (!comparisonModel.isCurrentItem) {
+            view.productCardView.setOnClickListener {
+                if (comparisonModel.recommendationItem.isTopAds) {
+                    val product = comparisonModel.recommendationItem
+                    TopAdsUrlHitter(context).hitClickUrl(
+                            CLASS_NAME,
+                            product.clickUrl,
+                            product.productId.toString(),
+                            product.name,
+                            product.imageUrl
                     )
-            )
-            comparisonWidgetInterface.onProductCardClicked(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
+                }
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                        ProductRecommendationTracking.getClickProductTracking(
+                                recommendationItems = listOf(
+                                        comparisonModel.recommendationItem
+                                ),
+                                androidPageName = recommendationTrackingModel.androidPageName,
+                                headerTitle = recommendationTrackingModel.headerTitle,
+                                chipsTitle = comparisonModel.productCardModel.productName,
+                                recomPageName = comparisonModel.recommendationItem.pageName,
+                                isTopads = comparisonModel.recommendationItem.isTopAds,
+                                widgetType = comparisonModel.recommendationItem.type,
+                                productId = comparisonModel.recommendationItem.productId.toString(),
+                                position = (adapterPosition+1),
+                                isLoggedIn = userSession.isLoggedIn,
+                                recommendationType = comparisonModel.recommendationItem.recommendationType,
+                                anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
+                        )
+                )
+                comparisonWidgetInterface.onProductCardClicked(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
+            }
         }
         view.productCardView.addOnImpressionListener(comparisonModel) {
             if (comparisonModel.recommendationItem.isTopAds) {
@@ -83,7 +86,8 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                             productId = comparisonModel.recommendationItem.productId.toString(),
                             position = (adapterPosition+1),
                             isLoggedIn = userSession.isLoggedIn,
-                            recommendationType = comparisonModel.recommendationItem.recommendationType
+                            recommendationType = comparisonModel.recommendationItem.recommendationType,
+                            anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
                     )
             )
             comparisonWidgetInterface.onProductCardImpressed(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)

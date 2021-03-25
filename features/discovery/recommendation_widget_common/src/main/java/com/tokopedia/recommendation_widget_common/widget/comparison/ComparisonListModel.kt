@@ -6,4 +6,8 @@ data class ComparisonListModel(
         val comparisonData: List<ComparisonModel>,
         val comparisonWidgetConfig: ComparisonWidgetConfig,
         val recommendationWidget: RecommendationWidget
-)
+) {
+    fun getAnchorProduct(): ComparisonModel? {
+        return comparisonData.getOrNull(0)
+    }
+}
