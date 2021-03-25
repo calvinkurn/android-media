@@ -178,10 +178,13 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         //shop info error state
-        if (!element.isGetShopError && (element.shopName.isNotEmpty() || !element.adminRoleText.isNullOrEmpty())) {
+        if (!element.isGetShopError && !element.adminRoleText.isNullOrEmpty()) {
             val shopTitle: String
             val shopInfo: String
-            if (element.adminRoleText == null) {
+            if (!element.hasShop){
+                shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
+                shopInfo = MethodChecker.fromHtml(element.shopName).toString()
+            } else if (element.adminRoleText == null) {
                 shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
                 shopInfo = MethodChecker.fromHtml(element.shopName).toString()
             } else {
