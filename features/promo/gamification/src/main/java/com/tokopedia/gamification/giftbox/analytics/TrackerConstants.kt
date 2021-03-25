@@ -12,7 +12,6 @@ object GiftBoxTrackerConstants {
     const val TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
     const val ITEM_LIST = "item_list"
     const val ITEMS = "items"
-    const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
     const val DAILY_GIFT_BOX = "daily-gift-box"
 }

@@ -245,7 +245,7 @@ class PdpGamificationView : LinearLayout {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
                 if (position.isNotEmpty()) intent.putExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, position[0])
                 fragment?.startActivityForResult(intent, Wishlist.REQUEST_FROM_PDP)
-                fragment?.handleButtonAction(false)
+                fragment?.performAutoApply()
             }
 
             override fun onProductImpression(item: RecommendationItem) {

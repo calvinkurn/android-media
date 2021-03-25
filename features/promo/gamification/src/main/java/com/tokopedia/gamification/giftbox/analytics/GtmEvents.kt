@@ -429,11 +429,9 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.OPEN_SCREEN
         map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
         map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
-        map[GiftBoxTrackerConstants.IS_LOGGED_IN_STATUS] = false
         map[GiftBoxTrackerConstants.SCREEN_NAME] = GiftBoxTrackerConstants.DAILY_GIFT_BOX
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
-            map[GiftBoxTrackerConstants.IS_LOGGED_IN_STATUS] = true
         }
     }
 }

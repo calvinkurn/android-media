@@ -29,7 +29,6 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
-import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
@@ -395,7 +394,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 tokoBtnContainer.btnSecond.setOnClickListener {
                                     checkInternetOnButtonActionAndRedirect()
                                 }
-                            }else{
+                            } else {
                                 tokoButtonContainer.btnSecond.visibility = View.GONE
                             }
 
@@ -483,7 +482,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     GtmEvents.clickProductRecom(userSession?.userId)
-                    pdpGamificationView.recyclerView.scrollBy(0,1.toPx())
+                    pdpGamificationView.recyclerView.scrollBy(0, 1.toPx())
                 }
             }
         })
@@ -539,38 +538,36 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         GtmEvents.clickInfoButton(userSession?.userId)
     }
 
-    fun handleButtonAction(redirect:Boolean = true) {
+    private fun handleButtonAction() {
         val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
         if (actionButtonList != null && actionButtonList.isNotEmpty()) {
             val applink = actionButtonList[0].applink
             if (!applink.isNullOrEmpty()) {
+                performAutoApply()
+                RouteManager.route(context, applink)
+                GtmEvents.clickClaimButton(tokoButtonContainer.btnSecond.btn.text.toString(), userSession?.userId)
+            }
+        }
+    }
 
-                //check for auto-apply
-                var isAutoApply = false
-                var dummyCode = ""
-                val list = giftBoxRewardEntity?.gamiCrack?.benefits
-                if (!list.isNullOrEmpty()) {
-                    for (item in list) {
-                        if (item.isAutoApply) {
-                            isAutoApply = true
-                            autoApplyMessage = item.autoApplyMsg
-                            dummyCode = item.dummyCode
-                            break
-                        }
-                    }
-                }
-
-                if (isAutoApply && !autoApplyMessage.isNullOrEmpty() && !dummyCode.isNullOrEmpty()) {
-                    viewModel.autoApply(dummyCode)
-                }
-                if(redirect) {
-                    RouteManager.route(context, applink)
-                    GtmEvents.clickClaimButton(tokoButtonContainer.btnSecond.btn.text.toString(), userSession?.userId)
+    fun performAutoApply() {
+        var isAutoApply = false
+        var dummyCode = ""
+        val list = giftBoxRewardEntity?.gamiCrack?.benefits
+        if (!list.isNullOrEmpty()) {
+            for (item in list) {
+                if (item.isAutoApply) {
+                    isAutoApply = true
+                    autoApplyMessage = item.autoApplyMsg
+                    dummyCode = item.dummyCode
+                    break
                 }
             }
         }
 
-
+        if (isAutoApply && !autoApplyMessage.isNullOrEmpty() && !dummyCode.isNullOrEmpty()) {
+            viewModel.autoApply(dummyCode)
+        }
     }
 
     fun setClickEventOnReminder() {
