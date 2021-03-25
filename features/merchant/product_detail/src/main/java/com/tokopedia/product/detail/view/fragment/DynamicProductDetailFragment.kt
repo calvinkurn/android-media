@@ -1550,9 +1550,16 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
-                    pdpUiUpdater?.updateComparisonDataModel(it.data)
-                    updateUi()
+                val enableComparisonWidget = remoteConfig()?.getBoolean(
+                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?:true
+                if (enableComparisonWidget) {
+                    if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
+                        pdpUiUpdater?.updateComparisonDataModel(it.data)
+                        updateUi()
+                    } else {
+                        pdpUiUpdater?.updateRecommendationData(it.data)
+                        updateUi()
+                    }
                 } else {
                     pdpUiUpdater?.updateRecommendationData(it.data)
                     updateUi()
