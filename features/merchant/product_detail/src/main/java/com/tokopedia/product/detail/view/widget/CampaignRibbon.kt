@@ -58,7 +58,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     private var campaignNameView2: Typography? = null
     private var timerView2: TimerUnifySingle? = null
     private var stockWordingView2: Typography? = null
-    private var stockSoldOutView2: Typography? = null
     private var stockBarView2: ProgressBarUnify? = null
     private var regulatoryInfoView2: Typography? = null
 
@@ -97,7 +96,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         campaignNameView2 = campaignRibbonType2View?.findViewById(R.id.tpg_campaign_name_s2)
         timerView2 = campaignRibbonType2View?.findViewById(R.id.tus_timer_view_s2)
         stockWordingView2 = campaignRibbonType2View?.findViewById(R.id.tgp_stock_wording_s2)
-        stockSoldOutView2 = campaignRibbonType2View?.findViewById(R.id.tgp_sold_out_wording_s2)
         stockBarView2 = campaignRibbonType2View?.findViewById(R.id.pbu_stock_bar_s2)
         regulatoryInfoView2 = campaignRibbonType2View?.findViewById(R.id.tgp_regulatory_info_s2)
         // TYPE 3 PROPERTIES
@@ -306,18 +304,10 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         campaignNameView2?.text = campaignName
         // render ongoing count down
         timerView2?.let { renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView2) }
-
         // render stock wording
-        val isStockWordingRendered = renderStockWording(
-                stockSoldPercentage = campaign.stockSoldPercentage,
-                stockWording = onGoingData.stockWording,
-                stockTypography = stockWordingView2,
-                soldOutTypography = stockSoldOutView2
-        )
-
+        renderStockWording(stockWording = onGoingData.stockWording, stockTypography = stockWordingView2)
         // render stock bar
-        renderStockBar(isStockWordingRendered, campaign.stockSoldPercentage, stockBarView2)
-
+        renderStockBar(campaign.stockSoldPercentage, stockBarView2)
         // render regulatory info
         if (campaign.paymentInfoWording.isNotBlank()) {
             regulatoryInfoView2?.text = campaign.paymentInfoWording
@@ -327,45 +317,22 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    private fun renderStockWording(stockSoldPercentage: Int,
-                                   stockWording: String,
-                                   stockTypography: Typography?,
-                                   soldOutTypography: Typography?): Boolean {
-        return try {
+    private fun renderStockWording(stockWording: String, stockTypography: Typography?) {
+        try {
             val styledStockWording = MethodChecker.fromHtml(stockWording)
-            if (stockSoldPercentage == 1) {
-                soldOutTypography?.text = styledStockWording
-                soldOutTypography?.show()
-            } else {
-                stockTypography?.text = styledStockWording
-            }
-            true
+            stockTypography?.text = styledStockWording
         } catch (ex: Exception) {
             stockTypography?.hide()
-            soldOutTypography?.hide()
-            false
         }
     }
 
-    private fun renderStockBar(isStockWordingRendered: Boolean,
-                               stockSoldPercentage: Int,
-                               stockProgressBar: ProgressBarUnify?) {
-        if (!isStockWordingRendered) {
-            stockProgressBar?.hide()
-            return
-        }
+    private fun renderStockBar(stockSoldPercentage: Int, stockProgressBar: ProgressBarUnify?) {
         // set track color
         stockProgressBar?.trackDrawable?.setColor(ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_track_color))
         // set progressbar color gradient, if using 1 color then set the same color amount
         val stockBarColor = ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_progress_color)
         stockProgressBar?.progressBarColor = intArrayOf(stockBarColor, stockBarColor)
-        // percentage 100% = 1
-        if (stockSoldPercentage != 1) {
-            stockProgressBar?.setValue(stockSoldPercentage)
-            stockProgressBar?.show()
-        } else {
-            stockProgressBar?.hide()
-        }
+        stockProgressBar?.setValue(stockSoldPercentage)
     }
 
     private fun renderOnGoingCountDownTimer(campaign: CampaignModular, timerView: TimerUnifySingle?) {
