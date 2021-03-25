@@ -1,16 +1,21 @@
 package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component
 
+import android.graphics.drawable.BitmapDrawable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ImageSpan
 import android.view.View
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.loadLeftDrawable
-import com.tokopedia.shop.common.util.removeDrawable
+import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderActionWidgetFollowButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.shop.pageheader.util.TextBaselineSpanAdjuster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 
 
 class ShopActionButtonWidgetFollowButtonComponentViewHolder(
@@ -73,12 +78,32 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
 
     private fun setDrawableLeft(button: UnifyButton, leftDrawableUrl: String) {
         if (leftDrawableUrl.isNotBlank()) {
-            button.loadLeftDrawable(
-                    context = itemView.context,
-                    url = leftDrawableUrl,
-                    convertIntoSize = 50
-            )
-            listener.onImpressionVoucherFollowUnFollowShop()
+            convertUrlToBitmapAndLoadImage(
+                    itemView.context,
+                    leftDrawableUrl,
+                    16.toPx()
+            ){
+                try {
+                    val drawableImage = BitmapDrawable(itemView.resources, it)
+                    val left = 0
+                    val top = -5
+                    val right = drawableImage.intrinsicWidth
+                    val bottom = drawableImage.intrinsicHeight
+                    drawableImage.setBounds(left, top, right, bottom)
+                    val spannableString = SpannableString("   ${button.text}")
+                    val imageSpan = ImageSpan(drawableImage)
+                    spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    val textAscentMultiplier = 0.15
+                    spannableString.setSpan(
+                            TextBaselineSpanAdjuster(textAscentMultiplier),
+                            0,
+                            spannableString.length,
+                            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    button.text = spannableString
+                    listener.onImpressionVoucherFollowUnFollowShop()
+                }catch (e: Throwable){}
+            }
         } else {
             removeCompoundDrawableFollowButton()
         }
