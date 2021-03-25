@@ -29,11 +29,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/finish_detail_1"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/iv_finish_detail_1"
         app:layout_constraintBottom_toBottomOf="@id/iv_finish_detail_1"
         app:layout_constraintStart_toEndOf="@id/iv_finish_detail_1"
+        app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/uoh_finish_order_1"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
@@ -52,11 +53,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/finish_detail_2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/iv_finish_detail_2"
         app:layout_constraintBottom_toBottomOf="@id/iv_finish_detail_2"
         app:layout_constraintStart_toEndOf="@id/iv_finish_detail_2"
+        app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/uoh_finish_order_2"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
