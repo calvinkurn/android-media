@@ -53,23 +53,6 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener
 ) {
     private var isShopFavorite = false
-
-    //    private val shopPageProfileBadgeView: AppCompatImageView
-//        get() = view.shop_page_main_profile_badge.takeIf {
-//            isUsingNewNavigation()
-//        }?: view.shop_page_main_profile_badge_old
-//    private val locationImageIcon : Int
-//        get() = R.drawable.ic_shop_location.takeIf {
-//            isUsingNewNavigation()
-//        } ?: R.drawable.ic_shop_location_old
-//    private val followerImageIcon : Int
-//        get() = R.drawable.ic_shop_follower.takeIf {
-//            isUsingNewNavigation()
-//        } ?: R.drawable.ic_shop_follower_old
-//    private val followButton : UnifyButton
-//        get() = view.shop_page_follow_unfollow_button.takeIf {
-//            isUsingNewNavigation()
-//        } ?: view.shop_page_follow_unfollow_button_old
     private val chooseAddressWidget: ChooseAddressWidget?
         get() = view.choose_address_widget
     private var coachMark: CoachMark2? = null
@@ -133,123 +116,10 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         )
     }
 
-
-    //    fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
-//        view.shop_page_follow_unfollow_button?.hide()
-//        view.shop_page_follow_unfollow_button_old?.hide()
-//        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavorite) }
-//        val shopLocation = shopPageHeaderDataModel.location
-//        if(shopLocation.isNotEmpty()){
-//            view.shop_page_main_profile_location_icon.setImageResource(locationImageIcon)
-//            view.shop_page_main_profile_location_icon.show()
-//            view.shop_page_main_profile_location.show()
-//            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_location, shopLocation, view.shop_page_main_profile_location.context.getString(R.string.content_desc_shop_page_main_profile_location))
-//        }else{
-//            view.shop_page_main_profile_location_icon.hide()
-//            view.shop_page_main_profile_location.hide()
-//            view.shop_page_main_profile_location.text = shopLocation
-//        }
-//        ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopPageHeaderDataModel.avatar)
-//        if (isMyShop) {
-//            view.shop_page_main_profile_background.setOnClickListener {
-//                listener.onShopCoverClicked(
-//                        shopPageHeaderDataModel.isOfficial,
-//                        shopPageHeaderDataModel.isGoldMerchant
-//                )
-//            }
-//        }
-//        when {
-//            shopPageHeaderDataModel.isOfficial -> displayOfficial()
-//            shopPageHeaderDataModel.isGoldMerchant -> displayGoldenShop()
-//            else -> {
-//                shopPageProfileBadgeView.visibility = View.GONE
-//            }
-//        }
-//        TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_name, MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString(), view.shop_page_main_profile_name.context.getString(R.string.content_desc_shop_page_main_profile_name))
-//        if (isMyShop) {
-//            setupSgcPlayWidget(shopPageHeaderDataModel)
-//        }
-//
-//        if (shopPageHeaderDataModel.isFreeOngkir)
-//            showLabelFreeOngkir(remoteConfig)
-//        else
-//            view.shop_page_main_profile_free_ongkir.hide()
-//
-//        if(isUsingNewNavigation() && !isMyShop) {
-//            view.shop_page_chevron_shop_info.show()
-//            view.shop_page_chevron_shop_info.setOnClickListener {
-//                listener.openShopInfo()
-//            }
-//            view.shop_page_main_profile_name.setOnClickListener {
-//                listener.openShopInfo()
-//            }
-//        } else {
-//            view.shop_page_chevron_shop_info.setOnClickListener(null)
-//            view.shop_page_main_profile_name.setOnClickListener (null)
-//            view.shop_page_chevron_shop_info.hide()
-//        }
-//    }
-//
-//    fun setupFollowButton(isMyShop: Boolean){
-//        if (isMyShop) {
-//            hideFollowButton()
-//        } else {
-//            showFollowButton()
-//            view.play_seller_widget_container.visibility = View.GONE
-//            updateFavoriteButton()
-//        }
-//    }
-//
-//    private fun hideFollowButton(){
-//        followButton.visibility = View.GONE
-//    }
-//
-//    fun showFollowButton(){
-//        followButton.visibility = View.VISIBLE
-//    }
-//
-//    private fun setupTextContentSgcWidget(){
-//        if(view.shop_page_sgc_title.text.isBlank()) {
-//            val text = context.getString(R.string.shop_page_play_widget_title)
-//            view.shop_page_sgc_title.text = MethodChecker.fromHtml(text)
-//        }
-//    }
-//
     fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel){
         shopPageHeaderAdapter?.setPlayWidgetData(shopPageHeaderDataModel)
     }
-//
-//    fun setShopName(shopName: String) {
-//        val name = MethodChecker.fromHtml(shopName)
-//        val shopNameTv = view.shop_page_main_profile_name
-//        if (shopNameTv.text != name) {
-//            shopNameTv.text = name
-//        }
-//    }
-//
-//    private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {
-//        val labelTitle = remoteConfig.getString(LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE, LABEL_FREE_ONGKIR_DEFAULT_TITLE)
-//        if (labelTitle.isNotEmpty()) {
-//            view.shop_page_main_profile_free_ongkir.show()
-//            view.shop_page_main_profile_free_ongkir.text = labelTitle
-//        }
-//    }
-//
-//    fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData) {
-//        isShopFavorite = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
-//        view.shop_page_main_profile_follower_icon.setImageResource(followerImageIcon)
-//        view.shop_page_main_profile_follower_icon.show()
-//        view.shop_page_main_profile_follower.show()
-//        if (favoriteData.totalFavorite > 1) {
-//            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_follower, MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
-//                    favoriteData.totalFavorite.toDouble().formatToSimpleNumber())).toString(), view.context.getString(R.string.content_desc_shop_page_main_profile_follower))
-//        } else { // if 0 or 1, only print as follower (without s)
-//            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_follower, MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
-//                    favoriteData.totalFavorite.toDouble().formatToSimpleNumber())).toString(), view.context.getString(R.string.content_desc_shop_page_main_profile_follower))
-//        }
-//        updateFavoriteButton()
-//    }
-//
+
     fun updateShopTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean) {
         shopPageHeaderDataModel.let {
             when {
@@ -441,21 +311,5 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
     fun updateShopName(shopName: String) {
         shopPageHeaderAdapter?.setShopName(MethodChecker.fromHtml(shopName).toString())
     }
-
-//    /**
-//     * Fetch the animation from http URL and play the animation
-//     */
-//    private fun setLottieAnimationFromUrl(animationUrl: String) {
-//        context?.let {
-//            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
-//
-//            lottieCompositionLottieTask.addListener { result ->
-//                view.lottie?.setComposition(result)
-//                view.lottie?.playAnimation()
-//            }
-//
-//            lottieCompositionLottieTask.addFailureListener { }
-//        }
-//    }
 
 }
