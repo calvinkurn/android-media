@@ -294,7 +294,7 @@
                 app:unifyButtonVariant="ghost"
                 app:unifyButtonSize="large"
                 android:text="@string/payment_label_cancel_transaction"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
         </LinearLayout>
 

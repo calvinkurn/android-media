@@ -151,8 +151,6 @@ public class PaymentListViewHolder extends AbstractViewHolder<PaymentListModel> 
             labelDynamicView.setVisibility(View.GONE);
             valueDynamicView.setVisibility(View.GONE);
         }
-
-        cancelTransaction.setVisibility(View.VISIBLE);
     }
 
     public interface ListenerPaymentList{
