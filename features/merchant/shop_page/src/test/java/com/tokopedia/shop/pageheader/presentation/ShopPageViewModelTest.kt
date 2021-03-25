@@ -130,7 +130,6 @@ class ShopPageViewModelTest {
                 shopRequestUnmoderateUseCase,
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
-                firebaseRemoteConfig,
                 testCoroutineDispatcherProvider
         )
     }

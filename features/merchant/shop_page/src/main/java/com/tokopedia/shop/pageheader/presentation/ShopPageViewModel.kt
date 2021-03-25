@@ -90,10 +90,6 @@ class ShopPageViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
 
-    companion object {
-        private const val DATA_NOT_FOUND = "Data not found"
-    }
-
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
     val isUserSessionActive: Boolean
