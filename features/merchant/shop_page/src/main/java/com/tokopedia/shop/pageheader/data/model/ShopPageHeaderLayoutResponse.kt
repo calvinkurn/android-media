@@ -19,7 +19,7 @@ data class ShopPageHeaderLayoutResponse(
                 @SerializedName("type")
                 val type: String = "",
                 @SerializedName("widgetID")
-                val widgetID: Int = -1
+                val widgetID: String = ""
         ) {
             data class Component(
                     @SerializedName("name")

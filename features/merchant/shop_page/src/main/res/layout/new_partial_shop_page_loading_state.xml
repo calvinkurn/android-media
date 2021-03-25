@@ -347,7 +347,7 @@
             app:corners="10" />
     </FrameLayout>
 
-    <ImageView
+    <View
         android:id="@+id/tab_indicator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_2"

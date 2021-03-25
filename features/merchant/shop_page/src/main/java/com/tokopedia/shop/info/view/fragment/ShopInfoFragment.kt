@@ -92,7 +92,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         shopInfo = arguments?.getParcelable(EXTRA_SHOP_INFO)
-        shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(context!!))
+        shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(requireContext()))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
         initViewModel()

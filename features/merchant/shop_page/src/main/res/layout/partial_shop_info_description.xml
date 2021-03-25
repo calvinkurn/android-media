@@ -8,8 +8,7 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_8"
     android:paddingTop="@dimen/dp_24"
-    android:orientation="vertical"
-    android:background="@color/Unify_N0">
+    android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"

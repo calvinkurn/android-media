@@ -76,7 +76,7 @@ object NewShopPageHeaderMapper {
             widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget
     ): ShopHeaderWidgetUiModel {
         return ShopHeaderWidgetUiModel(
-                widgetResponseData.widgetID.toString(),
+                widgetResponseData.widgetID,
                 widgetResponseData.name,
                 widgetResponseData.type,
                 mutableListOf<BaseShopHeaderComponentUiModel>().apply {
