@@ -30,12 +30,6 @@ private fun Any.eq(v: Any): Boolean = when {
 }
 
 fun regexEquals(s: String, v: Any): Boolean {
-//    val syntax = Regex("(.*)")
-//    val m = syntax.find(s)
-
-//    val regex: Regex = m?.groupValues?.get(1)?.toRegex()
-//            ?: throw Exception("Syntax not parsed")
-
     val regex = Regex(s)
     val vString = v.toString()
     return regex.matchEntire(vString) != null
