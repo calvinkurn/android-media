@@ -309,4 +309,13 @@
     <string name="title_detail_penalty_label">Detail Pelanggaran</string>
     <string name="title_level_score_projection">Proyeksi level &amp; skor hingga saat ini</string>
 
+    <string name="title_coachmark_shop_score_1">Cek skor dan level barumu di sini</string>
+    <string name="desc_coachmark_shop_score_1">Kamu bisa lihat hasil penilaian baru untuk Performa Toko di sini, dihitung dari 90 hari terakhir, ya.</string>
+
+    <string name="title_coachmark_shop_score_2">Pelajari Parameter Skornya, yuk!</string>
+    <string name="desc_coachmark_shop_score_2">Parameter Skor akan memengaruhi skor tokomu dan akan diperbarui setiap minggu. Klik di setiap Parameter untuk lihat detailnya, ya.</string>
+
+    <string name="title_coachmark_shop_score_3">Lihat status tokomu di sini!</string>
+    <string name="desc_coachmark_shop_score_3">Kamu bisa cek status grade, keuntungan yang kamu dapat, atau potensi grade untuk tokomu di sini, ya!</string>
+
 </resources>

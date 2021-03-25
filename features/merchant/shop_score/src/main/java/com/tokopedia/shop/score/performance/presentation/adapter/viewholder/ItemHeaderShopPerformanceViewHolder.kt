@@ -10,13 +10,16 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreUtils
+import com.tokopedia.shop.score.performance.presentation.adapter.ItemHeaderShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.item_header_shop_performance.view.*
 
 class ItemHeaderShopPerformanceViewHolder(view: View,
-                                          private val shopPerformanceListener: ShopPerformanceListener): AbstractViewHolder<HeaderShopPerformanceUiModel>(view) {
+                                          private val shopPerformanceListener: ShopPerformanceListener,
+                                          private val itemHeaderShopPerformanceListener: ItemHeaderShopPerformanceListener
+): AbstractViewHolder<HeaderShopPerformanceUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
@@ -24,6 +27,9 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
+
+            itemHeaderShopPerformanceListener.onViewHeaderListener(this)
+
             val roundedRadius = 16F
             containerHeaderShopPerformance.shapeAppearanceModel = containerHeaderShopPerformance.shapeAppearanceModel
                     .toBuilder()

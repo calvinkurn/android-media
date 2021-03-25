@@ -19,13 +19,15 @@ class ItemStatusPMViewHolder(view: View,
     }
 
     override fun bind(element: ItemStatusPMUiModel?) {
+        if (element == null) return
         with(itemView) {
-            iv_pm_badge_current_status?.loadImage(element?.badgePowerMerchant.orEmpty())
-            potentialPowerMerchantWidget?.background = element?.bgPowerMerchant?.let { ContextCompat.getDrawable(context, it) }
+            itemStatusPowerMerchantListener.onViewItemPowerMerchantListener(itemView)
+            iv_pm_badge_current_status?.loadImage(element.badgePowerMerchant)
+            potentialPowerMerchantWidget?.background = element.bgPowerMerchant?.let { ContextCompat.getDrawable(context, it) }
             tv_pm_reputation_value?.text = getString(R.string.title_pm_value,
-                    element?.statusPowerMerchant.orEmpty())
+                    element.statusPowerMerchant)
             tv_update_date_potential_pm?.text = getString(R.string.next_update_date_pm_status, getShopScoreDate(context)).orEmpty()
-            tv_desc_potential_pm?.text = MethodChecker.fromHtml(element?.descPotentialPM.orEmpty())
+            tv_desc_potential_pm?.text = MethodChecker.fromHtml(element.descPotentialPM)
             ic_info_potential_pm?.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedNextUpdatePM()
             }

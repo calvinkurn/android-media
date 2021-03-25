@@ -12,7 +12,8 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
                                         private val itemPotentialPowerMerchantListener: ItemPotentialRegularMerchantListener,
                                         private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener,
                                         private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener,
-                                        private val itemTimerNewSellerListener: ItemTimerNewSellerListener
+                                        private val itemTimerNewSellerListener: ItemTimerNewSellerListener,
+                                        private val itemHeaderShopPerformanceListener: ItemHeaderShopPerformanceListener
 ) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
     override fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int {
@@ -69,7 +70,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ItemHeaderShopPerformanceViewHolder.LAYOUT -> ItemHeaderShopPerformanceViewHolder(parent, shopPerformanceListener)
+            ItemHeaderShopPerformanceViewHolder.LAYOUT -> ItemHeaderShopPerformanceViewHolder(parent, shopPerformanceListener, itemHeaderShopPerformanceListener)
             PeriodDetailPerformanceViewHolder.LAYOUT -> PeriodDetailPerformanceViewHolder(parent)
             ItemDetailPerformanceViewHolder.LAYOUT -> ItemDetailPerformanceViewHolder(parent, itemShopPerformanceListener)
             ShopPerformanceShimmerViewHolder.LAYOUT -> ShopPerformanceShimmerViewHolder(parent)

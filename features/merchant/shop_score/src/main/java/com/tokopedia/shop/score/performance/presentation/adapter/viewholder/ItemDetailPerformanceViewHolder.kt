@@ -21,6 +21,8 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
+            itemShopPerformanceListener.onViewItemDetailPerformanceListener(this)
+
             setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
 

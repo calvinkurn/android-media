@@ -13,7 +13,7 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiMod
 import kotlinx.android.synthetic.main.item_potential_eligible_status_regular_merchant.view.*
 
 class ItemStatusRMViewHolder(view: View,
-                             private val itemPotentialPowerMerchantListener: ItemPotentialRegularMerchantListener):
+                             private val itemPotentialPowerMerchantListener: ItemPotentialRegularMerchantListener) :
         AbstractViewHolder<ItemStatusRMUiModel>(view) {
 
     companion object {
@@ -21,14 +21,16 @@ class ItemStatusRMViewHolder(view: View,
     }
 
     override fun bind(element: ItemStatusRMUiModel?) {
+        if (element == null) return
         with(itemView) {
+            itemPotentialPowerMerchantListener.onViewRegularMerchantListener(this)
             tvTitleEligiblePowerMerchant?.text = getString(R.string.title_eligible_status_power_merchant,
-                    element?.statusGradePM)
+                    element.statusGradePM)
             tvDescEligiblePowerMerchant?.text = getString(R.string.desc_potential_eligible_power_merchant,
                     getShopScoreDate(context))
-            containerEligiblePowerMerchant?.background = element?.bgGradePM?.let { ContextCompat.getDrawable(context, it) }
+            containerEligiblePowerMerchant?.background = element.bgGradePM?.let { ContextCompat.getDrawable(context, it) }
 
-            iv_pm_badge_eligible_status?.loadImage(element?.badgeGradePM.orEmpty())
+            iv_pm_badge_eligible_status?.loadImage(element.badgeGradePM)
             tv_pm_potential_value?.text = MethodChecker.fromHtml(getString(R.string.desc_pm_potential))
             tv_see_all_benefit_pm?.setOnClickListener {
                 itemPotentialPowerMerchantListener.onItemClickedBenefitPotentialRM()

@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.adapter.*
@@ -18,6 +21,8 @@ import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheet
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipLevel
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipScore
 import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +34,7 @@ import javax.inject.Inject
 class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
-        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener {
+        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, ItemHeaderShopPerformanceListener {
 
     @Inject
     lateinit var viewModel: ShopPerformanceViewModel
@@ -37,11 +42,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private val shopPerformanceAdapterTypeFactory by lazy {
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
-                this, this)
+                this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
+
+    private val coachMarkItem = ArrayList<CoachMark2Item>()
+    private val coachMark by lazy { CoachMark2(requireContext()) }
+    private val shopScoreCoachMarkPrefs by lazy { ShopScoreCoachMarkPrefs(requireContext()) }
+
+    private var isFinishedCoachMark = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +126,26 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         bottomSheetDetail.show(childFragmentManager)
     }
 
+
+    /**
+     * ItemShopPerformanceListener
+     **/
+    override fun onViewItemDetailPerformanceListener(view: View) {
+        if (!shopScoreCoachMarkPrefs.getHasShownItemPerformanceDetail()) {
+            coachMarkItem.add(CoachMark2Item(
+                    view.findViewById(R.id.cardItemDetailShopPerformance),
+                    getString(R.string.title_coachmark_shop_score_2),
+                    getString(R.string.desc_coachmark_shop_score_2),
+            ))
+            shopScoreCoachMarkPrefs.setHasShownItemPerformanceDetail(true)
+        }
+        val isShowCoachMarkTwoItem = shopPerformanceAdapter.list.find { it is ItemStatusPMUiModel }
+        val itemStatusRMUiModel = shopPerformanceAdapter.list.find { it is ItemStatusRMUiModel }
+        if (isShowCoachMarkTwoItem == null && itemStatusRMUiModel == null) {
+            showCoachMark()
+        }
+    }
+
     override fun onItemClickedNextUpdatePM() {
         val bottomSheetNextUpdate = BottomSheetNextUpdatePMSection.newInstance()
         bottomSheetNextUpdate.show(childFragmentManager)
@@ -124,8 +155,52 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         goToPowerMerchantSubscribe()
     }
 
+    /**
+     * ItemStatusPowerMerchantListener
+     **/
+    override fun onViewItemPowerMerchantListener(view: View) {
+        if (!shopScoreCoachMarkPrefs.getHasShownItemPM()) {
+            coachMarkItem.add(CoachMark2Item(
+                    view.findViewById(R.id.containerCornerShopPerformance),
+                    getString(R.string.title_coachmark_shop_score_3),
+                    getString(R.string.desc_coachmark_shop_score_3),
+            ))
+            shopScoreCoachMarkPrefs.setHasShownItemPM(true)
+        }
+        showCoachMark()
+    }
+
     override fun onItemClickedBenefitPotentialRM() {
         goToPowerMerchantSubscribe()
+    }
+
+    /**
+     * ItemPotentialRegularMerchantListener
+     **/
+    override fun onViewRegularMerchantListener(view: View) {
+        if (!shopScoreCoachMarkPrefs.getHasShownItemRM()) {
+            coachMarkItem.add(CoachMark2Item(
+                    view.findViewById(R.id.containerCornerShopPerformance),
+                    getString(R.string.title_coachmark_shop_score_3),
+                    getString(R.string.desc_coachmark_shop_score_3),
+            ))
+            shopScoreCoachMarkPrefs.setHasShownItemRM(true)
+        }
+        showCoachMark()
+    }
+
+    /**
+     * ItemHeaderShopPerformanceListener
+     **/
+    override fun onViewHeaderListener(view: View) {
+        if (!shopScoreCoachMarkPrefs.getHasShownHeaderPerformanceDetail()) {
+            coachMarkItem.add(CoachMark2Item(
+                    view.findViewById(R.id.containerCornerShopPerformance),
+                    getString(R.string.title_coachmark_shop_score_1),
+                    getString(R.string.desc_coachmark_shop_score_1),
+            ))
+            shopScoreCoachMarkPrefs.setHasShownHeaderPerformanceDetail(true)
+        }
     }
 
     override fun onItemClickedRecommendationFeature(appLink: String) {
@@ -148,6 +223,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onWatchVideoClicked() {
 
+    }
+
+    private fun showCoachMark() {
+        coachMark.onFinishListener = {
+            isFinishedCoachMark = true
+        }
+
+        if (!isFinishedCoachMark) {
+            coachMark.showCoachMark(coachMarkItem)
+        }
     }
 
     private fun goToPenaltyPage() {
@@ -219,6 +304,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     companion object {
+
+        const val COACH_MARK_TWO_ITEMS = 2
+        const val COACH_MARK_THREE_ITEMS = 3
+
         @JvmStatic
         fun newInstance(): ShopPerformancePageFragment {
             return ShopPerformancePageFragment()
