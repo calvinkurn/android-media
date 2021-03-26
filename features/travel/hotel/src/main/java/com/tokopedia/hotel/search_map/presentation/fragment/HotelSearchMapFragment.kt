@@ -88,8 +88,7 @@ import kotlin.math.abs
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener,
-        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener,
-        GoogleMap.OnCameraMoveListener, SubmitFilterListener {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveListener, SubmitFilterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -316,16 +315,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
-    override fun onCameraIdle() {
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(DELAY_BUTTON_RADIUS)
-            showFindNearHereView()
-        }
-    }
-
     override fun onCameraMove() {
-        hideFindNearHereView()
-        googleMap.setOnCameraIdleListener(this)
+        showFindNearHereView()
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -522,8 +513,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    cardListPosition = getCurrentItemCardList()
-                    changeMarkerState(cardListPosition)
+                    GlobalScope.launch(Dispatchers.Main) {
+                        cardListPosition = getCurrentItemCardList()
+                        delay(DELAY_MARKER_STATE)
+                        changeMarkerState(cardListPosition)
+                    }
                 }
             }
         })
@@ -617,8 +611,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isRotateGesturesEnabled = true
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
-            googleMap.setOnCameraMoveListener(this)
             googleMap.setOnMarkerClickListener(this)
+            googleMap.setOnCameraMoveListener(this)
             googleMap.setOnMapClickListener {
                 removeAnimation(false)
             }
@@ -651,6 +645,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
+            removeAllMarker()
             showCardListView()
             hideFindNearHereView()
             hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
@@ -693,7 +688,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     if (cardListPosition == position && !searchProperties.isNullOrEmpty()) {
                         allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
                         val latLng = LatLng(searchProperties[position].location.latitude.toDouble(), searchProperties[position].location.longitude.toDouble())
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                        if (cardListPosition == SELECTED_POSITION_INIT){
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                        }else{
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MAPS_STREET_LEVEL_ZOOM))
+                        }
                     }
                 }
             } catch (t: Throwable) {
@@ -1209,9 +1208,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
-        const val DELAY_MARKER_STATE: Long = 500L
+        const val DELAY_MARKER_STATE: Long = 300L
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 80f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -300f
+
+        private const val MAPS_STREET_LEVEL_ZOOM : Float = 20f
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
