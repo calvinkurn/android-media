@@ -330,7 +330,6 @@
             android:id="@+id/icon_warning_name"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginStart="@dimen/account_home_add_name_bottom_sheet_6dp"
             android:visibility="gone"
             app:icon_color_light_enable="@color/Unify_R500"
             app:icon_name="WARNING"

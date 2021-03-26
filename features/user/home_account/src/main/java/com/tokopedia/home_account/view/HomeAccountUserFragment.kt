@@ -1053,7 +1053,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 bottomSheet.dismiss()
             }
 
-            bottomSheet.bottomSheetTitle.hide()
             bottomSheet.setChild(addNameLayout)
             bottomSheet.clearAction()
             bottomSheet.setCloseClickListener {

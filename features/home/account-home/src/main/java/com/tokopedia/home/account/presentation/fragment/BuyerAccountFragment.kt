@@ -546,7 +546,6 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                 bottomSheet.dismiss()
             }
 
-            bottomSheet.bottomSheetTitle.hide()
             bottomSheet.setChild(addNameLayout)
             bottomSheet.clearAction()
             bottomSheet.setCloseClickListener {
