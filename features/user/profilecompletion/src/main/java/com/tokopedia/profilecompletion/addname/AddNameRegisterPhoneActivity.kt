@@ -41,8 +41,6 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
     private fun checkUri(bundle: Bundle): Fragment {
         rollanceType = getAbTestPlatform().getString(ROLLANCE_KEY)
 
-        println("rollance = $rollanceType")
-        Toaster.build(window.decorView.rootView,"Rollance ID = $rollanceType", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
         val uri = intent?.data
         return if (uri?.lastPathSegment?.contains(PATH_CLEAN_VIEW) == true && rollanceType.contains(ROLLANCE_KEY)) {
             AddNameRegisterPhoneCleanViewFragment.createInstance(bundle)
@@ -59,8 +57,7 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
     }
 
     companion object {
-//        private const val ROLLANCE_KEY = "android_defername"
-        private const val ROLLANCE_KEY = "defer_staging"
+        private const val ROLLANCE_KEY = "android_defername"
         private const val PATH_CLEAN_VIEW = "clean-view"
     }
 }
