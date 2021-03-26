@@ -37,7 +37,6 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
-import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
@@ -67,7 +66,8 @@ import javax.inject.Inject
 class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
 
     companion object {
-        private const val DEFAULT_END_DATE = 1L
+        private const val DEFAULT_START_DATE = 1L
+        private const val DEFAULT_END_DATE = 0L
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
@@ -96,7 +96,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
-        val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_6.toLong()))
+        val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate
                 ?: defaultStartDate
     }
@@ -336,11 +336,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setDefaultRange() = view?.run {
-        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
-        val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
-        val subTitle = "$headerSubTitle ($startEndDateFmt)"
-
-        setHeaderSubTitle(subTitle)
+        statisticPage?.dateFilters?.firstOrNull()?.let {
+            setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
+        }
     }
 
     private fun setHeaderSubTitle(subTitle: String) {
