@@ -39,7 +39,7 @@
             <padding
                 android:bottom="2dp"/>
 
-            <solid android:color="@color/travel_dms_toolbar_bg_shadow_bottom5" />
+            <solid android:color="@color/travel_dms_toolbar_bg_shadow_bottom4" />
         </shape>
     </item>
 
