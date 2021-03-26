@@ -59,7 +59,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     override fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = false
         clearAllData()
-        viewModelShop.getPenaltyDummyData()
+        viewModelShop.getDataDummyPenalty()
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -110,7 +110,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
                 }
             }
         }
-        viewModelShop.getPenaltyDummyData()
+        viewModelShop.getDataDummyPenalty()
     }
 
     companion object {

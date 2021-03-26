@@ -3,11 +3,11 @@ package com.tokopedia.shop.score.penalty.domain.mapper
 import com.tokopedia.shop.score.common.ShopScoreConstant.CASH_ADVANCE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_DUPLICATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_VIOLATION
+import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
+import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
+import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TRANSACTION_MANIPULATION
-import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
-import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import javax.inject.Inject
@@ -94,6 +94,29 @@ class PenaltyMapper @Inject constructor() {
                     descPenalty = "INV/20210126/XX/V/553738285",
                     colorPenalty = "#E02954"
             ))
+        }
+    }
+
+    fun mapToPenaltyFilterBottomSheet(): List<PenaltyFilterUiModel> {
+        return mutableListOf<PenaltyFilterUiModel>().apply {
+            add(PenaltyFilterUiModel(title = TITLE_SORT, isDividerVisible = true, chipsFilerList = mapToChipsSortFilter()))
+            add(PenaltyFilterUiModel(title = TITLE_SORT, canSelectMany = true, chipsFilerList = mapToChipsTypePenaltyFilter()))
+        }
+    }
+
+    private fun mapToChipsSortFilter(): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
+        return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
+            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = SORT_LATEST))
+            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = SORT_OLDEST))
+        }
+    }
+
+    private fun mapToChipsTypePenaltyFilter(): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
+        return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
+            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = CASH_ADVANCE))
+            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = PRODUCT_DUPLICATE))
+            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = PRODUCT_VIOLATION))
+            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = TRANSACTION_MANIPULATION))
         }
     }
 }

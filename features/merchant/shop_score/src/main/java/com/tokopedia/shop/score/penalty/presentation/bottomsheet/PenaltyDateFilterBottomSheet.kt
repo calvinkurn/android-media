@@ -2,10 +2,12 @@ package com.tokopedia.shop.score.penalty.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
@@ -18,7 +20,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 
-class PenaltyDateFilterBottomSheet: BaseBottomSheetShopScore() {
+class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
 
     private var tfStartDate: TextFieldUnify? = null
     private var tfEndDate: TextFieldUnify? = null
@@ -45,7 +47,9 @@ class PenaltyDateFilterBottomSheet: BaseBottomSheetShopScore() {
 
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
-            show(it, PenaltyDateFilterBottomSheetTag)
+            if (!isVisible) {
+                show(it, PenaltyDateFilterBottomSheetTag)
+            }
         }
     }
 
@@ -53,6 +57,7 @@ class PenaltyDateFilterBottomSheet: BaseBottomSheetShopScore() {
         super.onViewCreated(view, savedInstanceState)
         clearContentPadding = true
         isFullpage = true
+        bottomSheetClose.setImageDrawable(context?.let { ContextCompat.getDrawable(it, IconUnify.ARROW_BACK) })
         setStyle(DialogFragment.STYLE_NORMAL, R.style.PenaltyDateFilterDialogStyle)
         initView(view)
         setupCalendarView()
@@ -134,7 +139,7 @@ class PenaltyDateFilterBottomSheet: BaseBottomSheetShopScore() {
                             minDate = date
                             maxDate = null
                             selectStartDate(date)
-                        } else if ((minDate != null || maxDate == null)  && (date.after(minDate) || !date.before(minDate))) {
+                        } else if ((minDate != null || maxDate == null) && (date.after(minDate) || !date.before(minDate))) {
                             maxDate = date
                             selectEndDate(date)
                             GlobalScope.launch {
@@ -144,7 +149,8 @@ class PenaltyDateFilterBottomSheet: BaseBottomSheetShopScore() {
                             }
                         }
                     }
-                    else -> { }
+                    else -> {
+                    }
                 }
             }
 

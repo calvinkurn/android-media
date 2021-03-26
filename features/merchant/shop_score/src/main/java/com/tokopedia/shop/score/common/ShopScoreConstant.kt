@@ -83,9 +83,14 @@ object ShopScoreConstant {
     const val PRODUCT_VIOLATION = "Pelanggaran produk"
     const val TRANSACTION_MANIPULATION = "Manipulasi Transaksi"
 
-    val targetText = "Target"
-    val minuteText = "menit"
-    val percentText = "%"
-    val dayText = "hari"
+    const val minuteText = "menit"
+    const val percentText = "%"
+    const val dayText = "hari"
+
+    const val SORT_LATEST = "Paling Baru"
+    const val SORT_OLDEST = "Paling Lama"
+
+    const val TITLE_SORT = "Urutkan"
+    const val TITLE_TYPE_PENALTY = "Jenis Pelanggaran"
 
 }
