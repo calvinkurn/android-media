@@ -211,6 +211,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun renderList(list: List<FlightJourneyModel>) {
         hideLoading()
+        showPromoChips()
 
         // remove all unneeded element (empty/retry/loading/etc)
         if (isLoadingInitialData) {
