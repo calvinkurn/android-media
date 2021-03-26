@@ -156,7 +156,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         recyclerView.setHasFixedSize(true);
         int spanCount = getContext().getResources().getInteger(R.integer.gallery_span_count);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
-        int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
+        int spacing = getResources().getDimensionPixelSize(com.tokopedia.imagepicker.common.R.dimen.image_picker_media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
         recyclerView.setAdapter(albumMediaAdapter);
         RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
