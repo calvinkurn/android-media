@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="@dimen/hotel_list_horizontal_width"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -108,7 +108,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/property_price_deals_layout"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="@+id/title"
                 app:layout_constraintHorizontal_bias="1"

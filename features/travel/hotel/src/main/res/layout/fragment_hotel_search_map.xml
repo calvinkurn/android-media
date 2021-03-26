@@ -51,21 +51,22 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvHorizontalPropertiesHotelSearchMap"
+                    android:padding="@dimen/spacing_lvl2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_lvl6"
+                    android:layout_marginBottom="@dimen/hotel_12dp"
                     android:background="@color/transparent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     tools:itemCount="3"
-                    tools:listitem="@layout/item_property_search_result" />
+                    tools:listitem="@layout/item_property_search_result_horizontal" />
 
                 <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
                     android:id="@+id/btnGetRadiusHotelSearchMap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_lvl8"
+                    android:layout_marginTop="@dimen/layout_lvl7"
                     android:visibility="gone"
                     app:fbType="group"
                     app:layout_constraintEnd_toEndOf="parent"

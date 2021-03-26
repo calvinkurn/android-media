@@ -26,7 +26,9 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -59,7 +61,6 @@ import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactor
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
-import com.tokopedia.hotel.search_map.helper.StartSnapHelper
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
@@ -119,7 +120,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
-    private val snapHelper = StartSnapHelper()
+    private val snapHelper: SnapHelper = LinearSnapHelper()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -365,6 +366,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun showLoading() {
         if (adapterCardList.dataSize <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
+            hideGetMyLocation()
             adapterCardList.setLoadingModel(loadingModel)
             adapterCardList.showLoading()
         }
@@ -648,6 +650,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             removeAllMarker()
             showCardListView()
             hideFindNearHereView()
+            changeHeaderTitle()
             hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
             hotelSearchMapViewModel.getVisibleRadius(googleMap)
         }
@@ -723,6 +726,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             hideCardListView()
             showFindNearHereView()
             getCurrentLocation()
+            changeHeaderTitle()
         }
     }
 
@@ -771,6 +775,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
+        showGetMylocation()
         context?.let {
             val searchParam = hotelSearchMapViewModel.searchParam
             trackingHotelUtil.hotelViewHotelListImpression(it,
@@ -953,6 +958,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun hideLoader() {
         hotel_loader.gone()
+    }
+
+    private fun showGetMylocation(){
+        ivGetLocationHotelSearchMap.visible()
+    }
+
+    private fun hideGetMyLocation(){
+        ivGetLocationHotelSearchMap.gone()
+    }
+
+    private fun changeHeaderTitle(){
+        headerHotelSearchMap.setTitle(R.string.hotel_header_title_nearby)
     }
 
     private fun showFindNearHereView() {
@@ -1209,8 +1226,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
         const val DELAY_MARKER_STATE: Long = 300L
-        const val BUTTON_RADIUS_SHOW_VALUE: Float = 80f
-        const val BUTTON_RADIUS_HIDE_VALUE: Float = -300f
+        const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
+        const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 
         private const val MAPS_STREET_LEVEL_ZOOM : Float = 20f
 
