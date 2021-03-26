@@ -47,7 +47,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.mediauploader)
+    implementation project(rootProject.ext.features.mediauploader)
     implementation project(rootProject.ext.libraries.utils)
 
     implementation project(rootProject.ext.features.playCommon)

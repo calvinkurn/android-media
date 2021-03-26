@@ -6,6 +6,7 @@ include "features:category:tradein"
 include "features:common:developer_options"
 include "features:common:developer_options_noop"
 include "features:common:nps"
+include "features:common:internal_review"
 include "features:common:resources_common"
 include "features:category:common_tradein"
 
@@ -56,6 +57,9 @@ include "features:logistic:logisticcart"
 include "features:logistic:editshipping"
 include "features:logistic:activation"
 include "features:logistic:manageaddress"
+include "features:logistic:localizationchooseaddress"
+
+include "features:media:mediauploader"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"

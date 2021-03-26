@@ -10,8 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_new_card_header"
@@ -133,10 +132,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_12"
                 app:card_type="clear"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -330,7 +327,7 @@
                 android:paddingEnd="@dimen/spacing_lvl2"
                 app:icon_color_light_enable="@color/Unify_G500"
                 app:icon_color_night_enable="@color/Unify_G500"
-                app:icon_name="REPLAY"
+                app:icon_name="RELOAD"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_new_reload_shipping"
                 app:layout_constraintEnd_toStartOf="@+id/btn_new_reload_shipping"
                 app:layout_constraintTop_toTopOf="@+id/btn_new_reload_shipping" />

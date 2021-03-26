@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.unifyprinciples.Typography
 
 interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
@@ -91,8 +92,8 @@ interface DynamicProductDetailListener {
      * ProductRecommendationViewHolder
      */
     fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
     fun getRecommendationCarouselSavedState(): SparseIntArray
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
@@ -157,4 +158,11 @@ interface DynamicProductDetailListener {
      * ProductMiniSocialProofChipViewHolder
      */
     fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductShippingViewHolder
+     */
+    fun openShipmentClickedBottomSheet(title:String, labelShipping:String, isCod:Boolean, componentTrackDataModel:ComponentTrackDataModel?)
+    fun clickShippingComponentError(errorCode: Int, title:String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun showCoachmark(view: Typography?, isBoeType:Boolean)
 }
