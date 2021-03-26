@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.Window.ID_ANDROID_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -235,6 +236,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         collapsing_toolbar.title = ""
+        collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700))
 
         shimmering_back_icon.setOnClickListener { activity?.onBackPressed() }
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
