@@ -410,7 +410,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         tv_hotel_homepage_destination.textFieldInput.setText(hotelHomepageModel.locName)
         tv_hotel_homepage_checkin_date.textFieldInput.setText(hotelHomepageModel.checkInDateFmt)
         tv_hotel_homepage_checkout_date.textFieldInput.setText(hotelHomepageModel.checkOutDateFmt)
-        tv_hotel_homepage_night_count.text = String.format(getString(R.string.hotel_homepage_night_counter, hotelHomepageModel.nightCounter))
+        tv_hotel_homepage_night_count.text = String.format(getString(R.string.hotel_homepage_night_counter), hotelHomepageModel.nightCounter)
         tv_hotel_homepage_guest_info.textFieldInput.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
                 hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
     }

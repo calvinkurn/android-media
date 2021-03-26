@@ -18,7 +18,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
-import android.widget.TextView
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -62,6 +61,7 @@ import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -640,7 +640,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun onImportantNotesClicked(notes: String) {
         context?.run {
             val importantNotesBottomSheets = HotelBookingBottomSheets()
-            val textView = TextView(this)
+            val textView = Typography(this)
             textView.text = notes
             importantNotesBottomSheets.setTitle(getString(R.string.hotel_important_info_title))
             importantNotesBottomSheets.addContentView(textView)
