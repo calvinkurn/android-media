@@ -1020,7 +1020,7 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is ProductTag -> {
-                val currentPinnedProduct = _observablePinnedProduct.value ?: return
+                val currentPinnedProduct = _observablePinnedProduct.value ?: return@withContext
                 val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
                 _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
                     currentPinnedProduct.copy(
@@ -1045,7 +1045,7 @@ class PlayViewModel @Inject constructor(
                 )
             }
             is MerchantVoucher -> {
-                val currentPinnedProduct = _observablePinnedProduct.value ?: return
+                val currentPinnedProduct = _observablePinnedProduct.value ?: return@withContext
                 val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
                 _observablePinnedProduct.value = if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
                     currentPinnedProduct.copy(
