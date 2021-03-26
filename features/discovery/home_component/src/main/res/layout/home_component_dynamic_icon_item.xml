@@ -7,13 +7,13 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
     <FrameLayout
-        android:foreground="?attr/selectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/dynamic_icon_background"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
+            android:clickable="true"
             android:background="@drawable/home_dynamic_icon_background"
             android:contentDescription="@string/content_desc_icon_image"
             android:visibility="gone"/>
