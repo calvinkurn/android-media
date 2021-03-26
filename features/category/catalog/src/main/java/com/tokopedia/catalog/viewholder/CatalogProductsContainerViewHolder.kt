@@ -1,6 +1,5 @@
 package com.tokopedia.catalog.viewholder
 
-import android.content.Context
 import android.view.View
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

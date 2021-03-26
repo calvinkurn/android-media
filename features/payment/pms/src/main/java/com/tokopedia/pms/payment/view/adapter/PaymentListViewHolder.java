@@ -38,8 +38,8 @@ public class PaymentListViewHolder extends AbstractViewHolder<PaymentListModel> 
     private TextView labelDynamicView;
     private TextView valueDynamicView;
     private TextView paymentMethod;
-    private Button howToPay;
-    private Button cancelTransaction;
+    private TextView howToPay;
+    private TextView cancelTransaction;
 
     public PaymentListViewHolder(View itemView, ListenerPaymentList listenerPaymentList) {
         super(itemView);
