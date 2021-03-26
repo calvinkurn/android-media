@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
@@ -46,6 +47,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -69,7 +71,6 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopU
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -403,7 +404,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let { v ->
                         var message = it.errorMessage
                         if (message.isBlank() && it.throwable != null) {
-                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                            message = if (it.throwable is AkamaiErrorException) {
+                                it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
+                            } else {
+                                ErrorHandler.getErrorMessage(context, it.throwable)
+                            }
                         }
                         if (message.isNotBlank()) {
                             Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
@@ -417,7 +422,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let { v ->
                         var message = it.errorMessage
                         if (message.isBlank()) {
-                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                            message = if (it.throwable is AkamaiErrorException) {
+                                it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
+                            } else {
+                                ErrorHandler.getErrorMessage(context, it.throwable)
+                            }
                         }
                         Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                     }
@@ -447,7 +456,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     progressDialog?.dismiss()
                     if (activity != null) {
                         val messageData = it.message
-                        val priceValidationDialog = DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                        val priceValidationDialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
                         priceValidationDialog.setTitle(messageData.title)
                         priceValidationDialog.setDescription(messageData.desc)
                         priceValidationDialog.setPrimaryCTAText(messageData.action)
@@ -1318,7 +1327,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable?.message
+                    var message = throwable?.message
+                    if (throwable !is AkamaiErrorException) {
+                        message = ErrorHandler.getErrorMessage(it.context, throwable)
+                    }
+                    Toaster.build(it, message
                             ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                 }
             }
@@ -1358,6 +1371,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let {
                         showAtcGlobalError(GlobalError.SERVER_ERROR)
                     }
+                }
+            }
+            if (atcError.throwable is AkamaiErrorException) {
+                view?.let {
+                    Toaster.build(it, atcError.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         } else {
