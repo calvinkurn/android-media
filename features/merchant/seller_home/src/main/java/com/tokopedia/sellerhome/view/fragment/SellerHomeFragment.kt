@@ -270,7 +270,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupView() = view?.run {
-        ketupatLottie = findViewById<KetupatLottieView>(R.id.lottie_seller_home_ketupat).apply {
+        ketupatLottie = findViewById<KetupatLottieView>(R.id.lottie_seller_home_ketupat)?.apply {
             loadAnimationFromUrl()
             setListener(this@SellerHomeFragment)
         }
