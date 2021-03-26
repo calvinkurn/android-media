@@ -283,13 +283,6 @@
       "sessionIris": "{{.*}}"
     },
     {
-      "eventAction": "click product pinned message",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
       "eventAction": "buffer",
       "event": "viewGroupChat",
       "eventCategory": "groupchat room",

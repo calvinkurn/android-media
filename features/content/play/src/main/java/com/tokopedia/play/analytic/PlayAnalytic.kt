@@ -178,15 +178,6 @@ class PlayAnalytic(
         )
     }
 
-    fun clickPinnedProduct() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK product pinned message",
-                channelId
-        )
-    }
-
     fun impressionProductList(listOfProducts: List<PlayProductUiModel.Product>) {
         if (listOfProducts.isNotEmpty()) {
             trackingQueue.putEETracking(
