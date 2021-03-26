@@ -33,7 +33,7 @@ class ShipmentDonationViewHolder(itemView: View, private val shipmentAdapterActi
         Tooltip(llContainer.context).apply {
             setTitle(shipmentDonationModel.donation.title)
             setDesc(shipmentDonationModel.donation.description)
-            setTextButton(llContainer.context.getString(R.string.label_button_bottomsheet_close))
+            setTextButton(llContainer.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
             setIcon(R.drawable.checkout_module_ic_donation)
             btnAction.setOnClickListener { dismiss() }
         }.show()
