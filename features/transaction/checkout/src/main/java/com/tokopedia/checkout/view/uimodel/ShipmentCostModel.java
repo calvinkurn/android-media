@@ -3,13 +3,11 @@ package com.tokopedia.checkout.view.uimodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticcart.shipping.model.ShipmentData;
-
 /**
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class ShipmentCostModel implements Parcelable, ShipmentData {
+public class ShipmentCostModel implements Parcelable {
 
     private int totalItem;
     private double totalItemPrice;
@@ -267,9 +265,13 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.totalPromoStackAmountStr = totalPromoStackAmountStr;
     }
 
-    public int getBookingFee() { return bookingFee; }
+    public int getBookingFee() {
+        return bookingFee;
+    }
 
-    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+    public void setBookingFee(int bookingFee) {
+        this.bookingFee = bookingFee;
+    }
 
     public String getDiscountLabel() {
         return discountLabel;

@@ -20,7 +20,7 @@ class ShipmentInsuranceTncViewHolder(itemView: View, private val shipmentAdapter
 
     fun bindViewHolder(shipmentInsuranceTncModel: ShipmentInsuranceTncModel, itemCount: Int) {
         if (shipmentInsuranceTncModel.isVisible) {
-            if (adapterPosition == itemCount - 3) {
+            if (adapterPosition == itemCount - INDEX_DIFFERENCE) {
                 val padding = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_16)
                 tvInsuranceTnc.setPadding(padding, 0, padding, padding)
             } else {
@@ -50,6 +50,8 @@ class ShipmentInsuranceTncViewHolder(itemView: View, private val shipmentAdapter
     companion object {
         @JvmField
         val ITEM_VIEW_INSURANCE_TNC = com.tokopedia.checkout.R.layout.item_insurance_tnc
+
+        const val INDEX_DIFFERENCE = 3
     }
 
 }
