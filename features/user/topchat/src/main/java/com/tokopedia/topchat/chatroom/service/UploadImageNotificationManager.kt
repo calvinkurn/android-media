@@ -5,17 +5,18 @@ import android.app.PendingIntent
 import android.content.Context
 import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
+import java.util.*
 
 abstract class UploadImageNotificationManager(private val context: Context) {
 
-    val id = System.currentTimeMillis().toInt()
+    val id = Random().nextInt()
 
-    private val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager: NotificationManager? = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
         setContentTitle(TITLE)
-        setSmallIcon(com.tokopedia.design.R.drawable.ic_status_bar_notif_customerapp)
-        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
+        setSmallIcon(com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp)
+        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp))
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
         priority = NotificationCompat.PRIORITY_MAX
@@ -31,10 +32,9 @@ abstract class UploadImageNotificationManager(private val context: Context) {
                 .setContentIntent(getFailedIntent(errorMessage))
                 .build()
 
-        notificationManager.notify(TAG, id, notification)
+        notificationManager?.notify(TAG, id, notification)
     }
 
-    protected abstract fun getSuccessIntent(): PendingIntent
     protected abstract fun getFailedIntent(errorMessage: String): PendingIntent
 
     companion object {

@@ -16,7 +16,7 @@ data class ChatReplyData(
 
         @Expose
         @SerializedName("senderID")
-        var senderId: Int = 0,
+        var senderId: String = "0",
 
         @Expose
         @SerializedName("msg")
@@ -42,7 +42,7 @@ data class ChatReplyData(
 data class ChatReplyAttachment(
         @Expose
         @SerializedName("id")
-        var id: Int = 0,
+        var id: String = "0",
 
         @Expose
         @SerializedName("type")

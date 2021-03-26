@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.fragment
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
@@ -34,7 +33,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
@@ -86,7 +84,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastReceiver
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -203,7 +200,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var chatBackground: ImageView? = null
     private var textWatcher: MessageTextWatcher? = null
     private var topchatViewState: TopChatViewStateImpl? = null
-    private var broadcastReceiver: BroadcastReceiver? = null
+    private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -1756,12 +1753,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun registerUploadImageReceiver() {
-        broadcastReceiver = UploadImageBroadcastReceiver(this)
+        uploadImageBroadcastReceiver = UploadImageBroadcastReceiver(this)
         activity?.let {
             val intentFilters = IntentFilter().apply {
                 addAction(UploadImageChatService.BROADCAST_UPLOAD_IMAGE)
             }
-            broadcastReceiver?.let { receiver ->
+            uploadImageBroadcastReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(it).registerReceiver(receiver, intentFilters)
             }
         }
@@ -1793,7 +1790,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun unregisterUploadImageReceiver() {
         activity?.let {
-            broadcastReceiver?.let { receiver ->
+            uploadImageBroadcastReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(it).unregisterReceiver(receiver)
             }
         }

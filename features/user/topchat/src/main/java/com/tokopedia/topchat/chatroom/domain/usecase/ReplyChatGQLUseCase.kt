@@ -9,23 +9,18 @@ open class ReplyChatGQLUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatReplyPojo>
 ) {
 
-    fun replyMessage(
+    suspend fun replyMessage(
             msgId: String,
             msg: String,
             filePath: String,
-            source: String,
-            onSuccessReply: (ChatReplyPojo) -> Unit,
-            onErrorReply: (Throwable) -> Unit
-    ) {
+            source: String
+    ): ChatReplyPojo {
         val params = generateParam(msgId, msg, filePath, source)
-        gqlUseCase.apply {
+        return gqlUseCase.apply {
             setTypeClass(ChatReplyPojo::class.java)
             setRequestParams(params)
             setGraphqlQuery(query)
-        }.execute(
-                onSuccess = onSuccessReply,
-                onError = onErrorReply
-        )
+        }.executeOnBackground()
     }
 
     private fun generateParam(

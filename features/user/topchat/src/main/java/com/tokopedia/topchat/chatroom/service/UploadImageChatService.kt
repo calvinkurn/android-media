@@ -12,9 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.ErrorHandler
@@ -22,14 +20,11 @@ import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
-import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
-import rx.Subscriber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -38,16 +33,13 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     @Inject
     lateinit var uploadImageUseCase: TopchatUploadImageUseCase
     @Inject
-    lateinit var replyChatUseCase: ReplyChatUseCase
-    private var image: ImageUploadViewModel? = null
-    private var messageId = ""
-
-    private var notificationManager: UploadImageNotificationManager? = null
-
-    @Inject
     lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
+
+    private var image: ImageUploadViewModel? = null
+    private var messageId = ""
+    private var notificationManager: UploadImageNotificationManager? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -65,23 +57,12 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     private fun initNotificationManager() {
         if (notificationManager == null) {
             notificationManager = object: UploadImageNotificationManager(this@UploadImageChatService) {
-                override fun getSuccessIntent(): PendingIntent {
-                    val intent = createChatRoomIntent()
-                    return PendingIntent.getActivity(this@UploadImageChatService, 0, intent, 0)
-                }
-
                 override fun getFailedIntent(errorMessage: String): PendingIntent {
                     val intent = createLocalChatRoomIntent()
                     return PendingIntent.getActivity(this@UploadImageChatService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                 }
             }
         }
-    }
-
-    private fun createChatRoomIntent(): Intent {
-        val intent = RouteManager.getIntent(this, ApplinkConst.TOPCHAT, messageId)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        return intent
     }
 
     private fun createLocalChatRoomIntent(): Intent {
@@ -102,27 +83,19 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     }
 
     private fun onSuccessUploadImage(uploadId: String, dummyMessage: ImageUploadViewModel) {
-        var sendByGQL = true
-        if(sendByGQL) {
-            sendImageByGQL(messageId, "Uploaded Image", uploadId, dummyMessage)
-        } else {
-            sendImageByApi(uploadId, dummyMessage)
-        }
+        sendImageByGQL(messageId, "Uploaded Image", uploadId, dummyMessage)
     }
 
     private fun sendImageByGQL(msgId: String, msg: String, filePath: String, dummyMessage: ImageUploadViewModel) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                replyChatGQLUseCase.replyMessage(msgId, msg, filePath, dummyMessage.source,
-                        {
-                            if(it.data.attachment.attributes.isNotEmpty()) {
-                                removeDummyOnList(dummyMessage)
-                                image?.let {img ->
-                                    sendSuccessBroadcast(img)
-                                }
-                            }
-                        },
-                        onFailedReplyMessage())
+                val result = replyChatGQLUseCase.replyMessage(msgId, msg, filePath, dummyMessage.source)
+                if(result.data.attachment.attributes.isNotEmpty()) {
+                    removeDummyOnList(dummyMessage)
+                    image?.let {img ->
+                        sendSuccessBroadcast(img)
+                    }
+                }
             }
         },
         onError = {
@@ -136,31 +109,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                 onErrorUploadImage(it, img)
             }
         }
-    }
-
-    private fun sendImageByApi(uploadId: String, dummyMessage: ImageUploadViewModel) {
-        val requestParams = ReplyChatUseCase.generateParamAttachImage(messageId, uploadId)
-        sendByApi(requestParams, dummyMessage)
-    }
-
-    private fun sendByApi(requestParams: RequestParams, dummyMessage: Visitable<*>) {
-        replyChatUseCase.execute(requestParams, object : Subscriber<ReplyChatViewModel>() {
-            override fun onNext(response: ReplyChatViewModel) {
-                removeDummyOnList(dummyMessage)
-                image?.let {
-                    sendSuccessBroadcast(it)
-                }
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable) {
-                image?.let {
-                    onErrorUploadImage(e, it)
-                }
-            }
-        })
     }
 
     private fun sendSuccessBroadcast(image: ImageUploadViewModel) {
@@ -198,7 +146,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     override fun onDestroy() {
         super.onDestroy()
-        replyChatUseCase.unsubscribe()
         replyChatGQLUseCase.cancel()
     }
 
