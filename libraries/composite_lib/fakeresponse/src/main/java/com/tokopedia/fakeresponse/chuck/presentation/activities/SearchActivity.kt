@@ -191,7 +191,7 @@ class SearchActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val menuRes = if (isSelectionMode) R.menu.gql_send_menu else R.menu.gql_search_menu
+        val menuRes = if (isSelectionMode) R.menu.fake_gql_send_menu else R.menu.gql_search_menu
         menuInflater.inflate(menuRes, menu)
         return super.onCreateOptionsMenu(menu)
     }
