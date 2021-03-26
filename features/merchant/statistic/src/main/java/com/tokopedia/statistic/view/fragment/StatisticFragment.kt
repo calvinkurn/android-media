@@ -337,13 +337,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setDefaultDynamicParameter() {
-        statisticPage?.let {
-            mViewModel.setDateFilter(it.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+        statisticPage?.let { page ->
+            page.dateFilters.firstOrNull { it.isSelected }.let { dateFilter ->
+               if (dateFilter != null) {
+                   mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, dateFilter.getDateFilterType())
+               } else if (StatisticPageHelper.getRegularMerchantStatus(userSession)) {
+                   mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+               } else {
+                   mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_TODAY)
+               }
+            }
         }
     }
 
     private fun setDefaultRange() = view?.run {
-        statisticPage?.dateFilters?.firstOrNull()?.let {
+        statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.let {
             setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
         }
     }
