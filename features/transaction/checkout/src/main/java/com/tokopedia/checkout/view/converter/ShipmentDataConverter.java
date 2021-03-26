@@ -6,6 +6,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
@@ -14,6 +15,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
@@ -37,16 +39,16 @@ public class ShipmentDataConverter {
     }
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
+        if (cartShipmentAddressFormData.getGroupAddress().size() > 0) {
             UserAddress defaultAddress = null;
             UserAddress tradeInDropOffAddress = null;
             if (cartShipmentAddressFormData.getAddressesData() != null && cartShipmentAddressFormData.getAddressesData().getData() != null) {
                 if (cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress() != null &&
-                        cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId() != 0) {
+                        Utils.isNotNullOrEmptyOrZero(cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId())) {
                     defaultAddress = cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress();
                 }
                 if (cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress() != null &&
-                        cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId() != 0) {
+                        Utils.isNotNullOrEmptyOrZero(cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId())) {
                     tradeInDropOffAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
                 }
             }
@@ -97,18 +99,18 @@ public class ShipmentDataConverter {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
         if (defaultAddress != null) {
-            recipientAddress.setId(String.valueOf(defaultAddress.getAddressId()));
+            recipientAddress.setId(defaultAddress.getAddressId());
             recipientAddress.setAddressStatus(defaultAddress.getStatus());
             recipientAddress.setAddressName(defaultAddress.getAddressName());
             recipientAddress.setCountryName(defaultAddress.getCountry());
             recipientAddress.setProvinceName(defaultAddress.getProvinceName());
             recipientAddress.setDestinationDistrictName(defaultAddress.getDistrictName());
             recipientAddress.setCityName(defaultAddress.getCityName());
-            recipientAddress.setDestinationDistrictId(String.valueOf(defaultAddress.getDistrictId()));
+            recipientAddress.setDestinationDistrictId(defaultAddress.getDistrictId());
             recipientAddress.setStreet(defaultAddress.getAddress());
             recipientAddress.setPostalCode(defaultAddress.getPostalCode());
-            recipientAddress.setCityId(String.valueOf(defaultAddress.getCityId()));
-            recipientAddress.setProvinceId(String.valueOf(defaultAddress.getProvinceId()));
+            recipientAddress.setCityId(defaultAddress.getCityId());
+            recipientAddress.setProvinceId(defaultAddress.getProvinceId());
 
             recipientAddress.setRecipientName(defaultAddress.getReceiverName());
             recipientAddress.setRecipientPhoneNumber(defaultAddress.getPhone());
@@ -118,7 +120,7 @@ public class ShipmentDataConverter {
                     defaultAddress.getLongitude() : null);
 
             recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
-            recipientAddress.setCornerId(String.valueOf(defaultAddress.getCornerId()));
+            recipientAddress.setCornerId(defaultAddress.getCornerId());
             recipientAddress.setTradeIn(isTradeIn);
             recipientAddress.setCornerAddress(defaultAddress.isCorner());
         }
@@ -174,10 +176,14 @@ public class ShipmentDataConverter {
             if (groupShopList.size() > 1) {
                 orderIndex = groupShopList.indexOf(groupShop) + 1;
             }
-            getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex);
             shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
             shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
+            shipmentCartItemModel.setFulfillmentBadgeUrl(groupShop.getFulfillmentBadgeUrl());
+            getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
+                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex);
+            if (groupShop.isFulfillment()) {
+                shipmentCartItemModel.setShopLocation(groupShop.getFulfillmentName());
+            }
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
             shipmentCartItemModels.add(shipmentCartItemModel);
@@ -185,7 +191,6 @@ public class ShipmentDataConverter {
 
         return shipmentCartItemModels;
     }
-
 
     private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isAllItemError()) {
@@ -208,14 +213,17 @@ public class ShipmentDataConverter {
         if (orderIndex > 0) {
             shipmentCartItemModel.setOrderNumber(orderIndex);
         }
-        if (groupShop.getShipmentInformationData() != null) {
-            if (groupShop.getShipmentInformationData().getPreorder().isPreorder()) {
-                shipmentCartItemModel.setPreOrderInfo(groupShop.getShipmentInformationData().getPreorder().getDuration());
+        ShipmentInformationData shipmentInformationData = groupShop.getShipmentInformationData();
+        if (shipmentInformationData != null) {
+            if (shipmentInformationData.getPreorder().isPreorder()) {
+                shipmentCartItemModel.setPreOrderInfo(shipmentInformationData.getPreorder().getDuration());
             }
-            if (groupShop.getShipmentInformationData().getFreeShipping().getEligible()) {
-                shipmentCartItemModel.setFreeShippingBadgeUrl(groupShop.getShipmentInformationData().getFreeShipping().getBadgeUrl());
+            if (shipmentInformationData.getFreeShippingExtra().getEligible()) {
+                shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShippingExtra().getBadgeUrl());
+            } else if (shipmentInformationData.getFreeShipping().getEligible()) {
+                shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShipping().getBadgeUrl());
             }
-            shipmentCartItemModel.setShopLocation(groupShop.getShipmentInformationData().getShopLocation());
+            shipmentCartItemModel.setShopLocation(shipmentInformationData.getShopLocation());
         }
 
         Shop shop = groupShop.getShop();
@@ -295,8 +303,8 @@ public class ShipmentDataConverter {
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
+        cartItemModel.setFreeShippingExtra(product.isFreeShippingExtra());
         cartItemModel.setFreeShipping(product.isFreeShipping());
-        cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
         cartItemModel.setShowTicker(product.isShowTicker());
         cartItemModel.setTickerMessage(product.getTickerMessage());
         cartItemModel.setVariant(product.getVariant());

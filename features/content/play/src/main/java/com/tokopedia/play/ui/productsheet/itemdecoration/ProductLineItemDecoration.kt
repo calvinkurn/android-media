@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 
@@ -20,7 +19,7 @@ class ProductLineItemDecoration(context: Context) : RecyclerView.ItemDecoration(
     private val startOffset = context.resources.getDimensionPixelOffset(R.dimen.play_product_line_divider_start_offset)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, R.color.play_product_sheet_divider)
+        color = MethodChecker.getColor(context, R.color.play_dms_product_sheet_divider)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

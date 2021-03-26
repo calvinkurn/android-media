@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
@@ -12,6 +14,7 @@ import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
@@ -23,6 +26,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
+import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
@@ -35,6 +39,7 @@ import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.util.TokenGenerator
@@ -42,7 +47,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -55,6 +59,7 @@ import javax.inject.Named
 class RegisterInitialViewModel @Inject constructor(
         private val registerCheckUseCase: GraphqlUseCase<RegisterCheckPojo>,
         private val registerRequestUseCase: GraphqlUseCase<RegisterRequestPojo>,
+        private val registerRequestUseCaseV2: GraphqlUseCase<RegisterRequestV2>,
         private val activateUserUseCase: ActivateUserUseCase,
         private val discoverUseCase: DiscoverUseCase,
         private val getFacebookCredentialUseCase: GetFacebookCredentialUseCase,
@@ -63,6 +68,7 @@ class RegisterInitialViewModel @Inject constructor(
         private val tickerInfoUseCase: TickerInfoUseCase,
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         private val checkHasOvoAccUseCase: CheckHasOvoAccUseCase,
+        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
@@ -270,31 +276,67 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
+    private fun createRegisterBasicParams(
+            email: String,
+            password: String,
+            fullname: String,
+            validateToken: String
+    ): MutableMap<String, String> {
+        return mutableMapOf(
+                RegisterInitialQueryConstant.PARAM_EMAIL to email,
+                RegisterInitialQueryConstant.PARAM_PASSWORD to password,
+                RegisterInitialQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
+                RegisterInitialQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
+                RegisterInitialQueryConstant.PARAM_FULLNAME to fullname,
+                RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
+        )
+    }
+
     fun registerRequest(
             email: String,
             password: String,
             fullname: String,
             validateToken: String
-    ) {
+    ){
         rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
-            val params = mapOf(
-                    RegisterInitialQueryConstant.PARAM_EMAIL to email,
-                    RegisterInitialQueryConstant.PARAM_PASSWORD to password,
-                    RegisterInitialQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
-                    RegisterInitialQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
-                    RegisterInitialQueryConstant.PARAM_FULLNAME to fullname,
-                    RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
-            )
-
+            val params = createRegisterBasicParams(email, password, fullname, validateToken)
             userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
             registerRequestUseCase.setTypeClass(RegisterRequestPojo::class.java)
             registerRequestUseCase.setRequestParams(params)
             registerRequestUseCase.setGraphqlQuery(query)
             registerRequestUseCase.execute(
-                    onSuccessRegisterRequest(),
-                    onFailedRegisterRequest()
+                {
+                    onSuccessRegisterRequest(it.data)
+                }, {
+                    onFailedRegisterRequest(it)
+                }
             )
         }
+    }
+
+    fun registerRequestV2(
+            email: String,
+            password: String,
+            fullname: String,
+            validateToken: String
+    ) {
+        launchCatchError(coroutineContext, {
+            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            if(keyData.key.isNotEmpty()) {
+                val encryptedPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
+
+                val params = createRegisterBasicParams(email, encryptedPassword, fullname, validateToken)
+                params[RegisterInitialQueryConstant.PARAM_HASH] = keyData.hash
+
+                userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+                registerRequestUseCaseV2.setTypeClass(RegisterRequestV2::class.java)
+                registerRequestUseCaseV2.setRequestParams(params)
+                registerRequestUseCaseV2.setGraphqlQuery(RegisterV2Query.registerQuery)
+                val result = registerRequestUseCaseV2.executeOnBackground()
+                onSuccessRegisterRequest(result.data)
+            }}, {
+                onFailedRegisterRequest(it)
+            })
     }
 
     fun activateUser(
@@ -504,25 +546,21 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessRegisterRequest(): (RegisterRequestPojo) -> Unit {
-        return {
-            userSession.clearToken()
-            if (it.data.accessToken.isNotEmpty() &&
-                    it.data.refreshToken.isNotEmpty() &&
-                    it.data.tokenType.isNotEmpty()) {
-                mutableRegisterRequestResponse.value = Success(it.data)
-            } else if (it.data.errors.isNotEmpty() && it.data.errors[0].message.isNotEmpty()) {
-                mutableRegisterRequestResponse.value =
-                        Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0].message))
-            } else mutableRegisterRequestResponse.value = Fail(RuntimeException())
-        }
+    private fun onSuccessRegisterRequest(result: RegisterRequestData) {
+        userSession.clearToken()
+        if (result.accessToken.isNotEmpty() &&
+                result.refreshToken.isNotEmpty() &&
+                result.tokenType.isNotEmpty()) {
+            mutableRegisterRequestResponse.value = Success(result)
+        } else if (result.errors.isNotEmpty() && result.errors[0].message.isNotEmpty()) {
+            mutableRegisterRequestResponse.value =
+                    Fail(com.tokopedia.network.exception.MessageErrorException(result.errors[0].message))
+        } else mutableRegisterRequestResponse.value = Fail(RuntimeException())
     }
 
-    private fun onFailedRegisterRequest(): (Throwable) -> Unit {
-        return {
-            userSession.clearToken()
-            mutableRegisterRequestResponse.value = Fail(it)
-        }
+    private fun onFailedRegisterRequest (throwable: Throwable){
+        userSession.clearToken()
+        mutableRegisterRequestResponse.value = Fail(throwable)
     }
 
     private fun onSuccessActivateUser(): (ActivateUserData) -> Unit {
@@ -584,6 +622,7 @@ class RegisterInitialViewModel @Inject constructor(
         super.onCleared()
         activateUserUseCase.cancelJobs()
         registerRequestUseCase.cancelJobs()
+        registerRequestUseCaseV2.cancelJobs()
         registerCheckUseCase.cancelJobs()
         tickerInfoUseCase.unsubscribe()
         discoverUseCase.unsubscribe()

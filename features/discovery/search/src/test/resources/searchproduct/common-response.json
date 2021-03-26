@@ -66,6 +66,12 @@
               "position": "offers",
               "type": "lightGrey",
               "title": "Bisa Tukar Tambah"
+            },
+            {
+              "title": "TokoCabang",
+              "position": "fulfillment",
+              "type": "textDarkGrey",
+              "url": "https://images.tokopedia.net/img/jbZAUJ/2021/2/18/6d2cc121-91b9-49bc-99c3-d57437ad64b7.png"
             }
           ],
           "badges": [
