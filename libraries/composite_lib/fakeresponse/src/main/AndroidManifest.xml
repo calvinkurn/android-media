@@ -5,10 +5,6 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.fakeresponse.presentation.activities.BaseActivity"
-            android:theme="@style/FakeNoActionBar"
-             />
-        <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.AddGqlActivity"
             android:theme="@style/FakeNoActionBar"
              />
