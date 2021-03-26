@@ -655,6 +655,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                             if (oldWidget.isFromCache && !oldWidget.needToRefreshData(newWidget as BaseWidgetUiModel<BaseDataUiModel>)) {
                                 newWidgets.add(newWidget.apply {
                                     data = oldWidget.data
+                                    isLoaded = oldWidget.isLoaded
+                                    isLoading = oldWidget.isLoading
                                 })
                             } else {
                                 newWidgets.add(newWidget)
