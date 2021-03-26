@@ -76,7 +76,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/add_new_address_phone_label"
-            app:layout_constraintEnd_toStartOf="btn_contact_picker">
+            app:layout_constraintEnd_toStartOf="@id/btn_contact_picker">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_phone"
