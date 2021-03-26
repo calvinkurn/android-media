@@ -9,7 +9,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
 
-            <intent-filter android:autoVerify="true"
+            <intent-filter
                 android:label="deeplink second activity">
                 <action android:name="com.tokopedia.internal.VIEW" />
 
