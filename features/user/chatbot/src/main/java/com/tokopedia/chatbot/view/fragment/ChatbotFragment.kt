@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +64,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
+import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
@@ -83,11 +85,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
@@ -146,6 +150,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var attribute: Attributes
     private var isBackAllowed = true
     private lateinit var ticker: Ticker
+    private lateinit var dateIndicator: Typography
+    private lateinit var dateIndicatorContainer: CardView
     private var csatOptionsViewModel: CsatOptionsViewModel? = null
     private var invoiceRefNum = ""
     private var replyText = ""
@@ -236,7 +242,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         replyEditTextContainer = view.findViewById(R.id.new_comment_container)
         bindReplyTextBackground()
         ticker = view.findViewById(R.id.chatbot_ticker)
+        dateIndicator = view.findViewById(R.id.dateIndicator)
+        dateIndicatorContainer = view.findViewById(R.id.dateIndicatorContainer)
         setChatBackground()
+        getRecyclerView(view).addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
         return view
     }
 
@@ -276,8 +285,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 this,
-                this
+                this,
+                setDateIndicator()
         )
+    }
+
+    fun setDateIndicator() :(String) ->Unit ={
+        if (it.isNotEmpty()){
+            dateIndicator.text = it
+            dateIndicatorContainer.show()
+        }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {

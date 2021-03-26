@@ -19,7 +19,8 @@ class LeftChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
         private val chatbotAdapterListener: ChatbotAdapterListener,
-) : CustomChatbotMessageViewHolder(itemView, listener) {
+        dateIndicator: (String) -> Unit,
+) : CustomChatbotMessageViewHolder(itemView, listener, dateIndicator) {
 
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
@@ -80,6 +81,8 @@ class LeftChatMessageViewHolder(
             customChatLayout?.hideReadMoreView()
         }
     }
+
+    override fun getDateContainerId(): Int = R.id.dateContainer
 
     companion object {
         val LAYOUT = R.layout.item_chatbot_chat_left
