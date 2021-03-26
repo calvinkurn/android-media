@@ -38,6 +38,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
@@ -58,6 +59,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -99,14 +101,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
-        val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession)) {
+        val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
             Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_REGULAR_MERCHANT))
         } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate
                 ?: defaultStartDate
     }
     private val defaultEndDate by lazy {
-        val defaultEndDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession)) {
+        val defaultEndDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
             Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_REGULAR_MERCHANT))
         } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate
@@ -341,7 +345,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             page.dateFilters.firstOrNull { it.isSelected }.let { dateFilter ->
                if (dateFilter != null) {
                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, dateFilter.getDateFilterType())
-               } else if (StatisticPageHelper.getRegularMerchantStatus(userSession)) {
+               } else if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                       statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
                } else {
                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_TODAY)
@@ -351,8 +356,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setDefaultRange() = view?.run {
-        statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.let {
-            setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
+        statisticPage?.dateFilters?.firstOrNull { it.isSelected }.let {
+            val headerSubtitle = if (it != null) {
+                it.getHeaderSubTitle(requireContext())
+            } else if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                    statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                val headerSubTitle: String = getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
+                val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
+                "$headerSubTitle ($startEndDateFmt)"
+            } else {
+                val startDateMillis = defaultStartDate.time
+                val dateStr = DateTimeUtil.format(startDateMillis, "dd MMMM")
+                val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
+                getString(R.string.stc_today_fmt, dateStr, hourStr)
+            }
+            setHeaderSubTitle(headerSubtitle)
         }
     }
 
