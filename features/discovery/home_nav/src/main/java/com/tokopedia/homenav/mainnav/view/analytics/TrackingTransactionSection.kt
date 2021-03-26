@@ -13,7 +13,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_TICKET = "click on e-ticket and e-voucher"
     private const val ACTION_CLICK_ON_REVIEW = "click on review"
     private const val ACTION_CLICK_ON_WISHLIST = "click on Wishlist"
-    private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favourite Shop"
+    private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favorite Shop"
     private const val ACTION_CLICK_ON_ORDER_STATUS = "click on order status"
 
     fun clickOnAllTransaction(userId: String) {

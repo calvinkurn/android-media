@@ -628,12 +628,8 @@ class MainNavViewModel @Inject constructor(
         val transactionShimmer = _mainNavListVisitable.firstOrNull {
             it is InitialShimmerTransactionDataModel
         }
-        val findHomeMenu = _mainNavListVisitable.find {
-            it is HomeNavMenuDataModel && it.id == ID_HOME
-        }
         transactionShimmer?.let{
-            val increaseValue = if (findHomeMenu!=null) 1 else 0
-            return _mainNavListVisitable.indexOf(it) + increaseValue
+            return _mainNavListVisitable.indexOf(it)
         }
         return null
     }
