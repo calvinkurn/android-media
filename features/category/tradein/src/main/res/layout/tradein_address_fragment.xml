@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -18,7 +18,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="@color/Unify_N0">
 
             <ImageView
                 android:id="@+id/iv_back"
@@ -39,7 +39,7 @@
                 android:paddingStart="@dimen/dp_12"
                 android:paddingEnd="@dimen/dp_12"
                 android:text="@string/tradein_check_store_range"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toTopOf="@id/typography_subheader"
                 app:layout_constraintLeft_toRightOf="@id/iv_back"
                 app:layout_constraintRight_toRightOf="parent"
@@ -58,7 +58,7 @@
                 android:paddingStart="@dimen/dp_12"
                 android:paddingEnd="@dimen/dp_12"
                 android:text="@string/tradein_step1_of_4"
-                android:textColor="@color/tradein_clr_AD31353B"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/iv_back"
                 app:layout_constraintRight_toRightOf="parent"
@@ -88,7 +88,7 @@
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/spacing_lvl4"
             android:paddingRight="@dimen/spacing_lvl4"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Rumah" />
@@ -100,7 +100,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingRight="@dimen/spacing_lvl4"
-            android:textColor="@color/tradein_clr_AD31353B"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, RT 12, DKI Jakarta, Jakarta Selatan, Setiabudi 12560" />
 
@@ -113,7 +113,7 @@
             android:paddingRight="@dimen/spacing_lvl4"
             android:paddingBottom="@dimen/spacing_lvl4"
             android:text="@string/tradein_label_change_address_new"
-            android:textColor="@color/bg_button_green_border_outline"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
     </LinearLayout>
@@ -149,7 +149,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:visibility="gone">
@@ -164,7 +164,7 @@
         android:id="@+id/global_error"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

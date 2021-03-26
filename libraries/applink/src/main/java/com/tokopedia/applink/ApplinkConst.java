@@ -66,6 +66,7 @@ public interface ApplinkConst {
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
+    String REVIEW_REMINDER = "tokopedia://review-reminder";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_DOWNLOAD_HTML = "tokopedia://webview-download-html";
@@ -564,7 +565,6 @@ public interface ApplinkConst {
         String EXTRA_SHOP_TYPE = "shop_type";
         String EXTRA_SHOP_NAME = "shop_name";
         String EXTRA_OCS = "ocs";
-        String EXTRA_TRADE_IN_PARAMS = "trade_in_params";
         String EXTRA_NEED_REFRESH = "extra_need_refresh";
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";

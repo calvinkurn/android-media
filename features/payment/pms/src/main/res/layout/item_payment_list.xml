@@ -11,11 +11,9 @@
     android:paddingRight="@dimen/dp_10"
     android:paddingTop="@dimen/dp_2">
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardElevation="3sp"
-        card_view:cardUseCompatPadding="true">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,18 +33,26 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/dp_10" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_order_date"
-                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3"
                     android:layout_toRightOf="@id/image_product_type"
-                    tools:text="8 Nov 2018" />
+                    tools:text="8 Nov 2018"/>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_product_type"
-                    style="@style/TextView.Micro.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
                     android:layout_alignLeft="@+id/tv_order_date"
                     android:layout_below="@+id/tv_order_date"
-                    tools:text="Belanja" />
+                    tools:text="Belanja"/>
+
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_overflow"
@@ -59,16 +65,15 @@
                     app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black" />
             </RelativeLayout>
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginBottom="@dimen/dp_5"
-                android:layout_marginTop="@dimen/dp_5"
-                android:background="@drawable/bg_line_separator" />
+                android:layout_marginTop="@dimen/dp_5"/>
 
             <LinearLayout
                 android:id="@+id/container_due_date_payment"
-                style="@style/CardWarningStyle"
+                style="@style/PMS_CardWarningStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_8"
@@ -76,12 +81,16 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
-                <androidx.appcompat.widget.AppCompatTextView
+
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_due_payment_date"
-                    style="@style/TextView.Micro"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
                     android:layout_width="match_parent"
                     android:gravity="center_horizontal"
                     tools:text="Bayar sebelum 10 nov 2018, 18:00 WIB" />
+
             </LinearLayout>
 
             <RelativeLayout
@@ -95,20 +104,29 @@
                     android:layout_height="@dimen/dp_40"
                     android:layout_marginRight="@dimen/dp_10" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_total"
-                    style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_toRightOf="@id/image_payment"
-                    android:text="@string/payment_label_total"
-                    />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_total"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3"
+                    android:layout_width="wrap_content"
+                    android:layout_toRightOf="@id/image_payment"
+                    android:text="@string/payment_label_total" />
+
+
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_value_total"
-                    style="@style/TextView.Small.OrangeRed.Bold"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_Y500"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    android:layout_width="wrap_content"
                     android:layout_alignLeft="@+id/tv_total"
                     android:layout_below="@+id/tv_total"
                     android:layout_marginBottom="@dimen/dp_10"
-                    tools:text="Rp. 200.000" />
+                    tools:text="Rp. 200.000"/>
+
 
                 <LinearLayout
                     android:id="@+id/container_detail_payment"
@@ -118,25 +136,37 @@
                     android:layout_below="@id/tv_value_total"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_payment_code"
-                        style="@style/TextView.Micro.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyType="body_3"
+                        android:textColor="@color/Unify_N700_68"
                         tools:text="Kode Pembayaran" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_value_payment_code"
-                        style="@style/TextView.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyType="body_2"
+                        android:textColor="@color/Unify_N700_96"
                         android:layout_marginBottom="@dimen/dp_10"
                         tools:text="2349ojasfdpaosfd09" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_payment_method"
-                        style="@style/TextView.Micro.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Unify_N700_68"
+                        app:typographyType="body_3"
                         android:text="@string/payment_label_method_payment" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_value_payment_method"
-                        style="@style/TextView.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyType="body_2"
+                        android:textColor="@color/Unify_N700_96"
                         android:layout_marginBottom="@dimen/dp_10"
                         tools:text="2349ojasfdpaosfd09" />
                 </LinearLayout>
@@ -159,29 +189,40 @@
                         android:layout_toStartOf="@+id/separator_vertical"
                         android:layout_alignParentStart="true">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_label_sender_account"
-                            style="@style/TextView.Micro.BlackSecondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Unify_N700_68"
+                            app:typographyType="body_3"
                             android:layout_marginBottom="@dimen/dp_8"
                             android:text="@string/payment_label_acc_sender" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.tokopedia.unifyprinciples.Typography
+                            app:typographyType="body_3"
+                            app:typographyWeight="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Unify_N700_68"
                             android:id="@+id/tv_number_sender_account"
-                            style="@style/TextView.Micro.BlackSecondary.Bold"
                             tools:text="****5555" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            app:typographyType="body_3"
+                            app:typographyWeight="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Unify_N700_68"
                             android:id="@+id/tv_name_sender_account"
-                            style="@style/TextView.Micro.BlackSecondary.Bold"
                             tools:text="****5555" />
                     </LinearLayout>
 
-                    <View
+                    <com.tokopedia.unifycomponents.DividerUnify
                         android:id="@+id/separator_vertical"
                         android:layout_width="1dp"
                         android:layout_height="@dimen/dp_60"
-                        android:layout_centerHorizontal="true"
-                        android:background="@drawable/bg_line_separator_vertical" />
+                        android:layout_centerHorizontal="true" />
 
                     <LinearLayout
                         android:id="@+id/container_receiver"
@@ -193,22 +234,35 @@
                         android:orientation="vertical"
                         android:layout_toEndOf="@+id/separator_vertical"
                         android:layout_alignParentEnd="true">
-
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.tokopedia.unifyprinciples.Typography
+                            app:typographyType="body_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Unify_N700_68"
                             android:id="@+id/tv_label_receiver_account"
-                            style="@style/TextView.Micro.BlackSecondary"
                             android:layout_marginBottom="@dimen/dp_8"
-                            android:text="@string/payment_label_acc_dest" />
+                            android:text="@string/payment_label_acc_dest"  />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            app:typographyType="body_3"
+                            app:typographyWeight="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Unify_N700_68"
                             android:id="@+id/tv_number_receiver_account"
-                            style="@style/TextView.Micro.BlackSecondary.Bold"
                             tools:text="****5555" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            app:typographyType="body_3"
+                            app:typographyWeight="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Unify_N700_68"
                             android:id="@+id/tv_name_receiver_account"
-                            style="@style/TextView.Micro.BlackSecondary.Bold"
                             tools:text="****5555" />
+
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -222,20 +276,27 @@
 
             </RelativeLayout>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/button_how_to_pay"
-                style="@style/Button.Submit.Green.Full"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonSize="large"
                 android:text="@string/payment_label_how_to_pay" />
 
-            <Button
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/button_cancel_payment"
-                style="@style/Button.Submit.White.Border"
                 android:layout_width="match_parent"
-                android:layout_margin="0dp"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost"
+                app:unifyButtonSize="large"
                 android:text="@string/payment_label_cancel_transaction"
                 android:visibility="gone" />
+
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify>
 </LinearLayout>
