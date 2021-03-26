@@ -2569,6 +2569,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
             binding?.layoutGlobalError?.show()
+            if (throwable is AkamaiErrorException) {
+                showToastMessageRed(throwable)
+            }
         }
     }
 

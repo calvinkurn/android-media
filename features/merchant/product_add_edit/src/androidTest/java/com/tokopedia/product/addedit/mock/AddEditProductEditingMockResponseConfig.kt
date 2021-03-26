@@ -5,7 +5,7 @@ import com.tokopedia.product.addedit.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 
-class AddEditProductPreviewMockResponseConfig: MockModelConfig() {
+class AddEditProductEditingMockResponseConfig: MockModelConfig() {
 
     companion object {
         private const val VALIDATE_SHOP_INFO = "shopInfoByID"
