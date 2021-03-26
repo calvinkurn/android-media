@@ -52,7 +52,9 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) { remoteConfigInstance = RemoteConfigInstance(this.application) }
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(this.application)
+        }
         return remoteConfigInstance.abTestPlatform
     }
 
