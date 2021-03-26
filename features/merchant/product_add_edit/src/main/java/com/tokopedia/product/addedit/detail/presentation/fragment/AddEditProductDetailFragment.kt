@@ -921,7 +921,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     productCategoryLayout?.show()
-                    productCategoryRecListView?.setToDisplayText(categoryName, requireContext())
+                    productCategoryRecListView?.setToDisplayText(categoryName.orEmpty(), requireContext())
 
                     // clear specification, get new annotation spec
                     getAnnotationCategory()
