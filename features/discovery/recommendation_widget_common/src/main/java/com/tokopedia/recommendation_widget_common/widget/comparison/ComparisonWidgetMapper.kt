@@ -68,7 +68,7 @@ object ComparisonWidgetMapper {
             var currentPosition = i
             val text = findMaxSummaryText(recommendationItem, i)
             val textSizeHeight = context.resources.getDimensionPixelSize(R.dimen.comparison_summary_text_height)
-            var comparisonWidth = context.resources.getDimensionPixelSize(R.dimen.comparison_specs_content_width)
+            var comparisonWidth = context.resources.getDimensionPixelSize(R.dimen.comparison_specs_calculation_width)
             //substract with margin start and end
             comparisonWidth -= context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_start)
             comparisonWidth -= context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_end)
