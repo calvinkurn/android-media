@@ -653,13 +653,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                             newWidgets.add(newWidget)
                         } else {
                             if (oldWidget.isFromCache && !oldWidget.needToRefreshData(newWidget as BaseWidgetUiModel<BaseDataUiModel>)) {
-                                newWidgets.add(newWidget.apply {
+                                newWidget.apply {
                                     data = oldWidget.data
                                     isLoaded = oldWidget.isLoaded
                                     isLoading = oldWidget.isLoading
-                                })
+                                }
+                                val widgetData = newWidget.data
+                                if (widgetData == null || !shouldRemoveWidget(newWidget, widgetData)) {
+                                    newWidgets.add(newWidget)
+                                }
+                                Unit
                             } else {
                                 newWidgets.add(newWidget)
+                                Unit
                             }
                         }
                     }
@@ -856,7 +862,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }.takeIf { it > -1 }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
-                    if (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())) {
+                    if (shouldRemoveWidget(widget, widgetData)) {
                         newWidgetList.removeAt(index)
                         removeEmptySections(newWidgetList, index)
                     } else {
@@ -875,6 +881,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 requestVisibleWidgetsData()
             }
         }
+    }
+
+    private fun shouldRemoveWidget(widget: BaseWidgetUiModel<*>, widgetData: BaseDataUiModel): Boolean {
+        return !widget.isFromCache && !widgetData.isFromCache && (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove()))
     }
 
     private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {
