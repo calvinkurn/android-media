@@ -71,7 +71,8 @@ import javax.inject.Inject
  * @author by jessica on 07/01/21
  */
 
-class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
+class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
+        DigitalCartInputPriceWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -92,6 +93,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
     lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
+    lateinit var myBillsAdapter: DigitalMyBillsAdapter
 
     override fun getScreenName(): String = ""
 
@@ -131,6 +133,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        //save userInputView value for don't keep activities
+        viewModel.requestCheckoutParam.userInputPriceValue = inputPriceHolderView.getPriceInput()
+
         outState.putParcelable(EXTRA_STATE_PROMO_DATA, viewModel.promoData.value)
         outState.putParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, viewModel.requestCheckoutParam)
         super.onSaveInstanceState(outState)
@@ -168,11 +173,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
             renderCartDigitalInfoData(it)
-        })
-
-        viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
-            cartDetailInfoAdapter.setAdditionalInfoItems(it)
-            containerSeeDetailToggle.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+            renderCartBasedOnParamState()
         })
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
@@ -262,6 +263,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
         cartInfo.attributes.icon.let { iconCheckout.loadImage(it) }
         productTitle.text = cartInfo.attributes.categoryName
         cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo)
+        cartDetailInfoAdapter.setAdditionalInfoItems(cartInfo.additionalInfos)
+        containerSeeDetailToggle.visibility = if (cartInfo.additionalInfos.isEmpty()) View.GONE else View.VISIBLE
 
         if (cartInfo.attributes.isEnableVoucher) {
             checkoutBottomViewWidget.promoButtonVisibility = View.VISIBLE
@@ -272,7 +275,21 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
         }
     }
 
+    private fun renderCartBasedOnParamState() {
+        viewModel.requestCheckoutParam.let { param ->
+            //render input user
+            if (param.userInputPriceValue != null) {
+                inputPriceHolderView?.setPriceInput(param.userInputPriceValue)
+            }
+
+            //render fintechProduct & subscription
+            if (param.isSubscriptionChecked) myBillsAdapter.setActiveSubscriptions()
+            if (param.fintechProducts.isNotEmpty()) myBillsAdapter.setActiveFintechProducts(param.fintechProducts)
+        }
+    }
+
     private fun getDigitalIdentifierParam(): RequestBodyIdentifier = DeviceUtil.getDigitalIdentifierParam(requireActivity())
+
 
     private fun initViews() {
         // init recyclerview
@@ -420,13 +437,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
     }
 
     private fun renderMyBillsLayout(cartInfo: CartDigitalInfoData) {
-        val adapter = DigitalMyBillsAdapter(cartInfo.crossSellingType, this)
+        myBillsAdapter = DigitalMyBillsAdapter(cartInfo.crossSellingType, this)
 
         rvMyBills.layoutManager = LinearLayoutManager(context)
         rvMyBills.isNestedScrollingEnabled = false
-        rvMyBills.adapter = adapter
+        rvMyBills.adapter = myBillsAdapter
 
-        adapter.setItems(if (cartInfo.showSubscriptionsView) listOf(cartInfo.crossSellingConfig) else listOf(),
+        myBillsAdapter.setItems(if (cartInfo.showSubscriptionsView) listOf(cartInfo.crossSellingConfig) else listOf(),
                 cartInfo.attributes.fintechProduct)
     }
 
@@ -485,30 +502,28 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener {
             inputPriceContainer.visibility = View.VISIBLE
 
             if (!userInputPriceDigital.minPayment.isNullOrEmpty())
-                inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
-                    override fun onInputPriceByUserFilled(paymentAmount: Long?) {
-                        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble()
-                                ?: 0.0)
-                        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble()
-                                ?: 0.0)
-                    }
-
-                    override fun enableCheckoutButton() {
-                        checkoutBottomViewWidget.isCheckoutButtonEnabled = true
-                    }
-
-                    override fun disableCheckoutButton() {
-                        checkoutBottomViewWidget.isCheckoutButtonEnabled = false
-                    }
-                }
+                inputPriceHolderView.actionListener = this
 
             inputPriceHolderView.setMinMaxPayment(
-                    total,
                     userInputPriceDigital.minPaymentPlain.toLong(),
                     userInputPriceDigital.maxPaymentPlain.toLong(),
                     userInputPriceDigital.minPayment ?: "",
                     userInputPriceDigital.maxPayment ?: "")
+            inputPriceHolderView.setPriceInput(total)
         }
+    }
+
+    override fun onInputPriceByUserFilled(paymentAmount: Long?) {
+        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0)
+        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble() ?: 0.0)
+    }
+
+    override fun enableCheckoutButton() {
+        checkoutBottomViewWidget.isCheckoutButtonEnabled = true
+    }
+
+    override fun disableCheckoutButton() {
+        checkoutBottomViewWidget.isCheckoutButtonEnabled = false
     }
 
     private fun interruptRequestTokenVerification(phoneNumber: String?) {

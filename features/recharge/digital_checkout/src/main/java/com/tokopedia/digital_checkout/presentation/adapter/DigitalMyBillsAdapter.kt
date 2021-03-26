@@ -36,6 +36,22 @@ class DigitalMyBillsAdapter(private val crossSellingType: Int,
         notifyDataSetChanged()
     }
 
+    fun setActiveFintechProducts(activeFintechProducts: HashMap<String, FintechProduct> = hashMapOf()) {
+        for (fintechProduct in fintechProducts) {
+            if (activeFintechProducts.containsKey(fintechProduct.tierId)) {
+                fintechProduct.optIn = true
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    fun setActiveSubscriptions() {
+        subscriptions.firstOrNull()?.let {
+            it.isChecked = true
+            notifyItemChanged(0)
+        }
+    }
+
     override fun onBindViewHolder(holder: DigitalMyBillsViewHolder, position: Int) {
         if (holder.itemViewType == SUBSCRIPTION_VIEWTYPE) {
             holder.bindSubscription(subscriptions[position], crossSellingType)

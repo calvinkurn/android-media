@@ -99,6 +99,7 @@ object DigitalCheckoutQueries {
               allow_ovo_points
               fintech_amount
               fintech_partner_amount
+              operator_name
               info {
                 title
                 subtitle

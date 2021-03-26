@@ -15,7 +15,6 @@ import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRI
 import com.tokopedia.digital_checkout.data.PaymentSummary
 import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
-import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
@@ -68,10 +67,6 @@ class DigitalCartViewModel @Inject constructor(
     private val _cartDigitalInfoData = MutableLiveData<CartDigitalInfoData>()
     val cartDigitalInfoData: LiveData<CartDigitalInfoData>
         get() = _cartDigitalInfoData
-
-    private val _cartAdditionalInfoList = MutableLiveData<List<CartItemDigitalWithTitle>>()
-    val cartAdditionalInfoList: LiveData<List<CartItemDigitalWithTitle>>
-        get() = _cartAdditionalInfoList
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String>
@@ -175,8 +170,6 @@ class DigitalCartViewModel @Inject constructor(
         if (mappedCartData.isNeedOtp) {
             _isNeedOtp.postValue(userSession.phoneNumber)
         } else {
-            _cartDigitalInfoData.postValue(mappedCartData)
-            _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
 
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
@@ -185,6 +178,8 @@ class DigitalCartViewModel @Inject constructor(
             _payment.postValue(paymentSummary)
 
             requestCheckoutParam.transactionAmount = pricePlain
+
+            _cartDigitalInfoData.postValue(mappedCartData)
 
             val promoData = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
             promoData?.let {
