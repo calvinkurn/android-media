@@ -7,6 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+<!--Not using unify typography because this view need to be pre-calculated-->
+<!--    before render. And currently typography have some function in onMeasure-->
+<!--    that can impact its height. So for now its not compatible to use -->
+<!--    Typography for this feature-->
     <TextView
         android:id="@+id/tv_spec_title"
         android:layout_width="match_parent"

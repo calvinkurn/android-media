@@ -12,6 +12,10 @@
         android:layout_margin="4dp"
         android:layout_width="@dimen/widget_sticky_title_item_width"
         android:layout_height="wrap_content">
+        <!--Not using unify typography because this view need to be pre-calculated-->
+        <!--    before render. And currently typography have some function in onMeasure-->
+        <!--    that can impact its height. So for now its not compatible to use -->
+        <!--    Typography for this feature-->
         <TextView
             android:id="@+id/tv_sticky_title"
             android:layout_width="@dimen/widget_sticky_title_item_width"
