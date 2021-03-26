@@ -211,7 +211,6 @@ class AccountHeaderViewHolder(itemView: View,
             val str = tvShopInfo.text as Spannable
             str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tvShopInfo.setOnClickListener { onShopClicked(element.canGoToSellerAccount) }
             if (element.shopOrderCount > 0) {
                 tvShopNotif.visible()
                 tvShopNotif.setNotification(element.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)

@@ -12,6 +12,8 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_ALL_TRANSACTION = "click on all transaction"
     private const val ACTION_CLICK_ON_TICKET = "click on e-ticket and e-voucher"
     private const val ACTION_CLICK_ON_REVIEW = "click on review"
+    private const val ACTION_CLICK_ON_WISHLIST = "click on Wishlist"
+    private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favourite Shop"
     private const val ACTION_CLICK_ON_ORDER_STATUS = "click on order status"
 
     fun clickOnAllTransaction(userId: String) {
@@ -48,6 +50,34 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 event = EVENT_CLICK_NAVIGATION_DRAWER,
                 eventCategory = CATEGORY_GLOBAL_MENU,
                 eventAction = ACTION_CLICK_ON_REVIEW,
+                eventLabel = DEFAULT_EMPTY
+        )
+        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
+        trackingBuilder.appendUserId(userId)
+        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+        getTracker().sendGeneralEvent(trackingBuilder.build())
+    }
+
+    fun clickOnWishlist(userId: String) {
+        val trackingBuilder = BaseTrackerBuilder()
+        trackingBuilder.constructBasicGeneralClick(
+                event = EVENT_CLICK_NAVIGATION_DRAWER,
+                eventCategory = CATEGORY_GLOBAL_MENU,
+                eventAction = ACTION_CLICK_ON_WISHLIST,
+                eventLabel = DEFAULT_EMPTY
+        )
+        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
+        trackingBuilder.appendUserId(userId)
+        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+        getTracker().sendGeneralEvent(trackingBuilder.build())
+    }
+
+    fun clickOnTokoFavorit(userId: String) {
+        val trackingBuilder = BaseTrackerBuilder()
+        trackingBuilder.constructBasicGeneralClick(
+                event = EVENT_CLICK_NAVIGATION_DRAWER,
+                eventCategory = CATEGORY_GLOBAL_MENU,
+                eventAction = ACTION_CLICK_ON_FAVOURITE_SHOP,
                 eventLabel = DEFAULT_EMPTY
         )
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)

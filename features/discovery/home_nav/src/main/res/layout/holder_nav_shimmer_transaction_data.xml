@@ -5,9 +5,6 @@
     android:paddingTop="@dimen/dp_4"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/holder_transaction_list_shimmer"/>
-
     <LinearLayout
         android:layout_marginTop="@dimen/dp_13"
         android:layout_marginLeft="@dimen/dp_16"
