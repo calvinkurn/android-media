@@ -87,7 +87,7 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
                     val drawableImage = BitmapDrawable(itemView.resources, it)
                     val left = 0
                     val top = -5
-                    val right = drawableImage.intrinsicWidth
+                    val right = drawableImage.intrinsicWidth + 5
                     val bottom = drawableImage.intrinsicHeight
                     drawableImage.setBounds(left, top, right, bottom)
                     val spannableString = SpannableString("   ${button.text}")
