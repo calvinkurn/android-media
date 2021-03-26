@@ -224,14 +224,14 @@
                       "discountPrice": 0,
                       "endDateUnix": "0",
                       "hideGimmick": false,
-                      "isActive": false,
+                      "isActive": true,
                       "isAppsOnly": false,
                       "isCheckImei": false,
                       "isUsingOvo": false,
                       "minOrder": 0,
                       "originalPrice": 0,
                       "startDate": "",
-                      "stock": 0,
+                      "stock": 200,
                       "stockSoldPercentage": 0
                     },
                     "isCOD": false,
@@ -246,13 +246,13 @@
                     "price": 64900,
                     "priceFmt": "Rp 0",
                     "productID": "1060957408",
-                    "productName": "[Tokopedia 11th] - Screenshot test",
+                    "productName": "[Tokopedia 11th] - asdadas",
                     "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-s",
                     "sku": "",
                     "stock": {
                       "isBuyable": true,
                       "minimumOrder": "1",
-                      "stock": "1",
+                      "stock": "99",
                       "stockWording": "<b style='color:red'>Stok terakhir,</b> beli sekarang!",
                       "stockWordingHTML": "<b style='color:red'>Stok terakhir,</b> beli sekarang!"
                     },
@@ -723,57 +723,6 @@
             ],
             "name": "byme",
             "type": "info"
-          },
-          {
-            "data": [
-              {
-                "content": [
-                  {
-                    "applink": "",
-                    "subtitle": "100 Gram",
-                    "title": "Berat"
-                  },
-                  {
-                    "applink": "",
-                    "subtitle": "Baru",
-                    "title": "Kondisi"
-                  },
-                  {
-                    "applink": "",
-                    "subtitle": "1 Buah",
-                    "title": "Pemesanan Min"
-                  },
-                  {
-                    "applink": "tokopedia://category/1808",
-                    "subtitle": "Kaos Pria",
-                    "title": "Kategori"
-                  },
-                  {
-                    "applink": "https://www.tokopedia.com/merchandise/etalase/tokopedia-11",
-                    "subtitle": "TOKOPEDIA 11",
-                    "title": "Etalase"
-                  }
-                ],
-                "row": "top"
-              },
-              {
-                "content": [
-                  {
-                    "applink": "",
-                    "subtitle": "Hi Toppers,\n\nSelamat Ulang Tahun Tokopedia! Yuk bareng-bareng rayakan ulang tahun bareng Tokopedia! Kini hadir merchandise eksklusif khusus ulang tahun tokopedia yang ke- 11. Dengan desain yang unik, kaos ini bisa Toppers jadikan hadiah ulang tahun untuk yang tersayang loh! Tunggu apa lagi? Serbu sekarang!\n\n#Tokopedia11th\n\nMaterial : Cotton\nSize :\nS= 50 x 68 cm\nM= 52 x 70 cm \nL=54 × 72 cm \nXL= 56 x 74 cm \n",
-                    "title": "Deskripsi"
-                  }
-                ],
-                "row": "bottom"
-              }
-            ],
-            "name": "product_info",
-            "type": "product_info"
-          },
-          {
-            "data": [],
-            "name": "most_helpful_review",
-            "type": "most_helpful_review"
           },
           {
             "data": [],

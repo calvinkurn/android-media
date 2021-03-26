@@ -48,7 +48,7 @@ abstract class BaseProductDetailScreenShotTest {
         scrollToTop()
         screenShot(filePrefix(), "2")
 
-        Thread.sleep(6000)
+        Thread.sleep(7000)
         scrollToCenter()
         screenShot(filePrefix(), "3")
 
