@@ -242,7 +242,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun setProductNameInputAsFlow() {
         launchCatchError(block = {
             mProductNameInputLiveData.asFlow()
-                    .debounce(1000)
+                    .debounce(DEBOUNCE_DELAY_MILLIS)
                     .distinctUntilChanged()
                     .collect {
                         validateProductNameInput(it)
