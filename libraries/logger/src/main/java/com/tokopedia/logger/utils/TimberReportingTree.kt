@@ -94,7 +94,7 @@ class TimberReportingTree {
     }
 
     fun setPopulateTagMaps(tags: List<String>?) {
-        if (tags == null) {
+        if (tags.isNullOrEmpty()) {
             return
         }
         for (tag in tags) {
@@ -117,7 +117,7 @@ class TimberReportingTree {
     }
 
     fun setPopulateTagMapsNewRelic(tags: List<String>?) {
-        if (tags == null) {
+        if (tags.isNullOrEmpty()) {
             return
         }
         for (tag in tags) {

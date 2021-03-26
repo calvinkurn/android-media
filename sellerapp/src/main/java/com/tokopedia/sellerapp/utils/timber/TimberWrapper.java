@@ -30,8 +30,8 @@ public class TimberWrapper {
 
     private static final int PRIORITY_LENGTH = 2;
 
-    private static final String REMOTE_CONFIG_SCALRY_KEY_LOG = "android_customer_log_config_scalyr";
-    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customer_log_config_new_relic";
+    private static final String REMOTE_CONFIG_SCALRY_KEY_LOG = "android_sellerapp_log_config_scalyr";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
 
     public static void init(Application application) {
         LogManager.init(application);
