@@ -22,4 +22,5 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.testDependencies.junit
     implementation rootProject.ext.testDependencies.androidxTest
+    implementation rootProject.ext.miscDependencies.coroutineCore
 }

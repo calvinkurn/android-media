@@ -2,13 +2,10 @@ package com.tokopedia.cassavatest
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
-import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toCassavaQuery
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
 import rx.Observable
 import rx.schedulers.Schedulers
 
@@ -19,30 +16,27 @@ fun deleteCassavaDb(context: Context) =
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           context: Context,
                           queryFileName: String): List<Validator> {
-    val testCases = getTestCases(context, queryFileName)
+    val cassavaQuery = getQuery(context, queryFileName)
+    val validators = cassavaQuery.query.map { it.toDefaultValidator() }
     return ValidatorEngine(gtmLogDBSource)
-            .computeRx(testCases.first, testCases.second)
+            .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
 }
 
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
-    val queryPairs = getTestCases(InstrumentationRegistry.getInstrumentation().context, queryString)
+    val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryString)
+    val validators = cassavaQuery.query.map { it.toDefaultValidator() }
     return ValidatorEngine(gtmLogDBSource)
-            .computeRx(queryPairs.first, queryPairs.second)
+            .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
 }
 
-internal fun getTestCases(context: Context, queryFileName: String): Pair<List<Validator>, String> {
-    val cassavaQueryStr = Utils.getJsonDataFromAsset(context, queryFileName)
+internal fun getQuery(context: Context, queryFileName: String): CassavaQuery {
+    val queryJson = Utils.getJsonDataFromAsset(context, queryFileName)
             ?: throw AssertionError("Cassava query is not found: \"$queryFileName\"")
-    return queryFormat(cassavaQueryStr)
-}
-
-private fun queryFormat(queryString: String): Pair<List<Validator>, String> {
-    val q = queryString.toCassavaQuery()
-    return q.query.map { it.toDefaultValidator() } to q.mode.value
+    return queryJson.toCassavaQuery()
 }
 
 private fun <T> Observable<T>.test(onNext: (T) -> Unit) {

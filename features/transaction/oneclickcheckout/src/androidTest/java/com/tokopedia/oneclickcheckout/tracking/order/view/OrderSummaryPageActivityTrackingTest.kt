@@ -13,7 +13,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.*
@@ -40,7 +39,7 @@ class OrderSummaryPageActivityTrackingTest {
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
 
     @get:Rule
-    val cassavaTestRule = CassavaTestRule()
+    val cassavaTestRule = CassavaTestRule(ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var idlingResource: IdlingResource? = null
@@ -147,7 +146,7 @@ class OrderSummaryPageActivityTrackingTest {
             clickButtonContinueWithRedPromo()
         }
 
-        assertThat(cassavaTestRule.getAnalyticsByQuery(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        assertThat(cassavaTestRule.validate(), hasAllSuccess())
     }
 
     private fun performOrderSummaryPageBackAction() {
