@@ -256,7 +256,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
     }
 
     private boolean isOneOneRatio() {

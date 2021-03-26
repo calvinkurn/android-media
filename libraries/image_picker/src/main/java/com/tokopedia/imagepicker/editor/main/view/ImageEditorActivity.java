@@ -781,7 +781,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.title_loading));
+            progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         progressDialog.show();
         blockingView.setVisibility(View.VISIBLE);

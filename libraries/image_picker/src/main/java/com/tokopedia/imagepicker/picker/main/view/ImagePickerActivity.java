@@ -642,7 +642,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.title_loading));
+            progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         progressDialog.show();
     }
