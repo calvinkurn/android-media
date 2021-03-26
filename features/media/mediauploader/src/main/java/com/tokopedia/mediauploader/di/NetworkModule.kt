@@ -1,6 +1,10 @@
 package com.tokopedia.mediauploader.di
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor
 import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor.Companion.DEFAULT_TIMEOUT
 import dagger.Module
@@ -14,14 +18,21 @@ import java.util.concurrent.TimeUnit
 
     @Provides
     @MediaUploaderQualifier
-    fun provideOkHttpClientBuilder(): OkHttpClient.Builder {
+    fun provideOkHttpClientBuilder(
+            @ApplicationContext context: Context
+    ): OkHttpClient.Builder {
         return OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-                .addInterceptor(NetworkTimeOutInterceptor())
                 .retryOnConnectionFailure(false)
+                .addInterceptor(NetworkTimeOutInterceptor())
+                .also {
+                    if (GlobalConfig.isAllowDebuggingTools()) {
+                        it.addInterceptor(ChuckerInterceptor(context))
+                    }
+                }
     }
 
     @Provides

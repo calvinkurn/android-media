@@ -7,11 +7,13 @@ import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper.mapToSourcePoli
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.util.UploadValidatorUtil.getFileExtension
+import com.tokopedia.mediauploader.util.UploaderManager.isSourceMediaNotFound
+import com.tokopedia.mediauploader.util.UploaderManager.mediaErrorMessage
+import com.tokopedia.mediauploader.util.trackToTimber
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CancellationException
 import okhttp3.internal.http2.ConnectionShutdownException
 import okhttp3.internal.http2.StreamResetException
-import timber.log.Timber
 import java.io.File
 import java.io.InterruptedIOException
 import java.net.SocketException
@@ -36,37 +38,31 @@ class UploaderUseCase @Inject constructor(
         val fileToUpload = params.getObject(PARAM_FILE_PATH) as File
 
         return try {
-            preValidation(fileToUpload, sourceId) { sourcePolicy ->
-                postMedia(fileToUpload, sourcePolicy, sourceId)
+            uploadValidation(fileToUpload, sourceId) { sourcePolicy ->
+                postMediaToHost(fileToUpload, sourcePolicy, sourceId)
             }
         } catch (e: SocketTimeoutException) {
-            UploadResult.Error(TIMEOUT_ERROR)
+            setError(TIMEOUT_ERROR, sourceId, fileToUpload)
         } catch (e: StreamResetException) {
-            UploadResult.Error(TIMEOUT_ERROR)
+            setError(TIMEOUT_ERROR, sourceId, fileToUpload)
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
                     e !is SocketException &&
                     e !is InterruptedIOException &&
                     e !is ConnectionShutdownException &&
                     e !is CancellationException) {
-                Timber.w("P1#MEDIA_UPLOADER_ERROR#$sourceId;err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+                trackToTimber(sourceId, Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim())
             }
             // check whether media source is valid
             return if (isSourceMediaNotFound(e)) {
-                UploadResult.Error(SOURCE_NOT_FOUND)
+                setError(SOURCE_NOT_FOUND, sourceId, fileToUpload)
             } else {
-                UploadResult.Error(NETWORK_ERROR)
+                setError(NETWORK_ERROR, sourceId, fileToUpload)
             }
         }
     }
 
-    private suspend fun mediaPolicy(sourceId: String): SourcePolicy {
-        val dataPolicyParams = policyParam(sourceId)
-        val policyData = dataPolicyUseCase(dataPolicyParams)
-        return mapToSourcePolicy(policyData.dataPolicy)
-    }
-
-    private suspend fun postMedia(
+    private suspend fun postMediaToHost(
             fileToUpload: File,
             policy: SourcePolicy,
             sourceId: String
@@ -83,19 +79,17 @@ class UploaderUseCase @Inject constructor(
 
         return upload.data?.let {
             UploadResult.Success(it.uploadId)
-        }?: UploadResult.Error(
-                if (upload.header.messages.isNotEmpty()) {
-                    upload.header.messages.first()
-                } else {
-                    UNKNOWN_ERROR // error handling, when server returned empty error message
-                }
-        )
+        }?: setError(if (upload.header.messages.isNotEmpty()) {
+            upload.header.messages.first()
+        } else {
+            UNKNOWN_ERROR // error handling, when server returned empty error message
+        }, sourceId, fileToUpload)
     }
 
-    private suspend fun preValidation(
+    private suspend inline fun uploadValidation(
             fileToUpload: File,
             sourceId: String,
-            onUpload: suspend (sourcePolicy: SourcePolicy) -> UploadResult
+            onUpload: (sourcePolicy: SourcePolicy) -> UploadResult
     ): UploadResult {
         // sourceId empty validation
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
@@ -115,11 +109,6 @@ class UploaderUseCase @Inject constructor(
         }
     }
 
-    private fun isSourceMediaNotFound(exception: Exception): Boolean {
-        val exceptionMessage = exception.message.orEmpty()
-        return exceptionMessage.startsWith(ERROR_SOURCE_NOT_FOUND)
-    }
-
     /**
      * track progress of uploader
      */
@@ -129,6 +118,21 @@ class UploaderUseCase @Inject constructor(
                 progress(percentage)
             }
         }
+    }
+
+    private suspend fun mediaPolicy(sourceId: String): SourcePolicy {
+        val dataPolicyParams = policyParam(sourceId)
+        val policyData = dataPolicyUseCase(dataPolicyParams)
+        return mapToSourcePolicy(policyData.dataPolicy)
+    }
+
+    private fun setError(message: String, sourceId: String, fileToUpload: File): UploadResult {
+        // send purely the error state message with timber
+        trackToTimber(fileToUpload, sourceId, message)
+
+        // set the readable error message to the state
+        val commonMessage = mediaErrorMessage(message)
+        return UploadResult.Error(commonMessage)
     }
 
     fun createParams(sourceId: String, filePath: File): RequestParams {
