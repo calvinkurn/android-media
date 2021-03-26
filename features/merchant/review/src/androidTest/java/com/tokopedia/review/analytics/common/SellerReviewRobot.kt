@@ -1,4 +1,4 @@
-package com.tokopedia.review.analytics.seller
+package com.tokopedia.review.analytics.common
 
 import android.app.Activity
 import android.content.Context
@@ -11,7 +11,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 
-class SellerReviewDetailRobot {
+class SellerReviewRobot {
 
     fun <T : Activity> performClose(activityTestRule: ActivityTestRule<T>) {
         activityTestRule.finishActivity()
@@ -21,7 +21,7 @@ class SellerReviewDetailRobot {
         Espresso.onView(ViewMatchers.withId(idView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
     }
 
-    infix fun assertTest(action: SellerReviewDetailRobot.() -> Unit) = SellerReviewDetailRobot().apply(action)
+    infix fun assertTest(action: SellerReviewRobot.() -> Unit) = SellerReviewRobot().apply(action)
 
     fun validate(gtmLogDbSource: GtmLogDBSource,
                  targetContext: Context,
@@ -31,4 +31,4 @@ class SellerReviewDetailRobot {
     }
 }
 
-fun actionTest(action: SellerReviewDetailRobot.() -> Unit) = SellerReviewDetailRobot().apply(action)
+fun actionTest(action: SellerReviewRobot.() -> Unit) = SellerReviewRobot().apply(action)
