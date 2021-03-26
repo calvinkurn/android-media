@@ -92,8 +92,8 @@ interface DynamicProductDetailListener {
      * ProductRecommendationViewHolder
      */
     fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
     fun getRecommendationCarouselSavedState(): SparseIntArray
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
