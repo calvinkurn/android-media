@@ -618,14 +618,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             UploadImageChatService.removeDummyOnList(element)
             when (it.itemId) {
                 InboxMessageConstant.RESEND -> {
-                    presenter.startUploadImages(element)
                     removeDummy(element)
+                    resendImage(element)
                 }
                 InboxMessageConstant.DELETE -> {
                     removeDummy(element)
                 }
             }
         }.createDialog().show()
+    }
+
+    private fun resendImage(element: ImageUploadViewModel) {
+        //change the retry value
+        element.isRetry = false
+        presenter.startUploadImages(element)
     }
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
