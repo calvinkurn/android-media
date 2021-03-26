@@ -382,7 +382,11 @@ class PlayAnalytic(
                     hashMapOf(
                             "ecommerce" to hashMapOf(
                                     "currencyCode" to "IDR",
-                                    "impressions" to convertProductsToListOfObject(featuredProducts, "featured product")
+                                    "impressions" to convertProductsToListOfObject(
+                                            featuredProducts,
+                                            sourceFrom = "featured product",
+                                            startPosition = 1
+                                    )
                             )
                     ),
                     hashMapOf(
@@ -471,10 +475,15 @@ class PlayAnalytic(
     /**
      * Private methods
      */
-    private fun convertProductsToListOfObject(listOfProducts: List<PlayProductUiModel.Product>, sourceFrom: String): MutableList<HashMap<String, Any>> {
+    private fun convertProductsToListOfObject(
+            listOfProducts: List<PlayProductUiModel.Product>,
+            sourceFrom: String,
+            startPosition: Int = 0
+    ): MutableList<HashMap<String, Any>> {
         val products = mutableListOf<HashMap<String, Any>>()
         listOfProducts.forEachIndexed { index, product ->
-            products.add(convertProductToHashMapWithList(product, index, sourceFrom))
+            val position = startPosition + index
+            products.add(convertProductToHashMapWithList(product, position, sourceFrom))
         }
         return products
     }
