@@ -61,9 +61,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_gravity="center_vertical"
-                android:layout_margin="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/layout_lvl2"
                 app:descriptionText="@string/text_change_name_warning_message"
                 app:closeButtonVisibility="gone"
                 app:tickerType="warning"
@@ -83,7 +84,7 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl5"/>
+                    android:layout_marginTop="@dimen/spacing_lvl4"/>
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/bod"
