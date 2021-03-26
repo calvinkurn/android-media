@@ -123,7 +123,6 @@ import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper;
 import com.tokopedia.utils.time.TimeHelper;
 
 import java.util.ArrayList;
