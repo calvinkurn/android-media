@@ -2,9 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="90"
-        android:centerColor="@color/Unify_N700_68"
+        android:centerColor="@color/deal_dms_bg_scrim_voucher_center_color"
         android:centerY="0.38"
-        android:endColor="@color/Unify_N700_44"
-        android:startColor="@color/Unify_N700"
+        android:endColor="@color/deal_dms_bg_scrim_voucher_end_color"
+        android:startColor="@color/deal_dms_bg_scrim_voucher_start_color"
         android:type="linear" />
 </shape>
