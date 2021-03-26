@@ -786,6 +786,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             clearAllData()
             fetchSortAndFilterData()
         }
+
+        override fun onUnselectChips() {
+            flightSearchViewModel.filterModel.airlineList = mutableListOf()
+            fetchSortAndFilterData()
+        }
     }
 
     interface OnFlightSearchFragmentListener {

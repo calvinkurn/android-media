@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.flight.R
-import com.tokopedia.flight.promo_chips.presentation.widget.adapter.FlightPromoChipsAdapter
+import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapter
 import com.tokopedia.flight.promo_chips.presentation.widget.adapter.FlightPromoChipsAdapterTypeFactory
-import com.tokopedia.flight.promo_chips.presentation.widget.adapter.viewholder.FlightPromoChipsViewHolder
+import com.tokopedia.flight.promo_chips.presentation.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.unifycomponents.BaseCustomView
 
@@ -42,6 +42,10 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
             override fun onItemClicked(airlinePrice: AirlinePrice, adapterPosition: Int) {
                 listener.onClickPromoChips(airlinePrice, adapterPosition)
             }
+
+            override fun onItemUnselected() {
+                listener.onUnselectChips()
+            }
         }))
 
         recyclerView.adapter = adapter
@@ -52,5 +56,6 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
 
     interface PromoChipsListener{
         fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int)
+        fun onUnselectChips()
     }
 }

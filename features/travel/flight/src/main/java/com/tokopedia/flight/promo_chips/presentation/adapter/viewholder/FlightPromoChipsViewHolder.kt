@@ -1,9 +1,9 @@
-package com.tokopedia.flight.promo_chips.presentation.widget.adapter.viewholder
+package com.tokopedia.flight.promo_chips.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
-import com.tokopedia.flight.promo_chips.presentation.widget.adapter.FlightPromoChipsAdapter
+import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapter
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.item_flight_promo_chips.view.*
@@ -57,6 +57,10 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
                     if (adapter.selectedPosition != adapterPosition) {
                         onFlightPromoChipsListener.onItemClicked(element, adapterPosition)
                         adapter.setSelectedProduct(adapterPosition)
+                    }else{
+                        adapter.selectedPosition = FlightPromoChipsAdapter.SELECTED_POSITION_INIT
+                        changePromoChipsState(false)
+                        onFlightPromoChipsListener.onItemUnselected()
                     }
                 }
             }
@@ -65,5 +69,6 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
 
     interface OnFlightPromoChipsListener{
         fun onItemClicked(airlinePrice: AirlinePrice, adapterPosition: Int)
+        fun onItemUnselected()
     }
 }

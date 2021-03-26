@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.flight.R
-import com.tokopedia.flight.promo_chips.presentation.widget.adapter.viewholder.FlightPromoChipsViewHolder
+import com.tokopedia.flight.promo_chips.presentation.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 
 /**
