@@ -98,6 +98,7 @@ object CartListPresenterAddToCartTest : Spek({
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
                 every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
             }
 
             Given("mock userId") {
@@ -163,6 +164,7 @@ object CartListPresenterAddToCartTest : Spek({
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
                 every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
             }
 
             Given("mock userId") {
@@ -250,6 +252,7 @@ object CartListPresenterAddToCartTest : Spek({
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
                 every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
             }
 
             Given("mock userId") {

@@ -16,7 +16,6 @@ ext {
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
-            hotlist                         : ":features:discovery2:hotlist",
             agerestriction                  : ":features:category:age_restriction",
             findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
@@ -117,6 +116,9 @@ ext {
             manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
+            localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
+            
+            mediauploader                   : ":features:media:mediauploader",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
