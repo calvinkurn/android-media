@@ -10,7 +10,7 @@ import java.util.*
  * Tree that used for Timber in release Version
  * If there is log, it might be sent to logging server
  */
-class TimberReportingTree {
+class LoggerReportingTree {
 
     var userId: String = ""
     var partDeviceId: String = ""
@@ -157,11 +157,12 @@ class TimberReportingTree {
         const val PRIORITY_ONLINE = 2
         const val PRIORITY_OFFLINE = 1
 
-        @Volatile private var INSTANCE: TimberReportingTree? = null
+        @Volatile
+        private var INSTANCE: LoggerReportingTree? = null
 
-        fun getInstance(): TimberReportingTree {
+        fun getInstance(): LoggerReportingTree {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: TimberReportingTree().also { INSTANCE = it }
+                INSTANCE ?: LoggerReportingTree().also { INSTANCE = it }
             }
         }
     }

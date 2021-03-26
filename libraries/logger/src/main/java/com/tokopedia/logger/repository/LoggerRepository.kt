@@ -12,11 +12,10 @@ import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.model.scalyr.ScalyrEvent
 import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.TimberReportingTree
+import com.tokopedia.logger.utils.LoggerReportingTree
 import kotlinx.coroutines.*
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.log
 
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
@@ -51,8 +50,8 @@ class LoggerRepository(private val logDao: LoggerDao,
     }
 
     override suspend fun sendLogToServer(queryLimits: List<Int>) {
-        sendLogToServer(Constants.SEVERITY_HIGH, logDao.getServerChannel(TimberReportingTree.P1, queryLimits[0]))
-        sendLogToServer(Constants.SEVERITY_MEDIUM, logDao.getServerChannel(TimberReportingTree.P2, queryLimits[1]))
+        sendLogToServer(Constants.SEVERITY_HIGH, logDao.getServerChannel(LoggerReportingTree.P1, queryLimits[0]))
+        sendLogToServer(Constants.SEVERITY_MEDIUM, logDao.getServerChannel(LoggerReportingTree.P2, queryLimits[1]))
     }
 
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
@@ -94,7 +93,7 @@ class LoggerRepository(private val logDao: LoggerDao,
 
         val messageList = mutableListOf<String>()
         for (log in logs) {
-            val  message = encryptor.decrypt(log.message, secretKey)
+            val message = encryptor.decrypt(log.message, secretKey)
             messageList.add(addEventNewRelic(message))
         }
 

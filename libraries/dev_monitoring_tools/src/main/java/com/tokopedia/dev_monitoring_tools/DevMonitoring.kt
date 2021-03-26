@@ -29,7 +29,8 @@ class DevMonitoring(private var context: Context) {
     fun initCrashMonitoring() {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            ServerLogger.log(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize), "error" to Log.getStackTraceString(throwable) ))
+            ServerLogger.log(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize),
+                    "error" to Log.getStackTraceString(throwable).replace("\n", "").replace("\t", " ")))
             exceptionHandler?.uncaughtException(thread, throwable)
         }
     }
