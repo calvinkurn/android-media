@@ -30,7 +30,7 @@ class DevMonitoring(private var context: Context) {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             ServerLogger.log(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize), "error" to Log.getStackTraceString(throwable) ))
-            exceptionHandler.uncaughtException(thread, throwable)
+            exceptionHandler?.uncaughtException(thread, throwable)
         }
     }
 
