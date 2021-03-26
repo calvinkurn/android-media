@@ -8,6 +8,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.verify
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 
@@ -54,16 +55,16 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         coEvery { productrevGetReminderListUseCase.executeOnBackground() } returns responseWrapper
         viewModel.fetchProductList()
         coVerify { productrevGetReminderListUseCase.executeOnBackground() }
-        viewModel.getProducts().verifyValueEquals(Success(responseWrapper.productrevGetReminderList))
+        viewModel.getProducts().verifyValueEquals(responseWrapper.productrevGetReminderList)
     }
 
     @Test
-    fun `when fetch product list fail should update products value with error`(){
-        val throwable = Throwable()
-        coEvery { productrevGetReminderListUseCase.executeOnBackground() } throws throwable
+    fun `when fetch product list fail should update error value`() {
+        val errorMessage = anyString()
+        coEvery { productrevGetReminderListUseCase.executeOnBackground() } throws Throwable(errorMessage)
         viewModel.fetchProductList()
         coVerify { productrevGetReminderListUseCase.executeOnBackground() }
-        viewModel.getProducts().verifyValueEquals(Fail(throwable))
+        viewModel.getError().verifyValueEquals(errorMessage)
     }
 
     @Test
