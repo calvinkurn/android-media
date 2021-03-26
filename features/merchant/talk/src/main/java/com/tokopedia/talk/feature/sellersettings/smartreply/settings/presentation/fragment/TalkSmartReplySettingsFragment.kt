@@ -73,7 +73,6 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewReferences(view)
-        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let { activity?.window?.decorView?.setBackgroundColor(it) }
         showLoading()
         observeSmartReplyData()
         setToolbarTitle()
