@@ -1061,7 +1061,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     private void handleCallBackOperatorChooser(Operator operator) {
-        digitalProductView.renderUpdateOperatorSelected(operator);
+        if (digitalProductView != null) digitalProductView.renderUpdateOperatorSelected(operator);
     }
 
     @Override
