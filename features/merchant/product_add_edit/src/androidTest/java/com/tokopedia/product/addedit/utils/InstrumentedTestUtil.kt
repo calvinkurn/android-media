@@ -1,30 +1,13 @@
 package com.tokopedia.product.addedit.utils
 
-import android.content.Intent
-import android.net.Uri
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.Matchers
 
 object InstrumentedTestUtil {
-
-    fun createIntentEditProduct(productId: String): Intent {
-        val applink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-                .buildUpon()
-                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
-                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
-                .build()
-
-        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, AddEditProductPreviewActivity::class.java).also {
-            it.data = applink
-        }
-    }
 
     fun performDialogSecondaryClick() {
         Espresso.onView(CommonMatcher
