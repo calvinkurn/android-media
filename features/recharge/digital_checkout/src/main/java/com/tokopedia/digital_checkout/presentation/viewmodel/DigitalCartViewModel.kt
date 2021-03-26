@@ -12,6 +12,8 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_PROMO_CODE_POSITION
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_TOTAL_PAYMENT_POSITION
 import com.tokopedia.digital_checkout.data.PaymentSummary
 import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
@@ -174,7 +176,7 @@ class DigitalCartViewModel @Inject constructor(
             val pricePlain = mappedCartData.attributes.pricePlain
             _totalPrice.postValue(pricePlain)
             paymentSummary.summaries.clear()
-            paymentSummary.addToSummary(0, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
+            paymentSummary.addToSummary(SUMMARY_TOTAL_PAYMENT_POSITION, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
             _payment.postValue(paymentSummary)
 
             requestCheckoutParam.transactionAmount = pricePlain
@@ -232,7 +234,7 @@ class DigitalCartViewModel @Inject constructor(
         resetCheckoutSummaryPromoAndTotalPrice()
         val promoDataValue = promoData.value?.amount ?: 0
         if (promoDataValue > 0) {
-            paymentSummary.addToSummary(1, Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
+            paymentSummary.addToSummary(SUMMARY_PROMO_CODE_POSITION, Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
             _payment.postValue(paymentSummary)
             _totalPrice.forceRefresh()
         } else {
