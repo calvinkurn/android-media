@@ -68,7 +68,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         ReviewSellerPerformanceMonitoringContract {
 
     companion object {
-        private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
+        const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
         private const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
