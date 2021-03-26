@@ -76,10 +76,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
@@ -116,7 +112,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
-    private var searchProperties: List<Property> = listOf()
+    private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
@@ -174,6 +170,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty()) {
                         changeMarkerState(cardListPosition)
+                    }else{
+                        hideLoader()
+                        hideLoadingCardListMap()
+                        hideLoading()
                     }
                 }
                 is Fail -> {
@@ -515,11 +515,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    GlobalScope.launch(Dispatchers.Main) {
                         cardListPosition = getCurrentItemCardList()
-                        delay(DELAY_MARKER_STATE)
                         changeMarkerState(cardListPosition)
-                    }
                 }
             }
         })
@@ -683,25 +680,21 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun changeMarkerState(position: Int) {
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(DELAY_MARKER_STATE)
             resetMarkerState()
             try {
                 if (!allMarker.isNullOrEmpty()) {
-                    if (cardListPosition == position && !searchProperties.isNullOrEmpty()) {
+                    if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
                         allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
-                        val latLng = LatLng(searchProperties[position].location.latitude.toDouble(), searchProperties[position].location.longitude.toDouble())
                         if (cardListPosition == SELECTED_POSITION_INIT){
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
                         }else{
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MAPS_STREET_LEVEL_ZOOM))
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
                         }
                     }
                 }
             } catch (t: Throwable) {
                 t.printStackTrace()
             }
-        }
     }
 
     private fun resetMarkerState() {
@@ -790,16 +783,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hideLoader()
         showQuickFilterShimmering(false)
 
-        searchProperties = data.properties
+        val searchProperties = data.properties
 
         if (searchProperties.isNotEmpty()) {
             if (adapterCardList.itemCount <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
                 renderCardListMap(searchProperties)
                 searchProperties.forEach {
                     addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
+                    searchPropertiesMap.add(LatLng(it.location.latitude.toDouble(), it.location.longitude.toDouble()))
                 }
             }else{
                 hideLoadingCardListMap()
+                searchPropertiesMap.clear()
             }
 
             renderList(searchProperties.map {
@@ -1225,11 +1220,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
-        const val DELAY_MARKER_STATE: Long = 300L
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 
-        private const val MAPS_STREET_LEVEL_ZOOM : Float = 20f
+        private const val MAPS_STREET_LEVEL_ZOOM : Float = 15f
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
