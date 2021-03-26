@@ -6,6 +6,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCardDataItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXHome
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
@@ -26,9 +27,7 @@ object DynamicFeedNewMapper {
 
     fun map(feedXHome: FeedXHome): DynamicFeedDomainModel {
         val posts: MutableList<Visitable<*>> = ArrayList()
-        var lastCursor = ""
         var firstPageCursor = ""
-        var hasNext = false
 
         feedXHome.items.forEach {
             when (it.typename) {
@@ -46,19 +45,24 @@ object DynamicFeedNewMapper {
                     mapCardHighlight(posts, it)
                 }
                 TYPE_FEED_X_CARD_POST -> {
-                    //to add mapping for card post
+                    mapCardPost(posts, it)
                 }
                 TYPE_FEED_X_CARD_TOP_ADS -> {
                 }
             }
         }
-        lastCursor = feedXHome.pagination.cursor
+        val lastCursor: String = feedXHome.pagination.cursor
         if (firstPageCursor.isEmpty()) {
             firstPageCursor = feedXHome.pagination.cursor
         }
-        hasNext = feedXHome.pagination.hasNext && lastCursor.isNotEmpty()
+        val hasNext: Boolean = feedXHome.pagination.hasNext && lastCursor.isNotEmpty()
 
         return DynamicFeedDomainModel(posts, lastCursor, firstPageCursor, hasNext)
+    }
+
+    private fun mapCardPost(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
+        val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData())
+        posts.add(dynamicPostUiModel)
     }
 
     private fun mapCardHeadline(posts: MutableList<Visitable<*>>) {

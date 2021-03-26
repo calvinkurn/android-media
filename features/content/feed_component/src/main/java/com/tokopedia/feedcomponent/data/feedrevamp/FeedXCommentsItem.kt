@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class FeedXCommentsItem(
         @SerializedName("id")
-        var id: String,
+        var id: String = "",
         @SerializedName("text")
-        var text: String,
+        var text: String = "",
         @SerializedName("author")
-        var author: FeedXAuthor,
+        var author: FeedXAuthor = FeedXAuthor(),
         @SerializedName("mods")
-        var mods: List<String>,
+        var mods: List<String> = emptyList(),
 )

@@ -21,6 +21,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.Recomm
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
@@ -119,6 +120,10 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
     }
 
     override fun type(shimmerUiModel: ShimmerUiModel): Int {
+        return 0
+    }
+
+    override fun type(dynamicPostUiModel: DynamicPostUiModel): Int {
         return 0
     }
 

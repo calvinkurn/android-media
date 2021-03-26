@@ -5,19 +5,19 @@ import com.google.gson.annotations.SerializedName
 
 data class FeedXAuthor(
         @SerializedName("appLink")
-        var appLink: String,
+        var appLink: String = "",
         @SerializedName("badgeURL")
-        var badgeURL: String,
+        var badgeURL: String = "",
         @SerializedName("description")
-        var description: String,
+        var description: String = "",
         @SerializedName("id")
-        var id: String,
+        var id: String = "",
         @SerializedName("logoURL")
-        var logoURL: String,
+        var logoURL: String = "",
         @SerializedName("name")
-        var name: String,
+        var name: String = "",
         @SerializedName("type")
-        var type: Int,
+        var type: Int = 0,
         @SerializedName("webLink")
-        var webLink: String
+        var webLink: String = ""
 )

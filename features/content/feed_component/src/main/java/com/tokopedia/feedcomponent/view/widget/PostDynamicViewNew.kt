@@ -6,7 +6,11 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXAuthor
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -33,7 +37,7 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
     private var addCommentHint: Typography
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_post_dynamic_new, this, true)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_post_dynamic_new_content, this, true)
         view.run {
             shopImage = findViewById(R.id.shop_image)
             shopBadge = findViewById(R.id.shop_badge)
@@ -55,4 +59,30 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             addCommentHint = findViewById(R.id.comment_hint)
         }
     }
+
+    fun bindHeader(author: FeedXAuthor) {
+        shopImage.setImageUrl(author.logoURL)
+        shopBadge.setImageUrl(author.badgeURL)
+        shopName.text = author.name
+        //handle 3 dots click listener
+    }
+
+    fun bindLike(like: FeedXLike) {
+        if (like.isLiked) {
+            likeButton.setImage(IconUnify.THUMB_FILLED)
+        }else{
+            likeButton.setImage(IconUnify.THUMB)
+        }
+        likedText.text = like.label
+        likedText.showWithCondition(like.label.isNotEmpty())
+        //handle like click listener
+    }
+
+    fun bindComment(comments: FeedXComments) {
+        seeAllCommentText.text = comments.label
+        //handle click event for see all comment
+
+    }
+
+
 }

@@ -17,11 +17,13 @@ data class FeedXProduct(
         @SerializedName("star")
         var star: Float,
         @SerializedName("price")
-        var price: Float,
+        var price: Double,
+        //linter is asking to change it to double, please confirm with response
         @SerializedName("priceFmt")
         var priceFmt: String,
         @SerializedName("priceStruck")
-        var priceStruck: Float,
+        var priceStruck: Double,
+        //linter is asking to change it to double, please confirm with response
         @SerializedName("priceStruckFmt")
         var priceStruckFmt: String,
         @SerializedName("discount")

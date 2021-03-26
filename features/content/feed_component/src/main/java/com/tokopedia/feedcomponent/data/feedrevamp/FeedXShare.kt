@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class FeedXShare(
         @SerializedName("label")
-        var label: String,
+        var label: String = "",
         @SerializedName("operation")
-        var operation: String,
+        var operation: String = "",
         @SerializedName("mods")
-        var mods: List<String>,
+        var mods: List<String> = emptyList(),
 )

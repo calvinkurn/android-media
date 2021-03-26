@@ -5,63 +5,72 @@ import com.google.gson.annotations.SerializedName
 
 data class FeedXCard(
         @SerializedName("__typename")
-        var typename: String,
+        var typename: String = "",
 
         //FeedXCardBanners Data Type
         @SerializedName("id")
-        var id: String,
+        var id: String = "",
         @SerializedName("publishedAt")
-        var publishedAt: String,
+        var publishedAt: String = "",
         @SerializedName("mods")
-        var mods: List<String>,
+        var mods: List<String> = emptyList(),
 
         //FeedXCardTopAds Data Type
         @SerializedName("promos")
-        var promos: List<String>,
+        var promos: List<String> = emptyList(),
         @SerializedName("author")
-        var author: FeedXAuthor,
+        var author: FeedXAuthor = FeedXAuthor(),
         @SerializedName("items")
-        var items: List<FeedXCardDataItem>,
+        var items: List<FeedXCardDataItem> = emptyList(),
 
         //FeedXCardPlaceHolder Data Type
         @SerializedName("type")
-        var type: String,
+        var type: String = "",
 
         //FeedXCardProductsHighlight Data Type
         @SerializedName("products")
-        var products: List<FeedXProduct>,
+        var products: List<FeedXProduct> = emptyList(),
         @SerializedName("subTitle")
-        var subTitle: String,
+        var subTitle: String = "",
         @SerializedName("text")
-        var text: String,
+        var text: String = "",
         @SerializedName("title")
-        var title: String,
+        var title: String = "",
         @SerializedName("like")
-        var like: FeedXLike,
+        var like: FeedXLike = FeedXLike(),
         @SerializedName("comments")
-        var comments: FeedXComments,
+        var comments: FeedXComments = FeedXComments(),
         @SerializedName("share")
-        var share: FeedXShare,
+        var share: FeedXShare = FeedXShare(),
         @SerializedName("followers")
-        var followers: FeedXFollowers,
+        var followers: FeedXFollowers = FeedXFollowers(),
 
         //FeedXCardPost Data Type
         @SerializedName("appLink")
-        var appLink: String,
+        var appLink: String = "",
         @SerializedName("webLink")
-        var webLink: String,
+        var webLink: String = "",
         @SerializedName("actionButtonLabel")
-        var actionButtonLabel: String,
+        var actionButtonLabel: String = "",
         @SerializedName("actionButtonOperationWeb")
-        var actionButtonOperationWeb: String,
+        var actionButtonOperationWeb: String = "",
         @SerializedName("actionButtonOperationApp")
-        var actionButtonOperationApp: String,
+        var actionButtonOperationApp: String = "",
         @SerializedName("media")
-        var media: List<FeedXMedia>,
+        var media: List<FeedXMedia> = emptyList(),
         @SerializedName("tags")
-        var tags: List<FeedXProduct>,
+        var tags: List<FeedXProduct> = emptyList(),
         @SerializedName("hashtagAppLinkFmt")
-        var hashtagAppLinkFmt: String,
+        var hashtagAppLinkFmt: String = "",
         @SerializedName("hashtagWebLinkFmt")
-        var hashtagWebLinkFmt: String,
-)
+        var hashtagWebLinkFmt: String = "",
+) {
+    fun copyPostData(): FeedXCard {
+        return FeedXCard(id = id, author = author, title = title, subTitle = subTitle, text = text,
+                appLink = appLink, webLink = webLink, actionButtonLabel = actionButtonLabel,
+                actionButtonOperationApp = actionButtonOperationApp, actionButtonOperationWeb = actionButtonOperationWeb,
+                media = media, tags = tags, hashtagAppLinkFmt = hashtagAppLinkFmt, hashtagWebLinkFmt = hashtagWebLinkFmt,
+                like = like, comments = comments, share = share, followers = followers, publishedAt = publishedAt,
+                mods = mods)
+    }
+}

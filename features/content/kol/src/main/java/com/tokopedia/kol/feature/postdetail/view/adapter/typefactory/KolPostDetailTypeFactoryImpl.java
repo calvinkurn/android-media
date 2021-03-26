@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel;
@@ -209,6 +210,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
 
     @Override
     public int type(@NotNull ShimmerUiModel shimmerUiModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull DynamicPostUiModel dynamicPostUiModel) {
         return 0;
     }
 

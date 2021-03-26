@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -21,6 +22,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.shimmer.ShimmerViewHo
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
@@ -150,6 +152,10 @@ class FeedPlusTypeFactoryImpl(
         return ShimmerViewHolder.LAYOUT
     }
 
+    override fun type(dynamicPostUiModel: DynamicPostUiModel): Int {
+        return DynamicPostNewViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
 
         val viewHolder: AbstractViewHolder<*>
@@ -194,6 +200,8 @@ class FeedPlusTypeFactoryImpl(
             )
         } else if (type == ShimmerViewHolder.LAYOUT){
             viewHolder = ShimmerViewHolder(view)
+        } else if (type == DynamicPostNewViewHolder.LAYOUT){
+            viewHolder = DynamicPostNewViewHolder(view)
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder
