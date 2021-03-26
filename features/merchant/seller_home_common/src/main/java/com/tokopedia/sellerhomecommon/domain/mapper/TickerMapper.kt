@@ -22,7 +22,7 @@ class TickerMapper @Inject constructor() : BaseResponseMapper<GetTickerResponse,
                     redirectUrl = SellerHomeCommonUtils.extractUrls(it.message.orEmpty())
                             .getOrNull(0)
                             .orEmpty(),
-                    isFromCache = fromCache
+                    isFromCache = isFromCache
             )
         }
     }
