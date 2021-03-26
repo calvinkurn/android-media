@@ -2,7 +2,6 @@ package com.tokopedia.seller.menu.common.utils
 
 /**
  * Figma: https://www.figma.com/file/5uH3Pi5GbB0jmx7uo3IZJh/UI---Seller-App-Ramadhan?node-id=90%3A4
- * Note: Illustration links for OS are not quite right with their file naming, but essentially the illustrations are correct
  */
 enum class FastingPeriod(val regularMerchantIllustrationUrl: String,
                          val powerMerchantIllustrationUrl: String,

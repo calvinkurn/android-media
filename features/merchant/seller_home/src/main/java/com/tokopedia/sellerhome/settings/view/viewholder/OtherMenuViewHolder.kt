@@ -290,7 +290,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType, thematicIllustrationUrl: String = "") {
-        itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
+        itemView.shopStatusHeader?.setImageResource(shopType.shopTypeHeaderRes)
 
         itemView.findViewById<AppCompatImageView>(R.id.iv_other_menu_thematic)?.let { thematicIv ->
             ImageHandler.loadImageWithoutPlaceholderAndError(thematicIv, thematicIllustrationUrl)

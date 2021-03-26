@@ -52,5 +52,4 @@ class SellerHomeModule {
         val analytics = TrackApp.getInstance().gtm
         return SettingFreeShippingTracker(analytics, userSession)
     }
-
 }
