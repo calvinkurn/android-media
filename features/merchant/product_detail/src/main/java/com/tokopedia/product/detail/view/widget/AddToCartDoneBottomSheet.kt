@@ -45,6 +45,8 @@ import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
+import com.tokopedia.product.detail.view.util.showToasterError
+import com.tokopedia.product.detail.view.util.showToasterSuccess
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -93,7 +95,7 @@ open class AddToCartDoneBottomSheet :
     private lateinit var shadow: View
     private lateinit var stateAtcView: View
     private lateinit var addToCartButton: UnifyButton
-    private lateinit var recomWishlistItem: RecommendationItem
+    private var recomWishlistItem: RecommendationItem? = null
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
 
     private var inflatedView: View? = null
@@ -481,36 +483,31 @@ open class AddToCartDoneBottomSheet :
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
         if (productCardOptionsModel == null) return
-        val toasterOffset = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)
-        Toaster.toasterCustomBottomHeight = toasterOffset
+
         val wishlistResult = productCardOptionsModel.wishlistResult
         if (wishlistResult.isUserLoggedIn) {
             if (wishlistResult.isSuccess) {
-                recomWishlistItem.isWishlist = !recomWishlistItem.isWishlist
-                DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(recomWishlistItem, addToCartDoneViewModel.isLoggedIn(), wishlistResult.isAddWishlist)
-                dialog?.run {
-                    Toaster.build(findViewById(android.R.id.content),
-                            if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
-                            Snackbar.LENGTH_LONG,
-                            Toaster.TYPE_NORMAL,
-                            getString(R.string.recom_go_to_wishlist)
-                    ) {
-                        RouteManager.route(context, ApplinkConst.WISHLIST)
-                    }.show()
-                }
+                recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
+                recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, addToCartDoneViewModel.isLoggedIn(), wishlistResult.isAddWishlist) }
+                view?.showToasterSuccess(
+                        message = if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                        ctaText = getString(R.string.recom_go_to_wishlist),
+                        ctaListener = {
+                            goToWishlist()
+                        }
+                )
             } else {
-                dialog?.run {
-                    Toaster.build(
-                            findViewById(android.R.id.content),
-                            if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist),
-                            Snackbar.LENGTH_LONG,
-                            Toaster.TYPE_ERROR
-                    ).show()
-                }
+                view?.showToasterError(
+                        if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
+                )
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
+    }
+
+    private fun goToWishlist(){
+        RouteManager.route(context, ApplinkConst.WISHLIST)
     }
 
     private fun getRemoteConfig(): RemoteConfig? {
