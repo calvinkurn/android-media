@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.fakeresponse">
 
-    <application>
+    <application tools:node="replace">
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.AddGqlActivity"
             android:theme="@style/FakeNoActionBar"
