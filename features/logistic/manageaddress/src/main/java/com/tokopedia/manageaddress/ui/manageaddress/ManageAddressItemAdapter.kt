@@ -107,7 +107,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 } else {
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
-
+                cardAddress.setPadding(0, 0, 16.toDp(), 0)
                 setListener(itemView, data)
             }
         }
