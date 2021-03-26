@@ -586,6 +586,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Order History
             add(DFP({ it.startsWith(TRACK)}, DF_BASE_SELLER_APP, R.string.title_order_management_history))
+
+            // Review Reminder
+            add(DFP({ it.startsWith(REVIEW_REMINDER) }, DF_BASE_SELLER_APP, R.string.title_review_reminder))
         }
     }
 
