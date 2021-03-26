@@ -37,6 +37,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
@@ -66,8 +67,10 @@ import javax.inject.Inject
 class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
 
     companion object {
-        private const val DEFAULT_START_DATE = 1L
-        private const val DEFAULT_END_DATE = 0L
+        private const val DEFAULT_START_DATE_NON_REGULAR_MERCHANT = 1L
+        private const val DEFAULT_START_DATE_REGULAR_MERCHANT = 7L
+        private const val DEFAULT_END_DATE_NON_REGULAR_MERCHANT = 0L
+        private const val DEFAULT_END_DATE_REGULAR_MERCHANT = 1L
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
@@ -96,12 +99,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
-        val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE))
+        val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession)) {
+            Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_REGULAR_MERCHANT))
+        } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate
                 ?: defaultStartDate
     }
     private val defaultEndDate by lazy {
-        val defaultEndDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE))
+        val defaultEndDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession)) {
+            Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_REGULAR_MERCHANT))
+        } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate
                 ?: defaultEndDate
     }
