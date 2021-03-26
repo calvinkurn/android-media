@@ -3,26 +3,36 @@ package com.tokopedia.power_merchant.subscribe.view_old.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.constant.GMParamTracker
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
+import com.tokopedia.gm.common.data.source.local.model.PMSettingAndShopInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.TickerUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
+import com.tokopedia.power_merchant.subscribe.view.bottomsheet.ContentSliderBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMNotificationBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.model.ContentSliderUiModel
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view_old.bottomsheets.PowerMerchantCancelBottomSheet
@@ -34,32 +44,48 @@ import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState.HideLoadi
 import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState.ShowLoading
 import com.tokopedia.power_merchant.subscribe.view_old.viewmodel.PmSubscribeViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
+import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.view.*
 import javax.inject.Inject
 
 class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
+
     @Inject
     lateinit var viewModel: PmSubscribeViewModel
+
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val sharedViewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory).get(SubscriptionActivityViewModel::class.java)
+    }
+
+    private var pmSettingAndShopInfo: PMSettingAndShopInfoUiModel? = null
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
     override fun initInjector() {
-            activity?.let {
-                val appComponent = (it.application as BaseMainApplication).baseAppComponent
-                DaggerPowerMerchantSubscribeComponent.builder()
-                        .baseAppComponent(appComponent)
-                        .build().inject(this)
-            }
+        activity?.let {
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+            DaggerPowerMerchantSubscribeComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .build().inject(this)
+        }
     }
 
     companion object {
@@ -90,12 +116,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         setupFreeShippingError()
 
         viewModel.getPmStatusInfo()
+        observeTicker()
     }
 
     private fun setupFreeShippingError() {
         freeShippingError.apply {
             refreshBtn?.setOnClickListener {
-                if(!progressState) {
+                if (!progressState) {
                     progressState = true
                     viewModel.getFreeShippingStatus()
                 }
@@ -143,9 +170,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             viewModel.onActivatePmSuccess()
         } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.onActivatePmSuccess()
-        } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             onSuccessCancelMembership()
-        } else if (requestCode == FREE_SHIPPING_INTENT_CODE){
+        } else if (requestCode == FREE_SHIPPING_INTENT_CODE) {
             refreshData()
         }
     }
@@ -162,7 +189,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun observeActivatePowerMerchant() {
         observe(viewModel.onActivatePmSuccess) {
-            if(it is Success) {
+            if (it is Success) {
                 showBottomSheetSuccess(it.data)
                 refreshData()
             }
@@ -171,11 +198,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun observeGetFreeShippingDetail() {
         observe(viewModel.getPmFreeShippingStatusResult) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val freeShipping = it.data
 
-                    if(freeShipping.isTransitionPeriod && !freeShipping.isActive) {
+                    if (freeShipping.isTransitionPeriod && !freeShipping.isActive) {
                         hideFreeShippingWidget()
                     } else {
                         trackFreeShippingImpression(freeShipping)
@@ -214,21 +241,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun trackFreeShippingImpression(freeShipping: PowerMerchantFreeShippingStatus) {
         PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(
-            userSessionInterface,
-            freeShipping
+                userSessionInterface,
+                freeShipping
         )
     }
 
     private fun trackFreeShippingClick(freeShipping: PowerMerchantFreeShippingStatus) {
         PowerMerchantFreeShippingTracker.sendClickFreeShipping(
-            userSessionInterface,
-            freeShipping
+                userSessionInterface,
+                freeShipping
         )
     }
 
     private fun observeGetPmStatusInfo() {
         observe(viewModel.getPmStatusInfoResult) {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessGetPmInfo(it.data)
                 is Fail -> showEmptyState(it.throwable)
             }
@@ -237,7 +264,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun observeViewState() {
         observe(viewModel.viewState) {
-            when(it) {
+            when (it) {
                 is ShowLoading -> showLoading()
                 is HideLoading -> hideLoading()
             }
@@ -248,8 +275,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
 
         bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(
-            shopStatusModel.powerMerchant.expiredTime,
-            powerMerchantStatus.freeShippingEnabled
+                shopStatusModel.powerMerchant.expiredTime,
+                powerMerchantStatus.freeShippingEnabled
         )
         bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onClickCancelButton() {
@@ -292,33 +319,33 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val chargePeriod = !freeShipping.isTransitionPeriod
         val showFreeShipping = isFreeShippingEligible && chargePeriod
 
-        if(showFreeShipping) {
+        if (showFreeShipping) {
             trackFreeShippingSuccessBottomSheet(freeShipping)
         } else {
             trackPowerMerchantSuccessBottomSheet()
         }
 
-        val primaryBtnLabel = if(showFreeShipping) {
+        val primaryBtnLabel = if (showFreeShipping) {
             getString(R.string.power_merchant_free_shipping_learn_more)
         } else {
             getString(R.string.pm_label_bs_success_button)
         }
 
-        val description = if(showFreeShipping) {
+        val description = if (showFreeShipping) {
             getString(R.string.power_merchant_success_free_shipping_description)
         } else {
             getString(R.string.power_merchant_success_description)
         }
 
         val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
-            getString(R.string.power_merchant_success_title),
-            description,
-            R.drawable.ic_pm_registration_success,
-            CTAMode.SINGLE
+                getString(R.string.power_merchant_success_title),
+                description,
+                R.drawable.ic_pm_registration_success,
+                CTAMode.SINGLE
         )
         bottomSheet.setPrimaryButtonText(primaryBtnLabel)
         bottomSheet.setPrimaryButtonClickListener {
-            if(showFreeShipping) {
+            if (showFreeShipping) {
                 openFreeShippingPage()
                 trackSuccessBottomSheetClickLearnMore(freeShipping)
             } else {
@@ -335,14 +362,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun openFreeShippingPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW,
-            URL_FREE_SHIPPING_INTERIM_PAGE)
+                URL_FREE_SHIPPING_INTERIM_PAGE)
         startActivityForResult(intent, FREE_SHIPPING_INTENT_CODE)
     }
 
     private fun trackFreeShippingSuccessBottomSheet(freeShipping: PowerMerchantFreeShippingStatus) {
         PowerMerchantFreeShippingTracker.eventFreeShippingSuccessBottomSheet(
-            userSessionInterface,
-            freeShipping
+                userSessionInterface,
+                freeShipping
         )
     }
 
@@ -352,8 +379,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun trackSuccessBottomSheetClickLearnMore(freeShipping: PowerMerchantFreeShippingStatus) {
         PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(
-            userSessionInterface,
-            freeShipping
+                userSessionInterface,
+                freeShipping
         )
     }
 
@@ -366,7 +393,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
         setupCancelBottomSheet(powerMerchantStatus)
 
-        if(shopStatus.isPowerMerchantInactive()) {
+        if (shopStatus.isPowerMerchantInactive()) {
             showRegistrationView(powerMerchantStatus)
         } else {
             showMembershipView(powerMerchantStatus)
@@ -454,6 +481,138 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         context?.let {
             val intent = PowerMerchantTermsActivity.createIntent(it, shopScore)
             startActivityForResult(intent, ACTIVATE_INTENT_CODE)
+        }
+    }
+
+    private fun observeTicker() {
+        sharedViewModel.pmSettingAndShopInfo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    this.pmSettingAndShopInfo = it.data
+                    showTicker(it.data)
+                }
+                is Fail -> tickerPmCommunicationPeriod.gone()
+            }
+        })
+    }
+
+    private fun showTicker(data: PMSettingAndShopInfoUiModel) {
+        view?.tickerPmCommunicationPeriod?.run {
+            visible()
+            val pmSettings = data.pmSettingInfo
+            val tickersData = pmSettings.tickers.map { ticker ->
+                val tickerType: Int = when (ticker.type) {
+                    TickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
+                    TickerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
+                    else -> Ticker.TYPE_ANNOUNCEMENT
+                }
+                return@map TickerData(ticker.title, ticker.text, tickerType, true, ticker)
+            }
+
+            if (tickersData.isEmpty()) {
+                gone()
+                return@run
+            }
+
+            val adapter = TickerPagerAdapter(context, tickersData)
+            addPagerView(adapter, tickersData)
+            adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    if (itemData is TickerUiModel) {
+                        if (itemData.isInterruptPopup) {
+                            if (data.shopInfo.isNewSeller) {
+                                showNewSellerInterruptPopup()
+                            } else {
+                                showExistingSellerInterruptPopup()
+                            }
+                            return
+                        }
+                    }
+                    RouteManager.route(context, linkUrl.toString())
+                }
+            })
+        }
+    }
+
+    private fun showNewSellerInterruptPopup() {
+        val bottomSheet = ContentSliderBottomSheet.createInstance(childFragmentManager)
+        if (bottomSheet.isAdded) return
+        val slideItems = listOf(ContentSliderUiModel(
+                title = getString(R.string.pm_new_pm_inf_title),
+                description = getString(R.string.pm_new_pm_inf_description),
+                imgUrl = PMConstant.Images.PM_NEW_REQUIREMENT
+        ))
+        val emptyTitle = ""
+        bottomSheet.setContent(emptyTitle, slideItems)
+        bottomSheet.setOnPrimaryCtaClickListener {
+            bottomSheet.dismiss()
+        }
+        bottomSheet.setOnSecondaryCtaClickListener {
+            //todo : goto ss interrupt page
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showExistingSellerInterruptPopup() {
+        val bottomSheet = ContentSliderBottomSheet.createInstance(childFragmentManager)
+        if (bottomSheet.isAdded) return
+
+        val title = getString(R.string.pm_power_merchant_slider_title)
+        val slideItems = listOf(
+                ContentSliderUiModel(
+                        title = getString(R.string.pm_power_merchant_new_term_title),
+                        description = getString(R.string.pm_power_merchant_new_term_description),
+                        imgUrl = PMConstant.Images.PM_NEW_REQUIREMENT
+                ),
+                ContentSliderUiModel(
+                        title = getString(R.string.pm_integrated_with_reputation_title),
+                        description = getString(R.string.pm_integrated_with_reputation_description),
+                        imgUrl = PMConstant.Images.PM_INTEGRATED_WITH_REPUTATION
+                ),
+                ContentSliderUiModel(
+                        title = getString(R.string.pm_new_benefits_title),
+                        description = getString(R.string.pm_new_benefits_description),
+                        imgUrl = PMConstant.Images.PM_NEW_BENEFITS
+                ),
+                ContentSliderUiModel(
+                        title = getString(R.string.pm_new_benefits_title),
+                        description = getString(R.string.pm_new_schema_description),
+                        imgUrl = PMConstant.Images.PM_NEW_SCHEMA
+                )
+        )
+        bottomSheet.setContent(title, slideItems)
+        bottomSheet.setOnPrimaryCtaClickListener {
+            bottomSheet.dismiss()
+        }
+        bottomSheet.setOnSecondaryCtaClickListener {
+            //todo : goto ss interrupt page
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showRegistrationSuccessBottomSheet() {
+        val notifTitle = getString(R.string.pm_registration_success_title)
+        val notifDescription = getString(R.string.pm_registration_success_description)
+        val notifImage = PMConstant.Images.PM_REGISTRATION_SUCCESS
+        showNotificationBottomSheet(notifTitle, notifDescription, notifImage) {
+            if (pmSettingAndShopInfo?.shopInfo?.isNewSeller.orFalse()) {
+                showNewSellerInterruptPopup()
+            } else {
+                showExistingSellerInterruptPopup()
+            }
+        }
+    }
+
+    private fun showNotificationBottomSheet(title: String, description: String, imgUrl: String, callback: (() -> Unit)? = null) {
+        val notifBottomSheet = PMNotificationBottomSheet.createInstance(title, description, imgUrl)
+        if (!notifBottomSheet.isAdded) {
+            val ctaText = getString(R.string.pm_learn_new_pm)
+            notifBottomSheet.setPrimaryButtonClickListener(ctaText) {
+                callback?.invoke()
+            }
+            Handler().post {
+                notifBottomSheet.show(childFragmentManager)
+            }
         }
     }
 }

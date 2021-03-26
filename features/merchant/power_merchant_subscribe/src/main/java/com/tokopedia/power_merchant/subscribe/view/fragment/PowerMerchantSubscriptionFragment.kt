@@ -23,7 +23,7 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
-import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PowerMerchantNotificationBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
@@ -95,9 +95,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun observeShopSettingInfo() {
-        sharedViewModel.powerMerchantSettingInfo.observe(viewLifecycleOwner, Observer {
+        sharedViewModel.pmSettingAndShopInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> fetchPageContent(it.data)
+                is Success -> fetchPageContent(it.data.pmSettingInfo)
                 is Fail -> {
                     //show on error fetch setting info
                 }
@@ -206,7 +206,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             appLink = ApplinkConst.SHOP_SCORE_DETAIL
         }
 
-        val shopScoreBottomSheet = PowerMerchantNotificationBottomSheet.createInstance(title, description, illustrationUrl)
+        val shopScoreBottomSheet = PMNotificationBottomSheet.createInstance(title, description, illustrationUrl)
         shopScoreBottomSheet.setPrimaryButtonClickListener(ctaText) {
             shopScoreBottomSheet.dismiss()
             RouteManager.route(context, appLink)

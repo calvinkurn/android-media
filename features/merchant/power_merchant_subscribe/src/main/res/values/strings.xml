@@ -138,7 +138,7 @@
     <string name="pm_free_shipping_clickable_text">S&amp;K berlaku.</string>
     <string name="pm_label_next">Selanjutnya</string>
     <string name="pm_power_merchant_slider_title">Perubahan Power Merchant</string>
-    <string name="pm_power_merchant_slider_footer_cta_text">Lebih lanjut tentang Performa Toko, di sini</string>
+    <string name="pm_power_merchant_slider_footer_cta_text">Lebih lanjut tentang Performa Toko, <font color="#03AC0E"><b>di sini</b></font></string>
     <string name="pm_content_slider_last_slide_button">Oke, Saya Mengerti</string>
     <string name="pm_registration_header_description">Maksimalkan penjualan tokomu dengan upgrade \nke Power Merchant, yuk!</string>
     <string name="pm_registration_terms">Syarat Pendaftaran</string>
@@ -172,6 +172,7 @@
     <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor tokomu <strong>min. skor %1$d</strong> untuk mendaftar jadi Power Merchant, ya. Pelajari Performa Toko]]></string>
     <string name="pm_add_product">Tambah Produk</string>
     <string name="pm_learn_shop_performance">Pelajari Performa Toko</string>
+    <string name="pm_learn_new_pm">Pelajari Perubahan</string>
     <string name="pm_kyc_verified">Data Diri Terverifikasi</string>
     <string name="pm_kyc_not_verified">Data Diri Belum Terverifikasi</string>
     <string name="pm_kyc_verification_waiting">Menunggu Verifikasi Data Diri</string>
@@ -199,4 +200,16 @@
     <string name="pm_label_next_three_months_pm_grade_update">Update selanjutnya: %1$s</string>
     <string name="pm_deactivate_power_merchant_bottom_cta">Berhenti dari Power Merchant? <font color="#03AC0E"><b>Klik di sini</b></font></string>
     <string name="pm_deactivate_power_merchant_message_info"><![CDATA[Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan dan status PM otomatis berhenti pada <b>%1$s.</b>]]></string>
+    <string name="pm_registration_success_title">Selamat, tokomu sudah \nmenjadi Power Merchant!</string>
+    <string name="pm_registration_success_description">Mulai 31 Mei 2021, ada sistem penilaian baru yang berlaku untuk tokomu, lho. Pelajari tentang perubahannya, yuk!</string>
+    <string name="pm_power_merchant_new_term_title">Syarat Baru Power Merchant</string>
+    <string name="pm_power_merchant_new_term_description">Mulai 31 Mei 2021, ada perhitungan skor baru yang didasarkan pada level &amp; skor tokomu. Pertahankan skor toko min. 60 poin untuk tetap jadi Power Merchant, ya.</string>
+    <string name="pm_integrated_with_reputation_title">Integrasi dengan Reputasi</string>
+    <string name="pm_integrated_with_reputation_description">Power Merchant akan dapat grade yang sesuai dengan Reputasi Toko saat ini. Mulai 31 Mei 2021, Reputasi Toko juga tidak akan muncul lagi di sisi pembeli &amp; penjual, ya.</string>
+    <string name="pm_new_benefits_title">Banyak Keuntungan Baru</string>
+    <string name="pm_new_benefits_description">Power Merchant akan dapat banyak keuntungan eksklusif sesuai dengan grade-nya. Didasarkan oleh Performa Toko, update grade dilakukan tiap bulan &amp; penurunan grade setiap 3 bulan.</string>
+    <string name="pm_new_schema_title">Masa Adaptasi Skema Baru </string>
+    <string name="pm_new_schema_description">Mulai 31 Mei 2021, Power Merchant dengan status nonaktif akan otomatis jadi Regular Merchant. Selama 3 bulan setelahnya, tokomu akan tetap menjadi Power Merchant aktif dan tidak mengalami penurunan grade.</string>
+    <string name="pm_new_pm_inf_title">Informasi Power Merchant Baru</string>
+    <string name="pm_new_pm_inf_description">Belum ada penilaian untuk tokomu karena penilaian toko baru akan muncul setelah 90 hari bergabung. Tokomu akan dapat grade Power Merchant sesuai dengan performa, ya.</string>
 </resources>

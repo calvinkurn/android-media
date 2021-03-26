@@ -20,7 +20,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -86,9 +85,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun observePmSettingInfo() {
         getPowerMerchantSettingInfo()
-        mViewModel.powerMerchantSettingInfo.observe(this, Observer {
+        mViewModel.pmSettingAndShopInfo.observe(this, Observer {
             when (it) {
-                is Success -> renderPage(it.data)
+                is Success -> renderPage(it.data.pmSettingInfo)
                 is Fail -> showErrorToaster(it.throwable) {
                     getPowerMerchantSettingInfo()
                 }
@@ -117,7 +116,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     private fun getFragmentByPeriod(periodeType: String): Fragment {
         return when (periodeType) {
             PeriodType.FINAL_PERIOD, PeriodType.TRANSITION_PERIOD -> PowerMerchantSubscriptionFragment.createInstance()
-            else -> PowerMerchantSubscribeFragment.createInstance()
+            else -> com.tokopedia.power_merchant.subscribe.view_old.fragment.PowerMerchantSubscribeFragment.createInstance()
         }
     }
 

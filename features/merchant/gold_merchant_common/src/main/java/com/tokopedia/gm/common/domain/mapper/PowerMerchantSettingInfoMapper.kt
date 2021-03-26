@@ -4,6 +4,7 @@ import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.cloud.model.PMSettingInfoModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.TickerUiModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
@@ -14,16 +15,18 @@ import javax.inject.Inject
 class PowerMerchantSettingInfoMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(response: PMSettingInfoModel?): PowerMerchantSettingInfoUiModel {
+        val interruptPopupKey = "interrupt_popup"
         return PowerMerchantSettingInfoUiModel(
                 shopId = response?.shopId.orZero().toString(),
                 isNewPmContent = response?.isNewPmContent ?: false,
                 isFinalSuccessPopup = response?.isFinalSuccessPopup ?: false,
-                periodeType = PeriodType.FINAL_PERIOD,//response?.periodeType ?: PeriodType.COMMUNICATION_PERIOD,
+                periodeType = PeriodType.COMMUNICATION_PERIOD,//response?.periodeType ?: PeriodType.COMMUNICATION_PERIOD,
                 tickers = response?.tickers?.map {
                     TickerUiModel(
                             title = it.title.orEmpty(),
                             text = it.text.orEmpty(),
-                            type = it.type ?: TickerUiModel.TYPE_INFO
+                            type = it.type ?: TickerUiModel.TYPE_INFO,
+                            isInterruptPopup = it.text?.contains(interruptPopupKey).orFalse()
                     )
                 }.orEmpty()
         )

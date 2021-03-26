@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import kotlinx.android.synthetic.main.bottom_sheet_pm_notification.view.*
 
-class PowerMerchantNotificationBottomSheet : BaseBottomSheet() {
+class PMNotificationBottomSheet : BaseBottomSheet() {
 
     companion object {
         private const val EXTRA_TITLE = "extra_title"
@@ -20,8 +20,8 @@ class PowerMerchantNotificationBottomSheet : BaseBottomSheet() {
                 title: String,
                 description: String,
                 imgUrl: String
-        ): PowerMerchantNotificationBottomSheet {
-            return PowerMerchantNotificationBottomSheet().apply {
+        ): PMNotificationBottomSheet {
+            return PMNotificationBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(EXTRA_TITLE, title)
                 bundle.putString(EXTRA_DESCRIPTION, description)

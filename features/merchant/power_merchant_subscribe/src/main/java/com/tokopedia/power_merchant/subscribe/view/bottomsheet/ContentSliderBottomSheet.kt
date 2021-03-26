@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -23,16 +24,17 @@ class ContentSliderBottomSheet : BaseBottomSheet() {
     companion object {
         private const val TAG = "ContentSliderBottomSheet"
 
-        fun createInstance(): ContentSliderBottomSheet {
-            return ContentSliderBottomSheet().apply {
-                clearContentPadding = true
-            }
+        fun createInstance(fm: FragmentManager): ContentSliderBottomSheet {
+            return (fm.findFragmentByTag(TAG) as? ContentSliderBottomSheet)
+                    ?: ContentSliderBottomSheet().apply {
+                        clearContentPadding = true
+                    }
         }
     }
 
     private var mTitle: String = ""
-    private var mSubTitle: String = ""
-    private var ctaClickCallback: (() -> Unit)? = null
+    private var primaryCtaClickCallback: (() -> Unit)? = null
+    private var secondaryCtaClickCallback: (() -> Unit)? = null
     private var items: List<ContentSliderUiModel> = emptyList()
 
     private val sliderAdapter by lazy { ContentSliderAdapter() }
@@ -43,18 +45,24 @@ class ContentSliderBottomSheet : BaseBottomSheet() {
         setupSliderAdapter()
 
         btnPmContentSlider.setOnClickListener {
-            ctaClickCallback?.invoke()
+            primaryCtaClickCallback?.invoke()
+        }
+        tvPmContentSliderCta.setOnClickListener {
+            secondaryCtaClickCallback?.invoke()
         }
     }
 
-    fun setContent(title: String, subTitle: String, items: List<ContentSliderUiModel>) {
+    fun setContent(title: String, items: List<ContentSliderUiModel>) {
         this.mTitle = title
-        this.mSubTitle = subTitle
         this.items = items
     }
 
-    fun setOnCtaClickListener(action: () -> Unit) {
-        this.ctaClickCallback = action
+    fun setOnPrimaryCtaClickListener(action: () -> Unit) {
+        this.primaryCtaClickCallback = action
+    }
+
+    fun setOnSecondaryCtaClickListener(action: () -> Unit) {
+        secondaryCtaClickCallback = action
     }
 
     fun show(fm: FragmentManager) {
@@ -80,9 +88,13 @@ class ContentSliderBottomSheet : BaseBottomSheet() {
         })
 
         indicatorPmContentSlider.setIndicator(items.size)
+        if (items.size == 1) {
+            indicatorPmContentSlider.gone()
+        } else {
+            indicatorPmContentSlider.visible()
+        }
 
         tvPmContentSliderTitle.text = mTitle
-        tvPmContentSliderSubTitle.text = mSubTitle
 
         sliderAdapter.items = items
         sliderAdapter.notifyDataSetChanged()

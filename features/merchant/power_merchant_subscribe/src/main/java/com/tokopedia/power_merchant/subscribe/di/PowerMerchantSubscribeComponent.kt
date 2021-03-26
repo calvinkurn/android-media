@@ -32,7 +32,5 @@ interface PowerMerchantSubscribeComponent {
 
     fun inject(deactivationBottomSheet: DeactivationBottomSheet)
 
-    fun inject(fragment: com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment)
-
     fun inject(subscriptionActivity: SubscriptionActivity)
 }
