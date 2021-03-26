@@ -31,7 +31,7 @@
         android:id="@+id/account_user_item_profile_icon_warning_name"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/home_account_dp_6"
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_R500"
         app:icon_name="WARNING"

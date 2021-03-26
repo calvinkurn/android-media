@@ -229,8 +229,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     private void initTermPrivacyView() {
         if (getContext() != null) {
             SpannableString termPrivacy = new SpannableString(getString(R.string.detail_term_and_privacy));
-            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0);
-            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0);
+            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0);
+            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0);
             termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0);
             termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0);
 
@@ -240,20 +240,17 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         }
     }
 
-    private ClickableSpan termConditionClickAction() {
+    private ClickableSpan clickableSpan(String page) {
         return new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_TERM_AND_CONDITION));
+                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, page));
             }
-        };
-    }
 
-    private ClickableSpan privacyClickAction() {
-        return new ClickableSpan () {
             @Override
-            public void onClick(@NonNull View widget) {
-                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_PRIVACY_POLICY));
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
             }
         };
     }

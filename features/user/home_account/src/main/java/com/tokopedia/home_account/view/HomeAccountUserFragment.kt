@@ -81,13 +81,15 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
-import kotlinx.android.synthetic.main.layout_bottom_sheet_add_name.view.*
 import javax.inject.Inject
 
 /**
@@ -1036,19 +1038,22 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun showBottomSheetAddName(profile: ProfileDataView) {
         activity?.let {
-            val bottomSheet = BottomSheetUnify()
             val addNameLayout = View.inflate(context, R.layout.layout_bottom_sheet_add_name, null)
-            addNameLayout?.layout_bottom_sheet_add_name_bg_dot?.setBackgroundResource(R.drawable.ic_bg_circle_shadow)
-            addNameLayout?.layout_bottom_sheet_add_name_button?.setOnClickListener {
+            val btnAddName: UnifyButton = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_button)
+            val iconAddName: ImageUnify = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
+            val bottomSheet = BottomSheetUnify()
+
+            ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
+            iconAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()
             }
-            addNameLayout?.layout_bottom_sheet_add_name_icon?.setOnClickListener {
+            btnAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()
             }
 
-            bottomSheet.setTitle("")
+            bottomSheet.bottomSheetTitle.hide()
             bottomSheet.setChild(addNameLayout)
             bottomSheet.clearAction()
             bottomSheet.setCloseClickListener {
@@ -1131,6 +1136,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val REQUEST_FROM_PDP = 394
         private val FPM_BUYER = "mp_account_buyer"
+        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

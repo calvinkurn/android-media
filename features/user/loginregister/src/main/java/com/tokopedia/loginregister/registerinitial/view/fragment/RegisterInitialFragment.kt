@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -13,11 +12,14 @@ import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.SpannableString
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.util.Patterns
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -33,6 +35,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
@@ -91,6 +95,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -112,7 +117,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var emailPhoneEditText: AutoCompleteTextView
     private lateinit var registerButton: LoginTextView
-    private lateinit var loginButton: TextView
+    private var textTermAndCondition: Typography? = null
     private lateinit var container: ScrollView
     private lateinit var progressBar: RelativeLayout
     private lateinit var tickerAnnouncement: Ticker
@@ -258,13 +263,12 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         registerButton = view.findViewById(R.id.register)
         socmedButton = view.findViewById(R.id.socmed_btn)
-        loginButton = view.findViewById(R.id.login_button)
+        textTermAndCondition = view.findViewById(R.id.text_term_privacy)
         container = view.findViewById(R.id.container)
         progressBar = view.findViewById(R.id.progress_bar)
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerRegister = view.findViewById(R.id.banner_register)
         prepareView()
-        setViewListener()
         if (isSmartLogin) {
             if (isPending) {
                 val intent = goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE)
@@ -382,34 +386,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
             }
 
-            val sourceString = resources.getString(R.string
-                    .span_already_have_tokopedia_account)
-
-            val spannable = SpannableString(sourceString)
-
-            spannable.setSpan(object : ClickableSpan() {
-                override fun onClick(view: View) {}
-
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(
-                            activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
-                    )
-                    ds.typeface = Typeface.create("sans-serif-medium", Typeface
-                            .NORMAL)
-                }
-            }, sourceString.indexOf("Masuk"), sourceString.length, 0)
-
-            loginButton.setText(spannable, TextView.BufferType.SPANNABLE)
-        }
-    }
-
-    private fun setViewListener() {
-        loginButton.setOnClickListener {
-            registerAnalytics.trackClickBottomSignInButton()
-            activity?.run {
-                analytics.eventClickOnLoginFromRegister()
-                goToLoginPage()
-            }
+            initTermPrivacyView()
         }
     }
 
@@ -643,7 +620,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity,
                     errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
-            loginButton.isEnabled = false
+            textTermAndCondition?.isEnabled = false
         }
     }
 
@@ -1123,7 +1100,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         progressBar.visibility = View.VISIBLE
         container.visibility = View.GONE
-        loginButton.visibility = View.GONE
+        textTermAndCondition?.visibility = View.GONE
 
     }
 
@@ -1132,7 +1109,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         progressBar.visibility = View.GONE
 
         container.visibility = View.VISIBLE
-        loginButton.visibility = View.VISIBLE
+        textTermAndCondition?.visibility = View.VISIBLE
     }
 
     private fun onErrorRegister(errorMessage: String) {
@@ -1556,6 +1533,35 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         registerInitialViewModel.dynamicBannerResponse.removeObservers(this)
         combineLoginTokenAndValidateToken.removeObservers(this)
         registerInitialViewModel.flush()
+    }
+
+    private fun initTermPrivacyView() {
+        context?.let {
+            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
+            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
+            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
+
+            textTermAndCondition?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+            textTermAndCondition?.movementMethod = LinkMovementMethod.getInstance()
+            textTermAndCondition?.isSelected = false
+        }
+    }
+
+    private fun clickableSpan(page: String): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+            }
+        }
     }
 
     companion object {

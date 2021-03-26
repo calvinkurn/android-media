@@ -186,8 +186,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     private fun initTermPrivacyView() {
         context?.let {
             val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
-            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
-            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
+            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
+            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
             termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
             termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
 
@@ -197,22 +197,17 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         }
     }
 
-    private fun termConditionClickAction(): ClickableSpan {
+    private fun clickableSpan(page: String): ClickableSpan {
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_TERM_AND_CONDITION))
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ))
                 }
             }
-        }
-    }
 
-    private fun privacyClickAction(): ClickableSpan {
-        return object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_PRIVACY_POLICY))
-                }
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
             }
         }
     }

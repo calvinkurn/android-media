@@ -40,6 +40,7 @@ import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductVi
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper
 import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -50,11 +51,13 @@ import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
-import kotlinx.android.synthetic.main.layout_bottom_sheet_add_name.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -528,19 +531,22 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
     private fun showBottomSheetAddName(element: BuyerCardViewModel) {
         activity?.let {
-            val bottomSheet = BottomSheetUnify()
             val addNameLayout = View.inflate(context, com.tokopedia.home_account.R.layout.layout_bottom_sheet_add_name, null)
-            addNameLayout?.layout_bottom_sheet_add_name_bg_dot?.setBackgroundResource(com.tokopedia.home_account.R.drawable.ic_bg_circle_shadow)
-            addNameLayout?.layout_bottom_sheet_add_name_button?.setOnClickListener {
+            val btnAddName: UnifyButton = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_button)
+            val iconAddName: ImageUnify = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
+            val bottomSheet = BottomSheetUnify()
+
+            ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
+            iconAddName.setOnClickListener {
                 gotoChangeName(element)
                 bottomSheet.dismiss()
             }
-            addNameLayout?.layout_bottom_sheet_add_name_icon?.setOnClickListener {
+            btnAddName.setOnClickListener {
                 gotoChangeName(element)
                 bottomSheet.dismiss()
             }
 
-            bottomSheet.setTitle("")
+            bottomSheet.bottomSheetTitle.hide()
             bottomSheet.setChild(addNameLayout)
             bottomSheet.clearAction()
             bottomSheet.setCloseClickListener {
@@ -575,6 +581,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
         private const val className: String = "com.tokopedia.home.account.presentation.fragment.BuyerAccountFragment"
+        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
 
         private val DEFAULT_SPAN_COUNT = 2
         private const val REQUEST_CODE_CHANGE_NAME = 300

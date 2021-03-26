@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.profilecompletion.addname.fragment.AddNameRegisterPhoneCleanViewFragment
 import com.tokopedia.profilecompletion.addname.fragment.AddNameRegisterPhoneFragment
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * @author by nisie on 22/04/19.
@@ -21,6 +23,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
 
     private var rollanceType = ""
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -35,19 +38,22 @@ class AddNameRegisterPhoneActivity : BaseSimpleActivity() {
         SplitCompat.installActivity(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-        rollanceType = RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_KEY)
-        super.onCreate(savedInstanceState)
-    }
-
     private fun checkUri(bundle: Bundle): Fragment {
+        rollanceType = getAbTestPlatform().getString(ROLLANCE_KEY)
+
+        println("rollance = $rollanceType")
+        Toaster.build(window.decorView.rootView,"Rollance ID = $rollanceType", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
         val uri = intent?.data
         return if (uri?.lastPathSegment?.contains(PATH_CLEAN_VIEW) == true && rollanceType.contains(ROLLANCE_KEY)) {
             AddNameRegisterPhoneCleanViewFragment.createInstance(bundle)
         } else {
             AddNameRegisterPhoneFragment.createInstance(bundle)
         }
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) { remoteConfigInstance = RemoteConfigInstance(this.application) }
+        return remoteConfigInstance.abTestPlatform
     }
 
     companion object {

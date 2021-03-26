@@ -52,10 +52,11 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
             if (profile.name.toLowerCase().contains(DEFAULT_NAME)) {
                 account_user_item_profile_icon_warning_name?.show()
                 account_user_item_profile_icon_warning_name?.setOnClickListener { listener.onIconWarningClicked(profile) }
-            }
-            else account_user_item_profile_icon_warning_name?.hide()
+            } else account_user_item_profile_icon_warning_name?.hide()
 
-            account_user_item_profile_email?.text = profile.email
+            if (profile.phone != profile.email) {
+                account_user_item_profile_email?.text = profile.email
+            }
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
             home_account_profile_section?.setOnClickListener { listener.onProfileClicked() }
 
