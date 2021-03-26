@@ -2,5 +2,4 @@
 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget android:id="@+id/widgetMyBills"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/Unify_N0" />
+    android:layout_height="wrap_content" />

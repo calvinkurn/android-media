@@ -154,7 +154,7 @@ class DigitalCartActivityWithSubscriptionTest {
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.000")))
     }
 
     private fun validateTypeOnInputView() {
@@ -170,7 +170,7 @@ class DigitalCartActivityWithSubscriptionTest {
         Thread.sleep(1000)
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click()).perform(ViewActions.typeText("10000"),
                 ViewActions.closeSoftKeyboard())
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 10.500")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp10.500")))
     }
 
     private fun validateCheckoutSummaryOnUi() {
@@ -178,15 +178,15 @@ class DigitalCartActivityWithSubscriptionTest {
         onView(withId(R.id.tvCheckoutSummaryTitle)).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Subtotal Tagihan"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("purchase-protection"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 10.000"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp10.000"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp500"))).check(matches(isDisplayed()))
 
         // uncheck protection bills
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
 
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("purchase-protection"))).check(doesNotExist())
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(doesNotExist())
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp500"))).check(doesNotExist())
     }
 
     private fun validateOnClickPromo() {

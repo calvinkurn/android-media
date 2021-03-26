@@ -143,15 +143,6 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
 
-        // show correct additional info list
-        val additionalInfoValue = digitalCartViewModel.cartAdditionalInfoList.value
-        assert(additionalInfoValue != null)
-        assert(additionalInfoValue?.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
-        assert(additionalInfoValue?.getOrNull(0)?.items?.getOrNull(0)?.label
-                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label)
-        assert(additionalInfoValue?.getOrNull(0)?.items?.getOrNull(0)?.value
-                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value)
-
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
         assert(digitalCartViewModel.totalPrice.value == dummyResponse.price)
@@ -237,15 +228,6 @@ class DigitalCartViewModelTest {
                 dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
-
-        // show correct additional info list
-        val additionalInfoValue = digitalCartViewModel.cartAdditionalInfoList.value
-        assert(additionalInfoValue != null)
-        assert(additionalInfoValue?.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
-        assert(additionalInfoValue?.getOrNull(0)?.items?.getOrNull(0)?.label
-                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label)
-        assert(additionalInfoValue?.getOrNull(0)?.items?.getOrNull(0)?.value
-                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value)
 
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
@@ -526,7 +508,6 @@ class DigitalCartViewModelTest {
         assert(digitalCartViewModel.promoData.value?.amount == 0)
         assert(digitalCartViewModel.promoData.value?.promoCode == "")
         assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price)
-        assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 1)
     }
 
 
@@ -546,7 +527,6 @@ class DigitalCartViewModelTest {
 
         // then
         assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price)
-        assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 1)
     }
 
     @Test
@@ -606,7 +586,7 @@ class DigitalCartViewModelTest {
     fun onCheckedFintechProduct_updateCheckoutSummary() {
         // given
         val fintechInfo = FintechProduct.FintechProductInfo(title = "fintech A")
-        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0, info = fintechInfo)
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0, info = fintechInfo, transactionType = "Pulsa")
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
@@ -615,8 +595,7 @@ class DigitalCartViewModelTest {
         // then
         val fintechPrice = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
                 ?: 0.0
-        val fintechName = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.info?.title
-                ?: ""
+        val fintechName = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.transactionType
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
             it.title == fintechName
         }

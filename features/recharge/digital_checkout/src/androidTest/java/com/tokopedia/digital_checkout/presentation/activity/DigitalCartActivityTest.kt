@@ -130,13 +130,13 @@ class DigitalCartActivityTest {
         onView(withId(R.id.tvCheckoutSummaryTitle)).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Subtotal Tagihan"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("egold"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 12.500"))).check(matches(isDisplayed()))
-        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp 500"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp12.500"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp500"))).check(matches(isDisplayed()))
 
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.000")))
 
         Thread.sleep(1000)
     }

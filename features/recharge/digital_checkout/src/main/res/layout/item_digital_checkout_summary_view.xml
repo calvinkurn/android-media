@@ -3,11 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12"
-    android:background="@color/Unify_N0">
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCheckoutSummaryTitle"
@@ -23,7 +22,7 @@
         android:id="@+id/rvCheckoutSummary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintTop_toBottomOf="@id/tvCheckoutSummaryTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

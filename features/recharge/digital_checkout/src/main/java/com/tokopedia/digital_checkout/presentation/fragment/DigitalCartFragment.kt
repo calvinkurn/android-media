@@ -257,7 +257,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             }
         }
 
-        checkoutBottomViewWidget.checkoutButtonText = cartInfo.crossSellingConfig.checkoutButtonText
         renderMyBillsLayout(cartInfo)
 
         cartInfo.attributes.icon.let { iconCheckout.loadImage(it) }
