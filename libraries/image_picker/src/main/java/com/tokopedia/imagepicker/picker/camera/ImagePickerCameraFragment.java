@@ -35,6 +35,7 @@ import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
@@ -55,7 +56,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     private ImageView previewImageView;
     private CameraView cameraView;
-    private ImageButton flashImageButton;
+    private IconUnify flashImageButton;
     private FrameLayout cameraLayout;
     private View previewLayout;
     private OnImagePickerCameraFragmentListener onImagePickerCameraFragmentListener;
@@ -280,11 +281,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashImageButton.setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_auto_flash));
+            flashImageButton.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashImageButton.setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_on_flash));
+            flashImageButton.setImage(IconUnify.FLASH_ON, null, null, null, null);
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashImageButton.setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_off_flash));
+            flashImageButton.setImage(IconUnify.FLASH_OFF, null, null, null, null);
         }
     }
 

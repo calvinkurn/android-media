@@ -46,7 +46,7 @@
 
         </LinearLayout>
 
-        <ImageButton
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/btnFlash"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"

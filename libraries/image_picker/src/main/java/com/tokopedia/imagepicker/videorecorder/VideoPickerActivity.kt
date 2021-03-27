@@ -22,7 +22,7 @@ import com.tokopedia.imagepicker.common.model.MediaItem
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
-import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
+import com.tokopedia.imagepicker.videorecorder.recorder.VideoRecorderFragment
 import com.tokopedia.imagepicker.common.state.StateRecorder
 import com.tokopedia.videorecorder.utils.*
 import com.tokopedia.videorecorder.utils.show

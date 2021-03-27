@@ -1,4 +1,4 @@
-package com.tokopedia.videorecorder.main.recorder
+package com.tokopedia.imagepicker.videorecorder.recorder
 
 import android.content.Context
 import android.os.Bundle
@@ -14,7 +14,7 @@ import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.R
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
@@ -175,7 +175,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
                         }
                     }
                 }
-            },1, 1000)
+            }, 1, 1000)
         }
     }
 
@@ -214,9 +214,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     private fun setUIFlashCamera(flashEnum: Int) {
         when (flashEnum) {
-            Flash.AUTO.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), com.tokopedia.imagepicker.R.drawable.ic_auto_flash))
-            Flash.ON.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), com.tokopedia.imagepicker.R.drawable.ic_on_flash))
-            Flash.OFF.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), com.tokopedia.imagepicker.R.drawable.ic_off_flash))
+            Flash.AUTO.ordinal -> btnFlash.setImageDrawable(com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable(activity, com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash))
+            Flash.ON.ordinal -> btnFlash.setImage(IconUnify.FLASH_ON, null, null, null, null)
+            Flash.OFF.ordinal -> btnFlash.setImage(IconUnify.FLASH_OFF, null, null, null, null)
         }
     }
 
