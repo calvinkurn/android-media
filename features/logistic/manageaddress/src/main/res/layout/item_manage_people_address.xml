@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_location_state"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_20"
