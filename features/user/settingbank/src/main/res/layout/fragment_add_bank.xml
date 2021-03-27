@@ -27,7 +27,7 @@
         app:layout_constraintGuide_end="@dimen/dp_16" />
 
     <com.tokopedia.unifycomponents.TextAreaUnify
-        android:id="@+id/tf"
+        android:id="@+id/textAreaBankName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="@+id/guidelineTop"
         app:text_area_clearable="false"
         app:text_area_label="@string/bank_name_title"
-        app:text_area_label_static="false"
+        app:text_area_label_static="true"
         app:text_field_placeholder="@string/bank_name_title" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -46,114 +46,63 @@
         android:layout_height="@dimen/unify_space_16"
         app:icon_name="CHEVRON_DOWN"
         android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintTop_toTopOf="@+id/tf"
-        app:layout_constraintEnd_toEndOf="@+id/tf" />
+        app:layout_constraintTop_toTopOf="@+id/textAreaBankName"
+        app:layout_constraintEnd_toEndOf="@+id/textAreaBankName" />
 
-<!--
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/wrapperBankName"
-        style="@style/HintTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:hint="@string/bank_name_title"
-        android:textColorHint="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
-        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/tf">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etBankName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
-            android:singleLine="true"
-            android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/sp_16" />
-
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>-->
-
-
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/wrapperBankAccountNumber"
-        style="@style/HintTextInputLayout"
+    <com.tokopedia.unifycomponents.TextAreaUnify
+        android:id="@+id/textAreaBankAccountNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/sp_16"
-        android:layout_marginRight="@dimen/sp_16"
-        android:clickable="false"
-        android:hint="@string/account_number_title"
-        android:textColorHint="@color/white"
+        android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintEnd_toStartOf="@+id/btnPeriksa"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/tf">
+        app:layout_constraintTop_toBottomOf="@+id/textAreaBankName"
+        app:text_area_clearable="false"
+        app:text_area_label_static="true"
+        app:text_area_max_lines="1"
+        app:text_area_label="@string/account_number_title"
+        app:text_field_placeholder="@string/account_number_title" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etBankAccountNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="01234567890"
-            android:inputType="number"
-            android:singleLine="true"
-            android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/sp_16" />
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/wrapperManualAccountHolderName"
-        style="@style/HintTextInputLayout"
+    <com.tokopedia.unifycomponents.TextAreaUnify
+        android:id="@+id/textAreaBankAccountHolderName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_39"
-        android:clickable="false"
-        android:hint="@string/account_name_title"
-        android:textColorHint="@color/white"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/wrapperBankAccountNumber">
+        app:layout_constraintTop_toBottomOf="@+id/textAreaBankAccountNumber"
+        app:text_area_clearable="false"
+        app:text_area_label_static="true"
+        app:text_area_max_lines="1"
+        app:text_area_label="@string/account_name_title"
+        app:text_field_placeholder="@string/account_name_title" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etManualAccountHolderName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
-            android:inputType="textPersonName"
-            android:singleLine="true"
-            android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/sp_16" />
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-
-
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAccountHolderNameTag"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_39"
         android:text="@string/account_name_title"
         android:textColor="@color/Neutral_N700_68"
         android:textSize="@dimen/sp_12"
-        android:textStyle="normal"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/wrapperBankAccountNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/textAreaBankAccountNumber" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAccHolderNamePrefix"
         android:layout_width="@dimen/dp_35"
         android:layout_height="@dimen/dp_35"
         android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_11"
         android:background="@drawable/sbank_name_bg_circle"
         android:gravity="center"
-        android:textColor="@color/Neutral_N0"
-        android:textSize="12sp"
+        android:textColor="@color/Unify_N0"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvAccountHolderNameTag"
         tools:text="MR" />
@@ -163,7 +112,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_9"
-        android:layout_marginLeft="@dimen/dp_9"
         android:textColor="@color/black_70"
         app:layout_constraintBottom_toBottomOf="@+id/tvAccHolderNamePrefix"
         app:layout_constraintStart_toEndOf="@+id/tvAccHolderNamePrefix"
@@ -172,20 +120,15 @@
         tools:text="MOHAMAD RAVENA UTAMA" />
 
 
-    <TextView
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnPeriksa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/sbank_bg_periksa"
         android:enabled="false"
-        android:paddingStart="@dimen/dp_12"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_8"
+        app:unifyButtonType="main"
         android:text="@string/sbank_periksa"
-        android:textColor="@color/sbank_periksa_text_color"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintTop_toTopOf="@+id/guidelineNomorRekening" />
 
