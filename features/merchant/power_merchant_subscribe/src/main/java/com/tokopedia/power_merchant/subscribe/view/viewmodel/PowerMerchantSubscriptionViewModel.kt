@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
+import com.tokopedia.gm.common.domain.interactor.GetPMStatusAndShopInfoUseCase
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMFinalPeriodDataUseCase
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMGradeBenefitAndShopInfoUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.PMFinalPeriodUiModel
@@ -12,7 +14,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,6 +23,7 @@ import javax.inject.Inject
  */
 
 class PowerMerchantSubscriptionViewModel @Inject constructor(
+        private val getPMStatusAndShopInfo: Lazy<GetPMStatusAndShopInfoUseCase>,
         private val getPMGradeWithBenefitAndShopInfoUseCase: Lazy<GetPMGradeBenefitAndShopInfoUseCase>,
         private val getPMFinalPeriodDataUseCase: Lazy<GetPMFinalPeriodDataUseCase>,
         private val dispatchers: CoroutineDispatchers
@@ -31,11 +33,23 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         get() = _pmFinalPeriod
     val shopInfoAndPMGradeBenefits: LiveData<Result<PMGradeBenefitAndShopInfoUiModel>>
         get() = _pmGradeAndShopInfo
+    val pmStatusAndShopInfo: LiveData<Result<PMStatusAndShopInfoUiModel>>
+        get() = _pmStatusAndShopInfo
 
     private val _pmFinalPeriod: MutableLiveData<Result<PMFinalPeriodUiModel>> = MutableLiveData()
     private val _pmGradeAndShopInfo: MutableLiveData<Result<PMGradeBenefitAndShopInfoUiModel>> = MutableLiveData()
+    private val _pmStatusAndShopInfo: MutableLiveData<Result<PMStatusAndShopInfoUiModel>> = MutableLiveData()
 
-    fun getPMRegistrationData() {
+    fun getPmStatusAndShopInfo() {
+        launchCatchError(context = dispatchers.io, block = {
+            val result = getPMStatusAndShopInfo.get().executeOnBackground()
+            _pmStatusAndShopInfo.postValue(Success(result))
+        }, onError = {
+            _pmStatusAndShopInfo.postValue(Fail(it))
+        })
+    }
+
+    fun getPmRegistrationData() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getPMGradeWithBenefitAndShopInfoUseCase.get().executeOnBackground()
@@ -46,7 +60,7 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         })
     }
 
-    fun getFinalPeriodData() {
+    fun getPmActiveData() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getPMFinalPeriodDataUseCase.get().executeOnBackground()

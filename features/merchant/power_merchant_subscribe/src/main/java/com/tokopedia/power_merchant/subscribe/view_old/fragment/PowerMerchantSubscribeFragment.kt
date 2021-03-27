@@ -7,11 +7,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -19,8 +16,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.gm.common.data.source.local.model.PMSettingAndShopInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.TickerUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.orFalse
@@ -29,16 +27,18 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
+import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.ContentSliderBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.model.ContentSliderUiModel
-import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view_old.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view_old.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view_old.bottomsheets.PowerMerchantNotificationBottomSheet.CTAMode
 import com.tokopedia.power_merchant.subscribe.view_old.constant.PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE
+import com.tokopedia.power_merchant.subscribe.view_old.model.PMSettingAndShopInfoUiModel
+import com.tokopedia.power_merchant.subscribe.view_old.model.PMStatusAndSettingUiModel
 import com.tokopedia.power_merchant.subscribe.view_old.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState.HideLoading
 import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState.ShowLoading
@@ -67,14 +67,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val sharedViewModel by lazy {
-        ViewModelProvider(requireActivity(), viewModelFactory).get(SubscriptionActivityViewModel::class.java)
-    }
-
-    private var pmSettingAndShopInfo: PMSettingAndShopInfoUiModel? = null
+    private var pmStatusAndShopInfo: PMStatusAndShopInfoUiModel? = null
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
@@ -116,7 +109,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         setupFreeShippingError()
 
         viewModel.getPmStatusInfo()
-        observeTicker()
     }
 
     private fun setupFreeShippingError() {
@@ -388,7 +380,19 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheetCancel?.show(childFragmentManager)
     }
 
-    private fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
+    private fun onSuccessGetPmInfo(data: PMStatusAndSettingUiModel) {
+        val periodType = data.pmSettingAndShopInfo.pmSetting.periodeType
+        if (periodType != PeriodType.COMMUNICATION_PERIOD) {
+            showPmRevamp(data.pmSettingAndShopInfo)
+            return
+        }
+
+        if (data.pmStatus == null) {
+            showEmptyState(RuntimeException("Power merchant status must not be null"))
+            return
+        }
+
+        val powerMerchantStatus = data.pmStatus
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 
         setupCancelBottomSheet(powerMerchantStatus)
@@ -401,6 +405,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
 
         showCTAButton(powerMerchantStatus)
+        showTicker(data.pmSettingAndShopInfo)
+    }
+
+    private fun showPmRevamp(pmSettingAndShopInfo: PMSettingAndShopInfoUiModel) {
+        (activity as? SubscriptionActivityInterface)?.switchToPmRevampPage(pmSettingAndShopInfo.pmSetting)
     }
 
     private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {
@@ -484,22 +493,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun observeTicker() {
-        sharedViewModel.pmSettingAndShopInfo.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    this.pmSettingAndShopInfo = it.data
-                    showTicker(it.data)
-                }
-                is Fail -> tickerPmCommunicationPeriod.gone()
-            }
-        })
-    }
-
     private fun showTicker(data: PMSettingAndShopInfoUiModel) {
+        val pmSettings = data.pmSetting
         view?.tickerPmCommunicationPeriod?.run {
             visible()
-            val pmSettings = data.pmSettingInfo
             val tickersData = pmSettings.tickers.map { ticker ->
                 val tickerType: Int = when (ticker.type) {
                     TickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
@@ -595,7 +592,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val notifDescription = getString(R.string.pm_registration_success_description)
         val notifImage = PMConstant.Images.PM_REGISTRATION_SUCCESS
         showNotificationBottomSheet(notifTitle, notifDescription, notifImage) {
-            if (pmSettingAndShopInfo?.shopInfo?.isNewSeller.orFalse()) {
+            if (pmStatusAndShopInfo?.shopInfo?.isNewSeller.orFalse()) {
                 showNewSellerInterruptPopup()
             } else {
                 showExistingSellerInterruptPopup()

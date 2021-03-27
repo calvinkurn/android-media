@@ -15,7 +15,7 @@ class PMShopInfoMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(response: GoldGetPMShopInfoDataModel?): PMShopInfoUiModel {
         return PMShopInfoUiModel(
                 shopId = response?.shopId.orZero().toString(),
-                isNewSeller = true,//response?.isNewSeller ?: true,
+                isNewSeller = response?.isNewSeller ?: true,
                 shopAge = response?.shopAge.orZero(),
                 isKyc = response?.isKyc ?: false,
                 kycStatusId = response?.kycStatusId ?: KYCStatusId.NOT_VERIFIED,

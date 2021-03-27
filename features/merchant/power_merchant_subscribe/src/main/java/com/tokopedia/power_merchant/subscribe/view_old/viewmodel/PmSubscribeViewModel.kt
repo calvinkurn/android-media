@@ -3,11 +3,16 @@ package com.tokopedia.power_merchant.subscribe.view_old.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
+import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMSettingAndShopInfoUseCase
+import com.tokopedia.power_merchant.subscribe.view_old.model.PMSettingAndShopInfoUiModel
+import com.tokopedia.power_merchant.subscribe.view_old.model.PMStatusAndSettingUiModel
 import com.tokopedia.power_merchant.subscribe.view_old.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState
 import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState.HideLoading
@@ -18,21 +23,23 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class PmSubscribeViewModel @Inject constructor(
-    private val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase,
-    private val getShopFreeShippingStatusUseCase: GetShopFreeShippingStatusUseCase,
-    private val remoteConfig: PowerMerchantRemoteConfig,
-    private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+        private val getPMSettingAndShopInfoUseCase: GetPMSettingAndShopInfoUseCase,
+        private val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase,
+        private val getShopFreeShippingStatusUseCase: GetShopFreeShippingStatusUseCase,
+        private val remoteConfig: PowerMerchantRemoteConfig,
+        private val userSession: UserSessionInterface,
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     val viewState: LiveData<ViewState>
         get() = _viewState
-    val getPmStatusInfoResult: LiveData<Result<PowerMerchantStatus>>
+    val getPmStatusInfoResult: LiveData<Result<PMStatusAndSettingUiModel>>
         get() = _getPmStatusInfoResult
     val getPmFreeShippingStatusResult: LiveData<Result<PowerMerchantFreeShippingStatus>>
         get() = _getPmFreeShippingStatusResult
@@ -40,28 +47,43 @@ class PmSubscribeViewModel @Inject constructor(
         get() = _onActivatePmSuccess
 
     private val _viewState = MutableLiveData<ViewState>()
-    private val _getPmStatusInfoResult = MutableLiveData<Result<PowerMerchantStatus>>()
+    private val _getPmStatusInfoResult = MutableLiveData<Result<PMStatusAndSettingUiModel>>()
     private val _getPmFreeShippingStatusResult = MutableLiveData<Result<PowerMerchantFreeShippingStatus>>()
     private val _onActivatePmSuccess = MutableLiveData<Result<PowerMerchantFreeShippingStatus>>()
 
-    fun getPmStatusInfo(){
+    fun getPmStatusInfo() {
         showLoading()
-
         launchCatchError(block = {
-            val shopId = userSession.shopId
             val freeShippingEnabled = remoteConfig.isFreeShippingEnabled()
 
-            val response = withContext(dispatchers.io) {
-                val params = GetPowerMerchantStatusUseCase.createRequestParams(shopId)
-                getPowerMerchantStatusUseCase.getData(params)
+            val pmStatusAsync = async { getPowerMerchantStatus() }
+            val settingAndShopInfoAsync = async { getSettingAndShopInfo() }
+            val settingAndShopInfo = settingAndShopInfoAsync.await()
+            val pmStatus = pmStatusAsync.await()
+
+            if (settingAndShopInfo != null) {
+                if (settingAndShopInfo.pmSetting.periodeType == PeriodType.COMMUNICATION_PERIOD) {
+                    val powerMerchantStatus = pmStatus?.copy(freeShippingEnabled = freeShippingEnabled)
+                    if (powerMerchantStatus?.kycUserProjectInfoPojo?.kycProjectInfo != null) {
+                        val data = PMStatusAndSettingUiModel(
+                                pmStatus = pmStatus,
+                                pmSettingAndShopInfo = settingAndShopInfo
+                        )
+                        _getPmStatusInfoResult.value = Success(data)
+                    } else {
+                        throw NullPointerException("kycProjectInfo must not be null")
+                    }
+                } else {
+                    val data = PMStatusAndSettingUiModel(
+                            pmStatus = null,
+                            pmSettingAndShopInfo = settingAndShopInfo
+                    )
+                    _getPmStatusInfoResult.value = Success(data)
+                }
+            } else {
+                throw NullPointerException("PM Setting and Shop Info must not be null")
             }
 
-            val powerMerchantStatus = response.copy(freeShippingEnabled = freeShippingEnabled)
-            if(powerMerchantStatus.kycUserProjectInfoPojo.kycProjectInfo != null) {
-                _getPmStatusInfoResult.value = Success(powerMerchantStatus)
-            } else {
-                throw NullPointerException("kycProjectInfo must not be null")
-            }
             hideLoading()
         }) {
             _getPmStatusInfoResult.value = Fail(it)
@@ -73,7 +95,7 @@ class PmSubscribeViewModel @Inject constructor(
     fun getFreeShippingStatus() {
         val freeShippingEnabled = remoteConfig.isFreeShippingEnabled()
 
-        if(freeShippingEnabled) {
+        if (freeShippingEnabled) {
             launchCatchError(block = {
                 val freeShippingStatus = getShopFreeShippingStatus()
                 _getPmFreeShippingStatusResult.value = Success(freeShippingStatus)
@@ -89,7 +111,7 @@ class PmSubscribeViewModel @Inject constructor(
             val freeShippingStatus = getShopFreeShippingStatus()
             _onActivatePmSuccess.value = Success(freeShippingStatus)
             hideLoading()
-        })  {
+        }) {
             _onActivatePmSuccess.value = Fail(it)
             hideLoading()
         }
@@ -99,13 +121,39 @@ class PmSubscribeViewModel @Inject constructor(
         getPowerMerchantStatusUseCase.unsubscribe()
     }
 
+    private suspend fun getSettingAndShopInfo(): PMSettingAndShopInfoUiModel? {
+        return try {
+            withContext(dispatchers.io) {
+                getPMSettingAndShopInfoUseCase.executeOnBackground()
+            }
+        } catch (e: Exception) {
+            PowerMerchantErrorLogger.logToCrashlytic(PowerMerchantErrorLogger.SETTING_AND_SHOP_INFO_ERROR, e)
+            return null
+        }
+    }
+
+    private suspend fun getPowerMerchantStatus(): PowerMerchantStatus? {
+        return try {
+            withContext(dispatchers.io) {
+                val shopId = userSession.shopId
+                val params = GetPowerMerchantStatusUseCase.createRequestParams(shopId)
+                getPowerMerchantStatusUseCase.getData(params)
+            }
+        } catch (e: Exception) {
+            PowerMerchantErrorLogger.logToCrashlytic(PowerMerchantErrorLogger.POWER_MERCHANT_STATUS_ERROR, e)
+            return null
+        }
+    }
+
     private suspend fun getShopFreeShippingStatus(): PowerMerchantFreeShippingStatus {
         return withContext(dispatchers.io) {
             val userId = userSession.userId.toIntOrZero()
             val shopId = userSession.shopId.toIntOrZero()
             val pmStatus = _getPmStatusInfoResult.value as? Success<PowerMerchantStatus>
-            val isPowerMerchantActive = pmStatus?.data?.goldGetPmOsStatus?.result?.data?.isPowerMerchantActive() ?: false
-            val isPowerMerchantIdle = pmStatus?.data?.goldGetPmOsStatus?.result?.data?.isPowerMerchantIdle() ?: false
+            val isPowerMerchantActive = pmStatus?.data?.goldGetPmOsStatus?.result?.data?.isPowerMerchantActive()
+                    ?: false
+            val isPowerMerchantIdle = pmStatus?.data?.goldGetPmOsStatus?.result?.data?.isPowerMerchantIdle()
+                    ?: false
 
             val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
             val freeShipping = getShopFreeShippingStatusUseCase.execute(params)
@@ -115,11 +163,11 @@ class PmSubscribeViewModel @Inject constructor(
             val isTransitionPeriod = remoteConfig.isTransitionPeriodEnabled()
 
             PowerMerchantFreeShippingStatus(
-                isActive,
-                isEligible,
-                isTransitionPeriod,
-                isPowerMerchantIdle,
-                isPowerMerchantActive
+                    isActive,
+                    isEligible,
+                    isTransitionPeriod,
+                    isPowerMerchantIdle,
+                    isPowerMerchantActive
             )
         }
     }

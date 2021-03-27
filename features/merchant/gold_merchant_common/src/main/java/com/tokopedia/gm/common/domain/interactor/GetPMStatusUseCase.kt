@@ -1,7 +1,7 @@
 package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.gm.common.data.source.cloud.model.PMShopStatusResponse
-import com.tokopedia.gm.common.data.source.local.model.PMShopStatusUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.mapper.PMShopStatusMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -14,12 +14,12 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 16/03/21
  */
 
-class GetPMShopStatusUseCase @Inject constructor(
+class GetPMStatusUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PMShopStatusMapper
-) : BaseGqlUseCase<PMShopStatusUiModel>() {
+) : BaseGqlUseCase<PMStatusUiModel>() {
 
-    override suspend fun executeOnBackground(): PMShopStatusUiModel {
+    override suspend fun executeOnBackground(): PMStatusUiModel {
         val gqlRequest = GraphqlRequest(QUERY, PMShopStatusResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 

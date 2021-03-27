@@ -14,19 +14,22 @@ import javax.inject.Inject
 
 class PowerMerchantSettingInfoMapper @Inject constructor() {
 
+    companion object {
+        private const val INTERRUPT_POPUP_KEY = "interrupt_popup"
+    }
+
     fun mapRemoteModelToUiModel(response: PMSettingInfoModel?): PowerMerchantSettingInfoUiModel {
-        val interruptPopupKey = "interrupt_popup"
         return PowerMerchantSettingInfoUiModel(
                 shopId = response?.shopId.orZero().toString(),
                 isNewPmContent = response?.isNewPmContent ?: false,
                 isFinalSuccessPopup = response?.isFinalSuccessPopup ?: false,
-                periodeType = PeriodType.COMMUNICATION_PERIOD,//response?.periodeType ?: PeriodType.COMMUNICATION_PERIOD,
+                periodeType = PeriodType.TRANSITION_PERIOD, //response?.periodeType ?: PeriodType.COMMUNICATION_PERIOD,
                 tickers = response?.tickers?.map {
                     TickerUiModel(
                             title = it.title.orEmpty(),
                             text = it.text.orEmpty(),
                             type = it.type ?: TickerUiModel.TYPE_INFO,
-                            isInterruptPopup = it.text?.contains(interruptPopupKey).orFalse()
+                            isInterruptPopup = it.text?.contains(INTERRUPT_POPUP_KEY).orFalse()
                     )
                 }.orEmpty()
         )

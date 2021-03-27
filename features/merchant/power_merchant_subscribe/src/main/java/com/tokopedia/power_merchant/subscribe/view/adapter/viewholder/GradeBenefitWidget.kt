@@ -1,5 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -41,6 +43,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         val selected = element.benefitPages.indexOfFirst { it.isActive }
         if (selected != RecyclerView.NO_POSITION) {
             itemView.rvPmGradeBenefitPager.scrollToPosition(selected)
+            itemView.tabPmGradeBenefit.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             itemView.tabPmGradeBenefit.tabLayout.getTabAt(selected)?.select()
         }
     }

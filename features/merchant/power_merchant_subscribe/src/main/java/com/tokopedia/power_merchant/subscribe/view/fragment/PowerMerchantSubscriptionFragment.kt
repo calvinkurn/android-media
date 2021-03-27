@@ -7,19 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
@@ -27,7 +28,6 @@ import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMNotificationBot
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
-import com.tokopedia.power_merchant.subscribe.view.viewmodel.SubscriptionActivityViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -50,16 +50,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val sharedViewModel: SubscriptionActivityViewModel by lazy {
-        ViewModelProvider(requireActivity(), viewModelFactory).get(SubscriptionActivityViewModel::class.java)
-    }
     private val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
     }
 
-    private var shopSettingInfo: PowerMerchantSettingInfoUiModel? = null
-    private val recyclerView: RecyclerView?
-        get() = super.getRecyclerView(view)
+    private var pmSettingInfo: PowerMerchantSettingInfoUiModel? = null
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
@@ -79,7 +74,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
-        observeShopSettingInfo()
+        observePmStatusAndShopInfo()
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel?) {}
@@ -90,39 +85,59 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     }
 
+    fun setPmSettingInfo(pmSettingInfo: PowerMerchantSettingInfoUiModel) {
+        this.pmSettingInfo = pmSettingInfo
+    }
+
     private fun setupView() = view?.run {
 
     }
 
-    private fun observeShopSettingInfo() {
-        sharedViewModel.pmSettingAndShopInfo.observe(viewLifecycleOwner, Observer {
+    private fun observePmStatusAndShopInfo() {
+        mViewModel.pmStatusAndShopInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> fetchPageContent(it.data.pmSettingInfo)
+                is Success -> fetchPageContent(it.data)
                 is Fail -> {
-                    //show on error fetch setting info
+                    showErrorState()
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_STATUS_AND_SHOP_INFO_ERROR, it.throwable)
                 }
             }
         })
+
+        showLoadingState()
+        mViewModel.getPmStatusAndShopInfo()
     }
 
-    private fun fetchPageContent(data: PowerMerchantSettingInfoUiModel) {
-        this.shopSettingInfo = data
-        when (data.periodeType) {
-            PeriodType.TRANSITION_PERIOD -> observeTransitionPeriod()
-            PeriodType.FINAL_PERIOD -> observeFinalPeriodData(data)
+    private fun fetchPageContent(data: PMStatusAndShopInfoUiModel) {
+        when (data.pmStatus.status) {
+            PMStatusConst.INACTIVE -> observePmRegistrationPage()
+            else -> observePmActiveState()
         }
     }
 
-    private fun observeTransitionPeriod() {
+    private fun observePmRegistrationPage() {
         mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderRegistrationPM(it.data)
                 is Fail -> {
-                    //show error state
+                    showErrorState()
+                    logToCrashlytic(PowerMerchantErrorLogger.REGISTRATION_PAGE_ERROR, it.throwable)
                 }
             }
         })
-        mViewModel.getPMRegistrationData()
+
+        showLoadingState()
+        mViewModel.getPmRegistrationData()
+    }
+
+    private fun showLoadingState() {
+        adapter.clearAllElements()
+        renderList(listOf(WidgetLoadingStateUiModel))
+    }
+
+    private fun showErrorState() {
+        adapter.clearAllElements()
+        renderList(listOf(WidgetErrorStateUiModel))
     }
 
     private fun renderRegistrationPM(data: PMGradeBenefitAndShopInfoUiModel) {
@@ -230,17 +245,20 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         mViewModel.submitPMActivation()
     }
 
-    private fun observeFinalPeriodData(pmSettingInfo: PowerMerchantSettingInfoUiModel) {
+    private fun observePmActiveState() {
         view?.pmRegistrationFooterView?.gone()
         mViewModel.pmFinalPeriod.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderPMActiveState(it.data)
                 is Fail -> {
-                    //show on failed
+                    showErrorState()
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVE_IDLE_PAGE_ERROR, it.throwable)
                 }
             }
         })
-        mViewModel.getFinalPeriodData()
+
+        showLoadingState()
+        mViewModel.getPmActiveData()
     }
 
     private fun renderPMActiveState(data: PMFinalPeriodUiModel) {
@@ -324,5 +342,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                         description = getString(R.string.pm_potential_benefit_03)
                 )
         ))
+    }
+
+    private fun logToCrashlytic(message: String, throwable: Throwable) {
+        PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
     }
 }

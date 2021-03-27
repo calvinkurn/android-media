@@ -1,7 +1,7 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.gm.common.data.source.cloud.model.PMShopStatusDataModel
-import com.tokopedia.gm.common.data.source.local.model.PMShopStatusUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import javax.inject.Inject
 
 /**
@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 class PMShopStatusMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(shopStatus: PMShopStatusDataModel): PMShopStatusUiModel {
-        return PMShopStatusUiModel(
+    fun mapRemoteModelToUiModel(shopStatus: PMShopStatusDataModel): PMStatusUiModel {
+        return PMStatusUiModel(
                 status = shopStatus.powerMerchant?.status.orEmpty(),
                 expiredTime = shopStatus.powerMerchant?.expiredTime.orEmpty()
         )

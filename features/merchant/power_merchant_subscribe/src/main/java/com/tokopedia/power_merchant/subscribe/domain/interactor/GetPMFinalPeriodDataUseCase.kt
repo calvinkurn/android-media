@@ -1,9 +1,9 @@
 package com.tokopedia.power_merchant.subscribe.domain.interactor
 
 import com.tokopedia.gm.common.data.source.local.model.PMCurrentAndNextShopGradeUiModel
-import com.tokopedia.gm.common.data.source.local.model.PMShopStatusUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMCurrentAndNextShopGradeUseCase
-import com.tokopedia.gm.common.domain.interactor.GetPMShopStatusUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.model.PMFinalPeriodUiModel
 import com.tokopedia.usecase.coroutines.UseCase
@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 
 class GetPMFinalPeriodDataUseCase @Inject constructor(
-        private val getPMShopStatusUseCase: GetPMShopStatusUseCase,
+        private val getPMStatusUseCase: GetPMStatusUseCase,
         private val getPMCurrentAndNextShopGradeUseCase: GetPMCurrentAndNextShopGradeUseCase,
         private val userSession: UserSessionInterface
 ) : UseCase<PMFinalPeriodUiModel>() {
@@ -41,9 +41,9 @@ class GetPMFinalPeriodDataUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getPMShopStatus(): PMShopStatusUiModel {
-        getPMShopStatusUseCase.params = GetPMShopStatusUseCase.createParams(userSession.shopId)
-        return getPMShopStatusUseCase.executeOnBackground()
+    private suspend fun getPMShopStatus(): PMStatusUiModel {
+        getPMStatusUseCase.params = GetPMStatusUseCase.createParams(userSession.shopId)
+        return getPMStatusUseCase.executeOnBackground()
     }
 
     private suspend fun getCurrentAndNextPMGrade(): PMCurrentAndNextShopGradeUiModel {
