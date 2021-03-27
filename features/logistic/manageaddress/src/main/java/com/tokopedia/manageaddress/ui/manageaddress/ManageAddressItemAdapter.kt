@@ -11,10 +11,7 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
@@ -104,10 +101,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 cardAddress.hasCheckIcon = cardSelected
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    cardAddress.setPadding(itemView.getDimens(com.tokopedia.abstraction.R.dimen.dp_2), itemView.getDimens(com.tokopedia.abstraction.R.dimen.dp_12), itemView.getDimens(com.tokopedia.abstraction.R.dimen.dp_16), 0)
                 } else {
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
-                cardAddress.setPadding(0, 0, 16.toDp(), 0)
                 setListener(itemView, data)
             }
         }
