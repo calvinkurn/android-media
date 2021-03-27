@@ -122,12 +122,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
             if(peopleAddress.latitude.isNullOrEmpty()|| peopleAddress.longitude.isNullOrEmpty()) {
-                // val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
                 val colorGrey = ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)
                 imageLocation.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)
             } else {
-                // val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pinpoint_green)
                 val colorGreen = ContextCompat.getColor(itemView.context, R.color.Unify_G500)
                 imageLocation.setImage(IconUnify.LOCATION, colorGreen, colorGreen)
                 pinpointText.text = itemView.context.getString(R.string.pinpoint)
