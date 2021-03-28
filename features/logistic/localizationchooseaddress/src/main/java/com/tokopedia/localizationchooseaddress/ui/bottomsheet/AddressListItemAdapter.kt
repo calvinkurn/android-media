@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.R
@@ -102,6 +103,7 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
             if (dataIsSame(localAddr, data)) {
                 cardAddress.hasCheckIcon = true
                 cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                cardAddress.setPadding(0, 0, itemView.getDimens(R.dimen.choose_address_padding), 0)
                 cardAddress.setOnClickListener(null)
             } else {
                 cardAddress.hasCheckIcon = false
