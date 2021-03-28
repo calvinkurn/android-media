@@ -142,6 +142,8 @@ public interface ShipmentContract {
 
         void updateButtonPromoCheckout(PromoUiModel promoUiModel, boolean isNeedToHitValidateFinal);
 
+        void doResetButtonPromoCheckout();
+
         void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
 
         void setHasRunningApiCall(boolean hasRunningApiCall);
@@ -149,6 +151,8 @@ public interface ShipmentContract {
         void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc);
 
         void updateLocalCacheAddressData(UserAddress userAddress);
+
+        void resetAllCourier();
     }
 
     interface AnalyticsActionListener {

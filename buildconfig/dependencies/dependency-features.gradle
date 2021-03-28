@@ -10,6 +10,7 @@ ext {
             developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
             feedbackForm                    : ":features:common:feedback_form",
+            internalReview                  : ":features:common:internal_review",
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
@@ -117,6 +118,8 @@ ext {
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
+            
+            mediauploader                   : ":features:media:mediauploader",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
