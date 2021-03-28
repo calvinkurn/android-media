@@ -179,12 +179,12 @@ class AddEditProductDetailViewModelTest {
         } returns resultNameRecommendation
 
         viewModel.getProductNameRecommendation(query = "batik")
+        val resultViewmodel = viewModel.productNameRecommendations.getOrAwaitValue()
 
         coVerify {
             getNameRecommendationUseCase.executeOnBackground()
         }
 
-        val resultViewmodel = viewModel.productNameRecommendations.getOrAwaitValue()
         Assert.assertTrue(resultViewmodel == Success(resultNameRecommendation))
     }
 
@@ -195,12 +195,12 @@ class AddEditProductDetailViewModelTest {
         } throws MessageErrorException("")
 
         viewModel.getProductNameRecommendation(query = "baju")
+        val result = viewModel.productNameRecommendations.getOrAwaitValue()
 
         coVerify {
             getNameRecommendationUseCase.executeOnBackground()
         }
 
-        val result = viewModel.productNameRecommendations.getOrAwaitValue()
         Assert.assertTrue(result is Fail)
     }
 
