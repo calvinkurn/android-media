@@ -130,6 +130,17 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsProductSkuInputError
     var productSkuMessage: String = ""
 
+    init {
+        launch {
+            mProductNameInputLiveData.asFlow()
+                    .debounce(DEBOUNCE_DELAY_MILLIS)
+                    .distinctUntilChanged()
+                    .collect {
+                        validateProductNameInput(it)
+                    }
+        }
+    }
+
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
             this.value = isInputValid()
@@ -237,19 +248,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun setProductNameInput(string: String) {
         isProductNameChanged = true
         mProductNameInputLiveData.value = string
-    }
-
-    fun setProductNameInputAsFlow() {
-        launchCatchError(block = {
-            mProductNameInputLiveData.asFlow()
-                    .debounce(DEBOUNCE_DELAY_MILLIS)
-                    .distinctUntilChanged()
-                    .collect {
-                        validateProductNameInput(it)
-                    }
-        }, onError = {
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-        })
     }
 
     fun validateProductNameInput(productNameInput: String) {
