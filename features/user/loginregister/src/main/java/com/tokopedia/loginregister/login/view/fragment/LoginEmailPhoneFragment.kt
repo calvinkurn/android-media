@@ -786,7 +786,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun onLoginFacebookClick() {
         if (activity != null) {
             onDismissBottomSheet()
-            activity?.applicationContext?.let { analytics.eventClickLoginFacebook(it) }
+            activity?.let { analytics.eventClickLoginFacebook(it) }
             viewModel.getFacebookCredential(this, callbackManager)
         }
     }

@@ -250,7 +250,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         prepareView()
         setViewListener()
         if (isSmartLogin) {
-            context?.run{
+            activity?.run{
                 if (isPending) {
                     val intent =  registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE, context = this)
                     startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
@@ -469,7 +469,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         })
         registerInitialViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                context?.run {
+                activity?.run {
                     val intent =  registerInitialRouter.goToVerification(email = it, otpType = OTP_SECURITY_QUESTION, context = this)
                     startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
                 }
@@ -782,14 +782,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     override fun goToOTPActivateEmail(email: String) {
-        context?.run {
+        activity?.run {
             val intent = registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE, context = this)
             startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
         }
     }
 
     override fun goToOTPRegisterEmail(email: String) {
-        context?.run {
+        activity?.run {
             val intent = registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_REGISTER, context = this)
             startActivityForResult(intent, REQUEST_OTP_VALIDATE)
         }
@@ -924,7 +924,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 if (data != null) {
                     data.extras?.let { bundle ->
                         if (bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
-                            context?.run {
+                            activity?.run {
                                 val intent = registerInitialRouter.goToVerification(otpType = OTP_SECURITY_QUESTION, context = this)
                                 startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
                             }
@@ -1034,9 +1034,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun showLoadingDiscover() {
-        LetUtil.ifLet(context, socmedButtonsContainer) { (context, socmedButtonsContainer) ->
-            if(context is Context && socmedButtonsContainer is LinearLayout) {
-                val pb = LoaderUnify(context)
+        LetUtil.ifLet(context, socmedButtonsContainer) { (ctx, socmedButtonsContainer) ->
+            if(ctx is Context && socmedButtonsContainer is LinearLayout) {
+                val pb = LoaderUnify(ctx)
                 val lastPos = socmedButtonsContainer.childCount - 1
                 if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
                     socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
@@ -1151,7 +1151,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun goToLoginRegisteredPhoneNumber(phone: String) {
         phoneNumber = phone
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        context?.run {
+        activity?.run {
             val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER, context = this)
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
         }
@@ -1184,7 +1184,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             registerAnalytics.trackClickYesButtonPhoneDialog()
             dialog.dismiss()
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            context?.run {
+            activity?.run {
                 val intent = registerInitialRouter.goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER, context = this)
                 startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
             }
@@ -1197,7 +1197,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     override fun goToRegisterWithPhoneNumber(phone: String) {
-        context?.run {
+        activity?.run {
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
             val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER, context = this)
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
