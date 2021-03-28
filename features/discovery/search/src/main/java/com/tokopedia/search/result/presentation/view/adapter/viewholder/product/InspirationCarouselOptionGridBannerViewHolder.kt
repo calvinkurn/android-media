@@ -7,20 +7,20 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_grid_banner.view.*
 
 class InspirationCarouselOptionGridBannerViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView) {
+) : AbstractViewHolder<InspirationCarouselDataView.Option>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_grid_banner
     }
 
-    override fun bind(item: InspirationCarouselViewModel.Option) {
+    override fun bind(item: InspirationCarouselDataView.Option) {
         if (item.bannerImageUrl.isNotEmpty()) {
             bindBannerImage(item)
             hideDescButton()
@@ -32,7 +32,7 @@ class InspirationCarouselOptionGridBannerViewHolder(
         bindOnClickListener(item)
     }
 
-    private fun bindBannerImage(item: InspirationCarouselViewModel.Option) {
+    private fun bindBannerImage(item: InspirationCarouselDataView.Option) {
         itemView.optionGridCardViewBannerImage?.shouldShowWithAction(item.bannerImageUrl.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholder(itemView.optionGridCardViewBannerImage, item.bannerImageUrl)
         }
@@ -49,7 +49,7 @@ class InspirationCarouselOptionGridBannerViewHolder(
         )
     }
 
-    private fun bindProductDesc(item: InspirationCarouselViewModel.Option) {
+    private fun bindProductDesc(item: InspirationCarouselDataView.Option) {
         itemView.optionGridBannerDesc?.shouldShowWithAction(item.title.isNotEmpty()) {
             itemView.optionGridBannerDesc?.text = MethodChecker.fromHtml(item.title)
         }
@@ -59,7 +59,7 @@ class InspirationCarouselOptionGridBannerViewHolder(
         itemView.optionGridBannerButton?.visibility = View.VISIBLE
     }
 
-    private fun bindOnClickListener(item: InspirationCarouselViewModel.Option) {
+    private fun bindOnClickListener(item: InspirationCarouselDataView.Option) {
         itemView.optionGridCardViewBanner?.setOnClickListener { _ ->
             inspirationCarouselListener.onInspirationCarouselGridBannerClicked(item)
         }

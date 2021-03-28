@@ -327,7 +327,7 @@
                 android:paddingEnd="@dimen/spacing_lvl2"
                 app:icon_color_light_enable="@color/Unify_G500"
                 app:icon_color_night_enable="@color/Unify_G500"
-                app:icon_name="REPLAY"
+                app:icon_name="RELOAD"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_new_reload_shipping"
                 app:layout_constraintEnd_toStartOf="@+id/btn_new_reload_shipping"
                 app:layout_constraintTop_toTopOf="@+id/btn_new_reload_shipping" />

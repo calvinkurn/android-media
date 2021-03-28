@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.model
 
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
@@ -159,7 +160,7 @@ class GroupDetailViewModelTest {
         val onSuccess: (data: List<GroupListDataItem>) -> Unit = {
             actual = it[0].totalItem
         }
-        every { topAdsGetGroupListUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+        every { topAdsGetGroupListUseCase.execute(any(), any()) } answers {
             onSuccess.invoke(listOf(data))
         }
         viewModel.getGroupList("", onSuccess)
@@ -173,7 +174,7 @@ class GroupDetailViewModelTest {
         val onSuccess: () -> Unit = {
             actual = expected
         }
-        every { topAdsProductActionUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+        every { topAdsProductActionUseCase.execute(any(), any()) } answers {
             onSuccess.invoke()
         }
         viewModel.setProductAction(onSuccess, "", listOf(), res, "")
