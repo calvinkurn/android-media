@@ -41,8 +41,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_arrow"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_19"
         app:layout_constraintTop_toTopOf="@id/text_chosen_address"
