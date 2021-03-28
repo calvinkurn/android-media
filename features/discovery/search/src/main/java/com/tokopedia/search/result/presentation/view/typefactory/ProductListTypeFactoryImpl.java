@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
+import com.tokopedia.search.result.presentation.model.ChooseAddressViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -31,6 +32,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.CpmViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder;
@@ -49,6 +51,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
+import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
@@ -76,6 +79,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final SearchInTokopediaListener searchInTokopediaListener;
     private final SearchNavigationClickListener searchNavigationListener;
     private final TopAdsImageViewListener topAdsImageViewListener;
+    private final ChooseAddressListener chooseAddressListener;
     private final Config topAdsConfig;
     private int recyclerViewItem;
 
@@ -92,6 +96,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
                                       SearchInTokopediaListener searchInTokopediaListener,
                                       SearchNavigationClickListener searchNavigationListener,
                                       TopAdsImageViewListener topAdsImageViewListener,
+                                      ChooseAddressListener chooseAddressListener,
                                       Config config) {
 
         this.productListener = productListener;
@@ -108,6 +113,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.searchInTokopediaListener = searchInTokopediaListener;
         this.searchNavigationListener = searchNavigationListener;
         this.topAdsImageViewListener = topAdsImageViewListener;
+        this.chooseAddressListener = chooseAddressListener;
     }
 
     @Override
@@ -231,6 +237,11 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
+    public int type(ChooseAddressViewModel chooseAddressViewModel) {
+        return ChooseAddressViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -278,6 +289,8 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new SearchProductCountViewHolder(view, searchNavigationListener);
         } else if (type == SearchProductTopAdsImageViewHolder.LAYOUT) {
             viewHolder = new SearchProductTopAdsImageViewHolder(view, topAdsImageViewListener);
+        } else if (type == ChooseAddressViewHolder.LAYOUT) {
+            viewHolder = new ChooseAddressViewHolder(view, chooseAddressListener, searchNavigationListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

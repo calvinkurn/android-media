@@ -93,7 +93,7 @@ class EditFormDefaultViewModel @Inject constructor(
     }
 
     fun getAdKeyword(groupId: Int, cursor: String, onSuccess: (List<GetKeywordResponse.KeywordsItem>, cursor: String) -> Unit) {
-        getAdKeywordUseCase.setParams(groupId, cursor, userSession.shopId, source = ParamObject.KEYWORD_SOURCE)
+        getAdKeywordUseCase.setParams(groupId, cursor, userSession.shopId, source = ParamObject.KEYWORD_SOURCE, keywordStatus = listOf(1, 3))
         getAdKeywordUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topAdsListKeyword.data.keywords, it.topAdsListKeyword.data.pagination.cursor)
@@ -115,12 +115,22 @@ class EditFormDefaultViewModel @Inject constructor(
     }
 
     fun topAdsCreated(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>,
-                      dataGroup: HashMap<String, Any?>, onSuccess: (() -> Unit), onError: (() -> Unit)) {
+                      dataGroup: HashMap<String, Any?>, onSuccess: (() -> Unit), onError: ((error:String?) -> Unit)) {
         topAdsCreateUseCase.setParam(dataProduct, dataKeyword, dataGroup)
         topAdsCreateUseCase.executeQuerySafeMode(
-                { onSuccess() },
+                {
+                    if(it.topadsManageGroupAds.groupResponse.errors.isNullOrEmpty() && it.topadsManageGroupAds.keywordResponse.errors.isNullOrEmpty())
+                    onSuccess()
+                    else{
+                        var error = ""
+                        if(!it.topadsManageGroupAds.groupResponse.errors.isNullOrEmpty())
+                            error = it.topadsManageGroupAds.groupResponse.errors?.firstOrNull()?.detail?:""
+                        else if(!it.topadsManageGroupAds.keywordResponse.errors.isNullOrEmpty())
+                            error = it.topadsManageGroupAds.keywordResponse.errors?.firstOrNull()?.detail?:""
+                        onError(error)
+                    }},
                 { throwable ->
-                    onError()
+                    onError(throwable.message)
                     throwable.printStackTrace()
                 })
     }

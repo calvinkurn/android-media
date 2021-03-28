@@ -525,4 +525,16 @@
         <key>app_cm_inapp_enable_new2</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_enable_branch_reinitflow</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD</key>
+        <value>0.0</value>
+    </entry>
+    <entry>
+        <key>app_notif_tray_clear_v2</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

@@ -46,9 +46,9 @@ public class BranchWrapper implements WrapperInterface {
 
     @Override
     public void init(Context context) {
-        if(Branch.getInstance() == null) {
+        if (Branch.getInstance() == null) {
             Branch.getAutoInstance(context);
-            if(GlobalConfig.isAllowDebuggingTools()) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
                 Branch.enableLogging();
             }
         }
@@ -61,7 +61,7 @@ public class BranchWrapper implements WrapperInterface {
 
     @Override
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
-        if(linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
+        if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
             generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                     context, linkerShareRequest.getShareCallbackInterface(),
                     ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
@@ -72,28 +72,30 @@ public class BranchWrapper implements WrapperInterface {
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
         if (branch == null) {
-            if(linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
+            if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                         LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_INIT_FAILED, null));
             }
         } else {
             try {
-                if(linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDataObj() != null &&
+                if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDataObj() != null &&
                         linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData) {
-                    if(isBranchInitialized){
+                    if (isBranchInitialized) {
                         Branch.sessionBuilder(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity())
                                 .withCallback(getBranchCallback(linkerDeeplinkRequest, context))
                                 .withData(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable())
                                 .reInit();
-                    }
-                    else {
-                        isBranchInitialized = true;
+                    } else {
+                        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+                        if(remoteConfig.getBoolean(LinkerConstants.enableBranchReinitFlow)) {
+                            isBranchInitialized = true;
+                        }
                         Branch.sessionBuilder(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity()).withCallback(getBranchCallback(linkerDeeplinkRequest, context)).
                                 withData(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable()).init();
                     }
                 }
             } catch (Exception e) {
-                if(linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
+                if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                     linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                             LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
                 }
@@ -101,7 +103,7 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private Branch.BranchReferralInitListener getBranchCallback(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context){
+    private Branch.BranchReferralInitListener getBranchCallback(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         return new Branch.BranchReferralInitListener() {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
@@ -109,7 +111,7 @@ public class BranchWrapper implements WrapperInterface {
                     String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
                     String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
 
-                    if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")&&
+                    if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://") &&
                             !TextUtils.isEmpty(deeplink)) {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
                     }
@@ -118,7 +120,7 @@ public class BranchWrapper implements WrapperInterface {
                                 LinkerUtils.createDeeplinkData(deeplink, promoCode));
                     }
 
-                    checkAndSendUtmParams(context,referringParams);
+                    checkAndSendUtmParams(context, referringParams);
                 } else {
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -129,12 +131,12 @@ public class BranchWrapper implements WrapperInterface {
         };
     }
 
-    private void fetchLastAttributeTouchData(){
+    private void fetchLastAttributeTouchData() {
         Branch.getInstance().getLastAttributedTouchData(
                 new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
                     @Override
                     public void onDataFetched(JSONObject jsonObject, BranchError error) {
-                        if(error == null){
+                        if (error == null) {
 
                         }
                     }
@@ -154,9 +156,9 @@ public class BranchWrapper implements WrapperInterface {
 
     @Override
     public void sendEvent(LinkerGenericRequest linkerGenericRequest, Context context) {
-        switch (linkerGenericRequest.getEventId()){
+        switch (linkerGenericRequest.getEventId()) {
             case LinkerConstants.EVENT_USER_IDENTITY:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
                         linkerGenericRequest.getDataObj() instanceof UserData) {
                     UserData userData = (UserData) linkerGenericRequest.getDataObj();
                     if (userData != null) {
@@ -168,7 +170,7 @@ public class BranchWrapper implements WrapperInterface {
                 }
                 break;
             case LinkerConstants.EVENT_USER_REGISTRATION_VAL:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
                         linkerGenericRequest.getDataObj() instanceof UserData) {
                     BranchHelper.sendRegisterEvent(
                             (UserData) linkerGenericRequest.getDataObj(),
@@ -179,13 +181,13 @@ public class BranchWrapper implements WrapperInterface {
                 BranchHelper.sendLogoutEvent();
                 break;
             case LinkerConstants.EVENT_LOGIN_VAL:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
                         linkerGenericRequest.getDataObj() instanceof UserData) {
                     BranchHelper.sendLoginEvent(context, (UserData) linkerGenericRequest.getDataObj());
                 }
                 break;
             case LinkerConstants.EVENT_COMMERCE_VAL:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
                         linkerGenericRequest.getDataObj() instanceof LinkerCommerceData) {
                     BranchHelper.sendCommerceEvent(
                             ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getPaymentData(),
@@ -193,41 +195,41 @@ public class BranchWrapper implements WrapperInterface {
                 }
                 break;
             case LinkerConstants.EVENT_ITEM_VIEW:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
-                linkerGenericRequest.getDataObj() instanceof LinkerData){
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData) {
                     BranchHelper.sendItemViewEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
                 }
                 break;
             case LinkerConstants.EVENT_ADD_TO_CART:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
-                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData) {
                     BranchHelper.sendAddToCartEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
                 }
                 break;
             case LinkerConstants.EVENT_ADD_TO_WHISHLIST:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
-                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData) {
                     BranchHelper.sendAddToWishListEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
                 }
                 break;
             case LinkerConstants.EVENT_PURCHASE_FLIGHT:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
-                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData) {
                     BranchHelper.sendFlightPurchaseEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
                 }
                 break;
             // Recharge
             case LinkerConstants.EVENT_DIGITAL_HOMEPAGE:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
-                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData) {
                     RechargeBranchHelper.sendDigitalHomepageLaunchEvent(context,
                             (LinkerData) linkerGenericRequest.getDataObj()
                     );
                 }
                 break;
             case LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH:
-                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
-                        linkerGenericRequest.getDataObj() instanceof RechargeLinkerData){
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof RechargeLinkerData) {
                     RechargeBranchHelper.sendDigitalScreenLaunchEvent(context,
                             (RechargeLinkerData) linkerGenericRequest.getDataObj()
                     );
@@ -251,7 +253,7 @@ public class BranchWrapper implements WrapperInterface {
 
         if (isBranchUrlActivated(context, data.getType()) && !LinkerData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
             if (LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getshareUrl())) {
-                if(shareCallback != null) {
+                if (shareCallback != null) {
                     shareCallback.urlCreated(LinkerUtils.createShareResult(
                             data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl()));
                 }
@@ -262,15 +264,14 @@ public class BranchWrapper implements WrapperInterface {
                     @Override
                     public void onLinkCreate(String url, BranchError error) {
                         if (error == null) {
-                            if(shareCallback != null) {
+                            if (shareCallback != null) {
                                 shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
                             }
                         } else {
-                            if(shareCallback != null) {
-                                if(data.isThrowOnError()){
+                            if (shareCallback != null) {
+                                if (data.isThrowOnError()) {
                                     shareCallback.onError(LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
-                                }
-                                else {
+                                } else {
                                     shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
                                 }
                             }
@@ -292,7 +293,7 @@ public class BranchWrapper implements WrapperInterface {
 
         if (LinkerData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.PRODUCT_INFO, data.getId());
-        }  else if (LinkerData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
+        } else if (LinkerData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.SHOP, data.getId());//"shop/" + data.getId();
         } else if (LinkerData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
@@ -304,11 +305,9 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = data.getUri();
         } else if (LinkerData.MERCHANT_VOUCHER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
-        }
-
-        else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
+        } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.REFERRAL_WELCOME, data.getId());
-            if(userData != null) {
+            if (userData != null) {
                 deeplinkPath = deeplinkPath.replaceFirst(LinkerConstants.REGEX_APP_LINK,
                         userData.getName() == null ? "" : userData.getName());
             }
@@ -334,6 +333,10 @@ public class BranchWrapper implements WrapperInterface {
             linkProperties.setFeature(LinkerConstants.FEATURE_TYPE_HOTEL);
             linkProperties.addTag(LinkerConstants.HOTEL_LABEL);
             linkProperties.addTag(LinkerConstants.PDP_LABEL);
+            if (!desktopUrl.isEmpty()) {
+                linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
+            }
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
             linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
             deeplinkPath = data.getDeepLink();
@@ -345,7 +348,7 @@ public class BranchWrapper implements WrapperInterface {
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, LinkerConstants.REFERRAL_DESKTOP_URL);
         } else if (!TextUtils.isEmpty(desktopUrl)) {
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, desktopUrl);
-        }else {
+        } else {
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, data.renderShareUri());
         }
 
@@ -388,7 +391,7 @@ public class BranchWrapper implements WrapperInterface {
             try {
                 temp = URLEncoder.encode(temp, "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                temp = temp.replace(" ","");
+                temp = temp.replace(" ", "");
             }
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, String.format(LinkerConstants.STRING_FORMAT_DESKTOP_URL, desktopUrl, temp));
             linkProperties.addControlParameter(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH, renderedUrl);
@@ -405,7 +408,7 @@ public class BranchWrapper implements WrapperInterface {
                 || LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(type)) {
             return true;
         } else {
-            return ((LinkerRouter)context.getApplicationContext()).
+            return ((LinkerRouter) context.getApplicationContext()).
                     getBooleanRemoteConfig(LinkerConstants.FEATURE_GATE_BRANCH_LINKS, true);
         }
     }
@@ -423,12 +426,12 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     public static Boolean isAndroidIosUrlActivated(Context context) {
-        return ((LinkerRouter)context.getApplicationContext()).
+        return ((LinkerRouter) context.getApplicationContext()).
                 getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_INCLUDEMOBILEWEB, true);
     }
 
     public static Boolean isAppShowReferralButtonActivated(Context context) {
-        return ((LinkerRouter)context.getApplicationContext()).
+        return ((LinkerRouter) context.getApplicationContext()).
                 getBooleanRemoteConfig(LinkerConstants.APP_SHOW_REFERRAL_BUTTON, false);
     }
 
@@ -439,21 +442,21 @@ public class BranchWrapper implements WrapperInterface {
         String utmMedium;
         String utmTerm = null;
         utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
-        if(!TextUtils.isEmpty(utmSource)){
+        if (!TextUtils.isEmpty(utmSource)) {
             utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
             utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
             utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
-        }else{
+        } else {
             utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
             utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
             utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
         }
-        sendCampaignTOGTM(context,utmSource,utmCampaign,utmMedium, utmTerm);
+        sendCampaignTOGTM(context, utmSource, utmCampaign, utmMedium, utmTerm);
     }
 
 
-    private void sendCampaignTOGTM(Context context, String utmSource,String utmCampaign,String utmMedium,String utmTerm){
-        if(context==null) return;
+    private void sendCampaignTOGTM(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm) {
+        if (context == null) return;
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT) &&
                 !(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
@@ -462,7 +465,7 @@ public class BranchWrapper implements WrapperInterface {
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
-            if(!TextUtils.isEmpty(utmTerm)){
+            if (!TextUtils.isEmpty(utmTerm)) {
                 param.put(LinkerConstants.UTM_TERM, utmTerm);
             }
 

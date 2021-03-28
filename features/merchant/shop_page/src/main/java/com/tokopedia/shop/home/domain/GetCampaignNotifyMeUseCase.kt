@@ -4,16 +4,12 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_CAMPAIGN_NOTIFY_ME
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetCampaignNotifyMeUseCase @Inject constructor(
-        @Named(GQL_GET_CAMPAIGN_NOTIFY_ME)
-        val gqlQuery: String,
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<GetCampaignNotifyMeModel>() {
 
@@ -36,13 +32,25 @@ class GetCampaignNotifyMeUseCase @Inject constructor(
         }
     }
 
+    private val query = """
+            query get_campaign_notify_me(${'$'}params:GetCampaignNotifyMeRequest!){
+              getCampaignNotifyMe (params: ${'$'}params ){
+                campaign_id
+                success
+                message
+                error_message
+                is_available
+              }
+            }
+        """.trimIndent()
+
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): GetCampaignNotifyMeModel {
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.CLOUD_THEN_CACHE).build())
-        val gqlRequest = GraphqlRequest(gqlQuery, GetCampaignNotifyMeModel.Response::class.java, params)
+        val gqlRequest = GraphqlRequest(query, GetCampaignNotifyMeModel.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(GraphqlError::class.java)

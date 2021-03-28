@@ -52,6 +52,10 @@ public class RecipientAddressModel implements Parcelable {
     private LocationDataModel locationDataModel;
     private List<String> disabledAddress;
 
+    // Localizing Address
+    private boolean isStateChosenAddress;
+    private boolean radioButtonChecked;
+
     public RecipientAddressModel() {
     }
 
@@ -287,6 +291,23 @@ public class RecipientAddressModel implements Parcelable {
         this.dropOffAddressDetail = dropOffAddressDetail;
     }
 
+    public boolean isStateChosenAddress() {
+        return isStateChosenAddress;
+    }
+
+    public void setStateChosenAddress(boolean stateChosenAddress) {
+        isStateChosenAddress = stateChosenAddress;
+    }
+
+
+    public boolean isRadioButtonChecked() {
+        return radioButtonChecked;
+    }
+
+    public void setRadioButtonChecked(boolean radioButtonChecked) {
+        this.radioButtonChecked = radioButtonChecked;
+    }
+
     public LocationDataModel getLocationDataModel() {
         return locationDataModel;
     }
@@ -422,6 +443,8 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeString(this.dropOffAddressName);
         dest.writeString(this.dropOffAddressDetail);
         dest.writeParcelable(this.locationDataModel, flags);
+        dest.writeByte(this.isStateChosenAddress ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.radioButtonChecked? (byte) 1 : (byte) 0);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -456,6 +479,8 @@ public class RecipientAddressModel implements Parcelable {
         this.dropOffAddressName = in.readString();
         this.dropOffAddressDetail = in.readString();
         this.locationDataModel = in.readParcelable(LocationDataModel.class.getClassLoader());
+        this.isStateChosenAddress = in.readByte() != 0;
+        this.radioButtonChecked = in.readByte() != 0;
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
