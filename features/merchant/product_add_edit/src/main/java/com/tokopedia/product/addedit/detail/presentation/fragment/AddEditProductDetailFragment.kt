@@ -512,7 +512,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             viewModel.setProductNameInput(editable)
             showProductNameLoadingIndicator()
         }
-        viewModel.setProductNameInputAsFlow()
 
         // product price text change listener
         if (viewModel.productInputModel.variantInputModel.selections.isNotEmpty() &&

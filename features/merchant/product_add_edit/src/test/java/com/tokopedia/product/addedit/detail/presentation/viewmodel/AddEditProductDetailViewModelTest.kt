@@ -42,7 +42,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.*
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import kotlin.reflect.KFunction0
 
 @FlowPreview
