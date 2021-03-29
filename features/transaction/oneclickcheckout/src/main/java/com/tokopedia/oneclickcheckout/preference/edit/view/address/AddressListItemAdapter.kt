@@ -18,7 +18,7 @@ class AddressListItemAdapter(private val listener: OnSelectedListener) : Recycle
     }
 
     interface OnSelectedListener {
-        fun onSelect(addressId: String)
+        fun onSelect(addressModel: RecipientAddressModel)
     }
 
     override fun getItemViewType(position: Int): Int {

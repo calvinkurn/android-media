@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.CpmViewModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel
-import com.tokopedia.search.result.presentation.model.SeparatorViewModel
+import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
+import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -71,12 +71,12 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     private fun `Then verify TDN on first page`() {
         visitableList.size shouldBe 11
 
-        visitableList[0].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[0] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn1
-        visitableList[5].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[5] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn4
-        visitableList[10].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[10] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn8
+        visitableList[0].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+        (visitableList[0] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn1
+        visitableList[5].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+        (visitableList[5] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn4
+        visitableList[10].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+        (visitableList[10] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn8
     }
 
     @Test
@@ -111,10 +111,10 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     private fun `Then verify TDN on second page`() {
         visitableList.size shouldBe 21
 
-        visitableList[15].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[15] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn12
-        visitableList[20].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[20] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn16
+        visitableList[15].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+        (visitableList[15] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn12
+        visitableList[20].shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+        (visitableList[20] as SearchProductTopAdsImageDataView).topAdsImageViewModel shouldBe tdn16
     }
 
     @Test
@@ -131,7 +131,7 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify TDN is not shown`() {
-        visitableList.any { it is SearchProductTopAdsImageViewModel } shouldBe false
+        visitableList.any { it is SearchProductTopAdsImageDataView } shouldBe false
     }
 
     @Test
@@ -152,16 +152,16 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0 || index == 14) {
-                visitable.shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+                visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
             }
             else if (index == 15 || index == 17) {
-                visitable.shouldBeInstanceOf<SeparatorViewModel>()
+                visitable.shouldBeInstanceOf<SeparatorDataView>()
             }
             else if (index == 1 || index == 16) {
-                visitable.shouldBeInstanceOf<CpmViewModel>()
+                visitable.shouldBeInstanceOf<CpmDataView>()
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>()
+                visitable.shouldBeInstanceOf<ProductItemDataView>()
             }
         }
     }
@@ -184,20 +184,20 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads after load more`() {
-        visitableList.size shouldBe 35
+        visitableList.size shouldBe 36
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0 || index == 14 || index == 27) {
-                visitable.shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+                visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
             }
             else if (index == 28 || index == 30) {
-                visitable.shouldBeInstanceOf<SeparatorViewModel>()
+                visitable.shouldBeInstanceOf<SeparatorDataView>()
             }
             else if (index == 1 || index == 29) {
-                visitable.shouldBeInstanceOf<CpmViewModel>()
+                visitable.shouldBeInstanceOf<CpmDataView>()
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>()
+                visitable.shouldBeInstanceOf<ProductItemDataView>()
             }
         }
     }

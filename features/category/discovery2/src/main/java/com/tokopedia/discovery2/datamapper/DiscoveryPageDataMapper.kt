@@ -14,17 +14,20 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
 var discoComponentQuery: MutableMap<String, String?>? = null
 
-fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryParameterMap: MutableMap<String, String?>): DiscoveryPageData {
+fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
+                                   queryParameterMap: MutableMap<String, String?>,
+                                   userAddressData: LocalCacheModel?): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
             pageInfo.identifier?.let { identifier ->
@@ -41,7 +44,9 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
     return discoveryPageData
 }
 
-class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryParameterMap: Map<String, String?>) {
+class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
+                              private val queryParameterMap: Map<String, String?>,
+                              private val localCacheModel: LocalCacheModel?) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
         val componentList = getDiscoveryComponentList(filterSaleTimer(components))
@@ -50,6 +55,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 if (item.id == targetCompId) {
                     item.rpc_discoQuery = queryParameterMap
                 }
+                item.userAddressData = localCacheModel
+            }
+        }else if(componentList.isNotEmpty()){
+            componentList.forEach { item ->
+                item.userAddressData = localCacheModel
             }
         }
         return componentList
@@ -241,6 +251,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 setComponentsItem(component.getComponentsItem(), component.tabName)
             })
             component.needPagination = true
+            component.userAddressData = localCacheModel
             listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
                 properties = component.properties
             } })

@@ -169,6 +169,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -1498,6 +1499,18 @@ open class HomeFragment : BaseDaggerFragment(),
         stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
+    }
+
+    override fun onChooseAddressUpdated() {
+
+    }
+
+    override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowUserAddress: Boolean) {
+
+    }
+
+    override fun onChooseAddressServerDown() {
+
     }
 
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce

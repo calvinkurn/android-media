@@ -97,6 +97,6 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        inflateFragment()
+        setIntent(intent)
     }
 }

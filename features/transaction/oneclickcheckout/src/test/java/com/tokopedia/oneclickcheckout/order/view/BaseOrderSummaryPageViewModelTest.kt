@@ -53,7 +53,7 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var checkoutOccUseCase: CheckoutOccUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)

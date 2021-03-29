@@ -10,9 +10,9 @@ import javax.inject.Inject
 
 class SetDefaultPeopleAddressUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<SetDefaultPeopleAddressGqlResponse>) {
 
-    fun execute(inputAddressId: Int, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    fun execute(inputAddressId: Int, setAsStateChosenAddress: Boolean, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to inputAddressId))
+        graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to inputAddressId, PARAM_SET_AS_CHOSEN to setAsStateChosenAddress))
         graphqlUseCase.setTypeClass(SetDefaultPeopleAddressGqlResponse::class.java)
         graphqlUseCase.execute({ response: SetDefaultPeopleAddressGqlResponse ->
             if(response.response.status.equals(STATUS_OK, true))  {
@@ -31,10 +31,11 @@ class SetDefaultPeopleAddressUseCase @Inject constructor(private val graphqlUseC
 
     companion object{
         const val PARAM_KEY = "inputAddressId"
+        const val PARAM_SET_AS_CHOSEN = "setAsStateChosenAddress"
 
         val QUERY = """
-            mutation defaultAddress(${"$"}inputAddressId : Int!) {
-              kero_set_default_address(addr_id: ${"$"}inputAddressId) {
+            mutation defaultAddress(${"$"}inputAddressId : Int!, ${"$"}setAsStateChosenAddress: Boolean) {
+              kero_set_default_address(addr_id: ${"$"}inputAddressId, set_as_state_chosen_address: ${"$"}setAsStateChosenAddress) {
                 data{
                   is_success
                 }
