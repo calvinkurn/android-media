@@ -7,14 +7,14 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
-import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
@@ -85,11 +85,15 @@ public class ShipmentDataConverter {
     }
 
     public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
-        shipmentDonationModel.setChecked(cartShipmentAddressFormData.getDonation().isChecked());
-        shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
+        if (cartShipmentAddressFormData.getDonation() != null) {
+            ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
+            shipmentDonationModel.setChecked(cartShipmentAddressFormData.getDonation().isChecked());
+            shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
 
-        return shipmentDonationModel;
+            return shipmentDonationModel;
+        } else {
+            return null;
+        }
     }
 
     @NonNull

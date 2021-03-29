@@ -126,4 +126,6 @@
     <!-- Order Management History   -->
     <string name="transaction_title_activity_order_history">Detail Status</string>
 
+    <string name="review_reminder_title">Pengingat Ulasan</string>
+
 </resources>
