@@ -22,7 +22,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
-import com.tokopedia.flight.promo_chips.adapter.viewholder.FlightPromoChipsViewHolder
+import com.tokopedia.flight.promo_chips.presentation.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchViewHolder
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.test.application.espresso_component.CommonMatcher
@@ -157,6 +157,9 @@ class FlightSearchActivityTest {
         if (getPromoChipsItemCount() > 0) {
             onView(withId(R.id.recycler_view_promo_chips)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click()))
+            Thread.sleep(2000)
+            assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_PROMO_CHIPS),
+                    hasAllSuccess())
         }
     }
 
@@ -173,5 +176,6 @@ class FlightSearchActivityTest {
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_search_p1.json"
         private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_search_all.json"
+        private const val ANALYTIC_VALIDATOR_PROMO_CHIPS = "tracker/travel/flight/flight_srp_promochips.json"
     }
 }
