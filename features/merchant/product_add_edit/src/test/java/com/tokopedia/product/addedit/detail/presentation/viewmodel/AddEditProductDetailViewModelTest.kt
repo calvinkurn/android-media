@@ -29,6 +29,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputMo
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -36,13 +37,15 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.*
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import kotlin.reflect.KFunction0
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class AddEditProductDetailViewModelTest {
 
@@ -75,6 +78,9 @@ class AddEditProductDetailViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @Before
     fun setup() {
@@ -131,7 +137,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `success get category recommendation`() = runBlocking {
+    fun `success get category recommendation`() = coroutineTestRule.runBlockingTest {
         val successResult = listOf(any<ListItemUnify>(), any<ListItemUnify>(), any<ListItemUnify>())
 
         coEvery {
@@ -140,36 +146,32 @@ class AddEditProductDetailViewModelTest {
 
         viewModel.getCategoryRecommendation("baju")
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getCategoryRecommendationUseCase.executeOnBackground()
         }
 
-        val result = viewModel.productCategoryRecommendationLiveData.value
+        val result = viewModel.productCategoryRecommendationLiveData.getOrAwaitValue()
         Assert.assertTrue(result != null && result == Success(successResult))
     }
 
     @Test
-    fun `failed get category recommendation`() = runBlocking {
+    fun `failed get category recommendation`() = coroutineTestRule.runBlockingTest {
         coEvery {
             getCategoryRecommendationUseCase.executeOnBackground()
         } throws MessageErrorException("")
 
         viewModel.getCategoryRecommendation("baju")
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getCategoryRecommendationUseCase.executeOnBackground()
         }
 
-        val result = viewModel.productCategoryRecommendationLiveData.value
+        val result = viewModel.productCategoryRecommendationLiveData.getOrAwaitValue()
         Assert.assertTrue(result != null && result is Fail)
     }
 
     @Test
-    fun `success get name recommendation`() = runBlocking {
+    fun `success get name recommendation`() = coroutineTestRule.runBlockingTest {
         val resultNameRecommendation = listOf("batik", "batik couple", "baju batik wanita", "baju batik pria", "batik kultut")
 
         coEvery {
@@ -177,33 +179,29 @@ class AddEditProductDetailViewModelTest {
         } returns resultNameRecommendation
 
         viewModel.getProductNameRecommendation(query = "batik")
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        val resultViewmodel = viewModel.productNameRecommendations.getOrAwaitValue()
 
         coVerify {
             getNameRecommendationUseCase.executeOnBackground()
         }
 
-        val resultViewmodel = viewModel.productNameRecommendations.value
-        Assert.assertTrue(resultViewmodel != null && resultViewmodel == Success(resultNameRecommendation))
+        Assert.assertTrue(resultViewmodel == Success(resultNameRecommendation))
     }
 
     @Test
-    fun `failed get name recommendation`() = runBlocking {
+    fun `failed get name recommendation`() = coroutineTestRule.runBlockingTest {
         coEvery {
             getNameRecommendationUseCase.executeOnBackground()
         } throws MessageErrorException("")
 
         viewModel.getProductNameRecommendation(query = "baju")
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        val result = viewModel.productNameRecommendations.getOrAwaitValue()
 
         coVerify {
             getNameRecommendationUseCase.executeOnBackground()
         }
 
-        val result = viewModel.productNameRecommendations.value
-        Assert.assertTrue(result != null && result is Fail)
+        Assert.assertTrue(result is Fail)
     }
 
     @Test
@@ -322,7 +320,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductNameInput should invalid when product name is exist`() = runBlocking {
+    fun `validateProductNameInput should invalid when product name is exist`() = coroutineTestRule.runBlockingTest {
         val resultMessage = listOf("error 1", "error 2")
 
         coEvery {
@@ -336,7 +334,6 @@ class AddEditProductDetailViewModelTest {
 
         viewModel.isProductNameChanged = true
         viewModel.validateProductNameInput( "batik cociks")
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             validateProductUseCase.executeOnBackground()
@@ -347,7 +344,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductNameInput should valid when product name is not exist`() = runBlocking {
+    fun `validateProductNameInput should valid when product name is not exist`() = coroutineTestRule.runBlockingTest {
         val resultMessage = listOf<String>()
 
         coEvery {
@@ -361,7 +358,6 @@ class AddEditProductDetailViewModelTest {
 
         viewModel.isProductNameChanged = true
         viewModel.validateProductNameInput( "batik cociks")
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             validateProductUseCase.executeOnBackground()
@@ -748,50 +744,38 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductSkuInput should valid when productSkuInput is not contains space char`() = runBlocking {
+    fun `validateProductSkuInput should valid when productSkuInput is not contains space char`() = coroutineTestRule.runBlockingTest {
         val resultMessage = listOf<String>()
 
         coEvery {
-            validateProductUseCase.executeOnBackground()
-        } returns ValidateProductResponse(
-                ProductValidateV3(
-                        isSuccess = false,
-                        data = ProductValidateData(resultMessage, resultMessage)
-                )
-        )
+            validateProductUseCase.executeOnBackground().productValidateV3
+        } returns ProductValidateV3(isSuccess = true,
+                data = ProductValidateData(resultMessage, resultMessage))
 
         viewModel.validateProductSkuInput("ESKU")
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
 
         coVerify {
             validateProductUseCase.executeOnBackground()
         }
-
-        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
         Assert.assertTrue(!isError && viewModel.productSkuMessage.isBlank())
     }
 
     @Test
-    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = runBlocking {
+    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = coroutineTestRule.runBlockingTest  {
         val resultMessage = listOf("error 1", "error 2")
 
         coEvery {
-            validateProductUseCase.executeOnBackground()
-        } returns ValidateProductResponse(
-                ProductValidateV3(
-                        isSuccess = false,
-                        data = ProductValidateData(resultMessage, resultMessage)
-                )
-        )
+            validateProductUseCase.executeOnBackground().productValidateV3
+        } returns ProductValidateV3(isSuccess = false,
+                data = ProductValidateData(resultMessage, resultMessage))
 
         viewModel.validateProductSkuInput("ES KU")
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
 
         coVerify {
             validateProductUseCase.executeOnBackground()
         }
-
-        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
         Assert.assertTrue(isError && viewModel.productSkuMessage.isNotBlank() && viewModel.productSkuMessage == resultMessage.joinToString("\n"))
     }
 
@@ -908,27 +892,25 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `get showcase list should get the list`() {
-        runBlocking {
-            coEvery {
-                getShopEtalaseUseCase.executeOnBackground().shopShowcases.result
-            } returns listOf()
+    fun `get showcase list should get the list`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            getShopEtalaseUseCase.executeOnBackground().shopShowcases.result
+        } returns listOf()
 
-            viewModel.getShopShowCasesUseCase()
-            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        viewModel.getShopShowCasesUseCase()
 
-            coVerify {
-                getShopEtalaseUseCase.executeOnBackground()
-            }
-
-            val expectedResponse = Success(listOf<ShopEtalaseModel>())
-            val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
-            assertEquals(expectedResponse, actualResponse)
+        coVerify {
+            getShopEtalaseUseCase.executeOnBackground()
         }
+
+        val expectedResponse = Success(listOf<ShopEtalaseModel>())
+        val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
+        assertEquals(expectedResponse, actualResponse)
+
     }
 
     @Test
-    fun `getAnnotationCategory should return unfilled data when productId is not provided`() = runBlocking {
+    fun `getAnnotationCategory should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
         val annotationCategoryData = listOf<AnnotationCategoryData>()
 
         coEvery {
@@ -938,13 +920,12 @@ class AddEditProductDetailViewModelTest {
         )
 
         viewModel.getAnnotationCategory("", "")
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
 
         coVerify {
             annotationCategoryUseCase.executeOnBackground()
         }
 
-        val result = viewModel.annotationCategoryData.getOrAwaitValue()
         Assert.assertTrue(result is Success)
 
         if (result is Success) {
@@ -955,7 +936,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getAnnotationCategory should return specification data when productId is provided`() = runBlocking {
+    fun `getAnnotationCategory should return specification data when productId is provided`() = coroutineTestRule.runBlockingTest {
         val annotationCategoryData = listOf(
                 AnnotationCategoryData(
                         variant = "Merek",
@@ -978,13 +959,12 @@ class AddEditProductDetailViewModelTest {
         )
 
         viewModel.getAnnotationCategory("", "11090")
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
 
         coVerify {
             annotationCategoryUseCase.executeOnBackground()
         }
 
-        val result = viewModel.annotationCategoryData.getOrAwaitValue()
         Assert.assertTrue(result is Success)
 
         if (result is Success) {
@@ -995,7 +975,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `getAnnotationCategory should return simplified specification data when having more than 5 specification`() = runBlocking {
+    fun `getAnnotationCategory should return simplified specification data when having more than 5 specification`() = coroutineTestRule.runBlockingTest {
         val annotationCategoryData = listOf(
                 AnnotationCategoryData(
                         variant = "Merek",
@@ -1044,13 +1024,12 @@ class AddEditProductDetailViewModelTest {
         every { provider.getProductSpecificationCounter(any()) } returns ", +1 lainnya"
 
         viewModel.getAnnotationCategory("", "11090")
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
 
         coVerify {
             annotationCategoryUseCase.executeOnBackground()
         }
 
-        val result = viewModel.annotationCategoryData.getOrAwaitValue()
         Assert.assertTrue(result is Success)
 
         if (result is Success) {

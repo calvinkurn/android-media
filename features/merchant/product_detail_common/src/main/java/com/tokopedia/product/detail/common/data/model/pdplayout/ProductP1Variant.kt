@@ -48,7 +48,7 @@ data class ProductP1VariantOption(
 
         @SerializedName("hex")
         @Expose
-        val hex: String? = null, // ex:#ff3303
+        val hex: String? = null,
 
         @SerializedName("picture")
         @Expose

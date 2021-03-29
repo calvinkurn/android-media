@@ -42,7 +42,6 @@ include "libraries:logger"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
 include 'libraries:iris_session'
-include "libraries:mediauploader"
 include "libraries:oms"
 include "libraries:poc_new_relic"
 include "libraries:push_notification"

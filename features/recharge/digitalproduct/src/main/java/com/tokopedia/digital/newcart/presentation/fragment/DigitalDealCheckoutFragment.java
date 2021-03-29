@@ -89,8 +89,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         void showDim(float procentage, int height);
 
         void hideDim(float procentage);
-
-        boolean isAlreadyShowOnBoard();
     }
 
     @Inject
@@ -420,14 +418,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void showPromoOnlyForTopUpAndBillMessage() {
         Toaster.build(getView(), getString(R.string.digital_deal_promo_restriction_message),
                 Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.digital_deal_promo_restriction_action_label), v->{}).show();
-    }
-
-    @Override
-    public boolean isAlreadyShowOnBoard() {
-        if (interactionListener != null) {
-            return interactionListener.isAlreadyShowOnBoard();
-        }
-        return true;
     }
 
     public void updateSelectedDeal(DealProductViewModel viewModel) {

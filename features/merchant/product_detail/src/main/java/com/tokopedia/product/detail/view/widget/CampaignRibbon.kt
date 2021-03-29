@@ -47,7 +47,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     // upcoming components - structure type 1
     private var campaignRibbonType1View: View? = null
-    private var campaignRibbonLayout1: View? = null
     private var campaignNameViews1: Typography? = null
     private var timerView1: TimerUnifySingle? = null
     private var regulatoryInfoLayout1: View? = null
@@ -55,18 +54,15 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     // ongoing components - structure type 2
     private var campaignRibbonType2View: View? = null
-    private var campaignRibbonLayout2: View? = null
     private var campaignLogoView2: ImageView? = null
     private var campaignNameView2: Typography? = null
     private var timerView2: TimerUnifySingle? = null
     private var stockWordingView2: Typography? = null
-    private var stockSoldOutView2: Typography? = null
     private var stockBarView2: ProgressBarUnify? = null
     private var regulatoryInfoView2: Typography? = null
 
     // slash price / thematic only components - structure type 3
     private var campaignRibbonType3View: View? = null
-    private var campaignRibbonLayout3: View? = null
     private var campaignLogoView3: ImageView? = null
     private var campaignNameViews3: Typography? = null
     private var timerView3: TimerUnifySingle? = null
@@ -90,24 +86,20 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun collectViewReferences(rootView: View) {
         // TYPE 1 PROPERTIES
         campaignRibbonType1View = rootView.findViewById(R.id.campaign_ribbon_type_1)
-        campaignRibbonLayout1 = campaignRibbonType1View?.findViewById(R.id.campaign_ribbon_layout_s1)
         campaignNameViews1 = campaignRibbonType1View?.findViewById(R.id.tpg_campaign_name_s1)
         timerView1 = campaignRibbonType1View?.findViewById(R.id.tus_timer_view_s1)
         regulatoryInfoLayout1 = campaignRibbonType1View?.findViewById(R.id.regulatory_info_layout_s1)
         remindMeButton1 = campaignRibbonType1View?.findViewById(R.id.remind_me_button_s1)
         // TYPE 2 PROPERTIES
         campaignRibbonType2View = rootView.findViewById(R.id.campaign_ribbon_type_2)
-        campaignRibbonLayout2 = campaignRibbonType2View?.findViewById(R.id.campaign_ribbon_layout_s2)
         campaignLogoView2 = campaignRibbonType2View?.findViewById(R.id.iu_campaign_logo_s2)
         campaignNameView2 = campaignRibbonType2View?.findViewById(R.id.tpg_campaign_name_s2)
         timerView2 = campaignRibbonType2View?.findViewById(R.id.tus_timer_view_s2)
         stockWordingView2 = campaignRibbonType2View?.findViewById(R.id.tgp_stock_wording_s2)
-        stockSoldOutView2 = campaignRibbonType2View?.findViewById(R.id.tgp_sold_out_wording_s2)
         stockBarView2 = campaignRibbonType2View?.findViewById(R.id.pbu_stock_bar_s2)
         regulatoryInfoView2 = campaignRibbonType2View?.findViewById(R.id.tgp_regulatory_info_s2)
         // TYPE 3 PROPERTIES
         campaignRibbonType3View = rootView.findViewById(R.id.campaign_ribbon_type_3)
-        campaignRibbonLayout3 = campaignRibbonType3View?.findViewById(R.id.campaign_ribbon_layout_s3)
         campaignLogoView3 = campaignRibbonType3View?.findViewById(R.id.iu_campaign_logo_s3)
         campaignNameViews3 = campaignRibbonType3View?.findViewById(R.id.tpg_campaign_name_s3)
         timerView3 = campaignRibbonType3View?.findViewById(R.id.tus_timer_view_s3)
@@ -157,7 +149,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             // render campaign ribbon background
             val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
             val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes, SLASH_PRICE)
-            campaignRibbonLayout3?.background = gradientDrawable
+            campaignRibbonType3View?.background = gradientDrawable
             // show count down wording
             endsInWordingView3?.show()
             // render ongoing count down timer
@@ -175,7 +167,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
         if (thematicCampaign.background.isNotBlank()) {
-            campaignRibbonLayout3?.background = getGradientDrawableForBackGround(thematicCampaign.background)
+            campaignRibbonType3View?.background = getGradientDrawableForBackGround(thematicCampaign.background)
         }
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
@@ -217,12 +209,12 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     fun renderUpComingCampaignRibbon(upcomingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
         showCampaignRibbonType1()
         val gradientDrawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
-            context.getDrawable(R.drawable.bg_gradient_default_npl)
+            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_blue)
         } else {
-            context.getDrawable(R.drawable.bg_gradient_default_flash_sale_by_seller)
+            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_red)
         }
         // render campaign ribbon background
-        gradientDrawable?.run { campaignRibbonLayout1?.background = gradientDrawable }
+        gradientDrawable?.run { campaignRibbonType1View?.background = gradientDrawable }
         // render campaign name
         val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
         campaignNameViews1?.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
@@ -301,7 +293,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render campaign ribbon background
         val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
         val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-        campaignRibbonLayout2?.background = gradientDrawable
+        campaignRibbonType2View?.background = gradientDrawable
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
             campaignLogoView2?.loadImage(thematicCampaign.icon)
@@ -312,18 +304,10 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         campaignNameView2?.text = campaignName
         // render ongoing count down
         timerView2?.let { renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView2) }
-
         // render stock wording
-        val isStockWordingRendered = renderStockWording(
-                stockSoldPercentage = campaign.stockSoldPercentage,
-                stockWording = onGoingData.stockWording,
-                stockTypography = stockWordingView2,
-                soldOutTypography = stockSoldOutView2
-        )
-
+        renderStockWording(stockWording = onGoingData.stockWording, stockTypography = stockWordingView2)
         // render stock bar
-        renderStockBar(isStockWordingRendered, campaign.stockSoldPercentage, stockBarView2)
-
+        renderStockBar(campaign.stockSoldPercentage, stockBarView2)
         // render regulatory info
         if (campaign.paymentInfoWording.isNotBlank()) {
             regulatoryInfoView2?.text = campaign.paymentInfoWording
@@ -333,45 +317,23 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    private fun renderStockWording(stockSoldPercentage: Int,
-                                   stockWording: String,
-                                   stockTypography: Typography?,
-                                   soldOutTypography: Typography?): Boolean {
-        return try {
+    private fun renderStockWording(stockWording: String, stockTypography: Typography?) {
+        try {
             val styledStockWording = MethodChecker.fromHtml(stockWording)
-            if (stockSoldPercentage == 1) {
-                soldOutTypography?.text = styledStockWording
-                soldOutTypography?.show()
-            } else {
-                stockTypography?.text = styledStockWording
-            }
-            true
+            stockTypography?.text = styledStockWording
+            stockTypography?.show()
         } catch (ex: Exception) {
             stockTypography?.hide()
-            soldOutTypography?.hide()
-            false
         }
     }
 
-    private fun renderStockBar(isStockWordingRendered: Boolean,
-                               stockSoldPercentage: Int,
-                               stockProgressBar: ProgressBarUnify?) {
-        if (!isStockWordingRendered) {
-            stockProgressBar?.hide()
-            return
-        }
+    private fun renderStockBar(stockSoldPercentage: Int, stockProgressBar: ProgressBarUnify?) {
         // set track color
         stockProgressBar?.trackDrawable?.setColor(ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_track_color))
         // set progressbar color gradient, if using 1 color then set the same color amount
         val stockBarColor = ContextCompat.getColor(context, R.color.product_detail_dms_stock_bar_progress_color)
         stockProgressBar?.progressBarColor = intArrayOf(stockBarColor, stockBarColor)
-        // percentage 100% = 1
-        if (stockSoldPercentage != 1) {
-            stockProgressBar?.setValue(stockSoldPercentage)
-            stockProgressBar?.show()
-        } else {
-            stockProgressBar?.hide()
-        }
+        stockProgressBar?.setValue(stockSoldPercentage)
     }
 
     private fun renderOnGoingCountDownTimer(campaign: CampaignModular, timerView: TimerUnifySingle?) {
@@ -408,12 +370,12 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
         } catch (ex: Exception) {
             // return default gradient when the color parsing process is failed
-            var firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_to_green_gradient_color)
-            var secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_from_green_gradient_color)
+            var firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_default_green_bg_start_gradient_color)
+            var secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_default_green_bg_end_gradient_color)
             when (campaignTypes) {
                 SLASH_PRICE -> {
-                    firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_to_red_gradient_color)
-                    secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_from_red_gradient_color)
+                    firstColor = ContextCompat.getColor(context, R.color.product_detail_dms_default_red_bg_start_gradient_color)
+                    secondColor = ContextCompat.getColor(context, R.color.product_detail_dms_default_red_bg_end_gradient_color)
                 }
             }
             GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))

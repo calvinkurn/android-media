@@ -6,7 +6,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.slot
@@ -55,7 +55,7 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify empty search product model`(expectedIsFilterActive: Boolean) {
-        val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
+        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
 
         verify {
             productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))

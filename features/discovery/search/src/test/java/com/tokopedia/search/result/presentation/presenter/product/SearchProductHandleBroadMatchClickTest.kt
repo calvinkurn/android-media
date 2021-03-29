@@ -5,8 +5,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant.TopAdsComponent.B
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -52,22 +52,22 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
         productListPresenter.loadData(mapOf())
     }
 
-    private fun findBroadMatchItemFromVisitableList(isTopAds: Boolean): BroadMatchItemViewModel {
+    private fun findBroadMatchItemFromVisitableList(isTopAds: Boolean): BroadMatchItemDataView {
         val visitableList = visitableListSlot.captured
 
-        val broadMatchViewModel = visitableList.find { it is BroadMatchViewModel } as BroadMatchViewModel
+        val broadMatchViewModel = visitableList.find { it is BroadMatchDataView } as BroadMatchDataView
 
-        return broadMatchViewModel.broadMatchItemViewModelList.find { it.isOrganicAds == isTopAds }!!
+        return broadMatchViewModel.broadMatchItemDataViewList.find { it.isOrganicAds == isTopAds }!!
     }
 
-    private fun `When broad match product click`(broadMatchAds: BroadMatchItemViewModel) {
-        productListPresenter.onBroadMatchItemClick(broadMatchAds)
+    private fun `When broad match product click`(broadMatchAdsData: BroadMatchItemDataView) {
+        productListPresenter.onBroadMatchItemClick(broadMatchAdsData)
     }
 
-    private fun `Then verify view interaction for click broad match`(broadMatchItem: BroadMatchItemViewModel) {
+    private fun `Then verify view interaction for click broad match`(broadMatchItemData: BroadMatchItemDataView) {
         verify {
-            productListView.trackEventClickBroadMatchItem(broadMatchItem)
-            productListView.redirectionStartActivity(broadMatchItem.applink, broadMatchItem.url)
+            productListView.trackEventClickBroadMatchItem(broadMatchItemData)
+            productListView.redirectionStartActivity(broadMatchItemData.applink, broadMatchItemData.url)
         }
     }
 
@@ -83,16 +83,16 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
         `Then verify broad match top ads clicked`(broadMatchItem)
     }
 
-    private fun `Then verify broad match top ads clicked`(broadMatchItem: BroadMatchItemViewModel) {
+    private fun `Then verify broad match top ads clicked`(broadMatchItemData: BroadMatchItemDataView) {
         verify {
             productListView.className
 
             topAdsUrlHitter.hitClickUrl(
                     className,
-                    broadMatchItem.topAdsClickUrl,
-                    broadMatchItem.id,
-                    broadMatchItem.name,
-                    broadMatchItem.imageUrl,
+                    broadMatchItemData.topAdsClickUrl,
+                    broadMatchItemData.id,
+                    broadMatchItemData.name,
+                    broadMatchItemData.imageUrl,
                     BROAD_MATCH_ADS
             )
         }
