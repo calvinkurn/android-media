@@ -16,6 +16,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.nps.helper.InAppReviewHelper;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -30,6 +32,8 @@ import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -111,7 +115,9 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
         resetWalletCache();
-        Timber.w("P2#RN_THANK_YOU#open");
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "open");
+        ServerLogger.INSTANCE.log(Priority.P2, "RN_THANK_YOU", messageMap);
     }
 
     @Override
@@ -161,7 +167,11 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
             }
         }
         ThanksTrackerService.start(this, data);
-        Timber.w("P2#RN_THANK_YOU#sendAnalytics;id=%s;platform=%s", data.getId(), data.getPlatform());
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "sendAnalytics");
+        messageMap.put("id", data.getId());
+        messageMap.put("platform", data.getPlatform());
+        ServerLogger.INSTANCE.log(Priority.P2, "RN_THANK_YOU", messageMap);
     }
 
     @Override

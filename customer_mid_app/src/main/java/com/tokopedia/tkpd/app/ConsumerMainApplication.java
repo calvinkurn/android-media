@@ -47,6 +47,8 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
@@ -86,6 +88,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Pair;
@@ -164,7 +168,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private boolean checkPackageName(){
         boolean packageNameValid = this.getPackageName().equals(getOriginalPackageApp());
         if (!packageNameValid) {
-            Timber.w("P1#APP_SIGNATURE_FAILED#'packageName=%s'" , this.getPackageName());
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("packageName", this.getPackageName());
+            ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
         }
         return packageNameValid;
     }
@@ -190,20 +196,28 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             byte[] rawCertNative = getJniBytes();
             // handle if the library is failing
             if (rawCertNative == null) {
-                Timber.w("P1#APP_SIGNATURE_FAILED#'rawCertNative==null'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("rawCertNative", "null");
+                ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
                 return true;
             } else if (rawCertJava == null) {
-                Timber.w("P1#APP_SIGNATURE_FAILED#'rawCertJava==null'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("rawCertJava", "null");
+                ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
                 return true;
             } else {
                 signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
             }
             if (!signatureValid) {
-                Timber.w("P1#APP_SIGNATURE_FAILED#'certJava!=certNative'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("certJava", "!=certNative");
+                ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             }
             return signatureValid;
         } catch (PackageManager.NameNotFoundException e) {
-            Timber.w("P1#APP_SIGNATURE_FAILED#'PackageManager.NameNotFoundException'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "PackageManager.NameNotFoundException");
+            ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             return false;
         }
     }
@@ -417,8 +431,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             try {
                 AmplificationDataSource.invoke(ConsumerMainApplication.this);
             } catch (Exception e) {
-                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "exception");
+                messageMap.put("err", Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+                messageMap.put("data", "");
+                ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
             }
         }
     }

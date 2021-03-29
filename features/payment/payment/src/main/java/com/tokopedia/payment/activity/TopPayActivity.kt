@@ -37,6 +37,8 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
@@ -192,7 +194,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         val message = intent.getStringExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE)
         if (!message.isNullOrEmpty()) {
             scroogeWebView?.let {
-                Toaster.make(it, message)
+                Toaster.build(it, message).show()
             }
         }
     }
@@ -507,7 +509,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                         context = this@TopPayActivity
                         show(supportFragmentManager, "fingerprintPayment")
                     }
-                    view?.post { view?.stopLoading() }
+                    view?.post { view.stopLoading() }
                 }
             }
             return super.shouldInterceptRequest(view, request)
@@ -527,7 +529,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request?.url, error?.errorCode, error?.description)
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+                    mapOf("type" to request?.url.toString(),
+                    "error_code" to error?.errorCode.toString(),
+                    "desc" to error?.description?.toString().orEmpty()
+            ))
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
