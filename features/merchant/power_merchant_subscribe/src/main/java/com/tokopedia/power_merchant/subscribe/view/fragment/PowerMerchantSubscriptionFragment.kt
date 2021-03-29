@@ -54,7 +54,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
     }
 
+    private var pmStatusAndShopInfo: PMStatusAndShopInfoUiModel? = null
     private var pmSettingInfo: PowerMerchantSettingInfoUiModel? = null
+    private var showInitialLoadingState = true
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
@@ -85,31 +87,55 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     }
 
+    override fun setOnReloadClickListener() {
+        reloadPageContent()
+    }
+
     fun setPmSettingInfo(pmSettingInfo: PowerMerchantSettingInfoUiModel) {
         this.pmSettingInfo = pmSettingInfo
     }
 
     private fun setupView() = view?.run {
-
+        swipeRefreshPm.setOnRefreshListener {
+            reloadPageContent()
+        }
     }
 
     private fun observePmStatusAndShopInfo() {
+        showLoadingState()
+        mViewModel.getPmStatusAndShopInfo()
+
         mViewModel.pmStatusAndShopInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> fetchPageContent(it.data)
+                is Success -> {
+                    this.pmStatusAndShopInfo = it.data
+                    fetchPageContent()
+                }
                 is Fail -> {
                     showErrorState()
+                    hideSwipeRefreshLoading()
                     logToCrashlytic(PowerMerchantErrorLogger.PM_STATUS_AND_SHOP_INFO_ERROR, it.throwable)
                 }
             }
         })
-
-        showLoadingState()
-        mViewModel.getPmStatusAndShopInfo()
     }
 
-    private fun fetchPageContent(data: PMStatusAndShopInfoUiModel) {
-        when (data.pmStatus.status) {
+    private fun reloadPageContent() {
+        if (pmStatusAndShopInfo == null) {
+            mViewModel.getPmStatusAndShopInfo()
+        } else {
+            view?.swipeRefreshPm?.isRefreshing = true
+            fetchPageContent()
+        }
+    }
+
+    private fun fetchPageContent() {
+        if (pmStatusAndShopInfo == null) {
+            showErrorState()
+            return
+        }
+
+        when (pmStatusAndShopInfo?.pmStatus?.status) {
             PMStatusConst.INACTIVE -> observePmRegistrationPage()
             else -> observePmActiveState()
         }
@@ -117,6 +143,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun observePmRegistrationPage() {
         mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
+            hideSwipeRefreshLoading()
             when (it) {
                 is Success -> renderRegistrationPM(it.data)
                 is Fail -> {
@@ -126,17 +153,19 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
         })
 
-        showLoadingState()
         mViewModel.getPmRegistrationData()
     }
 
     private fun showLoadingState() {
-        adapter.clearAllElements()
+        if (!showInitialLoadingState) return
+        showInitialLoadingState = false
+
+        adapter.data.clear()
         renderList(listOf(WidgetLoadingStateUiModel))
     }
 
     private fun showErrorState() {
-        adapter.clearAllElements()
+        adapter.data.clear()
         renderList(listOf(WidgetErrorStateUiModel))
     }
 
@@ -147,6 +176,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 WidgetDividerUiModel,
                 WidgetGradeBenefitUiModel(benefitPages = data.gradeBenefitList)
         )
+        adapter.data.clear()
         renderList(widgets)
 
         setupFooterCta(data.shopInfo)
@@ -247,7 +277,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun observePmActiveState() {
         view?.pmRegistrationFooterView?.gone()
-        mViewModel.pmFinalPeriod.observe(viewLifecycleOwner, Observer {
+        mViewModel.pmPmActiveData.observe(viewLifecycleOwner, Observer {
+            hideSwipeRefreshLoading()
             when (it) {
                 is Success -> renderPMActiveState(it.data)
                 is Fail -> {
@@ -257,11 +288,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
         })
 
-        showLoadingState()
         mViewModel.getPmActiveData()
     }
 
-    private fun renderPMActiveState(data: PMFinalPeriodUiModel) {
+    private fun renderPMActiveState(data: PMActiveDataUiModel) {
         val widgets = mutableListOf<BaseWidgetUiModel>()
         widgets.add(WidgetQuitSubmissionUiModel(data.expiredTime))
         widgets.add(getShopGradeWidgetData(data))
@@ -275,10 +305,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         widgets.add(WidgetNextUpdateUiModel(data.nextQuarterlyCalibrationRefreshDate))
         widgets.add(WidgetSingleCtaUiModel(getString(R.string.pm_pm_transition_period_learnmore), Constant.Url.POWER_MERCHANT_EDU))
         widgets.add(WidgetPMDeactivateUiModel)
+        adapter.data.clear()
         renderList(widgets)
     }
 
-    private fun getNextShopGradeWidgetData(data: PMFinalPeriodUiModel): WidgetNextShopGradeUiModel {
+    private fun getNextShopGradeWidgetData(data: PMActiveDataUiModel): WidgetNextShopGradeUiModel {
         val nextGrade = data.nextPMGrade
         return WidgetNextShopGradeUiModel(
                 shopLevel = nextGrade?.shopLevel.orZero(),
@@ -289,7 +320,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         )
     }
 
-    private fun getCurrentShopGradeBenefit(data: PMFinalPeriodUiModel): WidgetExpandableUiModel {
+    private fun getCurrentShopGradeBenefit(data: PMActiveDataUiModel): WidgetExpandableUiModel {
         val grade = data.currentPMGrade
         val benefits = mutableListOf<BaseExpandableItemUiModel>()
         data.currentPMBenefits?.forEach { benefit ->
@@ -306,7 +337,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         )
     }
 
-    private fun getShopGradeWidgetData(data: PMFinalPeriodUiModel): WidgetShopGradeUiModel {
+    private fun getShopGradeWidgetData(data: PMActiveDataUiModel): WidgetShopGradeUiModel {
         val shopGrade = data.currentPMGrade
         return WidgetShopGradeUiModel(
                 shopGrade = shopGrade?.gradeName.orEmpty(),
@@ -346,5 +377,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun logToCrashlytic(message: String, throwable: Throwable) {
         PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
+    }
+
+    private fun hideSwipeRefreshLoading() {
+        view?.swipeRefreshPm?.isRefreshing = false
     }
 }

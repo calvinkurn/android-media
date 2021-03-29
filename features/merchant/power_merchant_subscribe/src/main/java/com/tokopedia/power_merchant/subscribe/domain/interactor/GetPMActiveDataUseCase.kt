@@ -5,7 +5,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMCurrentAndNextShopGradeUseCase
 import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
-import com.tokopedia.power_merchant.subscribe.view.model.PMFinalPeriodUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMActiveDataUiModel
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
@@ -16,19 +16,19 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 16/03/21
  */
 
-class GetPMFinalPeriodDataUseCase @Inject constructor(
+class GetPMActiveDataUseCase @Inject constructor(
         private val getPMStatusUseCase: GetPMStatusUseCase,
         private val getPMCurrentAndNextShopGradeUseCase: GetPMCurrentAndNextShopGradeUseCase,
         private val userSession: UserSessionInterface
-) : UseCase<PMFinalPeriodUiModel>() {
+) : UseCase<PMActiveDataUiModel>() {
 
-    override suspend fun executeOnBackground(): PMFinalPeriodUiModel {
+    override suspend fun executeOnBackground(): PMActiveDataUiModel {
         return coroutineScope {
             val shopStatusAsync = async { getPMShopStatus() }
             val currentAndNextPMGradeAsync = async { getCurrentAndNextPMGrade() }
             val shopStatus = shopStatusAsync.await()
             val currentAndNextPMGrade = currentAndNextPMGradeAsync.await()
-            return@coroutineScope PMFinalPeriodUiModel(
+            return@coroutineScope PMActiveDataUiModel(
                     pmStatus = shopStatus.status,
                     expiredTime = shopStatus.expiredTime,
                     nextMonthlyRefreshDate = currentAndNextPMGrade.nextMonthlyRefreshDate,

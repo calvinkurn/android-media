@@ -5,16 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPmRegistration"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshPm"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintBottom_toTopOf="@+id/pmRegistrationFooterView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="1"
-        tools:listitem="@layout/widget_pm_registration_header" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/pmRegistrationFooterView">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPmRegistration"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintBottom_toTopOf="@+id/pmRegistrationFooterView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:itemCount="1"
+            tools:listitem="@layout/widget_pm_registration_header" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.tokopedia.power_merchant.subscribe.view.viewcomponent.RegistrationFooterView
         android:id="@+id/pmRegistrationFooterView"

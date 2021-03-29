@@ -8,7 +8,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMNextGradeUiModel
  * Created By @ilhamsuaib on 16/03/21
  */
 
-data class PMFinalPeriodUiModel(
+data class PMActiveDataUiModel(
         val pmStatus: String = "",
         val expiredTime: String = "",
         val nextMonthlyRefreshDate: String = "",

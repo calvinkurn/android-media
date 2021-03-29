@@ -21,9 +21,11 @@ class GetPMStatusAndShopInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PMStatusAndShopInfoUiModel {
         return coroutineScope {
-            val pmStatusInfo = async { getPmStatusInfo() }
-            val pmShopInfo = async { getPmShopInfo() }
-            return@coroutineScope PMStatusAndShopInfoUiModel(pmStatusInfo.await(), pmShopInfo.await())
+            val pmStatusInfoAsync = async { getPmStatusInfo() }
+            val pmShopInfoAsync = async { getPmShopInfo() }
+            val pmStatusInfo = pmStatusInfoAsync.await()
+            val pmShopInfo = pmShopInfoAsync.await()
+            return@coroutineScope PMStatusAndShopInfoUiModel(pmStatusInfo, pmShopInfo)
         }
     }
 
