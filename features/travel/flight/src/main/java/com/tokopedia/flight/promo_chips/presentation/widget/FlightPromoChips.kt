@@ -54,6 +54,14 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         adapter.renderList(dataCollection)
     }
 
+    fun resetState(){
+        if(adapter.itemCount >= 0 && adapter.selectedPosition != FlightPromoChipsAdapter.SELECTED_POSITION_INIT){
+            recyclerView.findViewHolderForAdapterPosition(adapter.selectedPosition).let {
+                (it as FlightPromoChipsViewHolder).itemView.performClick()
+            }
+        }
+    }
+
     interface PromoChipsListener{
         fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int)
         fun onUnselectChips()

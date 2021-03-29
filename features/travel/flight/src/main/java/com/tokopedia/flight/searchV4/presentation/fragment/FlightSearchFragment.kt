@@ -307,6 +307,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightFilterModel?.let {
             flightSearchViewModel.filterModel = it
         }
+        if(flightFilterModel?.isHasFilter == false){
+            promoChipsWidget.resetState()
+        }
         clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
@@ -790,6 +793,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
         override fun onUnselectChips() {
             flightSearchViewModel.filterModel.airlineList = mutableListOf()
+            clearAllData()
             fetchSortAndFilterData()
         }
     }
