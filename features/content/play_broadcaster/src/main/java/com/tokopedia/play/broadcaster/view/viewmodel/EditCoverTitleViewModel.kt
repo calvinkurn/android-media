@@ -34,7 +34,8 @@ class EditCoverTitleViewModel @Inject constructor(
     private val scope = CoroutineScope(dispatcher.main + job)
 
     val observableCurrentTitle: LiveData<String> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
-        it.title
+//        it.title
+        ""
     }
 
     val observableUpdateTitle: LiveData<NetworkResult<Unit>>

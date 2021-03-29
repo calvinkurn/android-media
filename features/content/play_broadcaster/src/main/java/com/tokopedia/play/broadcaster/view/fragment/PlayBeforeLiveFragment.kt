@@ -267,7 +267,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                 else -> ivImagePreview.setImageDrawable(null)
             }
 
-            tvCoverTitle.text = it.title
+//            tvCoverTitle.text = it.title
         })
     }
 

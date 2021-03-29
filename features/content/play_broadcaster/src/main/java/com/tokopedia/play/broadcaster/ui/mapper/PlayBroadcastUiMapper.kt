@@ -220,7 +220,6 @@ class PlayBroadcastUiMapper(
                         coverSource = prevSource ?: CoverSource.None
                 ),
                 state = SetupDataState.Uploaded,
-                title = coverTitle
         )
     }
 

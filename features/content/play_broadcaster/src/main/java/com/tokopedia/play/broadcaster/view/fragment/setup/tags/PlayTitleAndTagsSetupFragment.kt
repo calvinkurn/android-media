@@ -1,11 +1,13 @@
 package com.tokopedia.play.broadcaster.view.fragment.setup.tags
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -54,6 +56,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupTransition()
         viewModel = ViewModelProvider(this, viewModelFactory)
                 .get(PlayTitleAndTagsSetupViewModel::class.java)
     }
@@ -141,6 +144,39 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
         viewModel.observableAddedTags.observe(viewLifecycleOwner, Observer {
             tagAddedListView.setTags(it.toList())
         })
+    }
+
+    /**
+     * Transition
+     */
+    private fun setupTransition() {
+        setupEnterTransition()
+        setupReturnTransition()
+    }
+
+    private fun setupEnterTransition() {
+        enterTransition = TransitionSet()
+                .addTransition(Slide(Gravity.END))
+                .addTransition(Fade(Fade.IN))
+                .setStartDelay(200)
+                .setDuration(300)
+
+        sharedElementEnterTransition = TransitionSet()
+                .addTransition(ChangeTransform())
+                .addTransition(ChangeBounds())
+                .setDuration(450)
+    }
+
+    private fun setupReturnTransition() {
+        returnTransition = TransitionSet()
+                .addTransition(Slide(Gravity.END))
+                .addTransition(Fade(Fade.OUT))
+                .setDuration(250)
+
+        sharedElementReturnTransition = TransitionSet()
+                .addTransition(ChangeTransform())
+                .addTransition(ChangeBounds())
+                .setDuration(450)
     }
 
     interface Listener {

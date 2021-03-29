@@ -46,7 +46,6 @@ class CoverDataStoreImpl @Inject constructor(
     override fun updateCoverTitle(title: String) {
         val currentCover = getSelectedCover() ?: PlayCoverUiModel.empty()
         _selectedCoverLiveData.value = currentCover.copy(
-                title = title,
                 state = SetupDataState.Draft
         )
     }
@@ -82,14 +81,14 @@ class CoverDataStoreImpl @Inject constructor(
             else -> throw IllegalStateException("Cover url must not be null")
         }
 
-        val coverTitle = currentCover.title
+//        val coverTitle = currentCover.title
 
         updateChannelUseCase.apply {
             setQueryParams(
                     PlayBroadcastUpdateChannelUseCase.createUpdateFullCoverRequest(
                             channelId = channelId,
                             authorId = userSession.shopId,
-                            coverTitle = coverTitle,
+                            coverTitle = "",
                             coverUrl = coverUrl
                     )
             )
@@ -98,8 +97,7 @@ class CoverDataStoreImpl @Inject constructor(
     }
 
     private suspend fun syncCoverTitle(channelId: String) = withContext(dispatcher.io) {
-        val currentCover = getSelectedCover()
-        val coverTitle = currentCover?.title ?: throw IllegalStateException("Cover title cannot be null")
+        val coverTitle = ""
 
         updateChannelUseCase.apply {
             setQueryParams(

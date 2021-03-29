@@ -37,7 +37,8 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private val scope = CoroutineScope(job + dispatcher.main)
 
     val title: String
-        get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
+//        get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
+        get() = "" //TODO("Handle This")
 
     val maxDurationDesc: String
         get() = try { channelConfigStore.getMaxDurationDesc() } catch (e: Throwable) { "" }
@@ -98,7 +99,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
                         else cover.croppedCover.coverImage
                 params = CreateLiveStreamChannelUseCase.createParams(
                         channelId = channelId,
-                        title = cover.title,
+                        title = "", //TODO("Handle This")
                         thumbnail = coverImage.toString()
                 )
             }.executeOnBackground())
