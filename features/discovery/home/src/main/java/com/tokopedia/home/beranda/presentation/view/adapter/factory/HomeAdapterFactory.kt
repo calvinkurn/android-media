@@ -61,7 +61,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val bestSellerListener: RecommendationWidgetListener,
                          private val categoryNavigationListener: CategoryNavigationListener,
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
-                         private val bannerComponentListener: BannerComponentListener,
+                         private val bannerComponentListener: BannerComponentListener?,
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
                          private val legoSixAutoListener: Lego6AutoBannerListener
 ) :

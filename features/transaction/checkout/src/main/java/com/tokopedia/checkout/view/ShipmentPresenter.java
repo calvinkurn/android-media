@@ -26,7 +26,7 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
@@ -51,7 +51,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
@@ -82,7 +81,6 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequestGqlDataMapper;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
@@ -164,7 +162,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
     private CodModel codData;
     private CampaignTimerUi campaignTimer;
-    private Token token;
     private ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel;
     private ValidateUsePromoRequest lastValidateUsePromoRequest;
     private Gson gson;
@@ -176,7 +173,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
     private boolean isIneligiblePromoDialogEnabled;
-    private ABTestButton abTestButton = new ABTestButton();
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
@@ -376,7 +372,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public ShipmentButtonPaymentModel getShipmentButtonPaymentModel() {
         if (shipmentButtonPaymentModel == null) {
             shipmentButtonPaymentModel = new ShipmentButtonPaymentModel();
-            shipmentButtonPaymentModel.setAbTestButton(abTestButton);
         }
         return shipmentButtonPaymentModel;
     }
@@ -596,17 +591,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
 
-        token = new Token();
-        token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
-        token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
-
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
-
-        abTestButton = cartShipmentAddressFormData.getAbTestButton();
-        if (shipmentButtonPaymentModel != null) {
-            shipmentButtonPaymentModel.setAbTestButton(abTestButton);
-        }
     }
 
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
@@ -1816,7 +1802,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .subscribe(
                         new GetCourierRecommendationSubscriber(
                                 getView(), this, shipperId, spId, itemPosition,
-                                shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
+                                shippingCourierConverter, shipmentCartItemModel,
                                 isInitialLoad, isTradeInDropOff, isForceReload
                         ));
     }
@@ -1936,11 +1922,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             campaignTimer.setGtmUserId(userSessionInterface.getUserId());
             return campaignTimer;
         }
-    }
-
-    @Override
-    public Token getKeroToken() {
-        return token;
     }
 
     @NotNull
