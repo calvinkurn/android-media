@@ -11,9 +11,11 @@
     <color name="product_detail_dms_tradein_blue">#32afff</color>
     <color name="product_detail_dms_stock_bar_track_color">#80FFFFFF</color>
     <color name="product_detail_dms_stock_bar_progress_color">#FFFFFF</color>
-    <color name="product_detail_dms_from_red_gradient_color">#F56958</color>
-    <color name="product_detail_dms_to_red_gradient_color">#D74049</color>
-    <color name="product_detail_dms_from_green_gradient_color">#00AA5B</color>
-    <color name="product_detail_dms_to_green_gradient_color">#008849</color>
-    <color name="product_Detail_dms_regulatory_info_overlay">#29000000</color>
+    <color name="product_detail_dms_default_red_bg_end_gradient_color">#F56958</color>
+    <color name="product_detail_dms_default_red_bg_start_gradient_color">#D74049</color>
+    <color name="product_detail_dms_default_green_bg_end_gradient_color">#00AA5B</color>
+    <color name="product_detail_dms_default_green_bg_start_gradient_color">#008849</color>
+    <color name="product_detail_dms_default_blue_bg_end_gradient_color">#0EC3EB</color>
+    <color name="product_detail_dms_default_blue_bg_start_gradient_color">#4F347A</color>
+    <color name="product_detail_dms_regulatory_info_overlay">#29000000</color>
 </resources>

@@ -94,7 +94,10 @@ internal class ShopPageFragmentPagerAdapter(
     override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
     fun getRegisteredFragment(position: Int): Fragment? {
-        return registeredFragments.get(position)
+        return if (listShopPageTabModel.isNotEmpty())
+            listShopPageTabModel.getOrNull(position)?.tabFragment
+        else
+            null
     }
 
     fun setTabData(listShopPageTabModel: List<ShopPageTabModel>) {
