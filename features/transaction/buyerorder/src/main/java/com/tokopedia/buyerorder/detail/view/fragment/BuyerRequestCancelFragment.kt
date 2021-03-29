@@ -382,7 +382,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingCancelReasons() {
-        buyerCancellationViewModel.cancelReasonResult.observe(this, Observer {
+        buyerCancellationViewModel.cancelReasonResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     empty_state_cancellation?.gone()
@@ -588,7 +588,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
     
     private fun observingRequestCancel() {
-        buyerCancellationViewModel.requestCancelResult.observe(this, Observer {
+        buyerCancellationViewModel.requestCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
@@ -615,7 +615,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingInstantCancel() {
-        buyerCancellationViewModel.buyerInstantCancelResult.observe(this, Observer {
+        buyerCancellationViewModel.buyerInstantCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     instantCancelResponse = it.data.buyerInstantCancel
