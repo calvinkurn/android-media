@@ -155,8 +155,11 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                 if (position != selectedTabPosition[0]) {
                     List<Fragment> fragmentList = getFragmentList();
                     for (int i = 0; i < fragmentList.size(); i++) {
-                        OnTabChangeListener onTabChangeListener = (OnTabChangeListener) fragmentList.get(i);
-                        onTabChangeListener.onTabChange(position);
+                        Fragment fragment= fragmentList.get(i);
+                        if(fragment instanceof InboxReviewFragment) {
+                            OnTabChangeListener onTabChangeListener = (OnTabChangeListener) fragmentList.get(i);
+                            onTabChangeListener.onTabChange(position);
+                        }
                     }
                     selectedTabPosition[0] = position;
                 }

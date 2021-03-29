@@ -35,7 +35,6 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.*
-import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener
 import com.tokopedia.review.feature.inboxreview.presentation.viewholder.InboxReviewEmptyViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
@@ -70,7 +69,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         HasComponent<ReviewProductListComponent>,
         ReviewSummaryViewHolder.ReviewSummaryViewListener,
         SellerReviewListViewHolder.SellerReviewListListener,
-        ReviewSellerPerformanceMonitoringContract, OnTabChangeListener {
+        ReviewSellerPerformanceMonitoringContract {
 
     companion object {
         const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
@@ -326,10 +325,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun getRecyclerView(view: View): RecyclerView {
         return view.findViewById(R.id.rvRatingProduct)
-    }
-
-    override fun onTabChange(position: Int) {
-        // No Op
     }
 
     private fun initSearchBar() {
