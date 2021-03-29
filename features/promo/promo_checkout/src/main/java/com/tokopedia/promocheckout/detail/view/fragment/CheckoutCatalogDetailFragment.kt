@@ -25,6 +25,7 @@ import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailContract
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailPresenter
+import com.tokopedia.promocheckout.util.ColorUtil
 import com.tokopedia.promocheckout.widget.ImageUtil
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
@@ -238,11 +239,8 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             for (i in 0 until data.upperTextDesc.size) {
                 if (i == textColorIndex) {
                     //exclusive case for handling font color of second index.
-                    try {
-                        colorFromResource = "#" + Integer.toHexString(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Y400) and HEX_CODE_TRANSPARENCY)
-                        upperText.append("<font color='${colorFromResource}'>" + data.upperTextDesc[i] + "</font>")
-                    }catch (e: Throwable){
-                        e.printStackTrace()
+                    context?.run {
+                        upperText.append("<font color='${ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_Y400)}'>" + data.upperTextDesc[i] + "</font>")
                     }
                 } else {
                     upperText.append(data.upperTextDesc[i]).append(" ")
@@ -308,7 +306,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
         val REQUEST_CODE_DETAIL_PROMO = 231
-        private const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
         fun newInstance(slug: String?, catalogId: Int?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
                         promo: Promo?): CheckoutCatalogDetailFragment {
             val checkoutcatalogfragment = CheckoutCatalogDetailFragment()

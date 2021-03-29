@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listpromocatalog.CatalogListItem
+import com.tokopedia.promocheckout.util.ColorUtil
 import com.tokopedia.promocheckout.widget.ImageUtil
 
 
@@ -24,7 +25,6 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
         fun onClickRedeemCoupon(catalogId: Int?, slug: String?, title: String, creativeName: String, position: Int)
     }
 
-    private var colorFromResource: String = ""
     var mListener: ListenerCouponExchange
     var items: ArrayList<CatalogListItem>? = null
         private set
@@ -128,12 +128,7 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
                         upperText.append(item.upperTextDesc.get(i))
                     } else {
                         //exclusive case for handling font color of second index.
-                            try {
-                                colorFromResource = "#" + Integer.toHexString(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400) and  HEX_CODE_TRANSPARENCY)
-                                upperText.append("<font color='${colorFromResource}>" + item.upperTextDesc.get(i) + "</font>")
-                            }catch (e: Throwable){
-                                e.printStackTrace()
-                            }
+                        upperText.append("<font color='${ColorUtil.getColorFromResToString(holder.quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + item.upperTextDesc.get(i) + "</font>")
                     }
                 } else {
                     upperText.append(item.upperTextDesc.get(i)).append(" ")

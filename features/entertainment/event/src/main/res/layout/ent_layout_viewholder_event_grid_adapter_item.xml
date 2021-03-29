@@ -39,7 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                app:srcCompat="@drawable/ent_ic_wishlist_inactive" />
+                app:srcCompat="@drawable/ent_ic_wishlist_inactive"
+                tools:ignore="ContentDescription"/>
         </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography

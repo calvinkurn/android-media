@@ -1,13 +1,13 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailHotelActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListHotelPresenter
+import com.tokopedia.promocheckout.util.ColorUtil
 import javax.inject.Inject
 
 class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment(), PromoCheckoutListContract.View {
@@ -30,11 +30,9 @@ class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment(), Promo
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        var hexColor: String = ""
         context?.run {
-            hexColor = "#" + Integer.toHexString( ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G200) and HEX_CODE_TRANSPARENCY)
+            if (promoCode.isNotEmpty()) promoCheckoutListHotelPresenter.checkPromoCode(cartID, promoCode, ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_G200))
         }
-        if (promoCode.isNotEmpty()) promoCheckoutListHotelPresenter.checkPromoCode(cartID, promoCode, hexColor)
     }
 
     override fun initInjector() {
@@ -50,7 +48,6 @@ class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment(), Promo
 
         val HOTEL_CATEGORY_ID = 51
         val EXTRA_CART_ID = "EXTRA_CART_ID"
-        const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, cartID: String?, pageTracking: Int?): PromoCheckoutListHotelFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListHotelFragment()
