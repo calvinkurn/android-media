@@ -24,7 +24,12 @@ public class MigratedUserSession {
         Pair<String, String> key = new Pair<>(prefName, keyName);
         if (UserSessionMap.map.containsKey(key)) {
             try {
-                return (Long) UserSessionMap.map.get(key);
+                Object value = UserSessionMap.map.get(key);
+                if (value == null) {
+                    return defValue;
+                } else {
+                    return (long) value;
+                }
             } catch (Exception ignored) {
             }
         }
@@ -107,7 +112,12 @@ public class MigratedUserSession {
         Pair<String, String> key = new Pair<>(prefName, keyName);
         if (UserSessionMap.map.containsKey(key)) {
             try {
-                return (String) UserSessionMap.map.get(key);
+                Object value = UserSessionMap.map.get(key);
+                if (value == null) {
+                    return defValue;
+                } else {
+                    return (String) value;
+                }
             } catch (Exception ignored) {
             }
         }
@@ -160,7 +170,12 @@ public class MigratedUserSession {
         Pair<String, String> key = new Pair<>(prefName, keyName);
         if (UserSessionMap.map.containsKey(key)) {
             try {
-                return (boolean) UserSessionMap.map.get(key);
+                Object value = UserSessionMap.map.get(key);
+                if (value == null) {
+                    return defValue;
+                } else {
+                    return (boolean) value;
+                }
             } catch (Exception ignored) {
             }
         }
