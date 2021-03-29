@@ -3,10 +3,6 @@ package com.tokopedia.oneclickcheckout.common.robot
 import android.view.View
 import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -47,6 +43,13 @@ class OrderSummaryPageRobot {
 
     fun clickMinusProductQuantity() {
         onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_substract)).perform(scrollTo()).perform(click())
+    }
+
+    fun clickCloseProfileTicker() {
+        onView(withId(R.id.ticker_preference_info)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            view.findViewById<View>(com.tokopedia.unifycomponents.R.id.ticker_close_icon).performClick()
+        }
     }
 
     fun clickChangePreference(func: PreferenceListBottomSheetRobot.() -> Unit) {
@@ -238,6 +241,31 @@ class OrderSummaryPageRobot {
 
     fun assertProfileRevampActionWording(actionWording: String) {
         onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).check(matches(withText(actionWording)))
+    }
+
+    fun assertProfileTicker(isShown: Boolean,
+                            title: String? = null,
+                            description: String? = null,
+                            closeButtonVisible: Boolean? = null) {
+        onView(withId(R.id.ticker_preference_info)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (isShown) {
+                assertEquals(View.VISIBLE, view.visibility)
+                if (title != null) {
+                    assertEquals(title, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_title).text.toString())
+                }
+                if (description != null) {
+                    assertEquals(description, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text.toString())
+                }
+                if (closeButtonVisible == true) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.unifycomponents.R.id.ticker_close_icon).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(com.tokopedia.unifycomponents.R.id.ticker_close_icon).visibility)
+                }
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
     }
 
     fun assertProfileAddress(headerMessage: String,

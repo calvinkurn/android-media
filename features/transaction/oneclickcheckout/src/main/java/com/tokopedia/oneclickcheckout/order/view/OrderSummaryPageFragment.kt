@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface.BOLD
 import android.os.Bundle
@@ -24,7 +25,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
@@ -45,6 +45,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -82,6 +83,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -595,8 +597,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tvHeader2?.visible()
             tvHeader3?.visible()
         }
-        tickerPreferenceInfo?.setHtmlDescription(preference.message)
-        tickerPreferenceInfo?.visibility = if (preference.message.isNotBlank()) View.VISIBLE else View.GONE
+        showPreferenceTicker(orderPreference)
 
         if (!viewModel.isNewFlow && orderPreference.onboarding.isShowOnboardingTicker) {
             lblOnboardingHeader?.text = orderPreference.onboarding.onboardingTicker.title
@@ -623,6 +624,44 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             onboardingCard?.gone()
             newOnboardingCard?.gone()
         }
+    }
+
+    private fun showPreferenceTicker(preference: OrderPreference) {
+        val sharedPreferences = getRemoveProfileTickerSharedPreference()
+        if (preference.removeProfileData.type == OccRemoveProfileData.TYPE_PRE && preference.removeProfileData.message.hasMessage() &&
+                sharedPreferences != null && sharedPreferences.getInt(SP_KEY_REMOVE_PROFILE_TICKER, 0) != OccRemoveProfileData.TYPE_PRE) {
+            tickerPreferenceInfo?.tickerTitle = preference.removeProfileData.message.title
+            tickerPreferenceInfo?.setHtmlDescription(preference.removeProfileData.message.description)
+            tickerPreferenceInfo?.closeButtonVisibility = View.VISIBLE
+            tickerPreferenceInfo?.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    //no op
+                }
+
+                override fun onDismiss() {
+                    val preferences = getRemoveProfileTickerSharedPreference() ?: return
+                    preferences.edit().putInt(SP_KEY_REMOVE_PROFILE_TICKER, OccRemoveProfileData.TYPE_PRE).apply()
+                }
+            })
+            tickerPreferenceInfo?.visible()
+        } else {
+            tickerPreferenceInfo?.setHtmlDescription(preference.preference.message)
+            tickerPreferenceInfo?.closeButtonVisibility = View.GONE
+            tickerPreferenceInfo?.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    //no op
+                }
+
+                override fun onDismiss() {
+                    //no op
+                }
+            })
+            tickerPreferenceInfo?.visibility = if (preference.preference.message.isNotBlank()) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun getRemoveProfileTickerSharedPreference(): SharedPreferences? {
+        return context?.applicationContext?.getSharedPreferences(SP_KEY_REMOVE_PROFILE_TICKER, Context.MODE_PRIVATE)
     }
 
     private fun showOnboarding(onboarding: OccMainOnboarding) {
@@ -1375,7 +1414,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             if (atcError.throwable is AkamaiErrorException) {
                 view?.let {
-                    Toaster.build(it, atcError.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(it, atcError.throwable.message
+                            ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         } else {
@@ -1610,6 +1650,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         private const val SOURCE_OTHERS = "others"
 
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
+
+        private const val SP_KEY_REMOVE_PROFILE_TICKER = "occ_remove_profile_ticker"
 
         @JvmStatic
         fun newInstance(productId: String?): OrderSummaryPageFragment {

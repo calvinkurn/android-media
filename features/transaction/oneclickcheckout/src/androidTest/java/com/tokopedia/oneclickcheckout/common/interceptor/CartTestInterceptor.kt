@@ -105,5 +105,7 @@ const val GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_BOE_RESPONSE_PATH = "cart/ge
 
 const val GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_RECOMMENDATION_SPID_RESPONSE_PATH = "cart/get_occ_cart_page_one_profile_revamp_with_recommendation_spid_response.json"
 
+const val GET_OCC_CART_PAGE_REMOVE_PROFILE_PRE_RESPONSE_PATH = "cart/get_occ_cart_page_remove_profile_pre_response.json"
+
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
 const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"
