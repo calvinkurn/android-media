@@ -5,7 +5,6 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FULL_YOUTUBE_URL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
@@ -29,7 +28,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -52,6 +50,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val videoYoutube: LiveData<Result<YoutubeVideoDetailModel>> = _videoYoutubeNew
 
     private val videoYoutubeFlow = MutableLiveData<String>()
+    private val descriptionFlow = MutableStateFlow<String>("")
 
     var isEditMode: Boolean = false
     var isAddMode: Boolean = false
@@ -81,6 +80,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     init {
         initVideoYoutube()
+        initDescription()
     }
 
     private fun initVideoYoutube() = launch {
@@ -102,12 +102,40 @@ class AddEditProductDescriptionViewModel @Inject constructor(
                 }
     }
 
+    private fun initDescription() = launch {
+        descriptionFlow
+                .filter {
+                    return@filter it.isNotBlank()
+                }
+                .debounce(INPUT_DEBOUNCE)
+                .flatMapLatest { desc ->
+                    validateDescription(desc)
+                            .catch {
+                                AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+                            }
+                }
+                .flowOn(coroutineDispatcher.io)
+                .collect {
+                    _descriptionValidationMessage.value = it
+                }
+    }
+
     private fun getYoutubeVideo(url: String): Flow<Result<YoutubeVideoDetailModel>> {
         return flow {
             getIdYoutubeUrl(url)?.let { youtubeId  ->
                 getYoutubeVideoUseCase.setVideoId(youtubeId)
             }
             emit(Success(convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())))
+        }
+    }
+
+    private fun validateDescription(desc: String): Flow<String> {
+        return flow {
+            validateProductDescriptionUseCase.setParams(desc)
+            val response = validateProductDescriptionUseCase.executeOnBackground()
+            val validationMessage = response.productValidateV3.data.validationResults
+                    .joinToString("\n")
+            emit(validationMessage)
         }
     }
 
@@ -126,23 +154,12 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         videoYoutubeFlow.value = url
     }
 
-    fun updateProductInputModel(productInputModel: ProductInputModel) {
-        _productInputModel.value = productInputModel
+    fun validateDescriptionChanged(desc: String) {
+        descriptionFlow.value = desc
     }
 
-    fun validateProductDescriptionInput(productDescriptionInput: String) {
-        launchCatchError(block = {
-            val response = withContext(coroutineDispatcher.io) {
-                validateProductDescriptionUseCase.setParams(productDescriptionInput)
-                validateProductDescriptionUseCase.executeOnBackground()
-            }
-            val validationMessage = response.productValidateV3.data.validationResults
-                    .joinToString("\n")
-            _descriptionValidationMessage.value = validationMessage
-        }, onError = {
-            // log error
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-        })
+    fun updateProductInputModel(productInputModel: ProductInputModel) {
+        _productInputModel.value = productInputModel
     }
 
     fun validateDuplicateVideo(inputUrls: MutableList<VideoLinkModel>, url: String): String {
