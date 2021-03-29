@@ -98,22 +98,20 @@ class PageInfoPusherManager(val activity: Activity) {
             }
 
             if (isHitGa) {
-                //will hit GA here
-                Log.d(className, "hitting to GA")
+                eventDisplayGeneralInfo(id)
             }
 
         } catch (e: java.lang.Exception) {
         }
     }
 
-    private fun eventDisplayGeneralInfo(userId: String?) {
+    private fun eventDisplayGeneralInfo(infoId: String?) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, "",
-                        EVENT_CATEGORY, "",
-                        EVENT_ACTION, "",
-                        EVENT_LABEL, "",
-                        USER_ID, userId
+                        EVENT_CATEGORY, "android - tools",
+                        EVENT_ACTION, "general info - impression",
+                        EVENT_LABEL, "$infoId"
                 )
         )
     }
