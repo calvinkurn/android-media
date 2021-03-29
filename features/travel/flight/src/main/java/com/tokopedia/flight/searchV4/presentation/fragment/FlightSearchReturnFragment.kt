@@ -121,18 +121,22 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
 
     override fun renderSearchList(list: List<FlightJourneyModel>) {
         clearAllData()
+
         if (flightSearchReturnViewModel.isBestPairing &&
                 !flightSearchReturnViewModel.isViewOnlyBestPairing &&
                 list.isNotEmpty()) {
                     showSeeBestPairingResultView()
         }
 
-        if (flightSearchViewModel.isDoneLoadData() && flightSearchReturnViewModel.isViewOnlyBestPairing) {
+        super.renderSearchList(list)
+
+        if(flightSearchReturnViewModel.isViewOnlyBestPairing){
             hidePromoChips()
-            showSeeAllResultView()
         }
 
-        super.renderSearchList(list)
+        if (flightSearchViewModel.isDoneLoadData() && flightSearchReturnViewModel.isViewOnlyBestPairing) {
+            showSeeAllResultView()
+        }
     }
 
     override fun onShowAllClicked() {
