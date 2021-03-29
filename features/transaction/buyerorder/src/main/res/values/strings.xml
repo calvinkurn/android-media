@@ -139,6 +139,7 @@ Anda di sini.</string>
     <string name="user_label">Data Pemegang E-tiket</string>
     <string name="btn_redeem_ticket">Tutup</string>
     <string name="redeem_deals_btn">Redeem</string>
+    <string name="tkpdtransaction_title_replacement_reason_1">Produk tidak sesuai atau kosong</string>
 
     <string name="month_1">Jan</string>
     <string name="month_2">Feb</string>
@@ -153,6 +154,7 @@ Anda di sini.</string>
     <string name="month_11">Nov</string>
     <string name="month_12">Des</string>
 
+    <string name="popup_selesai_cancel_btn">Kembali</string>
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="store_name_placeholder">Store Name 24 Character</string>
     <string name="invoice_placeholder">INV/20161025/XVI/X/55069657</string>
