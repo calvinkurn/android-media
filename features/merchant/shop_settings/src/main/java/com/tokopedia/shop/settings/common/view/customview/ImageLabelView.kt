@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.common.widget
+package com.tokopedia.shop.settings.common.view.customview
 
 import android.content.Context
 import android.graphics.Typeface
@@ -52,7 +52,7 @@ class ImageLabelView : FrameLayout {
         imageView = view.findViewById(R.id.imageView)
         tvContent = view.findViewById(R.id.tvContent)
         tvContent?.hint = contentHint
-        tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N75))
+        tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         setImage(drawableRes)
     }
 
@@ -85,7 +85,7 @@ class ImageLabelView : FrameLayout {
         super.setEnabled(enabled)
         isClickable = enabled
         if (enabled) {
-            tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N75))
+            tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             titleTextView?.setTextColor(titleColorValue)
         } else {
             tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
