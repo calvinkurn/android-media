@@ -23,5 +23,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/youtube_thumbnail_loading_bar"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         app:loader_type="circle"/>
 </RelativeLayout>
