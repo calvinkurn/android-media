@@ -486,7 +486,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 otherMenuViewModel.setIsStatusBarInitialState(false)
             }
             shopStatusHeader?.gone()
-//            shopStatusHeaderIcon?.gone()
             thematicIllustration?.gone()
             bg_white_other_menu?.gone()
         } else {
@@ -495,7 +494,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 otherMenuViewModel.setIsStatusBarInitialState(true)
             }
             shopStatusHeader?.visible()
-//            shopStatusHeaderIcon?.visible()
             thematicIllustration?.visible()
             bg_white_other_menu?.visible()
         }

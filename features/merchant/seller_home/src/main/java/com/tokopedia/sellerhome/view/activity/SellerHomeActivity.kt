@@ -433,9 +433,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         val animEnterDuration = 4f
         val animExitDuration = 1f
 
-//        Reuse this line after ramadhan thematic campaign has finished
-//        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home, R.raw.anim_bottom_nav_home_to_enabled, R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
-
         menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home_mosque, R.raw.anim_bottom_nav_home_mosque_to_enabled, R.drawable.ic_sah_bottom_nav_home_mosque_active, R.drawable.ic_sah_bottom_nav_home_mosque_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
         menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.anim_bottom_nav_product, R.raw.anim_bottom_nav_product_to_enabled, R.drawable.ic_sah_bottom_nav_product_active, R.drawable.ic_sah_bottom_nav_product_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
         menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.anim_bottom_nav_chat, R.raw.anim_bottom_nav_chat_to_enabled, R.drawable.ic_sah_bottom_nav_chat_active, R.drawable.ic_sah_bottom_nav_chat_inactive, R.color.color_active_bottom_nav, true, animExitDuration, animEnterDuration))
