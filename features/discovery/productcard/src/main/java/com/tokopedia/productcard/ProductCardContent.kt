@@ -32,9 +32,9 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderPdpCountView(productCardModel)
     renderTextProductName(productCardModel)
     renderLabelGroupVariant(productCardModel)
+    renderTextPrice(productCardModel)
     renderDiscount(productCardModel)
     renderLabelPrice(productCardModel)
-    renderTextPrice(productCardModel)
     renderShopBadge(productCardModel)
     renderTextFulfillment(productCardModel)
     renderTextShopLocation(productCardModel)
@@ -180,6 +180,14 @@ private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.La
     addView(typography)
 }
 
+private fun View.renderTextPrice(productCardModel: ProductCardModel) {
+    val priceToRender = productCardModel.getPriceToRender()
+
+    textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, priceToRender, context.getString(R.string.content_desc_textViewPrice))
+    }
+}
+
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
@@ -204,21 +212,9 @@ private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
     val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
     val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
 
-    view?.let {
-        val constraintSet = ConstraintSet().apply { clone(it) }
-
-        constraintSet.clear(R.id.labelPrice, ConstraintSet.TOP)
-        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 4.toPx())
-
-        constraintSet.applyTo(it)
-    }
-}
-
-private fun View.renderTextPrice(productCardModel: ProductCardModel) {
-    val priceToRender = productCardModel.getPriceToRender()
-
-    textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(it, priceToRender, context.getString(R.string.content_desc_textViewPrice))
+    view?.applyConstraintSet {
+        it.clear(R.id.labelPrice, ConstraintSet.TOP)
+        it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 4.toPx())
     }
 }
 
