@@ -39,7 +39,7 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
                 .into(object : CustomTarget<Bitmap?>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
                         val drawable = BitmapDrawable(itemView.context.resources, Bitmap.createScaledBitmap(resource,24,24,false))
-                        imageButtonShopNote?.setPadding(6.toPx(),0,0, 0)
+                        imageButtonShopNote?.setPadding(4.toPx(),0,0, 0)
                         imageButtonShopNote?.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null)
                     }
 
