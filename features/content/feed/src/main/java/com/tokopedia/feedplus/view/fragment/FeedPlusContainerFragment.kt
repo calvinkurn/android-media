@@ -184,6 +184,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         ) == AbTestPlatform.VARIANT_NEW_INBOX && !showOldToolbar
     }
 
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
+    }
+
     private fun initToolbar() {
         status_bar_bg.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
@@ -235,7 +243,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
+                .addIcon(getInboxIcon()) { onInboxButtonClick() }
 
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
@@ -307,7 +315,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (!useNewInbox) {
                 setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             }
-            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
         this.badgeNumberNotification = notificationCount

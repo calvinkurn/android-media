@@ -13,6 +13,6 @@ data class PostListDataUiModel(
         override val showWidget: Boolean = false
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && items.isEmpty()
+        return items.isEmpty()
     }
 }

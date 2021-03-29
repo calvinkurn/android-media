@@ -240,7 +240,7 @@ object WishlistTracking {
     }
 
     fun clickBuy(wishlistItem: WishlistItem, cartId: String){
-        getTracker().sendGeneralEvent(
+        getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT, EVENT_CLICK_ADD_TO_CART,
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
