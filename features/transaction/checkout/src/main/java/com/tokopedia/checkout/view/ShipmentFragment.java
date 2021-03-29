@@ -2511,24 +2511,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onShow() {
-//        if (promoNotEligibleBottomsheet != null) {
-//            BottomSheetBehavior bottomSheetBehavior = promoNotEligibleBottomsheet.getBottomSheetBehavior();
-//            if (bottomSheetBehavior != null) {
-//                bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//                    @Override
-//                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-//                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//
-//                    }
-//                });
-//            }
-//        }
+        //no op
     }
 
     @Override
