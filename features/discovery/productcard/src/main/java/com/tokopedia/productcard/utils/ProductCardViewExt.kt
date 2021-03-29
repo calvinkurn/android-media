@@ -367,7 +367,7 @@ private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCa
     progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
         if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
             it.setProgressIcon(
-                    icon = ContextCompat.getDrawable(it.context, R.drawable.ic_fire_filled),
+                    icon = ContextCompat.getDrawable(it.context, R.drawable.product_card_ic_fire_filled),
                     width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
                     height = it.context.resources.getDimension(FIRE_HEIGHT).toInt())
         }
