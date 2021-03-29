@@ -22,10 +22,9 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
-import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.*
@@ -223,7 +222,7 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
     }
 
     private fun onEmpty() {
-        adapter.items.add(NegKeywordEmptyViewModel())
+        adapter.items.add(NegKeywordEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
             btn_submit?.isEnabled = false
@@ -231,7 +230,6 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
         } else {
             adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
         }
-        (activity as TopAdsHeadlineAdDetailViewActivity).setNegKeywordCount(0)
     }
 
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
@@ -239,9 +237,8 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
         totalPage = (totalCount / response.meta.page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
-            adapter.items.add(NegKeywordItemViewModel(result))
+            adapter.items.add(NegKeywordItemModel(result))
         }
         adapter.notifyDataSetChanged()
-        (activity as TopAdsHeadlineAdDetailViewActivity).setNegKeywordCount(adapter.itemCount)
     }
 }

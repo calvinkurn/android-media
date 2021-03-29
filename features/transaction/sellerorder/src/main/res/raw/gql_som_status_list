@@ -1,8 +1,0 @@
-query OrderFilterList {
-  order_filter_som_single {
-   status_list {
-     id
-     value
-   }
- }
-}

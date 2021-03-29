@@ -18,8 +18,11 @@ import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
 import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
+import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
@@ -29,7 +32,6 @@ import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactoryIm
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.view.model.ProductAdsListViewModel
-import com.tokopedia.topads.view.sheet.InfoSheetProductList
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -92,18 +94,18 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperListener?.goToNextPage(stepperModel)
     }
 
-    private fun getSelectedProduct(): MutableList<Int> {
-        var list = mutableListOf<Int>()
+    private fun getSelectedProductAdId(): MutableList<String> {
+        val list = mutableListOf<String>()
         productListAdapter.getSelectedItems().forEach {
-            list.add(it.productID)
+            list.add(it.adID)
         }
         return list
     }
 
-    private fun getSelectedProductAdId(): MutableList<Int> {
-        var list = mutableListOf<Int>()
+    private fun getSelectedProduct(): MutableList<String> {
+        val list = mutableListOf<String>()
         productListAdapter.getSelectedItems().forEach {
-            list.add(it.adID)
+            list.add(it.productID)
         }
         return list
     }
@@ -157,7 +159,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
@@ -177,7 +178,16 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
         tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
-            InfoSheetProductList.newInstance().show(fragmentManager!!, "")
+            val tipsList: ArrayList<TipsUiModel> = ArrayList()
+            tipsList.apply {
+                add(TipsUiRowModel(R.string.pilih_produk_dengan_ulasan_terbanyak, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.pilih_produk_terpopuler, R.drawable.topads_create_ic_checklist))
+            }
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            tipsListSheet?.showHeader = true
+            tipsListSheet?.showKnob = false
+            tipsListSheet?.setTitle(getString(R.string.tip_memilih_produk))
+            tipsListSheet?.show(childFragmentManager, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN, "")
         }
         btn_sort.setOnClickListener {
@@ -206,7 +216,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         swipe_refresh_layout.setOnRefreshListener {
             refreshProduct()
         }
-
     }
 
     private fun refreshProduct() {
@@ -286,11 +295,11 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         btn_next.isEnabled = false
         data.forEach { result ->
             if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
-                if (result.adID > 0)
+                if (result.adID.toFloat() > 0)
                     productListAdapter.items.add(ProductItemViewModel(result))
 
             } else {
-                if (result.adID == 0)
+                if (result.adID == "0")
                     productListAdapter.items.add(ProductItemViewModel(result))
             }
         }

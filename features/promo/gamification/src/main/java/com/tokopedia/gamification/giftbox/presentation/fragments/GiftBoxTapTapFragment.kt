@@ -38,9 +38,15 @@ import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON_RP_0
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.OVO
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.REWARD_POINT
 import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.CLOSE
 import com.tokopedia.gamification.giftbox.presentation.fragments.BoxState.Companion.OPEN
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType.Companion.CARD
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType.Companion.CATALOG
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType.Companion.IMAGE
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType.Companion.UNDEFINED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.FINISHED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.NOT_STARTED
 import com.tokopedia.gamification.giftbox.presentation.fragments.MinuteTimerState.Companion.STARTED
@@ -53,10 +59,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxTapTapViewModel
-import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxTapTapView
-import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
-import com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
+import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome
@@ -75,6 +78,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var tvProgressCount: Typography
     lateinit var rewardSummary: RewardSummaryView
     lateinit var lottieTimeUp: LottieAnimationView
+    lateinit var rewardContainer: RewardContainer
     lateinit var viewDim: View
     var fmCoupons: FrameLayout? = null
 
@@ -146,8 +150,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
         downloadAudios()
-        colorDim = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_dim)
-        colorBlackTransParent = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_black_transparent)
+        colorDim = ContextCompat.getColor(requireActivity(), com.tokopedia.gamification.R.color.gf_dim)
+        colorBlackTransParent = ContextCompat.getColor(requireActivity(), com.tokopedia.gamification.R.color.gf_black_transparent)
         viewModel.getGiftBoxHome()
         return v
     }
@@ -436,11 +440,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         viewModel.couponLiveData.observe(viewLifecycleOwner, Observer { result ->
             when (result.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
-                    if (result.data?.couponMap != null) {
+                    if (result.data?.couponDetailList != null) {
                         benefitItems.forEach {
                             if (it.first.benefitType == BenefitType.COUPON && !it.first.referenceID.isNullOrEmpty()) {
-                                val couponDetail = result.data.couponMap["id_${it.first.referenceID}"]
-                                rewardItems.add(RewardSummaryItem(couponDetail, it.first, it.second))
+                                val refId = it.first.referenceID
+                                val couponDetail = result.data.couponDetailList.find { coupon->coupon.referenceId == refId }
+                                if(couponDetail!=null) {
+                                    rewardItems.add(RewardSummaryItem(couponDetail, it.first, it.second))
+                                }
                             } else if (it.first.benefitType == OVO) {
                                 rewardItems.add(RewardSummaryItem(null, it.first))
                             }
@@ -701,7 +708,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
             val imageFrontTop = imageBoxFront.top + giftBoxDailyView.fmGiftBox.top
-            val translationY = imageFrontTop - imageBoxFront.context.resources.getDimension(com.tokopedia.design.R.dimen.dp_40)
+            val translationY = imageFrontTop - imageBoxFront.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
         }
@@ -719,7 +726,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(::handleGiftBoxTap, context!!)
+                showNoInterNetDialog(::handleGiftBoxTap, requireContext())
             } else {
                 showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
             }
@@ -730,7 +737,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::getGiftBoxHome, context!!)
+                showNoInterNetDialog(viewModel::getGiftBoxHome, requireContext())
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
             }
@@ -754,6 +761,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     override fun initViews(v: View) {
+        rewardContainer = v.findViewById(R.id.reward_container)
         tvTimer = v.findViewById(R.id.tv_timer)
         progressBarTimer = v.findViewById(R.id.progress_bar_timer)
         tvProgressCount = v.findViewById(R.id.tv_progress_count)
@@ -1078,11 +1086,24 @@ annotation class MinuteTimerState {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(COUPON, OVO)
+@StringDef(COUPON, OVO, REWARD_POINT, COUPON_RP_0)
 annotation class BenefitType {
     companion object {
         const val COUPON = "coupon"
         const val OVO = "ovo_points"
+        const val REWARD_POINT = "reward_point"
+        const val COUPON_RP_0 = "coupon_rp0"
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(CARD, CATALOG, IMAGE, UNDEFINED)
+annotation class DisplayType {
+    companion object {
+        const val CARD = "card"
+        const val CATALOG = "catalog"
+        const val IMAGE = "image"
+        const val UNDEFINED = ""
     }
 }
 

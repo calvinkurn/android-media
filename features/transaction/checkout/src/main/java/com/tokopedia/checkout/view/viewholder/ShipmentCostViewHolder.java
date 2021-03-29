@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.viewholder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -8,8 +9,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.purchase_platform.common.utils.Utils;
@@ -86,6 +86,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvProductDiscountPrice = itemView.findViewById(R.id.tv_product_discount_price);
     }
 
+    @SuppressLint("StringFormatInvalid")
     public void bindViewHolder(ShipmentCostModel shipmentCost) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
@@ -123,6 +124,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         if (shipmentCost.isHasDiscountDetails()) {
             renderShippingDiscount(shipmentCost);
             renderProductDiscount(shipmentCost);
+            mTvDiscountLabel.setVisibility(View.GONE);
+            mTvDiscountPrice.setVisibility(View.GONE);
         } else {
             renderGeneralDiscount(shipmentCost);
             mTvShippingDiscountLabel.setVisibility(View.GONE);

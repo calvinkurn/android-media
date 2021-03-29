@@ -1,5 +1,7 @@
 package com.tokopedia.categorylevels.analytics
 
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -156,9 +158,18 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             productMap[KEY_ID] = it.productId.toString()
             productMap[LIST] = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
             productMap[KEY_NAME] = it.name.toString()
+            var label = ""
+            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                label = "$label&${map.key}=${map.value}"
+            }
+            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+                label = "$label&${map.key}=${map.value}"
+            }
+            productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
             productMap[KEY_VARIANT] = NONE_OTHER
+            productMap[DIMENSION83] = getProductDime83(it)
         }
         list.add(productMap)
 
@@ -186,10 +197,19 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_CATEGORY] = it.departmentID
                 productMap[KEY_ID] = it.productId.toString()
                 productMap[LIST] = productCardItemList
+                var label = ""
+                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                    label = "$label&${map.key}=${map.value}"
+                }
+                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+                    label = "$label&${map.key}=${map.value}"
+                }
+                productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
                 productMap[KEY_NAME] = it.name.toString()
                 productMap[KEY_POSITION] = componentsItems.position + 1
                 productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
                 productMap[KEY_VARIANT] = NONE_OTHER
+                productMap[DIMENSION83] = getProductDime83(it)
             }
             list.add(productMap)
 
@@ -205,6 +225,19 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             map[KEY_CAMPAIGN_CODE] = campaignCode
             map[KEY_E_COMMERCE] = eCommerce
             getTracker().sendEnhanceEcommerceEvent(map)
+        }
+    }
+
+    private fun getProductDime83(dataItem: DataItem): String {
+        if (dataItem.freeOngkir?.isActive == true){
+            for(labelGroup in dataItem.labelsGroupList ?: arrayListOf()){
+                if(labelGroup.position == Constant.LABEL_FULFILLMENT){
+                    return BEBAS_ONGKIR_EXTRA
+                }
+            }
+            return BEBAS_ONGKIR
+        }else {
+            return NONE_OTHER
         }
     }
 
@@ -252,5 +285,18 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             }
         }
         return map
+    }
+
+    override fun trackClickDetailedFilter(componentName: String?) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_FILTER_MENU))
+    }
+
+    override fun trackClickApplyFilter(mapParameters: Map<String, String>) {
+        var label = ""
+        for (map in mapParameters) {
+            if(map.key!= ORIGIN_FILTER)
+            label = "$label&${map.key}=${map.value}"
+        }
+        getTracker().sendGeneralEvent(createGeneralEvent(eventName = EVENT_CLICK_FILTER, eventAction = APPLY_FILTER, eventLabel = label.removePrefix("&")))
     }
 }

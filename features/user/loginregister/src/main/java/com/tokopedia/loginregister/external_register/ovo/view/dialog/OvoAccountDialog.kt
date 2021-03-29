@@ -21,8 +21,8 @@ class OvoAccountDialog {
                     setTitle(getString(R.string.ovo_connect_account_title))
                     setDescription(getString(R.string.ovo_connect_account_description))
                     setImageUrl(OvoConstants.IMG_COLLAB_OVO)
-                    setPrimaryCTAText(getString(R.string.dialog_register_account_positive_btn_text))
-                    setSecondaryCTAText(getString(R.string.dialog_register_account_negative_btn_text))
+                    setPrimaryCTAText(getString(R.string.dialog_connect_account_positive_btn_text))
+                    setSecondaryCTAText(getString(R.string.dialog_connect_account_negative_btn_text))
                     setPrimaryCTAClickListener {
                         listener?.onDialogPositiveBtnClicked()
                         dismiss()

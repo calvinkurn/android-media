@@ -19,7 +19,6 @@ import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
-import com.tokopedia.topads.common.domain.usecase.GetTopadsGroupListQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -66,7 +65,7 @@ const val TOP_ADS_GET_GROUP_LIST_QUERY: String = """query GetTopadsDashboardGrou
 }
 """
 
-@GqlQuery("GetTopadsGroupListQuery", TOP_ADS_GET_GROUP_LIST_QUERY)
+@GqlQuery("GetTopadsGroupDataQuery", TOP_ADS_GET_GROUP_LIST_QUERY)
 class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
     fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String, groupType: Int): RequestParams {
@@ -87,7 +86,7 @@ class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSession
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
         val token = object : TypeToken<DataResponse<GroupItemResponse>>() {}.type
-        val query = GetTopadsGroupListQuery.GQL_QUERY
+        val query = GetTopadsGroupDataQuery.GQL_QUERY
         val request = GraphqlRequest(query, GroupItemResponse::class.java, requestParams?.parameters)
         val headers = java.util.HashMap<String, String>()
         headers["Content-Type"] = "application/json"

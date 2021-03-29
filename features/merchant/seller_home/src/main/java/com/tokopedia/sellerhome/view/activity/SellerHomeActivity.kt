@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -20,8 +21,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.internal_review.common.InternalReviewHelper
+import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -49,6 +53,8 @@ import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
@@ -66,6 +72,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     @Inject lateinit var userSession: UserSessionInterface
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
+
+    private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -113,12 +121,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+        observeIsRoleEligible()
         fetchSellerAppWidget()
     }
 
     override fun onResume() {
         super.onResume()
         homeViewModel.getNotifications()
+        homeViewModel.getAdminInfo()
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
@@ -160,6 +170,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                 UpdateShopActiveService.startService(this)
                 onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                 showToolbarNotificationBadge()
+                checkForSellerAppReview(FragmentType.HOME)
             }
             FragmentType.PRODUCT -> {
                 UpdateShopActiveService.startService(this)
@@ -170,7 +181,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                 onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
             }
             FragmentType.ORDER -> {
-                initSomListLoadTimeMonitoring()
+                if (navigator?.getCurrentSelectedPage() != FragmentType.ORDER) {
+                    initSomListLoadTimeMonitoring()
+                }
                 UpdateShopActiveService.startService(this)
                 onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
             }
@@ -229,6 +242,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (intent?.data == null) {
             showToolbar(initialPageType)
             showInitialPage(initialPageType)
+            checkForSellerAppReview(initialPageType)
         } else {
             handleAppLink(intent)
         }
@@ -245,11 +259,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun handleAppLink(intent: Intent?) {
-        DeepLinkHandler.handleAppLink(intent) { page ->
+        DeepLinkHandler.handleAppLink(this, intent) { page ->
             val pageType = page.type
 
             when (pageType) {
-                FragmentType.ORDER -> lastSomTab = page
+                FragmentType.ORDER -> {
+                    initSomListLoadTimeMonitoring()
+                    lastSomTab = page
+                }
                 FragmentType.PRODUCT -> lastProductManagePage = page
             }
 
@@ -257,6 +274,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             setCurrentFragmentType(pageType)
             sahBottomNav.setSelected(pageType)
             navigator?.navigateFromAppLink(page)
+            checkForSellerAppReview(pageType)
         }
     }
 
@@ -367,6 +385,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         homeViewModel.getShopInfo()
     }
 
+    private fun observeIsRoleEligible() {
+        homeViewModel.isRoleEligible.observe(this) { result ->
+            if (result is Success) {
+                result.data.let { isRoleEligible ->
+                    if (!isRoleEligible) {
+                        RouteManager.route(this, ApplinkConstInternalGlobal.LOGOUT)
+                        finish()
+                    }
+                }
+            }
+        }
+    }
+
     private fun showNotificationBadge(notifUnreadInt: Int) {
         val homeFragment = navigator?.getHomeFragment()
         homeFragment?.setNotifCenterCounter(notifUnreadInt)
@@ -417,9 +448,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (intent.data == null) {
             initPerformanceMonitoringSellerHome()
         } else {
-            DeepLinkHandler.handleAppLink(intent) {
+            DeepLinkHandler.handleAppLink(this, intent) {
                 if (it.type == FragmentType.HOME) {
                     initPerformanceMonitoringSellerHome()
+                } else if (it.type == FragmentType.ORDER) {
+                    initSomListLoadTimeMonitoring()
                 }
             }
         }
@@ -428,5 +461,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun initPerformanceMonitoringSellerHome() {
         performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
+    }
+
+    private fun checkForSellerAppReview(pageType: Int) {
+        if (pageType == FragmentType.HOME) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                sellerReviewHelper?.checkForSellerReview(this@SellerHomeActivity, supportFragmentManager)
+            }
+        }
     }
 }

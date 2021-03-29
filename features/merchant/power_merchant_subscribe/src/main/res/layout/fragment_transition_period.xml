@@ -22,6 +22,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/dp_16"
             android:layout_centerHorizontal="true"
+            android:contentDescription="@string/pm_content_desc_transition_period_image_kyc"
             tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.design.component.TextViewCompat
@@ -35,7 +36,7 @@
             android:text="@string/pm_label_transition_period_header"
             android:textAlignment="center"
             android:layout_below="@id/img_kyc_verification"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:textStyle="bold"
             app:fontSize="titleBig" />
 

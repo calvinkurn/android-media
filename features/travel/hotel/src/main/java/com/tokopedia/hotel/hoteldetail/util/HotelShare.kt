@@ -75,6 +75,7 @@ class HotelShare(val activity: Activity) {
                 custmMsg = if (isPromo) "promo" else ""
                 deepLink = context.resources.getString(R.string.hotel_detail_share_applink, data.property.id.toString())
                 uri = context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
+                desktopUrl = context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
             }
         }
     }

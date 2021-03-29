@@ -39,6 +39,8 @@
     <string name="sudah_diiklankan">Sudah Diiklankan</string>
     <string name="belum_diiklankan">Belum Diiklankan</string>
     <string name="cari_produk">Cari Produk</string>
+    <string name="iklan_otomatis_subtitle">Beriklan lebih praktis</string>
+    <string name="iklan_manual_subtitle">Beriklan dengan kendali penuh</string>
     <string name="pilih_cara_beriklan_yang_sesuai_kebutuhanmu">Pilih cara beriklan yang sesuai kebutuhanmu</string>
     <string name="yuk_iklankan_produkmu">Yuk, iklankan produkmu!</string>
     <string name="beriklan_hanya_dengan_1x_klik">Beriklan hanya dengan 1x klik</string>
@@ -98,8 +100,10 @@
     <string name="cancel_btn">Batalkan</string>
     <string name="select_ad_creation_option_auto"> Sistem akan memilihkan produk dan biaya per klik yg tepat sehingga iklan lebih efektif</string>
     <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
-    <string name="ticker_title">Iklan Otomatis akan dinonaktifkan</string>
-    <string name="ticker_desc">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
+    <string name="topads_create_ticker_title_deactivate">Iklan Otomatis akan dinonaktifkan</string>
+    <string name="topads_create_ticker_desc_deactiivate">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
+    <string name="topads_create_ticker_title_activate">Iklan Otomatis akan diaktifkan</string>
+    <string name="topads_create_ticker_desc_actiivate">Proses mengaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi ya</string>
     <string name="topads_create_onboarding_button1">Lanjut</string>
     <string name="topads_create_onboarding_button2">Yuk, Mulai Beriklan</string>
     <string name="topads_create_onboarding_action_text">Lewati</string>
@@ -110,6 +114,13 @@
     <string name="topads_create_onboarding_screen_desc2">Dengan TopAds, produkmu dapat menjangkau  lebih banyak calon pembeli dan berpotensi meningkatkan penjualan.</string>
     <string name="topads_create_onboarding_screen_title3">Beriklan tanpa ribet</string>
     <string name="topads_create_onboarding_screen_desc3">Cukup bayar sesuai hasil, produkmu akan diiklankan lebih efektif dan tepat sasaran. Lebih mudah beriklan hanya dengan 1x klik.</string>
+    <string name="iklan_otomatis_desc1">Produk dipilihkan secara rutin\n oleh TopAds</string>
+    <string name="iklan_otomatis_desc2">Kata kunci &amp; biaya iklan diatur secara rutin\n oleh TopAds</string>
+    <string name="iklan_otomatis_desc3">Kamu cukup atur anggaran harian saja</string>
+
+    <string name="iklan_manual_desc1">Bebas pilih produk yang ingin diiklankan</string>
+    <string name="iklan_manual_desc2">Bebas pilih kata kunci &amp; atur biaya iklan</string>
+    <string name="iklan_manual_desc3">Bebas atur anggaran harian </string>
     <string name="autoads_selanjutnya">Selanjutnya</string>
 
 

@@ -13,6 +13,7 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -23,6 +24,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
@@ -44,16 +47,14 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -61,6 +62,10 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -81,15 +86,20 @@ import java.net.UnknownHostException
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 const val PAGE_REFRESH_LOGIN = 35771
+private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
 private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
-class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener,
-        View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener,
-        TabLayout.OnTabSelectedListener {
+class DiscoveryFragment :
+        BaseDaggerFragment(),
+        SwipeRefreshLayout.OnRefreshListener,
+        View.OnClickListener,
+        LihatSemuaViewHolder.OnLihatSemuaClickListener,
+        TabLayout.OnTabSelectedListener,
+        ChooseAddressWidget.ChooseAddressWidgetListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -102,6 +112,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var navToolbar: NavToolbar
     private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
+    private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var chooseAddressWidgetDivider: View? = null
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -117,8 +129,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var pinnedAlreadyScrolled = false
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
-
-
+    private var userAddressData : LocalCacheModel? = null
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -168,7 +179,19 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         super.onViewCreated(view, savedInstanceState)
         mDiscoveryFab = view.findViewById(R.id.fab)
         initToolbar(view)
+        initChooseAddressWidget(view)
         initView(view)
+    }
+
+    private fun initChooseAddressWidget(view: View) {
+        chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
+        chooseAddressWidgetDivider = view.findViewById(R.id.divider_view)
+        chooseAddressWidget?.bindChooseAddress(this)
+        context?.let {
+            if (ChooseAddressUtils.isRollOutUser(it)) {
+                fetchUserLatestAddressData()
+            }
+        }
     }
 
     private fun initToolbar(view: View) {
@@ -250,7 +273,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun setUpObserver() {
-        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
@@ -272,7 +295,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             mSwipeRefreshLayout.isRefreshing = false
         })
 
-        discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     it.data.data?.get(0)?.let { data ->
@@ -286,7 +309,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             }
         })
 
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     setToolBarPageInfoOnSuccess(it.data)
@@ -298,7 +321,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             }
         })
 
-        discoveryViewModel.getDiscoveryLiveStateData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryLiveStateData().observe(viewLifecycleOwner, {
             when (it) {
                 is RouteToApplink -> {
                     RouteManager.route(context, it.applink)
@@ -310,7 +333,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             }
         })
 
-        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     setBottomNavigationComp(it)
@@ -320,6 +343,39 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         })
+
+        discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
+            context?.let {
+                if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
+                    chooseAddressWidget?.show()
+                    chooseAddressWidgetDivider?.show()
+                    if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
+                        showLocalizingAddressCoachMark()
+                    }
+                    fetchUserLatestAddressData()
+                }else{
+                    chooseAddressWidget?.hide()
+                    chooseAddressWidgetDivider?.hide()
+                }
+            }
+        })
+    }
+
+    private fun showLocalizingAddressCoachMark() {
+        chooseAddressWidget?.let {
+                val coachMarkItem = ArrayList<CoachMark2Item>()
+                val coachMark = CoachMark2(requireContext())
+                coachMark.isOutsideTouchable = true
+                coachMarkItem.add(
+                        CoachMark2Item(
+                                it,
+                                getString(R.string.choose_address_title),
+                                getString(R.string.choose_address_description)
+                        )
+                )
+                coachMark.showCoachMark(coachMarkItem)
+            }
     }
 
     private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
@@ -493,7 +549,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun fetchDiscoveryPageData() {
-        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData)
     }
 
     private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
@@ -569,6 +625,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         showVerificationBottomSheet()
     }
 
+    fun openPlay(componentPosition: Int = -1, appLink: String) {
+        this.componentPosition = componentPosition
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, OPEN_PLAY_CHANNEL)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -592,6 +654,14 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 if (resultCode == Activity.RESULT_OK) {
                     refreshPage()
                 }
+            }
+            OPEN_PLAY_CHANNEL -> {
+                if (data == null)
+                    return
+                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
+                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
             }
         }
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
@@ -659,7 +729,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun onResume() {
         super.onResume()
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
@@ -669,6 +739,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         })
+        context?.let {
+            if (ChooseAddressUtils.isRollOutUser(it) && discoveryViewModel.getAddressVisibilityValue()) {
+                updateChooseAddressWidget()
+                checkAddressUpdate()
+            }
+        }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -727,5 +803,65 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } catch (exception: Exception) {
             ContextCompat.getColor(context, R.color.Green_G500)
         }
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        updateChooseAddressWidget()
+        checkAddressUpdate()
+    }
+
+    override fun onLocalizingAddressServerDown() {
+        chooseAddressWidget?.hide()
+        chooseAddressWidgetDivider?.hide()
+    }
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+        if(isRollOutUser && discoveryViewModel.getAddressVisibilityValue()){
+            chooseAddressWidget?.show()
+            chooseAddressWidgetDivider?.show()
+        }else{
+            chooseAddressWidget?.hide()
+            chooseAddressWidgetDivider?.hide()
+        }
+    }
+
+    override fun getLocalizingAddressHostFragment(): Fragment {
+        return this
+    }
+
+    override fun getLocalizingAddressHostSourceData(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+    }
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+    }
+
+    override fun onLocalizingAddressLoginSuccess() {
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+
+    }
+
+    private fun fetchUserLatestAddressData() {
+        context?.let {
+            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    private fun checkAddressUpdate() {
+        context?.let {
+            if(userAddressData != null){
+                if(ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
+                    userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+                    showLoadingWithRefresh()
+                }
+            }
+        }
+    }
+
+    private fun updateChooseAddressWidget(){
+        chooseAddressWidget?.updateWidget()
     }
 }

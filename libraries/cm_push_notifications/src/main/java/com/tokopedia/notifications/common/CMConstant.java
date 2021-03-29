@@ -132,6 +132,10 @@ public interface CMConstant {
         String REVIEW_SCORE = "reviewScore";
         String REVIEW_NUMBER = "reviewNumber";
         String REVIEW_ICON = "reviewIcon";
+
+        String MAIN_APP_PRIORITY = "mainappPriority";
+        String SELLER_APP_PRIORITY = "sellerappPriority";
+        String ADVANCE_TARGET = "isAdvanceTarget";
     }
 
     interface NotificationProductType {

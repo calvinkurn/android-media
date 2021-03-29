@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.viewholder
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
 
@@ -16,6 +16,7 @@ class CartLoadingViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     }
 
     fun bind(element: CartLoadingHolderData) {
+        // no op
     }
 
 }

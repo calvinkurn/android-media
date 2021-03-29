@@ -113,5 +113,9 @@
     <string name="lbl_new_occ_profile_name">Template Beli Langsung</string>
     <string name="lbl_add_new_occ_profile_name">Buat Template Baru</string>
 
+    <string name="lbl_occ_profile_name_with_suffix">Template %1$s</string>
+
     <string name="lbl_reload_shipping">Refresh</string>
+
+    <string name="content_description_img_payment">Payment Image</string>
 </resources>

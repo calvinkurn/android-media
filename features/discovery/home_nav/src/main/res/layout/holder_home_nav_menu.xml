@@ -54,4 +54,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:notificationType="counter_type"
         tools:visibility="visible"/>
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/menu_notification_typography"
+        android:visibility="visible"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:typographyType="small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:notificationType="counter_type"
+        tools:visibility="visible"/>
 </LinearLayout>

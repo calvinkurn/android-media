@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inboxreview.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -15,6 +16,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.*
@@ -23,10 +26,12 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewConstants.ALL_RATINGS
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
+import com.tokopedia.review.common.util.ReviewConstants.RESULT_INTENT_REVIEW_REPLY
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
 
@@ -47,14 +52,12 @@ import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_inbox_review.*
+import kotlinx.coroutines.isActive
 import javax.inject.Inject
 
 class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(),
@@ -122,16 +125,21 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeInboxReviewCounter()
         observeInboxReview()
         observeFeedbackInboxReview()
+        observeReviewReminderEstimation()
         initTickerInboxReview()
         initSortFilterInboxReview()
         initRatingFilterList()
         setupMarginSortFilter()
+        setupViewInteraction()
     }
 
     override fun onResume() {
         super.onResume()
+        inboxReviewViewModel.getInboxReviewCounter()
+        inboxReviewViewModel.fetchReminderCounter()
         InboxReviewTracking.openScreenInboxReview(inboxReviewViewModel.userSession.shopId.orEmpty(),
                 inboxReviewViewModel.userSession.userId.orEmpty())
     }
@@ -225,12 +233,24 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         }
 
-        startActivity(Intent(context, SellerReviewReplyActivity::class.java).apply {
+        startActivityForResult(Intent(context, SellerReviewReplyActivity::class.java).apply {
             putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
             putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, inboxReviewViewModel.userSession.shopId.orEmpty())
             putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
-        })
+        }, RESULT_INTENT_REVIEW_REPLY)
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            RESULT_INTENT_REVIEW_REPLY -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    clearAllData()
+                    loadInitialData()
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>,
@@ -281,6 +301,49 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
+    private fun setupViewInteraction(){
+        buttonReviewReminder?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
+        }
+    }
+
+    private fun observeInboxReviewCounter() {
+        observe(inboxReviewViewModel.inboxReviewCounterText) {
+            when (it) {
+                is Success -> {
+                    setInboxReviewTabCounter(it.data)
+                }
+                is Fail -> {
+                    setInboxReviewTabCounter()
+                }
+            }
+        }
+        inboxReviewViewModel.getInboxReviewCounter()
+        inboxReviewViewModel.fetchReminderCounter()
+    }
+
+    private fun setInboxReviewTabCounter(counter: Int = 0) {
+        (activity as? InboxReputationActivity)?.fragmentList?.forEachIndexed { index, fragment ->
+            if (fragment::class.java == this::class.java) {
+                    if (counter.isMoreThanZero()) {
+                        (activity as? InboxReputationActivity)
+                                ?.indicator
+                                ?.tabLayout
+                                ?.getTabAt(index)
+                                ?.setCounter(counter)
+                                ?.setNotification(hasNotification = true)
+                    }
+                return
+            }
+        }
+    }
+
+    private fun setButtonReviewReminder(counter: Int = 0) {
+        buttonReviewReminder?.text = if (counter > 0) {
+            getString(R.string.review_reminder_button_review_reminder_with_counter, counter)
+        } else getString(R.string.review_reminder_button_review_reminder)
+    }
+
     private fun observeInboxReview() {
         observe(inboxReviewViewModel.inboxReview) {
             hideLoading()
@@ -306,6 +369,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     onErrorGetInboxReviewData()
                 }
             }
+        }
+    }
+
+    private fun observeReviewReminderEstimation() {
+        observe(inboxReviewViewModel.getEstimation()) {
+            setButtonReviewReminder(it.totalBuyer)
         }
     }
 

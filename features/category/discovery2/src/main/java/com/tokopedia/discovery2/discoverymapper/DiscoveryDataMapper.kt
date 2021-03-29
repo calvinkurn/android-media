@@ -212,7 +212,12 @@ class DiscoveryDataMapper {
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
                 pdpViewCount = getPDPViewCount(dataItem.pdpView),
                 labelGroupList = labelGroupList.apply {
-                    dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
+                    dataItem.labelsGroupList?.forEach {
+                        add(ProductCardModel.LabelGroup(it.position,
+                                it.title,
+                                it.type,
+                                it.url))
+                    }
                 },
                 shopLocation = getShopLocation(dataItem),
                 shopBadgeList = getShopBadgeList(dataItem),
@@ -220,13 +225,15 @@ class DiscoveryDataMapper {
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
-                hasNotifyMeButton =  dataItem.hasNotifyMe,
+                hasNotifyMeButton = dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots
         )
     }
 
     private fun setSlashPrice(dataItem: DataItem): String {
         if(dataItem.discountedPrice.isNullOrEmpty()){
+            return ""
+        }else if(dataItem.discountedPrice == dataItem.price){
             return ""
         }
         return dataItem.price ?: ""

@@ -45,13 +45,17 @@ internal data class SearchShopModel(
             @Expose
             val tabName: String = "",
 
+            @SerializedName("suggestion")
+            @Expose
+            val suggestion: Suggestion = Suggestion(),
+
             @SerializedName("shops")
             @Expose
             val shopList: List<ShopItem> = listOf(),
 
             @SerializedName("top_shop")
             @Expose
-            val topShopList: List<ShopItem> = listOf()
+            val topShopList: List<ShopItem> = listOf(),
     ) {
 
         data class Paging(
@@ -62,6 +66,20 @@ internal data class SearchShopModel(
                 @SerializedName("uri_previous")
                 @Expose
                 val uriPrevious: String = ""
+        )
+
+        data class Suggestion(
+                @SerializedName("currentKeyword")
+                @Expose
+                val currentKeyword: String = "",
+
+                @SerializedName("query")
+                @Expose
+                val query: String = "",
+
+                @SerializedName("text")
+                @Expose
+                val text: String = "",
         )
 
         data class ShopItem(

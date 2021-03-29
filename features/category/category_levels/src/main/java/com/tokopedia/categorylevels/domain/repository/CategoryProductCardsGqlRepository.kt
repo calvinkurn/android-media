@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import java.util.HashMap
 import javax.inject.Inject
 
 class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
@@ -27,15 +26,17 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
 
     override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
-        val filters = getComponent(componentId, pageEndPoint)?.selectedFilters
         val recommendationData =
-                recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), filters))
-        return mapRecommendationToDiscoveryResponse(recommendationData)
+                recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), getComponent(componentId, pageEndPoint)))
+        return mapRecommendationToDiscoveryResponse(componentId, recommendationData)
     }
 
-    private fun createRequestParams(page: String, componentId: String, filters: HashMap<String, String>?): GetRecommendationRequestParam {
+    private fun createRequestParams(page: String, componentId: String, component: ComponentsItem?): GetRecommendationRequestParam {
         var queryParam =""
-        filters?.forEach {
+        component?.selectedFilters?.forEach {
+            queryParam = queryParam.plus("&${it.key}=${it.value}")
+        }
+        component?.selectedSort?.forEach {
             queryParam = queryParam.plus("&${it.key}=${it.value}")
         }
         return GetRecommendationRequestParam(
@@ -48,17 +49,18 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         )
     }
 
-    private fun mapRecommendationToDiscoveryResponse(recommendationData: List<RecommendationWidget>): ArrayList<ComponentsItem> {
+    private fun mapRecommendationToDiscoveryResponse(componentId: String, recommendationData: List<RecommendationWidget>): ArrayList<ComponentsItem> {
         val components = arrayListOf<ComponentsItem>()
         recommendationData[0].recommendationItemList.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
             componentsItem.position = index
+            componentsItem.parentComponentId = componentId
             componentsItem.name = ComponentNames.ProductCardRevampItem.componentName
             val dataItems = mutableListOf<DataItem>()
             val dataItem = DataItem()
             val labelsGroupList = arrayListOf<LabelsGroup>()
             it.labelGroupList.forEach {
-                labelsGroupList.add(LabelsGroup(it.position, it.title, it.type))
+                labelsGroupList.add(LabelsGroup(it.position, it.title, it.type, it.imageUrl))
             }
             dataItem.id = it.productId.toString()
             dataItem.productId = it.productId.toString()

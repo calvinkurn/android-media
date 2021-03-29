@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="PmCheckbox" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/tkpd_main_green</item>
-        <item name="android:textColorSecondary">@color/pm_cb_color</item>
+    <style name="PmCheckbox" parent="Theme.AppCompat.DayNight">
+        <item name="colorAccent">@color/Unify_G500</item>
+        <item name="android:textColorSecondary">@color/Unify_N0_68</item>
     </style>
 
-    <style name="PmCheckboxDisabled" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/pm_cb_color</item>
-        <item name="android:textColorSecondary">@color/pm_cb_color</item>
+    <style name="PmCheckboxDisabled" parent="Theme.AppCompat.DayNight">
+        <item name="colorAccent">@color/Unify_N0_68</item>
+        <item name="android:textColorSecondary">@color/Unify_N0_68</item>
     </style>
 
     <style name="PmBottomSheet" parent="Theme.Design.Light.BottomSheetDialog">

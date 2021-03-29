@@ -1,7 +1,6 @@
 package com.tokopedia.gallery.domain
 
 import android.content.Context
-
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gallery.R
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
@@ -11,11 +10,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-
-import java.util.ArrayList
-import java.util.HashMap
-
 import rx.Observable
+import java.util.*
 
 open class GetImageReviewUseCase(private val context: Context?,
                             private val graphqlUseCase: GraphqlUseCase) : UseCase<ImageReviewListModel>() {
@@ -77,10 +73,10 @@ open class GetImageReviewUseCase(private val context: Context?,
 
         fun createRequestParams(page: Int,
                                 total: Int,
-                                productId: Int): RequestParams {
+                                productId: Long): RequestParams {
 
             val requestParams = RequestParams.create()
-            requestParams.putInt(KEY_PRODUCT_ID, productId)
+            requestParams.putLong(KEY_PRODUCT_ID, productId)
             requestParams.putInt(KEY_PAGE, page)
             requestParams.putInt(KEY_TOTAL, total)
             return requestParams

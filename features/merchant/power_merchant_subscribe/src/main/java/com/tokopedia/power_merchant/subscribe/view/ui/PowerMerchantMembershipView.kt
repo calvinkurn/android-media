@@ -73,11 +73,11 @@ class PowerMerchantMembershipView: ConstraintLayout {
 
     private fun showShopStatus(shopScore: Int) {
         if(shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
-            val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_R500)
+            val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
             textStatus.setTextColor(textColor)
             textStatus.text = context.getString(R.string.power_merchant_inactive)
         } else {
-            val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700)
+            val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
             textStatus.setTextColor(textColor)
             textStatus.text = context.getString(R.string.power_merchant_active)
         }

@@ -7,6 +7,10 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Items implements Serializable {
+    @SerializedName("detail_id")
+    @Expose
+    private String orderDetailId;
+
     @SerializedName("categoryID")
     @Expose
     private int categoryID;
@@ -25,7 +29,7 @@ public class Items implements Serializable {
 
     @SerializedName("id")
     @Expose
-    private long id;
+    private String id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -101,6 +105,14 @@ public class Items implements Serializable {
     private boolean isTapActionsLoaded;
 
     private boolean isActionButtonLoaded;
+
+    public String getOrderDetailId() {
+        return orderDetailId;
+    }
+
+    public void setOrderDetailId(String orderDetailId) {
+        this.orderDetailId = orderDetailId;
+    }
 
     public int getCategoryID() {
         return categoryID;
@@ -256,11 +268,11 @@ public class Items implements Serializable {
         this.weight = weight;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

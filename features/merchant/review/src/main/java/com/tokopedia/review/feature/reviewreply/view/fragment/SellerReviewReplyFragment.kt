@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewreply.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -286,7 +287,11 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             feedbackUiModel?.replyText = replyEditText.text.toString()
             tvReplyComment.text = feedbackUiModel?.replyText
             replyEditText.text?.clear()
+            activity?.setResult(Activity.RESULT_OK)
+        } else {
+            activity?.setResult(Activity.RESULT_CANCELED)
         }
+        KeyboardHandler.hideSoftKeyboard(requireActivity())
     }
 
     private fun updateReviewReplySuccess(data: UpdateReplyResponseUiModel) {
@@ -298,7 +303,11 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             feedbackUiModel?.replyText = data.responseMessage
             tvReplyDate.text = viewModelReviewReply?.replyTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
             tvReplyComment.text = feedbackUiModel?.replyText
+            activity?.setResult(Activity.RESULT_OK)
+        } else {
+            activity?.setResult(Activity.RESULT_CANCELED)
         }
+        KeyboardHandler.hideSoftKeyboard(requireActivity())
     }
 
     private fun showData() {

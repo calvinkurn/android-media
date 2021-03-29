@@ -1,0 +1,13 @@
+{
+  "readme": "inbox detail page reply helpfull/not helpfull tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "inbox pesan bantuan",
+      "event": "clickInboxBantuan",
+      "eventAction": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

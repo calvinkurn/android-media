@@ -19,11 +19,7 @@ import javax.inject.Inject
 class GtmLogDBSource @Inject
 constructor(context: Context) {
 
-    private val gtmLogDao: GtmLogDao
-
-    init {
-        gtmLogDao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
-    }
+    private val gtmLogDao: GtmLogDao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
 
     fun deleteAll(): Observable<Boolean> {
         return Observable.unsafeCreate { subscriber ->
@@ -34,12 +30,12 @@ constructor(context: Context) {
 
     fun insertAll(data: AnalyticsLogData): Observable<Boolean> {
         return Observable.just(data).map { analyticsLogData ->
-            val gtmLogDB = GtmLogDB()
-            gtmLogDB.name = analyticsLogData.name
-            gtmLogDB.category = analyticsLogData.category
-            gtmLogDB.data = analyticsLogData.data
-            gtmLogDB.timestamp = Date().time
-            gtmLogDB.source = data.source
+            val gtmLogDB = GtmLogDB(
+                    data = analyticsLogData.data,
+                    name = analyticsLogData.name,
+                    timestamp = Date().time,
+                    source =  analyticsLogData.source
+            )
             gtmLogDao.insertAll(gtmLogDB)
             true
         }
@@ -80,12 +76,6 @@ constructor(context: Context) {
                 else -> gtmLogDao.getAll(analyticsSource)
             }
 
-        }
-    }
-
-    suspend fun delete() {
-        withContext(Dispatchers.IO) {
-            gtmLogDao.deleteAll()
         }
     }
 

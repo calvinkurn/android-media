@@ -66,4 +66,12 @@
     <string name="gami_ayo_tap">Ayo tap terus sebelum waktunya habis!</string>
     <string name="gami_end_time">00:00:00</string>
     <string name="gami_end_time_minute">0</string>
+    <string name="gami_info_label">Information</string>
+    <string name="gami_hadiah_yang_mungkin_didapat">Hadiah yang mungkin didapat</string>
+    <string name="gami_pdp_title">Produk menarik buatmu</string>
+    <string name="gami_back_button_message">Hadiahnya udah siap, nanti bisa kamu kirim lewat halaman Daftar Hadiah Game selama 30 hari ke depan.</string>
+    <string name="gami_back_button_title">Belum mau kirim hadiah ini?.</string>
+    <string name="gami_back_button_ok">Cek Daftar Hadiah Game</string>
+    <string name="gami_back_button_cancel">Ke Home</string>
+
 </resources>

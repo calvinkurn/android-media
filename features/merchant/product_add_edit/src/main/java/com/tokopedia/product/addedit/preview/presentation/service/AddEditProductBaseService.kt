@@ -16,10 +16,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.IMAGE_SOURCE_ID
-import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
-import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
-import com.tokopedia.product.addedit.common.util.AddEditProductUploadException
-import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
@@ -32,6 +29,8 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -60,9 +59,15 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
     @Inject
+    lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
+    @Inject
+    lateinit var updateProductStockWarehouseUseCase: UpdateProductStockWarehouseUseCase
+    @Inject
     lateinit var resourceProvider: ResourceProvider
     @Inject
     lateinit var gson: Gson
+    @Inject
+    lateinit var sellerAppReviewHelper: AddEditSellerReviewHelper
 
     private var notificationManager: AddEditProductNotificationManager? = null
 

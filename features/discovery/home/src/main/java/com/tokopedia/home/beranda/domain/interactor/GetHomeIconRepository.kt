@@ -12,9 +12,9 @@ import javax.inject.Inject
 class GetHomeIconRepository @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ){
-    suspend fun getIconData(param: String = ""): HomeIconData {
+    suspend fun getIconData(param: String = "", locationParams: String = ""): HomeIconData {
         val gqlResponse  = graphqlRepository.getReseponse(
-                listOf(buildRequest(param)), GraphqlCacheStrategy
+                listOf(buildRequest(param, locationParams)), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(HomeIconData::class.java)
         if (errors.isNullOrEmpty()) {
@@ -22,11 +22,12 @@ class GetHomeIconRepository @Inject constructor(
         } else throw MessageErrorException(errors.joinToString { it.message })
     }
 
-    private fun buildRequest(param: String): GraphqlRequest {
-        return GraphqlRequest(QueryHome.homeIconQuery, HomeIconData::class.java, mapOf(PARAM to param))
+    private fun buildRequest(param: String, locationParams: String): GraphqlRequest {
+        return GraphqlRequest(QueryHome.homeIconQuery, HomeIconData::class.java, mapOf(PARAM to param, PARAM_LOCATION to locationParams))
     }
 
     companion object{
         private const val PARAM = "param"
+        private const val PARAM_LOCATION = "location"
     }
 }

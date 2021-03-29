@@ -18,6 +18,7 @@ mutation GamiCrack($campaignSlug:String!,$uniqueCode:String!){
       isAutoApply
       autoApplyMsg
       isBigPrize
+      displayType
     }
     actionButton {
       text
@@ -25,6 +26,11 @@ mutation GamiCrack($campaignSlug:String!,$uniqueCode:String!){
       applink
       type
       backgroundColor
+    }
+    recommendation {
+      isShow
+      shopID
+      pageName
     }
   }
 }

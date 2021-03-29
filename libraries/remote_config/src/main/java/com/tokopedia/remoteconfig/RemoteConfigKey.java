@@ -88,9 +88,6 @@ public class RemoteConfigKey {
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
-    public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
-    public static final String ANDROID_MAIN_APP_ENABLED_CACHE_PDP = "android_main_app_enabled_cache_pdp";
-
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
     public static final String NONB2_TTL = "app_nonb_2_ttl";
@@ -111,6 +108,8 @@ public class RemoteConfigKey {
     public static final String HOME_GEOLOCATION_COMPONENT_DESCRIPTION = "android_customer_home_geolocation_component_description";
     public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
     public static final String HOME_USE_GLOBAL_COMPONENT = "android_customer_home_use_global_component";
+
+    public static final String RECOMMENDATION_ENABLE_COMPARISON_WIDGET = "android_customer_recom_enable_comparison_widget";
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 

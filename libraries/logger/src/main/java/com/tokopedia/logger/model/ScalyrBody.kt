@@ -27,6 +27,9 @@ data class ScalyrSessionInfo(
         @SerializedName("packageName")
         @Expose
         val packageName: String,
+        @SerializedName("installer")
+        @Expose
+        val installer: String,
         @SerializedName("debug")
         @Expose
         val debug: Boolean,

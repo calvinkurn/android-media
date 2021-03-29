@@ -51,7 +51,9 @@ public class ApplinkNotificationHelper {
         model.setTargetApp(data.getString("target_app", ""));
         model.setTransactionId(data.getString("trans_id", ""));
         model.setImages(data.getString("images", ""));
-
+        model.setMainAppPriority(data.getString("mainapp_priority", ""));
+        model.setSellerAppPriority(data.getString("sellerapp_priority", ""));
+        model.setIsAdvanceTarget(data.getString("is_advance_target", "false").equals("true"));
         return model;
     }
 

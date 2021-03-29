@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#ffffff</color>
-    <color name="grey_300">#e0e0e0</color>
-    <color name="notif_unread_color">#f3fef3</color>
-    <color name="white_four">#e0e0e0</color>
-    <color name="divider_notif_light">#e5e7e9</color>
-    <color name="divider_notif_big">#f3f4f5</color>
-    <color name="chorcoal_black">#31353b</color>
-    <color name="charcoal_grey_88">#e131353b</color>
-    <color name="charcoal_grey_40">#6631353b</color>
-    <color name="charcoal_grey_96">#f531353b</color>
-    <color name="black_68">#31353b</color>
+    <color name="notifcenter_dms_unread_notification">@color/Unify_G100</color>
+    <color name="notifcenter_dms_order_list_card_shadow">#1F31353B</color>
 </resources>

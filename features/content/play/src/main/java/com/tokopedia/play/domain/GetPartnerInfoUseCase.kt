@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -8,7 +9,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -16,13 +16,15 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-10.
  */
 
-class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository): UseCase<ShopInfo>() {
+class GetPartnerInfoUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository
+): GraphqlUseCase<ShopInfo>(graphqlRepository) {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ShopInfo {
         val gqlRequest = GraphqlRequest(query, ShopInfo.Response::class.java, params.parameters)
-        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val error = gqlResponse.getError(ShopInfo.Response::class.java)

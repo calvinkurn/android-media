@@ -23,5 +23,13 @@ abstract class LoadTimeMonitoring {
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
     }
 
+    fun startCustomMetric(tag: String) {
+        pageLoadTimePerformanceMonitoring?.startCustomMetric(tag)
+    }
+
+    fun stopCustomMetric(tag: String) {
+        pageLoadTimePerformanceMonitoring?.stopCustomMetric(tag)
+    }
+
     fun getPltPerformanceMonitoring(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
 }

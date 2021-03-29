@@ -13,7 +13,7 @@ FragmentTransaction) {
 fun AppCompatActivity.addFragment(frameId: Int, fragment: Fragment) {
     supportFragmentManager.doTransaction {
         addToBackStack(null)
-        add(frameId, fragment)
+        add(frameId, fragment, fragment.tag)
     }
 }
 

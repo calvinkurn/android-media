@@ -22,6 +22,7 @@
     <string name="pm_label_transition_period_desc"><![CDATA[Sekarang Power Merchant bebas biaya bulanan. Nikmati layanan baru Power Merchant dengan upload KTP sebelum tanggal <b>1 Juli 2019.</b>]]></string>
     <string name="pm_label_transition_period_button">Upload KTP Sekarang</string>
     <string name="pm_label_transition_period_learnmore">Pelajari Power Merchant Selengkapnya.</string>
+    <string name="pm_content_desc_transition_period_image_kyc">transition period image kyc verification</string>
 
     <string name="expired_label">Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan otomatis berhenti pada %1$s, pukul %2$s WIB.</string>
     <string name="pm_bottom_sheet_expired_label">Layanan otomatis berhenti pada %1$s, pukul %2$s WIB.</string>
@@ -63,9 +64,9 @@
     <string name="power_merchant_shop_benefit">Jadi toko pilihan pembeli</string>
     <string name="power_merchant_shop_benefit_description">Dilihat banyak pembeli dengan fitur Etalase Toko (200 Etalase), Produk Unggulan, dan Sampul Toko.</string>
     <string name="power_merchant_top_ads_benefit">Tambahan kredit TopAds</string>
-    <string name="power_merchant_top_ads_benefit_description">Dapatkan ekstra kredit 5% setiap top-up kredit TopAds.</string>
+    <string name="power_merchant_top_ads_benefit_description" formatted="false">Dapatkan ekstra kredit 5% setiap top-up kredit TopAds.</string>
     <string name="power_merchant_cost_benefit">Biaya layanan HANYA 1%</string>
-    <string name="power_merchant_cost_benefit_description">Biaya layanan Power Merchant 1% hanya dibayarkan setiap produk terjual.</string>
+    <string name="power_merchant_cost_benefit_description" formatted="false">Biaya layanan Power Merchant 1% hanya dibayarkan setiap produk terjual.</string>
     <string name="power_merchant_broadcast_benefit">GRATIS Broadcast Chat</string>
     <string name="power_merchant_broadcast_benefit_description">Gunakan layanan Broadcast Chat gratis setiap bulannya sesuai syarat &amp; ketentuan.</string>
     <string name="power_merchant_register_now">Daftar Sekarang</string>

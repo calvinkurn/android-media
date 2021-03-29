@@ -28,7 +28,8 @@ class FlightFilterModel(
         var isSeatDistancing: Boolean = false,
         var isFreeRapidTest: Boolean = false,
         var canFilterSeatDistancing: Boolean = false,
-        var canFilterFreeRapidTest: Boolean = false
+        var canFilterFreeRapidTest: Boolean = false,
+        var departureArrivalTime: String = ""
 ) : Parcelable, Cloneable {
 
     fun setHasFilter(searchStatisticModel: FlightSearchStatisticModel?) {

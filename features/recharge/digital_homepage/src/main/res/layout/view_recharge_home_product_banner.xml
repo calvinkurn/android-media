@@ -6,173 +6,180 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/view_recharge_home_product_banner_background"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/Unify_G500"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/Unify_G500" />
-
-    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
-        android:id="@+id/view_recharge_home_product_banner_header"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/iv_recharge_home_product_banner_close_button"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/iv_recharge_home_product_banner_close_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close_white" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/view_recharge_home_product_banner_product_card"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/view_recharge_home_product_banner_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/section_header_margin"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="@dimen/spacing_lvl3"
-        app:cardElevation="@dimen/spacing_lvl2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_recharge_home_product_banner_header">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <View
+            android:id="@+id/view_recharge_home_product_banner_background"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/spacing_lvl4">
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/Unify_G500" />
 
-            <include
-                android:id="@+id/view_recharge_home_product_banner_image"
-                layout="@layout/view_recharge_home_card_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/card_image_margin"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+            android:id="@+id/view_recharge_home_product_banner_header"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/iv_recharge_home_product_banner_close_button"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_recharge_home_product_banner_name"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginLeft="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl3"
-                android:ellipsize="end"
-                android:maxLines="2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Nama"
-                tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/iv_recharge_home_product_banner_close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/recharge_home_close_button_content_description"
+            app:srcCompat="@drawable/ic_close_white" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_recharge_home_product_banner_desc"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginLeft="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl3"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textColor="@color/Unify_N700_44"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
-                app:layout_constraintTop_toBottomOf="@+id/tv_recharge_home_product_banner_name"
-                app:typographyType="body_3"
-                tools:text="Nama"
-                tools:visibility="visible" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/view_recharge_home_product_banner_product_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/section_header_margin"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="@dimen/spacing_lvl3"
+            app:cardElevation="@dimen/spacing_lvl2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_recharge_home_product_banner_header">
 
-            <com.tokopedia.unifycomponents.Label
-                android:id="@+id/tv_recharge_home_product_banner_discount_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginLeft="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:gravity="center_vertical"
-                app:labelType="general_light_red"
-                app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
-                app:layout_constraintTop_toBottomOf="@+id/tv_recharge_home_product_banner_desc"
-                tools:text="100%"
-                tools:visibility="visible" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/spacing_lvl4">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_recharge_home_product_banner_slashed_price"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_lvl2"
-                android:layout_marginRight="@dimen/spacing_lvl3"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:textColor="@color/Unify_N700_44"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_recharge_home_product_banner_discount_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_recharge_home_product_banner_discount_label"
-                app:layout_constraintTop_toTopOf="@+id/tv_recharge_home_product_banner_discount_label"
-                app:typographyType="small"
-                tools:text="Rp 99999999999999999999999999999999999999999999999999999999999999999999999999999999"
-                tools:visibility="visible" />
+                <include
+                    android:id="@+id/view_recharge_home_product_banner_image"
+                    layout="@layout/view_recharge_home_card_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/card_image_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_recharge_home_product_banner_price"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginLeft="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl3"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/Unify_Y500"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_recharge_home_product_banner_buy"
-                app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
-                app:layout_constraintTop_toBottomOf="@+id/tv_recharge_home_product_banner_discount_label"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Rp 9999999999999999999999999999999999999999"
-                tools:visibility="visible" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_recharge_home_product_banner_name"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_marginLeft="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Nama"
+                    tools:visibility="visible" />
 
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btn_recharge_home_product_banner_buy"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:text="@string/recharge_home_product_banner_buy_button_label"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:unifyButtonSize="small"
-                app:unifyButtonType="transaction" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_recharge_home_product_banner_desc"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_marginLeft="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/Unify_N700_44"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recharge_home_product_banner_name"
+                    app:typographyType="body_3"
+                    tools:text="Nama"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifycomponents.Label
+                    android:id="@+id/tv_recharge_home_product_banner_discount_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_marginLeft="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/spacing_lvl2"
+                    android:gravity="center_vertical"
+                    app:labelType="general_light_red"
+                    app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recharge_home_product_banner_desc"
+                    tools:text="100%"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_recharge_home_product_banner_slashed_price"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_lvl2"
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_N700_44"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_recharge_home_product_banner_discount_label"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_recharge_home_product_banner_discount_label"
+                    app:layout_constraintTop_toTopOf="@+id/tv_recharge_home_product_banner_discount_label"
+                    app:typographyType="small"
+                    tools:text="Rp 99999999999999999999999999999999999999999999999999999999999999999999999999999999"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_recharge_home_product_banner_price"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_marginLeft="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_Y500"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_recharge_home_product_banner_buy"
+                    app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recharge_home_product_banner_discount_label"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Rp 9999999999999999999999999999999999999999"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_recharge_home_product_banner_buy"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recharge_home_product_banner_buy_button_label"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:unifyButtonSize="small"
+                    app:unifyButtonType="transaction" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/view_recharge_home_product_banner_shimmering"
         layout="@layout/view_recharge_home_product_banner_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,6 +41,7 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() {
         return TextsModel().apply {
             textRangePrice = data.textRangePrice
             textsServiceDesc = data.textServiceDesc
+            textEta = if (data.errorCode == 0) data.textEtaSummarize else null
         }
     }
 
