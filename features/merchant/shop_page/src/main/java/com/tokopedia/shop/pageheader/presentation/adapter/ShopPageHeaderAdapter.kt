@@ -5,15 +5,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_FOLLOW
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.BUTTON_PLAY
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderActionWidgetFollowButtonComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPlayWidgetButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.SHOP_NAME
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PLAY
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
+import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
 
 class ShopPageHeaderAdapter(
         typeFactory: ShopPageHeaderAdapterTypeFactory
@@ -97,7 +96,18 @@ class ShopPageHeaderAdapter(
             it.shopPageHeaderDataModel = shopPageHeaderDataModel
             val playWidgetPosition = visitables.indexOf(widgetUiModel)
             if (playWidgetPosition != -1) {
-                notifyItemChanged(playWidgetPosition, shopPageHeaderDataModel)
+                notifyItemChanged(playWidgetPosition)
+            }
+        }
+    }
+
+    fun setShopName(shopName: String) {
+        val shopBasicInfoWidget = getWidgetUiModel(SHOP_BASIC_INFO)
+        shopBasicInfoWidget?.getComponentUiModel<ShopHeaderBadgeTextValueComponentUiModel>(SHOP_NAME)?.let {
+            it.text.getOrNull(0)?.textHtml = shopName
+            val shopBasicInfoWidgetPosition = visitables.indexOf(shopBasicInfoWidget)
+            if (shopBasicInfoWidgetPosition != -1) {
+                notifyItemChanged(shopBasicInfoWidgetPosition)
             }
         }
     }

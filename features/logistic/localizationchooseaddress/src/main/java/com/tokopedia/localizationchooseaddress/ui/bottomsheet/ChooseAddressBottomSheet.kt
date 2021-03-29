@@ -2,6 +2,7 @@ package com.tokopedia.localizationchooseaddress.ui.bottomsheet
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
@@ -210,6 +211,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 if (resultCode == Activity.RESULT_OK) {
                     isLoginFlow = true
                     setInitialViewState()
+                    val chooseAddressPref = context?.getSharedPreferences(CHOOSE_ADDRESS_PREF, Context.MODE_PRIVATE)
+                    chooseAddressPref?.edit()?.clear()?.apply()
                     viewModel.getDefaultChosenAddress("", source)
                 }
             }
@@ -224,7 +227,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         val view = View.inflate(context, R.layout.bottomsheet_choose_address, null)
         setupView(view)
         setChild(view)
-        setCloseClickListener { dismissBottomSheet() }
+        setCloseClickListener {
+            ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
+            dismissBottomSheet()
+        }
         setOnDismissListener {
             listener?.onDismissChooseAddressBottomSheet()
         }
@@ -408,9 +414,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         txtSnippet?.visible()
         buttonSnippet?.visible()
 
-        setTitle("Mau kirim belanjaan ke mana")
+        setTitle(getString(R.string.bottomsheet_choose_address_title))
         renderButton()
         setCloseClickListener {
+            ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
             dismissBottomSheet()
         }
     }
@@ -445,9 +452,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         errorLayout?.visible()
         imageError?.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_service_error) })
         setTitle("")
+        listener?.onLocalizingAddressServerDown()
         setCloseClickListener {
             ChooseAddressTracking.onClickCloseBottomSheet(userSession.userId)
-            listener?.onLocalizingAddressServerDown()
             dismissBottomSheet()
         }
     }
@@ -482,6 +489,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_LOGIN_PAGE = 499
 
         private const val HAS_ASKED_PERMISSION_KEY = "has_asked_permission"
+        private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
     }
 
     override fun onItemClicked(address: ChosenAddressList) {

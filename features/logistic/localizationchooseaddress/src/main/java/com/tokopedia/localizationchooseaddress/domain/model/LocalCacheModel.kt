@@ -1,11 +1,11 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
 data class LocalCacheModel (
-        var address_id: String = "",
-        var city_id: String = "",
-        var district_id: String = "",
-        var lat: String = "",
-        var long: String = "",
-        var postal_code: String = "",
-        var label: String = ""
+        val address_id: String = "",
+        val city_id: String = "",
+        val district_id: String = "",
+        val lat: String = "",
+        val long: String = "",
+        val postal_code: String = "",
+        val label: String = ""
 )

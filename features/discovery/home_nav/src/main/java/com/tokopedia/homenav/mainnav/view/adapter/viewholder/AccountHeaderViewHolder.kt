@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
@@ -150,7 +151,10 @@ class AccountHeaderViewHolder(itemView: View,
             usrOvoBadgeShimmer.gone()
             tvOvo.visible()
             usrOvoBadge.visible()
-            if (element.isGetOvoError && element.isGetSaldoError) {
+            if (element.isTokopointExternalAmountError){
+                tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
+                usrOvoBadge.clearImage()
+            }else if (element.isGetOvoError && element.isGetSaldoError) {
                 tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
                 usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
             } else if (element.isGetOvoError && !element.isGetSaldoError) {
@@ -175,15 +179,18 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         //shop info error state
-        if (!element.isGetShopError && (element.shopName.isNotEmpty() || !element.adminRoleText.isNullOrEmpty())) {
+        if (!element.isGetShopError) {
             val shopTitle: String
             val shopInfo: String
-            if (element.adminRoleText == null) {
-                shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
+            if (!element.hasShop){
+                shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
                 shopInfo = MethodChecker.fromHtml(element.shopName).toString()
-            } else {
+            } else if (!element.adminRoleText.isNullOrEmpty()) {
                 shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
                 shopInfo = element.adminRoleText.orEmpty()
+            } else {
+                shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
+                shopInfo = MethodChecker.fromHtml(element.shopName).toString()
             }
             tvShopTitle.run {
                 visible()
@@ -192,12 +199,18 @@ class AccountHeaderViewHolder(itemView: View,
             tvShopInfo.run {
                 visible()
                 setText(shopInfo, TextView.BufferType.SPANNABLE)
-                setOnClickListener { onShopClicked(element.canGoToSellerAccount) }
+                setOnClickListener {
+                    if (element.hasShop)
+                        onShopClicked(element.canGoToSellerAccount)
+                    else {
+                        RouteManager.route(context, ApplinkConst.CREATE_SHOP)
+                        TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
+                    }
+                }
             }
             val str = tvShopInfo.text as Spannable
             str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tvShopInfo.setOnClickListener { onShopClicked(element.canGoToSellerAccount) }
             if (element.shopOrderCount > 0) {
                 tvShopNotif.visible()
                 tvShopNotif.setNotification(element.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
@@ -208,6 +221,7 @@ class AccountHeaderViewHolder(itemView: View,
             tvShopInfo.gone()
             tvShopTitle.gone()
             btnTryAgainShopInfo.gone()
+            tvShopNotif.gone()
             shimmerShopInfo.visible()
         } else if (element.isGetShopError) {
             btnTryAgainShopInfo.visible()

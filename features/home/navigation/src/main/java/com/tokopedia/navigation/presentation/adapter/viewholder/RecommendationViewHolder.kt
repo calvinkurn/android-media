@@ -20,7 +20,7 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
 
     override fun bind(element: Recommendation) {
         productCardView?.run {
-            setProductModel(element.recommendationItem.toProductCardModel())
+            setProductModel(element.recommendationItem.toProductCardModel(hasThreeDots = true))
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
                 override fun onViewHint() {
                     recommendationListener.onProductImpression(element.recommendationItem)

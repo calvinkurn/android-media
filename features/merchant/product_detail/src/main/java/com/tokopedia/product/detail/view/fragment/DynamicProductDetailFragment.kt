@@ -134,8 +134,10 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -506,7 +508,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
+                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
                         stickyLoginView?.hide()
@@ -809,7 +812,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun getPurchaseProtectionUrl(): String {
-        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL ?: ""
+        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL
+                ?: ""
     }
 
     private fun getPPTitleName(): String {
@@ -853,15 +857,15 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         RouteManager.route(context, applink)
     }
 
-    override fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventRecommendationClick(
-                recomItem, position, viewModel.isUserSessionActive, pageName, title, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                recomItem, chipValue, false, position, viewModel.isUserSessionActive, pageName, title, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
     }
 
-    override fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         if (::trackingQueue.isInitialized) {
             DynamicProductDetailTracking.Impression.eventRecommendationImpression(
-                    trackingQueue, position, recomItem, viewModel.isUserSessionActive, pageName, title,
+                    trackingQueue, position, recomItem, chipValue, false, viewModel.isUserSessionActive, pageName, title,
                     viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         }
     }
@@ -876,6 +880,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     override fun loadTopads(pageName: String) {
         viewModel.loadRecommendation(pageName)
+    }
+
+    /**
+     * PdpComparisonWidgetViewHolder
+     */
+    override fun getStickyTitleView(): StickyTitleView? {
+        return stickyTitleComparisonWidget
     }
 
     /**
@@ -1305,9 +1316,12 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
+        val isUpcomingType = viewModel.p2Data.value?.upcomingCampaigns?.get(selectedChild?.productId.toString())?.isUpcomingNplType() ?: false
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
-                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
+                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
+                isUpcomingType)
+
         pdpUiUpdater?.updateShipmentData(
                 viewModel.getP2RatesEstimateByProductId(),
                 viewModel.getMultiOriginByProductId().isFulfillment,
@@ -1395,7 +1409,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     renderPageError(ProductDetailErrorHelper.getErrorType(ctx, it, isFromDeeplink, deeplinkUrl))
                 }
             })
-            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant() ?: false)
+            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
+                    ?: false)
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
         }
     }
@@ -1535,8 +1550,20 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                pdpUiUpdater?.updateRecommendationData(it.data)
+                val enableComparisonWidget = remoteConfig()?.getBoolean(
+                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?:true
+                if (enableComparisonWidget) {
+                    if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
+                        pdpUiUpdater?.updateComparisonDataModel(it.data)
+                        updateUi()
+                    } else {
+                        pdpUiUpdater?.updateRecommendationData(it.data)
+                        updateUi()
+                    }
+                } else {
+                    pdpUiUpdater?.updateRecommendationData(it.data)
                     updateUi()
+                }
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
@@ -1621,8 +1648,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getDynamicProductInfoP1?.parentProductId
-                                    ?: ""
+                        viewModel.getDynamicProductInfoP1?.parentProductId
+                                ?: ""
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                                 viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -1779,10 +1806,14 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
-        pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID
-                ?: "", viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
-                ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
-                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0, boeData.imageURL)
+        pdpUiUpdater?.updateDataP2(
+                context = context,
+                p2Data = it,
+                productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
+                isProductWarehouse = viewModel.getDynamicProductInfoP1?.basic?.isWarehouse() ?: false,
+                isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
+                isOutOfStock = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
+                boeImageUrl = boeData.imageURL)
 
         updateUi()
     }
@@ -1920,7 +1951,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     productImageUrl,
                     it.data.variant.isVariant,
                     it.basic.getShopId(),
-                    viewModel.p2Data.value?.bebasOngkir?.boImages?.first()?.imageURL
+                    viewModel.getBebasOngkirDataByProductId().imageURL
             )
             val bundleData = Bundle()
             bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
@@ -1970,6 +2001,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun openShipmentBottomSheetWhenError(): Boolean {
+        if (!viewModel.isNewShipment) return false //we dont want to block user by this bottom sheet if rollence turn off
         context?.let {
             val rates = viewModel.getP2RatesEstimateByProductId()
             val bottomSheetData = viewModel.getP2RatesBottomSheetData()
@@ -3363,6 +3395,10 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             e.printStackTrace()
             true
         }
+    }
+
+    override fun getFragmentTrackingQueue(): TrackingQueue? {
+        return trackingQueue
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {

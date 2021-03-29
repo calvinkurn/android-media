@@ -35,12 +35,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
@@ -76,6 +76,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -746,6 +747,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             toolbar?.hideResetButton()
             fragmentUiModel.uiData.exception?.let {
                 layoutGlobalError?.setType(getGlobalErrorType(it))
+                if (it is AkamaiErrorException) {
+                    showToastMessage(it)
+                }
             }
             layoutGlobalError?.setActionClickListener { view ->
                 analytics.eventClickCobaLagi(viewModel.getPageSource())
@@ -831,19 +835,19 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         return false
     }
 
-    fun showToastMessage(message: String) {
+    private fun showToastMessage(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
-    fun showToastMessage(throwable: Throwable) {
+    private fun showToastMessage(throwable: Throwable) {
         showToastMessage(getErrorMessage(throwable))
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
         var errorMessage = throwable.message
-        if (throwable !is PromoErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        if (throwable !is PromoErrorException && throwable !is AkamaiErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         if (errorMessage.isNullOrBlank()) {
             errorMessage = getString(R.string.label_error_global_promo_checkout)
         }
@@ -1013,12 +1017,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewModel.updatePromoListAfterClickPromoHeader(element)
     }
 
-    override fun onClickPromoListItem(element: PromoListItemUiModel) {
+    override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
         viewModel.updatePromoListAfterClickPromoItem(element)
         renderStickyPromoHeader(recyclerView)
 
         // dismiss coachmark if user click promo with coachmark
         if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] is PromoListItemUiModel &&
+                promoWithCoachMarkIndex == position &&
                 (adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel).id == element.id &&
                 ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
             promoCoachMark.dismissCoachMark()

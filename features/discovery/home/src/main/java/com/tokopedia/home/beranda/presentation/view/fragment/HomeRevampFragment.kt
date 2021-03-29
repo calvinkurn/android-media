@@ -314,7 +314,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
-    private var isLightThemeStatusBar = true
+    private var isLightThemeStatusBar = false
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
     private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
@@ -330,7 +330,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
     private var useNewInbox = false
-    private val bannerCarouselCallback = BannerComponentCallback(context, this)
+    private var coachmark: CoachMark2? = null
+    private var bannerCarouselCallback: BannerComponentCallback? = null
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
@@ -380,7 +381,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
-        requestStatusBarDark()
     }
 
     private fun createDaggerComponent(){
@@ -396,16 +396,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         else{
             initHomePageFlows()
         }
-    }
-
-    private fun requestStatusBarDark() {
-        isLightThemeStatusBar = false
-        mainParentStatusBarListener?.requestStatusBarDark()
-    }
-
-    private fun requestStatusBarLight() {
-        isLightThemeStatusBar = true
-        mainParentStatusBarListener?.requestStatusBarLight()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -712,27 +702,32 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark() {
-        coachMarkIsShowing = true
-        val coachMarkItem = ArrayList<CoachMark2Item>()
-        val coachMark = CoachMark2(requireContext())
+        context?.let {
+            coachMarkIsShowing = true
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            coachmark = CoachMark2(it)
 
-        coachMarkItem.buildHomeCoachmark()
-        coachMark.setStepListener(object: CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                coachMarkItem.setCoachmarkShownPref()
+            coachMarkItem.buildHomeCoachmark()
+            coachmark?.let {
+                it.setStepListener(object: CoachMark2.OnStepListener {
+                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                        coachMarkItem.setCoachmarkShownPref()
+                    }
+                })
+                //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+                //will be removed along the coachmark removal in the future
+                try {
+                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                        it.showCoachMark(step = coachMarkItem, index = 0)
+                        coachMarkItem[0].setCoachmarkShownPref()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        })
-        //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-        //will be removed along the coachmark removal in the future
-        try {
-            if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                coachMark.showCoachMark(step = coachMarkItem, index = 0)
-                coachMarkItem[0].setCoachmarkShownPref()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
+
 
     private fun CoachMark2Item.setCoachmarkShownPref() {
         when {
@@ -894,8 +889,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
 
         //TODO: Register remote config to turn off and on new balance widget
-        val showNewBalanceWidget = true
-        getHomeViewModel().setNewBalanceWidget(showNewBalanceWidget)
+        getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
@@ -1102,7 +1096,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isNeedRefresh = data.peekContent()
             if (isNeedRefresh) {
-                bannerCarouselCallback.resetImpression()
+                bannerCarouselCallback?.resetImpression()
             }
         })
         getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
@@ -1241,6 +1235,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
+
+        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(requireContext())
+        if (isChooseAddressShow) {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        } else {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        }
+
         Glide.with(requireContext())
                 .load(backgroundUrl)
                 .fitCenter()
@@ -1364,11 +1370,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
                 FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
             }
-            if (offsetAlpha >= 150) {
-                if (isLightThemeStatusBar) requestStatusBarDark()
-            } else {
-                if (!isLightThemeStatusBar) requestStatusBarLight()
-            }
         }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
@@ -1430,6 +1431,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
+        bannerCarouselCallback = BannerComponentCallback(context, this)
         val adapterFactory = HomeAdapterFactory(
                 this,
                 this,
@@ -1452,7 +1454,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 RechargeBUWidgetCallback(context, this),
                 bannerCarouselCallback,
                 DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this)
+                Lego6AutoBannerComponentCallback(context, this),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1682,7 +1684,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        bannerCarouselCallback.resetImpression()
+        bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
         if (this::viewModel.isInitialized) {
@@ -1718,6 +1720,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             chooseAddressWidgetInitialized = true
         }
+    }
+
+    override fun onChooseAddressServerDown() {
+        getHomeViewModel().removeChooseAddressWidget()
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce
@@ -1781,6 +1787,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_ONBOARDING_NAVIGATION, true)
+    }
+
+    private fun remoteConfigIsNewBalanceWidget(): Boolean {
+        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
     }
 
     private fun needToShowGeolocationComponent() {
@@ -2081,6 +2091,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().onDynamicChannelRetryClicked()
     }
 
+    override fun isNewNavigation(): Boolean {
+        return isNavRevamp()
+    }
+
     private fun openApplink(applink: String, trackingAttribution: String) {
         if (!TextUtils.isEmpty(applink)) {
             RouteManager.route(activity, appendTrackerAttributionIfNeeded(applink, trackingAttribution))
@@ -2177,6 +2191,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
+        manageCoachmarkOnFragmentVisible(isVisibleToUser)
+    }
+
+    private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
+        when(isVisibleToUser) {
+            true -> if (coachMarkIsShowing) {
+                coachmark?.let {
+                    it.showCoachMark(step = it.coachMarkItem, index = it.currentIndex)
+                }
+            }
+            false -> if (coachMarkIsShowing) {
+                coachmark?.hideCoachMark()
+            }
+        }
     }
 
     private fun resetAutoPlay(isVisibleToUser: Boolean){

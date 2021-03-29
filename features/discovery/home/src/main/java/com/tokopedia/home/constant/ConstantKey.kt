@@ -13,6 +13,7 @@ object ConstantKey {
         const val AB_TEST_REVIEW_KEY = "InboxUlasanRevamp2"
         const val AB_TEST_AUTO_TRANSITION_KEY = "auto_transition"
         const val HOME_SHOW_ONBOARDING_NAVIGATION = "android_customer_home_show_nav_onboarding"
+        const val HOME_SHOW_NEW_BALANCE_WIDGET = "android_customer_home_show_balance_widget"
     }
 
     object TkpdCache {

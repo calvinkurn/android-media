@@ -55,7 +55,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".notes.view.activity.ShopSettingNotesAddEditActivity"
+        <activity android:name=".notes.view.activity.ShopSettingsNotesAddEditActivity"
             android:label="@string/shop_settings_add_note"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"/>

@@ -85,7 +85,6 @@ PopularCityAdapter.ActionListener {
         }
 
         if (isLocalization == true) permissionCheckerHelper = PermissionCheckerHelper()
-        binding.searchInputView.visibility = View.VISIBLE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,8 +114,11 @@ PopularCityAdapter.ActionListener {
             binding.discomCurrentLocationDivider.visibility = View.VISIBLE
             binding.llDiscomPopularCity.visibility = View.VISIBLE
             fusedLocationClient = FusedLocationProviderClient(requireActivity())
-            searchInputView.setOnClickListener {
-                ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
+            searchInputView.searchTextView.apply {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
+                }
+                setOnClickListener { ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId) }
             }
 
             val cityList = resources.getStringArray(R.array.cityList)
@@ -262,33 +264,64 @@ PopularCityAdapter.ActionListener {
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
                             ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
-                            context?.let { permissionCheckerHelper?.onPermissionDenied(it, permissionText) }
+                            hasRequestedLocation = false
+                            showDialogAskGps()
                         }
 
                         override fun onNeverAskAgain(permissionText: String) {
-                            context?.let { permissionCheckerHelper?.onNeverAskAgain(it, permissionText) }
+                            // no op
                         }
 
                         @SuppressLint("MissingPermission")
                         override fun onPermissionGranted() {
-                            if (AddNewAddressUtils.isGpsEnabled(context)) {
-                                ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-                                fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                                    if (data != null) {
-                                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-                                        presenter.autoFill(data.latitude, data.longitude)
-                                    } else {
-                                        fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
-                                        createLocationCallback(), null)
-                                    }
-                                }
-                            } else {
-                                hasRequestedLocation = false
-                                showDialogAskGps()
-                            }
+                            ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+                            getLocation()
                         }
 
                     }, getString(R.string.rationale_need_location))
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getLocation() {
+        if (AddNewAddressUtils.isGpsEnabled(context)) {
+            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                if (data != null) {
+                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+                    presenter.autoFill(data.latitude, data.longitude)
+                } else {
+                    fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
+                            createLocationCallback(), null)
+                }
+            }
+        } else {
+            hasRequestedLocation = false
+            showDialogAskGps()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+    }
+
+
+    private fun showDialogAskGps() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.undetected_location))
+            dialog.setDescription(getString(R.string.undetected_location_desc_2))
+            dialog.setPrimaryCTAText(getString(R.string.btn_ok))
+            dialog.setSecondaryCTAText(getString(R.string.btn_lain_kali))
+            dialog.setCancelable(true)
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
     }
 
     fun createLocationCallback(): LocationCallback {
@@ -379,54 +412,6 @@ PopularCityAdapter.ActionListener {
         view?.let { v ->
             toaster.build(v, getString(R.string.toaster_failed_get_district), Toaster.LENGTH_SHORT,
                     Toaster.TYPE_ERROR, "").show()
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        var isAllowed = false
-        for (i in permissions.indices) {
-            if (grantResults.isNotEmpty() && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                isAllowed = true
-                break
-            }
-        }
-        if (isAllowed) {
-            ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-            if (AddNewAddressUtils.isGpsEnabled(context)) {
-                fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                    if (data != null) {
-                        ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-                        presenter.autoFill(data.latitude, data.longitude)
-                    }
-                }
-            } else {
-                hasRequestedLocation = false
-                showDialogAskGps()
-            }
-        } else {
-            ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
-        }
-    }
-
-    private fun showDialogAskGps() {
-        context?.let {
-            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.undetected_location))
-            dialog.setDescription(getString(R.string.undetected_location_desc_2))
-            dialog.setPrimaryCTAText(getString(R.string.btn_ok))
-            dialog.setSecondaryCTAText(getString(R.string.btn_lain_kali))
-            dialog.setCancelable(true)
-            dialog.setPrimaryCTAClickListener {
-                dialog.dismiss()
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            }
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
         }
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
@@ -63,7 +64,11 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
         val chooseAddressView = itemView.widget_choose_address
-        listener.initializeChooseAddressWidget(chooseAddressView, needToShowChooseAddress)
+        if (needToShowChooseAddress) {
+            listener.initializeChooseAddressWidget(chooseAddressView, needToShowChooseAddress)
+        } else {
+            chooseAddressView.gone()
+        }
     }
 
     private fun renderEmptySpace(isUserLogin: Boolean) {
@@ -72,25 +77,25 @@ class HomeHeaderOvoViewHolder(itemView: View,
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         val viewTreeObserver = emptySpace.viewTreeObserver
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            viewTreeObserver.removeGlobalOnLayoutListener(this)
-                        }
+                        viewTreeObserver.removeOnGlobalLayoutListener(this)
                         val layoutParams = emptySpace.layoutParams
-                        if (!isUserLogin) {
-                            layoutParams.height = listener.homeMainToolbarHeight -
-                                    itemView.resources.getDimensionPixelOffset(R.dimen.dp_12)
-                        } else {
-                            layoutParams.height = listener.homeMainToolbarHeight -
-                                    itemView.resources.getDimensionPixelOffset(R.dimen.dp_8)
-                        }
+                        setupHeight(isUserLogin, layoutParams)
                         emptySpace.layoutParams = layoutParams
                         emptySpace.invalidate()
                     }
                 }
         )
+    }
+
+    private fun setupHeight(isUserLogin: Boolean, layoutParams: ViewGroup.LayoutParams) {
+        var additionalHeight = 0
+
+        if (listener.isNewNavigation()) {
+            additionalHeight = -(itemView.resources.getDimensionPixelOffset(R.dimen.dp_8))
+            if (!isUserLogin) additionalHeight = -(itemView.resources.getDimensionPixelOffset(R.dimen.dp_12))
+        }
+
+        layoutParams.height = listener.homeMainToolbarHeight + additionalHeight
     }
 
     private fun renderOvoLayout(data: HeaderDataModel?, needToShowUserWallet: Boolean ) {

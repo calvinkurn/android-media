@@ -109,6 +109,8 @@ public class RemoteConfigKey {
     public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
     public static final String HOME_USE_GLOBAL_COMPONENT = "android_customer_home_use_global_component";
 
+    public static final String RECOMMENDATION_ENABLE_COMPARISON_WIDGET = "android_customer_recom_enable_comparison_widget";
+
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";

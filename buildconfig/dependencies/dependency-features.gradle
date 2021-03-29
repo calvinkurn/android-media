@@ -10,13 +10,13 @@ ext {
             developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
             feedbackForm                    : ":features:common:feedback_form",
+            internalReview                  : ":features:common:internal_review",
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
-            hotlist                         : ":features:discovery2:hotlist",
             agerestriction                  : ":features:category:age_restriction",
             findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
@@ -118,6 +118,8 @@ ext {
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
+            
+            mediauploader                   : ":features:media:mediauploader",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
@@ -213,6 +215,7 @@ ext {
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             snapshot                        : ":features:ordermanagement:snapshot",
+            ordermanagementhistory          : ":features:ordermanagement:orderhistory",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 
@@ -252,7 +255,6 @@ ext {
             fcm_common                      : ":features:user:fcm_common",
             homeAccountUser                 : ":features:user:home_account",
             tkpdcore                        : ":tkpdcore",
-            tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",

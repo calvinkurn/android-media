@@ -18,7 +18,7 @@ class OfficialProductRecommendationViewHolder(
 
     override fun bind(element: ProductRecommendationDataModel) {
         productCardView?.run {
-            setProductModel(element.productItem.toProductCardModel())
+            setProductModel(element.productItem.toProductCardModel(hasThreeDots = true))
 
             setImageProductViewHintListener(element.productItem, object : ViewHintListener {
                 override fun onViewHint() {

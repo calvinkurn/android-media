@@ -48,11 +48,11 @@ class CMPushNotificationManager : CoroutineScope {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true)
 
     private val isPushEnable: Boolean
-        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_CM_PUSH_ENABLE, false) || BuildConfig.DEBUG
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_CM_PUSH_ENABLE, true) || BuildConfig.DEBUG
 
     private val isInAppEnable: Boolean
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
-                false) || BuildConfig.DEBUG
+                true) || BuildConfig.DEBUG
 
     private var aidlApiBundle: Bundle? = null
 

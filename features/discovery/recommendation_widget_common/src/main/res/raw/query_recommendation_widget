@@ -57,6 +57,10 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         recommendationType
         stock
         isTopads
+        specificationLabels {
+                  key
+                  value
+        }
       }
     }
   }

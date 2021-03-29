@@ -263,6 +263,7 @@ public class ShopPageTrackingConstant {
     public static final String VALUE_PRODUCT = "Product";
     public static final String VALUE_UPCOMING = "upcoming";
     public static final String VALUE_ONGOING = "ongoing";
+    public static final String VALUE_THEMATIC = "thematic";
     public static final String VALUE_UPCOMING_BANNER = "upcoming banner";
     public static final String VALUE_ONGOING_BANNER = "ongoing banner";
     public static final String VALUE_FINISHED_BANNER = "finished banner";

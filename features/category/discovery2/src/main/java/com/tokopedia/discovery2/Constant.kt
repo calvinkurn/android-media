@@ -67,6 +67,7 @@ object Constant {
 
     object ChooseAddressGTMSSource{
         const val HOST_SOURCE = "discovery"
+        const val HOST_TRACKING_SOURCE = "discovery page"
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"

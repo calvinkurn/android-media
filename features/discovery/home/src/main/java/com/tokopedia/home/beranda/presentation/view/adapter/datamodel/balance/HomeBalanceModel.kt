@@ -42,6 +42,9 @@ data class HomeBalanceModel (
         const val OVO_POINTS_BALANCE = "%s Points"
 
         private const val HASH_CODE = 39
+
+        const val ERROR_TITLE = "Gagal Memuat"
+        const val ERROR_SUBTITLE = "Coba Lagi"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -91,6 +94,88 @@ data class HomeBalanceModel (
         mapTokopoint(tokopointDrawerListHomeData)
         mapWallet(homeHeaderWalletAction)
         mapPendingCashback(homeHeaderWalletAction, pendingCashBackData)
+    }
+
+    fun mapErrorTokopoints() {
+        when(balanceType) {
+            TYPE_STATE_1 -> {
+                balanceDrawerItemModels[1] = getDefaultTokopointsErrorState()
+                balanceDrawerItemModels[2] = getDefaultCouponsRewardsErrorState()
+            }
+            TYPE_STATE_2 -> {
+                balanceDrawerItemModels[1] = getDefaultBBOErrorState()
+                balanceDrawerItemModels[2] = getDefaultTokopointsErrorState()
+                balanceDrawerItemModels[3] = getDefaultCouponsRewardsErrorState()
+            }
+            TYPE_STATE_3 -> {
+                balanceDrawerItemModels[0] = getDefaultTokopointsErrorState()
+                balanceDrawerItemModels[1] = getDefaultCouponsRewardsErrorState()
+                balanceDrawerItemModels[2] = getDefaultBBOErrorState()
+            }
+        }
+    }
+
+    fun mapErrorWallet() {
+        when(balanceType) {
+            TYPE_STATE_1 -> {
+                balanceDrawerItemModels[0] = getDefaultOvoErrorState()
+            }
+            TYPE_STATE_2 -> {
+                balanceDrawerItemModels[0] = getDefaultOvoErrorState()
+            }
+        }
+    }
+
+    private fun getDefaultOvoErrorState(): BalanceDrawerItemModel {
+        return BalanceDrawerItemModel(
+                drawerItemType = TYPE_WALLET_OVO,
+                defaultIconRes = R.drawable.wallet_ic_ovo_home,
+                balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
+                balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+        )
+    }
+
+    private fun getDefaultBBOErrorState(): BalanceDrawerItemModel {
+        return BalanceDrawerItemModel(
+                drawerItemType = TYPE_FREE_ONGKIR,
+                defaultIconRes = R.drawable.ic_new_bbo,
+                balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
+                balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+        )
+    }
+
+    private fun getDefaultTokopointsErrorState(): BalanceDrawerItemModel {
+        return BalanceDrawerItemModel(
+                drawerItemType = TYPE_TOKOPOINT,
+                defaultIconRes = R.drawable.ic_new_tokopoints,
+                balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
+                balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+        )
+    }
+
+    private fun getDefaultCouponsRewardsErrorState(): BalanceDrawerItemModel {
+        return BalanceDrawerItemModel(
+                drawerItemType = TYPE_REWARDS,
+                defaultIconRes = R.drawable.ic_new_points,
+                balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
+                balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+        )
+    }
+
+    private fun getDefaultErrorTitleTextAttribute(): BalanceTextAttribute {
+        return BalanceTextAttribute(
+                text = ERROR_TITLE,
+                isBold = true,
+                colourRef = R.color.Unify_N700
+        )
+    }
+
+    private fun getDefaultErrorSubTItleTextAttribute(): BalanceTextAttribute {
+        return BalanceTextAttribute(
+                text = ERROR_SUBTITLE,
+                isBold = true,
+                colourRef = R.color.Unify_G500
+        )
     }
 
     fun setWalletBalanceState(state: Int): HomeBalanceModel {
