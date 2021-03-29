@@ -2,11 +2,12 @@ package com.tokopedia.dynamicfeatures.utils
 
 import android.content.Context
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * Created by hendry on 2019-10-03.
@@ -60,7 +61,7 @@ object DFInstallerLogUtil {
             } else {
                 messageMap["free_bef"] = "-1"
             }
-            messageBuilder.append(";free_aft=")
+
             try {
                 messageMap["free_aft"] = Utils.getSizeInMB(StorageUtils.getFreeSpaceBytes(context))
             } catch (ignored: Exception) {
@@ -86,7 +87,7 @@ object DFInstallerLogUtil {
             messageMap["play_srv"] = PlayServiceUtils.getPlayServiceLongVersionCode(context).toString()
             messageMap["installer_pkg"] = PlayServiceUtils.getInstallerPackageName(context)
 
-            Timber.w("P1#$tag#$messageMap")
+            ServerLogger.log(Priority.P1, tag, messageMap)
         }
     }
 }
