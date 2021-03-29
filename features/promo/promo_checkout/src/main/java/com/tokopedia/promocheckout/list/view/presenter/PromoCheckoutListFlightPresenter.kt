@@ -29,10 +29,6 @@ class PromoCheckoutListFlightPresenter(private val checkVoucherUseCase: FlightCh
                 } else {
                     val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
                     checkVoucherData.messageColor = hexColor
-                    try {
-                    }catch (e: Throwable){
-                        e.printStackTrace()
-                    }
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
                 }
             }
