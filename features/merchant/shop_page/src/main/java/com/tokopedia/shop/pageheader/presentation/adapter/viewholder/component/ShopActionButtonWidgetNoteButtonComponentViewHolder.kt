@@ -35,8 +35,7 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
         }
         Glide.with(itemView.context)
                 .asBitmap()
-//                .load(model.icon)
-                .load("https://p1.hiclipart.com/preview/250/74/411/microsoft-office-2013-long-shadow-icons-word-shadow-png-icon.jpg")
+                .load(model.icon)
                 .into(object : CustomTarget<Bitmap?>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
                         val drawable = BitmapDrawable(itemView.context.resources, Bitmap.createScaledBitmap(resource,24,24,false))
