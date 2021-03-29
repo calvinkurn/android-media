@@ -4,12 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialItemViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialViewHolder
-import com.tokopedia.home_account.view.viewholder.ErrorItemViewHolder
 import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
 import java.util.*
 
@@ -57,7 +55,6 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener) : Recyc
         this.list.find { it.type == type }?.let {
             this.list.remove(it)
         }
-        notifyDataSetChanged()
     }
 
     private fun orderItem() {
@@ -103,11 +100,6 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener) : Recyc
             ErrorFinancialItemViewHolder.TYPE_ERROR_OVO,
             ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO -> {
                 createErrorFinancialItemViewHolder(parent)
-            }
-            AccountConstants.LAYOUT.TYPE_ERROR -> {
-                val view = LayoutInflater.from(parent.context).inflate(ErrorItemViewHolder.LAYOUT, parent, false)
-                view.setOnClickListener { listener.onFinancialErrorClicked(viewType) }
-                ErrorItemViewHolder(view, listener)
             }
             ErrorFinancialViewHolder.ERROR_TYPE -> {
                 createErrorFinancialViewHolder(parent)

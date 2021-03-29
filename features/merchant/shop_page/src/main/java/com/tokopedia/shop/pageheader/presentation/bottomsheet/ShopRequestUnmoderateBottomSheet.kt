@@ -14,6 +14,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopRequestUnmoderateBottomSheetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopRequestUnmoderateBottomsheetViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
+import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -35,7 +36,7 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
     private var buttonSendUnmoderateRequest: UnifyButton? = null
     private var loaderModerateBottomsheet: LoaderUnify? = null
     private var typographyAlreadySentReq: Typography? = null
-    private var bottomSheetListener : ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener? = null
+    private var bottomSheetListener : ShopPageFragmentViewHolderListener? = null
     private var rvRequestOptions: RecyclerView? = null
     private var choosenOptionValue = ""
 
@@ -54,7 +55,7 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
         optionValue?.let { choosenOptionValue = it }
     }
 
-    fun init(listener: ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener) {
+    fun init(listener: ShopPageFragmentViewHolderListener) {
         this.bottomSheetListener = listener
     }
 
