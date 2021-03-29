@@ -90,7 +90,10 @@ public class BranchWrapper implements WrapperInterface {
                                 .withData(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable())
                                 .reInit();
                     } else {
-                        isBranchInitialized = true;
+                        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+                        if(remoteConfig.getBoolean(LinkerConstants.enableBranchReinitFlow)) {
+                            isBranchInitialized = true;
+                        }
                         Branch.sessionBuilder(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity()).withCallback(getBranchCallback(linkerDeeplinkRequest, context)).
                                 withData(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable()).init();
                     }
