@@ -28,7 +28,7 @@ class AddRestResponseActivity : BaseActivity() {
     lateinit var etTag: EditText
     lateinit var toolbar: Toolbar
 
-    override fun getLayout() = R.layout.fake_activity_add_rest
+    override fun getLayout() = R.layout.activity_add_rest
     lateinit var viewModel: AddRestVM
 
     var id: Int? = null
