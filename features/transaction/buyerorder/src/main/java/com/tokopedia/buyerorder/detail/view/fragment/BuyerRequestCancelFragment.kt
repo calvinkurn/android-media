@@ -717,6 +717,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
                 dialog.dismiss()
+                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
                 activity?.finish()
         }
         dialog?.show()
