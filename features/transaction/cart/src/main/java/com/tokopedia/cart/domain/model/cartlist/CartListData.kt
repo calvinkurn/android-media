@@ -1,7 +1,6 @@
 package com.tokopedia.cart.domain.model.cartlist
 
 import android.os.Parcelable
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
@@ -32,7 +31,6 @@ data class CartListData(
         var outOfServiceData: OutOfServiceData = OutOfServiceData(),
         var showLessUnavailableDataWording: String = "",
         var showMoreUnavailableDataWording: String = "",
-        var abTestButton: ABTestButton = ABTestButton(),
         var localizationChooseAddressData: LocalizationChooseAddressData = LocalizationChooseAddressData(),
         var popUpMessage: String = ""
 ) : Parcelable

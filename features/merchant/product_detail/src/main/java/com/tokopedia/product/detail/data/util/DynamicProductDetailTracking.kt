@@ -754,11 +754,13 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_IMAGE_MOST_HELPFULL_REVIEW)
         }
 
-        fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String,
+        fun eventRecommendationClick(product: RecommendationItem, chipValue: String, isComparison: Boolean, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String,
                                      productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val listValue = ProductTrackingConstant.Tracking.LIST_DEFAULT + pageName +
                     (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
-                    ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+                    ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "") +
+                    (if (isComparison) ProductTrackingConstant.TopAds.RECOMMENDATION_COMPARISON else ProductTrackingConstant.TopAds.RECOMMENDATION_CAROUSELL) + " - " + (productInfo?.parentProductId
+                    ?: "")
             val topAdsAction = ProductTrackingConstant.Action.TOPADS_CLICK + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
             val bebasOngkirValue = if (product.isFreeOngkirActive && product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
             else if (product.isFreeOngkirActive && !product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
@@ -768,7 +770,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                             ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                             ProductTrackingConstant.Tracking.KEY_ACTION, topAdsAction,
-                            ProductTrackingConstant.Tracking.KEY_LABEL, pageTitle,
+                            ProductTrackingConstant.Tracking.KEY_LABEL, "$pageTitle-$chipValue",
                             ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString(),
                             ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
                             ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};",
@@ -1240,8 +1242,10 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
-            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString ?: ""
-            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString
+                    ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
+                    ?: ""
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.MiniSocialProof.CLICK_BUYER_PHOTOS)
         }
@@ -1639,11 +1643,13 @@ object DynamicProductDetailTracking {
             return sentBundle
         }
 
-        fun eventRecommendationImpression(trackingQueue: TrackingQueue?, position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String,
+        fun eventRecommendationImpression(trackingQueue: TrackingQueue?, position: Int, product: RecommendationItem, chipValue: String, isComparison: Boolean, isSessionActive: Boolean, pageName: String, pageTitle: String,
                                           productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val listValue = ProductTrackingConstant.Tracking.LIST_DEFAULT + pageName +
                     (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
-                    ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+                    ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "") +
+                    (if (isComparison) ProductTrackingConstant.TopAds.RECOMMENDATION_COMPARISON else ProductTrackingConstant.TopAds.RECOMMENDATION_CAROUSELL) + " - " + (productInfo?.parentProductId
+                    ?: "")
             val topAdsAction = ProductTrackingConstant.Action.TOPADS_IMPRESSION + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
             val bebasOngkirValue = if (product.isFreeOngkirActive && product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
             else if (product.isFreeOngkirActive && !product.labelGroupList.hasLabelGroupFulfillment()) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
@@ -1652,7 +1658,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_VIEW,
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Tracking.KEY_ACTION, topAdsAction,
-                    ProductTrackingConstant.Tracking.KEY_LABEL, pageTitle,
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "$pageTitle-$chipValue",
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString(),
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
                     ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};",
