@@ -47,7 +47,7 @@ class ShopPageFeaturedShowcaseViewHolder(
         // try catch to avoid crash ImageUnify on loading image with Glide
         try {
             if (ivShowcaseImg?.context?.isValidGlideContext() == true) {
-                ivShowcaseImg?.setImageUrl(element.imageUrl)
+                element.imageUrl?.let { ivShowcaseImg?.setImageUrl(it) }
             }
         } catch (e: Throwable) {
         }

@@ -107,7 +107,7 @@ class ShopShowcaseListReorderAdapter(
             // try catch to avoid crash ImageUnify on loading image with Glide
             try {
                 if (imageShowcase?.context?.isValidGlideContext() == true) {
-                    imageShowcase?.setImageUrl(dataShowcase.imageUrl)
+                    dataShowcase.imageUrl?.let { imageShowcase?.setImageUrl(it) }
                 }
             } catch (e: Throwable) {
             }

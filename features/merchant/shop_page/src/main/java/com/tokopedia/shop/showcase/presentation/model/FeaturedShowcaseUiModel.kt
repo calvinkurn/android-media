@@ -12,5 +12,5 @@ data class FeaturedShowcaseUiModel(
         var id: String = "",
         var name: String = "",
         var count: Int = 0,
-        var imageUrl: String = ""
+        var imageUrl: String? = ""
 ): ImpressHolder()

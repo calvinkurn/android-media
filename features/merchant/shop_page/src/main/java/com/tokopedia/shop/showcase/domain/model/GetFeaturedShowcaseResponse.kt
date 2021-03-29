@@ -40,7 +40,7 @@ data class ShopFeaturedShowcase(
         val uri: String = "",
         @SerializedName("imageURL")
         @Expose
-        val imageUrl: String = ""
+        val imageUrl: String? = ""
 )
 
 data class ShopFeaturedShowcaseError(
