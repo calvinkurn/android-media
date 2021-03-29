@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
@@ -30,7 +31,11 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        if (promoCode.isNotEmpty()) promoCheckoutListFlightPresenter.checkPromoCode(cartID, promoCode)
+        var hexColor: String = ""
+        context?.run {
+           hexColor = "#" + Integer.toHexString( ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G200) and HEX_CODE_TRANSPARENCY)
+        }
+        if (promoCode.isNotEmpty()) promoCheckoutListFlightPresenter.checkPromoCode(cartID, promoCode, hexColor)
     }
 
     override fun initInjector() {
@@ -46,6 +51,7 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
 
         val FLIGHT_CATEGORY_ID = 27
         val EXTRA_CART_ID = "EXTRA_CART_ID"
+        const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, cartID: String?, pageTracking: Int?): PromoCheckoutListFlightFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListFlightFragment()

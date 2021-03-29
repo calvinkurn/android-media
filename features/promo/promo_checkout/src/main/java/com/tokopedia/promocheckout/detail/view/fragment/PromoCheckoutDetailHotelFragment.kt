@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
@@ -44,7 +45,11 @@ class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailHotelPresenter.checkVoucher(codeCoupon, cartID)
+        var hexColor: String = ""
+        context?.run {
+           hexColor = "#" + Integer.toHexString( ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G200) and HEX_CODE_TRANSPARENCY)
+        }
+        promoCheckoutDetailHotelPresenter.checkVoucher(codeCoupon, cartID, hexColor)
     }
 
     override fun onClickCancel() {
@@ -85,6 +90,7 @@ class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
 
     companion object {
         val EXTRA_CART_ID = "EXTRA_CART_ID"
+        const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
 
         fun createInstance(codeCoupon: String, cartID: String, isUse: Boolean, pageTracking: Int): PromoCheckoutDetailHotelFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailHotelFragment()

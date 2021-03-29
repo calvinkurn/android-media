@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
-import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -20,7 +19,7 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
                                          private val cancelVoucherUseCase: FlightCancelVoucherUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailFlightContract.Presenter {
 
-    override fun checkVoucher(promoCode: String, cartID: String) {
+    override fun checkVoucher(promoCode: String, cartID: String, hexColor: String) {
         view.showProgressLoading()
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, cartID), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
@@ -32,11 +31,7 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
                     throw MessageErrorException(errorMessage.title)
                 } else {
                     val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
-                    try {
-                        if(view.getContext() != null) checkVoucherData.messageColor = "#" + Integer.toHexString( ContextCompat.getColor(view.getContext()!!, com.tokopedia.unifyprinciples.R.color.Unify_G200) and HEX_CODE_TRANSPARENCY)
-                    }catch (e: Throwable){
-                        e.printStackTrace()
-                    }
+                    checkVoucherData.messageColor = hexColor
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
                 }
             }
@@ -115,6 +110,5 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
 
     companion object {
         data class FlightCheckVoucherError(val id: String, val status: String, val title: String)
-        private const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
     }
 }
