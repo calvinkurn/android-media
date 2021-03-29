@@ -1,14 +1,9 @@
 <resources>
-
-    <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3.Launcher">
-        <item name="android:windowBackground">@android:color/white</item>
-    </style>
-
     <style name="Tabs.Notification">
         <item name="footerIndicatorHeight">1dp</item>
         <item name="footerIndicatorStyle">underline</item>
-        <item name="footerColor">@color/tkpd_main_green</item>
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="footerColor">@color/Unify_G500</item>
+        <item name="android:textColor">@color/Unify_G500</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/sp_14</item>
         <item name="android:textStyle">bold</item>

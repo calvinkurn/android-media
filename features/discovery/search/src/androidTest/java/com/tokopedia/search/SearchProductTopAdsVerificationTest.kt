@@ -19,7 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
@@ -88,7 +88,7 @@ internal class SearchProductTopAdsVerficationTest {
     }
 
     private fun scrollAndClickTopAds(index: Int, visitable: Visitable<*>) {
-        if (visitable is ProductItemViewModel && visitable.isTopAdsOrOrganicAds()) {
+        if (visitable is ProductItemDataView && visitable.isTopAdsOrOrganicAds()) {
             topAdsCount++
 
             onView(withId(recyclerViewId)).perform(scrollToPosition<ProductItemViewHolder>(index))
@@ -96,5 +96,5 @@ internal class SearchProductTopAdsVerficationTest {
         }
     }
 
-    private fun ProductItemViewModel.isTopAdsOrOrganicAds() = isTopAds || isOrganicAds
+    private fun ProductItemDataView.isTopAdsOrOrganicAds() = isTopAds || isOrganicAds
 }

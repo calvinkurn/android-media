@@ -14,6 +14,7 @@ import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsReposit
 import com.tokopedia.promocheckout.common.domain.mapper.DealsCheckoutMapper
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsErrorResponse
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
+import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.model.listtravelcollectivebanner.PromoChekoutDealsBannerModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDealsPresenter.Mapper.mapToLastSeen
@@ -87,8 +88,7 @@ class PromoCheckoutListDealsPresenter(
 
     override fun getListTravelCollectiveBanner(resources: Resources) {
         val variables = HashMap<String, Any>()
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.promocheckout.common.R.raw.promo_checkout_deals), PromoChekoutDealsBannerModel.Response::class.java, variables, false)
+        val graphqlRequest = GraphqlRequest(PromoQuery.promoDealsQuery(), PromoChekoutDealsBannerModel.Response::class.java, variables, false)
         dealsPromoUseCase.clearRequest()
         dealsPromoUseCase.addRequest(graphqlRequest)
         dealsPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {

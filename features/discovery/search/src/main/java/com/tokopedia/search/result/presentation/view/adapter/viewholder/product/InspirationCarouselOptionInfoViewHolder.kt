@@ -8,20 +8,20 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_info.view.*
 
 class InspirationCarouselOptionInfoViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView) {
+) : AbstractViewHolder<InspirationCarouselDataView.Option>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_info
     }
 
-    override fun bind(item: InspirationCarouselViewModel.Option) {
+    override fun bind(item: InspirationCarouselDataView.Option) {
         val productOption = item.product.getOrNull(0) ?: return
 
         bindProductImage(productOption.imgUrl)
@@ -40,11 +40,11 @@ class InspirationCarouselOptionInfoViewHolder(
         }
     }
 
-    private fun bindImpressionListener(product: InspirationCarouselViewModel.Option.Product) {
+    private fun bindImpressionListener(product: InspirationCarouselDataView.Option.Product) {
         itemView.optionInfoImage?.addOnImpressionListener(product, createViewHintListener(product))
     }
 
-    private fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {
+    private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
                 inspirationCarouselListener.onImpressedInspirationCarouselInfoProduct(product)
@@ -71,7 +71,7 @@ class InspirationCarouselOptionInfoViewHolder(
         }
     }
 
-    private fun bindOnClickListener(item: InspirationCarouselViewModel.Option) {
+    private fun bindOnClickListener(item: InspirationCarouselDataView.Option) {
         itemView.optionInfoCardView?.setOnClickListener { _ ->
             val product = item.product.getOrNull(0) ?: return@setOnClickListener
             inspirationCarouselListener.onInspirationCarouselInfoProductClicked(product)

@@ -35,7 +35,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvLastUpdate"
-                android:textColor="@color/font_black_disabled_38"
+                android:textColor="@color/Unify_N700_32"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_32"
@@ -54,7 +54,7 @@
             android:paddingTop="@dimen/dp_20"
             android:paddingBottom="@dimen/dp_20"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_three_dots_more_menu"
+            app:srcCompat="@drawable/ic_three_dots"
             android:contentDescription="@string/settings_of_the_item"/>
     </LinearLayout>
 

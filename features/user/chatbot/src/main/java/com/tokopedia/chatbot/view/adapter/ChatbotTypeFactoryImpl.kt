@@ -20,6 +20,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.*
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.CustomChatbotMessageViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.LeftChatMessageViewHolder
@@ -39,7 +40,8 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   private val chatRatingListener: ChatRatingListener,
                                   private val chatActionListBubbleListener: ChatActionListBubbleListener,
                                   private val chatOptionListListener: ChatOptionListListener,
-                                  private val csatOptionListListener: CsatOptionListListener) :
+                                  private val csatOptionListListener: CsatOptionListListener,
+                                  private val actionButtonClickListener: StickyActionButtonClickListener) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
@@ -81,12 +83,17 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             ChatHelpfullQuestionViewHolder.LAYOUT -> ChatHelpfullQuestionViewHolder(parent, chatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             QuickReplyViewHolder.LAYOUT -> QuickReplyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
             ChatbotFallbackAttachmentViewHolder.LAYOUT -> ChatbotFallbackAttachmentViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
+            StickyActionButtonViewHolder.LAYOUT -> StickyActionButtonViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener, actionButtonClickListener)
             else -> createViewHolder(parent, type)
         }
     }
 
     override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
         return ChatbotImageUploadViewHolder.LAYOUT
+    }
+
+    override fun type(stickyActionButtonViewModel: StickyActionButtonViewModel): Int {
+        return StickyActionButtonViewHolder.LAYOUT
     }
 
     override fun type(chatSepratorViewModel: ChatSepratorViewModel): Int {
