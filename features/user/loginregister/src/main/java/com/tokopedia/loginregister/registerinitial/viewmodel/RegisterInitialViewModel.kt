@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
@@ -72,7 +72,8 @@ class RegisterInitialViewModel @Inject constructor(
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
-        dispatcherProvider: DispatcherProvider) : BaseViewModel(dispatcherProvider.ui()) {
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemDataModel>>>()
     val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemDataModel>>>

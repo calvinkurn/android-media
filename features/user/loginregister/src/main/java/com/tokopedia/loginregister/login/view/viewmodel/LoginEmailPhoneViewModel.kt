@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
@@ -65,13 +65,13 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
-        private val dispatcherProvider: DispatcherProvider
-) : BaseViewModel(dispatcherProvider.ui()) {
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     private var job: Job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcherProvider.io() + job
+        get() = dispatchers.io + job
 
     private val mutableRegisterCheckResponse = MutableLiveData<Result<RegisterCheckData>>()
     val registerCheckResponse: LiveData<Result<RegisterCheckData>>

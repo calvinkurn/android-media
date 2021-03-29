@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seamless_login_common.utils.AESUtils
@@ -15,7 +16,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -27,7 +27,8 @@ import javax.inject.Named
 class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_MODULE)
                                                   private val userSession: UserSessionInterface,
                                                   private val loginTokenUseCase: LoginTokenUseCase,
-                                                  dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+                                                  private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val mutableLoginTokenResponse = MutableLiveData<Result<LoginToken>>()
     val loginTokenResponse: LiveData<Result<LoginToken>>

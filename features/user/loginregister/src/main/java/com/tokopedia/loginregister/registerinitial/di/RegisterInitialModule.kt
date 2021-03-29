@@ -2,6 +2,8 @@ package com.tokopedia.loginregister.registerinitial.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -43,5 +45,11 @@ class RegisterInitialModule {
     fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
         override fun ui(): CoroutineDispatcher = Dispatchers.Main
         override fun io(): CoroutineDispatcher = Dispatchers.IO
+    }
+
+    @RegisterInitialScope
+    @Provides
+    fun provideCoroutineDispatchersProvider(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 }
