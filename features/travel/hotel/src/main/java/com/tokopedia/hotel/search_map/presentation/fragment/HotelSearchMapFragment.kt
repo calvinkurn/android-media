@@ -706,6 +706,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun removeAllMarker() {
+        searchPropertiesMap.clear()
         markerCounter = INIT_MARKER_TAG
         allMarker.forEach {
             it.remove()
