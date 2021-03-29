@@ -37,6 +37,8 @@ android {
 dependencies {
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+
+    implementation project(rootProject.ext.features.commonDigital)
 }
 
 project.ext {
