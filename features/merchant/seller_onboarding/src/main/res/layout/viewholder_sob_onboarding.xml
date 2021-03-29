@@ -24,7 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        android:contentDescription="@string/sob_illustration_content_desc"
         tools:text="Atur stok dan terima pesanan dengan cepat dan mudah" />
 
     <ImageView
@@ -33,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl6"
         android:minHeight="@dimen/sob_370dp"
+        android:contentDescription="@string/sob_illustration_content_desc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
