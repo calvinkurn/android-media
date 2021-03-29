@@ -1,9 +1,11 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -35,8 +37,11 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecorati
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
+import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
@@ -58,6 +63,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var labelRumah: String? = "Rumah"
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var isMismatch: Boolean = false
     private var isMismatchSolved: Boolean = false
     private var isUnnamedRoad: Boolean = false
@@ -89,6 +95,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     companion object {
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
+        const val REQUEST_CODE_CONTACT_PICKER = 99
+
         @JvmStatic
         fun newInstance(extra: Bundle): AddEditAddressFragment {
             return AddEditAddressFragment().apply {
@@ -102,6 +110,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     putBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true))
                     putBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, extra.getBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, false))
                 }
+                permissionCheckerHelper = PermissionCheckerHelper()
             }
         }
     }
@@ -335,6 +344,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 return@setOnTouchListener false
             }
             addTextChangedListener(setWrapperWatcher(et_phone_wrapper))
+        }
+
+        btn_contact_picker.setOnClickListener {
+            onNavigateToContact()
         }
     }
 
@@ -762,6 +775,42 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
     }
 
+    private fun onNavigateToContact() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            activity?.let {
+                permissionCheckerHelper?.checkPermission(it,
+                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                        object : PermissionCheckerHelper.PermissionCheckListener {
+                            override fun onPermissionDenied(permissionText: String) {
+                                permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                            }
+
+                            override fun onNeverAskAgain(permissionText: String) {
+                                permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                            }
+
+                            override fun onPermissionGranted() {
+                                openContactPicker()
+                            }
+                        })
+            }
+        } else {
+            openContactPicker()
+        }
+    }
+
+    private fun openContactPicker() {
+        val contactPickerIntent = Intent(
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        try {
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+        } catch (e: ActivityNotFoundException) {
+            view?.let {
+                Toaster.build(it, "Kontak tidka ditemukan", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
+        }
+    }
+
     private fun setSaveAddressModel() {
         var address1 = ""
         val detailAddress: String
@@ -953,33 +1002,41 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == FINISH_PINPOINT_FLAG && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH)) {
-                    isMismatch = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH, false)
-                }
-
-                if (data.hasExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)) {
-                    saveAddressDataModel = data.getParcelableExtra<SaveAddressDataModel>(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-                    saveAddressDataModel?.let {
-                        currentLat = it.latitude.toDouble()
-                        currentLong = it.longitude.toDouble()
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == FINISH_PINPOINT_FLAG) {
+                if (data != null) {
+                    if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH)) {
+                        isMismatch = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH, false)
                     }
-                }
 
-                if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)) {
-                    isMismatchSolved = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, true)
+                    if (data.hasExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)) {
+                        saveAddressDataModel = data.getParcelableExtra<SaveAddressDataModel>(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+                        saveAddressDataModel?.let {
+                            currentLat = it.latitude.toDouble()
+                            currentLong = it.longitude.toDouble()
+                        }
+                    }
+
+                    if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)) {
+                        isMismatchSolved = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, true)
+                    }
+                    createFragment()
                 }
-                createFragment()
-            }
-        } else {
-            // this solves issue when positif ANA changed into negatif ANA
-            if (data == null) {
-                isMismatch = true
-                isMismatchSolved = false
-                createFragment()
+            } else if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+                if (data != null) {
+                    val contactURI = data.data
+                    val contact = context?.contentResolver?.let { AddEditAddressUtil.convertContactUriToData(it, contactURI) }
+                }
+            } else {
+                // this solves issue when positif ANA changed into negatif ANA
+                if (data == null) {
+                    isMismatch = true
+                    isMismatchSolved = false
+                    createFragment()
+                }
             }
         }
+
     }
 
     private fun setDetailAlamatWatcher(): TextWatcher {
