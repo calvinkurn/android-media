@@ -588,7 +588,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_fragment_rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         home_account_user_fragment_rv?.adapter = adapter
         home_account_user_fragment_rv?.isNestedScrollingEnabled = false
-        setupSettingList()
     }
 
     private fun setupSettingList() {
