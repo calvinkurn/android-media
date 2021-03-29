@@ -142,6 +142,7 @@ class OvoWidgetView: FrameLayout {
         tvBalanceTokocash.setTextColor(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
 
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
+            // error state wallet -> get use case error
             tokoCashHolder.setOnClickListener {
                 tokocashProgressBar.visibility = View.VISIBLE
                 listener?.onRefreshTokoCashButtonClicked()
@@ -155,6 +156,7 @@ class OvoWidgetView: FrameLayout {
             tvBalanceTokocash.visibility = View.GONE
             tokocashProgressBar.visibility = View.GONE
         } else if (element.homeHeaderWalletActionData == null && !element.isWalletDataError) {
+            // error state wallet -> data null
             tvActionTokocash.visibility = View.GONE
             tvTitleTokocash.visibility = View.GONE
             tvBalanceTokocash.visibility = View.GONE
@@ -164,6 +166,7 @@ class OvoWidgetView: FrameLayout {
             val homeHeaderWalletAction = element.homeHeaderWalletActionData
 
             homeHeaderWalletAction?.let {homeHeaderWalletAction ->
+                // OVO = applink static, title = cashBalance, tracker different
                 if (!TextUtils.isEmpty(homeHeaderWalletAction.walletType) && homeHeaderWalletAction.walletType == WALLET_TYPE) {
                     tokocashProgressBar.visibility = View.GONE
                     tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
@@ -171,6 +174,7 @@ class OvoWidgetView: FrameLayout {
                     tvActionTokocash.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkActionButton) }
                     tokoCashHolder.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkBalance) }
 
+                    //check user is linked to new balance or not (from tokocash)
                     if (homeHeaderWalletAction.isLinked) {
 
                         tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
@@ -178,6 +182,8 @@ class OvoWidgetView: FrameLayout {
                         tvBalanceTokocash.visibility = View.VISIBLE
                         tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
+
+                        //TODO: Move to viewmodel implementation / mapper
                         if (homeHeaderWalletAction.isShowTopup) {
                             tvBalanceTokocash.setTextColor(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
@@ -191,6 +197,7 @@ class OvoWidgetView: FrameLayout {
                         tvTitleTokocash.text = TITLE
                         tvActionTokocash.visibility = View.VISIBLE
                         tvBalanceTokocash.visibility = View.GONE
+                        //TODO: Move to viewmodel implementation / mapper
                         if (element.isPendingTokocashChecked && element.cashBackData != null) {
                             if (element.cashBackData?.amount?:0 > 0) {
                                 tvTitleTokocash.text = "(+ ${element?.cashBackData?.amountText} )"
@@ -201,6 +208,8 @@ class OvoWidgetView: FrameLayout {
                         tvTitleTokocash.visibility = View.VISIBLE
                     }
                 } else {
+                    // if not OVO = applink -> depends on BE, title = labelTitle, tracker different
+
                     tokocashProgressBar.visibility = View.GONE
                     tvTitleTokocash.text = homeHeaderWalletAction.labelTitle
                     tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
@@ -259,6 +268,7 @@ class OvoWidgetView: FrameLayout {
         ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)
         mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         if (element.tokopointsDrawerHomeData == null && element.isTokoPointDataError) {
+            // error state tokokpoint -> use case tokopoint error
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
                 listener?.onRefreshTokoPointButtonClicked()
@@ -276,6 +286,7 @@ class OvoWidgetView: FrameLayout {
             ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24)
             tvBalanceTokoPoint.visibility = View.GONE
         } else if (element.tokopointsDrawerHomeData == null && !element.isTokoPointDataError) {
+            // error state tokopoint -> response null
             tokoPointHolder.setOnClickListener(null)
             tokopointProgressBarLayout.visibility = View.VISIBLE
             tokopointActionContainer.visibility = View.GONE

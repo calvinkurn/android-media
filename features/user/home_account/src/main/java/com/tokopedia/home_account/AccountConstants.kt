@@ -26,6 +26,9 @@ object AccountConstants {
         const val EVENT_CATEGORY = "eventCategory"
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
+        const val EVENT_BUSINESS_UNIT = "businessUnit"
+        const val EVENT_CURRENT_SITE = "currentSite"
+        const val EVENT_USER_ID = "userId"
         const val ECOMMERCE = "ecommerce"
         const val CURRENCY_CODE = "currencyCode"
         const val IDR = "IDR"
@@ -69,6 +72,7 @@ object AccountConstants {
             const val ACTION_CLICK_PROFILE = "click - profile page - click profile"
             const val ACTION_VIEW_OVO_HOMEPAGE = "view ovo homepage"
             const val ACTION_CLICK_BALANCE = "click - tokopedia pay - saldo"
+            const val ACTION_CLICK_TOKOPOINTS = "click - tokopedia pay - tokopoints"
             const val ACTION_CLICK_ON_MORE_OPTION = "click on more option"
             const val ACTION_CLICK_REWARD_SECTION = "click reward section"
             const val ACTION_CLICK_ACCOUNT_SETTING_SECTION = "click account settings section"
@@ -105,6 +109,14 @@ object AccountConstants {
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
         }
+
+        object BusinessUnit {
+            const val USER_PLATFORM_UNIT = "user platform"
+        }
+
+        object CurrentSite {
+            const val TOKOPEDIA_MARKETPLACE_SITE = "tokopediamarketplace"
+        }
     }
 
     interface ErrorCodes {
@@ -116,6 +128,9 @@ object AccountConstants {
     object Query {
         const val NEW_QUERY_BUYER_ACCOUNT_HOME = "query_account_buyer"
         const val QUERY_USER_REWARDSHORCUT = "query_account_shortcut"
+        const val QUERY_GET_BALANCE = "query_get_balance"
+        const val QUERY_GET_USER_ASSET_CONFIG = "query_get_user_asset_config"
+        const val QUERY_TOKOPOINTS_DRAWER_LIST = "query_tokopoints_drawerr_list"
     }
 
     object Url {
@@ -128,6 +143,9 @@ object AccountConstants {
         const val KEY_IMAGE_HOST = "image_host"
         const val CDN_URL = "https://ecs7.tokopedia.net"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
+        const val TOKOPOINTS_ICON = "https://images.tokopedia.net/img/img/phoenix/tokopoints.png"
+        const val SALDO_ICON = "https://images.tokopedia.net/img/android/user/emoney/saldo.png"
+        const val OVO_ICON = "https://images.tokopedia.net/img/android/user/emoney/ovo.png"
     }
 
     object SettingCode {
@@ -151,12 +169,13 @@ object AccountConstants {
         const val SETTING_OLD_ACCOUNT = 40
         const val SETTING_OVO = 41
         const val SETTING_SALDO = 42
-        const val SETTING_TOKOPOINTS = 43
+        const val SETTING_MORE_MEMBER = 43
         const val SETTING_INSTANT_PAYMENT = 44
         const val SETTING_INSTANT_BUY = 45
         const val SETTING_APP_SETTING = 46
         const val SETTING_ABOUT_TOKOPEDIA = 47
-        const val SETTING_QUALITY_SETTING = 48
+        const val SETTING_TOKOPOINTS = 48
+        const val SETTING_QUALITY_SETTING = 49
     }
 
     object KEY {

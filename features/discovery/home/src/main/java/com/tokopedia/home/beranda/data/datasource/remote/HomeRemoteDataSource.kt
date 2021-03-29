@@ -30,12 +30,12 @@ class HomeRemoteDataSource(
         getHomePageBannerUseCase.executeOnBackground()
     }
 
-    suspend fun getHomeIconUseCase(param: String): HomeIconData = withContext(dispatchers.io()) {
-        getHomeIconRepository.getIconData(param)
+    suspend fun getHomeIconUseCase(param: String, locationParams: String): HomeIconData = withContext(dispatchers.io()) {
+        getHomeIconRepository.getIconData(param, locationParams)
     }
 
-    suspend fun getHomeTickerUseCase(): HomeTickerData? = withContext(dispatchers.io()) {
-        getHomeTickerRepository.getTickerData()
+    suspend fun getHomeTickerUseCase(locationParams: String): HomeTickerData? = withContext(dispatchers.io()) {
+        getHomeTickerRepository.getTickerData(locationParams)
     }
 
     suspend fun getAtfDataUseCase(): HomeAtfData? = withContext(dispatchers.io()) {
@@ -45,6 +45,7 @@ class HomeRemoteDataSource(
                                       token: String = "",
                                       numOfChannel: Int = 0,
                                       params: String = "",
+                                      locationParams: String = "",
                                       doQueryHash: Boolean = false
     ): HomeChannelData = getHomeDynamicChannelsRepository.getDynamicChannelData(
             GetHomeDynamicChannelsRepository.buildParams(
@@ -52,6 +53,7 @@ class HomeRemoteDataSource(
                     token = token,
                     numOfChannel = numOfChannel,
                     queryParams = params,
+                    locationParams = locationParams,
                     doQueryHash = doQueryHash
             )
     )

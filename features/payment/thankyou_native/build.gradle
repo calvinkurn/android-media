@@ -75,6 +75,8 @@ dependencies {
     implementation project(rootProject.ext.features.promotionsTarget)
 
 
+    implementation project(rootProject.ext.features.localizationchooseaddress)
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit

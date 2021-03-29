@@ -116,7 +116,8 @@
                         android:layout_marginTop="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_14"
                         android:background="@color/Unify_N0"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:ignore="DisableBaselineAlignment">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -180,7 +181,7 @@
                                 android:contentDescription="@string/content_desc_go_to_courier_page_button"
                                 android:gravity="center_vertical"
                                 app:unifyButtonSize="medium"
-                                app:unifyButtonType="transaction"
+                                app:unifyButtonType="main"
                                 app:unifyButtonVariant="filled"
                                 tools:text="Checkout" />
 

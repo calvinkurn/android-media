@@ -1,11 +1,10 @@
 package com.tokopedia.cart.view.bottomsheet
 
 import android.content.Context
-import android.view.View
+import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.LayoutBottomsheetGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.layout_bottomsheet_global_error.view.*
 
 fun showGlobalErrorBottomsheet(fragmentManager: FragmentManager, context: Context, actionCallback: () -> Unit) {
 
@@ -13,13 +12,13 @@ fun showGlobalErrorBottomsheet(fragmentManager: FragmentManager, context: Contex
     bottomSheet.showCloseIcon = true
     bottomSheet.showHeader = true
 
-    val view = View.inflate(context, R.layout.layout_bottomsheet_global_error, null)
-    view.layout_global_error.setActionClickListener {
+    val binding = LayoutBottomsheetGlobalErrorBinding.inflate(LayoutInflater.from(context))
+    binding.layoutGlobalError.setActionClickListener {
         actionCallback()
         bottomSheet.dismiss()
     }
 
-    bottomSheet.setChild(view)
+    bottomSheet.setChild(binding.root)
     bottomSheet.show(fragmentManager, "Cart Global Error")
 
 }

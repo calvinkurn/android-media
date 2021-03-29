@@ -210,11 +210,18 @@ class MixLeftComponentViewHolder (itemView: View,
                             stockBarLabel = element.label,
                             isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage,
+                            shopLocation = element.shop.shopLocation,
+                            shopBadgeList = listOf(
+                                    ProductCardModel.ShopBadge(
+                                            true, element.shop.shopBadgeUrl
+                                    )
+                            ),
                             labelGroupList = element.labelGroup.map {
                                 ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
-                                        type = it.type
+                                        type = it.type,
+                                        imageUrl = it.url
                                 )
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(

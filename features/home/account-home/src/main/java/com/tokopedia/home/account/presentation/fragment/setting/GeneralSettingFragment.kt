@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -57,6 +58,7 @@ import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
+import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -70,6 +72,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_general_setting.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -92,6 +96,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
+    private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -269,7 +274,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             SettingConstant.SETTING_APP_REVIEW_ID -> {
                 accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
-                goToPlaystore()
+                goToReviewApp()
             }
             SettingConstant.SETTING_HELP_CENTER_ID -> {
                 accountAnalytics.eventClickSetting(HELP_CENTER)
@@ -298,6 +303,16 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             else -> {
             }
+        }
+    }
+
+    private fun goToReviewApp() {
+        if (reviewHelper != null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                reviewHelper?.checkForCustomerReview(context, childFragmentManager, ::goToPlaystore)
+            }
+        } else {
+            goToPlaystore()
         }
     }
 

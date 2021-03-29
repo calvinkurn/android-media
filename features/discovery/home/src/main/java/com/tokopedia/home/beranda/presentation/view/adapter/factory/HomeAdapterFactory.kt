@@ -26,6 +26,7 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
@@ -60,7 +61,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val bestSellerListener: RecommendationWidgetListener,
                          private val categoryNavigationListener: CategoryNavigationListener,
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
-                         private val bannerComponentListener: BannerComponentListener,
+                         private val bannerComponentListener: BannerComponentListener?,
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
                          private val legoSixAutoListener: Lego6AutoBannerListener
 ) :

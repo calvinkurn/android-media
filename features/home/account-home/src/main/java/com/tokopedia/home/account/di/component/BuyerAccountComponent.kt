@@ -6,6 +6,7 @@ import com.tokopedia.home.account.di.module.BuyerAccountViewModelModule
 import com.tokopedia.home.account.di.module.RevampedBuyerAccountModule
 import com.tokopedia.home.account.di.scope.BuyerAccountScope
 import com.tokopedia.home.account.presentation.fragment.BuyerAccountFragment
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 
 import dagger.Component
 
@@ -14,6 +15,7 @@ import dagger.Component
  */
 @Component(modules = [BuyerAccountModule::class,
     BuyerAccountViewModelModule::class,
+    RecommendationModule::class,
     RevampedBuyerAccountModule::class], dependencies = [BaseAppComponent::class])
 @BuyerAccountScope
 interface BuyerAccountComponent {

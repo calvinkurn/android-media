@@ -28,7 +28,6 @@ import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
-
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextGimmick(productCardModel)
     renderPdpCountView(productCardModel)
@@ -38,6 +37,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
     renderShopBadge(productCardModel)
+    renderTextFulfillment(productCardModel)
     renderTextShopLocation(productCardModel)
     renderRating(productCardModel)
     renderTextReview(productCardModel)
@@ -46,6 +46,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderShopRating(productCardModel)
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
+    renderTextETA(productCardModel)
 }
 
 
@@ -226,6 +227,24 @@ private fun ProductCardModel.getPriceToRender(): String {
     return if (priceRange.isNotEmpty()) priceRange else formattedPrice
 }
 
+private fun View.renderTextFulfillment(productCardModel: ProductCardModel) {
+    if (productCardModel.willShowFulfillment()) {
+        val labelGroup = productCardModel.getLabelFulfillment() ?: return
+
+        imageFulfillment?.show()
+        imageFulfillment?.loadIcon(labelGroup.imageUrl)
+
+        dividerFulfillment?.showWithCondition(productCardModel.isShowShopBadge())
+
+        textViewFulfillment?.initLabelGroup(productCardModel.getLabelFulfillment())
+    }
+    else {
+        imageFulfillment?.hide()
+        dividerFulfillment?.hide()
+        textViewFulfillment?.initLabelGroup(null)
+    }
+}
+
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {
     val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
     imageShopBadge?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
@@ -234,7 +253,7 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
-    textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
+    textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty() && !productCardModel.willShowFulfillment()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.shopLocation, context.getString(R.string.content_desc_textViewShopLocation))
     }
 }
@@ -389,4 +408,7 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
         textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }
 
+private fun View.renderTextETA(productCardModel: ProductCardModel) {
+    textViewETA?.initLabelGroup(productCardModel.getLabelETA())
+}
 

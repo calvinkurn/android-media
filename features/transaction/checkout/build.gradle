@@ -32,6 +32,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    //noinspection GradleNotAllowed
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation project(rootProject.ext.libraries.applink)
@@ -51,7 +52,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
@@ -72,6 +72,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.commonPayment)
