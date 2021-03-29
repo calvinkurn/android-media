@@ -572,7 +572,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         ))
                         val icons = IconBuilder(
                                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
-                        ).addIcon(IconList.ID_MESSAGE) {}
+                        ).addIcon(getInboxIcon()) {}
                         if (!useNewInbox) {
                             icons.addIcon(IconList.ID_NOTIFICATION) {}
                         }
@@ -613,6 +613,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         useNewInbox = getAbTestPlatform().getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
+    }
+
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
     }
 
     private fun showNavigationOnboarding() {
@@ -660,18 +668,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         //inbox
-//        if (!isInboxCoachmarkShown(requireContext())) {
-//            val inboxIcon = navToolbar?.getInboxIconView()
-//            inboxIcon?.let {
-//                this.add(
-//                        CoachMark2Item(
-//                                inboxIcon,
-//                                getString(R.string.onboarding_coachmark_inbox_title),
-//                                getString(R.string.onboarding_coachmark_inbox_description)
-//                        )
-//                )
-//            }
-//        }
+        if (!isInboxCoachmarkShown(requireContext())) {
+            val inboxIcon = navToolbar?.getInboxIconView()
+            inboxIcon?.let {
+                this.add(
+                        CoachMark2Item(
+                                inboxIcon,
+                                getString(R.string.onboarding_coachmark_inbox_title),
+                                getString(R.string.onboarding_coachmark_inbox_description)
+                        )
+                )
+            }
+        }
 
         //add location
         if (isLocalizingAddressNeedShowCoachMark(requireContext())) {
@@ -1321,7 +1329,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (!useNewInbox) {
                     navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
                 }
-                navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, it.messageCount)
+                navToolbar?.setBadgeCounter(getInboxIcon(), it.messageCount)
                 navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
             })
         }
