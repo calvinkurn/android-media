@@ -115,7 +115,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener,
         TypingListener, ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener, TransactionInvoiceBottomSheetListener {
+        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -147,6 +147,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isBackAllowed = true
     private lateinit var ticker: Ticker
     private var csatOptionsViewModel: CsatOptionsViewModel? = null
+    private var invoiceRefNum = ""
+    private var replyText = ""
+    private var isStickyButtonClicked = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -264,6 +267,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ChatbotTypeFactoryImpl(
+                this,
                 this,
                 this,
                 this,
@@ -923,6 +927,47 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun removeDummy(visitable: Visitable<*>) {
         getViewState().removeDummy(visitable)
+    }
+
+    override fun onStickyActionButtonClicked(invoiceRefNum: String, replyText: String) {
+        this.invoiceRefNum = invoiceRefNum
+        this.replyText = replyText
+        presenter.checkLinkForRedirection(invoiceRefNum,
+                onGetSuccessResponse = {
+                    if (it.isNotEmpty()){
+                        onGoToWebView(it, it)}
+                },
+                setStickyButtonStatus = { isResoListNotEmpty->
+                    if (!isResoListNotEmpty) this.isStickyButtonClicked = true
+                },
+                onError = {
+
+                })
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        sendReplyTextForResolutionComponent()
+    }
+
+    private fun sendReplyTextForResolutionComponent() {
+        if (isStickyButtonClicked) {
+            this.isStickyButtonClicked = false
+            presenter.checkLinkForRedirection(invoiceRefNum,
+                    onGetSuccessResponse = {},
+                    setStickyButtonStatus = { isResoListNotEmpty ->
+                        if (isResoListNotEmpty) {
+                            val startTime = SendableViewModel.generateStartTime()
+                            presenter.sendMessage(messageId, replyText, startTime, opponentId,
+                                    onSendingMessage(replyText, startTime))
+                        }
+                    },
+                    onError = {
+
+                    })
+        }
+
     }
 
     override fun onBackPressed(): Boolean {
