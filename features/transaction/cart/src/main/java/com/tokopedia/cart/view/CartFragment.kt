@@ -93,7 +93,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -1748,10 +1747,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun renderAbTestButton(button: ABTestButton) {
-        binding?.goToCourierPageButton?.buttonType = button.getUnifyButtonType()
-    }
-
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
@@ -1763,7 +1758,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             sendAnalyticsScreenNameCartPage()
             updateStateAfterFinishGetCartList(it)
 
-            renderAbTestButton(cartListData.abTestButton)
             renderCheckboxGlobal(cartListData)
             renderTickerAnnouncement(it)
             renderChooseAddressWidget(cartListData.localizationChooseAddressData)
@@ -2575,6 +2569,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
             binding?.layoutGlobalError?.show()
+            if (throwable is AkamaiErrorException) {
+                showToastMessageRed(throwable)
+            }
         }
     }
 

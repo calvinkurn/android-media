@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.*
@@ -126,15 +128,18 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         observeInboxReviewCounter()
         observeInboxReview()
         observeFeedbackInboxReview()
+        observeReviewReminderEstimation()
         initTickerInboxReview()
         initSortFilterInboxReview()
         initRatingFilterList()
         setupMarginSortFilter()
+        setupViewInteraction()
     }
 
     override fun onResume() {
         super.onResume()
         inboxReviewViewModel.getInboxReviewCounter()
+        inboxReviewViewModel.fetchReminderCounter()
         InboxReviewTracking.openScreenInboxReview(inboxReviewViewModel.userSession.shopId.orEmpty(),
                 inboxReviewViewModel.userSession.userId.orEmpty())
     }
@@ -296,6 +301,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
+    private fun setupViewInteraction(){
+        buttonReviewReminder?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
+        }
+    }
+
     private fun observeInboxReviewCounter() {
         observe(inboxReviewViewModel.inboxReviewCounterText) {
             when (it) {
@@ -308,6 +319,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         }
         inboxReviewViewModel.getInboxReviewCounter()
+        inboxReviewViewModel.fetchReminderCounter()
     }
 
     private fun setInboxReviewTabCounter(counter: Int = 0) {
@@ -324,6 +336,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 return
             }
         }
+    }
+
+    private fun setButtonReviewReminder(counter: Int = 0) {
+        buttonReviewReminder?.text = if (counter > 0) {
+            getString(R.string.review_reminder_button_review_reminder_with_counter, counter)
+        } else getString(R.string.review_reminder_button_review_reminder)
     }
 
     private fun observeInboxReview() {
@@ -351,6 +369,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     onErrorGetInboxReviewData()
                 }
             }
+        }
+    }
+
+    private fun observeReviewReminderEstimation() {
+        observe(inboxReviewViewModel.getEstimation()) {
+            setButtonReviewReminder(it.totalBuyer)
         }
     }
 

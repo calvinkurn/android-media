@@ -215,7 +215,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private fun contentValues(filename: String) : ContentValues {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
         values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
         return values
