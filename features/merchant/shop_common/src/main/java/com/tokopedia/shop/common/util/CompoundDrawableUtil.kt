@@ -10,7 +10,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-private fun convertUrlToBitmapAndLoadImage(
+fun convertUrlToBitmapAndLoadImage(
         context: Context,
         url: String?,
         convertIntoSize: Int,
