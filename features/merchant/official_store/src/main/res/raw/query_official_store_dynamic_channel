@@ -34,7 +34,6 @@ query dynamicHomeChannel($type: String, $location: String) {
                 slashedPrice
                 discount
                 imageUrl
-                productImageUrl
                 label
                 soldPercentage
                 attribution
