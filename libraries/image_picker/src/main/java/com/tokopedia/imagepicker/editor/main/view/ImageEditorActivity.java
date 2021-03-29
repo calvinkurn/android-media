@@ -477,9 +477,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             editorControlView.setVisibility(View.VISIBLE);
             doneButton.setVisibility(View.GONE);
 
-            getSupportActionBar().setHomeButtonEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setTitle("");
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setHomeButtonEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setTitle("");
+            }
 
             switch (editActionType) {
                 case ACTION_CROP:
