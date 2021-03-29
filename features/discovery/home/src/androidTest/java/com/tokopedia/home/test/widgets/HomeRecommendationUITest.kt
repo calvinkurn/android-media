@@ -22,7 +22,7 @@ import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeRecommendationFragmentTest
 import com.tokopedia.home.test.json.HomeRecommendationJson
 import com.tokopedia.home.test.matchers.CustomAssertions.Companion.hasItemCount
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
