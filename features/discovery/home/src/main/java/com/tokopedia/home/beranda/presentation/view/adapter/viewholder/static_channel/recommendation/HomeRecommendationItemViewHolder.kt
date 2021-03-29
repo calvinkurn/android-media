@@ -52,7 +52,8 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                                     imageUrl = element.product.freeOngkirInformation.imageUrl
                             ),
                             labelGroupList = productCardModelLabelGroupList,
-                            hasThreeDots = true
+                            hasThreeDots = true,
+                            shopName = element.product.shop.name
                     )
             )
             setImageProductViewHintListener(element, object: ViewHintListener {

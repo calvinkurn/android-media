@@ -109,7 +109,8 @@ object DynamicChannelComponentMapper {
                             ),
                             textColor = it.textColor,
                             recommendationType = it.recommendationType,
-                            campaignCode = it.campaignCode
+                            campaignCode = it.campaignCode,
+                            shopId = it.shop.shopId
                     )
                 }
         )
