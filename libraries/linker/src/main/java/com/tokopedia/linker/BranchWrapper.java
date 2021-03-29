@@ -45,7 +45,7 @@ public class BranchWrapper implements WrapperInterface {
     private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     private static boolean isBranchInitialized = false;
     private RemoteConfig remoteConfig;
-    public static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
+    private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
 
     @Override
     public void init(Context context) {
@@ -74,7 +74,7 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
-        CheckBranchLinkUTMParams(linkerDeeplinkRequest);
+        checkBranchLinkUTMParams(linkerDeeplinkRequest);
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -479,7 +479,7 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private void CheckBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest){
+    private void checkBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest){
         APP_OPEN_FROM_BRANCH_LINK = false;
         Activity activity= ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
         if(activity != null && activity.getIntent().getData()!= null && activity.getIntent().getData().toString().contains(LinkerConstants.BRANCH_LINK_DOMAIN)){
