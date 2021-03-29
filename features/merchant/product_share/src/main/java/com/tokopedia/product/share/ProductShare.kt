@@ -23,6 +23,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.image.ImageProcessingUtil
 import timber.log.Timber
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
 
@@ -31,31 +32,42 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
     fun cancelShare(cancelShare: Boolean) {
         this.cancelShare = cancelShare
+        if (cancelShare && isLog) {
+            val timeEnd = System.currentTimeMillis()
+            if (timeEnd - timeStartShare > TIMEOUT_BRANCH) {
+                log(mode,imageProcess, resourceReady, branchTime, err, null)
+            }
+        }
     }
 
     var branchTime = 0L
     var imageProcess = 0L
     var resourceReady = 0L
+    var timeStartShare = 0L
+    var isLog = false
     var err: MutableList<Throwable> = mutableListOf()
 
     private fun resetLog() {
         branchTime = 0L
         imageProcess = 0L
         resourceReady = 0L
+        timeStartShare = 0L
+        isLog = false
         err = mutableListOf()
     }
 
     fun share(data: ProductData, preBuildImage: () -> Unit, postBuildImage: () -> Unit, isLog: Boolean = false) {
         cancelShare = false
         resetLog()
+        this.isLog = isLog
 
         if (mode == MODE_IMAGE) {
             preBuildImage()
-            val timeStart = System.currentTimeMillis()
+            timeStartShare = System.currentTimeMillis()
             val target = object : CustomTarget<Bitmap>(DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT) {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     val timeResourceEnd = System.currentTimeMillis()
-                    resourceReady = timeResourceEnd - timeStart
+                    resourceReady = timeResourceEnd - timeStartShare
                     val sticker = ProductImageSticker(activity, resource, data)
                     try {
                         val bitmap = sticker.buildBitmapImage()
@@ -197,7 +209,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         const val MODE_IMAGE = 1
 
         const val log_tag = "BRANCH_GENERATE"
-
+        const val TIMEOUT_BRANCH = 10_000L // 10seconds
     }
 }
 
