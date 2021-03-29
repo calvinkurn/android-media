@@ -39,7 +39,7 @@ class OrderSummaryPageActivityTrackingTest {
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
 
     @get:Rule
-    val cassavaTestRule = CassavaTestRule(ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+    val cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var idlingResource: IdlingResource? = null
@@ -146,7 +146,7 @@ class OrderSummaryPageActivityTrackingTest {
             clickButtonContinueWithRedPromo()
         }
 
-        assertThat(cassavaTestRule.validate(), hasAllSuccess())
+        assertThat(cassavaTestRule.validateByQuery(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
     }
 
     private fun performOrderSummaryPageBackAction() {

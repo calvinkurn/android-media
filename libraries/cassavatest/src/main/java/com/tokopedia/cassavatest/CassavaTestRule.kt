@@ -12,15 +12,11 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-class CassavaTestRule(
-        queryPath: String
-) : TestRule {
+class CassavaTestRule : TestRule {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
     private val daoSource = GtmLogDBSource(context)
-
-    private val cassavaQuery = getQuery(context, queryPath)
 
     override fun apply(base: Statement?, description: Description?): Statement {
         return object : Statement() {
@@ -35,9 +31,9 @@ class CassavaTestRule(
         }
     }
 
-    fun validate(): List<Validator> {
+    fun validateByQuery(path: String): List<Validator> {
+        val cassavaQuery = getQuery(context, path)
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-        // run blocking because it runs on test thread
         return runBlocking {
             ValidatorEngine(daoSource).computeCo(validators, cassavaQuery.mode.value)
         }
