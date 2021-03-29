@@ -5,7 +5,7 @@
     android:layout_width="@dimen/dp_150"
     android:layout_height="@dimen/dp_150"
     android:orientation="vertical"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
     app:cardCornerRadius="@dimen/dp_4"
     xmlns:tools="http://schemas.android.com/tools">
 
