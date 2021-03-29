@@ -73,7 +73,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
 
         if (arguments == null) {
             if (activity != null) {
-                activity!!.finish()
+                requireActivity().finish()
             }
             return
         }
@@ -112,7 +112,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
 
     override fun initInjector() {
         DaggerPromoCheckoutDetailComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
@@ -216,12 +216,12 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
 
         ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
 
-        val tvTnc = view!!.findViewById<WebView>(R.id.tnc_content)
+        val tvTnc = requireView().findViewById<WebView>(R.id.tnc_content)
         if (data.tnc != null) {
             tvTnc.loadData(data.tnc, COUPON_MIME_TYPE, UTF_ENCODING)
         }
 
-        val pointValue = view!!.findViewById<Typography>(R.id.text_point_value_coupon)
+        val pointValue = requireView().findViewById<Typography>(R.id.text_point_value_coupon)
         if (data.pointsStr == null || data.pointsStr.isEmpty()) {
             pointValue.visibility = View.GONE
         } else {
