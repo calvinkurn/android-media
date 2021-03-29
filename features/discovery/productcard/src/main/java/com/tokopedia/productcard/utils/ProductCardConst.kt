@@ -1,5 +1,8 @@
 package com.tokopedia.productcard.utils
 
+import androidx.annotation.DimenRes
+import com.tokopedia.productcard.R
+
 internal const val LIGHT_GREY = "lightGrey"
 internal const val LIGHT_BLUE = "lightBlue"
 internal const val LIGHT_GREEN = "lightGreen"
@@ -38,3 +41,11 @@ internal const val TYPE_VARIANT_SIZE = "size"
 internal const val TYPE_VARIANT_CUSTOM = "custom"
 
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
+
+internal const val WORDING_SEGERA_HABIS = "Segera Habis"
+
+@DimenRes
+internal val FIRE_WIDTH = R.dimen.dp_12
+
+@DimenRes
+internal val FIRE_HEIGHT = R.dimen.dp_13

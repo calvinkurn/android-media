@@ -260,10 +260,4 @@ data class ProductCardModel (
                 && !isShowLabelShipping
                 && !isShowLabelETA
     }
-
-    companion object {
-        const val WORDING_SEGERA_HABIS = "Segera Habis"
-        val FIRE_WIDTH = R.dimen.dp_12
-        val FIRE_HEIGHT = R.dimen.dp_13
-    }
 }

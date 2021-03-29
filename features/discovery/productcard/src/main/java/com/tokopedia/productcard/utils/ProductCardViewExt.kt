@@ -31,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 
 internal val View.isVisible: Boolean
@@ -354,5 +355,40 @@ internal fun Drawable.overrideColor(hexColor: String) {
         is GradientDrawable -> setColor(safeParseColor(hexColor))
         is ShapeDrawable -> paint.color = safeParseColor(hexColor)
         is ColorDrawable -> color = safeParseColor(hexColor)
+    }
+}
+
+internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: Typography?, productCardModel: ProductCardModel) {
+    renderStockPercentage(progressBarStock, productCardModel)
+    renderStockLabel(textViewStock, productCardModel)
+}
+
+private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCardModel: ProductCardModel) {
+    progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+        if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+            it.setProgressIcon(
+                    icon = ContextCompat.getDrawable(it.context, R.drawable.ic_fire_filled),
+                    width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
+                    height = it.context.resources.getDimension(FIRE_HEIGHT).toInt())
+        }
+        it.progressBarColorType = ProgressBarUnify.COLOR_RED
+        it.setValue(productCardModel.stockBarPercentage, true)
+    }
+}
+
+private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: ProductCardModel) {
+    textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+        it.text = productCardModel.stockBarLabel
+
+        val color = when {
+            productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true) ->
+                MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
+            productCardModel.stockBarLabelColor.isNotEmpty() ->
+                safeParseColor(productCardModel.stockBarLabelColor)
+            else ->
+                MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+        }
+
+        it.setTextColor(color)
     }
 }
