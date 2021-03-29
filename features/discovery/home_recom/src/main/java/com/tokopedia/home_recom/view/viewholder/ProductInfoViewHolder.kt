@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.empty_product_info.view.*
 import kotlinx.android.synthetic.main.fragment_product_info.view.*
 
+
 class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : AbstractViewHolder<ProductInfoDataModel>(view) {
 
     init {
