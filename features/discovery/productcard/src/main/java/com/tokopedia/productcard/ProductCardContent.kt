@@ -318,6 +318,12 @@ private fun View.renderTextIntegrityWithSalesRatingFloat(productCardModel: Produ
 
     textViewSales?.shouldShowWithAction(willShowSalesAndRating) {
         it.initLabelGroup(productCardModel.getLabelIntegrity())
+
+        val constraintLayout = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+        constraintLayout?.applyConstraintSet {  constraintSet ->
+            val marginEnd = if (productCardModel.shouldReserveThreeDotsMarginEndForTextViewSales()) 32.toPx() else 0
+            constraintSet.setMargin(it.id, ConstraintSet.END, marginEnd)
+        }
     }
 }
 
