@@ -56,7 +56,6 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
                                       position: Int) {
             list?.getOrNull(position)?.let { holder.bind(it) }
             holder.itemView.setOnClickListener {
-                invoiceSelection.hide()
                 selectedListener.onInvoiceSelected(
                         AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(list!![position])
                 )

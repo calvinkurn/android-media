@@ -144,7 +144,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             if (!useNewInbox) {
                 setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             }
-            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
         toolbar?.run {
@@ -246,6 +246,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
+    }
+
     private fun init(view: View) {
         configStatusBar(view)
         configMainToolbar(view)
@@ -300,7 +308,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                        .addIcon(IconList.ID_MESSAGE) {}
+                        .addIcon(getInboxIcon()) {}
 
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) {}

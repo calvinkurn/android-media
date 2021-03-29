@@ -74,8 +74,8 @@ object IncentiveOvoBottomSheetBuilder {
                 val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
                 bottomSheet.setShowListener {
                     CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, productRevIncentiveOvoDomain?.productrevIncentiveOvo != null)
+                    incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 }
-                incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 incentiveOvoSubmittedTitle?.text = defaultTitle
                 incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, amount)
                 productRevIncentiveOvoDomain?.productrevIncentiveOvo?.let {
