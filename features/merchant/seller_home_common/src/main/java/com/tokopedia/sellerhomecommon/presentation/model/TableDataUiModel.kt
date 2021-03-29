@@ -16,7 +16,7 @@ data class TableDataUiModel(
         override val showWidget: Boolean = false
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && dataSet.all { it.rows.isEmpty() }
+        return dataSet.all { it.rows.isEmpty() }
     }
 }
 

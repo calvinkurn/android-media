@@ -90,8 +90,8 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     tokopedia_note.gone()
                     address_detail.text = data.street + ", " + data.postalCode
                 }
-                val bitmap = (assetMoreBtn as VectorDrawable).toBitmap()
-                val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 80.toDp(), 80.toDp(), true))
+                val bitmap = assetMoreBtn?.toBitmap()
+                val d: Drawable = BitmapDrawable(resources, bitmap?.let { Bitmap.createScaledBitmap(it, 80.toDp(), 80.toDp(), true) })
                 btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
                 val cardSelected: Boolean

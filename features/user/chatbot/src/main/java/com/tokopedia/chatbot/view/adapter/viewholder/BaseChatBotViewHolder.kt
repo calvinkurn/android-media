@@ -62,12 +62,12 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
 
     }
 
-    private fun hideSenderInfo() {
+    protected fun hideSenderInfo() {
         senderAvatar?.hide()
         senderName?.hide()
     }
 
-    private fun convertToSenderInfo(source: String): SenderInfoData? {
+    protected fun convertToSenderInfo(source: String): SenderInfoData? {
         val senderInfoPrefix = itemView.context.getString(R.string.chatbot_sender_info_prefix)
         if (source.isNotEmpty() && source.startsWith(senderInfoPrefix)) {
             val s = source.substring(senderInfoPrefix.length, source.length)
@@ -77,7 +77,7 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
         } else return null
     }
 
-    private fun bindSenderInfo(senderInfoData: SenderInfoData) {
+    protected fun bindSenderInfo(senderInfoData: SenderInfoData) {
         senderAvatar?.show()
         senderName?.show()
         ImageHandler.loadImageCircle2(itemView.context, senderAvatar, senderInfoData.iconUrl)
@@ -88,7 +88,7 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
         customChatLayout?.background = bg
     }
 
-    private fun verifyReplyTime(chat: BaseChatViewModel) {
+    protected fun verifyReplyTime(chat: BaseChatViewModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
