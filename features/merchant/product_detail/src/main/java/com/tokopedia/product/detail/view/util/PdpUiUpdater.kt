@@ -68,6 +68,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productInstallmentInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_INSTALLMENT_INFO] as? ProductGeneralInfoDataModel
 
+    val productInstallmentPaylater: ProductGeneralInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO] as? ProductGeneralInfoDataModel
+
     val productShipingInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_SHIPPING_INFO] as? ProductGeneralInfoDataModel
 
@@ -358,6 +361,29 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     imageURL = it.merchantVoucherSummary.imageURL
                     isShown = it.merchantVoucherSummary.isShown
                     shopId = it.shopInfo.shopCore.shopID
+                }
+            }
+
+            //old installment component
+            if (it.productFinancingRecommendationData.data.partnerCode.isNotBlank()) {
+                updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO) {
+                    productInstallmentInfoMap?.run {
+                        subtitle = String.format(context?.getString(R.string.new_installment_template)
+                                ?: "",
+                                CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productFinancingRecommendationData.data.monthlyPrice.roundToLong(), false))
+                    }
+                }
+            } else {
+                removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO)
+            }
+
+            if (it.productFinancingRecommendationData.data.subtitle.isEmpty()) {
+                removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
+            } else {
+                updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) {
+                    productInstallmentPaylater?.run {
+                        subtitle = it.productFinancingRecommendationData.data.subtitle
+                    }
                 }
             }
 
