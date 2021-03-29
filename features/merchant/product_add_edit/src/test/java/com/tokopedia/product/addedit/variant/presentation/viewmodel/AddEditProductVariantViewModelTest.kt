@@ -374,7 +374,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
             getVariantCategoryCombinationUseCase.executeOnBackground()
         } returns GetVariantCategoryCombinationResponse()
 
-        viewModel.getVariantCategoryCombination(0, listOf())
+        viewModel.getVariantCategoryCombination(1, listOf())
 
         coVerify {
             getVariantCategoryCombinationUseCase.executeOnBackground()
@@ -397,7 +397,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
             getVariantCategoryCombinationUseCase.executeOnBackground()
         } returns GetVariantCategoryCombinationResponse()
 
-        viewModel.getVariantCategoryCombination(0, selections)
+        viewModel.getVariantCategoryCombination(1, selections)
 
         coVerify {
             getVariantCategoryCombinationUseCase.executeOnBackground()
