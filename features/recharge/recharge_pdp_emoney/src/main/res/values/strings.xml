@@ -3,4 +3,10 @@
     <string name="app_name">tkpddigital</string>
 
     <string name="recharge_pdp_emoney_toolbar_title">E-money</string>
+
+    <string name="recharge_pdp_emoney_check_saldo">Cek Saldo</string>
+    <string name="recharge_pdp_emoney_update_saldo">Update Saldo</string>
+
+
+    <string name="recharge_pdp_emoney_input_card_no_label">Nomor Kartu</string>
 </resources>
