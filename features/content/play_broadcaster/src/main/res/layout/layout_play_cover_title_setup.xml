@@ -109,9 +109,10 @@
                 android:background="@drawable/bg_play_title"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_lvl4"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_cover_image"
-                app:layout_constraintStart_toStartOf="@+id/iv_cover_image"
                 app:layout_constraintEnd_toEndOf="@+id/iv_cover_image"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover_image"
                 >
 
                 <com.tokopedia.unifyprinciples.Typography

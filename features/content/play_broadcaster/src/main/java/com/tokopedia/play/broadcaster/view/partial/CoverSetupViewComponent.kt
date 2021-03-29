@@ -46,8 +46,8 @@ class CoverSetupViewComponent(
     private val loaderImage: LoaderUnify = findViewById(R.id.loader_image)
     private val llChangeCover: LinearLayout = findViewById(R.id.ll_change_cover)
     private val etCoverTitle: EditText = findViewById(R.id.et_cover_title)
-    private val tvCoverTitleLabel: TextView = findViewById(R.id.tv_cover_title_label)
-    private val tvCoverTitleCounter: TextView = findViewById(R.id.tv_cover_title_counter)
+//    private val tvCoverTitleLabel: TextView = findViewById(R.id.tv_cover_title_label)
+//    private val tvCoverTitleCounter: TextView = findViewById(R.id.tv_cover_title_counter)
     private val tvAddChangeCover: TextView = findViewById(R.id.tv_add_change_cover)
     private val btnNext: UnifyButton = findViewById(R.id.btn_next)
     private val clCropButton: ConstraintLayout = findViewById(R.id.cl_crop_button)
@@ -86,7 +86,7 @@ class CoverSetupViewComponent(
 
         showHint(true)
         setupTitleTextField()
-        tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), coverTitle)
+//        tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), coverTitle)
 
         updateViewState()
 
@@ -167,24 +167,24 @@ class CoverSetupViewComponent(
     }
 
     private fun updateCounterCount(text: String) {
-        tvCoverTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                text.length, mMaxTitleChars)
+//        tvCoverTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
+//                text.length, mMaxTitleChars)
     }
 
     private fun updateCounterColor(text: String) {
-        tvCoverTitleCounter.setTextColor(
-                MethodChecker.getColor(
-                        tvCoverTitleCounter.context,
-                        if (!dataSource.isValidCoverTitle(text) && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Unify_R500
-                        else com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-                )
-        )
+//        tvCoverTitleCounter.setTextColor(
+//                MethodChecker.getColor(
+//                        tvCoverTitleCounter.context,
+//                        if (!dataSource.isValidCoverTitle(text) && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Unify_R500
+//                        else com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+//                )
+//        )
     }
 
     private fun setupTitleLabel(currentTitle: CharSequence) {
-        val currentLabel = tvCoverTitleLabel.text.toString()
-        val newText = getCoverTitleLabelText(currentLabel, currentTitle.toString())
-        if (currentLabel != newText.toString()) tvCoverTitleLabel.text = newText
+//        val currentLabel = tvCoverTitleLabel.text.toString()
+//        val newText = getCoverTitleLabelText(currentLabel, currentTitle.toString())
+//        if (currentLabel != newText.toString()) tvCoverTitleLabel.text = newText
     }
 
     private fun updateTextField(text: String, isFirstFocus: Boolean) {
@@ -260,7 +260,7 @@ class CoverSetupViewComponent(
     }
     
     private fun showCounter(shouldShow: Boolean) {
-        if (shouldShow) tvCoverTitleCounter.visible() else tvCoverTitleCounter.invisible()
+//        if (shouldShow) tvCoverTitleCounter.visible() else tvCoverTitleCounter.invisible()
     }
 
     private fun stabilizeScroll(shouldStabilize: Boolean) {
