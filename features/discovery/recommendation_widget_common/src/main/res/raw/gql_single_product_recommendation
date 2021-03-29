@@ -48,6 +48,7 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
                 position
                 title
                 type
+                url
               }
               wholesalePrice {
                   price
@@ -65,6 +66,10 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
               recommendationType
               stock
               isTopads
+              specificationLabels {
+                                              key
+                                              value
+                            }
            }
        }
      }

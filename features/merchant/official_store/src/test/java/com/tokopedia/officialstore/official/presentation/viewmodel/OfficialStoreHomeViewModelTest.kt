@@ -106,7 +106,7 @@ class OfficialStoreHomeViewModelTest {
             onGetDynamicChannel_thenReturn(osDynamicChannel)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category)
+            viewModel.loadFirstData(category, "")
 
             val expectedOSBanners = Success(osBanners)
             val expectedOSBenefits = Success(osBenefits)
@@ -133,7 +133,7 @@ class OfficialStoreHomeViewModelTest {
             onGetOfficialStoreData_thenReturn(error)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category)
+            viewModel.loadFirstData(category, "")
             val expectedError = Fail(NullPointerException())
 
             verifyLiveDataValueError(expectedError)
@@ -397,7 +397,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun onSetupDynamicChannelParams_thenCompleteWith(channelType: String) {
-        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) } returns Unit
+        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(channelType, "") } returns Unit
     }
 
     private fun verifyOfficialStoreBannersEquals(
@@ -495,7 +495,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyDynamicChannelParamsEquals(channelType: String) {
-        coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) }
+        coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType, "") }
     }
 
 

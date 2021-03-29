@@ -153,6 +153,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.weaver)
 
     implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

@@ -30,7 +30,7 @@ class MenuSettingActivity : BaseSimpleActivity() {
     private fun setWhiteStatusBar(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                setStatusBarColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.transparent))
+                setStatusBarColor(ContextCompat.getColor(context, android.R.color.transparent))
                 setLightStatusBar(true)
             } catch (ex: Resources.NotFoundException) {
                 Timber.e(ex)

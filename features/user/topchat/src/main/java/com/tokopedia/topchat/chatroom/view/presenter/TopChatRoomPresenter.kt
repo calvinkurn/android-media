@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import com.google.gson.JsonObject
@@ -67,8 +66,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -215,7 +212,6 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onReplyMessage(pojo: ChatSocketPojo) {
-        Log.d("DEBUG_TEXT", "onReplyMessage ${Thread.currentThread().id}")
         val temp = mapToVisitable(pojo)
         view?.onReceiveMessageEvent(temp)
         if (!pojo.isOpposite) {

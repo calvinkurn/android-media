@@ -12,9 +12,9 @@ import kotlin.coroutines.CoroutineContext
  * @author by nisie on 16/01/19.
  */
 
-class GetShopFollowingUseCase @Inject constructor(
-        private var dispatchers: CoroutineDispatchers,
-        private val gqlUseCase: GraphqlUseCase<ShopFollowingPojo>
+open class GetShopFollowingUseCase @Inject constructor(
+        private val gqlUseCase: GraphqlUseCase<ShopFollowingPojo>,
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     private val paramShopIDs = "shopIDs"

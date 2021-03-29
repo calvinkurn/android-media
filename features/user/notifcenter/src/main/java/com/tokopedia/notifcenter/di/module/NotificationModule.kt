@@ -7,6 +7,7 @@ import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManagerImpl
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -18,33 +19,13 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module(includes = [TopAdsWishlistModule::class])
+@Module(includes = [RecommendationModule::class, TopAdsWishlistModule::class])
 class NotificationModule {
 
     @Provides
     @NotificationScope
     fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
         return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
-    }
-
-    @Provides
-    @NotificationScope
-    fun provideGetRecomendationUseCase(@Named("recommendationQuery") recomQuery: String,
-                                       graphqlUseCase: GraphqlUseCase,
-                                       userSession: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession)
-    }
-
-    @Provides
-    @NotificationScope
-    @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(
-            @NotificationContext context: Context
-    ): String {
-        return GraphqlHelper.loadRawString(
-                context.resources,
-                com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget
-        )
     }
 
     @Provides

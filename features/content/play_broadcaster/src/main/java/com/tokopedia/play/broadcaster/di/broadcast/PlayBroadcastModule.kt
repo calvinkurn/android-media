@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -69,8 +71,14 @@ class PlayBroadcastModule(val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun providePlayBroadcastMapper(): PlayBroadcastMapper {
-        return PlayBroadcastUiMapper()
+    fun provideHtmlTextTransformer(): HtmlTextTransformer {
+        return DefaultHtmlTextTransformer()
+    }
+
+    @PlayBroadcastScope
+    @Provides
+    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer): PlayBroadcastMapper {
+        return PlayBroadcastUiMapper(htmlTextTransformer)
 
         /**
          * If you want configurable

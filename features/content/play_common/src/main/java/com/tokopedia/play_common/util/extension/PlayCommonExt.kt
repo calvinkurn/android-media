@@ -48,7 +48,7 @@ suspend inline fun View.awaitMeasured() = suspendCancellableCoroutine<Unit> { co
                         vto.isAlive -> vto.removeOnGlobalLayoutListener(this)
                         else -> viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
-                    cont.resume(Unit)
+                    if (cont.isActive) cont.resume(Unit)
                 }
             }
         }
@@ -70,7 +70,7 @@ suspend inline fun View.awaitNextGlobalLayout() = suspendCancellableCoroutine<Un
                 vto.isAlive -> vto.removeOnGlobalLayoutListener(this)
                 else -> viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-            cont.resume(Unit)
+            if (cont.isActive) cont.resume(Unit)
         }
     }
     cont.invokeOnCancellation {
@@ -142,7 +142,7 @@ suspend inline fun View.awaitLayout() = suspendCancellableCoroutine<Unit> { cont
                     oldBottom: Int
             ) {
                 view.removeOnLayoutChangeListener(this)
-                cont.resume(Unit)
+                if (cont.isActive) cont.resume(Unit)
             }
         }
 
@@ -177,11 +177,7 @@ fun EditText.setTextFieldColor(@ColorRes color: Int) {
                     color
             ), PorterDuff.Mode.SRC_ATOP)
 
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-        background = drawable
-    } else {
-        setBackgroundDrawable(drawable)
-    }
+    background = drawable
 }
 
 fun Fragment.cleanBackstack() {

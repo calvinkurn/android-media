@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -46,7 +47,7 @@ class PlayBroadcastPrepareViewModelTest {
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var dataStore: PlayBroadcastDataStore
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper()
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
 
     private lateinit var createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
     private lateinit var getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase

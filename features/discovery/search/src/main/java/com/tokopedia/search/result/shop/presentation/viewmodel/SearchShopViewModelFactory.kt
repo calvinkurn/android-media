@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy as daggerLazy
@@ -19,8 +19,8 @@ internal class SearchShopViewModelFactory(
         private val searchShopLoadMoreUseCase: daggerLazy<UseCase<SearchShopModel>>,
         private val getDynamicFilterUseCase: daggerLazy<UseCase<DynamicFilterModel>>,
         private val getShopCountUseCase: daggerLazy<UseCase<Int>>,
-        private val shopCpmViewModelMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmViewModel>>,
-        private val shopViewModelMapper: daggerLazy<Mapper<SearchShopModel, ShopViewModel>>,
+        private val shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
+        private val shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
         private val userSession: daggerLazy<UserSessionInterface>
 ): ViewModelProvider.Factory {
 
@@ -41,8 +41,8 @@ internal class SearchShopViewModelFactory(
                 searchShopLoadMoreUseCase,
                 getDynamicFilterUseCase,
                 getShopCountUseCase,
-                shopCpmViewModelMapper,
-                shopViewModelMapper,
+                shopCpmDataViewMapper,
+                shopDataViewMapper,
                 userSession
         )
     }

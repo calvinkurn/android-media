@@ -66,11 +66,11 @@ open class WishlistModule {
 
     @Provides
     @WishlistScope
-    open fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
+    open fun provideGetSingleRecommendationUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(context, graphqlRepository)
 
     @Provides
     @WishlistScope
-    fun provideGetRecommendationUseCase(coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(coroutineGqlRepository)
+    fun provideGetRecommendationUseCase(@ApplicationContext context: Context, coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
 
     @Provides
     @WishlistScope

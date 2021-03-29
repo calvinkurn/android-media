@@ -89,7 +89,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<WishlistModel>>()
     }
 
-    fun loadFirstData(category: Category?) {
+    fun loadFirstData(category: Category?, location: String = "") {
         launchCatchError(block = {
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
@@ -100,7 +100,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
-            getOfficialStoreDynamicChannel(currentSlug)
+            getOfficialStoreDynamicChannel(currentSlug, location)
         }) {
             _officialStoreBannersResult.value = Fail(it)
             _officialStoreBenefitResult.value = Fail(it)
@@ -157,9 +157,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getOfficialStoreDynamicChannel(channelType: String) {
+    private fun getOfficialStoreDynamicChannel(channelType: String, location: String) {
         launchCatchError(coroutineContext, block = {
-            getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
+            getOfficialStoreDynamicChannelUseCase.setupParams(channelType, location)
             _officialStoreDynamicChannelResult.postValue(Success(getOfficialStoreDynamicChannelUseCase.executeOnBackground()))
         }){
             _officialStoreDynamicChannelResult.postValue(Fail(it))

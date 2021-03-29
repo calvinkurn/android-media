@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelU
 import com.tokopedia.play.broadcaster.model.ModelBuilder
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -27,7 +28,7 @@ class PlayBroadcastSummaryViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper()
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
 
     private lateinit var channelConfigStore: ChannelConfigStore
 

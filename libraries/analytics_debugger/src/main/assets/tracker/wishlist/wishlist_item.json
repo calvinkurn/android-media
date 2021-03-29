@@ -9,7 +9,7 @@
       "eventAction": "product impressions",
       "sessionIris": "{{.*}}",
       "items": [{
-        "dimension83": "{{bebas ongkir|none / other}}",
+        "dimension83": "{{bebas ongkir|bebas ongkir extra|none / other}}",
         "item_id": "{{.*}}",
         "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
         "dimension40": "{{.*}}",

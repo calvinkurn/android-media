@@ -39,7 +39,7 @@ class MainNavModule {
     fun provideAccountHeaderMapper(@ApplicationContext context: Context,
                                    userSession: UserSessionInterface
     ) = AccountHeaderMapper(
-            context, userSession
+            userSession
     )
 
     @MainNavScope

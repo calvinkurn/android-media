@@ -20,10 +20,10 @@ import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
 
-class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: GamingRecommendationProductUseCase,
-                                             val addWishListUseCase: AddWishListUseCase,
-                                             val removeWishListUseCase: RemoveWishListUseCase,
-                                             val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+class PdpDialogViewModel @Inject constructor(private val recommendationProductUseCase: GamingRecommendationProductUseCase,
+                                             private val addWishListUseCase: AddWishListUseCase,
+                                             private val removeWishListUseCase: RemoveWishListUseCase,
+                                             private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
                                              val userSession: UserSessionInterface,
                                              @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher) : BaseViewModel(workerDispatcher) {
 
@@ -38,9 +38,9 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
             recommendationProductUseCase.useEmptyShopId = useEmptyShopId
             val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(pageNumber, shopId, pageName)).first()
             val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
-            if(list.isNullOrEmpty() && useEmptyShopId){
+            if (list.isNullOrEmpty() && useEmptyShopId) {
                 productLiveData.postValue(LiveDataResult.error(Exception("Getting empty personal recommendataion")))
-            }else {
+            } else {
                 productLiveData.postValue(LiveDataResult.success(list))
             }
         }, onError = {
@@ -52,44 +52,56 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
         if (model.isTopAds) {
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                    callback.invoke(false, e)
-                }
-
-                override fun onNext(wishlistModel: WishlistModel) {
-                    if (wishlistModel.data != null) {
-                        callback.invoke(true, null)
-                    }
-                }
-            })
+            topAdsWishlishedUseCase.execute(params, getSubscriber(callback))
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
+            addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, getWishListActionListener(callback))
+        }
+    }
 
-                override fun onSuccessAddWishlist(productId: String?) {
+    fun getWishListActionListener(callback: ((Boolean, Throwable?) -> Unit)): WishListActionListener {
+        return object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                callback.invoke(false, Throwable(errorMessage))
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                callback.invoke(true, null)
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                // do nothing
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                // do nothing
+            }
+        }
+    }
+
+    fun getSubscriber(callback: ((Boolean, Throwable?) -> Unit)): Subscriber<WishlistModel> {
+        return object : Subscriber<WishlistModel>() {
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable) {
+                callback.invoke(false, e)
+            }
+
+            override fun onNext(wishlistModel: WishlistModel) {
+                if (wishlistModel.data != null) {
                     callback.invoke(true, null)
                 }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    // do nothing
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    // do nothing
-                }
-            })
+            }
         }
     }
 
 
     fun removeFromWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))) {
-        removeWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object : WishListActionListener {
+        removeWishListUseCase.createObservable(model.productId.toString(), userSession.userId, getWishListActionListenerForRemoveFromWishList(wishlistCallback))
+    }
+
+    fun getWishListActionListenerForRemoveFromWishList(wishlistCallback: (((Boolean, Throwable?) -> Unit))):WishListActionListener{
+        return object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // do nothing
             }
@@ -105,7 +117,7 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
             override fun onSuccessRemoveWishlist(productId: String?) {
                 wishlistCallback.invoke(true, null)
             }
-        })
+        }
     }
 
 

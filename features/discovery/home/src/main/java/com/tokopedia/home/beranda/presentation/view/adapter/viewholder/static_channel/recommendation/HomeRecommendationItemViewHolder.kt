@@ -5,11 +5,9 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home_component.util.ConstantABTesting
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 
@@ -28,7 +26,7 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
 
     private fun setLayout(element: HomeRecommendationItemDataModel, listener: HomeRecommendationListener){
         val productCardModelLabelGroupList = element.product.labelGroup.map {
-            ProductCardModel.LabelGroup(position = it.position, type = it.type, title = it.title)
+            ProductCardModel.LabelGroup(position = it.position, type = it.type, title = it.title, imageUrl = it.imageUrl)
         }
 
         productCardView?.run{
