@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -92,7 +92,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
         TextViewExtKt.setTextAndContentDescription(mTvTotalItemPrice, shipmentCost.getTotalItemPrice() == 0 ? "-" :
-                Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false)), R.string.content_desc_tv_total_item_price_summary);
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false)), R.string.content_desc_tv_total_item_price_summary);
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee));
         TextViewExtKt.setTextAndContentDescription(mTvShippingFee, getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()), R.string.content_desc_tv_shipping_fee_summary);
         TextViewExtKt.setTextAndContentDescription(mTvInsuranceFee, getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()), R.string.content_desc_tv_insurance_fee_summary);
@@ -174,7 +174,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, false));
+            return Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) price, false));
         }
     }
 

@@ -5,13 +5,11 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,13 +17,13 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
 import java.util.List;
 
@@ -132,13 +130,13 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductPrice(CartItemModel cartItem) {
-        mTvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+        mTvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                 (long) cartItem.getPrice(), false)));
         int dp4 = mTvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4);
         int dp10 = mTvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_10);
         if (cartItem.getOriginalPrice() > 0) {
             mTvProductPrice.setPadding(dp4, dp4, 0, 0);
-            mTvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false)));
+            mTvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false)));
             mTvProductOriginalPrice.setPaintFlags(mTvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             mTvProductOriginalPrice.setVisibility(View.VISIBLE);
         } else {
@@ -167,7 +165,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             });
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
             mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
-            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getProtectionPricePerProduct(), false)));
+            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) cartItem.getProtectionPricePerProduct(), false)));
 
             if (cartItem.isProtectionCheckboxDisabled()) {
                 mCbPPP.setEnabled(false);
