@@ -140,6 +140,7 @@ Anda di sini.</string>
     <string name="btn_redeem_ticket">Tutup</string>
     <string name="redeem_deals_btn">Redeem</string>
     <string name="tkpdtransaction_title_replacement_reason_1">Produk tidak sesuai atau kosong</string>
+    <string name="cancel_replacement">Batalkan Pencarian</string>
 
     <string name="month_1">Jan</string>
     <string name="month_2">Feb</string>
