@@ -22,7 +22,7 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
-import com.tokopedia.notifcenter.util.coroutines.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper.Companion.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
