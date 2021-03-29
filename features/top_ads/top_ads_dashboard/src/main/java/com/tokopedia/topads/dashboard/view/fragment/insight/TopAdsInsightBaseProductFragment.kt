@@ -31,6 +31,8 @@ import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsProductRecomAdapter
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.HEIGHT
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.PRODUCT_RECOM
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRecomGroupBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
@@ -47,10 +49,12 @@ import kotlin.collections.set
  * Created by Pika on 20/7/20.
  */
 
-class TopAdsInsightBaseProductFragment(private val productRecommendData: ProductRecommendationData?, val height: Int?) : BaseDaggerFragment() {
+class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: TopadsProductRecomAdapter
     private lateinit var checkBox: CheckboxUnify
+    private var productRecommendData: ProductRecommendationData? = null
+    var height: Int? = null
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -61,6 +65,15 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     }
     private var currentGroupName = ""
     private var currentGroupId = -1
+
+    companion object {
+        fun createInstance(bundle: Bundle): TopAdsInsightBaseProductFragment {
+            val fragment = TopAdsInsightBaseProductFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
 
     override fun getScreenName(): String {
         return TopAdsInsightBaseProductFragment::class.java.name
@@ -94,6 +107,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getDataFromArgument()
         rvProductRecom.setMargin(0, 0, 0, height ?: 0)
         swipeRefreshLayout?.setOnRefreshListener {
             loadData()
@@ -104,6 +118,11 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
             setAdapterData(productRecommendData?.products)
         }
         checkUnchekAll()
+    }
+
+    private fun getDataFromArgument() {
+        productRecommendData = arguments?.getParcelable(PRODUCT_RECOM)
+        height = arguments?.getInt(HEIGHT)
     }
 
     private fun checkUnchekAll() {
