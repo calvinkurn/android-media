@@ -4,7 +4,9 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsMapper
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -60,7 +62,13 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                             RecommendationLabel(title = it.title, type = it.type, position = it.position, imageUrl = it.imageUrl)
                         },
                         isGold = recommendation.shop.isGold,
-                        isOfficial = recommendation.shop.isOfficial
+                        isOfficial = recommendation.shop.isOfficial,
+                        specs = recommendation.specificationsLabels.map {
+                            RecommendationSpecificationLabels(
+                                    specTitle = it.key,
+                                    specSummary = it.value
+                            )
+                        }
                 )
             },
             title,
@@ -116,7 +124,6 @@ fun RecommendationItem.toProductCardModel(
             addToCartButtonType = addToCartButtonType
     )
 }
-
 
 var LABEL_FULFILLMENT: String = "fulfillment"
 

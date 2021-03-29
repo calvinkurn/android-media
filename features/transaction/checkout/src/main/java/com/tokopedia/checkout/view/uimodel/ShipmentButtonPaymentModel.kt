@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.uimodel
 
 import android.os.Parcelable
-import com.tokopedia.logisticcart.shipping.model.ShipmentData
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -11,5 +10,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class ShipmentButtonPaymentModel(
         var totalPrice: String = "-",
-        var quantity: Int = 0
-) : ShipmentData, Parcelable
+        var quantity: Int = 0,
+) : Parcelable

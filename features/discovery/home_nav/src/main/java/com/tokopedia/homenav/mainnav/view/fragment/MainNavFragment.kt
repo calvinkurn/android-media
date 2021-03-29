@@ -29,8 +29,10 @@ import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -225,6 +227,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
+            ID_WISHLIST_MENU -> TrackingTransactionSection.clickOnWishlist(userSession.userId)
+            ID_FAVORITE_SHOP -> TrackingTransactionSection.clickOnTokoFavorit(userSession.userId)
             else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuDataModel.trackerName, userSession.userId)
         }
     }
