@@ -9,7 +9,6 @@ import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
-import kotlinx.android.synthetic.main.item_shipment_button_payment.view.*
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 
@@ -28,7 +27,7 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
     }
 
     fun bindViewHolder(model: ShipmentButtonPaymentModel) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(tvTotalPayment, model.totalPrice, itemView.tv_total_payment.context.getString(R.string.content_desc_tv_total_payment))
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvTotalPayment, model.totalPrice, itemView.context.getString(R.string.content_desc_tv_total_payment))
 
         btnSelectPaymentMethod.let {
             compositeSubscription.add(
