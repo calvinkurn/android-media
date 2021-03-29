@@ -34,6 +34,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopStatisticsResp = MutableLiveData<ShopStatisticsResp>()
     val shopInfo = MutableLiveData<ShopInfoData>()
+    val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
@@ -79,6 +80,14 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                 shopNotesResp.postValue(shopNotes)
             }
         }){}
+    }
+
+    fun getShopReputationBadge(shopId: String) {
+        launchCatchError(coroutineDispatcherProvider.io, block = {
+            getShopReputation(shopId)?.let {
+                shopBadgeReputation.postValue(Success(it))
+            }
+        }) {}
     }
 
     fun getShopStats(shopId: String) {
