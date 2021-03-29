@@ -15,6 +15,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -98,10 +99,18 @@ class TopChatRoomPresenterStub @Inject constructor(
 
     override fun startUploadImages(image: ImageUploadViewModel) {
         //always upload with service
+        addDummyToService(image)
+        startUploadImageWithService(image)
+    }
+
+    private fun addDummyToService(image: ImageUploadViewModel) {
         view?.addDummyMessage(image)
         val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
         UploadImageChatService.dummyMap.add(uploadImageDummy)
-        UploadImageChatServiceStub.enqueueWork(view.context, image, thisMessageId)
+    }
+
+    private fun startUploadImageWithService(image: ImageUploadViewModel) {
+        UploadImageChatServiceStub.enqueueWork(view.context, ImageUploadMapper.mapToImageUploadServer(image), thisMessageId)
     }
 
     companion object {

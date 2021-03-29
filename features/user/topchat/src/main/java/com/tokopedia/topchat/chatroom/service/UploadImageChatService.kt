@@ -16,12 +16,14 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -75,8 +77,19 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
     override fun onHandleWork(intent: Intent) {
         initNotificationManager()
+        setupData(intent)
+        uploadImage()
+    }
+
+    private fun setupData(intent: Intent) {
         messageId = intent.getStringExtra(MESSAGE_ID,)?: ""
-        image = intent.getSerializableExtra(IMAGE) as ImageUploadViewModel
+        val imageUploadService = intent.getParcelableExtra<ImageUploadServiceModel>(IMAGE)
+        imageUploadService?.let {
+            image =  ImageUploadMapper.mapToImageUploadViewModel(it)
+        }
+    }
+
+    private fun uploadImage() {
         image?.let {
             uploadImageUseCase.upload(it, ::onSuccessUploadImage, ::onErrorUploadImage)
         }
@@ -92,9 +105,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                 val result = replyChatGQLUseCase.replyMessage(msgId, msg, filePath, dummyMessage.source)
                 if(result.data.attachment.attributes.isNotEmpty()) {
                     removeDummyOnList(dummyMessage)
-                    image?.let {img ->
-                        sendSuccessBroadcast(img)
-                    }
+                    sendSuccessBroadcast()
                 }
             }
         },
@@ -103,45 +114,49 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         })
     }
 
-    private fun onFailedReplyMessage(): (Throwable) -> Unit {
-        return {
-            image?.let { img ->
-                onErrorUploadImage(it, img)
-            }
-        }
-    }
-
-    private fun sendSuccessBroadcast(image: ImageUploadViewModel) {
+    private fun sendSuccessBroadcast() {
         val result = Intent(BROADCAST_UPLOAD_IMAGE)
-        val bundle = Bundle()
-        bundle.putString(MESSAGE_ID, messageId)
-        bundle.putSerializable(IMAGE, image)
-        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
-
-        result.putExtras(bundle)
+        result.putExtras(generateBundleSuccess())
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
     }
 
-    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
-        val position = findDummy(image)
-        position?.let {
-            dummyMap[it].isFail = true
-        }
-
-        val result = Intent(BROADCAST_UPLOAD_IMAGE)
+    private fun generateBundleSuccess(): Bundle {
         val bundle = Bundle()
         bundle.putString(MESSAGE_ID, messageId)
-        bundle.putString(ERROR_MESSAGE, ErrorHandler.getErrorMessage(this, throwable))
-        bundle.putInt(RETRY_POSITION, position?: -1)
-        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR)
+        image?.let {
+            bundle.putParcelable(IMAGE, ImageUploadMapper.mapToImageUploadServer(it))
+        }
+        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
+        return bundle
+    }
 
-        result.putExtras(bundle)
+    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
+        val position = findDummy(image)?: -1
+        flagDummyInPosition(position)
+
+        val result = Intent(BROADCAST_UPLOAD_IMAGE)
+        result.putExtras(generateBundleError(position, throwable))
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
 
         firebaseLogError(throwable)
 
         val errorMessage = ErrorHandler.getErrorMessage(this@UploadImageChatService, throwable)
         notificationManager?.onFailedUpload(errorMessage)
+    }
+
+    private fun flagDummyInPosition(position: Int) {
+        if(position > -1) {
+            dummyMap[position].isFail = true
+        }
+    }
+
+    private fun generateBundleError(position: Int, throwable: Throwable): Bundle {
+        val bundle = Bundle()
+        bundle.putString(MESSAGE_ID, messageId)
+        bundle.putString(ERROR_MESSAGE, ErrorHandler.getErrorMessage(this, throwable))
+        bundle.putInt(RETRY_POSITION, position)
+        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR)
+        return bundle
     }
 
     override fun onDestroy() {
@@ -169,7 +184,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         const val BROADCAST_UPLOAD_IMAGE = "BROADCAST_UPLOAD_IMAGE"
         var dummyMap = arrayListOf<UploadImageDummy>()
 
-        fun enqueueWork(context: Context, image: ImageUploadViewModel, messageId: String) {
+        fun enqueueWork(context: Context, image: ImageUploadServiceModel, messageId: String) {
             val intent = Intent(context, UploadImageChatService::class.java)
             intent.putExtra(IMAGE, image)
             intent.putExtra(MESSAGE_ID, messageId)

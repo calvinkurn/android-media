@@ -1,6 +1,5 @@
 package com.tokopedia.chat_common.data
 
-import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,7 +33,7 @@ constructor(
         attachmentId, attachmentType, replyTime, message,
         source,
         replyId = replyId
-), Serializable {
+) {
 
     var startTime: String protected set
     var isShowRole = true

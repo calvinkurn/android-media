@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
@@ -29,7 +30,7 @@ class UploadImageChatServiceStub: UploadImageChatService() {
 
     companion object {
         var dummyMap = UploadImageChatService.dummyMap
-        fun enqueueWork(context: Context, image: ImageUploadViewModel, messageId: String) {
+        fun enqueueWork(context: Context, image: ImageUploadServiceModel, messageId: String) {
             val intent = Intent(context, UploadImageChatServiceStub::class.java)
             intent.putExtra(IMAGE, image)
             intent.putExtra(MESSAGE_ID, messageId)

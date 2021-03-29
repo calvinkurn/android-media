@@ -54,6 +54,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -337,14 +338,22 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun startUploadImages(image: ImageUploadViewModel) {
         if(isEnableUploadImageService()) {
-            view?.addDummyMessage(image)
-            val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
-            UploadImageChatService.dummyMap.add(uploadImageDummy)
-            UploadImageChatService.enqueueWork(view.context, image, thisMessageId)
+            addDummyToService(image)
+            startUploadImageWithService(image)
         } else {
             processDummyMessage(image)
             uploadImageUseCase.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
         }
+    }
+
+    private fun addDummyToService(image: ImageUploadViewModel) {
+        view?.addDummyMessage(image)
+        val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
+        UploadImageChatService.dummyMap.add(uploadImageDummy)
+    }
+
+    private fun startUploadImageWithService(image: ImageUploadViewModel) {
+        UploadImageChatService.enqueueWork(view.context, ImageUploadMapper.mapToImageUploadServer(image), thisMessageId)
     }
 
     private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {

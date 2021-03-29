@@ -75,6 +75,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -111,6 +112,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -1775,8 +1777,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     //Success upload image with service
     override fun onSuccessUploadImageWS(intent: Intent) {
         if(messageId == getResultMessageId(intent)) {
-            val image = intent.getSerializableExtra(UploadImageChatService.IMAGE) as ImageUploadViewModel
-            removeDummy(image)
+            val image = intent.getParcelableExtra<ImageUploadServiceModel>(UploadImageChatService.IMAGE)
+            image?.let {
+                removeDummy(ImageUploadMapper.mapToImageUploadViewModel(it))
+            }
         }
     }
 

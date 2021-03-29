@@ -2,17 +2,15 @@ package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
-import java.io.Serializable
 
 /**
  * Created by stevenfredian on 11/28/17.
  */
 
-class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory>, Serializable {
+class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
     var imageUrl: String? = null
     var imageUrlThumbnail: String? = null
-        private set
     var isRetry: Boolean = false
 
     constructor(
