@@ -12,8 +12,6 @@ import kotlin.Pair;
 public class MigratedUserSession {
     public static final boolean IS_ENABLE = false;
 
-    private final HashMap<Pair<String, String>, Object> map = new HashMap<>();
-
     protected Context context;
 
     public MigratedUserSession(Context context) {
@@ -27,9 +25,9 @@ public class MigratedUserSession {
 
     protected long getLong(String prefName, String keyName, long defValue) {
         Pair<String, String> key = new Pair<>(prefName, keyName);
-        if (map.containsKey(key)) {
+        if (UserSessionMap.getMap().containsKey(key)) {
             try {
-                return (Long) map.get(key);
+                return (Long) UserSessionMap.getMap().get(key);
             } catch (Exception ignored) {
             }
         }
@@ -39,7 +37,7 @@ public class MigratedUserSession {
         }
 
         long value = internalGetLong(prefName, keyName, defValue);
-        map.put(key, value);
+        UserSessionMap.getMap().put(key, value);
         return value;
     }
 
@@ -49,7 +47,7 @@ public class MigratedUserSession {
     }
 
     protected void setLong(String prefName, String keyName, long value) {
-        map.put(new Pair<>(prefName, keyName), value);
+        UserSessionMap.getMap().put(new Pair<>(prefName, keyName), value);
 
         if (!IS_ENABLE) {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
@@ -67,7 +65,7 @@ public class MigratedUserSession {
     }
 
     protected void cleanKey(String prefName, String keyName) {
-        map.remove(new Pair<>(prefName, keyName));
+        UserSessionMap.getMap().remove(new Pair<>(prefName, keyName));
         if (!IS_ENABLE) {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
@@ -83,7 +81,7 @@ public class MigratedUserSession {
     }
 
     protected void nullString(String prefName, String keyName) {
-        map.put(new Pair<>(prefName, keyName), null);
+        UserSessionMap.getMap().put(new Pair<>(prefName, keyName), null);
         if (!IS_ENABLE) {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
@@ -93,7 +91,7 @@ public class MigratedUserSession {
     }
 
     protected void setString(String prefName, String keyName, String value) {
-        map.put(new Pair<>(prefName, keyName), value);
+        UserSessionMap.getMap().put(new Pair<>(prefName, keyName), value);
         if (!IS_ENABLE) {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
@@ -110,9 +108,9 @@ public class MigratedUserSession {
 
     protected String getAndTrimOldString(String prefName, String keyName, String defValue) {
         Pair<String, String> key = new Pair<>(prefName, keyName);
-        if (map.containsKey(key)) {
+        if (UserSessionMap.getMap().containsKey(key)) {
             try {
-                return (String) map.get(key);
+                return (String) UserSessionMap.getMap().get(key);
             } catch (Exception ignored) {
             }
         }
@@ -123,20 +121,20 @@ public class MigratedUserSession {
         String oldValue = internalGetString(oldprefName, oldKeyName, defValue);
 
         if (!IS_ENABLE) {
-            map.put(key, oldValue);
+            UserSessionMap.getMap().put(key, oldValue);
             return oldValue;
         }
 
         if (oldValue != null && !oldValue.equals(defValue)) {
             internalCleanKey(oldprefName, oldKeyName);
             internalSetString(prefName, keyName, oldValue);
-            map.put(key, oldValue);
+            UserSessionMap.getMap().put(key, oldValue);
             return oldValue;
         }
 
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         String value = sharedPrefs.getString(keyName, defValue);
-        map.put(key, value);
+        UserSessionMap.getMap().put(key, value);
         return value;
     }
 
@@ -146,7 +144,7 @@ public class MigratedUserSession {
     }
 
     protected void setBoolean(String prefName, String keyName, boolean value) {
-        map.put(new Pair<>(prefName, keyName), value);
+        UserSessionMap.getMap().put(new Pair<>(prefName, keyName), value);
         if (!IS_ENABLE) {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
@@ -163,9 +161,9 @@ public class MigratedUserSession {
 
     protected boolean getAndTrimOldBoolean(String prefName, String keyName, boolean defValue) {
         Pair<String, String> key = new Pair<>(prefName, keyName);
-        if (map.containsKey(key)) {
+        if (UserSessionMap.getMap().containsKey(key)) {
             try {
-                return (boolean) map.get(key);
+                return (boolean) UserSessionMap.getMap().get(key);
             } catch (Exception ignored) {
             }
         }
@@ -175,20 +173,20 @@ public class MigratedUserSession {
         boolean oldValue = internalGetBoolean(oldprefName, oldKeyName, defValue);
 
         if (!IS_ENABLE) {
-            map.put(key, oldValue);
+            UserSessionMap.getMap().put(key, oldValue);
             return oldValue;
         }
 
         if (oldValue != defValue) {
             internalCleanKey(oldprefName, oldKeyName);
             internalSetBoolean(prefName, keyName, oldValue);
-            map.put(key, oldValue);
+            UserSessionMap.getMap().put(key, oldValue);
             return oldValue;
         }
 
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         boolean value = sharedPrefs.getBoolean(keyName, defValue);
-        map.put(key, value);
+        UserSessionMap.getMap().put(key, value);
         return value;
     }
 }
