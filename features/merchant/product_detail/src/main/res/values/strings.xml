@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">product_detail</string>
 
-    <string name="label_flash_sale">Flash Sale</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_product_info">Informasi Produk</string>
     <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
@@ -43,16 +42,13 @@
     <string name="label_category">Kategori</string>
     <string name="merchant_product_detail_label_specification_product">Spesifikasi Produk</string>
 
-    <string name="label_chat_seller">Chat Penjual</string>
     <string name="label_follow">Follow</string>
     <string name="label_favorited">Following</string>
-    <string name="template_shop_last_login">\u2022 %s</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
     <string name="campaign_expired_descr">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
     <string name="courier_title">Kurir</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
-    <string name="title_most_helpful_review">Ulasan Paling Membantu</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
     <string name="service_title_format">%1$s (%2$s)</string>
     <string name="see_message">Lihat Pesan</string>
@@ -81,12 +77,7 @@
     <string name="atc_done_see_cart">Lihat Keranjang</string>
     <string name="recom_see_more_title">Lihat semua</string>
 
-    <string name="review_like_pattern">%1$d orang</string>
-    <string name="date_review_pattern">%1$s oleh %2$s</string>
-    <string name="txt_most_helpfull">terbantu dengan ulasan ini</string>
-    <string name="txt_more_item_plus">%1$d +</string>
     <string name="ongkir_pattern_string_dynamic_pdp"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
-    <string name="review_counter">• %1$d ulasan</string>
     <string name="review_out_of_total_reviews">dari %d ulasan</string>
     <string name="review_author">oleh &lt;b>%s&lt;/b></string>
     <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
@@ -138,7 +129,6 @@
     //NotifyMe (UpComing Teaser) section
     <string name="notify_me_active">Pengingat Aktif</string>
     <string name="notify_me_inactive">Ingatkan Saya</string>
-    <string name="notify_me_subtitle"><![CDATA[Dimulai dalam <b>%1$s hari lagi</b>]]></string>
     <string name="notify_me_subtitle_main">Dimulai dalam</string>
     <string name="notify_me_title">Kejar Diskon</string>
     <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
@@ -159,10 +149,6 @@
     <string name="wishlist_single_text_template_builder">%1s orang menyukai barang ini</string>
     <string name="view_single_text__template_builder">%1s orang melihat barang ini</string>
     <string name="label_buyer_photos">Foto Pembeli</string>
-
-    <!--Mini Shop Info-->
-    <string name="label_desc_os">Pasti Ori • Pasti Ready • Garansi 7 Hari</string>
-    <string name="label_dijual">Dijual oleh</string>
 
     <string name="slider_counter_builder">%1$d/%2$d</string>
 
@@ -226,7 +212,6 @@
     <string name="shop_chat_speed_in_minute">%1d menit</string>
 
     <string name="label_go_apotik">By GoApotik</string>
-    <string name="campaign_npl_start">Dimulai dalam</string>
 
     <string name="pdp_tradein_text_permission_description">Izinkan Tokopedia mengakses IMEI, WiFi, dan lainnya untuk tes fungsi HP</string>
     <string name="pdp_tradein_text_request_access">Izin akses ke HP-mu</string>
@@ -267,16 +252,13 @@
     <string name="pdp_video_divider"> / </string>
 
     <string name="pdp_shipping_weight_checkout_label">Total ongkir akhir akan dihitung saat checkout.</string>
-    <string name="pdp_shipping_bebas_ongkir_label">Bebas Ongkir</string>
     <string name="pdp_shipping_simulation_label">Simulasi Pengiriman</string>
     <string name="pdp_shipping_available_cod_label">Bisa COD</string>
-    <string name="pdp_shipping_estimation_builder">Estimasi tiba %1s</string>
     <string name="pdp_shipping_to_builder">Dikirim ke <![CDATA[<b>%1s</b>]]></string>
     <string name="pdp_shipping_from_builder">Dari %1s</string>
     <string name="pdp_shipping_weight_builder"><![CDATA[Berat satuan: <b>%1s</b>]]></string>
 
     <string name="pdp_shipping_cod_label">COD</string>
-    <string name="pdp_shipping_sameday_label">Same Day</string>
     <string name="pdp_shipping_choose_courier_label">Lihat Pilihan Kurir</string>
     <string name="pdp_shipping_other_courier_label">Kurir lainnya:</string>
     <string name="pdp_shipping_khusus_label">Khusus:</string>
