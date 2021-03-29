@@ -15,6 +15,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.OtherAddressModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class AddressListItemAdapter(private val listener: AddressListItemAdapterListener): RecyclerView.Adapter<AddressListItemAdapter.BaseViewHolder<*>>() {
@@ -103,7 +104,7 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
             if (dataIsSame(localAddr, data)) {
                 cardAddress.hasCheckIcon = true
                 cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                cardAddress.setPadding(0, 0, itemView.getDimens(R.dimen.choose_address_padding), 0)
+                cardAddress.setPadding(0, 0, 16.toPx(), 0)
                 cardAddress.setOnClickListener(null)
             } else {
                 cardAddress.hasCheckIcon = false
