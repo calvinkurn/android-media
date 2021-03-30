@@ -9,10 +9,7 @@ import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -425,7 +422,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun setupPersistentBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from<ConstraintLayout>(hotel_search_map_bottom_sheet)
-        bottomSheetBehavior.isFitToContents = false
 
         val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
         bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
@@ -709,7 +705,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             hideSearchWithMap()
             hideHotelResultList()
             showErrorNoResult()
-            expandBottomSheet()
         }
 
         if (isFirstInitializeFilter) {
@@ -1024,6 +1019,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun showErrorNoResult() {
         containerEmptyResultState.visible()
+        val viewTree = containerEmptyResultState.viewTreeObserver
+        viewTree.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewTree.removeOnGlobalLayoutListener(this)
+                bottomSheetBehavior.peekHeight = containerEmptyResultState.measuredHeight
+            }
+        })
+        collapseBottomSheet()
     }
 
     private fun hideErrorNoResult() {
