@@ -218,7 +218,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         if (isChecked) {
             paymentMode = CreditCard
             getSimulationProductInfo()
-            //creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
         } else {
             paymentMode = PayLater
         }
