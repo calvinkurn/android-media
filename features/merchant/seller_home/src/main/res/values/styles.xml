@@ -22,7 +22,7 @@
 
     <style name="MenuSettingStyle" parent="Base.Theme">
         <item name="toolbarTheme">@style/Toolbar.Transparent</item>
-        <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
+        <item name="titleTextAppearance">@style/TitleTextAppearance.MenuSetting</item>
     </style>
 
     <style name="Toolbar.Transparent" parent="Base.Toolbar.Theme">
@@ -30,8 +30,12 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="actionModeBackground">@android:color/transparent</item>
         <item name="android:actionModeBackground">@android:color/transparent</item>
-        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
-        <item name="android:actionMenuTextColor">@color/font_black_primary_70</item>
-        <item name="android:textColorSecondary">@color/font_black_primary_70</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
+    </style>
+
+    <style name="TitleTextAppearance.MenuSetting">
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 </resources>
