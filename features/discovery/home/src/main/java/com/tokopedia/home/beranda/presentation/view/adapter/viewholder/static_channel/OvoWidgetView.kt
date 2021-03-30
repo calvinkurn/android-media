@@ -184,7 +184,6 @@ class OvoWidgetView: FrameLayout {
                         tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
 
-                        //TODO: Move to viewmodel implementation / mapper
                         if (homeHeaderWalletAction.isShowTopup) {
                             tvBalanceTokocash.setTextColor(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
@@ -198,7 +197,6 @@ class OvoWidgetView: FrameLayout {
                         tvTitleTokocash.text = TITLE
                         tvActionTokocash.visibility = View.VISIBLE
                         tvBalanceTokocash.visibility = View.GONE
-                        //TODO: Move to viewmodel implementation / mapper
                         if (element.isPendingTokocashChecked && element.cashBackData != null) {
                             if (element.cashBackData?.amount?:0 > 0) {
                                 tvTitleTokocash.text = "(+ ${element?.cashBackData?.amountText} )"
