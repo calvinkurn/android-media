@@ -154,6 +154,7 @@ class FlightSearchActivityTest {
 
     @Test
     fun promoChipsOnClicked(){
+        Thread.sleep(2000)
         if (getPromoChipsItemCount() > 0) {
             onView(withId(R.id.recycler_view_promo_chips)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click()))
