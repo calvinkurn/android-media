@@ -450,14 +450,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_toolbar?.let {
             it.setIcon(IconBuilder(
                     IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
-            ).addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    disableRouteManager = true,
-            ) {
-                val bundle = Bundle()
-                val applink = ApplinkConst.HOME_NAVIGATION
-                RouteManager.route(context, bundle, applink, null)
-            })
+            ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {})
         }
 
         setupStatusBar()
@@ -516,7 +509,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.getShortcutData()
     }
 
-    private fun showHomeAccountTokopoints() : Boolean {
+    private fun showHomeAccountTokopoints(): Boolean {
         return isShowHomeAccountTokopoints
     }
 
