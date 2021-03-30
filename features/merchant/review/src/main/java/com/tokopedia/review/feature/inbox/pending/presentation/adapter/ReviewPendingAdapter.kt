@@ -9,9 +9,6 @@ class ReviewPendingAdapter(
 ) : BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(reviewPendingAdapterTypeFactory) {
 
     fun insertOvoIncentive(reviewPendingOvoIncentiveUiModel: ReviewPendingOvoIncentiveUiModel) {
-        if(visitables.isEmpty()) {
-            return
-        }
         if(visitables.firstOrNull() is ReviewPendingOvoIncentiveUiModel) {
             return
         }
