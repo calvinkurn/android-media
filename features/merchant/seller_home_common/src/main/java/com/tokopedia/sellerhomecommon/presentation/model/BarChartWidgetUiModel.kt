@@ -32,4 +32,8 @@ data class BarChartWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<BarChartDataUiModel> {
         return BarChartWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<BarChartDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

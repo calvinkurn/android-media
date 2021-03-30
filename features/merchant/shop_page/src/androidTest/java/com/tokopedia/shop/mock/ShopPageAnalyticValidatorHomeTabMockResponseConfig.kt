@@ -8,8 +8,10 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawStrin
 class ShopPageAnalyticValidatorHomeTabMockResponseConfig : MockModelConfig() {
     companion object {
         const val KEY_QUERY_GET_SHOP_TICKER = "get_ticker"
+        const val KEY_QUERY_GET_SHOP_PAGE_HEADER_LAYOUT = "getShopPageGetHeaderLayout"
         const val KEY_QUERY_GET_SHOP_OPERATIONAL_HOUR_STATUS = "getShopOperationalHourStatus"
         const val KEY_QUERY_SHOP_SHOWCASES_BY_ID = "shopShowcasesByShopID"
+        const val KEY_QUERY_SHOP_SORT_DATA = "getShopSort"
         const val KEY_QUERY_SHOP_PAGE_GET_LAYOUT = "get_shop_page_home_layout"
         const val KEY_QUERY_MEMBERSHIP_STAMP_PROGRESS = "membershipStampProgress"
         const val KEY_QUERY_GET_SHOP_PRODUCT = "GetShopProduct"
@@ -30,6 +32,12 @@ class ShopPageAnalyticValidatorHomeTabMockResponseConfig : MockModelConfig() {
         addMockResponse(
                 KEY_QUERY_GET_SHOP_TICKER,
                 getRawString(context, R.raw.response_mock_data_get_shop_ticker),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_QUERY_GET_SHOP_PAGE_HEADER_LAYOUT,
+                getRawString(context, R.raw.response_mock_data_shop_page_header_layout_buyer_view),
                 FIND_BY_CONTAINS
         )
 
@@ -72,6 +80,13 @@ class ShopPageAnalyticValidatorHomeTabMockResponseConfig : MockModelConfig() {
                 KEY_QUERY_SHOP_SHOWCASES_BY_ID,
                 getRawString(context, R.raw.response_mock_data_shop_showcase_by_shop_id),
                 FIND_BY_CONTAINS)
+
+
+        addMockResponse(
+                KEY_QUERY_SHOP_SORT_DATA,
+                getRawString(context, R.raw.response_mock_data_shop_product_result_shop_sort),
+                FIND_BY_CONTAINS
+        )
 
         addMockResponse(
                 KEY_QUERY_SHOP_PAGE_GET_LAYOUT,

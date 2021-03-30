@@ -10,8 +10,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.custom_field_setting_profile.view.*
 import kotlinx.android.synthetic.main.item_empty_field_setting_profile.view.*
 import kotlinx.android.synthetic.main.item_filled_field_setting_profile.view.*
@@ -46,14 +48,14 @@ class CustomFieldSettingProfile : LinearLayout {
     private val view: View by lazy { View.inflate(context, R.layout.custom_field_setting_profile, this) }
     private val itemEmptyField: View by lazy { view.itemEmptyField }
     private val itemFilledField: View by lazy { view.itemFilledField }
-    private val subtitleEmpty: TextView by lazy { view.subtitleEmpty }
-    private val subtitleFilled: TextView by lazy { view.subtitleFilled }
+    private val subtitleEmpty: Typography by lazy { view.subtitleEmpty }
+    private val subtitleFilled: Typography by lazy { view.subtitleFilled }
     private val valueEmpty: EditText by lazy { view.valueEmpty }
-    private val valueFilled: TextView by lazy { view.valueFilled }
+    private val valueFilled: Typography by lazy { view.valueFilled }
     private val verified: Label by lazy { view.verified }
-    private val btnEdit: TextView by lazy { view.btnEdit }
-    private val btnAdd: TextView by lazy { view.btnAdd }
-    private val message: TextView by lazy { view.message }
+    private val btnEdit: Typography by lazy { view.btnEdit }
+    private val btnAdd: IconUnify by lazy { view.btnAdd }
+    private val message: Typography by lazy { view.message }
 
     private var fieldType: Int = 1
 

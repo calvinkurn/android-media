@@ -7,7 +7,7 @@ import com.tokopedia.analytic_constant.Event;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.iris.util.ConstantKt;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.ProductItemDataView;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -225,7 +225,7 @@ public class SearchTracking {
         );
     }
 
-    private static int getPageNumberFromFirstItem(List<ProductItemViewModel> itemList) {
+    private static int getPageNumberFromFirstItem(List<ProductItemDataView> itemList) {
         if (itemList.get(0) != null) {
             return itemList.get(0).getPageNumber();
         }

@@ -162,10 +162,10 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private fun statusChange(pos: Int, status: Int) {
         if (status != 1) {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_ACTIVATE,
-                    listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()), resources, null)
+                    listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()), null)
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_DEACTIVATE,
-                    listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()), resources, null)
+                    listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()), null)
         }
     }
 
@@ -259,14 +259,14 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel)
-                        topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+                        topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), selectedFilter)
                     SingleDelGroupId = ""
                     deleteCancel = false
                     setSelectMode(false)
                 }
             }
         } else {
-            topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+            topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), selectedFilter)
             SingleDelGroupId = ""
         }
 
@@ -285,7 +285,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSuccessAction(action: String) {
+    private fun onSuccessAction() {
         setSelectMode(false)
         fetchData()
     }
