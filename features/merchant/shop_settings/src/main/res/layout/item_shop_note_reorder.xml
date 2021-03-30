@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingStart="@dimen/dp_16"
+    android:id="@+id/item_note_reorder"
     tools:ignore="RtlSymmetry">
 
     <LinearLayout
@@ -35,7 +36,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvLastUpdate"
-                android:textColor="@color/font_black_disabled_38"
+                android:textColor="@color/Unify_N700_32"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginEnd="@dimen/dp_32"
@@ -53,9 +54,7 @@
             android:paddingTop="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_16"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_reorder_four_arrow"
+            app:srcCompat="@drawable/ic_reorder_with_four_arrow"
             android:contentDescription="@string/move_the_item"/>
-
     </LinearLayout>
-
 </LinearLayout>

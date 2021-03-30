@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
@@ -185,6 +186,26 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
+        }
+    }
+
+    @Test
+    fun validateUseErrorAkamai_ShouldShowErrorAndResetCourierAndClearPromo() {
+        // Given
+        val errorMessage = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(errorMessage))
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+
+        // Then
+        verifySequence {
+            checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
+            view.showToastError(errorMessage)
+            view.resetAllCourier()
+            view.cancelAllCourierPromo()
+            view.doResetButtonPromoCheckout()
         }
     }
 }
