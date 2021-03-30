@@ -10,10 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.onTabSelected
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
@@ -63,8 +60,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         BottomSheetNavigator(childFragmentManager)
     }
 
-    private val productPrice: Int by lazy {
-        arguments?.getInt(PRODUCT_PRICE) ?: 0
+    private val productPrice: String by lazy {
+        arguments?.getString(PRODUCT_PRICE) ?: ""
     }
     private val productUrl: String by lazy {
         arguments?.getString(PARAM_PRODUCT_URL) ?: ""
@@ -107,8 +104,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun getSimulationProductInfo() {
         parentDataGroup.visible()
         when (paymentMode) {
-            is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice)
-            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
+            is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice.toIntOrZero())
+            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toFloatOrZero())
         }
     }
 
@@ -220,7 +217,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
         if (isChecked) {
             paymentMode = CreditCard
-            creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
+            getSimulationProductInfo()
+            //creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
         } else {
             paymentMode = PayLater
         }
