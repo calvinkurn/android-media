@@ -21,6 +21,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -29,6 +30,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import rx.Subscriber
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
@@ -58,6 +60,7 @@ open class RecommendationPageViewModel @Inject constructor(
 
     companion object {
         const val PARAM_TXSC = "txsc"
+        const val PARAM_JOB_TIMEOUT = 3000L
     }
     /**
      * public variable
@@ -76,6 +79,7 @@ open class RecommendationPageViewModel @Inject constructor(
             productId: String,
             queryParam: String) {
         getRecommendationList(productId, queryParam)
+
         getProductTopadsStatus(productId, queryParam)
     }
 
@@ -141,31 +145,33 @@ open class RecommendationPageViewModel @Inject constructor(
         // 3. if found, append isTopads, topads click url and topads view url
         if (queryParam.contains(PARAM_TXSC)) {
             launchCatchError(coroutineContext, block = {
-                getTopadsIsAdsUseCase.setParams(
-                        productId = productId,
-                        productKey = "",
-                        shopDomain = "",
-                        urlParam = queryParam,
-                        pageName = ""
-                )
-                val adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
-                var dataList = recommendationListLiveData.value as MutableList
-                val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
-                val errorCode = adsStatus.status.error_code
-                if (errorCode >= 200 || errorCode <= 300) {
-                    (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
-                        val topadsProduct = adsStatus.data.productList[0]
-                        it.isTopads = topadsProduct.isCharge
-                        it.clickUrl = topadsProduct.clickUrl
-                        it.trackerImageUrl = topadsProduct.product.image.m_url
+                var adsStatus = TopadsIsAdsQuery()
+                val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+                    getTopadsIsAdsUseCase.setParams(
+                            productId = productId,
+                            productKey = "",
+                            shopDomain = "",
+                            urlParam = queryParam,
+                            pageName = ""
+                    )
+                    adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
+                    val dataList = recommendationListLiveData.value as MutableList
+                    val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
+                    val errorCode = adsStatus.status.error_code
+                    if (errorCode >= 200 || errorCode <= 300) {
+                        (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
+                            val topadsProduct = adsStatus.data.productList[0]
+                            it.isTopads = topadsProduct.isCharge
+                            it.clickUrl = topadsProduct.clickUrl
+                            it.trackerImageUrl = topadsProduct.product.image.m_url
 
-                        val itemIndex = dataList.indexOf(productRecom)
-                        dataList[itemIndex] = productRecom
+                            val itemIndex = dataList.indexOf(productRecom)
+                            dataList[itemIndex] = productRecom
 
-                        _recommendationListLiveData.postValue(dataList)
+                            _recommendationListLiveData.postValue(dataList)
+                        }
                     }
                 }
-
             }) {
                 it.printStackTrace()
             }

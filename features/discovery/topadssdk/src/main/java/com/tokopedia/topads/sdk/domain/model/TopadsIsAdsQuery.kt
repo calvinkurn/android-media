@@ -37,7 +37,7 @@ data class Image(
 
 data class TopadsStatus(
         @SerializedName("error_code")
-        val error_code:Int = 0,
+        val error_code:Int = 500,
         @SerializedName("message")
         val message:String = ""
 )
