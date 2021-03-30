@@ -1,9 +1,9 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
@@ -17,7 +17,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class ProductFeaturedViewComponent(
         container: ViewGroup,
-        listener: Listener
+        private val listener: Listener
 ) : ViewComponent(container, R.id.view_product_featured) {
 
     private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
@@ -34,10 +34,16 @@ class ProductFeaturedViewComponent(
                 }
             }
     )
+    private val productFeaturedListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+        }
+    }
 
     init {
         rvProductFeatured.adapter = adapter
         rvProductFeatured.addItemDecoration(ProductFeaturedItemDecoration(rvProductFeatured.context))
+        rvProductFeatured.addOnScrollListener(productFeaturedListener)
     }
 
     fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
@@ -45,7 +51,10 @@ class ProductFeaturedViewComponent(
         adapter.setItemsAndAnimateChanges(featuredItems)
 
         if (featuredItems.isEmpty()) hide()
-        else show()
+        else {
+            show()
+            rvProductFeatured.addOneTimeGlobalLayoutListener { sendImpression() }
+        }
     }
 
     fun showIfNotEmpty() {
@@ -69,6 +78,20 @@ class ProductFeaturedViewComponent(
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }
 
+    private fun sendImpression() {
+        val layoutManager = rvProductFeatured.layoutManager
+        if (layoutManager !is LinearLayoutManager) return
+
+        val startPosition = layoutManager.findFirstVisibleItemPosition()
+        val endPosition = layoutManager.findLastVisibleItemPosition()
+        if (startPosition < 0 || endPosition > adapter.itemCount) return
+
+        val productImpressed = adapter.getItems()
+                .slice(startPosition..endPosition)
+                .filterIsInstance<PlayProductUiModel.Product>()
+        listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, productImpressed)
+    }
+
     companion object {
 
         private const val TOTAL_PLACEHOLDER = 3
@@ -76,6 +99,7 @@ class ProductFeaturedViewComponent(
 
     interface Listener {
 
+        fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<PlayProductUiModel.Product>)
         fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int)
         fun onSeeMoreClicked(view: ProductFeaturedViewComponent)
     }

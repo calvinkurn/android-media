@@ -369,34 +369,31 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionFeaturedProduct(products: List<PlayProductUiModel.Product>, maxFeaturedProduct: Int) {
-        if (products.isNotEmpty()) {
-            val featuredProducts = products.take(maxFeaturedProduct)
-            trackingQueue.putEETracking(
-                    EventModel(
-                            "productView",
-                            KEY_TRACK_GROUP_CHAT_ROOM,
-                            "view on featured product",
-                            "$channelId - ${featuredProducts[0].id} - ${channelType.value} - featured product tagging"
-                    ),
-                    hashMapOf(
-                            "ecommerce" to hashMapOf(
-                                    "currencyCode" to "IDR",
-                                    "impressions" to convertProductsToListOfObject(
-                                            featuredProducts,
-                                            sourceFrom = "featured product",
-                                            startPosition = 1
-                                    )
-                            )
-                    ),
-                    hashMapOf(
-                            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                            KEY_USER_ID to userId,
-                            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                    )
-            )
-        }
+    fun impressionFeaturedProduct(featuredProducts: List<PlayProductUiModel.Product>) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        "productView",
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "view on featured product",
+                        "$channelId - ${featuredProducts[0].id} - ${channelType.value} - featured product tagging"
+                ),
+                hashMapOf(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "impressions" to convertProductsToListOfObject(
+                                        featuredProducts,
+                                        sourceFrom = "featured product",
+                                        startPosition = 1
+                                )
+                        )
+                ),
+                hashMapOf(
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                )
+        )
     }
 
     fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {

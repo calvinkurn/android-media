@@ -2,7 +2,9 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.pinnedvoucher.adapter.PinnedVoucherAdapter
 import com.tokopedia.play.ui.pinnedvoucher.viewholder.PinnedVoucherViewHolder
@@ -29,10 +31,17 @@ class PinnedVoucherViewComponent(
             listener.onVoucherClicked(this@PinnedVoucherViewComponent, voucher)
         }
     })
+    private val pinnedVoucherListener = object: RecyclerView.OnScrollListener() {
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+        }
+    }
 
     init {
         rvPinnedVoucherList.adapter = pinnedVoucherAdapter
         rvPinnedVoucherList.addItemDecoration(ProductFeaturedItemDecoration(rvPinnedVoucherList.context))
+        rvPinnedVoucherList.addOnScrollListener(pinnedVoucherListener)
     }
 
     fun setVoucher(vouchers: List<PlayVoucherUiModel>) {
@@ -40,7 +49,10 @@ class PinnedVoucherViewComponent(
         pinnedVoucherAdapter.setItemsAndAnimateChanges(highlightedItems)
 
         if (highlightedItems.isEmpty()) hide()
-        else show()
+        else {
+            show()
+            rvPinnedVoucherList.addOneTimeGlobalLayoutListener { sendImpression() }
+        }
     }
 
     fun showIfNotEmpty() {
@@ -60,8 +72,23 @@ class PinnedVoucherViewComponent(
         } else vouchers
     }
 
+    private fun sendImpression() {
+        val layoutManager = rvPinnedVoucherList.layoutManager
+        if (layoutManager !is LinearLayoutManager) return
+
+        val startPosition = layoutManager.findFirstVisibleItemPosition()
+        val endPosition = layoutManager.findLastVisibleItemPosition()
+        if (startPosition < 0 || endPosition > pinnedVoucherAdapter.itemCount) return
+
+        val voucherImpressed = pinnedVoucherAdapter.getItems()
+                .slice(startPosition..endPosition)
+                .filterIsInstance<MerchantVoucherUiModel>()
+        listener.onVoucherImpressed(this@PinnedVoucherViewComponent, voucherImpressed)
+    }
+
     interface Listener {
 
+        fun onVoucherImpressed(view: PinnedVoucherViewComponent, vouchers: List<MerchantVoucherUiModel>)
         fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel)
     }
 

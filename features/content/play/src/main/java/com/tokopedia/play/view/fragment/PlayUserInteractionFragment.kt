@@ -376,6 +376,10 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Product Featured View Component Listener
      */
+    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<PlayProductUiModel.Product>) {
+        analytic.impressionFeaturedProduct(products)
+    }
+
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
         analytic.clickFeaturedProduct(product, position)
@@ -389,6 +393,10 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Pinned Voucher View Component Listener
      */
+    override fun onVoucherImpressed(view: PinnedVoucherViewComponent, vouchers: List<MerchantVoucherUiModel>) {
+        analytic.impressionHighlightedVoucher(vouchers)
+    }
+
     override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
         if (voucher.code.isBlank() || voucher.code.isEmpty()) return
 
@@ -635,10 +643,6 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedViewOnStateChanged(pinnedModel = it)
             productFeaturedViewOnStateChanged(pinnedModel = it)
             quickReplyViewOnStateChanged(pinnedModel = it)
-            if (it is PlayPinnedUiModel.PinnedProduct
-                    && it.productTags is PlayProductTagsUiModel.Complete) {
-                sendTrackerImpressionPinnedProduct(it.productTags)
-            }
         })
     }
 
@@ -1062,13 +1066,6 @@ class PlayUserInteractionFragment @Inject constructor(
             delay(AUTO_SWIPE_DELAY)
             playNavigation.navigateToNextPage()
         }
-    }
-
-    private fun sendTrackerImpressionPinnedProduct(productTags: PlayProductTagsUiModel.Complete) {
-        val highlightedVouchers = productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
-        val featuredProducts = productTags.productList.filterIsInstance<PlayProductUiModel.Product>()
-        analytic.impressionHighlightedVoucher(highlightedVouchers)
-        analytic.impressionFeaturedProduct(featuredProducts, productTags.basicInfo.maxFeaturedProducts)
     }
 
     private fun sendTrackerImpressionBottomSheetProduct() {
