@@ -5,7 +5,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.*
-import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_DEFAULT
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
@@ -23,26 +22,15 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 class DataViewMapper @Inject constructor(
-        private val userSession: UserSessionInterface,
-        private val remoteConfig: RemoteConfig
+        private val userSession: UserSessionInterface
 ) {
 
-    fun mapToProfileDataView(context: Context?, accountDataModel: UserAccountDataModel): ProfileDataView {
+    fun mapToProfileDataView(accountDataModel: UserAccountDataModel): ProfileDataView {
         return ProfileDataView(
                 name = accountDataModel.profile.fullName,
                 phone = userSession.phoneNumber,
                 email = userSession.email,
                 avatar = accountDataModel.profile.profilePicture,
-                members = mapToMemberDataView(accountDataModel),
-                backdrop = accountDataModel.tokopoints.status.tier.backgroundImgUrl
-        )
-    }
-
-    fun mapToMemberDataView(accountDataModel: UserAccountDataModel): MemberDataView {
-        return MemberDataView(
-                title = accountDataModel.tokopoints.status?.tier?.nameDesc.toEmptyStringIfNull(),
-                icon = accountDataModel.tokopoints.status?.tier?.imageUrl.toEmptyStringIfNull(),
-                items = mapMemberItemDataView(accountDataModel.shortcutResponse)
         )
     }
 
