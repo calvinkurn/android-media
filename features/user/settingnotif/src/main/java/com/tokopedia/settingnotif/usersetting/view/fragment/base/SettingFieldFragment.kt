@@ -68,6 +68,8 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     *  */
     abstract fun getNotificationType(): String
 
+    abstract fun initViewModel()
+
     @RawRes abstract fun getGqlRawQuery(): Int
 
     // setting field adapter
@@ -88,6 +90,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
         setupRecyclerView(view)
+        initViewModel()
     }
 
     private fun initObservable() {
