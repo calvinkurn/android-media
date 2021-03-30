@@ -6,6 +6,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_VIOLATION
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
+import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
 import com.tokopedia.shop.score.common.ShopScoreConstant.TRANSACTION_MANIPULATION
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.sortfilter.SortFilterItem
@@ -100,7 +101,7 @@ class PenaltyMapper @Inject constructor() {
     fun mapToPenaltyFilterBottomSheet(): List<PenaltyFilterUiModel> {
         return mutableListOf<PenaltyFilterUiModel>().apply {
             add(PenaltyFilterUiModel(title = TITLE_SORT, isDividerVisible = true, chipsFilerList = mapToChipsSortFilter()))
-            add(PenaltyFilterUiModel(title = TITLE_SORT, canSelectMany = true, chipsFilerList = mapToChipsTypePenaltyFilter()))
+            add(PenaltyFilterUiModel(title = TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilter()))
         }
     }
 

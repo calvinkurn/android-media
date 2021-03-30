@@ -71,7 +71,6 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.UP_POTENTIAL_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
-import com.tokopedia.shop.score.common.ShopScoreConstant.targetText
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface

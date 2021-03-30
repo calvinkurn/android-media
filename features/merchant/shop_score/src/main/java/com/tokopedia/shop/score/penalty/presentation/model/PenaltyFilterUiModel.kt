@@ -1,15 +1,21 @@
 package com.tokopedia.shop.score.penalty.presentation.model
 
+import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
+import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapterFactory
+
 data class PenaltyFilterUiModel(
         val title: String = "",
         val isDividerVisible: Boolean = false,
-        val canSelectMany: Boolean = false,
-        val chipsFilerList: List<ChipsFilterPenaltyUiModel> = listOf()
-) {
+        var chipsFilerList: List<ChipsFilterPenaltyUiModel> = listOf()
+): BaseFilterPenaltyPage {
     data class ChipsFilterPenaltyUiModel(
         val title: String = "",
         // temporary
         val value: String = "",
-        val isSelected: Boolean = false
+        var isSelected: Boolean = false
     )
+
+    override fun type(typeFactory: FilterPenaltyAdapterFactory): Int {
+        return typeFactory.type(this)
+    }
 }

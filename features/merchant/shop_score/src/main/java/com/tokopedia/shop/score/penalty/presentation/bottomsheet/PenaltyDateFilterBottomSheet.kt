@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
@@ -57,7 +58,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
         super.onViewCreated(view, savedInstanceState)
         clearContentPadding = true
         isFullpage = true
-        bottomSheetClose.setImageDrawable(context?.let { ContextCompat.getDrawable(it, IconUnify.ARROW_BACK) })
+        bottomSheetClose.setImageDrawable(context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_BACK) })
         setStyle(DialogFragment.STYLE_NORMAL, R.style.PenaltyDateFilterDialogStyle)
         initView(view)
         setupCalendarView()
