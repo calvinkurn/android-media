@@ -6,6 +6,5 @@ object UpdateShopActiveQuery {
             "    success\n" +
             "    message\n" +
             "  }\n" +
-            "  status\n" + //Don't remove `status` field since it's necessary for refresh token flow
             "}"
 }
