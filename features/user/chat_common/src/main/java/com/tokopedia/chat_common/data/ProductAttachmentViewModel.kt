@@ -74,6 +74,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         }
     val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = 0
+    var isFullfilment: Boolean = false
 
     override fun updateData(attribute: Any?) {
         if (attribute is ProductAttachmentAttributes) {
@@ -99,6 +100,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             rating = attribute.productProfile.rating
             isPreOrder = attribute.productProfile.isPreOrder
             campaignId = attribute.productProfile.campaignId
+            isFullfilment = attribute.productProfile.isFullFilment
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }
@@ -397,6 +399,10 @@ open class ProductAttachmentViewModel : SendableViewModel,
 
     fun isFlashSaleProduct(): Boolean {
         return campaignId == -10000L
+    }
+
+    fun isProductCampaign(): Boolean {
+        return hasDiscount
     }
 
     companion object {

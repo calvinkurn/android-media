@@ -51,6 +51,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var reviewCount: Typography? = null
     private var productName: Typography? = null
     private var thumbnail: ImageView? = null
+    private var sellerStockContainer: LinearLayout? = null
+    private var sellerStockType: Typography? = null
+    private var sellerStockCount: Typography? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var listener: ProductAttachmentListener? = null
@@ -98,12 +101,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         initAttr(context, attrs)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(
+            context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr) {
         initAttr(context, attrs)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(
+            context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes) {
         initAttr(context, attrs)
     }
 
@@ -125,6 +132,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         reviewCount = findViewById(R.id.tv_review_count)
         productName = findViewById(R.id.tv_product_name)
         thumbnail = findViewById(R.id.iv_thumbnail)
+        sellerStockContainer = findViewById(R.id.ll_seller_stock_data)
+        sellerStockType = findViewById(R.id.tp_seller_stock_category)
+        sellerStockCount = findViewById(R.id.tp_seller_stock_count)
     }
 
     private fun initLayoutView() {
@@ -137,7 +147,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 attrs, R.styleable.SingleProductAttachmentContainer, 0, 0
         ).apply {
             try {
-                widthMultiplier = getFloat(R.styleable.SingleProductAttachmentContainer_widthMultiplier, DEFAULT_WIDTH_MULTIPLIER)
+                widthMultiplier = getFloat(
+                        R.styleable.SingleProductAttachmentContainer_widthMultiplier,
+                        DEFAULT_WIDTH_MULTIPLIER
+                )
             } finally {
                 recycle()
             }
@@ -183,6 +196,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindPreOrderLabel(product)
             bindEmptyStockLabel(product)
             bindBackground(product)
+            bindRemainingStockSeller(product)
             bindMargin(product)
             listener.trackSeenProduct(product)
         }
@@ -314,6 +328,29 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         } else {
             toggleCampaign(View.GONE)
         }
+    }
+
+    private fun bindRemainingStockSeller(product: ProductAttachmentViewModel) {
+        if (commonListener?.isSeller() == true) {
+            sellerStockContainer?.show()
+            bindSellerStockCount(product)
+            bindSellerStockType(product)
+        } else {
+            sellerStockContainer?.hide()
+        }
+    }
+
+    private fun bindSellerStockCount(product: ProductAttachmentViewModel) {
+        sellerStockCount?.text = product.remainingStock.toString()
+    }
+
+    private fun bindSellerStockType(product: ProductAttachmentViewModel) {
+        val stockCategory = if (product.isProductCampaign()) {
+            "Stok campaign:"
+        } else {
+            "Stok:"
+        }
+        sellerStockType?.text = stockCategory
     }
 
     private fun bindMargin(product: ProductAttachmentViewModel) {

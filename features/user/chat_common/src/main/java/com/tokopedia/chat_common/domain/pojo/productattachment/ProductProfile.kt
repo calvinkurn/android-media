@@ -68,4 +68,7 @@ class ProductProfile {
     @SerializedName("campaign_id")
     @Expose
     val campaignId: Long = 0
+    @SerializedName("is_fullfilment")
+    @Expose
+    val isFullFilment: Boolean = false
 }
