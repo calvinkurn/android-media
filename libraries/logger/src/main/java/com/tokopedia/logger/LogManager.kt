@@ -75,11 +75,10 @@ class LogManager(val application: Application) {
          * Setter for Scalyr Config List to be used checking when sent to server
          */
         fun setScalyrConfigList(): List<ScalyrConfig>? {
-            if (scalyrConfigList.isNullOrEmpty()) {
-                val context = instance?.application?.applicationContext
-                for (i in 0 until PRIORITY_LENGTH) {
-                    context?.let { scalyrConfigList.add(getScalyrConfig(it, i + 1)) }
-                }
+            scalyrConfigList.clear()
+            val context = instance?.application?.applicationContext
+            for (i in 0 until PRIORITY_LENGTH) {
+                context?.let { scalyrConfigList.add(getScalyrConfig(it, i + 1)) }
             }
             return scalyrConfigList
         }
@@ -102,11 +101,10 @@ class LogManager(val application: Application) {
          * Setter for New Relic Config List to be used checking when sent to server
          */
         fun setNewRelicConfigList(): List<NewRelicConfig>? {
-            if (newRelicConfigList.isNullOrEmpty()) {
-                val context = instance?.application?.applicationContext
-                for (i in 0 until PRIORITY_LENGTH) {
-                    context?.let { newRelicConfigList.add(getNewRelicConfig(it, i + 1)) }
-                }
+            newRelicConfigList.clear()
+            val context = instance?.application?.applicationContext
+            for (i in 0 until PRIORITY_LENGTH) {
+                context?.let { newRelicConfigList.add(getNewRelicConfig(it, i + 1)) }
             }
             return newRelicConfigList
         }
