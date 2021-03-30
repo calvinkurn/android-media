@@ -5,7 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
@@ -18,7 +18,7 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewMod
 
 class PushNotifFieldFragment : SettingFieldFragment() {
 
-    private val viewModel: SettingStateViewModel by viewModels { viewModelFactory }
+    private lateinit var viewModel: SettingStateViewModel
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
@@ -26,6 +26,11 @@ class PushNotifFieldFragment : SettingFieldFragment() {
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_push_notif_setting
+    }
+
+    override fun initViewModel() {
+        viewModel = ViewModelProvider(this, viewModelFactory)
+                .get(SettingStateViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
