@@ -54,24 +54,6 @@ object OvoWidgetTracking: BaseTracking() {
         )
     }
 
-    fun eventOvo() {
-        getTracker().sendGeneralEvent(
-                Event.CLICK_HOMEPAGE,
-                Category.HOMEPAGE,
-                ACTION_CLICK_ON_OVO,
-                Label.NONE
-        )
-    }
-
-    fun sendTokopointTrackerClick() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        EVENT_TOKO_POINT,
-                        CATEGORY_HOMEPAGE_TOKOPOINTS,
-                        ACTION_CLICK_POINT,
-                        LABEL_TOKOPOINTS))
-    }
-
     fun eventTokopointNonLogin() {
         val tracker = TrackApp.getInstance().gtm
         tracker.sendGeneralEvent(
@@ -112,21 +94,6 @@ object OvoWidgetTracking: BaseTracking() {
         ))
     }
 
-    fun sendBebasOngkir(userId: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE,
-                Action.KEY, String.format(Action.CLICK_ON, BEBAS_ONGKIR_KUOTA),
-                Label.KEY, Label.NONE,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                Screen.KEY, Screen.DEFAULT,
-                UserId.KEY, userId
-            )
-        )
-    }
-
     fun eventUserProfileTokopoints() {
         val tracker = TrackApp.getInstance().gtm
         tracker.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -134,18 +101,6 @@ object OvoWidgetTracking: BaseTracking() {
                 CATEGORY_TOKOPOINTS_USER_PAGE,
                 ACTION_CLICK_TOKO_POINTS,
                 LABEL_TOKOPOINTS
-        ))
-    }
-
-    fun sendClickOnTokopointsNewCouponTracker() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY, EVENT_TOKO_POINT,
-                Category.KEY, CATEGORY_HOMEPAGE_TOKOPOINTS,
-                Action.KEY, EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON,
-                Label.KEY, Label.NONE,
-                Screen.KEY, Screen.DEFAULT,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT
         ))
     }
 

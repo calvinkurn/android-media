@@ -196,7 +196,6 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             },
                             ovoWalletAction = {
                                 if (RouteManager.isSupportApplink(itemView.context, element.applinkActionText)) {
-                                    OvoWidgetTracking.eventOvo()
                                     OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(isOvoAvailable, listener?.userId ?: "")
                                     val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkActionText)
                                     itemView.context.startActivity(intentBalanceWallet)
