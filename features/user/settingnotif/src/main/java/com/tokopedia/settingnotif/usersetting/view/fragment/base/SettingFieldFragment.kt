@@ -84,6 +84,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        initViewModel()
         initObservable()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -92,7 +93,6 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
         setupRecyclerView(view)
-        initViewModel()
     }
 
     private fun initObservable() {
