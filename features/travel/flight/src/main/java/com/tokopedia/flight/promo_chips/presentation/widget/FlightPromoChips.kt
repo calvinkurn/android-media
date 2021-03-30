@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.flight.R
 import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapter
-import com.tokopedia.flight.promo_chips.presentation.widget.adapter.FlightPromoChipsAdapterTypeFactory
+import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapterTypeFactory
 import com.tokopedia.flight.promo_chips.presentation.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.unifycomponents.BaseCustomView
