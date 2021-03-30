@@ -245,7 +245,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         dateIndicator = view.findViewById(R.id.dateIndicator)
         dateIndicatorContainer = view.findViewById(R.id.dateIndicatorContainer)
         setChatBackground()
-        getRecyclerView(view).addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
+        getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
         return view
     }
 
