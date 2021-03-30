@@ -121,6 +121,9 @@ class PlayVideoFragment @Inject constructor(
             val dialogHandler = { openDialog(
                     requestHandler = {
                         requestPermissionFlow.requestPermission()
+                        if (pipMode is PiPMode.BrowsingOtherPage) {
+                            pipSessionStorage.setHasRequestedPiPBrowsing(true)
+                        }
                      },
                     cancelHandler = {
                         requestPermissionFlow.cancel()
