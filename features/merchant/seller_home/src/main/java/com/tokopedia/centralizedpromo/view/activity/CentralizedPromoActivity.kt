@@ -40,7 +40,7 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(android.R.color.white)
+            setStatusBarColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
     }
 

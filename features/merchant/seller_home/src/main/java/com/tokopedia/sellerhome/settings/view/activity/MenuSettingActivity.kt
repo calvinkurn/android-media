@@ -22,7 +22,7 @@ class MenuSettingActivity : BaseSimpleActivity() {
         MenuSettingFragment.createInstance()
 
     override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         setWhiteStatusBar(context)
         return super.onCreateView(parent, name, context, attrs)
     }

@@ -27,7 +27,7 @@
         android:maxLines="1"
         android:text="@string/shc_failed_to_load_information"
         android:textAlignment="center"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         app:typographyWeight="bold" />
 </LinearLayout>

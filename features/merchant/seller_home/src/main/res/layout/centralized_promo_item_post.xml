@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/centralized_promo_post_title_left_margin"
         android:layout_marginLeft="@dimen/centralized_promo_post_title_left_margin"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/ivPromotionPost"
         app:layout_constraintRight_toRightOf="parent"
