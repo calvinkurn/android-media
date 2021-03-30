@@ -1994,14 +1994,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
                 ArrayList<Product> products = getProductForRatesRequest(shipmentCartItemModel);
                 ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
-                shippingDurationBottomsheet.show(activity, getFragmentManager(),
+                shippingDurationBottomsheet.show(activity, getFragmentManager(), this,
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shipmentCartItemModel.getShopShipmentList(),
                         recipientAddressModel, cartPosition, codHistory,
                         shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
                         isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
                         shipmentCartItemModel.getShipmentCartData().getPreOrderDuration(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()));
-                shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
             }
         }
     }
@@ -2032,15 +2031,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShippingCourierViewModelsState(cartPosition) != null) {
             shippingCourierUiModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);
         }
-        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
-                shippingCourierUiModels, recipientAddressModel, cartPosition);
-        shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
-        if (shippingCourierUiModels != null) {
-            checkHasCourierPromo(shippingCourierUiModels);
-        }
-
-        if (getActivity() != null) {
-            shippingCourierBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+        Activity activity = getActivity();
+        if (activity != null) {
+            shippingCourierBottomsheet = new ShippingCourierBottomsheet();
+            shippingCourierBottomsheet.show(activity, getFragmentManager(), this,
+                    shippingCourierUiModels, recipientAddressModel, cartPosition);
+            if (shippingCourierUiModels != null) {
+                checkHasCourierPromo(shippingCourierUiModels);
+            }
         }
     }
 
