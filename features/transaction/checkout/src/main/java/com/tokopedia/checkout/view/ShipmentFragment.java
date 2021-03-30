@@ -1989,10 +1989,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentPresenter.getCodData() != null) {
                 codHistory = shipmentPresenter.getCodData().getCounterCod();
             }
-            if (shipmentDetailData != null) {
+            Activity activity = getActivity();
+            if (shipmentDetailData != null && activity != null) {
                 String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
                 ArrayList<Product> products = getProductForRatesRequest(shipmentCartItemModel);
-                ShippingDurationBottomsheet shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
+                shippingDurationBottomsheet.show(activity, getFragmentManager(),
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shipmentCartItemModel.getShopShipmentList(),
                         recipientAddressModel, cartPosition, codHistory,
                         shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
@@ -2000,10 +2002,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
                         shipmentCartItemModel.getShipmentCartData().getPreOrderDuration(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()));
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
-
-                if (getActivity() != null) {
-                    shippingDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
-                }
             }
         }
     }
