@@ -23,9 +23,7 @@ class GetPMStatusAndShopInfoUseCase @Inject constructor(
         return coroutineScope {
             val pmStatusInfoAsync = async { getPmStatusInfo() }
             val pmShopInfoAsync = async { getPmShopInfo() }
-            val pmStatusInfo = pmStatusInfoAsync.await()
-            val pmShopInfo = pmShopInfoAsync.await()
-            return@coroutineScope PMStatusAndShopInfoUiModel(pmStatusInfo, pmShopInfo)
+            return@coroutineScope PMStatusAndShopInfoUiModel(pmStatusInfoAsync.await(), pmShopInfoAsync.await())
         }
     }
 

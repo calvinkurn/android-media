@@ -45,10 +45,21 @@ class ContentSliderBottomSheet : BaseBottomSheet() {
         setupSliderAdapter()
 
         btnPmContentSlider.setOnClickListener {
-            primaryCtaClickCallback?.invoke()
+            setOnPrimaryBtnClicked()
         }
         tvPmContentSliderCta.setOnClickListener {
             secondaryCtaClickCallback?.invoke()
+        }
+    }
+
+    private fun setOnPrimaryBtnClicked() {
+        childView?.run {
+            val indicatorCurrentPosition = indicatorPmContentSlider.indicatorCurrentPosition
+            if (indicatorCurrentPosition == items.size.minus(1)) {
+                primaryCtaClickCallback?.invoke()
+            } else {
+                rvPmContentSlider.smoothScrollToPosition(indicatorCurrentPosition.plus(1))
+            }
         }
     }
 

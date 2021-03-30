@@ -33,4 +33,6 @@ interface WidgetAdapterFactory {
     fun type(model: WidgetLoadingStateUiModel): Int
 
     fun type(model: WidgetErrorStateUiModel): Int
+
+    fun type(model: WidgetTickerUiModel): Int
 }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMStatusAndShopInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMActiveDataUseCase
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMGradeBenefitAndShopInfoUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.PMActiveDataUiModel
@@ -26,6 +27,7 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         private val getPMStatusAndShopInfo: Lazy<GetPMStatusAndShopInfoUseCase>,
         private val getPMGradeWithBenefitAndShopInfoUseCase: Lazy<GetPMGradeBenefitAndShopInfoUseCase>,
         private val getPMActiveDataUseCase: Lazy<GetPMActiveDataUseCase>,
+        private val activatePMUseCase: Lazy<PowerMerchantActivateUseCase>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -35,10 +37,13 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         get() = _pmGradeAndShopInfo
     val pmStatusAndShopInfo: LiveData<Result<PMStatusAndShopInfoUiModel>>
         get() = _pmStatusAndShopInfo
+    val pmActivationStatus: LiveData<Result<Boolean>>
+        get() = _pmActivationStatus
 
     private val _pmActiveData: MutableLiveData<Result<PMActiveDataUiModel>> = MutableLiveData()
     private val _pmGradeAndShopInfo: MutableLiveData<Result<PMGradeBenefitAndShopInfoUiModel>> = MutableLiveData()
     private val _pmStatusAndShopInfo: MutableLiveData<Result<PMStatusAndShopInfoUiModel>> = MutableLiveData()
+    private val _pmActivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
 
     fun getPmStatusAndShopInfo() {
         launchCatchError(block = {
@@ -74,6 +79,13 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
     }
 
     fun submitPMActivation() {
-
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                activatePMUseCase.get().executeOnBackground()
+            }
+            _pmActivationStatus.value = Success(result)
+        }, onError = {
+            _pmActivationStatus.value = Fail(it)
+        })
     }
 }

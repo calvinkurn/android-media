@@ -50,4 +50,12 @@ class RegistrationFooterView : ConstraintLayout {
             cbPmRegistrationTnC.gone()
         }
     }
+
+    fun showRegistrationProgress() {
+        btnPmRegister.isLoading = true
+    }
+
+    fun hideRegistrationProgress() {
+        btnPmRegister.isLoading = false
+    }
 }

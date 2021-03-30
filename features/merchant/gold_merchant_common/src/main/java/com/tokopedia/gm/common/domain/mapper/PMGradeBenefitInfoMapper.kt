@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.domain.mapper
 
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.data.source.cloud.model.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -14,8 +15,8 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(response: PMGradeBenefitInfoModel?): PMGradeBenefitInfoUiModel {
         return PMGradeBenefitInfoUiModel(
                 shopId = response?.shopId.orZero().toString(),
-                nextMonthlyRefreshDate = response?.nextMonthlyRefreshDate.orEmpty(),
-                nextQuarterlyCalibrationRefreshDate = response?.nextQuarterlyCalibrationRefreshDate.orEmpty(),
+                nextMonthlyRefreshDate = getRefreshDateFmt(response?.nextMonthlyRefreshDate.orEmpty()),
+                nextQuarterlyCalibrationRefreshDate = getRefreshDateFmt(response?.nextQuarterlyCalibrationRefreshDate.orEmpty()),
                 currentPMGrade = getCurrentPMGrade(response?.currentPMGrade),
                 currentPMBenefits = getPMGradeBenefits(response?.currentPMBenefits),
                 nextPMGrade = getNextPMGrade(response?.nextPMGrade),
@@ -93,5 +94,15 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
             )
         }
         return null
+    }
+
+    private fun getRefreshDateFmt(dateStr: String): String {
+        return try {
+            val currentFormat = "yyyy-MM-dd"
+            val newFormat = "dd MMMM yyyy"
+            DateFormatUtils.formatDate(currentFormat, newFormat, dateStr)
+        } catch (e: Exception) {
+            dateStr
+        }
     }
 }

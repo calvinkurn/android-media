@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.domain.mapper
 
+import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.cloud.model.PMShopStatusDataModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import javax.inject.Inject

@@ -41,6 +41,8 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(model: WidgetErrorStateUiModel): Int = ErrorStateWidget.RES_LAYOUT
 
+    override fun type(model: WidgetTickerUiModel): Int = TickerWidget.RES_LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent)
@@ -56,6 +58,7 @@ class WidgetAdapterFactoryImpl(
             PotentialWidget.RES_LAYOUT -> PotentialWidget(parent)
             SingleCtaWidget.RES_LAYOUT -> SingleCtaWidget(parent)
             DividerWidget.RES_LAYOUT -> DividerWidget(parent)
+            TickerWidget.RES_LAYOUT -> TickerWidget(parent, widgetListener)
             else -> super.createViewHolder(parent, type)
         }
     }

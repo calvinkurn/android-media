@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/layout_lvl1"
     android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingBottom="@dimen/layout_lvl4">
+    android:paddingBottom="@dimen/layout_lvl3">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmDeactivateCta"
