@@ -3,12 +3,10 @@ package com.tokopedia.entertainment.pdp.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -18,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.coachmark.*
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
@@ -33,8 +30,11 @@ import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
-import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
+import com.tokopedia.entertainment.pdp.data.EventPDPTicket
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketBanner
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketGroup
 import com.tokopedia.entertainment.pdp.data.PackageItem
+import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
@@ -52,21 +52,16 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
-import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
-class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageTypeFactory>(),
+class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFactory>(),
         OnBindItemTicketListener, OnCoachmarkListener {
 
     private var urlPDP = ""
@@ -108,18 +103,19 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     override fun getAdapterTypeFactory(): PackageTypeFactory = packageTypeFactoryImp
 
-    override fun onItemClicked(p0: EventPDPTicketModel?) {}
+    override fun onItemClicked(t: EventPDPTicket?) {}
 
-    override fun getRecyclerViewResourceId(): Int = R.id.recycler_viewParent
+    override fun getRecyclerViewResourceId(): Int = R.id.rvEventTicketList
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
     override fun loadData(p0: Int) {
+        // TODO: [Misael] ini harus load MainPackage + RecommendationList
         viewModel.getData(urlPDP, selectedDate, true, EventQuery.eventPDPV3(),
                 eventContentById())
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<EventPDPTicketModel, PackageTypeFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<EventPDPTicket, PackageTypeFactory> {
         return EventPDPParentPackageAdapter(packageTypeFactoryImp, eventPDPTracking)
     }
 
@@ -179,36 +175,26 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     private fun setupView() {
         setupRecycler()
-        setupRecommendationRecycler()
         setupSwipeRefresh()
         setupHeader()
         setupPilihTicketButton()
     }
 
     private fun setupRecycler() {
-        recycler_viewParent.apply {
+        rvEventTicketList.apply {
             setHasFixedSize(true)
             itemAnimator = null
-        }
-    }
-
-    private fun setupRecommendationRecycler() {
-        val adapterTypeFactory = PackageTypeFactoryImpl(this, this)
-        recommendationAdapter = EventPDPParentPackageAdapter(adapterTypeFactory, eventPDPTracking)
-        rvEventRecommendationList.apply {
-            setHasFixedSize(true)
-            itemAnimator = null
-            adapter = recommendationAdapter
         }
     }
 
     private fun setupSwipeRefresh() {
         swipe_refresh_layout.apply {
             setOnRefreshListener {
-                showViewBottom(false)
+                showViewBottom(false) //ini bisa balikin rv
                 showUbah(false)
                 loadInitialData()
-                hideRecommendationView()
+                // TODO: [Misael] nnti check ini
+//                hideRecommendationView()
             }
         }
     }
@@ -237,7 +223,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                         eventPDPTracking.onClickPickDate()
                         showViewBottom(false)
                         loadInitialData()
-                        hideRecommendationView()
+                        // TODO: [Misael] ini
+//                        hideRecommendationView()
                     }
 
                     override fun onDateUnselected(date: Date) {}
@@ -295,18 +282,28 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         showViewBottom(false)
     }
 
+    // TODO: [Misael] Check this cast
     private fun observeData() {
         viewModel.ticketModel.observe(viewLifecycleOwner, Observer {
-            clearAllData()
-            swipe_refresh_layout.isRefreshing = false
-            it?.run { renderList(this) }
-            showUbah(true)
+            val packageV3 = it as? List<PackageV3>
+            packageV3?.let { packages ->
+                clearAllData()
+                swipe_refresh_layout.isRefreshing = false
+                packages.run { renderList(listOf(EventPDPTicketGroup(this))) }
+                showUbah(true)
+            }
         })
 
         viewModel.recommendationTicketModel.observe(viewLifecycleOwner, Observer {
             it?.run {
-                renderRecommendationList(this)
-                if(!getLocalCache()) showCoachMark(this)
+//                if(!getLocalCache()) showCoachMark(this)
+                val packageV3 = it as? List<PackageV3>
+                packageV3?.let { packages ->
+                    if (this.isNotEmpty()) {
+                        renderList(listOf(EventPDPTicketBanner("[Misael] COBA CEK YANG INI JUGA, YUK! ")))
+                        renderList(listOf(EventPDPTicketGroup(packages)))
+                    }
+                }
             }
         })
 
@@ -314,7 +311,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(it)) {
                 showViewBottom(false)
                 loadInitialData()
-                hideRecommendationView()
+                // TODO: [Misael] ini tolong cek hideRecommendationView
+//                hideRecommendationView()
             }.showRetrySnackbar()
         })
 
@@ -373,52 +371,53 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
     }
 
-    fun showCoachMark(listRecom: List<EventPDPTicketModel>) {
-        Handler().postDelayed(
-                {
-                    context?.let {
-                        val coachMark = CoachMark2(it)
-                        coachMark.apply {
-                            showCoachMark(ArrayList(getCoachmarkItem(listRecom)), scroll_ticket_pdp, 0)
-                        }
-                    }
-                    localCacheHandler.apply {
-                        putBoolean(SHOW_COACH_MARK_KEY, true)
-                        applyEditor()
-                    }
-                }, COACH_MARK_START_DELAY)
-    }
-
-    fun getCoachmarkItem(listRecom: List<EventPDPTicketModel>): List<CoachMark2Item> {
-        val coachmarkList: MutableList<CoachMark2Item> = mutableListOf()
-        activity?.let { _activity ->
-            if (isAdded) {
-                checkAvailableCoachmark()?.let {
-                    coachmarkList.add(0,
-                            CoachMark2Item(
-                                    it,
-                                    getString(R.string.ent_home_coachmark_title),
-                                    getString(R.string.ent_home_coachmark_subtitle),
-                                    CoachMark2.POSITION_BOTTOM
-                            )
-                    )
-                }
-                if (listRecom.isNotEmpty()) {
-                    rvEventRecommendationList.findViewHolderForAdapterPosition(0)?.itemView?.let {
-                        coachmarkList.add(if(checkAvailableCoachmark() != null) 1 else 0,
-                                CoachMark2Item(
-                                        it,
-                                        getString(R.string.ent_home_coachmark_title_recom),
-                                        getString(R.string.ent_home_coachmark_subtitle_recom),
-                                        CoachMark2.POSITION_TOP
-                                )
-                        )
-                    }
-                }
-            }
-        }
-        return coachmarkList
-    }
+    // TODO: [Misael] coachmark benerin nanti
+//    fun showCoachMark(listRecom: List<EventPDPTicketModel>) {
+//        Handler().postDelayed(
+//                {
+//                    context?.let {
+//                        val coachMark = CoachMark2(it)
+//                        coachMark.apply {
+//                            showCoachMark(ArrayList(getCoachmarkItem(listRecom)), scroll_ticket_pdp, 0)
+//                        }
+//                    }
+//                    localCacheHandler.apply {
+//                        putBoolean(SHOW_COACH_MARK_KEY, true)
+//                        applyEditor()
+//                    }
+//                }, COACH_MARK_START_DELAY)
+//    }
+//
+//    fun getCoachmarkItem(listRecom: List<EventPDPTicketModel>): List<CoachMark2Item> {
+//        val coachmarkList: MutableList<CoachMark2Item> = mutableListOf()
+//        activity?.let { _activity ->
+//            if (isAdded) {
+//                checkAvailableCoachmark()?.let {
+//                    coachmarkList.add(0,
+//                            CoachMark2Item(
+//                                    it,
+//                                    getString(R.string.ent_home_coachmark_title),
+//                                    getString(R.string.ent_home_coachmark_subtitle),
+//                                    CoachMark2.POSITION_BOTTOM
+//                            )
+//                    )
+//                }
+//                if (listRecom.isNotEmpty()) {
+//                    rvEventRecommendationList.findViewHolderForAdapterPosition(0)?.itemView?.let {
+//                        coachmarkList.add(if(checkAvailableCoachmark() != null) 1 else 0,
+//                                CoachMark2Item(
+//                                        it,
+//                                        getString(R.string.ent_home_coachmark_title_recom),
+//                                        getString(R.string.ent_home_coachmark_subtitle_recom),
+//                                        CoachMark2.POSITION_TOP
+//                                )
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//        return coachmarkList
+//    }
 
     override fun clickRecommendation(list: List<String>) {
         setupBottomSheet(list)
@@ -444,45 +443,46 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         }
     }
 
-    private fun renderRecommendationList(recommendationList: List<EventPDPTicketModel>) {
-        recommendationAdapter.clearAllElements()
+    // TODO: [Misael] review ulang functional bawah ini
 
-        if (recommendationList.isNotEmpty()) {
-            recommendationAdapter.addElement(recommendationList)
-            recommendationAdapter.notifyDataSetChanged()
-
-            showRecommendationView()
-        } else {
-            hideRecommendationView()
-        }
-    }
-
-    private fun showRecommendationView() {
-        tgEventTicketRecommendationTitle.show()
-        rvEventRecommendationList.show()
-    }
-
-    private fun hideRecommendationView() {
-        tgEventTicketRecommendationTitle.hide()
-        rvEventRecommendationList.hide()
-    }
-
-    private fun getLayoutCoachmark(id: Int): View?{
-        return recycler_viewParent.findViewHolderForAdapterPosition(0)?.itemView?.
-        findViewById<RecyclerView>(R.id.rv_event_parent_ticket)?.
-        findViewHolderForAdapterPosition(0)?.itemView?.
-        findViewById<Typography>(id)
-    }
-
-    private fun checkAvailableCoachmark():View? {
-        return when{
-            getLayoutCoachmark(R.id.txtPilih_ticket)!=null -> getLayoutCoachmark(R.id.txtPilih_ticket)
-            getLayoutCoachmark(R.id.txtHabis_ticket)!=null -> getLayoutCoachmark(R.id.txtHabis_ticket)
-            getLayoutCoachmark(R.id.txtNotStarted)!=null -> getLayoutCoachmark(R.id.txtNotStarted)
-            getLayoutCoachmark(R.id.txtAlreadyEnd)!=null -> getLayoutCoachmark(R.id.txtAlreadyEnd)
-            else -> null
-        }
-    }
+//    private fun renderRecommendationList(recommendationList: List<EventPDPTicketModel>) {
+//        recommendationAdapter.clearAllElements()
+//
+//        if (recommendationList.isNotEmpty()) {
+//            recommendationAdapter.addElement(recommendationList)
+//            recommendationAdapter.notifyDataSetChanged()
+//
+//            showRecommendationView()
+//        } else {
+//            hideRecommendationView()
+//        }
+//    }
+//    private fun showRecommendationView() {
+//        tgEventTicketRecommendationTitle.show()
+//        rvEventRecommendationList.show()
+//    }
+//
+//    private fun hideRecommendationView() {
+//        tgEventTicketRecommendationTitle.hide()
+//        rvEventRecommendationList.hide()
+//    }
+//
+//    private fun getLayoutCoachmark(id: Int): View?{
+//        return recycler_viewParent.findViewHolderForAdapterPosition(0)?.itemView?.
+//        findViewById<RecyclerView>(R.id.rv_event_parent_ticket)?.
+//        findViewHolderForAdapterPosition(0)?.itemView?.
+//        findViewById<Typography>(id)
+//    }
+//
+//    private fun checkAvailableCoachmark():View? {
+//        return when{
+//            getLayoutCoachmark(R.id.txtPilih_ticket)!=null -> getLayoutCoachmark(R.id.txtPilih_ticket)
+//            getLayoutCoachmark(R.id.txtHabis_ticket)!=null -> getLayoutCoachmark(R.id.txtHabis_ticket)
+//            getLayoutCoachmark(R.id.txtNotStarted)!=null -> getLayoutCoachmark(R.id.txtNotStarted)
+//            getLayoutCoachmark(R.id.txtAlreadyEnd)!=null -> getLayoutCoachmark(R.id.txtAlreadyEnd)
+//            else -> null
+//        }
+//    }
 
     companion object {
         fun newInstance(url: String, selectedDate: String, startDate: String, endDate: String) = EventPDPTicketFragment().also {

@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.entertainment.pdp.widget.WidgetEventPDPExpandable
+<com.tokopedia.accordion.AccordionUnify
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/expand_event_pdp_ticket"
+    android:id="@+id/accordionEventPDPTicket"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
-    app:eo_checked="false"
-    app:eo_theme="@style/ExpandableStyleArrow"
-    app:eo_header_layout="@layout/custom_event_expandable_parent"
-    app:eo_use_rotate_animation="true">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:nestedScrollingEnabled="false"
-        android:id="@+id/rv_event_parent_ticket"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-</com.tokopedia.entertainment.pdp.widget.WidgetEventPDPExpandable>
+    android:layout_height="wrap_content" />

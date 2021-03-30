@@ -775,6 +775,7 @@ data class Media(
         val url: String = ""
 )
 
+// TODO: [Misael] Check this, just removed extend type n function
 data class PackageV3(
         @SerializedName("id")
         @Expose
@@ -816,12 +817,7 @@ data class PackageV3(
         @Expose
         val formsPackages: List<Form> = emptyList(),
         var isRecommendationPackage: Boolean = false
-) : EventPDPTicketModel() {
-
-    override fun type(typeFactory: PackageTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-}
+): EventPDPTicketModel()
 
 data class PackageItem(
         @SerializedName("id")
