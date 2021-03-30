@@ -412,7 +412,7 @@
 
             <TableRow>
                 <TextView
-                    android:text="Timber Logging To Server"
+                    android:text="Logging To Server"
                     android:paddingRight="25dip"
                     style="@style/TextView.Title.Bold"
                     android:layout_width="match_parent"

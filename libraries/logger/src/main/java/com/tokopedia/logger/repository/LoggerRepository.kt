@@ -2,17 +2,17 @@ package com.tokopedia.logger.repository
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.BaseEncryptor
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
+import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.model.scalyr.ScalyrEvent
 import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.LoggerReportingTree
+import com.tokopedia.logger.utils.LoggerReporting
 import kotlinx.coroutines.*
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
@@ -20,8 +20,8 @@ import kotlin.coroutines.CoroutineContext
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
                        private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
-                       private val dispatcher: CoroutineDispatchers,
                        private val scalyrConfigs: List<ScalyrConfig>,
+                       private val newRelicConfigs: List<NewRelicConfig>,
                        private val encryptor: BaseEncryptor,
                        private val secretKey: SecretKey) : LoggerRepositoryContract, CoroutineScope {
 
@@ -50,16 +50,32 @@ class LoggerRepository(private val logDao: LoggerDao,
     }
 
     override suspend fun sendLogToServer(queryLimits: List<Int>) {
-        sendLogToServer(Constants.SEVERITY_HIGH, logDao.getServerChannel(LoggerReportingTree.P1, queryLimits[0]))
-        sendLogToServer(Constants.SEVERITY_MEDIUM, logDao.getServerChannel(LoggerReportingTree.P2, queryLimits[1]))
+        sendLogToServer(Constants.SEVERITY_HIGH, logDao.getServerChannel(LoggerReporting.P1, queryLimits[0]))
+        sendLogToServer(Constants.SEVERITY_MEDIUM, logDao.getServerChannel(LoggerReporting.P2, queryLimits[1]))
     }
 
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
         val tokenIndex = priority - 1
 
-        launch(context = dispatcher.io, block = {
+        if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isEmpty()) {
+            val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
+            if (scalyrSendSuccess) {
+                deleteEntries(logs)
+            }
+        } else if (scalyrConfigs.isEmpty() && newRelicConfigs.isNotEmpty()) {
+            val newRelicSendSuccess = sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs)
+            if (newRelicSendSuccess) {
+                deleteEntries(logs)
+            }
+        } else if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isNotEmpty()) {
+            sendMultipleLogToServer(tokenIndex, logs)
+        }
+    }
+
+    private fun sendMultipleLogToServer(tokenIndex: Int, logs: List<Logger>) {
+        launch(context = Dispatchers.IO, block = {
             val scalyrSendSuccess = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs) }
-            val newRelicSendSuccess = async { sendNewRelicLogToServer(logs) }
+            val newRelicSendSuccess = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs) }
             if (scalyrSendSuccess.await() || newRelicSendSuccess.await()) {
                 deleteEntries(logs)
             }
@@ -86,7 +102,7 @@ class LoggerRepository(private val logDao: LoggerDao,
         return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
     }
 
-    suspend fun sendNewRelicLogToServer(logs: List<Logger>): Boolean {
+    suspend fun sendNewRelicLogToServer(config: NewRelicConfig, logs: List<Logger>): Boolean {
         if (logs.isEmpty()) {
             return true
         }
@@ -97,7 +113,7 @@ class LoggerRepository(private val logDao: LoggerDao,
             messageList.add(addEventNewRelic(message))
         }
 
-        return loggerCloudNewRelicImpl.sendToLogServer(messageList)
+        return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
     }
 
     private fun addEventNewRelic(message: String): String {
@@ -115,5 +131,5 @@ class LoggerRepository(private val logDao: LoggerDao,
     }
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcher.io
+        get() = Dispatchers.IO
 }

@@ -2,6 +2,7 @@ package com.tokopedia.logger.datasource.cloud
 
 import com.google.gson.Gson
 import com.tokopedia.keys.Keys
+import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,11 +18,11 @@ class LoggerCloudNewRelicDataSource : LoggerCloudNewRelicImpl {
         val gson = Gson()
     }
 
-    override suspend fun sendToLogServer(message: List<String>): Boolean {
+    override suspend fun sendToLogServer(newRelicConfig: NewRelicConfig, message: List<String>): Boolean {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         withContext(Dispatchers.IO) {
             try {
-                errCode = openURL(message)
+                errCode = openURL(newRelicConfig, message)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -29,7 +30,7 @@ class LoggerCloudNewRelicDataSource : LoggerCloudNewRelicImpl {
         return errCode == Constants.RESPONSE_SUCCESS_CODE
     }
 
-    private fun openURL(message: List<String>): Int {
+    private fun openURL(newRelicConfig: NewRelicConfig, message: List<String>): Int {
         var urlConnection: HttpURLConnection? = null
         val url: URL
 
@@ -39,7 +40,7 @@ class LoggerCloudNewRelicDataSource : LoggerCloudNewRelicImpl {
             val requestBody = compressRequestBody(message)
             url = URL(Constants.getNewRelicEventURL(Keys.AUTH_NEW_RELIC_USER_ID))
             urlConnection = url.openConnection() as HttpURLConnection
-            urlConnection = urlConnection.setRequestProperty(requestBody.size)
+            urlConnection = urlConnection.setRequestProperty(requestBody.size, newRelicConfig)
             urlConnection.outputStream.use { outputStream ->
                 outputStream.write(requestBody)
             }
@@ -53,12 +54,12 @@ class LoggerCloudNewRelicDataSource : LoggerCloudNewRelicImpl {
         }
     }
 
-    private fun HttpURLConnection.setRequestProperty(size: Int): HttpURLConnection {
+    private fun HttpURLConnection.setRequestProperty(size: Int, newRelicConfig: NewRelicConfig): HttpURLConnection {
         requestMethod = Constants.METHOD_POST
         doOutput = true
         useCaches = false
         setRequestProperty(Constants.HEADER_CONTENT_TYPE, Constants.HEADER_CONTENT_TYPE_JSON)
-        setRequestProperty(Constants.HEADER_NEW_RELIC_KEY, Keys.AUTH_NEW_RELIC_API_KEY)
+        setRequestProperty(Constants.HEADER_NEW_RELIC_KEY, newRelicConfig.token)
         setRequestProperty(Constants.HEADER_CONTENT_ENCODING, Constants.HEADER_CONTENT_ENCODING_GZIP)
         setRequestProperty(Constants.HEADER_CONTENT_LENGTH, size.toString())
         return this

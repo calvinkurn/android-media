@@ -1,7 +1,7 @@
 package com.tokopedia.logger
 
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.logger.utils.LoggerReportingTree
+import com.tokopedia.logger.utils.LoggerReporting
 
 object ServerLogger {
     fun log(priority: Priority, tag: String, message: Map<String, String>) {
@@ -9,6 +9,6 @@ object ServerLogger {
             Priority.P1 -> "P1"
             Priority.P2 -> "P2"
         }
-        LoggerReportingTree.getInstance().log(priorityText, tag, message)
+        LoggerReporting.getInstance().log(priorityText, tag, message)
     }
 }

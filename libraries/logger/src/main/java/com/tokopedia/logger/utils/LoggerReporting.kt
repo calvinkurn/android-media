@@ -10,14 +10,14 @@ import java.util.*
  * Tree that used for Timber in release Version
  * If there is log, it might be sent to logging server
  */
-class LoggerReportingTree {
+class LoggerReporting {
 
     var userId: String = ""
     var partDeviceId: String = ""
     var versionName: String = ""
     var versionCode: Int = 0
     var installerPackageName: String? = ""
-    var tagMaps: HashMap<String, Tag> = hashMapOf()
+    var tagMapsScalyr: HashMap<String, Tag> = hashMapOf()
     var tagMapsNewRelic: HashMap<String, Tag> = hashMapOf()
 
     fun setClientLogs(clientLogs: List<String>?) {
@@ -40,10 +40,18 @@ class LoggerReportingTree {
                 return@globalScopeLaunch
             }
 
-            tagMaps.putAll(tagMapsNewRelic)
+            var priorityTag = 0
+            tagMapsScalyr[tagMapKey]?.let {
+                priorityTag = it.postPriority
+                LogManager.setScalyrConfigList()
+            }
 
-            tagMaps[tagMapKey]?.let {
-                val priorityTag = it.postPriority
+            tagMapsNewRelic[tagMapKey]?.let {
+                priorityTag = it.postPriority
+                LogManager.setNewRelicConfigList()
+            }
+
+            if (LogManager.newRelicConfigList.isNotEmpty() || LogManager.scalyrConfigList.isNotEmpty()) {
                 val processedMessage = getMessage(tag, timeStamp, logPriority, message)
                 LogManager.log(processedMessage, timeStamp, priorityTag, logPriority)
             }
@@ -110,7 +118,7 @@ class LoggerReportingTree {
                             .append(DELIMITER_TAG_MAPS)
                             .append(tagSplit[1])
                             .toString()
-                    tagMaps[tagKey] = Tag(getPriority(tagSplit[3]))
+                    tagMapsScalyr[tagKey] = Tag(getPriority(tagSplit[3]))
                 }
             }
         }
@@ -158,11 +166,11 @@ class LoggerReportingTree {
         const val PRIORITY_OFFLINE = 1
 
         @Volatile
-        private var INSTANCE: LoggerReportingTree? = null
+        private var INSTANCE: LoggerReporting? = null
 
-        fun getInstance(): LoggerReportingTree {
+        fun getInstance(): LoggerReporting {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: LoggerReportingTree().also { INSTANCE = it }
+                INSTANCE ?: LoggerReporting().also { INSTANCE = it }
             }
         }
     }

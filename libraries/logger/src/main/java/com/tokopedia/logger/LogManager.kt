@@ -1,16 +1,22 @@
 package com.tokopedia.logger
 
 import android.app.Application
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import android.content.Context
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.encryption.security.AESEncryptorECB
+import com.tokopedia.keys.Keys.AUTH_NEW_RELIC_API_KEY
+import com.tokopedia.keys.Keys.AUTH_SCALYR_API_KEY
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
+import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.LogWorker
 import com.tokopedia.logger.utils.Constants
+import com.tokopedia.logger.utils.LoggerUtils.getLogSession
+import java.util.*
 
 /**
  * Class to wrap the mechanism to send the logging message to server.
@@ -26,8 +32,14 @@ class LogManager(val application: Application) {
 
     companion object {
 
+        private const val PRIORITY_LENGTH = 2
+
         @JvmStatic
-        var scalyrConfigList: List<ScalyrConfig> = mutableListOf()
+        var scalyrConfigList = mutableListOf<ScalyrConfig>()
+
+        @JvmStatic
+        var newRelicConfigList = mutableListOf<NewRelicConfig>()
+
         var queryLimits: List<Int> = mutableListOf(5, 5)
 
         @JvmField
@@ -47,8 +59,8 @@ class LogManager(val application: Application) {
                 loggerRepository = LoggerRepository(logsDao,
                         loggerCloudScalyrDataSource,
                         loggerCloudNewRelicDataSource,
-                        CoroutineDispatchersProvider,
                         scalyrConfigList,
+                        newRelicConfigList,
                         encryptor, secretKey)
             }
             return loggerRepository
@@ -58,6 +70,56 @@ class LogManager(val application: Application) {
         fun init(application: Application) {
             instance = LogManager(application)
         }
+
+        /**
+         * Setter for Scalyr Config List to be used checking when sent to server
+         */
+        fun setScalyrConfigList(): List<ScalyrConfig>? {
+            if (scalyrConfigList.isNullOrEmpty()) {
+                val context = instance?.application?.applicationContext
+                for (i in 0 until PRIORITY_LENGTH) {
+                    context?.let { scalyrConfigList.add(getScalyrConfig(it, i + 1)) }
+                }
+            }
+            return scalyrConfigList
+        }
+
+        private fun getScalyrConfig(context: Context, priority: Int): ScalyrConfig {
+            val session = getLogSession(context)
+            val serverHost = String.format("android-main-app-p%s", priority)
+            val parser = "android-parser"
+            val installer: String = if (context.packageManager.getInstallerPackageName(context.packageName) != null) {
+                context.packageManager?.getInstallerPackageName(context.packageName).toString()
+            } else {
+                ""
+            }
+            return ScalyrConfig(AUTH_SCALYR_API_KEY, session, serverHost, parser, context.packageName,
+                    installer,
+                    GlobalConfig.DEBUG, priority)
+        }
+
+        /**
+         * Setter for New Relic Config List to be used checking when sent to server
+         */
+        fun setNewRelicConfigList(): List<NewRelicConfig>? {
+            if (newRelicConfigList.isNullOrEmpty()) {
+                val context = instance?.application?.applicationContext
+                for (i in 0 until PRIORITY_LENGTH) {
+                    context?.let { newRelicConfigList.add(getNewRelicConfig(it, i + 1)) }
+                }
+            }
+            return newRelicConfigList
+        }
+
+        private fun getNewRelicConfig(context: Context, priority: Int): NewRelicConfig {
+            val installer: String = if (context.packageManager.getInstallerPackageName(context.packageName) != null) {
+                context.packageManager?.getInstallerPackageName(context.packageName).toString()
+            } else {
+                ""
+            }
+            return NewRelicConfig(AUTH_NEW_RELIC_API_KEY, context.packageName, installer, GlobalConfig.DEBUG, priority)
+        }
+
 
         /**
          * To give message log to logging server
