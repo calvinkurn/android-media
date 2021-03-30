@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
+import android.content.Intent
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
@@ -12,6 +13,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -109,6 +111,75 @@ class OrderSummaryPageActivityRevampTest {
     }
 
     @Test
+    fun happyFlow_ChangeAddress() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertAddressRevamp(
+                    addressName = "Address 1 - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+            )
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_ADDRESS_2_RESPONSE_PATH
+            clickChangeAddressRevamp {
+                clickAddress(1)
+            }
+
+            assertAddressRevamp(
+                    addressName = "Address 2 - User 1 (2)",
+                    addressDetail = "Address Street 2, District 2, City 2, Province 2 2",
+            )
+
+            assertPayment("Rp116.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun happyFlow_ChangeDuration() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                    shippingCourier = "Kurir Rekomendasi",
+                    shippingPrice = "Rp15.000",
+                    shippingEta = null
+            )
+
+            clickChangeDurationRevamp {
+                chooseDurationWithText("Next Day (1 hari)")
+            }
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Next Day (1 hari)",
+                    shippingCourier = "JNE",
+                    shippingPrice = "Rp38.000",
+                    shippingEta = null
+            )
+
+            assertPayment("Rp139.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
     fun happyFlow_ChangeCourier() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
 
@@ -135,6 +206,40 @@ class OrderSummaryPageActivityRevampTest {
             )
 
             assertPayment("Rp117.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun happyFlow_ChangePayment() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY, "payment2")
+            putExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA, "metadata")
+        }))
+
+        orderSummaryPage {
+            assertPaymentRevamp(
+                    paymentName = "Payment 1",
+                    paymentDetail = null
+            )
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_PAYMENT_2_RESPONSE_PATH
+            clickChangePaymentRevamp()
+
+            assertPaymentRevamp(
+                    paymentName = "Payment 2",
+                    paymentDetail = "second payment"
+            )
+
+            assertPayment("Rp116.000", "Bayar")
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",

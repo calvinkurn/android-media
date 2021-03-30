@@ -3,10 +3,6 @@ package com.tokopedia.oneclickcheckout.common.robot
 import android.view.View
 import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -63,8 +59,11 @@ class OrderSummaryPageRobot {
         }
     }
 
-    fun clickChangeAddressRevamp() {
+    fun clickChangeAddressRevamp(func: (AddressBottomSheetRobot.() -> Unit)? = null) {
         onView(withId(R.id.btn_new_change_address)).perform(scrollTo()).perform(click())
+        if (func != null) {
+            AddressBottomSheetRobot().apply(func)
+        }
     }
 
     fun clickChangeDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
