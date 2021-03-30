@@ -78,7 +78,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             } else {
                 tvFeedbackReview?.apply {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                    text = feedbackText.toReviewDescriptionFormatted(ProductFeedbackDetailViewHolder.FEEDBACK_MAX_CHAR)
+                    text = feedbackText.toReviewDescriptionFormatted(ProductFeedbackDetailViewHolder.FEEDBACK_MAX_CHAR, itemView.context)
                     setOnClickListener {
                         feedbackInboxReviewListener.onInFullReviewClicked(
                                 feedbackId,
@@ -104,7 +104,7 @@ class InboxReviewFeedbackViewHolder(view: View,
 
                 tvReplyComment?.text = element.replyText
                 tvReplyComment?.let {
-                    it.text = element.replyText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR)
+                    it.text = element.replyText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR, itemView.context)
                     it.setOnClickListener { _ ->
                         it.maxLines = Integer.MAX_VALUE
                         it.text = MethodChecker.fromHtml(element.replyText)

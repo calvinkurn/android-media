@@ -8,6 +8,7 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_IMPRESSION_SHOP_HEADER_BUYER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_IMPRESSION_SHOP_HEADER_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT;
@@ -38,24 +41,42 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_X_TAB;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENCY_CODE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ID;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IDR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSIONS;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OF_REQUEST_OPEN_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OPEN_OPERATIONAL_SHOP;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_PRODUCT_SEARCH_SUGGESTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.INFO;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_CLICK_SHOP_HEADER_BUYER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_CLICK_SHOP_HEADER_SELLER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_SOURCE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.POSITION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_HEADER_ACTION_TRACKER_TYPE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_HEADER_BASIC_INFO_TRACKER_TYPE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_HEADER_PERFORMANCE_TRACKER_TYPE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_HEADER_PLAY_TRACKER_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
@@ -63,6 +84,10 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SORT_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.USE_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
+import static com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION;
+import static com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO;
+import static com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE;
+import static com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PLAY;
 
 public class ShopPageTracking {
     public static final String SHOPPAGE = "/shoppage";
@@ -516,5 +541,129 @@ public class ShopPageTracking {
         } else {
             return "";
         }
+    }
+
+    public void clickShopHeaderComponent(
+            Boolean isMyShop,
+            String shopId,
+            String userId,
+            String valueDisplayed,
+            String componentId,
+            String componentName,
+            String headerId,
+            String headerType,
+            int componentPosition,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String eventCategory = isMyShop ? SHOP_PAGE_SELLER : SHOP_PAGE_BUYER;
+        String eventLabel;
+        if (isMyShop) {
+            eventLabel = String.format(LABEL_CLICK_SHOP_HEADER_SELLER, shopId);
+        } else {
+            eventLabel = String.format(LABEL_CLICK_SHOP_HEADER_BUYER, shopId);
+        }
+        HashMap<String, Object> eventMap = createMap(
+                PROMO_CLICK,
+                eventCategory,
+                CLICK,
+                eventLabel,
+                customDimensionShopPage
+        );
+        eventMap.put(ShopPageTrackingConstant.BUSINESS_UNIT, PHYSICAL_GOODS);
+        eventMap.put(ShopPageTrackingConstant.CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        eventMap.put(ShopPageTrackingConstant.USER_ID, userId);
+        String headerTrackerType = getShopHeaderTrackerType(headerType);
+        eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                                createShopHeaderPromotionItemMap(
+                                        valueDisplayed,
+                                        componentId,
+                                        componentName,
+                                        headerId,
+                                        headerTrackerType,
+                                        componentPosition
+                                )
+                        )
+                )));
+        sendDataLayerEvent(eventMap);
+    }
+
+    public void impressionShopHeaderComponent(
+            Boolean isMyShop,
+            String shopId,
+            String userId,
+            String valueDisplayed,
+            String componentId,
+            String componentName,
+            String headerId,
+            String headerType,
+            int componentPosition,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String eventCategory = isMyShop ? SHOP_PAGE_SELLER : SHOP_PAGE_BUYER;
+        String eventAction = isMyShop ? ACTION_IMPRESSION_SHOP_HEADER_SELLER : ACTION_IMPRESSION_SHOP_HEADER_BUYER;
+        String eventLabel;
+        if (isMyShop) {
+            eventLabel = String.format(LABEL_CLICK_SHOP_HEADER_SELLER, shopId);
+        } else {
+            eventLabel = String.format(LABEL_CLICK_SHOP_HEADER_BUYER, shopId);
+        }
+        HashMap<String, Object> eventMap = createMap(
+                PROMO_VIEW,
+                eventCategory,
+                eventAction,
+                eventLabel,
+                customDimensionShopPage
+        );
+        eventMap.put(ShopPageTrackingConstant.BUSINESS_UNIT, PHYSICAL_GOODS);
+        eventMap.put(ShopPageTrackingConstant.CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        eventMap.put(ShopPageTrackingConstant.USER_ID, userId);
+        String headerTrackerType = getShopHeaderTrackerType(headerType);
+        eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                                createShopHeaderPromotionItemMap(
+                                        valueDisplayed,
+                                        componentId,
+                                        componentName,
+                                        headerId,
+                                        headerTrackerType,
+                                        componentPosition
+                                )
+                        )
+                )));
+        sendDataLayerEvent(eventMap);
+    }
+
+    private String getShopHeaderTrackerType(String headerType) {
+        switch (headerType) {
+            case SHOP_BASIC_INFO:
+                return SHOP_HEADER_BASIC_INFO_TRACKER_TYPE;
+            case SHOP_PERFORMANCE:
+                return SHOP_HEADER_PERFORMANCE_TRACKER_TYPE;
+            case SHOP_ACTION:
+                return SHOP_HEADER_ACTION_TRACKER_TYPE;
+            case SHOP_PLAY:
+                return SHOP_HEADER_PLAY_TRACKER_TYPE;
+            default:
+                return "";
+        }
+    }
+
+    private Map<String, Object> createShopHeaderPromotionItemMap(
+            String valueDisplayed,
+            String componentId,
+            String componentName,
+            String headerId,
+            String headerTrackerType,
+            int componentPosition
+    ) {
+        HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put(CREATIVE, valueDisplayed);
+        eventMap.put(ID, componentId);
+        eventMap.put(NAME, joinDash(componentName, headerId, headerTrackerType));
+        eventMap.put(POSITION, componentPosition);
+        return eventMap;
     }
 }

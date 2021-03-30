@@ -96,6 +96,11 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_shop_favourite_list"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_favourite_list_with_shop_id"/>
             </intent-filter>
         </activity>
 
@@ -138,6 +143,10 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
                     android:path="@string/path_shop_page_setting"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_page_setting_customer_app_with_shop_id"/>
             </intent-filter>
         </activity>
 

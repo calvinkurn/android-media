@@ -1,10 +1,11 @@
 package com.tokopedia.digital.product.view.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -44,7 +45,8 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
 
     @Override
     public int getItemCount() {
-        return clientNumbers.size();
+        if (clientNumbers == null) return 0;
+        else return clientNumbers.size();
     }
 
     public void setNumbers(List<OrderClientNumber> clientNumbers) {
