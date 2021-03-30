@@ -679,17 +679,39 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         hideSnackBarRetry()
         updateScrollListenerState(false)
 
-        val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
-        val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
-        mostWidgetData.forEachIndexed { i, widget ->
-            widgets.getOrNull(i)?.let { newWidget ->
-                // "if" is true only on the first load, "else" is always true when we reload
-                if (isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
-                    widget.apply { isFromCache = false }
-                    newWidgets.add(widget)
-                } else {
-                    newWidgets.add(newWidget)
+        val newWidgetFromCache = widgets.first().isFromCache
+        val newWidgets = if (adapter.data.isEmpty()) {
+            widgets as List<BaseWidgetUiModel<BaseDataUiModel>>
+        } else {
+            if (newWidgetFromCache) {
+                return
+            } else {
+                val oldWidgets = adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>
+                val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
+                widgets.forEach { newWidget ->
+                    oldWidgets.find { isTheSameWidget(it, newWidget) }.let { oldWidget ->
+                        if (oldWidget == null) {
+                            newWidgets.add(newWidget)
+                        } else {
+                            if (oldWidget.isFromCache && !oldWidget.needToRefreshData(newWidget as BaseWidgetUiModel<BaseDataUiModel>)) {
+                                newWidget.apply {
+                                    data = oldWidget.data
+                                    isLoaded = oldWidget.isLoaded
+                                    isLoading = oldWidget.isLoading
+                                }
+                                val widgetData = newWidget.data
+                                if (widgetData == null || !shouldRemoveWidget(newWidget, widgetData)) {
+                                    newWidgets.add(newWidget)
+                                }
+                                Unit
+                            } else {
+                                newWidgets.add(newWidget)
+                                Unit
+                            }
+                        }
+                    }
                 }
+                newWidgets
             }
         }
 
@@ -711,7 +733,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun isTheSameWidget(oldWidget: BaseWidgetUiModel<*>, newWidget: BaseWidgetUiModel<*>): Boolean {
         return oldWidget.widgetType == newWidget.widgetType && oldWidget.title == newWidget.title &&
                 oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
-                oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText
+                oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
+                oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
+                oldWidget.emptyState == newWidget.emptyState
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -879,7 +903,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }.takeIf { it > -1 }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
-                    if (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())) {
+                    if (shouldRemoveWidget(widget, widgetData)) {
                         newWidgetList.removeAt(index)
                         removeEmptySections(newWidgetList, index)
                     } else {
@@ -898,6 +922,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 requestVisibleWidgetsData()
             }
         }
+    }
+
+    private fun shouldRemoveWidget(widget: BaseWidgetUiModel<*>, widgetData: BaseDataUiModel): Boolean {
+        return !widget.isFromCache && !widgetData.isFromCache && (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove()))
     }
 
     private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {

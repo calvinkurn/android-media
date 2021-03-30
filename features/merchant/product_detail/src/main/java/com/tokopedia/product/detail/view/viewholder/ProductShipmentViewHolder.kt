@@ -45,7 +45,6 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentLabelInstant: Label? = itemView.findViewById(R.id.label_pdp_shipment_instant)
     private val shipmentArrow: IconUnify? = itemView.findViewById(R.id.ic_pdp_shipment_arrow_right)
 
-    private val impressHolder = ImpressHolder()
     private var componentTrackDataModel: ComponentTrackDataModel? = null
 
     override fun bind(element: ProductShipmentDataModel) {
@@ -71,7 +70,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
                     componentTrackDataModel = getComponentTrackData(element)
                 }
 
-                itemView.addOnImpressionListener(impressHolder) {
+                itemView.addOnImpressionListener(element.impressHolder) {
                     listener.showCoachmark(shipmentTitle, element.isBoeType())
                 }
 
