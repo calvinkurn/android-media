@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
+import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
@@ -31,8 +33,10 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        if (intent.extras != null)
-            bundle.putAll(intent.extras)
+        if (intent.data != null) {
+            bundle.putString(PRODUCT_PRICE, intent.data?.getQueryParameter(PRODUCT_PRICE))
+            bundle.putString(PARAM_PRODUCT_URL, intent.data?.getQueryParameter(PARAM_PRODUCT_URL))
+        }
         return PdpSimulationFragment.newInstance(bundle)
     }
 

@@ -235,7 +235,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         }
     }
 
-    fun hideDataGroup() {
+    private fun hideDataGroup() {
         parentDataGroup.gone()
         modeSwitcher.gone()
         daftarGroup.gone()
