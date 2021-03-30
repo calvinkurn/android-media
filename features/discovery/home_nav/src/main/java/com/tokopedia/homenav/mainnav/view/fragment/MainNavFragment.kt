@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -175,8 +176,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onProfileSectionClicked() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.ACCOUNT)
-        startActivity(intent)
+        if (pageSource == SOURCE_ACCOUNT) {
+            activity?.onBackPressed()
+        } else {
+            val intent = RouteManager.getIntent(context, ApplinkConst.ACCOUNT)
+            startActivity(intent)
+        }
     }
 
     override fun onProfileLoginClicked() {
