@@ -16,6 +16,9 @@ internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>
     it.add(createCarouselProductCardGridCountSoldRatingAndIntegrity())
     it.add(createCarouselProductCardGridRatingAndIntegrity())
     it.add(createCarouselProductCardGridShopLocation())
+    it.add(createCarouselProductCardGridLabelCategory())
+    it.add(createCarouselProductCardGridLabelCostPerUnit())
+    it.add(createCarouselProductCardGridLabelCategoryAndCostPerUnit())
 }
 
 private fun createSmallProductCard(): ProductCardModel {
@@ -385,5 +388,60 @@ private fun createProductCardLabelETA(): ProductCardModel {
             labelGroupList = listOf(
                     LabelGroup(position = "eta", title = "Tiba 28 Feb - 1 Mar", type = "textDarkGrey")
             ),
+    )
+}
+
+private fun createCarouselProductCardGridLabelCategory(): List<ProductCardModel> {
+    return listOf(
+        ProductCardModel(
+                productName = "Label Category test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
+                productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                formattedPrice = "Rp7.999.000",
+                labelGroupList = listOf(
+                        LabelGroup(position = "category", title = "Halal", type = "textGreen"),
+                ),
+        ),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+    )
+}
+
+private fun createCarouselProductCardGridLabelCostPerUnit(): List<ProductCardModel> {
+    return listOf(
+            ProductCardModel(
+                    productName = "Label Cost per Unit test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
+                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    formattedPrice = "Rp7.999.000",
+                    labelGroupList = listOf(
+                            LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
+                    ),
+            ),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+    )
+}
+
+private fun createCarouselProductCardGridLabelCategoryAndCostPerUnit(): List<ProductCardModel> {
+    return listOf(
+            ProductCardModel(
+                    productName = "Label Category & Cost per Unit test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
+                    productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+                    formattedPrice = "Rp7.999.000",
+                    labelGroupList = listOf(
+                            LabelGroup(position = "category", title = "Halal", type = "textGreen"),
+                            LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
+                    ),
+            ),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
+            createSmallProductCard(),
     )
 }
