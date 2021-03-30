@@ -1,16 +1,14 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 
-class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?) : RecyclerView.ViewHolder(view) {
-
-    private val chooseAddressWidget by lazy { view.findViewById<ChooseAddressWidget>(R.id.cart_choose_address_widget) }
+class CartChooseAddressViewHolder(private val binding: ItemCartChooseAddressBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_cart_choose_address
@@ -18,7 +16,7 @@ class CartChooseAddressViewHolder(val view: View, val listener: ActionListener?)
     }
 
     fun bind(data: CartChooseAddressHolderData) {
-        chooseAddressWidget.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
+        binding.cartChooseAddressWidget.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
                 listener?.onLocalizingAddressUpdatedFromWidget()
             }

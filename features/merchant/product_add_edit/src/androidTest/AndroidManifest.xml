@@ -8,8 +8,6 @@
     <application
         android:label="Test activity"
         tools:replace="android:label">
-        <activity
-            android:name=".picker.main.view.ImagePickerActivity"/>
     </application>
 
 </manifest>

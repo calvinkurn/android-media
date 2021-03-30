@@ -183,13 +183,13 @@ object QueryHome {
             "        }"
 
     val homeTickerQuery: String = "" +
-            "query homeTicker\n" +
+            "query homeTicker(\$location: String)\n" +
             "        {\n" +
             "          ticker {\n" +
             "            meta {\n" +
             "              total_data\n" +
             "            }\n" +
-            "            tickers\n" +
+            "            tickers(location: \$location)\n" +
             "            {\n" +
             "              id\n" +
             "              title\n" +
@@ -227,10 +227,10 @@ object QueryHome {
             "        }"
 
     val homeIconQuery: String = "" +
-            "query homeIcon(\$param: String)\n" +
+            "query homeIcon(\$param: String, \$location: String)\n" +
             "        {\n" +
             "          dynamicHomeIcon {\n" +
-            "            dynamicIcon(param: \$param) {\n" +
+            "            dynamicIcon(param: \$param, location: \$location) {\n" +
             "              id\n" +
             "              galaxy_attribution\n" +
             "              persona\n" +

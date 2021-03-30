@@ -110,6 +110,7 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
+import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
@@ -138,9 +139,10 @@ import javax.inject.Inject
 class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<ShopPageComponent>,
-        ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener,
+        ShopPageFragmentViewHolderListener,
         ShopShareBottomsheetListener,
-        ChooseAddressWidget.ChooseAddressWidgetListener {
+        ChooseAddressWidget.ChooseAddressWidgetListener,
+        InterfaceShopPageHeader {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -1126,7 +1128,7 @@ class ShopPageFragment :
         }
     }
 
-    fun onBackPressed() {
+    override fun onBackPressed() {
         shopPageTracking?.clickBackArrow(isMyShop, customDimensionShopPage)
         removeTemporaryShopImage(shopImageFilePath)
     }
@@ -1483,7 +1485,7 @@ class ShopPageFragment :
         }
     }
 
-    fun refreshData() {
+    override fun refreshData() {
         button_chat?.hide()
         button_chat_old?.hide()
         val shopProductListFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
@@ -1510,20 +1512,20 @@ class ShopPageFragment :
         stickyLoginView?.loadContent()
     }
 
-    fun collapseAppBar() {
+    override fun collapseAppBar() {
         appBarLayout.post {
             appBarLayout.setExpanded(false)
         }
     }
 
-    fun isNewlyBroadcastSaved(): Boolean? {
+    override fun isNewlyBroadcastSaved(): Boolean? {
         val args = arguments
         return args?.containsKey(NEWLY_BROADCAST_CHANNEL_SAVED)?.let {
             args.getBoolean(NEWLY_BROADCAST_CHANNEL_SAVED)
         }
     }
 
-    fun clearIsNewlyBroadcastSaved() {
+    override fun clearIsNewlyBroadcastSaved() {
         arguments?.remove(NEWLY_BROADCAST_CHANNEL_SAVED)
     }
 
@@ -1841,7 +1843,7 @@ class ShopPageFragment :
         ).show()
     }
 
-    fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
+    override fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
         return if (viewPagerAdapter?.isFragmentObjectExists(tabFragmentClass) == true) {
             viewPagerAdapter?.getFragmentPosition(tabFragmentClass) == selectedPosition
         } else {

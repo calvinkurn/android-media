@@ -9,8 +9,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.purchase_platform.common.utils.Utils;

@@ -165,7 +165,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
         NotificationModHandler.clearCacheAllNotification(applicationContext)
         CacheApiClearAllUseCase(applicationContext).executeSync()
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         NotificationModHandler(applicationContext).dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
@@ -175,6 +174,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
