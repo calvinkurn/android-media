@@ -36,6 +36,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.RechargeBills
+import com.tokopedia.smartbills.data.RechargeBillsModel
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivity
@@ -45,6 +46,7 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHo
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
+import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getNotAccordionSection
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -61,7 +63,7 @@ import javax.inject.Inject
  * @author by resakemal on 17/05/20
  */
 
-class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFactory>(),
+class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapterFactory>(),
         BaseCheckableViewHolder.CheckableInteractionListener,
         BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
         SmartBillsViewHolder.DetailListener,
@@ -149,10 +151,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             view_smart_bills_shimmering.hide()
             when (it) {
                 is Success -> {
-                    val bills = it.data.bills
+                    val bills = it.data.sections.first().bills
                     if (bills.isNotEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
                         renderList(bills)
+                        renderList(getNotAccordionSection(it.data.sections))
                         smartBillsAnalytics.impressionAllProducts(bills)
 
                         // Auto select bills based on data
@@ -357,9 +360,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         return R.id.smart_bills_swipe_refresh_layout
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<RechargeBills, SmartBillsAdapterFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory> {
         adapter = SmartBillsAdapter(adapterTypeFactory, this)
-        return adapter
+        return adapter as BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory>
     }
 
     override fun getAdapterTypeFactory(): SmartBillsAdapterFactory {
@@ -373,7 +376,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         }
     }
 
-    override fun onItemClicked(t: RechargeBills?) {
+    override fun onItemClicked(t: RechargeBillsModel?) {
 
     }
 

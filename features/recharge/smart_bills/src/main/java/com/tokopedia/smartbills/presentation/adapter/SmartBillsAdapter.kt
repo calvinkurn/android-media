@@ -6,7 +6,8 @@ import com.tokopedia.smartbills.data.RechargeBills
 
 class SmartBillsAdapter(adapterFactory: SmartBillsAdapterFactory,
                         checkableListener: OnCheckableAdapterListener<RechargeBills>):
-        BaseListCheckableAdapter<RechargeBills, SmartBillsAdapterFactory>(adapterFactory, checkableListener) {
+        BaseListCheckableAdapter<RechargeBills, SmartBillsAdapterFactory>(adapterFactory, checkableListener)
+{
 
     fun renderEmptyState() {
         clearAllElements()

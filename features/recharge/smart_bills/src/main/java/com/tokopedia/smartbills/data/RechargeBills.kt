@@ -10,58 +10,58 @@ data class RechargeBills(
         @SerializedName("Flag")
         @Expose
         val flag: Boolean = false,
-        @SerializedName("index")
+        @SerializedName("Index")
         @Expose
         val index: Int = -1,
-        @SerializedName("productID")
+        @SerializedName("ProductID")
         @Expose
         val productID: Int = 0,
-        @SerializedName("productName")
+        @SerializedName("ProductName")
         @Expose
         val productName: String = "",
-        @SerializedName("categoryID")
+        @SerializedName("CategoryID")
         @Expose
         val categoryID: Int = 0,
-        @SerializedName("categoryName")
+        @SerializedName("CategoryName")
         @Expose
         val categoryName: String = "",
-        @SerializedName("operatorID")
+        @SerializedName("OperatorID")
         @Expose
         val operatorID: Int = 0,
-        @SerializedName("operatorName")
+        @SerializedName("OperatorName")
         @Expose
         val operatorName: String = "",
-        @SerializedName("clientNumber")
+        @SerializedName("ClientNumber")
         @Expose
         val clientNumber: String = "",
-        @SerializedName("amount")
+        @SerializedName("Amount")
         @Expose
         val amount: Float = 0f,
-        @SerializedName("amountText")
+        @SerializedName("AmountText")
         @Expose
         val amountText: String = "",
-        @SerializedName("iconURL")
+        @SerializedName("IconURL")
         @Expose
         val iconURL: String = "",
-        @SerializedName("date")
+        @SerializedName("Date")
         @Expose
         val date: String = "",
-        @SerializedName("dateText")
+        @SerializedName("DateText")
         @Expose
         val dateText: String = "",
-        @SerializedName("disabled")
+        @SerializedName("Disabled")
         @Expose
         val disabled: Boolean = false,
-        @SerializedName("disabledText")
+        @SerializedName("DisabledText")
         @Expose
         val disabledText: String = "",
-        @SerializedName("checkoutFields")
+        @SerializedName("CheckoutFields")
         @Expose
         val checkoutFields: List<RechargeField> = listOf(),
-        @SerializedName("billName")
+        @SerializedName("BillName")
         @Expose
         val billName: String = "",
-        @SerializedName("isChecked")
+        @SerializedName("IsChecked")
         @Expose
         var isChecked: Boolean = false,
         var errorMessage: String = "",
@@ -75,7 +75,7 @@ data class RechargeBills(
         @Expose
         var dueDateLabel: DueUrgency = DueUrgency(),
 
-): Visitable<SmartBillsAdapterFactory> {
+): RechargeBillsModel() {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
                 return typeFactory.type(this)
         }

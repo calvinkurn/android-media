@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
 class SmartBillsViewHolder(val view: View,
                            checkableListener: CheckableInteractionListener,
-                           val detailListener: DetailListener) :
+                           private val detailListener: DetailListener) :
         BaseCheckableViewHolder<RechargeBills>(view, checkableListener) {
 
     companion object {

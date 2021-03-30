@@ -2,6 +2,7 @@ package com.tokopedia.smartbills.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.GraphqlConstant
@@ -32,8 +33,8 @@ class SmartBillsViewModel @Inject constructor(
     val statementMonths: LiveData<Result<List<RechargeStatementMonths>>>
         get() = mutableStatementMonths
 
-    private val mutableStatementBills = MutableLiveData<Result<RechargeStatementBills>>()
-    val statementBills: LiveData<Result<RechargeStatementBills>>
+    private val mutableStatementBills = MutableLiveData<Result<RechargeListSmartBills>>()
+    val statementBills: LiveData<Result<RechargeListSmartBills>>
         get() = mutableStatementBills
 
     private val mutableMultiCheckout = MutableLiveData<Result<RechargeMultiCheckoutResponse>>()
@@ -65,19 +66,21 @@ class SmartBillsViewModel @Inject constructor(
 
     fun getStatementBills(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(
-                    SmartBillsQueries.STATEMENT_BILLS_QUERY,
-                    RechargeStatementBills.Response::class.java, mapParams
-            )
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
-                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
-            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<RechargeStatementBills.Response>()
+//            val graphqlRequest = GraphqlRequest(
+//                    SmartBillsQueries.STATEMENT_BILLS_QUERY_CLUSTERING,
+//                    RechargeListSmartBills.Response::class.java, mapParams
+//            )
+//            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
+//                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
+//            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+//            val data = withContext(dispatcher.IO) {
+//                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+//            }.getSuccessData<RechargeListSmartBills.Response>()
 
-            if (data.response != null) {
-                mutableStatementBills.postValue(Success(data.response))
+            val datas = Gson().fromJson(SmartBillsQueries.DUMMY_RESPONSE, RechargeListSmartBills.Response::class.java)
+
+            if (datas.response != null) {
+                    mutableStatementBills.postValue(Success(datas.response))
             } else {
                 throw(MessageErrorException(STATEMENT_BILLS_ERROR))
             }
