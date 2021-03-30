@@ -16,6 +16,7 @@ import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
@@ -43,6 +44,7 @@ class TestRecommendationPageViewModel {
     private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
     private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getPrimaryProductUseCase = mockk<GetPrimaryProductUseCase>(relaxed = true)
+    private val getTopadsIsAdsUseCase = mockk<GetTopadsIsAdsUseCase>(relaxed = true)
     private val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -54,6 +56,7 @@ class TestRecommendationPageViewModel {
             removeWishListUseCase = removeWishListUseCase,
             topAdsWishlishedUseCase = topAdsWishlishedUseCase,
             addToCartUseCase = addToCartUseCase,
+            getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
             getPrimaryProductUseCase = getPrimaryProductUseCase
     )
     private val recommendation = RecommendationItem(productId = 1234)

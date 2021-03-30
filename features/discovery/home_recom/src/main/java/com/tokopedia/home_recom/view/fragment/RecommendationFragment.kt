@@ -548,7 +548,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     private fun loadData(){
         activity?.let{
-            recommendationWidgetViewModel.getRecommendationList(productId,
+            recommendationWidgetViewModel.getRecomDataWithTopads(productId,
                     queryParam)
         }
     }

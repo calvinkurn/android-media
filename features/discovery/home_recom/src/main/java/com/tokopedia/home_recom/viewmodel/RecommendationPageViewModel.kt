@@ -16,8 +16,10 @@ import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.util.mapDataModel
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
@@ -50,6 +52,7 @@ open class RecommendationPageViewModel @Inject constructor(
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val getPrimaryProductUseCase: GetPrimaryProductUseCase,
         private val addToCartUseCase: AddToCartUseCase,
+        private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
         private val dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
     /**
@@ -63,6 +66,14 @@ open class RecommendationPageViewModel @Inject constructor(
 
     val buyNowLiveData : LiveData<Response<ProductInfoDataModel>> get() = _buyNowLiveData
     private val _buyNowLiveData = MutableLiveData<Response<ProductInfoDataModel>>()
+
+
+    fun getRecomDataWithTopads(
+            productId: String,
+            queryParam: String) {
+        getRecommendationList(productId, queryParam)
+        getProductTopadsStatus(productId, queryParam)
+    }
 
     /**
      * [getRecommendationList] is the void for get recommendation widgets from the network
@@ -114,6 +125,44 @@ open class RecommendationPageViewModel @Inject constructor(
             } catch (t: Exception){
                 _recommendationListLiveData.postValue(listOf(RecommendationErrorDataModel(t)))
             }
+        }
+    }
+
+    fun getProductTopadsStatus(
+            productId: String,
+            queryParam: String) {
+        //todo :
+        // 1. parallel with new usecase getistopads
+        // 2. search viewmodel for ProductInfoDataModel entity
+        // 3. if found, append isTopads, topads click url and topads view url
+        launchCatchError(coroutineContext, block =  {
+            getTopadsIsAdsUseCase.setParams(
+                    productId = productId,
+                    productKey = "",
+                    shopDomain =  "",
+                    urlParam = queryParam,
+                    pageName = ""
+            )
+            val adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
+            var dataList = recommendationListLiveData.value as MutableList
+            val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel}
+            val errorCode = adsStatus.status.error_code
+            if (errorCode>= 200 || errorCode <= 300) {
+                (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
+                    val topadsProduct = adsStatus.data.productList[0]
+                    it.isTopads = topadsProduct.isCharge
+                    it.clickUrl = topadsProduct.clickUrl
+                    it.trackerImageUrl = topadsProduct.product.image.m_url
+
+                    val itemIndex = dataList.indexOf(productRecom)
+                    dataList[itemIndex] = productRecom
+
+                    _recommendationListLiveData.postValue(dataList)
+                }
+            }
+
+        }) {
+            it.printStackTrace()
         }
     }
 
