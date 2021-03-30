@@ -59,11 +59,11 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
                 }catch (e: Throwable){}
             }
         } else {
-            removeCompoundDrawableFollowButton()
+            removeCompoundDrawableButton()
         }
     }
 
-    private fun removeCompoundDrawableFollowButton() {
+    private fun removeCompoundDrawableButton() {
         if (!imageButtonShopNote?.compoundDrawables.isNullOrEmpty()) {
             imageButtonShopNote?.removeDrawable()
         }
