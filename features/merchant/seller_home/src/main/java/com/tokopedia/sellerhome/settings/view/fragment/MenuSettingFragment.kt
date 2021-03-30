@@ -21,10 +21,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.seller.menu.common.analytics.*
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
+import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
@@ -33,16 +33,17 @@ import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
-import com.tokopedia.sellerreview.common.SellerReviewUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.internal_review.common.InternalReviewUtils
 import kotlinx.android.synthetic.main.fragment_menu_setting.*
 import kotlinx.android.synthetic.main.setting_logout.view.*
 import kotlinx.android.synthetic.main.setting_tc.view.*
@@ -51,9 +52,6 @@ import javax.inject.Inject
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), SettingTrackingListener, MenuSettingAdapter.Listener {
 
     companion object {
-        private const val REQUEST_CHANGE_PASSWORD = 123
-        private const val REQUEST_ADD_PASSWORD = 1234
-
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
         private const val URL_PLAY_STORE_HOST = "https://play.google.com/store/apps/details?id="
@@ -215,13 +213,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun addOrChangePassword() {
-        var intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.ADD_PASSWORD)
-        var requestCode = REQUEST_ADD_PASSWORD
-        if (userSession.hasPassword()) {
-            intent = RouteManager.getIntent(activity, ApplinkConst.CHANGE_PASSWORD)
-            requestCode = REQUEST_CHANGE_PASSWORD
-        }
-        startActivityForResult(intent, requestCode)
+        var intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.HAS_PASSWORD)
+        startActivity(intent)
     }
 
     private fun shareApplication() {
@@ -234,7 +227,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun reviewApplication() {
-        SellerReviewUtils.saveFlagHasOpenedReviewApp(activity?.applicationContext, userSession.userId)
+        InternalReviewUtils.saveFlagHasOpenedReviewApp(activity?.applicationContext, userSession.userId)
         val uri = Uri.parse(MARKET_DETAIL_HOST + activity?.application?.packageName)
         val goToMarket = Intent(Intent.ACTION_VIEW, uri)
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)

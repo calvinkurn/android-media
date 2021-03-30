@@ -28,7 +28,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation

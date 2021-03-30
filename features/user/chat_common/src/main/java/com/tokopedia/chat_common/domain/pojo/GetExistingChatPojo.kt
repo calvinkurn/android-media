@@ -192,7 +192,7 @@ data class Attachment(
         val type: Int = 0,
         @Expose
         @SerializedName("attributes")
-        val attributes: String = "",
+        var attributes: String = "",
         @Expose
         @SerializedName("fallback")
         val fallback: Fallback = Fallback()
@@ -217,7 +217,7 @@ data class Fallback(
 data class Block(
         @Expose
         @SerializedName("isPromoBlocked")
-        val isPromoBlocked: Boolean = false,
+        var isPromoBlocked: Boolean = false,
         @Expose
         @SerializedName("isBlocked")
         val isBlocked: Boolean = false,

@@ -169,6 +169,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -540,7 +541,7 @@ open class HomeFragment : BaseDaggerFragment(),
                         ))
                         val icons = IconBuilder(
                                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
-                        ).addIcon(IconList.ID_MESSAGE) {}
+                        ).addIcon(getInboxIcon()) {}
                         if (!useNewInbox) {
                             icons.addIcon(IconList.ID_NOTIFICATION) {}
                         }
@@ -572,6 +573,14 @@ open class HomeFragment : BaseDaggerFragment(),
         useNewInbox = getAbTestPlatform().getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
+    }
+
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
     }
 
     private fun showNavigationOnBoarding() {
@@ -1500,6 +1509,18 @@ open class HomeFragment : BaseDaggerFragment(),
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
+    override fun onChooseAddressUpdated() {
+
+    }
+
+    override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowUserAddress: Boolean) {
+
+    }
+
+    override fun onChooseAddressServerDown() {
+
+    }
+
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
 //        homeRecyclerView?.itemAnimator = null
@@ -2129,7 +2150,7 @@ open class HomeFragment : BaseDaggerFragment(),
                     if (!useNewInbox) {
                         navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
                     }
-                    navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+                    navToolbar?.setBadgeCounter(getInboxIcon(), inboxCount)
                     navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
                 }
         )
@@ -2435,6 +2456,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         startActivityForResult(RouteManager.getIntent(requireContext(), appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+    }
+
+    override fun isNewNavigation(): Boolean {
+        return isNavRevamp()
     }
 
     private fun observePlayWidgetReminder() {

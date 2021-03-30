@@ -53,6 +53,7 @@ class GetProfileDataCacheUseCase @Inject constructor(
                     userInfoData,
                     null,
                     null,
+                    null,
                     userMembershipData,
                     shopData?.userShopInfo,
                     shopData?.notifications,

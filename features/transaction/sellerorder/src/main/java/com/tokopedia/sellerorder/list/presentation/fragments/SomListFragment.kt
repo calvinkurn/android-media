@@ -1149,6 +1149,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun checkAdminPermission() {
+        if (!userSession.isShopOwner) {
+            somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+        }
         viewModel.getAdminPermission()
     }
 

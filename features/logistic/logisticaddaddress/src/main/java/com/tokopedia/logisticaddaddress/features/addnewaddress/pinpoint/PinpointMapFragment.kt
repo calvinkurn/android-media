@@ -202,7 +202,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     private fun prepareLayout() {
         with(binding.bottomSheetGetDistrict) {
-            bottomSheetBehavior = BottomSheetBehavior.from(this.bottomsheetGetdistrict)
+            bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheetGetDistrict)
             getdistrictContainer.visibility = View.GONE
             invalidContainer.visibility = View.GONE
             wholeLoadingContainer.visibility = View.VISIBLE
@@ -403,6 +403,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onDestroyView() {
         binding.mapView.onDestroy()
         _binding = null
+        composite.unsubscribe()
+        presenter.detachView()
         super.onDestroyView()
     }
 
@@ -900,9 +902,4 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        presenter.detachView()
-        composite.unsubscribe()
-    }
 }

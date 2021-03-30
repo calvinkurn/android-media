@@ -412,6 +412,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         courierData.setPromoTitle(data.getTitle());
         courierData.setHideShipperName(data.getHideShipperName());
         courierData.setShipperName(data.getShipperName());
+        courierData.setEtaText(data.getEtaData().getTextEta());
+        courierData.setEtaErrorCode(data.getEtaData().getErrorCode());
 
         try {
             shippingDurationBottomsheetListener.onLogisticPromoChosen(

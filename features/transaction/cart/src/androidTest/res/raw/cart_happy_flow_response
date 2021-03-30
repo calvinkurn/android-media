@@ -51,6 +51,10 @@
             "ErrorProductMinQuantity": "Min. beli {{value}} barang"
           },
           "fulfillment_message": "Dilayani Tokopedia",
+          "toko_cabang": {
+            "message": "Tokocabang",
+            "badge_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
+          },
           "available_section": {
             "action": [
               {

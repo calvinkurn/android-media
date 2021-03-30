@@ -37,6 +37,7 @@ class ShippingDurationViewModelTest {
     private val mapperPrice = ShippingDurationModelWithPriceMapper()
 
     private val shippingParam = ShippingParam().apply {
+        addressId = ""
         token = ""
         ut = ""
         shopId = ""
