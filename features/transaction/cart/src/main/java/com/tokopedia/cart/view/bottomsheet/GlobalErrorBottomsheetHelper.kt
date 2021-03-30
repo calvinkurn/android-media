@@ -8,9 +8,12 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 fun showGlobalErrorBottomsheet(fragmentManager: FragmentManager, context: Context, actionCallback: () -> Unit) {
 
-    val bottomSheet = BottomSheetUnify()
-    bottomSheet.showCloseIcon = true
-    bottomSheet.showHeader = true
+    val bottomSheet = BottomSheetUnify().apply {
+        showCloseIcon = true
+        showHeader = true
+        isDragable = true
+        isHideable = true
+    }
 
     val binding = LayoutBottomsheetGlobalErrorBinding.inflate(LayoutInflater.from(context))
     binding.layoutGlobalError.setActionClickListener {
