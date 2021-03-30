@@ -189,10 +189,23 @@ fun View.renderTextCategoryAndCostPerUnit(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
+    moveTextPriceConstraint(productCardModel)
+
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, priceToRender, context.getString(R.string.content_desc_textViewPrice))
+    }
+}
+
+private fun View.moveTextPriceConstraint(productCardModel: ProductCardModel) {
+    val hasLabelCostPerUnit = productCardModel.getLabelCostPerUnit()?.title?.isNotEmpty() == true
+    val targetConstraint = if (hasLabelCostPerUnit) R.id.textViewCostPerUnit else R.id.textViewCategory
+    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+    view?.applyConstraintSet {
+        it.clear(R.id.textViewPrice, ConstraintSet.TOP)
+        it.connect(R.id.textViewPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 4.toPx())
     }
 }
 
@@ -222,7 +235,7 @@ private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
 
     view?.applyConstraintSet {
         it.clear(R.id.labelPrice, ConstraintSet.TOP)
-        it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 4.toPx())
+        it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 2.toPx())
     }
 }
 
