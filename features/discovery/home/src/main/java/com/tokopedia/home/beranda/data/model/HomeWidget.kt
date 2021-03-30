@@ -60,6 +60,9 @@ class HomeWidget(
 
     data class PopularKeywordList(
             @Expose
+            @SerializedName("recommendation_type")
+            val recommendationType: String = "",
+            @Expose
             @SerializedName("keywords")
             val keywords: List<PopularKeyword> = listOf()
     )

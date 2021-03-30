@@ -35,6 +35,7 @@ class GetPopularKeywordUseCase @Inject constructor(
         """
             query PopularKeywords($count: Int!) {
                 popular_keywords(count: $count) {
+                    recommendation_type
                     keywords {
                       url
                       image_url

@@ -17,6 +17,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
 import com.tokopedia.home_component.util.invertIfDarkMode
@@ -178,7 +179,7 @@ class PopularKeywordViewHolder (val view: View,
 
     interface PopularKeywordListener {
         fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels)
-        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int)
-        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int)
+        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel,  positionInWidget: Int)
+        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel,  positionInWidget: Int)
     }
 }

@@ -1212,7 +1212,7 @@ open class HomeViewModel @Inject constructor(
             popularKeywordUseCase.get().setParams()
             val results = popularKeywordUseCase.get().executeOnBackground()
             if (results.data.keywords.isNotEmpty()) {
-                val resultList = convertPopularKeywordDataList(results.data.keywords)
+                val resultList = convertPopularKeywordDataList(results.data)
                 homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListDataModel) {
@@ -1539,10 +1539,18 @@ open class HomeViewModel @Inject constructor(
 // ================================== Mapper Function =========================================
 // ============================================================================================
 
-    private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordDataModel> {
+    private fun convertPopularKeywordDataList(popularKeywordList: HomeWidget.PopularKeywordList): MutableList<PopularKeywordDataModel> {
+        val keywordList = popularKeywordList.keywords
         val dataList: MutableList<PopularKeywordDataModel> = mutableListOf()
-        for (pojo in list) {
-            dataList.add(PopularKeywordDataModel(pojo.url, pojo.imageUrl, pojo.keyword, pojo.productCount))
+        for (pojo in keywordList) {
+            dataList.add(
+                    PopularKeywordDataModel(
+                            recommendationType = popularKeywordList.recommendationType,
+                            applink = pojo.url,
+                            imageUrl = pojo.imageUrl,
+                            title = pojo.keyword,
+                            productCount = pojo.productCount)
+            )
         }
         return dataList
     }
