@@ -54,6 +54,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var sellerStockContainer: LinearLayout? = null
     private var sellerStockType: Typography? = null
     private var sellerStockCount: Typography? = null
+    private var sellerFullfilment: LinearLayout? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var listener: ProductAttachmentListener? = null
@@ -135,6 +136,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         sellerStockContainer = findViewById(R.id.ll_seller_stock_data)
         sellerStockType = findViewById(R.id.tp_seller_stock_category)
         sellerStockCount = findViewById(R.id.tp_seller_stock_count)
+        sellerFullfilment = findViewById(R.id.ll_seller_fullfilment)
     }
 
     private fun initLayoutView() {
@@ -197,6 +199,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindEmptyStockLabel(product)
             bindBackground(product)
             bindRemainingStockSeller(product)
+            bindSellerFullfilment(product)
             bindMargin(product)
             listener.trackSeenProduct(product)
         }
@@ -351,6 +354,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             "Stok:"
         }
         sellerStockType?.text = stockCategory
+    }
+
+    private fun bindSellerFullfilment(product: ProductAttachmentViewModel) {
+        if (commonListener?.isSeller() == true && product.isFullfilment) {
+            sellerFullfilment?.show()
+        } else {
+            sellerFullfilment?.hide()
+        }
     }
 
     private fun bindMargin(product: ProductAttachmentViewModel) {
