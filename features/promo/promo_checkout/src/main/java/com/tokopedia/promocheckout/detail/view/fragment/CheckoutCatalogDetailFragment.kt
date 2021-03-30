@@ -44,7 +44,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     private val couponRedemptionCode_QUOTA_LIMIT_REACHED = 42022
     private val couponRedemptionCode_PROFILE_INCOMPLETE = 42021
     private val couponRedemptionCode_SUCCESS = 200
-    private var colorFromResource: String = ""
 
     @Inject
     lateinit var mPresenter: CheckoutCatalogDetailPresenter

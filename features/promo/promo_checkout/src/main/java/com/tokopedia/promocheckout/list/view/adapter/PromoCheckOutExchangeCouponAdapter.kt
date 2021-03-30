@@ -193,8 +193,4 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
 
     override fun onViewAttachedToWindow(holder: ViewHolder) {
     }
-
-    companion object{
-        private const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
-    }
 }
