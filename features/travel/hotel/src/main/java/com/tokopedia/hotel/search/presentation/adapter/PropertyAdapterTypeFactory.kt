@@ -24,7 +24,7 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
 
     override fun type(viewModel: LoadingModel): Int = R.layout.property_search_shimmer_loading
 
-    fun type(hotelLoadingModel: HotelLoadingModel): Int = R.layout.item_property_horizontal_search_shimmering
+    fun type(viewModel: HotelLoadingModel): Int = HotelLoadingViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -33,7 +33,7 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
             R.layout.property_search_shimmer_loading -> LoadingViewholder(parent)
             EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
             HotelSearchMapItemViewHolder.LAYOUT -> HotelSearchMapItemViewHolder(parent)
-            R.layout.item_property_horizontal_search_shimmering -> HotelLoadingViewHolder(parent)
+            HotelLoadingViewHolder.LAYOUT -> HotelLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

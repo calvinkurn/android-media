@@ -27,14 +27,25 @@
 
             <!-- Invisible View to be used for Coachmark to make Coachmark in the middle of the map-->
             <View
-                android:id="@+id/invisibleView"
-                android:layout_width="6dp"
-                android:layout_height="7dp"
+                android:id="@+id/invisibleViewMap"
+                android:layout_width="@dimen/layout_lvl1"
+                android:layout_height="@dimen/layout_lvl1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.25" />
+
+            <!-- Invisible View to be used for Coachmark to make Coachmark in the bottom of the map-->
+            <View
+                android:id="@+id/invisibleViewBottomSheet"
+                android:layout_width="@dimen/layout_lvl1"
+                android:layout_height="@dimen/layout_lvl1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.90" />
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapHotelSearchMap"
@@ -100,7 +111,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/hotel_search_map_bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
             android:elevation="@dimen/spacing_lvl2"
             app:layout_behavior="@string/bottom_sheet_behavior">

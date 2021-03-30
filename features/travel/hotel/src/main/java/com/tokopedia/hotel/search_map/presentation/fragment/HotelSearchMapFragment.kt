@@ -346,7 +346,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun showLoading() {
         if (adapterCardList.dataSize <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
             hideGetMyLocation()
-            if (isLoadingInitialData){
+            if (isLoadingInitialData) {
                 adapterCardList.clearAllElements()
                 adapterCardList.addElement(HotelLoadingModel(isForHorizontalItem = true))
             }
@@ -426,6 +426,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun setupPersistentBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from<ConstraintLayout>(hotel_search_map_bottom_sheet)
+        bottomSheetBehavior.isFitToContents = false
 
         val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
         bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
@@ -748,13 +749,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 isInAnimation = true
                 val coachMarkItem = arrayListOf(
                         CoachMark2Item(
-                                invisibleView,
+                                invisibleViewMap,
                                 getString(R.string.hotel_search_map_coach_mark_map_title),
                                 getString(R.string.hotel_search_map_coach_mark_map_desc),
                                 CoachMark2.POSITION_BOTTOM
                         ),
                         CoachMark2Item(
-                                topHotelSearchMapListKnob,
+                                invisibleViewBottomSheet,
                                 getString(R.string.hotel_search_map_coach_mark_list_title),
                                 getString(R.string.hotel_search_map_coach_mark_list_desc),
                                 CoachMark2.POSITION_TOP
