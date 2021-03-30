@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
@@ -32,6 +33,7 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
+import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
@@ -150,6 +152,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             getSavedInstanceState = savedInstanceState
         }
         createFragment()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
 
     private fun createFragment() {
@@ -776,27 +783,28 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     }
 
     private fun onNavigateToContact() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper?.checkPermission(it,
-                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper?.onPermissionDenied(it, permissionText)
-                            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper?.checkPermissions(this, getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            //no-op
+                        }
 
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
-                            }
+                        override fun onNeverAskAgain(permissionText: String) {
+                            //no-op
+                        }
 
-                            override fun onPermissionGranted() {
-                                openContactPicker()
-                            }
-                        })
-            }
-        } else {
-            openContactPicker()
+                        override fun onPermissionGranted() {
+                            openContactPicker()
+                        }
+                    })
         }
+    }
+
+    private fun getPermissions() : Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
+        )
     }
 
     private fun openContactPicker() {
@@ -1023,10 +1031,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     createFragment()
                 }
             } else if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
-                if (data != null) {
-                    val contactURI = data.data
-                    val contact = context?.contentResolver?.let { AddEditAddressUtil.convertContactUriToData(it, contactURI) }
+                val contactURI = data?.data
+                var contact: ContactData? = null
+                if (contactURI != null) {
+                    contact = context?.let { AddEditAddressUtil.convertContactUriToData(it.contentResolver, contactURI) }
                 }
+                et_receiver_name.setText(contact?.name)
+                et_phone.setText(contact?.contactNumber)
             } else {
                 // this solves issue when positif ANA changed into negatif ANA
                 if (data == null) {
