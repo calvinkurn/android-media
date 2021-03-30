@@ -32,6 +32,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderPdpCountView(productCardModel)
     renderTextProductName(productCardModel)
     renderLabelGroupVariant(productCardModel)
+    renderTextCategoryAndCostPerUnit(productCardModel)
     renderTextPrice(productCardModel)
     renderDiscount(productCardModel)
     renderLabelPrice(productCardModel)
@@ -47,7 +48,6 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextShipping(productCardModel)
     renderTextETA(productCardModel)
 }
-
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
     if (productCardModel.isShowLabelGimmick())
@@ -178,6 +178,14 @@ private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.La
     typography.tag = LABEL_VARIANT_TAG
 
     addView(typography)
+}
+
+fun View.renderTextCategoryAndCostPerUnit(productCardModel: ProductCardModel) {
+    textViewCategory?.initLabelGroup(productCardModel.getLabelCategory())
+
+    dividerCategory?.showWithCondition(productCardModel.willShowCategoryAndCostPerUnit())
+
+    textViewCostPerUnit?.initLabelGroup(productCardModel.getLabelCostPerUnit())
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {

@@ -140,6 +140,14 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_FULFILLMENT)
     }
 
+    fun getLabelCategory(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY)
+    }
+
+    fun getLabelCostPerUnit(): LabelGroup? {
+        return findLabelGroup(LABEL_COST_PER_UNIT)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
@@ -185,6 +193,16 @@ data class ProductCardModel (
         return labelFulfillment != null
                 && labelFulfillment.title.isNotEmpty()
                 && labelFulfillment.imageUrl.isNotEmpty()
+    }
+
+    fun willShowCategoryAndCostPerUnit(): Boolean {
+        val labelCategory = getLabelCategory()
+        val isShowLabelCategory = labelCategory != null && labelCategory.title.isNotEmpty()
+
+        val labelCostPerUnit = getLabelCostPerUnit()
+        val isShowLabelCostPerUnit = labelCostPerUnit != null && labelCostPerUnit.title.isNotEmpty()
+
+        return isShowLabelCategory && isShowLabelCostPerUnit
     }
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
