@@ -1,269 +1,252 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorHotelSearchMap"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_N0"
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarHotelSearchMap"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorHotelSearchMap"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:theme="@style/ThemeOverlay.AppCompat.Light">
+        android:layout_height="0dp"
+        android:background="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbarHotelSearchMap"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toolbarConstraintContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:contentScrim="@android:color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false">
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/toolbarConstraintContainer"
+            <!-- Invisible View to be used for Coachmark to make Coachmark in the middle of the map-->
+            <View
+                android:id="@+id/invisibleView"
+                android:layout_width="6dp"
+                android:layout_height="7dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.25" />
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapHotelSearchMap"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center"
+                app:cameraZoom="10"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:mapType="normal" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvHorizontalPropertiesHotelSearchMap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.6">
+                android:layout_marginBottom="@dimen/hotel_76dp"
+                android:background="@color/transparent"
+                android:padding="@dimen/spacing_lvl2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_property_search_result_horizontal" />
 
-                <!-- Invisible View to be used for Coachmark to make Coachmark in the middle of the map-->
-                <View
-                    android:id="@+id/invisibleView"
-                    android:layout_width="@dimen/layout_lvl1"
-                    android:layout_height="@dimen/layout_lvl1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+                android:id="@+id/btnGetRadiusHotelSearchMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl7"
+                android:visibility="gone"
+                app:fbType="group"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/mapHotelSearchMap"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    app:cameraZoom="10"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:mapType="normal" />
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/hotel_loader"
+                android:layout_width="@dimen/layout_lvl4"
+                android:layout_height="@dimen/layout_lvl4"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/layout_lvl9"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="circular" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvHorizontalPropertiesHotelSearchMap"
-                    android:padding="@dimen/spacing_lvl2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/hotel_12dp"
-                    android:background="@color/transparent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/item_property_search_result_horizontal" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivGetLocationHotelSearchMap"
+                android:layout_width="@dimen/spacing_lvl8"
+                android:layout_height="@dimen/spacing_lvl8"
+                android:layout_margin="@dimen/spacing_lvl4"
+                app:layout_constraintBottom_toTopOf="@+id/rvHorizontalPropertiesHotelSearchMap"
+                app:layout_constraintRight_toRightOf="parent"
+                app:srcCompat="@drawable/ic_get_location" />
 
-                <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-                    android:id="@+id/btnGetRadiusHotelSearchMap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_lvl7"
-                    android:visibility="gone"
-                    app:fbType="group"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.tokopedia.unifycomponents.LoaderUnify
-                    android:id="@+id/hotel_loader"
-                    android:layout_width="@dimen/layout_lvl4"
-                    android:layout_height="@dimen/layout_lvl4"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/layout_lvl9"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:loader_type="circular" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/hotel_search_map_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0"
+            android:elevation="@dimen/spacing_lvl2"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+
+            <View
+                android:id="@+id/topHotelSearchMapListKnob"
+                android:layout_width="@dimen/bottom_sheet_knob_width"
+                android:layout_height="@dimen/bottom_sheet_knob_height"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/layout_lvl2"
+                android:background="@drawable/bottomsheet_knob_icon"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Loading view for title-->
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/tvHotelSearchListTitleLoader"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_margin="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl5"
+                app:corners="16"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvHotelSearchListTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_lvl4"
+                android:text="@string/hotel_search_map_list_title"
+                android:textColor="@color/Unify_N700_96"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob"
+                app:typographyType="heading_3" />
+
+            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                android:id="@+id/rvVerticalPropertiesHotelSearchMap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/hotel_12dp"
+                android:paddingBottom="@dimen/hotel_12dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvHotelSearchListTitle" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerEmptyResultState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:background="@color/Unify_N0"
+                android:padding="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob"
+                tools:visibility="visible">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivGetLocationHotelSearchMap"
-                    android:layout_width="@dimen/spacing_lvl8"
-                    android:layout_height="@dimen/spacing_lvl8"
-                    android:layout_margin="@dimen/spacing_lvl4"
-                    app:layout_constraintBottom_toTopOf="@+id/rvHorizontalPropertiesHotelSearchMap"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:srcCompat="@drawable/ic_get_location" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <RelativeLayout
-                android:id="@+id/containerFilterHotelSearchMap"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="?attr/actionBarSize"
-                android:background="@color/Unify_N0"
-                app:layout_collapseMode="pin">
-
-                <include
-                    android:id="@+id/shimmeringQuickFilterHotelSearchMap"
-                    layout="@layout/layout_quick_filter_shimmering"
-                    android:paddingBottom="@dimen/spacing_lvl3" />
-
-                <com.tokopedia.sortfilter.SortFilter
-                    android:id="@+id/quickFilterSortHotelSearchMap"
-                    android:layout_width="match_parent"
+                    android:id="@+id/ivHotelSearchMapNoResult"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:clipToPadding="false"
-                    android:elevation="@dimen/spacing_lvl2"
-                    android:paddingStart="@dimen/spacing_lvl4"
-                    android:paddingTop="@dimen/spacing_lvl3"
-                    android:paddingBottom="@dimen/spacing_lvl3"
-                    android:visibility="gone"
-                    app:sort_filter_relationship="AND"
-                    app:sort_filter_type="quick" />
-
-            </RelativeLayout>
-
-            <com.tokopedia.header.HeaderUnify
-                android:id="@+id/headerHotelSearchMap"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/layout_lvl8"
-                app:layout_collapseMode="pin" />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/spacing_lvl2"
-        android:focusableInTouchMode="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nsvContainerHotelSearchMap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/contentContainerHotelSearchMap"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_hotel_rect_rounded_stroke_gray">
-
-                <View
-                    android:id="@+id/topHotelSearchMapListKnob"
-                    android:layout_width="@dimen/bottom_sheet_knob_width"
-                    android:layout_height="@dimen/bottom_sheet_knob_height"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
-                    android:layout_marginBottom="@dimen/layout_lvl2"
-                    android:background="@drawable/bottomsheet_knob_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/tvHotelSearchMapNoResultSubtitle"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <!-- Loading view for title-->
-                <com.elyeproj.loaderviewlibrary.LoaderTextView
-                    android:id="@+id/tvHotelSearchListTitleLoader"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_lvl1"
-                    android:layout_margin="@dimen/spacing_lvl4"
-                    android:layout_marginBottom="@dimen/spacing_lvl5"
-                    app:corners="16"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob" />
+                    app:layout_constraintTop_toTopOf="@id/tvHotelSearchNoResultTitle" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tvHotelSearchListTitle"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tvHotelSearchNoResultTitle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/spacing_lvl4"
-                    android:text="@string/hotel_search_map_list_title"
+                    android:layout_marginStart="@dimen/spacing_lvl2"
+                    android:text="@string/hotel_search_map_no_result_title"
                     android:textColor="@color/Unify_N700_96"
-                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/ivHotelSearchMapNoResult"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob"
-                    app:typographyType="heading_3" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="heading_4" />
 
-                <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-                    android:id="@+id/rvVerticalPropertiesHotelSearchMap"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:paddingTop="@dimen/hotel_12dp"
-                    android:paddingBottom="@dimen/hotel_12dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvHotelSearchListTitle" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/containerEmptyResultState"
-                    android:layout_width="match_parent"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvHotelSearchMapNoResultSubtitle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl2"
-                    android:background="@color/Unify_N0"
-                    android:padding="@dimen/spacing_lvl4"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:text="@string/hotel_search_map_no_result_subtitle"
+                    android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintLeft_toLeftOf="@id/tvHotelSearchNoResultTitle"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob"
-                    tools:visibility="visible">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivHotelSearchMapNoResult"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@id/tvHotelSearchMapNoResultSubtitle"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tvHotelSearchNoResultTitle" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tvHotelSearchNoResultTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_lvl2"
-                        android:text="@string/hotel_search_map_no_result_title"
-                        android:textColor="@color/Unify_N700_96"
-                        app:layout_constraintLeft_toRightOf="@id/ivHotelSearchMapNoResult"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:typographyType="heading_4" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tvHotelSearchMapNoResultSubtitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_lvl2"
-                        android:text="@string/hotel_search_map_no_result_subtitle"
-                        android:textColor="@color/Unify_N700_68"
-                        app:layout_constraintLeft_toLeftOf="@id/tvHotelSearchNoResultTitle"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvHotelSearchNoResultTitle"
-                        app:typographyType="body_3" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    app:layout_constraintTop_toBottomOf="@id/tvHotelSearchNoResultTitle"
+                    app:typographyType="body_3" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
 
-        <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-            android:id="@+id/btnHotelSearchWithMap"
-            android:layout_width="wrap_content"
+            <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+                android:id="@+id/btnHotelSearchWithMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:visibility="gone"
+                app:fbType="group"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/headerHotelSearchMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            android:id="@+id/shimmeringQuickFilterHotelSearchMap"
+            layout="@layout/layout_quick_filter_shimmering"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:elevation="@dimen/spacing_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/headerHotelSearchMap" />
+
+        <com.tokopedia.sortfilter.SortFilter
+            android:id="@+id/quickFilterSortHotelSearchMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_N0"
+            android:clipToPadding="false"
+            android:elevation="@dimen/spacing_lvl2"
+            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl3"
             android:visibility="gone"
-            app:fbType="group"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            app:sort_filter_relationship="AND"
+            app:sort_filter_type="quick" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

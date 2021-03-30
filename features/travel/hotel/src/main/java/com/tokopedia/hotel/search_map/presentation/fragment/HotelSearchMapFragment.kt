@@ -1,28 +1,24 @@
 package com.tokopedia.hotel.search_map.presentation.fragment
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.util.DisplayMetrics
-import android.util.TypedValue
-import android.view.*
-import android.view.animation.DecelerateInterpolator
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,9 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.Behavior.DragCallback
-import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -78,7 +72,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.abs
 
 /**
  * @author by furqan on 01/03/2021
@@ -100,13 +93,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private lateinit var adapterCardList: HotelSearchResultAdapter
 
     private lateinit var googleMap: GoogleMap
-    private lateinit var valueAnimator: ValueAnimator
 
     private var searchDestinationName = ""
     private var searchDestinationType = ""
     private var allMarker: ArrayList<Marker> = ArrayList()
     private var markerCounter: Int = INIT_MARKER_TAG
-    private var screenHeight: Int = 0
     private var isInAnimation: Boolean = false
     private var cardListPosition: Int = SELECTED_POSITION_INIT
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
@@ -115,8 +106,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
-    private lateinit var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
     private val snapHelper: SnapHelper = LinearSnapHelper()
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -170,7 +161,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty()) {
                         changeMarkerState(cardListPosition)
-                    }else{
+                    } else {
                         hideLoader()
                         hideLoadingCardListMap()
                         hideLoading()
@@ -179,7 +170,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Fail -> {
                     hideLoader()
                     hideCollapsingHeader()
-                    animateCollapsingToolbar()
+                    expandBottomSheet()
                     showGetListError(it.throwable)
                 }
             }
@@ -286,29 +277,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupPersistentBottomSheet()
         initRecyclerViewMap()
         initFloatingButton()
         initLocationMap()
         setupToolbarAction()
         setUpTitleAndSubtitle()
-        setupCollapsingToolbar(collapsingHeightSize = COLLAPSING_THIRTEEN_FIFTEEN_OF_SCREEN)
         setupFindWithMapButton()
-        setupEndlessScrollForNestedScrollView()
-        Handler().postDelayed({
-            animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
-        }, ANIMATION_DETAIL_TIMES)
         initGetMyLocation()
 
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
-    }
 
-    private fun removeAnimation(canDrag: Boolean) {
-        val params: CoordinatorLayout.LayoutParams = appBarHotelSearchMap.layoutParams as CoordinatorLayout.LayoutParams
-        val behavior = AppBarLayout.Behavior()
-        behavior.setDragCallback(object : DragCallback() {
-            override fun canDrag(appBarLayout: AppBarLayout): Boolean = canDrag
-        })
-        params.behavior = behavior
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -440,19 +420,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             headerHotelSearchMap.setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
-
-            globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-                containerFilterHotelSearchMap.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
-
-                val bottomMargin = containerFilterHotelSearchMap.measuredHeight - resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                val headerParams = headerHotelSearchMap.layoutParams as CollapsingToolbarLayout.LayoutParams
-                headerParams.setMargins(headerParams.leftMargin, headerParams.topMargin,
-                        headerParams.rightMargin, bottomMargin)
-
-                headerHotelSearchMap.layoutParams = headerParams
-            }
-            containerFilterHotelSearchMap.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
         }
+    }
+
+    private fun setupPersistentBottomSheet() {
+        bottomSheetBehavior = BottomSheetBehavior.from<ConstraintLayout>(hotel_search_map_bottom_sheet)
+        bottomSheetBehavior.isFitToContents = false
+
+        val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
+        bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
     }
 
     private fun setUpTitleAndSubtitle() {
@@ -515,8 +491,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        cardListPosition = getCurrentItemCardList()
-                        changeMarkerState(cardListPosition)
+                    cardListPosition = getCurrentItemCardList()
+                    changeMarkerState(cardListPosition)
                 }
             }
         })
@@ -525,82 +501,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun getCurrentItemCardList(): Int =
             (rvHorizontalPropertiesHotelSearchMap.layoutManager as LinearLayoutManager)
                     .findFirstCompletelyVisibleItemPosition()
-
-    /**
-     * Function to setup collapsing toolbar position
-     *
-     * use peekSize if you want to set the peekSize
-     * use collapsingHeightSize if you want to set the collapsing toolbar by it's height multiplied by some number
-     */
-    private fun setupCollapsingToolbar(peekSize: Int = 0, collapsingHeightSize: Double = 1.0) {
-        activity?.let {
-            val display = it.windowManager.defaultDisplay
-            val size = Point()
-            try {
-                display.getRealSize(size)
-            } catch (error: NoSuchMethodError) {
-                display.getSize(size)
-            }
-
-            screenHeight = size.y
-            val height = screenHeight * collapsingHeightSize
-            val titleBarHeight = getActionBarHeight()
-
-            val tmpHeight = height - peekSize - abs(titleBarHeight) - getSoftButtonsBarHeight()
-
-            val layoutParams = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, tmpHeight.toInt())
-            layoutParams.collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
-            layoutParams.parallaxMultiplier = 0.6f
-            toolbarConstraintContainer.layoutParams = layoutParams
-            toolbarConstraintContainer.requestLayout()
-
-            appBarHotelSearchMap.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-                /**
-                val oneThreeOfScreen = (screenHeight * COLLAPSING_ONE_THREE_OF_SCREEN).toInt()
-
-                if (abs(verticalOffset) < oneThreeOfScreen && !isInAnimation) {
-                showCardListView()
-                } else {
-                hideCardListView()
-                }
-
-                if (abs(verticalOffset) == 0) {
-                showFindNearHereView()
-                showTargetView()
-                } else {
-                hideFindNearHereView()
-                hideTargetView()
-                }*/
-            })
-        }
-    }
-
-    private fun getActionBarHeight(): Int {
-        activity?.let {
-            val tv = TypedValue()
-            if (requireActivity().theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-                return TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-            }
-        }
-        return 0
-    }
-
-    @SuppressLint("NewApi")
-    private fun getSoftButtonsBarHeight(): Int {
-        val metrics = DisplayMetrics()
-        activity?.let {
-            it.windowManager.defaultDisplay.getMetrics(metrics)
-            val usableHeight = metrics.heightPixels
-            it.windowManager.defaultDisplay.getRealMetrics(metrics)
-            val realHeight = metrics.heightPixels
-            return if (realHeight > usableHeight) {
-                realHeight - usableHeight
-            } else {
-                0
-            }
-        }
-        return 0
-    }
 
     private fun setGoogleMap() {
         if (::googleMap.isInitialized) {
@@ -612,9 +512,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveListener(this)
-            googleMap.setOnMapClickListener {
-                removeAnimation(false)
-            }
         }
     }
 
@@ -680,21 +577,21 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun changeMarkerState(position: Int) {
-            resetMarkerState()
-            try {
-                if (!allMarker.isNullOrEmpty()) {
-                    if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
-                        allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
-                        if (cardListPosition == SELECTED_POSITION_INIT){
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
-                        }else{
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
-                        }
+        resetMarkerState()
+        try {
+            if (!allMarker.isNullOrEmpty()) {
+                if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
+                    allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+                    if (cardListPosition == SELECTED_POSITION_INIT) {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                    } else {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
                     }
                 }
-            } catch (t: Throwable) {
-                t.printStackTrace()
             }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
     }
 
     private fun resetMarkerState() {
@@ -714,7 +611,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         allMarker.clear()
     }
 
-    /**Location permission is handled by LocationDetector*/
+    /** Location permission is handled by LocationDetector */
     private fun initGetMyLocation() {
         ivGetLocationHotelSearchMap.setOnClickListener {
             hideCardListView()
@@ -793,7 +690,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
                     searchPropertiesMap.add(LatLng(it.location.latitude.toDouble(), it.location.longitude.toDouble()))
                 }
-            }else{
+            } else {
                 hideLoadingCardListMap()
                 searchPropertiesMap.clear()
             }
@@ -804,7 +701,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }.toList(), searchProperties.isNotEmpty())
 
             if (hotelSearchMapViewModel.searchParam.page == defaultInitialPage) {
-                animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
+                halfExpandBottomSheet()
             }
             hotelSearchMapViewModel.searchParam.page.plus(DEFAULT_INCREMENT_PAGE)
         } else if (adapter.data.isEmpty()) {
@@ -812,7 +709,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             hideSearchWithMap()
             hideHotelResultList()
             showErrorNoResult()
-            animateCollapsingToolbar(COLLAPSING_ONE_FOURTH_OF_SCREEN)
+            expandBottomSheet()
         }
 
         if (isFirstInitializeFilter) {
@@ -845,48 +742,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         adapterCardList.addElement(dataCollection)
     }
 
-    private fun setupValueAnimator() {
-        val params: CoordinatorLayout.LayoutParams = appBarHotelSearchMap.layoutParams as CoordinatorLayout.LayoutParams
-        val behavior: AppBarLayout.Behavior? = params.behavior as AppBarLayout.Behavior?
-
-        behavior?.let {
-            valueAnimator = ValueAnimator.ofInt()
-            valueAnimator.interpolator = DecelerateInterpolator()
-            valueAnimator.addUpdateListener { animation ->
-                behavior.topAndBottomOffset = animation.animatedValue as Int
-                appBarHotelSearchMap.requestLayout()
-            }
-        }
-    }
-
-    private fun animateCollapsingToolbar(collapsingHeightSize: Double = 1.0) {
-        if (!::valueAnimator.isInitialized) {
-            setupValueAnimator()
-        }
-
-        activity?.let {
-            val display = it.windowManager.defaultDisplay
-            val size = Point()
-            try {
-                display.getRealSize(size)
-            } catch (error: NoSuchMethodError) {
-                display.getSize(size)
-            }
-            screenHeight = size.y
-            val height = screenHeight.toDouble() * collapsingHeightSize
-
-            val params: CoordinatorLayout.LayoutParams = appBarHotelSearchMap.layoutParams as CoordinatorLayout.LayoutParams
-            val behavior: AppBarLayout.Behavior? = params.behavior as AppBarLayout.Behavior?
-
-            behavior?.let {
-                valueAnimator.cancel()
-                valueAnimator.setIntValues(behavior.topAndBottomOffset, height.toInt() * -1)
-                valueAnimator.duration = ANIMATION_DETAIL_TIMES
-                valueAnimator.start()
-            }
-        }
-    }
-
     private fun showCoachMark() {
         context?.let {
             if (PersistentCacheManager.instance.get(KEY_SEARCH_MAP_COACHMARK, Boolean::class.java, false) != true) {
@@ -899,7 +754,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                                 CoachMark2.POSITION_BOTTOM
                         ),
                         CoachMark2Item(
-                                contentContainerHotelSearchMap,
+                                topHotelSearchMapListKnob,
                                 getString(R.string.hotel_search_map_coach_mark_list_title),
                                 getString(R.string.hotel_search_map_coach_mark_list_desc),
                                 CoachMark2.POSITION_TOP
@@ -915,9 +770,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 coachmark.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                         if (currentIndex == COACHMARK_LIST_STEP_POSITION) {
-                            animateCollapsingToolbar(COLLAPSING_FULL_EXPAND)
+                            collapseBottomSheet()
                         } else if (currentIndex == COACHMARK_FILTER_STEP_POSITION) {
-                            animateCollapsingToolbar(COLLAPSING_HALF_OF_SCREEN)
+                            halfExpandBottomSheet()
                         }
                     }
                 })
@@ -956,15 +811,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotel_loader.gone()
     }
 
-    private fun showGetMylocation(){
+    private fun showGetMylocation() {
         ivGetLocationHotelSearchMap.visible()
     }
 
-    private fun hideGetMyLocation(){
+    private fun hideGetMyLocation() {
         ivGetLocationHotelSearchMap.gone()
     }
 
-    private fun changeHeaderTitle(){
+    private fun changeHeaderTitle() {
         headerHotelSearchMap.setTitle(R.string.hotel_header_title_nearby)
     }
 
@@ -1136,8 +991,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         btnHotelSearchWithMap.addItem(wrapper)
         btnHotelSearchWithMap.setOnClickListener {
-            nsvContainerHotelSearchMap.scrollTo(0, 0)
-            animateCollapsingToolbar(COLLAPSING_FULL_EXPAND)
+            rvVerticalPropertiesHotelSearchMap.scrollTo(0, 0)
+            collapseBottomSheet()
         }
 
         rvVerticalPropertiesHotelSearchMap.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -1149,15 +1004,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 }
             }
         })
-    }
-
-    private fun setupEndlessScrollForNestedScrollView() {
-        nsvContainerHotelSearchMap.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            if (scrollY == ((v?.getChildAt(0)?.measuredHeight ?: 0) - (v?.measuredHeight
-                            ?: 0)) && scrollY > oldScrollY) {
-                endlessRecyclerViewScrollListener.loadMoreNextPage()
-            }
-        }
     }
 
     private fun showHotelResultList() {
@@ -1184,18 +1030,23 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         containerEmptyResultState.gone()
     }
 
+    private fun expandBottomSheet() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun halfExpandBottomSheet() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+    }
+
+    private fun collapseBottomSheet() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
     companion object {
         private const val KEY_SEARCH_MAP_COACHMARK = "key_hotel_search_map_coachmark"
         private const val COACHMARK_LIST_STEP_POSITION = 1
         private const val COACHMARK_FILTER_STEP_POSITION = 2
         private const val DAYS_A_YEAR: Long = 365
-
-        private const val ANIMATION_DETAIL_TIMES: Long = 500
-
-        private const val COLLAPSING_FULL_EXPAND = 0.0
-        private const val COLLAPSING_HALF_OF_SCREEN = 1.0 / 2.0
-        private const val COLLAPSING_ONE_FOURTH_OF_SCREEN = 1.0 / 5.0
-        private const val COLLAPSING_THIRTEEN_FIFTEEN_OF_SCREEN = 14.5 / 15.0
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
         private const val REQUEST_CHANGE_SEARCH_HOTEL = 105
@@ -1224,7 +1075,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 
-        private const val MAPS_STREET_LEVEL_ZOOM : Float = 15f
+        private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
