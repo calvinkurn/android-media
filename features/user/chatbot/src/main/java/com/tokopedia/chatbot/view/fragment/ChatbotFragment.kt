@@ -285,8 +285,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 this,
-                this,
-                setDateIndicator()
+                this
         )
     }
 

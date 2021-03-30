@@ -23,7 +23,6 @@ import java.util.*
 abstract class CustomChatbotMessageViewHolder(
         itemView: View?,
         protected val listener: ChatLinkHandlerListener,
-        private val dateIndicator: (String) -> Unit,
 ) : BaseChatViewHolder<MessageViewModel>(itemView) {
 
     protected open val customChatLayout: CustomChatbotChatLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.customChatLayout)

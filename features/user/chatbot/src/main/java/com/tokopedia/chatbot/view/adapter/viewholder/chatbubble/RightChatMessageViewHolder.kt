@@ -10,9 +10,8 @@ import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHo
 
 open class RightChatMessageViewHolder(
         itemView: View?,
-        listener: ChatLinkHandlerListener,
-        dateIndicator: (String) -> Unit,
-) : CustomChatbotMessageViewHolder(itemView, listener, dateIndicator) {
+        listener: ChatLinkHandlerListener
+) : CustomChatbotMessageViewHolder(itemView, listener) {
 
     protected open val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
