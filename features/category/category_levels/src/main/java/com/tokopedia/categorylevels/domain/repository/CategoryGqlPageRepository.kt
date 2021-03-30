@@ -26,7 +26,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
 
     init {
         componentMap["chip-horizontal-scroll"] = ComponentNames.NavigationChips.componentName
-//        componentMap["product-card-horizontal-scroll"] = ComponentNames.ProductCardCarousel.componentName
+        componentMap["product-card-horizontal-scroll"] = ComponentNames.CategoryBestSeller.componentName
         componentMap["product-list-filter"] = ComponentNames.QuickFilter.componentName
         componentMap["product-list-infinite-scroll"] = ComponentNames.ProductCardRevamp.componentName
     }
