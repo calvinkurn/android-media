@@ -7,6 +7,7 @@ import com.newrelic.agent.android.NewRelic
 
 class NewRelicInteractionActCall : ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        NewRelic.startInteraction(activity.localClassName)
         NewRelic.setInteractionName(activity.localClassName)
     }
 
