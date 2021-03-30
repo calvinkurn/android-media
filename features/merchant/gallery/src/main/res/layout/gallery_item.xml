@@ -10,7 +10,7 @@
         app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="0dp">
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/galleryImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
