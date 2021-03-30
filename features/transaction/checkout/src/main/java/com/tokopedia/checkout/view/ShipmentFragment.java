@@ -133,6 +133,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -214,8 +215,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutTradeInAnalytics checkoutTradeInAnalytics;
     @Inject
     CheckoutEgoldAnalytics checkoutEgoldAnalytics;
-    @Inject
-    CheckoutCampaignTimerHelper checkoutCampaignTimerHelper;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
@@ -2610,9 +2609,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void setCampaignTimer() {
         CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
         if (timer != null && timer.getShowTimer()) {
-            checkoutCampaignTimerHelper.setCampaignTimer(this, checkoutAnalyticsCourierSelection, cdView, shipmentPresenter.getCampaignTimer());
+            long diff = TimeHelper.timeBetweenRFC3339(timer.getTimerServer(), timer.getTimerExpired());
             cdLayout.setVisibility(View.VISIBLE);
             cdText.setText(timer.getTimerDescription());
+            cdView.setRemainingMilliseconds(diff);
+
+            cdView.setOnFinish(() -> {
+                ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, ShipmentFragment.this);
+                dialog.show(getFragmentManager(), "expired dialog");
+                return Unit.INSTANCE;
+            });
         }
     }
 
