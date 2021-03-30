@@ -22,12 +22,9 @@ abstract class BaseCheckoutActivity : BaseSimpleActivity(), HasComponent<BaseApp
         if (intent.extras != null) {
             setupBundlePass(intent.extras)
         }
-        initInjector()
         super.onCreate(savedInstanceState)
         initView()
     }
-
-    protected abstract fun initInjector()
 
     /**
      * Kalalu memang ada bundle data dari intent, mau diapain?

@@ -21,10 +21,6 @@ data class UserAccountDataModel(
         @Expose
         var profile: ProfileModel = ProfileModel(),
 
-        @SerializedName("tokopoints")
-        @Expose
-        var tokopoints: TokopointsModel = TokopointsModel(),
-
         @SerializedName("openDebitSettings")
         @Expose
         var debitInstant: DebitInstantModel = DebitInstantModel(),

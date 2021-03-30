@@ -4,7 +4,7 @@
 <!-- "shadow" -->
 <item>
     <shape android:shape="oval" >
-        <solid android:color="@color/Unify_Static_Black"/>
+        <solid android:color="@color/Unify_N700"/>
         <size
             android:width="@dimen/dp_36"
             android:height="@dimen/dp_36" />
@@ -14,7 +14,7 @@
 
 <item>
     <shape android:shape="oval" >
-        <solid android:color="@color/Unify_Static_White"/>
+        <solid android:color="@color/Unify_N0"/>
         <size
             android:width="@dimen/dp_35"
             android:height="@dimen/dp_35" />
