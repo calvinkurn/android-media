@@ -32,7 +32,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    //still used for CountDownView
     //noinspection GradleNotAllowed
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.akamaiBotLib)
