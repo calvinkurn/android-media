@@ -55,7 +55,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var sellerStockType: Typography? = null
     private var sellerStockCount: Typography? = null
     private var sellerFullfilment: LinearLayout? = null
-    private var btnUpdateStock: LinearLayout? = null
+    private var btnUpdateStockContainer: LinearLayout? = null
+    private var btnUpdateStock: UnifyButton? = null
     private var footerContainer: LinearLayout? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
@@ -139,7 +140,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         sellerStockType = findViewById(R.id.tp_seller_stock_category)
         sellerStockCount = findViewById(R.id.tp_seller_stock_count)
         sellerFullfilment = findViewById(R.id.ll_seller_fullfilment)
-        btnUpdateStock = findViewById(R.id.ll_seller_update_stock)
+        btnUpdateStockContainer = findViewById(R.id.ll_seller_update_stock)
+        btnUpdateStock = findViewById(R.id.btn_update_stock)
         footerContainer = findViewById(R.id.ll_footer)
     }
 
@@ -205,6 +207,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindSellerRemainingStock(product)
             bindSellerFullfilment(product)
             bindSellerUpdateStock(product)
+            bindSellerUpdateStockClick(product)
             bindMargin(product)
             listener.trackSeenProduct(product)
         }
@@ -348,7 +351,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindSellerStockCount(product: ProductAttachmentViewModel) {
+    fun bindSellerStockCount(product: ProductAttachmentViewModel) {
         sellerStockCount?.text = product.remainingStock.toString()
     }
 
@@ -371,9 +374,15 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindSellerUpdateStock(product: ProductAttachmentViewModel) {
         if (product.canShowFooter || commonListener?.isSeller() == false) {
-            btnUpdateStock?.hide()
+            btnUpdateStockContainer?.hide()
         } else {
-            btnUpdateStock?.show()
+            btnUpdateStockContainer?.show()
+        }
+    }
+
+    private fun bindSellerUpdateStockClick(product: ProductAttachmentViewModel) {
+        btnUpdateStock?.setOnClickListener {
+            listener?.updateProductStock(product, adapterPosition)
         }
     }
 
@@ -589,6 +598,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     companion object {
+        const val PAYLOAD_UPDATE_STOCK = 1
+
         private const val DEFAULT_WIDTH_MULTIPLIER = 0.83f
         private val LAYOUT = R.layout.item_topchat_product_card
     }

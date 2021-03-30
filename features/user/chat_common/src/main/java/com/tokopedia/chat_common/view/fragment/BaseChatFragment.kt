@@ -276,5 +276,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) {}
 
+    override fun updateProductStock(product: ProductAttachmentViewModel, adapterPosition: Int) { }
+
     override fun onItemClicked(t: Visitable<*>?) {}
 }

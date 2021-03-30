@@ -28,6 +28,7 @@ open class TopchatProductAttachmentViewHolder constructor(
         if (payloads.isEmpty()) return
         when (payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED -> bind(element)
+            SingleProductAttachmentContainer.PAYLOAD_UPDATE_STOCK -> bindStock(element)
         }
     }
 
@@ -37,6 +38,10 @@ open class TopchatProductAttachmentViewHolder constructor(
                 product, adapterPosition, listener, deferredAttachment,
                 searchListener, commonListener, adapterListener, useStrokeSender
         )
+    }
+
+    private fun bindStock(element: ProductAttachmentViewModel) {
+        productView?.bindSellerStockCount(element)
     }
 
     fun bind(element: ProductAttachmentViewModel, isUnifyBroadcast: Boolean) {

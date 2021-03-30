@@ -9,10 +9,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.ReplyChatViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -35,6 +32,7 @@ import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
@@ -108,6 +106,7 @@ open class TopChatRoomPresenter @Inject constructor(
     var newUnreadMessage = 0
     var thisMessageId: String = ""
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
+    val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
 
     private lateinit var webSocketUrl: String
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
@@ -745,6 +744,13 @@ open class TopChatRoomPresenter @Inject constructor(
                     }
                 }
         )
+    }
+
+    override fun addOngoingUpdateProductStock(
+            product: ProductAttachmentViewModel, adapterPosition: Int
+    ) {
+        val result = UpdateProductStockResult(product, adapterPosition)
+        onGoingStockUpdate[product.productId] = result
     }
 
     private fun onLoadBackgroundFromCache(url: String) {

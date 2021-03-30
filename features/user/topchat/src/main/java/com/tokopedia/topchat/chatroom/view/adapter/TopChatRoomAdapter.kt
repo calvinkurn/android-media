@@ -16,6 +16,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
+import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
@@ -23,6 +24,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
@@ -310,6 +312,17 @@ class TopChatRoomAdapter constructor(
         }
     }
 
+    fun updateProductStock(updateProductResult: UpdateProductStockResult, stockCount: Int) {
+        val itemPair = getUpToDateUiModelPosition(
+                updateProductResult.lastKnownPosition, updateProductResult.product
+        )
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        val item = itemPair.second ?: return
+        item.remainingStock = stockCount
+        notifyItemChanged(position, SingleProductAttachmentContainer.PAYLOAD_UPDATE_STOCK)
+    }
+
     private fun postUpdateReviewState(
             lastKnownPosition: Int, review: ReviewUiModel,
             state: Int, reviewClickAt: Int
@@ -377,7 +390,7 @@ class TopChatRoomAdapter constructor(
         return visitables.isNotEmpty() && visitables.size >= 2
     }
 
-    private inline fun <reified T : Visitable<TopChatTypeFactory>> getUpToDateUiModelPosition(
+    private inline fun <reified T : Visitable<*>> getUpToDateUiModelPosition(
             lastKnownPosition: Int, element: T
     ): Pair<Int, T?> {
         val item = visitables.getOrNull(lastKnownPosition)

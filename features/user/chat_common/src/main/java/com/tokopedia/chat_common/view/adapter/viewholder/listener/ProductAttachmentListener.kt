@@ -16,4 +16,5 @@ interface ProductAttachmentListener {
     fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit)
     fun onClickRemoveFromWishList(productId: String, success: () -> Unit)
     fun trackClickProductThumbnail(product: ProductAttachmentViewModel)
+    fun updateProductStock(product: ProductAttachmentViewModel, adapterPosition: Int)
 }

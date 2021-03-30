@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -187,5 +188,7 @@ interface TopChatContract {
                 onSuccessAddToCart: (data: DataModel) -> Unit,
                 onError: (msg: String) -> Unit
         )
+
+        fun addOngoingUpdateProductStock(product: ProductAttachmentViewModel, adapterPosition: Int)
     }
 }

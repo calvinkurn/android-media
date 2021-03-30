@@ -66,6 +66,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -78,7 +79,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -179,6 +179,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private val REQUEST_ATTACH_VOUCHER = 117
     private val REQUEST_REPORT_USER = 118
     private val REQUEST_REVIEW = 119
+    private val REQUEST_UPDATE_STOCK = 120
 
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
@@ -405,6 +406,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     onSuccessGetMessageId()
             )
         }
+    }
+
+    override fun updateProductStock(product: ProductAttachmentViewModel, adapterPosition: Int) {
+        val intent = RouteManager.getIntent(
+                context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
+                product.productId, product.shopId.toString()
+        )
+        presenter.addOngoingUpdateProductStock(product, adapterPosition)
+        startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
 
     private fun initFireBase() {
@@ -942,6 +952,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
             REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
             REQUEST_REVIEW -> onReturnFromReview(data, resultCode)
+            REQUEST_UPDATE_STOCK -> onReturnFromUpdateStock(data, resultCode)
+        }
+    }
+
+    private fun onReturnFromUpdateStock(data: Intent?, resultCode: Int) {
+        if (resultCode == RESULT_OK && data != null) {
+            val productId = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID)
+            val stockCount = data.getIntExtra(
+                    ProductManageCommonConstant.EXTRA_UPDATED_STOCK, 0
+            )
+            val updateProductResult = presenter.onGoingStockUpdate[productId] ?: return
+            adapter.updateProductStock(updateProductResult, stockCount)
+            presenter.onGoingStockUpdate.remove(productId)
         }
     }
 
