@@ -208,6 +208,7 @@ class NewShopPageFragment :
     var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
+    private var isTabClickByUser = false
     private var isFollowing: Boolean = false
     private var tabPosition = TAB_POSITION_HOME
     private var stickyLoginView: StickyLoginView? = null
@@ -1226,7 +1227,13 @@ class NewShopPageFragment :
         val selectedPosition = getSelectedTabPosition()
         tabLayout.removeAllTabs()
         listShopPageTabModel.forEach {
-            tabLayout.addTab(tabLayout.newTab().setIcon(it.tabIconInactive),false)
+            val tab = tabLayout.newTab().apply {
+                view.setOnClickListener {
+                    isTabClickByUser = true
+                }
+                setIcon(it.tabIconInactive)
+            }
+            tabLayout.addTab(tab,false)
         }
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
@@ -1251,15 +1258,17 @@ class NewShopPageFragment :
                     tabLayout.getTabAt(position)?.let{
                         viewPagerAdapter?.handleSelectedTab(it, true)
                     }
-                    shopPageTracking?.clickTab(
-                            shopViewModel?.isMyShop(shopId) == true,
-                            listShopPageTabModel[position].tabTitle,
-                            CustomDimensionShopPage.create(
-                                    shopId,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
-                            )
-                    )
+                    if(isTabClickByUser) {
+                        shopPageTracking?.clickTab(
+                                shopViewModel?.isMyShop(shopId) == true,
+                                listShopPageTabModel[position].tabTitle,
+                                CustomDimensionShopPage.create(
+                                        shopId,
+                                        shopPageHeaderDataModel?.isOfficial ?: false,
+                                        shopPageHeaderDataModel?.isGoldMerchant ?: false
+                                )
+                        )
+                    }
                     if (isSellerMigrationEnabled(context)) {
                         if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
                             val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
@@ -1275,6 +1284,7 @@ class NewShopPageFragment :
                     viewPager?.post {
                         checkIfShouldShowOrHideScrollToTopButton(position)
                     }
+                    isTabClickByUser = false
                 }
         })
     }
