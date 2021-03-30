@@ -41,7 +41,6 @@ interface DynamicProductDetailListener {
     fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun onSwipePicture(type: String, url: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
     fun shouldShowWishlist(): Boolean
-    fun shareProductFromContent(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
      * ProductInfoViewHolder

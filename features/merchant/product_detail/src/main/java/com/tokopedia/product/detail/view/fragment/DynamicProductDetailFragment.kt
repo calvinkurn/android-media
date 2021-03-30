@@ -2098,11 +2098,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
-    override fun shareProductFromContent(componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickShareFromContent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
-        shareProduct()
-    }
-
     private fun shareProductFromToolbar() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
