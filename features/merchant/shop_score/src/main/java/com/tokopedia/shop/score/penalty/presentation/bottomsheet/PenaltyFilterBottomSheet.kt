@@ -2,7 +2,9 @@ package com.tokopedia.shop.score.penalty.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -55,15 +57,17 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isFullpage = true
+        clearContentPadding = true
         showKnob = true
         isDragable = true
         showCloseIcon = false
         initView(view)
+        setupRecyclerView()
         observePenaltyFilter()
         observeUpdateFilterSelected()
         observeResetFilter()
         clickBtnApplied()
+        clickBtnReset()
     }
 
     override fun onChipsFilterItemClick(nameFilter: String, chipType: String, position: Int) {
@@ -136,6 +140,15 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         }
     }
 
+    private fun clickBtnReset() {
+        context?.let {
+            bottomSheetAction.text = it.resources.getString(R.string.reset_filter_penalty)
+        }
+        bottomSheetAction.setOnClickListener {
+            shopPenaltyViewModel.resetFilterSelected()
+        }
+    }
+
     private fun showHideBottomSheetReset() {
         if (checkIsSelected()) {
             bottomSheetAction.show()
@@ -155,13 +168,24 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         return false
     }
 
+    private fun setupRecyclerView() {
+        rvPenaltyFilter?.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = filterPenaltyAdapter
+        }
+    }
+
     private fun initView(view: View) {
-        rvPenaltyFilter = view.findViewById(R.id.rvPenaltyFilter)
+        rvPenaltyFilter = view.findViewById(R.id.rvPenaltyFilterBottomSheet)
         btnShowPenalty = view.findViewById(R.id.btnShowPenalty)
     }
 
     fun setPenaltyFilterFinishListener(penaltyFilterFinishListener: PenaltyFilterFinishListener) {
         this.penaltyFilterFinishListener = penaltyFilterFinishListener
+    }
+
+    interface PenaltyFilterFinishListener {
+        fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>)
     }
 
     companion object {
@@ -170,9 +194,5 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         fun newInstance(): PenaltyFilterBottomSheet {
             return PenaltyFilterBottomSheet()
         }
-    }
-
-    interface PenaltyFilterFinishListener {
-        fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>)
     }
 }

@@ -23,6 +23,9 @@ class ItemDetailPenaltyFilterViewHolder(view: View,
     override fun bind(element: ItemDetailPenaltyFilterUiModel?) {
         with(itemView) {
             tvPeriodDetailPenalty?.text = getString(R.string.period_date_detail_penalty, element?.periodDetail.orEmpty())
+            sortFilterDetailPenalty?.parentListener = {
+                filterPenaltyListener.onParentSortFilterClick()
+            }
             sortFilterDetailPenalty?.setupSortFilter(element?.itemSortFilterWrapperList)
 
             ic_detail_penalty_filter?.setOnClickListener {
@@ -49,10 +52,6 @@ class ItemDetailPenaltyFilterViewHolder(view: View,
                     filterPenaltyListener.onChildSortFilterItemClick(it, adapterPosition)
                 }
             }
-        }
-
-        parentListener = {
-            filterPenaltyListener.onParentSortFilterClick()
         }
     }
 }

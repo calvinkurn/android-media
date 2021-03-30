@@ -55,14 +55,12 @@ class ShopPenaltyViewModel @Inject constructor(
 
     fun getFilterPenalty(penaltyFilterList: List<PenaltyFilterUiModel>) {
         launchCatchError(block = {
+            penaltyFilterUiModel.clear()
             if (penaltyFilterUiModel.isNotEmpty()) {
-                penaltyFilterUiModel.clear()
                 penaltyFilterUiModel.addAll(penaltyFilterList)
             } else {
-                penaltyFilterUiModel = penaltyMapper.mapToPenaltyFilterBottomSheet().toMutableList()
+                penaltyFilterUiModel.addAll(penaltyMapper.mapToPenaltyFilterBottomSheet())
             }
-            itemSortFilterWrapperList = penaltyFilterUiModel.filterIsInstance<ItemDetailPenaltyFilterUiModel>()
-                    .firstOrNull()?.itemSortFilterWrapperList?.toMutableList() ?: mutableListOf()
             _filterPenaltyData.value = Success(penaltyFilterUiModel)
         }, onError = {
             _filterPenaltyData.value = Fail(it)

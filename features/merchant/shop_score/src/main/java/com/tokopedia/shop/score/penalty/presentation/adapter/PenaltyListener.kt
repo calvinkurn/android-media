@@ -1,6 +1,5 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter
 
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 
 interface FilterPenaltyListener {

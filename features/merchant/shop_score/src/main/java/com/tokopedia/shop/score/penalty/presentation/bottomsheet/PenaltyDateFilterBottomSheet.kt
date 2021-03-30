@@ -15,6 +15,7 @@ import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
 import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.unifycomponents.TextFieldUnify
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,7 +60,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
         clearContentPadding = true
         isFullpage = true
         bottomSheetClose.setImageDrawable(context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_BACK) })
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.PenaltyDateFilterDialogStyle)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.PenaltyFilterDialogStyle)
         initView(view)
         setupCalendarView()
         setDefaultSelectedDate()
@@ -114,7 +115,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
     private fun selectEndDate(date: Date) {
         endDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         endDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
-        tfEndDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
+        tfEndDate?.textFieldInput?.setText(getSelectedDate(date, PATTER_DATE_EDT))
         tfEndDate?.textFieldInput?.setSelection(tfEndDate?.textFieldInput?.text?.length ?: 0)
         tfEndDate?.textFieldInput?.requestFocus()
     }
@@ -122,7 +123,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
     private fun selectStartDate(date: Date) {
         startDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         startDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
-        tfStartDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
+        tfStartDate?.textFieldInput?.setText(getSelectedDate(date, PATTER_DATE_EDT))
         tfStartDate?.textFieldInput?.setSelection(tfStartDate?.textFieldInput?.text?.length ?: 0)
         tfStartDate?.textFieldInput?.requestFocus()
     }
@@ -143,7 +144,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
                         } else if ((minDate != null || maxDate == null) && (date.after(minDate) || !date.before(minDate))) {
                             maxDate = date
                             selectEndDate(date)
-                            GlobalScope.launch {
+                            GlobalScope.launch(Dispatchers.Main) {
                                 delay(300)
                                 calenderFilterListener?.onSaveCalendarClicked(Pair(startDateParam, startDateEditText), Pair(endDateParam, endDateEditText))
                                 dismissAllowingStateLoss()
@@ -169,7 +170,6 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
 
     companion object {
         const val PenaltyDateFilterBottomSheetTag = "PenaltyDateFilterBottomSheetTag"
-        const val PATTERN_DATE = "EEE, dd MMM"
         const val PATTER_DATE_EDT = "dd MMM yyyy"
         const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
 

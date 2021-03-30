@@ -44,6 +44,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         observePenaltyPage()
+        observeUpdateSortFilter()
     }
 
     override fun getScreenName(): String = ""
@@ -85,8 +86,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem, position: Int) {
-        val updatedState = sortFilterItem.type == ChipsUnify.TYPE_SELECTED
-        viewModelShopPenalty.updateSortFilterSelected(sortFilterItem.title.toString(), sortFilterItem.type, )
+        viewModelShopPenalty.updateSortFilterSelected(sortFilterItem.title.toString(), sortFilterItem.type)
     }
 
     override fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>) {
@@ -118,6 +118,16 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     override fun onDestroy() {
         removeObservers(viewModelShopPenalty.penaltyPageData)
         super.onDestroy()
+    }
+
+    private fun observeUpdateSortFilter() {
+        observe(viewModelShopPenalty.updateSortFilterSelected) {
+            when (it) {
+                is Success -> {
+                    penaltyPageAdapter.updateItemSortFilterPenalty(it.data)
+                }
+            }
+        }
     }
 
     private fun observePenaltyPage() {

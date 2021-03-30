@@ -13,7 +13,7 @@
         android:layout_alignParentEnd="true" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPenaltyFilter"
+        android:id="@+id/rvPenaltyFilterBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/spacing_lvl3"

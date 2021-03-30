@@ -34,6 +34,13 @@ abstract class BaseBottomSheetShopScore: BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onPause() {
+        childFragmentManager.fragments.forEach {
+            if (it is BottomSheetUnify) it.dismiss()
+        }
+        super.onPause()
+    }
+
     private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
         val view = inflater.inflate(getLayoutResId(), container, false)
         setChild(view)
