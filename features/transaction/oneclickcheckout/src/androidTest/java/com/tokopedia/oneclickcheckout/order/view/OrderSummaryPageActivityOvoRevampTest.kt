@@ -55,6 +55,7 @@ class OrderSummaryPageActivityOvoRevampTest {
             assertProductCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
                     hasShopBadge = true,
                     productName = "Product1",
                     productPrice = "Rp100.000",
@@ -95,6 +96,7 @@ class OrderSummaryPageActivityOvoRevampTest {
             assertProductCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
                     hasShopBadge = true,
                     productName = "Product1",
                     productPrice = "Rp100.000",
@@ -126,6 +128,7 @@ class OrderSummaryPageActivityOvoRevampTest {
             assertProductCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
                     hasShopBadge = true,
                     productName = "Product1",
                     productPrice = "Rp100.000",
@@ -165,6 +168,7 @@ class OrderSummaryPageActivityOvoRevampTest {
             assertProductCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
                     hasShopBadge = true,
                     productName = "Product1",
                     productPrice = "Rp100.000",

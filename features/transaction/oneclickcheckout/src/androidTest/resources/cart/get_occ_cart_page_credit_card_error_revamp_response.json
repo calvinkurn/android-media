@@ -571,10 +571,17 @@
                 "tnc_info": "\u003cul\u003e\u003cli\u003e\u003ch1\u003eKonversi Cicilan 0%\u003c/h1\u003e\u003col\u003e\u003cli\u003ePihak bank butuh 7-14 hari kerja untuk mengubah tagihanmu dari pembayaran penuh (full payment) jadi cicilan\u003c/li\u003e\u003cli\u003eJika tagihan kartu kreditmu terbit dan ditagih secara penuh, kamu bisa lakukan pembayaran minimum dulu.\u003c/li\u003e\u003c/ol\u003e\u003c/li\u003e\u003cli\u003e\u003ch1\u003eBiaya Layanan\u003c/h1\u003e\u003cp\u003eBiaya layanan ini diberlakukan untuk tujuan pemeliharaan sistem dan peningkatan layanan dalam bertransaksi melalui Tokopedia.\u003c/p\u003e\u003c/li\u003e\u003c/ul\u003e"
               },
               "error_message": {
-                "message": "Kedaluwarsa",
+                "message": "",
                 "button": {
-                  "text": "Ubah",
+                  "text": "",
                   "link": ""
+                }
+              },
+              "occ_revamp_error_message": {
+                "message": "Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.",
+                "button": {
+                  "text": "",
+                  "action": "change_payment"
                 }
               },
               "ticker_message": "",
@@ -672,7 +679,7 @@
             "change_cc_link": "https://pay.tokopedia.com/v3/cardlist",
             "callback_url": "https://api.tokopedia.com/cart/v2/cart/v2/receiver"
           },
-          "error_ticker": "",
+          "error_ticker": "Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.",
           "prompt": {
             "type": "",
             "title": "",
