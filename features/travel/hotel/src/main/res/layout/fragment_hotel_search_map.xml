@@ -7,6 +7,7 @@
     android:background="@color/Unify_N0"
     android:orientation="vertical">
 
+    <!-- Start of Coordinator Layout for Maps and BottomSheet-->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorHotelSearchMap"
         android:layout_width="match_parent"
@@ -17,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Start of Constraint Layout for Content (Maps, Horizontal Properties List, etc) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbarConstraintContainer"
             android:layout_width="match_parent"
@@ -92,7 +94,9 @@
                 app:srcCompat="@drawable/ic_get_location" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- End of Constraint Layout for Content (Maps, Horizontal Properties List, etc) -->
 
+        <!-- Start of Constraint Layout for Bottom Sheet -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/hotel_search_map_bottom_sheet"
             android:layout_width="match_parent"
@@ -208,8 +212,12 @@
                 app:layout_constraintRight_toRightOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <!-- End of Constraint Layout for Bottom Sheet -->
 
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!-- End of Coordinator Layout for Maps and BottomSheet-->
+
+    <!-- Start of Linear Layout for Header (Toolbar and Quick Filter) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -248,5 +256,6 @@
             app:sort_filter_type="quick" />
 
     </LinearLayout>
+    <!-- End of Linear Layout for Header (Toolbar and Quick Filter) -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
