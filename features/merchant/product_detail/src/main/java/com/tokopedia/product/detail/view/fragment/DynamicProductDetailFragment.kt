@@ -2101,8 +2101,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun shareProductFromToolbar() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
+            shareProduct()
         }
-        shareProduct()
     }
 
     private fun shareProduct() {
@@ -2514,6 +2514,9 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         navToolbar?.apply {
             setIcon(
                     IconBuilder()
+                            .addIcon(IconList.ID_SHARE) {
+                                shareProductFromToolbar()
+                            }
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
