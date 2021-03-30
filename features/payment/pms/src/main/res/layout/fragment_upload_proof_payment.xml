@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <RelativeLayout
         android:id="@+id/container_main_upload"
@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="@dimen/dp_16"
-                android:background="@color/grey_200"
+                android:background="@color/Unify_N50"
                 android:padding="@dimen/dp_8">
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -215,6 +215,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/dp_10"
                     android:scaleType="centerCrop"
+                    android:contentDescription="@null"
                     app:srcCompat="@drawable/ic_coupon_image" />
 
                 <androidx.appcompat.widget.AppCompatImageView

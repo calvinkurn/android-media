@@ -3,7 +3,7 @@
     
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
     <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
-    <string name="product_manage_stock_info_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="product_manage_stock_info_description">Stock 0 tidak muncul di calon pembeli</string>
     <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_save">Simpan</string>
@@ -24,7 +24,12 @@
     <string name="content_desc_quickEditStockQuantityEditor">input stok</string>
     <string name="content_desc_quickEditStockSaveButton">button simpan stok</string>
 
-    <string name="power_merchant_variant_stock_description">Varian ini tidak bisa dilihat calon pembeli karena stok 0.</string>
-    <string name="power_merchant_stock_warning_ticker_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="product_manage_stock_warning_ticker_description">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
+    <string name="product_manage_stock_ticker_description"><![CDATA[<b>1.</b> Hanya menampilkan stok di lokasi utama. Atur alokasi stok di lokasi lain lewat desktop. <br><br> <b>2.</b> Perubahan status berlaku untuk semua lokasi.]]></string>
+    <string name="product_manage_closable_stock_ticker_description">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
+    <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan stok lokasi utama</string>
+    <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
 
+    <string name="product_manage_campaign_stock_open_campaign">Buka halaman Campaign lewat laptop atau komputer untuk ubah detail stok campaign.</string>
+    <string name="product_manage_campaign_label">Campaign</string>
 </resources>

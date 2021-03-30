@@ -1,7 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
-import com.tokopedia.sellerhomecommon.domain.model.TableDataModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
@@ -13,7 +14,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 30/06/20
  */
 
-class TableMapper @Inject constructor() {
+class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
 
     companion object {
         /**
@@ -27,13 +28,14 @@ class TableMapper @Inject constructor() {
         private const val MAX_ROWS_PER_PAGE = 5
     }
 
-    fun mapRemoteModelToUiModel(tableData: List<TableDataModel>, isFromCache: Boolean): List<TableDataUiModel> {
-        return tableData.map {
+    override fun mapRemoteDataToUiData(response: GetTableDataResponse, isFromCache: Boolean): List<TableDataUiModel> {
+        return response.fetchSearchTableWidgetData.data.map {
             TableDataUiModel(
                     dataKey = it.dataKey,
                     error = it.errorMsg,
                     dataSet = getTableDataSet(it.data),
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

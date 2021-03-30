@@ -6,7 +6,6 @@ import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.submitdevice.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.devicefingerprint.submitdevice.utils.InsertDeviceInfoPayloadCreator
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -21,9 +20,6 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
     @Inject
     lateinit var insertDeviceInfoPayloadCreator: InsertDeviceInfoPayloadCreator
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     init {
         DaggerDeviceFingerprintComponent.builder()
                 .deviceFingerprintModule(DeviceFingerprintModule(appContext))
@@ -36,18 +32,12 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
             return Result.failure()
         }
         return withContext(Dispatchers.IO) {
-            var result = Result.success()
+            var result: Result
             try {
                 useCase.setParams(insertDeviceInfoPayloadCreator.create())
-                useCase.execute(
-                        onSuccess = {
-                            result = Result.success()
-                            setSuccessSubmitDevice()
-                        },
-                        onError = {
-                            result = Result.retry()
-                        }
-                )
+                useCase.executeOnBackground()
+                result = Result.success()
+                setSuccessSubmitDevice()
             } catch (e: Exception) {
                 result = Result.retry()
             }

@@ -26,6 +26,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.datamodel.WishlistActionData
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.BulkRemoveWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -87,6 +88,8 @@ open class WishlistViewModel @Inject constructor(
     var currentPage = 1
         private set
 
+    private var additionalParams: WishlistAdditionalParamRequest = WishlistAdditionalParamRequest()
+
     val wishlistLiveData: LiveData<List<WishlistDataModel>> get() = wishlistData
     val isInBulkModeState: LiveData<Boolean> get() = isInBulkMode
     val isWishlistState: LiveData<Status> get() = wishlistState
@@ -120,15 +123,16 @@ open class WishlistViewModel @Inject constructor(
      * Calls this function will override search keyword, also reset page number state,
      * and clear all existing wishlist data
      */
-    fun getWishlistData(keyword: String = "", shouldShowInitialPage: Boolean = false){
+    fun getWishlistData(keyword: String = "", additionalParams: WishlistAdditionalParamRequest = WishlistAdditionalParamRequest(), shouldShowInitialPage: Boolean = false){
         if (shouldShowInitialPage) loadInitialPage()
 
         keywordSearch = keyword
         currentPage = 1
+        this.additionalParams = additionalParams
 
         launchCatchError(wishlistCoroutineDispatcherProvider.ui(), block = {
             val data = getWishlistUseCase.getData(
-                    GetWishlistParameter(keyword, currentPage))
+                    GetWishlistParameter(keyword, currentPage, additionalParams))
             if (!data.isSuccess) {
                 isWishlistErrorInFirstPage.value = true
 
@@ -172,7 +176,7 @@ open class WishlistViewModel @Inject constructor(
         currentPage++
 
         launchCatchError(wishlistCoroutineDispatcherProvider.ui(), block = {
-            val data = getWishlistUseCase.getData(GetWishlistParameter(keywordSearch, currentPage))
+            val data = getWishlistUseCase.getData(GetWishlistParameter(keywordSearch, currentPage, additionalParams))
             if (!data.isSuccess || data.items.isEmpty()) {
                 wishlistData.value = removeLoadMore()
                 currentPage--

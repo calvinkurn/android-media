@@ -16,9 +16,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
@@ -136,7 +133,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     // config collapse & expand tablayout
     override fun onContentScrolled(dy: Int) {
-        if(dy == 0) return;
+        if(dy == 0) return
 
         tabLayout?.adjustTabCollapseOnScrolled(dy)
     }
@@ -147,7 +144,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             if (!useNewInbox) {
                 setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             }
-            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
         toolbar?.run {
@@ -249,6 +246,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
+    }
+
     private fun init(view: View) {
         configStatusBar(view)
         configMainToolbar(view)
@@ -303,7 +308,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                        .addIcon(IconList.ID_MESSAGE) {}
+                        .addIcon(getInboxIcon()) {}
 
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) {}

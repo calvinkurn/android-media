@@ -199,6 +199,7 @@
     <string name="error_maximal_name">Nama terlalu panjang</string>
     <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimum 8 angka</string>
     <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 8 karakter</string>
+    <string name="error_maximal_password">Kata sandi terlalu panjang, maksimum 32 karakter</string>
     <string name="minimal_8_character">minimum 8 karakter</string>
     <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>

@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoring
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringType
@@ -95,7 +96,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         searchBarView?.setSearchTextBoxListener(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
-        onQueryTextChangeListener("")
+        setInitialKeyword()
     }
 
     private fun initView() {
@@ -105,6 +106,16 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         suggestionFragment = supportFragmentManager.findFragmentById(R.id.search_suggestion) as? SuggestionSearchFragment
         initialStateFragment = supportFragmentManager.findFragmentById(R.id.search_initial_state) as? InitialSearchFragment
     }
+
+    private fun setInitialKeyword() {
+        getKeywordFromIntent().let { keyword ->
+            proceedSearchKeyword(keyword)
+            searchBarView?.setKeyword(keyword)
+        }
+    }
+
+    private fun getKeywordFromIntent(): String =
+            intent?.data?.getQueryParameter(GlobalSearchSellerConstant.KEYWORD).orEmpty()
 
     override fun onQueryTextChangeListener(keyword: String) {
         viewModel.getTypingSearch(keyword)

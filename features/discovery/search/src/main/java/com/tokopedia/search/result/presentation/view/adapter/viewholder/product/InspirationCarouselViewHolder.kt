@@ -14,7 +14,7 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
@@ -26,7 +26,7 @@ import kotlinx.coroutines.*
 class InspirationCarouselViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel>(itemView), CoroutineScope {
+) : AbstractViewHolder<InspirationCarouselDataView>(itemView), CoroutineScope {
 
     companion object {
         @LayoutRes
@@ -48,16 +48,16 @@ class InspirationCarouselViewHolder(
         }
     }
 
-    override fun bind(element: InspirationCarouselViewModel) {
+    override fun bind(element: InspirationCarouselDataView) {
         bindTitle(element)
         bindContent(element)
     }
 
-    private fun bindTitle(element: InspirationCarouselViewModel) {
+    private fun bindTitle(element: InspirationCarouselDataView) {
         itemView.inspirationCarousel?.inspirationCarouselTitle?.text = element.title
     }
 
-    private fun bindContent(element: InspirationCarouselViewModel) {
+    private fun bindContent(element: InspirationCarouselDataView) {
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
             if (it.itemDecorationCount == 0) it.addItemDecoration(createItemDecoration())
 
@@ -74,7 +74,7 @@ class InspirationCarouselViewHolder(
         }
     }
 
-    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselViewModel.Option, productList: List<ProductCardModel>) {
+    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselDataView.Option, productList: List<ProductCardModel>) {
         launch {
             try {
                 layoutManager = createLayoutManager()
@@ -87,15 +87,15 @@ class InspirationCarouselViewHolder(
         }
     }
 
-    private fun createGridProductList(option: InspirationCarouselViewModel.Option): List<Visitable<*>> {
+    private fun createGridProductList(option: InspirationCarouselDataView.Option): List<Visitable<*>> {
         val list = mutableListOf<Visitable<*>>()
         if(option.shouldAddBannerCard()) list.add(createBannerOption(option))
         list.addAll(option.product)
         return list
     }
 
-    private fun createBannerOption(option: InspirationCarouselViewModel.Option): InspirationCarouselViewModel.Option {
-        return InspirationCarouselViewModel.Option(
+    private fun createBannerOption(option: InspirationCarouselDataView.Option): InspirationCarouselDataView.Option {
+        return InspirationCarouselDataView.Option(
                 title = option.title,
                 layout = LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER,
                 bannerImageUrl = option.bannerImageUrl,
@@ -116,7 +116,7 @@ class InspirationCarouselViewHolder(
         layoutParams = carouselLayoutParams
     }
 
-    private fun InspirationCarouselViewModel.Option.Product.toProductCardModel(): ProductCardModel {
+    private fun InspirationCarouselDataView.Option.Product.toProductCardModel(): ProductCardModel {
         return ProductCardModel(
                 productImageUrl = imgUrl,
                 productName = name,
@@ -134,7 +134,7 @@ class InspirationCarouselViewHolder(
         return list.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
-    private fun configureSeeAllButton(option: InspirationCarouselViewModel.Option) {
+    private fun configureSeeAllButton(option: InspirationCarouselDataView.Option) {
         showSeeAllButton()
         bindSeeAllButtonListener(option)
     }
@@ -143,7 +143,7 @@ class InspirationCarouselViewHolder(
         itemView.inspirationCarouselSeeAllButton?.visibility = View.VISIBLE
     }
 
-    private fun bindSeeAllButtonListener(option: InspirationCarouselViewModel.Option) {
+    private fun bindSeeAllButtonListener(option: InspirationCarouselDataView.Option) {
         itemView.inspirationCarouselSeeAllButton?.setOnClickListener {
             inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
         }
@@ -172,8 +172,8 @@ class InspirationCarouselViewHolder(
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return InspirationCarouselItemDecoration(
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) ?: 0,
         )
     }
 

@@ -44,6 +44,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
+import java.lang.StringBuilder
 import javax.inject.Inject
 
 /**
@@ -363,7 +364,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             val sortChip = recommendationViewModel.filterSortChip.value?.data?.filterAndSort?.sortChip?.find { it.isSelected }?.value
             val selectedSort = if(sortChip != null && sortChip != DEFAULT_VALUE_SORT) 1 else 0
             sortFilterView.parentListener = { openBottomSheetFilterRevamp(dynamicFilterModel) }
-            sortFilterView.indicatorCounter = dynamicFilterModel.data.filter.filter { it.title in filters.map { it.title } }.getCountSelected() + selectedSort
+            sortFilterView.indicatorCounter = dynamicFilterModel.data.filter.getOptions().getCountSelected() + selectedSort
         }
     }
 
@@ -383,8 +384,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     private fun onQuickFilterClick(item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip){
         adapter.clearAllElements()
-        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), ref, source, productId)
-        item.toggleSelected()
+        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), source, productId)
         SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
     }
 
@@ -476,9 +476,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         adapter.clearAllElements()
-        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, ref, source, productId)
+        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, source, productId)
         filterSortBottomSheet = null
-        val selectedFilterString = applySortFilterModel.selectedFilterMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
+        val mapFilter = mutableMapOf<String, String>()
+        applySortFilterModel.selectedFilterMapParameter.forEach {
+            if(mapFilter.containsKey(it.key)) mapFilter[it.key] = mapFilter[it.key] + "&" + it.value
+            else mapFilter[it.key] = it.value
+        }
+        val selectedFilterString = mapFilter.map { it.key + "=" + it.value }.joinToString("&")
+
         val selectedSortString = applySortFilterModel.selectedSortMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
         applySortFilterModel.mapParameter.forEach {
             SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId(), "${it.key}=${it.value}")

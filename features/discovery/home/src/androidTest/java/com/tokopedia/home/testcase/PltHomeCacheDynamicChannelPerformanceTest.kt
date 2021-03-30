@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.home.R
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
@@ -67,9 +68,7 @@ class PltHomeCacheDynamicChannelPerformanceTest {
     fun testPageLoadTimePerformance() {
         onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         val datasource = checkDataSource()
-        if (isCacheDataSource(datasource)) {
-            savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, datasource)
-        }
+        savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, datasource)
 
         activityRule.activity.finishAndRemoveTask()
     }
@@ -87,7 +86,7 @@ class PltHomeCacheDynamicChannelPerformanceTest {
     }
 
     private fun savePLTPerformanceResultData(tag: String, datasource: String) {
-        val performanceData = activityRule.activity.getPltPerformanceResultData()
+        var performanceData = activityRule.activity.getPltPerformanceResultData()
         performanceData?.let {
             writePLTPerformanceFile(
                     activityRule.activity,

@@ -72,6 +72,8 @@ dependencies {
     implementation project(rootProject.ext.features.profileCommon)
     implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.seamlessLoginCommon)
+    implementation project(rootProject.ext.features.pushNotificationCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.playServicesDependencies.location
 
     implementation rootProject.ext.unifyDependencies.icon
@@ -112,7 +114,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.parceler
 
     // UI Test
-    androidTestImplementation rootProject.ext.testDependencies.couroutinesTest
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
@@ -128,6 +130,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi

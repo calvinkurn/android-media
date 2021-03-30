@@ -8,7 +8,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductInfoDataModel
 import com.tokopedia.product.detail.view.adapter.ProductDetailInfoAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.info.util.ProductDetailInfoConstant
@@ -24,7 +26,7 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
         private const val DESCRIPTION_LIMIT = 300
     }
 
-    private var adapter = ProductDetailInfoAdapter()
+    private var adapter = ProductDetailInfoAdapter(listener)
     private var rvProductDetail: RecyclerView? = itemView.findViewById(R.id.rv_product_detail_info)
 
     override fun bind(element: ProductDetailInfoDataModel) {
@@ -32,13 +34,13 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
         renderDescription(element)
 
         view.product_detail_info_seemore?.setOnClickListener {
-            listener.onSeeMoreDescriptionClicked(element.dataContent)
+            listener.onSeeMoreDescriptionClicked(element.dataContent, getComponentTrackData(element))
         }
     }
 
     private fun renderListInfo(element: ProductDetailInfoDataModel) = with(view) {
         rvProductDetail?.adapter = adapter
-        adapter.updateData(element.getShowableData())
+        adapter.updateData(element.getShowableData(), getComponentTrackData(element))
     }
 
     private fun renderDescription(element: ProductDetailInfoDataModel) = with(view) {
@@ -50,7 +52,7 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
             (product_detail_info_seemore.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
 
             val textDesc = if (descFormatted.length > DESCRIPTION_LIMIT) {
-                MethodChecker.fromHtml(descFormatted.replace("(\r\n|\n)".toRegex(), ""))
+                MethodChecker.fromHtml(descFormatted.replace("(\r\n|\n)".toRegex(), " "))
             } else descFormatted
 
             product_detail_info_description.text = textDesc
@@ -60,4 +62,7 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
             product_detail_info_description?.hide()
         }
     }
+
+    private fun getComponentTrackData(element: ProductDetailInfoDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "", element?.name ?: "", adapterPosition + 1)
 }

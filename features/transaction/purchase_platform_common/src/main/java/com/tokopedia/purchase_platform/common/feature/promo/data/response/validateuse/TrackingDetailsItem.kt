@@ -10,7 +10,7 @@ data class TrackingDetailsItem(
 	val promoDetailsTracking: String = "",
 
 	@field:SerializedName("product_id")
-	val productId: Int = 0,
+	val productId: Long = 0,
 
 	@field:SerializedName("promo_codes_tracking")
 	val promoCodesTracking: String = ""

@@ -39,11 +39,11 @@ class BankSettingButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         if (isJoinedRekeningPremium) {
             drawable.alpha = DISABLED_DRAWABLE_ALPHA
             tvBankAccountSettingTitle
-                    .setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_32))
+                    .setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         } else {
             drawable.alpha = ENABLE_DRAWABLE_ALPHA
             tvBankAccountSettingTitle
-                    .setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+                    .setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             itemView.setOnClickListener {
                 if (numberOfAccount < MAX_BANK_ACCOUNT_LIMIT)
                     openAddBankAccount()

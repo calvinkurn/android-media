@@ -26,16 +26,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxDailyFragment
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
-import com.tokopedia.gamification.pdp.presentation.*
+import com.tokopedia.gamification.pdp.presentation.GamiPdpRecommendationListener
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.track.TrackApp
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -47,18 +46,17 @@ class PdpGamificationView : LinearLayout {
     private var spanCount = 2
 
     private lateinit var tvTitle: Typography
-    private lateinit var recyclerView: RecyclerView
+    lateinit var recyclerView: RecyclerView
     private lateinit var loadingView: LinearLayout
     private lateinit var viewFlipper: ViewFlipper
-    var fragment: Fragment? = null
+    var fragment: GiftBoxDailyFragment? = null
 
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private lateinit var dataList: ArrayList<Visitable<*>>
-    var pageName = ""
-    var shopId = 0L
+    var shopId = ""
     var userId: String? = null
-    var errorListener: PdpErrorListener?=null
+    var errorListener: PdpErrorListener? = null
 
 
     @Inject
@@ -168,10 +166,11 @@ class PdpGamificationView : LinearLayout {
                             handler.postDelayed({
                                 updateList(oldSize, it.data)
                             }, delay)
-                        }else{
+                        } else {
                             val oldSize = dataList.size
-                            if(oldSize == 0 && it.data?.isNullOrEmpty()){
+                            if (oldSize == 0 && it.data?.isNullOrEmpty()) {
                                 viewModel.useEmptyShopId = true
+                                viewModel.shopId = ""
                                 viewModel.getProducts(0)
                             }
                         }
@@ -182,31 +181,36 @@ class PdpGamificationView : LinearLayout {
                 }
             }
         })
-
-        viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.ERROR -> {
-                    hidePdp()
-                }
-            }
-        })
     }
 
-    fun hidePdp(){
+    fun hidePdp() {
         errorListener?.onError()
     }
 
     fun updateList(oldSize: Int, list: List<Recommendation>) {
+        var isFirstLoad = false
+        if(oldSize == 0 && list.isNotEmpty()){
+            isFirstLoad = true
+        }
+
         dataList.addAll(oldSize, list)
         adapter.notifyItemRangeInserted(oldSize, list.size)
         scrollListener.updateStateAfterGetData()
+        sendPdpRecomImpressionEvent(isFirstLoad)
     }
 
-    fun getRecommendationParams(pageName: String, shopId: Long) {
-        this.pageName = pageName
+    private fun sendPdpRecomImpressionEvent(isFirstLoad:Boolean){
+        if(isFirstLoad) {
+            GtmEvents.impressionProductRecom(userId)
+        }
+    }
+
+    fun getRecommendationParams(pageName: String, shopId: String, isShopIdEmpty: Boolean) {
         this.shopId = shopId
         viewModel.shopId = shopId
-        viewModel.getRecommendationParams(pageName)
+        viewModel.pageName = pageName
+        viewModel.useEmptyShopId = isShopIdEmpty
+        viewModel.getProducts(0)
     }
 
 
@@ -215,13 +219,45 @@ class PdpGamificationView : LinearLayout {
         val listener = object : GamiPdpRecommendationListener {
 
             override fun onProductImpression(item: RecommendationItem, position: Int) {
+                val productIdString: String = if (item.productId != null) {
+                    item.productId.toString()
+                } else {
+                    ""
+                }
+                GtmEvents.impressionProductRecomItem(viewModel.userSession.userId,
+                        productIdString,
+                        item.recommendationType,
+                        position,
+                        "",
+                        "",
+                        item.name,
+                        "",
+                        item.price,
+                        item.isTopAds)
             }
 
             override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
 
+                val productIdString: String = if (item.productId != null) {
+                    item.productId.toString()
+                } else {
+                    ""
+                }
+                GtmEvents.clickProductRecomItem(viewModel.userSession.userId,
+                        productIdString,
+                        item.recommendationType,
+                        position[0],
+                        "",
+                        "",
+                        item.name,
+                        "",
+                        item.price,
+                        item.isTopAds)
+
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
                 if (position.isNotEmpty()) intent.putExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, position[0])
                 fragment?.startActivityForResult(intent, Wishlist.REQUEST_FROM_PDP)
+                fragment?.performAutoApply()
             }
 
             override fun onProductImpression(item: RecommendationItem) {
@@ -267,6 +303,6 @@ object Wishlist {
     const val REQUEST_FROM_PDP = 138
 }
 
-interface PdpErrorListener{
+interface PdpErrorListener {
     fun onError()
 }

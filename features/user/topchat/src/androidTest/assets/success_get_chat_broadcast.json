@@ -1,0 +1,196 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1593320444778",
+    "maxReplyTime": "1593320444778",
+    "block": {
+      "blockedUntil": "",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "attachmentIDs": "439369778,439369779,439369780",
+    "contacts": [
+      {
+        "role": "User",
+        "userId": 7977933,
+        "shopId": 5665147,
+        "interlocutor": true,
+        "name": "Seller Testing",
+        "tag": "Penjual",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/7977933/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 29240564,
+        "shopId": 5665147,
+        "interlocutor": false,
+        "name": "Buyer Testing",
+        "tag": "Pengguna",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5665147/shop_xs_thumbnail/desktop",
+        "domain": "lorealparis",
+        "isOfficial": true,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_os_icon.png",
+        "status": {
+          "timestamp": 1607337686,
+          "timestampStr": "1607337686",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "28 Jun 2020",
+        "chats": [
+          {
+            "time": "12:00",
+            "replies": [
+              {
+                "msgId": 932022280,
+                "replyId": "8367013655",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778964000",
+                "status": 1,
+                "attachmentID": 439318912,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 439318912,
+                  "type": 1,
+                  "attributes": "{\"url\":\"https://chat.tokopedia.com/tc/v1/redirect/763cc64b928702b648782e9c10adde1668157b29644421981cb0ca7ef78c6ec30f6ba2fcd1e36c50d174dbc1174a1d511967da4b9d168caaffb0e0cb0b1fa2c7717ab5516c7a3545bb9d34d5f8240f4a1dbb9233137c7dc116751e8c5e8aa5ac59fd379080fb7c58ed0a2e2e8fe2ea2395652eea3b1956444fcdb12ac39ff27c64ddb5cb4376a48034affe393cc5819ceb796600d952777eaa04ec7d7156c42c0cf3ec8eed479b0ca726d9739c75ec4bb3b39fe0a0b9c3770bb99e1fee686d5e1e5eb36271311d445e8e68c565fa268eb93ae9309d385d9d5acc9391\",\"image_url\":\"https://ecs7.tokopedia.net/img/LUZQDL/2020/6/28/dcd23df7-75b5-4bdf-ad5d-82df18cf6ba8.jpg\",\"url_2\":\"https://chat.tokopedia.com/tc/v1/redirect/1a4a061f1d9492eedeec021c0ea4147e23b1cb8891b66fcfbfebc4f3f94d231cb6d87038ce6ec5b71d5663462f0230cb9ebbc6b343a680b2fb050124fe8b4a1109dfeb89d127b18f0a1decc2c1c9cba01aeb6295dde646b58cbca7697febb7356784ace0d5ce2ea8ff73efdd20e4717fab1a77ccfc60ce3e5e64d6ddfcdb91424114be2675c8f185a4e63c03e3cb5d9916ee07d0062aa1be017a2db8bf44c749a94db72dd35863ef680ee0dfd12b33bef5a253c912e25d54d9ad3df2d81ac415a147768c9f788441609dd1436790952f66508b41a7ad8de0d0b8ef94b4398b37\",\"image_url_thumbnail\":\"https://ecs7.tokopedia.net/img/cache/100-square/LUZQDL/2020/6/28/dcd23df7-75b5-4bdf-ad5d-82df18cf6ba8.jpg\"}",
+                  "fallback": {
+                    "message": "Tokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.",
+                    "html": "\u003cdiv\u003eTokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.\u003c/div\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013659",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "\u003ca rel\u003d\"nofollow\" target\u003d\"_blank\" href\u003d\"https://chat.tokopedia.com/tc/v1/redirect/15c471a19344a304fa1aa71c91d67135aa676757501e46c112dfd934644d6ebfc110b63597a061313899088c6c111ac98ea9e7c0302025e0bffb7c06999b9861cc2d8e92b9af73a6914607d7a61e5568e1db2742ad68db3de61f3a7cf76ab11f147ee5d233bac206006d1468a44590860d31ab0841cf79fe897929a9893c0a360f770ad0b1d7351b7a58fd0f7f87444244416af9d07c66c59ebd90c47c294be1db6368b74b4d955d840df49da891b0ec2e94427d69b5a46f9ef9b002d164028a68f32eb8a57413e2ae4a44fcf9fef7cfbf04801c6798534306b1a69b05faa4acf7bfdc8b20e75ded9d3f07790609ad878c9356ed006280ce1a95be4aae0f0bdcdbb6c43a343cf2fd69ad650c8c3293b7bea16fc20b6e55a78dd60848812d4ded959e17771d3b0d9c16e2208adc818ff0ec862e646f3bc017ebc3c5f0d06720274358a13e96e932c6c72b2efa60fbd9ea6344e97677615860aaf8c1b493059f921a1beba8cc03d5fe3bcf78ba3b52844d0513e9f16c8dbf7f7f15e612c5afd94911594b412d42d5b923482f5ed36a546ea7f2b0d1af9a78f5251911fdad92cb915c757b7a5ac06a92b9608382464e47f29b735366d7be23105a8094ab1e2368e26af8205d375ee78bda430a6e93c018759473471403fd9cc0ba24926c55cff2115de4fdbd35a1545d79e0467e4e045c2e6a30801e40fb4345d3003b634c835bd159fb95c3ae272a355deab29347310240c418564ef28e761507daddeda4e6d843f9d0c9dfaecae00b6628620a2b86065dd90d9aaaabf6c9173da830c7aa39dcc3bb0a91cfac35bcb72faea3bf4230259e3f9f0e614ee0e7fa1f8147291a372d7aed13aaab3d4380b3277bb6fc50c5ffaa872e1821799c82ec521925048b5adc5e43336c9f64149755b1979db0b542f782f18e4b1446833df3e1c4a90032c320e081110f9f52edf80d19ba2550a13e5a03c2109d042d5cdd93e5884b84c92a3d2e75b0e1461c24ce79728d3bbd6bfbc7a837dec2eae25e5bd44dbff35376b35da075bbee1a43c28fc9e59848e7302b990b10bbb6facd7d847cb0e4daccdeff8d750bced2e86abfde88d2e71d39ab3c051336038065c1ad75a45606ebbdbae6b4e985b089e0785b4c8d6bf937ada5202c59e6ae98d9e7372a907a076c54fc42151156917bc4c9f5ab51a981477f8ded74a3a2958405\"\u003ehttps://chat.tokopedia.com/tc/v1/redirect/ec04dd2c223e4ea55983ab930ccb986b27de5a85187df51bf174f4f411a95b814e0365edb4734268e8fbdba2c4493d1287fdf3038f17b0ddad207d09245434cd0a3a6d94b98c264ead2cc57485e8bd3935c635d6e3b00bd606a70d3a421fac54d2035700c05e65d189cfc47f874451d4246f359283bb7a3ff9944824acba2ffe092652db4846d070c4e11ed648a0a2b61b2539da5bc68036d1f182f4bc9468288548aeced66e61a84d1ae6bb5550707329a3f5c2d1d320f388010c014a4500346cfed2d08d57face6ccf3dfa37e350cb66761616da364631325bbaeabdb1aa2858343e0c\u003c/a\u003e",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778966000",
+                "status": 1,
+                "attachmentID": 439369778,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 439369778,
+                  "type": 3,
+                  "attributes": "{\"product_id\":445955139,\"product_profile\":{\"name\":\"L\u0027Oreal Paris Mascara Waterproof Lash Paradise Black\",\"price\":\"Rp 155.000\",\"price_int\":0,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"url\":\"https://chat.tokopedia.com/tc/v1/redirect/ec04dd2c223e4ea55983ab930ccb986b27de5a85187df51bf174f4f411a95b814e0365edb4734268e8fbdba2c4493d1287fdf3038f17b0ddad207d09245434cd0a3a6d94b98c264ead2cc57485e8bd3935c635d6e3b00bd606a70d3a421fac54d2035700c05e65d189cfc47f874451d4246f359283bb7a3ff9944824acba2ffe092652db4846d070c4e11ed648a0a2b61b2539da5bc68036d1f182f4bc9468288548aeced66e61a84d1ae6bb5550707329a3f5c2d1d320f388010c014a4500346cfed2d08d57face6ccf3dfa37e350cb66761616da364631325bbaeabdb1aa2858343e0c\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":5665147,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":null,\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "https://www.tokopedia.com/lorealparis/l-oreal-paris-mascara-waterproof-lash-paradise-black"
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013660",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "\u003ca rel\u003d\"nofollow\" target\u003d\"_blank\" href\u003d\"https://chat.tokopedia.com/tc/v1/redirect/7cf15f888b59d33f3502f4c1c6a5388dddf27c63557248559e7cf6dfc00d590e53ef880584bec69547c9845cf9ede4904ced50cd73b19553ca7556cfa32481f87998883c6e462fd97fda47d78e6c970b6ddbae3a030aa230fd00a4675d80552db8d8249417865b40aa2b44194203626423c912061be30943606790014c73e5cc81606149174c32c6b16c85b899fe78f4d131d26df17397567a3f48a5123dca865ee3fca755a8c76eb774ea2e0f69e1c28c44a5c1ed690374f9db0c690356bf7067bee8320ee86f5ba21f056d75572ac707f8dfedd84b6d1c3e651560df67432556d315441d4a7c1cbff557a5b3ba76cda2d0323198607e16c0ac325c9207afc3b3185d330f5eb905f33a9461af691ce27f94cc4f5500ab8de18cd7c6e41fd9e2ce9a7db9e0f7c978e0f24ad0d706fa3a13c143122352276ff001064f9c201733c3592b99f778b2411c131592923f54b13633b4c92195b66a0cf7635f6a4d847c61447f60457b45074bc8e2a05fb92ce0668524cf509ea496fe1af05e850bdf91ea7ec86e6f1b9c77e26b69619b2de10eda193dd6e33143a7c7f0f5ecdd5568e960a1e38a574c6a4de50e116d2d5d68b10ccd8f4326e935fbad5f43d8f75db40d61a24a33ce2f7876aa8b5ff79f1f7509301f9452c49c9ed72a6bcc3c4e3d3a2d6129365ca1c62e272bce7da99031a5082c4fc452fa66f359b9e2e79a140721b126a9b315290d9d15d6939e15a9bb815444ee06b558d97335dec3e73475ceec43bf605c8e56a0742b40925a22a42dad49fbdbfcdbf44059219f601439ccf3ea1d507c006094e69b26ed50044a4b2639e67f2b72a6fdd1ed6a5c3c8769d918d262e96a1b07a594b380768ea77f784f2123fe3943bc9e362ff4f12fc49ecb08151264ff0db0463ba0ace702156ad705e8afd43e9155ca3924e8acbb217ef765630b274288e82229348b110e243106f35c80039797c4e03868a6633946d68ee83250380051bd9e1b99f0233444a2999e7a6975e56d96af3b43efb694002d31c765d26d9c8f1ddaa10c6f6c5459ac5c5b20a65a056d94be18a74d0bd5b65406014dc742e1ae9c1cf40c26a63e7ff4750bc8681cd90ca6251385d8954113be02f74191f037806bf48a9cac81554afe23d87a21007c0921fa2bad9be08ade2d0a4c48eb10465b2bb16e1a0174695627df2f313671e71ce6\"\u003ehttps://chat.tokopedia.com/tc/v1/redirect/cef6dcf6d2e87849694b624ed91096ff86b367cbe77841bfd7dff02e965371c3eb938d5b23012f6cfa625f10c3d6a40253fe7035e1479436b143bd80e1cccc9aa1dce82f1a713f8f42d6691a35048be7bad0a013993bce84d566e8bff48db3b5a587755e04520a67ebb814135851af2e6705e41b060fa46f6bf91338f7a3ab19c29b976330ff75ca743b9e75477ad72359e925db8acc58a23405c8c843983a2d9499623fdea3d7533b0dd2c76eda88276a859a42cfe6cf7cc03f001518d063c6614f6bf9c2ff73d38a431730c8265b91db053bd91ba3caf589bd25acc7fc8463a60beac3\u003c/a\u003e",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778967000",
+                "status": 1,
+                "attachmentID": 439369779,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 439369779,
+                  "type": 3,
+                  "attributes": "{\"product_id\":737169439,\"product_profile\":{\"name\":\"L\u0027Oreal Paris Extraordinary Oil Gold + Crystal Essence 65ml+Free Scarf\",\"price\":\"Rp 494.000\",\"price_int\":0,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/4/21/29240564/29240564_15a0bab2-b3c8-4e31-9b60-409bd9cae920_1300_1300\",\"url\":\"https://chat.tokopedia.com/tc/v1/redirect/cef6dcf6d2e87849694b624ed91096ff86b367cbe77841bfd7dff02e965371c3eb938d5b23012f6cfa625f10c3d6a40253fe7035e1479436b143bd80e1cccc9aa1dce82f1a713f8f42d6691a35048be7bad0a013993bce84d566e8bff48db3b5a587755e04520a67ebb814135851af2e6705e41b060fa46f6bf91338f7a3ab19c29b976330ff75ca743b9e75477ad72359e925db8acc58a23405c8c843983a2d9499623fdea3d7533b0dd2c76eda88276a859a42cfe6cf7cc03f001518d063c6614f6bf9c2ff73d38a431730c8265b91db053bd91ba3caf589bd25acc7fc8463a60beac3\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":5665147,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":null,\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "https://www.tokopedia.com/lorealparis/l-oreal-paris-extraordinary-oil-gold-crystal-essence-65ml-free-scarf"
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013661",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "\u003ca rel\u003d\"nofollow\" target\u003d\"_blank\" href\u003d\"https://chat.tokopedia.com/tc/v1/redirect/bdb060d864c90e8922236f68b39384da769008c51017ca72206d0fa4b410029609e063ce24c22539d2c86288acb3dc01cf456b237e1cd0a7e92863b828dd828a021786ca45eb6f91286f8b74919f81aefe8d3e1ce5775967b633e56133027af6ae67a49094980626763ec81cd6cf9b79ed5dbf08e6b2e90456409b6e9e4820806ddfd11747f88fefbbd93fcb582393a34d6888fa0346b2b1957915660ec7767c96e15b9b4d7c14d21d4e53f9bffd0fdd9d8effa4e2a405a2fc28e02499dcdfae107cd7f87889a485427393886f57af43c4295431e868525ee646e975567c871b52d121f84cb60410bc186e05d9844ca6bc9c014ff29e2cb279d6f397877bf5881b32652e72fff1b38cbd84272177376a8653e62a08efe482ccb9c13c091d75600c6004a4bc217ebf0c80852667ed2b26a1ae7c8dcfabd0a40a407831dff8ca886232340b6b90c52a117612b06ee494b8e09efe3446616e8df50bb885e950990a5a54559a89a0971fd06ee9d6744ef38b081d126287f72ec71f18ac58a94d72cc5508bbb9896a38278ad751dc8d7de2ef26fe4e2f2bc9a39e6cd7075752325640941f426b3688469888f4be3f4bf5d1e44426ce663a19dd5a5dadc9505b4feeff2ae4126c1bf36483c15d845d6142841aeb7952948c2de33c11ca56ce8a5ee5b497ceb43ef833ba37ade0b7e4531e510ab45837b2a18566d5cd021103d9fded01883c5feb8b1f2338d56d456090137740c0f23c744dda9ee08ebe4fd5d7af09d43e866d57199ae92c7739181e407aa7cf6458c57779804f28443d5e398c730bd95d09d934bc9b53c7c7ca9e90ef7bf6b14bbb326ab052f5d76b3ce49aa83e84b899a29343ac65f4989dbef4fce851196b70f1656acb555aedad33c31239c55efe3f75854470dc95cdd0c15ee4d708eeffcd975fc41c89524db79877121e2e66f2697984e0e946e8e0cadff753e737637dcd34464c3b6b8d7ca11cee30dacf349678ea611db1c5bdd63b747909433b7225d4d073ad958662866648f0a4f24210d230e53a44ab64f8fc56fce70ca4acde7e573683fe4f17d2ad32a9f1802806a1d03345b4440da5cbd6f8bc39ecd74b019aa0c3d9dcb59b6ad07a2834bcd70b9923f9be96b25989256586cf3f48f7b8fb267cef52c38f6958f3fa016b7e046f0c54e2dfd0d77a0cc7deaece34b0c3e5b8e28aceb648\"\u003ehttps://chat.tokopedia.com/tc/v1/redirect/86dddd558816455513e99953058627cd2aed0b73b26d23caa1ea32d5e47aa9af8c9c9ce516dc524ca9e5fe629c2834e1581aab8c1f37d4144cdb5207eae45aee11ec1680dddad8fe3c5d0ac8176cee96cc5c6acc8b146d16b4e62051ac2c76ce68249d2dd5cbbcf2d0de35967e2aa53ddb6062d4a36cb80defa59acc0f480ec1921ed45453bc526631ad646cb2aa7549ca9b58f40adb59dabc2576e18443f3a95a7ab8a25652666acce13f26276025d5f14ab9fe2d7ffb521a0dac8359e4a24677ed1197617239f1a40b5a1d63f1027e83f9f47f69c489bbced4f93c04701359e422cfe6\u003c/a\u003e",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778968000",
+                "status": 1,
+                "attachmentID": 439369780,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 439369780,
+                  "type": 3,
+                  "attributes": "{\"product_id\":445955093,\"product_profile\":{\"name\":\"L\u0027Oreal Paris Extraordinary Oil Gold\",\"price\":\"Rp 135.000\",\"price_int\":0,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/200-square/attachment/2020/6/27/32520341/32520341_5cfe4f14-4c79-4f28-b928-28e89f51b450.jpg\",\"url\":\"https://chat.tokopedia.com/tc/v1/redirect/86dddd558816455513e99953058627cd2aed0b73b26d23caa1ea32d5e47aa9af8c9c9ce516dc524ca9e5fe629c2834e1581aab8c1f37d4144cdb5207eae45aee11ec1680dddad8fe3c5d0ac8176cee96cc5c6acc8b146d16b4e62051ac2c76ce68249d2dd5cbbcf2d0de35967e2aa53ddb6062d4a36cb80defa59acc0f480ec1921ed45453bc526631ad646cb2aa7549ca9b58f40adb59dabc2576e18443f3a95a7ab8a25652666acce13f26276025d5f14ab9fe2d7ffb521a0dac8359e4a24677ed1197617239f1a40b5a1d63f1027e83f9f47f69c489bbced4f93c04701359e422cfe6\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":5665147,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":null,\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "https://www.tokopedia.com/lorealparis/l-oreal-paris-extraordinary-oil-gold"
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013662",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "Lorem ipsum test broadcast text",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778969000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -86,7 +86,13 @@ class ShopHomeVideoViewHolder(
                     }
                     isSuccess
                 }
-                youTubeThumbnailShopPageImageUnify?.urlSrc = highResVideoThumbnailUrl
+                youTubeThumbnailShopPageImageUnify?.apply {
+                    try {
+                        if (context.isValidGlideContext())
+                            urlSrc = highResVideoThumbnailUrl
+                    } catch (e: Throwable) {
+                    }
+                }
             } else {
                 groupVideoError?.visible()
                 loaderImageView?.gone()

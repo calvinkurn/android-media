@@ -184,6 +184,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         ) == AbTestPlatform.VARIANT_NEW_INBOX && !showOldToolbar
     }
 
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
+    }
+
     private fun initToolbar() {
         status_bar_bg.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
@@ -235,7 +243,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
+                .addIcon(getInboxIcon()) { onInboxButtonClick() }
 
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
@@ -307,7 +315,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (!useNewInbox) {
                 setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             }
-            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
         this.badgeNumberNotification = notificationCount
@@ -398,7 +406,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun onErrorGetWhitelist(throwable: Throwable) {
         view?.let {
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                    Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
                     viewModel.getWhitelist()
                 }
@@ -407,8 +415,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun setFeedBackgroundCrossfader() {
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.dp_50)
-        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(R.dimen.dp_100)
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.searchbar_tansition_range)
+        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(R.dimen.searchbar_start_tansition_offsite)
         activity?.let {
             val feedBackgroundGradient = MethodChecker.getDrawable(it, R.drawable.gradient_feed)
             val feedBackgroundWhite = MethodChecker.getDrawable(it, R.drawable.gradient_feed_white)
@@ -445,8 +453,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 else -> View.GONE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.Unify_N0))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.Unify_N0), MethodChecker.getColor(activity, R.color.Unify_N0))
+                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             requestStatusBarLight()
         }
@@ -497,7 +505,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (isFabExpanded) {
                 hideAllFab(false)
             } else {
-                fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
+                fab_feed.animation = AnimationUtils.loadAnimation(activity, com.tokopedia.feedcomponent.R.anim.rotate_forward)
                 layout_grey_popup.visibility = View.VISIBLE
                 for (author in whitelistDomain.authors) {
                     if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
@@ -544,7 +552,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (isInitial) {
             fab_feed.hide()
         } else {
-            fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_backward)
+            fab_feed.animation = AnimationUtils.loadAnimation(activity, com.tokopedia.feedcomponent.R.anim.rotate_backward)
         }
         fab_feed_byme.hide()
         fab_feed_shop.hide()

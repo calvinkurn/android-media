@@ -57,6 +57,11 @@ class GlobalSearchView : BaseCustomView {
         this.searchTextBoxListener = searchTextBoxListener
     }
 
+    fun setKeyword(keyword: String) {
+        searchKeyword = keyword
+        searchBarView?.searchBarTextField?.setText(searchKeyword)
+    }
+
     fun setKeywordSearchBar(keyword: String) {
         searchKeyword = keyword
         searchBarView.searchBarTextField.setText(searchKeyword)

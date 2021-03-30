@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Ticker(
     @field:SerializedName("id")
-    val id: Int,
+    val id: String,
     @field:SerializedName("message")
     val message: String,
     @field:SerializedName("page")

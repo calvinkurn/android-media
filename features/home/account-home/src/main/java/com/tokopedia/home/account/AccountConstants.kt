@@ -196,20 +196,6 @@ object AccountConstants {
         const val LAST_TRANSACT_DATE = "last_transaction_date"
     }
 
-    interface VccStatus {
-        companion object {
-            const val ELIGIBLE = "eligible"
-            const val NOT_ELIGIBLE = "not_eligible"
-            const val HOLD = "hold"
-            const val ACTIVE = "active"
-            const val BLOCKED = "blocked"
-            const val KYC_PENDING = "kyc pending"
-            const val NOT_FOUND = "not_found"
-            const val REJECTED = "rejected"
-            const val DEACTIVATED = "deactivated"
-        }
-    }
-
     interface ErrorCodes {
         companion object {
             const val ERROR_CODE_NULL_MENU = "ACC001"

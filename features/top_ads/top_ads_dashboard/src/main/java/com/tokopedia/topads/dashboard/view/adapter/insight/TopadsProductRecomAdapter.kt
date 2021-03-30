@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.topads_dash_recon_product_item.view.*
 
 class TopadsProductRecomAdapter(var itemSelected: () -> Unit, var enableButton: (enable: Boolean) -> Unit) : RecyclerView.Adapter<TopadsProductRecomAdapter.ViewHolder>() {
     var items: MutableList<ProductRecommendation> = mutableListOf()
-    private var maxBid = 0
+    private var maxBid = "0"
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -46,7 +46,7 @@ class TopadsProductRecomAdapter(var itemSelected: () -> Unit, var enableButton: 
         notifyDataSetChanged()
     }
 
-    fun setMaxValue(bid:Int){
+    fun setMaxValue(bid: String) {
         maxBid = bid
         notifyDataSetChanged()
     }
@@ -69,19 +69,19 @@ class TopadsProductRecomAdapter(var itemSelected: () -> Unit, var enableButton: 
             holder.view.editBudget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(holder.view.editBudget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    setCurrentBid = number.toInt()
+                    items[holder.adapterPosition].setCurrentBid = number.toInt()
                     when {
-                        number < recomBid.toDouble() && number > minBid.toInt() -> {
+                        number < items[holder.adapterPosition].recomBid.toDouble() && number > minBid.toInt() -> {
                             enableButton.invoke(true)
                             holder.view.editBudget?.setError(false)
                             holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), recomBid))
                         }
-                        number < minBid.toInt() -> {
+                        number < items[holder.adapterPosition].minBid.toFloat() -> {
                             enableButton.invoke(false)
                             holder.view.editBudget?.setError(true)
                             holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_min_budget_error))
                         }
-                        number >= maxBid -> {
+                        number >= maxBid.toFloat() -> {
                             enableButton.invoke(false)
                             holder.view.editBudget?.setError(true)
                             holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_max_budget_error))

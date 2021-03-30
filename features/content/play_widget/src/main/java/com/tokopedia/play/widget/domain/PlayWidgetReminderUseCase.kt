@@ -1,34 +1,25 @@
 package com.tokopedia.play.widget.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.widget.data.PlayWidgetReminder
-import com.tokopedia.play.widget.data.PlayWidgetReminderResponse
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 21/10/20.
  */
-class PlayWidgetReminderUseCase @Inject constructor(private val repository: GraphqlRepository) : UseCase<PlayWidgetReminder>() {
+class PlayWidgetReminderUseCase @Inject constructor(
+        graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<PlayWidgetReminder>(graphqlRepository) {
 
-    var params: Map<String, Any> = emptyMap()
-
-    override suspend fun executeOnBackground(): PlayWidgetReminder {
-        val gqlRequest = GraphqlRequest(query, PlayWidgetReminderResponse::class.java, params)
-        val gqlResponse = repository.getReseponse(
-                listOf(gqlRequest),
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        )
-        val errors = gqlResponse.getError(PlayWidgetReminderResponse::class.java)
-        if (!errors.isNullOrEmpty()) {
-            throw Throwable(errors.firstOrNull()?.message)
-        }
-        val response = gqlResponse.getData<PlayWidgetReminderResponse>(PlayWidgetReminderResponse::class.java)
-        return response.data
+    init {
+        setGraphqlQuery(query)
+        setCacheStrategy(GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(PlayWidgetReminder::class.java)
     }
 
     companion object {

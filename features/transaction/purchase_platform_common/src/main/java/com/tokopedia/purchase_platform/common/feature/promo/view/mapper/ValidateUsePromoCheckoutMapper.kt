@@ -158,7 +158,8 @@ class ValidateUsePromoCheckoutMapper {
                     desc = usageSummaries.description,
                     type = usageSummaries.type,
                     amountStr = usageSummaries.amountString,
-                    amount = usageSummaries.amount)
+                    amount = usageSummaries.amount,
+                    currencyDetailStr = usageSummaries.currencyDetailsStr)
         }
 
         private fun mapToBenefitSummaryInfoUiModel(benefitSummaryInfo: BenefitSummaryInfo?): BenefitSummaryInfoUiModel {

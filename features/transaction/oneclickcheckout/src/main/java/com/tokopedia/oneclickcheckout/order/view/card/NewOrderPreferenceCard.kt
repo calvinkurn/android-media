@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -121,8 +122,12 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     }
 
     private fun showHeader(revampData: OccRevampData) {
-        tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
-        if (preference.preference.status == MAIN_PROFILE_STATUS) {
+        if (preference.preference.profileRevampWording.isNotEmpty()) {
+            tvCardHeader?.text = preference.preference.profileRevampWording
+        } else {
+            tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
+        }
+        if (!preference.preference.isRecom && preference.preference.status == MAIN_PROFILE_STATUS) {
             lblDefaultPreference?.visible()
         } else {
             lblDefaultPreference?.gone()
@@ -171,7 +176,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 renderBboTicker(shipping)
 
                 if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                    tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping)
+                    tvShippingCourier?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.logisticPromoViewModel.title)
                     tvShippingDuration?.gone()
                     btnChangeDuration?.gone()
                     if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
@@ -207,8 +212,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                 } else if (shipping.shippingEta != null) {
                     tvShippingCourier?.text = "${shipping.shipperName} (${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                                ?: 0, false).removeDecimalSuffix()
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                            ?: 0, false).removeDecimalSuffix()
                     })"
                     if (shipping.shippingEta.isNotEmpty()) {
                         tvShippingCourierEta?.text = shipping.shippingEta
@@ -562,16 +567,16 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase) {
+    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
         AddressListBottomSheet(usecase, object : AddressListBottomSheet.AddressListBottomSheetListener {
-            override fun onSelect(addressId: String) {
-                listener.onAddressChange(addressId)
+            override fun onSelect(addressModel: RecipientAddressModel) {
+                listener.onAddressChange(addressModel)
             }
 
             override fun onAddAddress(token: Token?) {
                 listener.onAddAddress(token)
             }
-        }).show(fragment, preference.preference.address.addressId.toString())
+        }).show(fragment, preference.preference.address.addressId.toString(), addressState)
     }
 
     fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
@@ -652,7 +657,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         fun onAddAddress(token: Token?)
 
-        fun onAddressChange(addressId: String)
+        fun onAddressChange(addressModel: RecipientAddressModel)
 
         fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel)
 

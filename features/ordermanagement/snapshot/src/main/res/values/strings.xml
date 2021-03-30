@@ -1,0 +1,21 @@
+<resources>
+    <string name="title_snapshot">Riwayat Detail Produk</string>
+    <string name="snapshot_img">image product</string>
+    <string name="detail_produk">Detail produk</string>
+    <string name="snapshot_kondisi_label">Kondisi</string>
+    <string name="snapshot_berat_label">Berat</string>
+    <string name="snapshot_po_label">Waktu PreOrder</string>
+    <string name="snapshot_min_order_label">Min. Pemesanan</string>
+    <string name="snapshot_condition_baru">Baru</string>
+    <string name="snapshot_condition_bekas">Bekas</string>
+    <string name="btn_snapshot_to_pdp_label">Lihat Halaman Produk</string>
+    <string name="snapshot_error_common">Terjadi kesalahan, mohon dicoba kembali</string>
+    <string name="snapshot_ticker_info">
+        <![CDATA[
+        <html>
+        <body>Berikut tampilan detail produk yang dipesan pada tanggal <b>#createdTime</b>
+        </body>
+        </html>
+        ]]>
+    </string>
+</resources>
