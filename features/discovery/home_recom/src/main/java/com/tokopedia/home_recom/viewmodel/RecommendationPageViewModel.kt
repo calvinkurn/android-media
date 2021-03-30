@@ -55,6 +55,10 @@ open class RecommendationPageViewModel @Inject constructor(
         private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
         private val dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
+
+    companion object {
+        const val PARAM_TXSC = "txsc"
+    }
     /**
      * public variable
      */
@@ -135,34 +139,36 @@ open class RecommendationPageViewModel @Inject constructor(
         // 1. parallel with new usecase getistopads
         // 2. search viewmodel for ProductInfoDataModel entity
         // 3. if found, append isTopads, topads click url and topads view url
-        launchCatchError(coroutineContext, block =  {
-            getTopadsIsAdsUseCase.setParams(
-                    productId = productId,
-                    productKey = "",
-                    shopDomain =  "",
-                    urlParam = queryParam,
-                    pageName = ""
-            )
-            val adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
-            var dataList = recommendationListLiveData.value as MutableList
-            val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel}
-            val errorCode = adsStatus.status.error_code
-            if (errorCode>= 200 || errorCode <= 300) {
-                (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
-                    val topadsProduct = adsStatus.data.productList[0]
-                    it.isTopads = topadsProduct.isCharge
-                    it.clickUrl = topadsProduct.clickUrl
-                    it.trackerImageUrl = topadsProduct.product.image.m_url
+        if (queryParam.contains(PARAM_TXSC)) {
+            launchCatchError(coroutineContext, block = {
+                getTopadsIsAdsUseCase.setParams(
+                        productId = productId,
+                        productKey = "",
+                        shopDomain = "",
+                        urlParam = queryParam,
+                        pageName = ""
+                )
+                val adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
+                var dataList = recommendationListLiveData.value as MutableList
+                val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
+                val errorCode = adsStatus.status.error_code
+                if (errorCode >= 200 || errorCode <= 300) {
+                    (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
+                        val topadsProduct = adsStatus.data.productList[0]
+                        it.isTopads = topadsProduct.isCharge
+                        it.clickUrl = topadsProduct.clickUrl
+                        it.trackerImageUrl = topadsProduct.product.image.m_url
 
-                    val itemIndex = dataList.indexOf(productRecom)
-                    dataList[itemIndex] = productRecom
+                        val itemIndex = dataList.indexOf(productRecom)
+                        dataList[itemIndex] = productRecom
 
-                    _recommendationListLiveData.postValue(dataList)
+                        _recommendationListLiveData.postValue(dataList)
+                    }
                 }
-            }
 
-        }) {
-            it.printStackTrace()
+            }) {
+                it.printStackTrace()
+            }
         }
     }
 

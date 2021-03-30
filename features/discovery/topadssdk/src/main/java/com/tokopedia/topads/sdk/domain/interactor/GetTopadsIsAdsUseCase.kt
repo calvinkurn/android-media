@@ -85,14 +85,14 @@ class GetTopadsIsAdsUseCase @Inject constructor(
     }
     //endregion
 
-    fun setParams(productId: String,
-                  productKey: String,
-                  shopDomain: String,
+    fun setParams(productId: String = "",
+                  productKey: String = "",
+                  shopDomain: String = "",
                   src: String = DEFAULT_SRC,
                   device: String = DEFAULT_DEVICE,
                   q: String = DEFAULT_Q,
-                  urlParam: String,
-                  pageName: String) {
+                  urlParam: String = "",
+                  pageName: String = "") {
         params.parameters.clear()
         params.putString(PARAM_PRODUCT_ID, productId)
         params.putString(PARAM_PRODUCT_KEY, productKey)
