@@ -54,6 +54,7 @@ import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
+import com.tokopedia.hotel.search_map.data.HotelLoadingModel
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
@@ -264,6 +265,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         tvHotelSearchListTitle.gone()
 
         adapterCardList.clearAllElements()
+        removeAllMarker()
 
         hideErrorNoResult()
         showHotelResultList()
@@ -347,8 +349,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun showLoading() {
         if (adapterCardList.dataSize <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
             hideGetMyLocation()
-            adapterCardList.setLoadingModel(loadingModel)
-            adapterCardList.showLoading()
+            if (isLoadingInitialData){
+                adapterCardList.clearAllElements()
+                adapterCardList.addElement(HotelLoadingModel(isForHorizontalItem = true))
+            }
         }
         super.showLoading()
     }
@@ -731,6 +735,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun renderCardListMap(listProperty: List<Property>) {
+        adapterCardList.removeElement(HotelLoadingModel(isForHorizontalItem = true))
         hideLoadingCardListMap()
 
         val dataCollection = mutableListOf<Visitable<*>>()
@@ -994,16 +999,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             rvVerticalPropertiesHotelSearchMap.scrollTo(0, 0)
             collapseBottomSheet()
         }
-
-        rvVerticalPropertiesHotelSearchMap.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && !adapter.isLoading && adapter.isContainData) {
-                    showSearchWithMap()
-                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    hideSearchWithMap()
-                }
-            }
-        })
     }
 
     private fun showHotelResultList() {

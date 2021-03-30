@@ -10,6 +10,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SearchPropertyViewHolder
 import com.tokopedia.hotel.search_map.data.HotelLoadingModel
+import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.HotelLoadingViewHolder
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.HotelSearchMapItemViewHolder
 
 class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : BaseAdapterTypeFactory() {
@@ -19,14 +20,11 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
         else SearchPropertyViewHolder.LAYOUT
     }
 
-    fun type(hotelLoadingModel: HotelLoadingModel) : Int{
-        return if (hotelLoadingModel.isForHorizontalItem) HotelSearchMapItemViewHolder.LAYOUT
-        else SearchPropertyViewHolder.LAYOUT
-    }
-
     override fun type(viewModel: ErrorNetworkModel): Int = ErrorNetworkViewHolder.LAYOUT
 
     override fun type(viewModel: LoadingModel): Int = R.layout.property_search_shimmer_loading
+
+    fun type(hotelLoadingModel: HotelLoadingModel): Int = R.layout.item_property_horizontal_search_shimmering
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -35,6 +33,7 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
             R.layout.property_search_shimmer_loading -> LoadingViewholder(parent)
             EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
             HotelSearchMapItemViewHolder.LAYOUT -> HotelSearchMapItemViewHolder(parent)
+            R.layout.item_property_horizontal_search_shimmering -> HotelLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
