@@ -1789,14 +1789,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             pdpUiUpdater?.removeComponent(ProductDetailConstant.TRADE_IN)
         }
 
-        it.productFinancingRecommendationData.let { financingData ->
-            if (financingData.data.partnerCode.isNotBlank()) {
-                pdpUiUpdater?.updateDataInstallment(context, financingData, viewModel.getDynamicProductInfoP1?.data?.isOS == true)
-            } else {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO)
-            }
-        }
-
         if(!it.merchantVoucherSummary.isShown) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.MVC)
         }
