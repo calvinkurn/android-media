@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.ordermanagement.orderhistory.R
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.history.viewmodel.OrderHistoryListData
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by kris on 11/8/17. Tokopedia
@@ -72,13 +72,13 @@ class OrderHistoryAdapter(private val historyListDatas: List<OrderHistoryListDat
     }
 
     inner class OrderHistoryViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val orderHistoryTitle: TextView = itemView.findViewById(R.id.history_title)
-        val orderHistoryDescription: TextView = itemView.findViewById(R.id.history_description)
-        val orderHistoryTime: TextView = itemView.findViewById(R.id.history_date)
+        val orderHistoryTitle: Typography = itemView.findViewById(R.id.history_title)
+        val orderHistoryDescription: Typography = itemView.findViewById(R.id.history_description)
+        val orderHistoryTime: Typography = itemView.findViewById(R.id.history_date)
         val dot: ImageView = itemView.findViewById(R.id.dot_image)
         val dotTrailBot: View = itemView.findViewById(R.id.dot_trail_bottom)
         val dotTraiTop: View = itemView.findViewById(R.id.dot_trail_top)
-        val orderHistoryComment: TextView = itemView.findViewById(R.id.history_comment)
+        val orderHistoryComment: Typography = itemView.findViewById(R.id.history_comment)
     }
 
 }

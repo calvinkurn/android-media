@@ -51,7 +51,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_dot_black" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/history_title"
         android:layout_width="0dp"
         android:layout_height="18dp"
@@ -64,7 +64,8 @@
         app:layout_constraintTop_toTopOf="@+id/dot_image"
         tools:text="Loren Ipsum" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+
         android:id="@+id/history_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,7 +76,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="20 Mei 2017" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/history_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -89,7 +90,7 @@
         app:layout_constraintTop_toBottomOf="@id/history_title"
         tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/history_comment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
