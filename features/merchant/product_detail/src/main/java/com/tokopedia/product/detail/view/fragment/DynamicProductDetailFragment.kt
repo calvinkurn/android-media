@@ -2199,7 +2199,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 }
             }, {
                 hideProgressDialog()
-            })
+            }, true)
         }
     }
 
