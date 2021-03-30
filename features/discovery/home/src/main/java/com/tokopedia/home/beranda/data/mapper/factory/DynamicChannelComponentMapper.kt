@@ -110,7 +110,13 @@ object DynamicChannelComponentMapper {
                             textColor = it.textColor,
                             recommendationType = it.recommendationType,
                             campaignCode = it.campaignCode,
-                            shopId = it.shop.shopId
+                            shopId = it.shop.shopId,
+                            badges = it.badges.map { badge ->
+                                ChannelGridBadges(
+                                        title = badge.title,
+                                        imageUrl = badge.imageUrl
+                                )
+                            }
                     )
                 }
         )

@@ -256,11 +256,9 @@ class MixTopComponentViewHolder(
                             isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage,
                             shopLocation = element.shop.shopLocation,
-                            shopBadgeList = listOf(
-                                    ProductCardModel.ShopBadge(
-                                            true, element.shop.shopBadgeUrl
-                                    )
-                            ),
+                            shopBadgeList = element.badges.map {
+                                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                            },
                             labelGroupList = element.labelGroup.map {
                                 ProductCardModel.LabelGroup(
                                         position = it.position,

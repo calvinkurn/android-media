@@ -457,7 +457,19 @@ data class DynamicHomeChannel(
             val recommendationType: String = "",
             @Expose
             @SerializedName("campaignCode")
-            val campaignCode: String = ""
+            val campaignCode: String = "",
+            @Expose
+            @SerializedName("badges")
+            val badges: Array<HomeBadges> = arrayOf()
+    )
+
+    data class HomeBadges(
+            @Expose
+            @SerializedName("title")
+            val title: String = "",
+            @Expose
+            @SerializedName("image_url")
+            val imageUrl: String = ""
     )
 
     data class Benefit(
@@ -468,6 +480,7 @@ data class DynamicHomeChannel(
             @SerializedName("value")
             val value: String = ""
     )
+
     data class Header(
             @Expose
             @SerializedName("id")
