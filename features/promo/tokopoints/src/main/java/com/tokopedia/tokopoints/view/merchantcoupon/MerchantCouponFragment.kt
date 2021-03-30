@@ -32,7 +32,7 @@ import com.tokopedia.tokopoints.view.util.*
 import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.*
 import javax.inject.Inject
 
-class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitoringListener, SwipeRefreshLayout.OnRefreshListener, AdapterCallback, MerchantCouponFilterAdapter.OnFilterTypeClickListener {
+class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitoringListener, SwipeRefreshLayout.OnRefreshListener, AdapterCallback {
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -40,10 +40,8 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     private val mViewModel: MerchantCouponViewModel by lazy { ViewModelProvider(this, factory)[MerchantCouponViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val mCouponAdapter: MerchantCouponListAdapter by lazy { MerchantCouponListAdapter(mViewModel, this) }
-    private val mFilterAdapter: MerchantCouponFilterAdapter by lazy { MerchantCouponFilterAdapter(this) }
 
     private var merchantRewardToolbar: MerchantRewardToolbar? = null
-    private lateinit var exploreFilterRv: RecyclerView
     private lateinit var exploreCouponRv: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var appBarLayout: View
@@ -67,7 +65,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         val view = inflater.inflate(R.layout.tp_layout_merchat_coupon_list, container, false)
-        exploreFilterRv = view.findViewById(R.id.rv_coupon_category)
         exploreCouponRv = view.findViewById(R.id.rv_merchant_couponlist)
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
@@ -93,7 +90,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
 
     private fun initVar() {
         if (arguments != null) {
-            categoryId = (arguments!!.getString(
+            categoryId = (requireArguments().getString(
                     PARAM_CATEGORY_ID,
                     DEFAULT_CATEGORY)
                     )
@@ -110,14 +107,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
             appBarLayout.outlineProvider = null
         }
         swipeToRefresh.setOnRefreshListener(this)
-
-        val linearLayoutManagerFilter = LinearLayoutManager(context,
-                LinearLayoutManager.HORIZONTAL,
-                false)
-        exploreFilterRv.layoutManager = linearLayoutManagerFilter
-        exploreFilterRv.addItemDecoration(MerchantListItemDecorator(convertDpToPixel(10, exploreFilterRv.context)))
-        exploreFilterRv.adapter = mFilterAdapter
-
         val linearLayoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL,
                 false)
@@ -138,9 +127,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    if (it.data.firstSetup) {
-                        setUpFilter(it.data.merchantCouponResponse.productlist?.productCategoriesFilter)
-                    }
                     it.data.merchantCouponResponse.productlist?.let { it1 -> mCouponAdapter.onSuccess(it1) }
                 }
                 is ErrorMessage -> {
@@ -152,9 +138,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
         }
     })
 
-    private fun setUpFilter(productCategoriesFilter: List<ProductCategoriesFilterItem?>?) {
-        mFilterAdapter.setData(productCategoriesFilter as ArrayList<ProductCategoriesFilterItem>)
-    }
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
@@ -239,8 +222,8 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
 
     fun getStatusBarHeight(context: Context?): Int {
         var height = 0
-        val resId = context!!.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resId > 0) {
+        val resId = requireContext().resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resId > 0 && context!=null) {
             height = context.resources.getDimensionPixelSize(resId)
         }
         return height
@@ -288,18 +271,5 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
         view?.postDelayed({ hideLoader() }, CommonConstant.UI_SETTLING_DELAY_MS.toLong())
-    }
-
-    override fun onFilterTypeSelected(adapterPosition: Int, productCategoriesFilterItem: ProductCategoriesFilterItem) {
-        if (productCategoriesFilterItem.rootID != null) {
-            mViewModel.setCategoryRootId(productCategoriesFilterItem.rootID)
-        }
-    }
-
-    override fun onFilterTypeDeselected(adapterPosition: Int, productCategoriesFilterItem: ProductCategoriesFilterItem): Boolean {
-        if (productCategoriesFilterItem.rootID != null) {
-            mViewModel.setCategoryRootId("0")
-        }
-        return true
     }
 }

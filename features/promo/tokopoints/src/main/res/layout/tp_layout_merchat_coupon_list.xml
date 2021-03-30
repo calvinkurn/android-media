@@ -10,7 +10,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_52"
         android:orientation="vertical">
 
         <include layout="@layout/categorylist_shimmer" />
@@ -26,21 +26,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_coupon_category"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    android:paddingBottom="@dimen/dp_16"
-                    android:visibility="visible"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    tools:itemCount="2"
-                    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_merchant_couponlist"
