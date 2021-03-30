@@ -9,7 +9,6 @@ import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -54,7 +53,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
 
-    protected val settingViewModel: UserSettingViewModel by viewModels { viewModelFactory }
+    protected lateinit var settingViewModel: UserSettingViewModel
 
     /*
     * a flag for preventing request network if needed
@@ -68,7 +67,10 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     *  */
     abstract fun getNotificationType(): String
 
-    abstract fun initViewModel()
+    open fun initViewModel() {
+        settingViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(UserSettingViewModel::class.java)
+    }
 
     @RawRes abstract fun getGqlRawQuery(): Int
 
