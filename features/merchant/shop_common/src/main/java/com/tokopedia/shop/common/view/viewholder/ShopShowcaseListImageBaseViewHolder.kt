@@ -2,16 +2,21 @@ package com.tokopedia.shop.common.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class ShopShowcaseListImageBaseViewHolder(
         itemView: View
-): RecyclerView.ViewHolder(itemView) {
+) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
@@ -42,6 +47,10 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         }
     }
 
+    fun isShowcaseTypeGenerated(type: Int): Boolean {
+        return ShopEtalaseTypeDef.ETALASE_DEFAULT == type
+    }
+
     fun getCampaignLabelTitle(type: Int): String {
         return when (type) {
             ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
@@ -51,6 +60,82 @@ abstract class ShopShowcaseListImageBaseViewHolder(
                 itemView.context.getString(R.string.shop_page_showcase_thematic_text)
             }
             else -> ""
+        }
+    }
+
+    fun renderShowcaseMainInfo(element: Any) {
+        when (element) {
+            is ShopEtalaseModel -> renderShowcaseMainInfo(element)
+            is ShopEtalaseUiModel -> renderShowcaseMainInfo(element)
+        }
+    }
+
+    inline fun setItemShowcaseClickListener(crossinline onItemClicked: () -> Unit) {
+        itemView.setOnClickListener {
+            onItemClicked()
+        }
+    }
+
+    fun adjustShowcaseNameConstraintPosition() {
+        val parentConstraintLayout = itemView.findViewById<ConstraintLayout>(R.id.parent_layout)
+        val constraintSet = ConstraintSet()
+        val tvShowcaseNameId = R.id.tvShowcaseName
+        val labelShowcaseCampaignId = R.id.showcaseCampaignLabel
+        val verticalGuidelineId = R.id.guideline_action_picker2
+        constraintSet.clone(parentConstraintLayout)
+        if (showcaseCampaignLabel?.visibility == View.VISIBLE) {
+            constraintSet.connect(
+                    tvShowcaseNameId,
+                    ConstraintSet.RIGHT,
+                    labelShowcaseCampaignId,
+                    ConstraintSet.LEFT,
+                    0
+            )
+        } else {
+            constraintSet.connect(
+                    tvShowcaseNameId,
+                    ConstraintSet.RIGHT,
+                    verticalGuidelineId,
+                    ConstraintSet.LEFT,
+                    0
+            )
+        }
+        constraintSet.applyTo(parentConstraintLayout)
+    }
+
+    private fun renderShowcaseMainInfo(element: ShopEtalaseModel) {
+        setShowcaseInfo(
+                name = element.name,
+                count = element.count
+        )
+        setShowcaseImage(element.imageUrl)
+    }
+
+    private fun renderShowcaseMainInfo(element: ShopEtalaseUiModel) {
+        setShowcaseInfo(
+                name = element.name,
+                count = element.count
+        )
+        setShowcaseImage(element.imageUrl)
+    }
+
+    private fun setShowcaseInfo(name: String, count: Int) {
+        tvShowcaseName?.text = name
+        tvShowcaseCount?.text = itemView.context.getString(
+                R.string.shop_page_showcase_product_count_text,
+                count.toString()
+        )
+    }
+
+    private fun setShowcaseImage(imageUrl: String?) {
+        // try catch to avoid crash ImageUnify on loading image with Glide
+        try {
+            imageUrl?.let {
+                if (ivShowcaseImage?.context?.isValidGlideContext() == true) {
+                    ivShowcaseImage?.setImageUrl(it)
+                }
+            } ?: ivShowcaseImage?.setImageUrl("")
+        } catch (e: Throwable) {
         }
     }
 }

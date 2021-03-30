@@ -1,28 +1,20 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
-import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.constraintlayout.widget.Guideline
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.design.touchhelper.OnStartDragListener
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.isValidGlideContext
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
 import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
 
 class ShopShowcaseListReorderAdapter(
         val listener: ShopShowcaseReorderListener,
@@ -48,7 +40,9 @@ class ShopShowcaseListReorderAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent.inflateLayout(R.layout.item_shop_showcase_list_image))
+        return ViewHolder(parent.inflateLayout(
+                ShopShowcaseListImageBaseViewHolder.LAYOUT
+        ))
     }
 
     override fun getItemCount(): Int {
@@ -56,7 +50,7 @@ class ShopShowcaseListReorderAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindData(showcaseList[position], position)
+        holder.bind(showcaseList[position])
     }
 
     override fun onItemDismiss(position: Int) {
@@ -77,92 +71,48 @@ class ShopShowcaseListReorderAdapter(
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : ShopShowcaseListImageBaseViewHolder(itemView) {
 
-        val context: Context = itemView.context
-        private var titleShowcase: TextView? = null
-        private var countShowcase: TextView? = null
-        private var imageShowcase: ImageUnify? = null
-        private var buttonMove: ImageView? = null
-        private var campaignLabel: Label? = null
-        private var verticalLineGuide: Guideline? = null
+        override var showcaseActionButton: Any? = null
 
         init {
-            titleShowcase = itemView.findViewById(R.id.tvShowcaseName)
-            countShowcase = itemView.findViewById(R.id.tvShowcaseCount)
-            imageShowcase = itemView.findViewById(R.id.ivShowcaseImage)
-            buttonMove = itemView.findViewById(R.id.img_move_showcase)
-            campaignLabel = itemView.findViewById(R.id.showcaseCampaignLabel)
-            verticalLineGuide = itemView.findViewById(R.id.guideline_action_picker2)
+            showcaseActionButton = itemView.findViewById(R.id.img_move_showcase)
         }
 
-        fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
+        override fun bind(element: Any) {
 
-            titleShowcase?.text = dataShowcase.name
-            countShowcase?.text = context.getString(
-                    R.string.shop_page_showcase_product_count_text,
-                    dataShowcase.count.toString()
+            renderShowcaseMainInfo(element)
+
+            val showcaseItem = element as ShopEtalaseModel
+
+            // showcase show campaign label condition
+            showcaseCampaignLabel?.shouldShowWithAction(
+                    isShowCampaignLabel(showcaseItem.type),
+                    action = {
+                        adjustShowcaseNameConstraintPosition()
+                    }
+            )
+            showcaseCampaignLabel?.setLabel(getCampaignLabelTitle(showcaseItem.type))
+
+            // showcase show action button condition
+            val actionButton = (showcaseActionButton as? ImageView)
+            val actionButtonShowCondition = !isShowCampaignLabel(showcaseItem.type) && !isShowcaseTypeGenerated(showcaseItem.type)
+            actionButton?.shouldShowWithAction(
+                    shouldShow = actionButtonShowCondition,
+                    action = {
+                        adjustShowcaseNameConstraintPosition()
+                    }
             )
 
-            // try catch to avoid crash ImageUnify on loading image with Glide
-            try {
-                if (imageShowcase?.context?.isValidGlideContext() == true) {
-                    dataShowcase.imageUrl?.let { imageShowcase?.setImageUrl(it) }
-                }
-            } catch (e: Throwable) {
-            }
-
-
-            if (dataShowcase.type == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
-                buttonMove?.visibility = View.VISIBLE
-            } else {
-                buttonMove?.visibility = View.GONE
-            }
-
-            if (dataShowcase.type == ShopEtalaseTypeDef.ETALASE_CAMPAIGN) {
-                campaignLabel?.show()
-                adjustShowcaseNameConstraint()
-            } else {
-                campaignLabel?.hide()
-                adjustShowcaseNameConstraint()
-            }
-
-            buttonMove?.setOnTouchListener { _, event ->
+            // handle showcase action drag listener
+            actionButton?.setOnTouchListener { _, event ->
                 @Suppress("DEPRECATION")
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                     onStartDragListener?.onStartDrag(this@ViewHolder)
                 }
                 false
             }
-        }
 
-        private fun adjustShowcaseNameConstraint() {
-            val parentConstraintLayout = itemView.findViewById<ConstraintLayout>(R.id.parent_layout)
-            val constraintSet = ConstraintSet()
-            val tvShowcaseNameId = R.id.tvShowcaseName
-            val labelShowcaseCampaignId = R.id.showcaseCampaignLabel
-            val verticalGuidelineId = R.id.guideline_action_picker2
-            constraintSet.clone(parentConstraintLayout)
-            if (campaignLabel?.visibility == View.VISIBLE) {
-                constraintSet.connect(
-                        tvShowcaseNameId,
-                        ConstraintSet.RIGHT,
-                        labelShowcaseCampaignId,
-                        ConstraintSet.LEFT,
-                        0
-                )
-            } else {
-                constraintSet.connect(
-                        tvShowcaseNameId,
-                        ConstraintSet.RIGHT,
-                        verticalGuidelineId,
-                        ConstraintSet.LEFT,
-                        0
-                )
-            }
-            constraintSet.applyTo(parentConstraintLayout)
         }
-
     }
-
 }

@@ -27,7 +27,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
-import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
+import com.tokopedia.shop.showcase.presentation.adapter.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.showcase.di.component.DaggerShopPageShowcaseComponent
 import com.tokopedia.shop.showcase.di.component.ShopPageShowcaseComponent

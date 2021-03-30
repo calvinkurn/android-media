@@ -3,10 +3,10 @@ package com.tokopedia.shop.showcase.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
-import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageListener
-import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageViewHolder
+import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
+import com.tokopedia.shop.showcase.presentation.adapter.viewholder.ShopShowcaseListImageListener
+import com.tokopedia.shop.showcase.presentation.adapter.viewholder.ShopShowcaseListImageViewHolder
 
 /**
  * Created by Rafli Syam on 12/03/2021
@@ -20,7 +20,7 @@ class ShopPageShowcaseListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShowcaseListImageViewHolder {
         return ShopShowcaseListImageViewHolder(
                 itemView = LayoutInflater.from(parent.context).inflate(
-                        R.layout.item_shop_showcase_list_image,
+                        ShopShowcaseListImageBaseViewHolder.LAYOUT,
                         parent,
                         false
                 ),

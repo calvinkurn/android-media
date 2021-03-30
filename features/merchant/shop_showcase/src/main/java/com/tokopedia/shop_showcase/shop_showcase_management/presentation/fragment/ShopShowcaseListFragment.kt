@@ -245,6 +245,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun refreshData() {
         showLoadingSwipeToRefresh(true)
+        showLoading(true)
         loadData()
     }
 
