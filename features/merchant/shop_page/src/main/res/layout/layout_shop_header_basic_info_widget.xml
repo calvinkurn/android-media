@@ -63,13 +63,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shop_page_chevron_shop_info"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_18"
-        android:paddingLeft="@dimen/dp_6"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_6"
-        android:paddingBottom="@dimen/dp_4"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         android:visibility="visible"
+        app:layout_constraintVertical_bias="0.7"
         app:layout_constraintBottom_toBottomOf="@id/text_shop_name"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@id/text_shop_name"
