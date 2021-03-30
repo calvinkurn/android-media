@@ -18,7 +18,7 @@ object RechargeSmartBillsAccordionView {
                                detailListener: SmartBillsViewHolder.DetailListener): View{
         val view = LayoutInflater.from(itemView.context).inflate(R.layout.view_smart_bills_need_action, null)
         view.rv_smart_bills_need_action.apply {
-            val adapter = SmartBillsAccordionAdapter( checkableListener, detailListener)
+            val adapter = SmartBillsAccordionAdapter(checkableListener, detailListener)
             adapter.addList(section.bills)
             layoutManager = LinearLayoutManager(itemView.context)
             this.adapter = adapter
@@ -30,7 +30,7 @@ object RechargeSmartBillsAccordionView {
                              detailListener: SmartBillsViewHolder.DetailListener): View{
         val view = LayoutInflater.from(itemView.context).inflate(R.layout.view_smart_bills_need_paid, null)
         view.rv_smart_bills_need_paid.apply {
-            val adapter = SmartBillsAccordionAdapter( checkableListener, detailListener)
+            val adapter = SmartBillsAccordionAdapter(checkableListener, detailListener)
             adapter.addList(section.bills)
             layoutManager = LinearLayoutManager(itemView.context)
             this.adapter = adapter

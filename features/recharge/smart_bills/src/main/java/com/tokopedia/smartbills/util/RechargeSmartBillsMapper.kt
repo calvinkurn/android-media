@@ -7,14 +7,15 @@ import com.tokopedia.smartbills.data.Section
 object RechargeSmartBillsMapper {
 
     fun addAccordionData(content: View, element: Section): AccordionDataUnify {
-        return AccordionDataUnify(
+        val accordion = AccordionDataUnify(
                 title = element.title,
                 expandableView = content
-        ).apply {
-            borderBottom = false
-            borderTop = false
-            contentPaddingLeft = 0
-        }
+        )
+
+        accordion.setContentPadding(0,0,0,0)
+        accordion.setBorder(false, false)
+
+        return accordion
     }
 
 

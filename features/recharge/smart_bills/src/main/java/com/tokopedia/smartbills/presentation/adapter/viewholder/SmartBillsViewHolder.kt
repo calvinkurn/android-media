@@ -2,6 +2,7 @@ package com.tokopedia.smartbills.presentation.adapter.viewholder
 
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -23,7 +24,9 @@ import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
 class SmartBillsViewHolder(val view: View,
                            checkableListener: CheckableInteractionListener,
-                           private val detailListener: DetailListener) :
+                           private val detailListener: DetailListener,
+                           private val isAccordion: Boolean = false
+) :
         BaseCheckableViewHolder<RechargeBills>(view, checkableListener) {
 
     companion object {
@@ -34,6 +37,13 @@ class SmartBillsViewHolder(val view: View,
     override fun bind(element: RechargeBills) {
         super.bind(element)
         with(view) {
+
+            if(isAccordion){
+                val layout : ViewGroup.MarginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+                layout.leftMargin = 0
+                layout.rightMargin = 0
+            }
+
 
             val title = when {
                 (element.categoryName.isNotEmpty() && element.productName.isNotEmpty()) -> String.format("%s - %s", element.categoryName, element.productName)

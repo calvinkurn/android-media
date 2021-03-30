@@ -154,6 +154,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     val bills = it.data.sections.first().bills
                     if (bills.isNotEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
+
+                        if(it.data.sections.first().title.isNotEmpty())
+                        tv_smart_bills_title.text = it.data.sections.first().title
+
                         renderList(bills)
                         renderList(getNotAccordionSection(it.data.sections))
                         smartBillsAnalytics.impressionAllProducts(bills)

@@ -26,7 +26,7 @@ class SmartBillsAccordionAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartBillsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_smart_bills_item,
                 parent, false)
-        return SmartBillsViewHolder(view, checkableListener, detailListener)
+        return SmartBillsViewHolder(view, checkableListener, detailListener, true)
     }
 
     fun addList(bills: List<RechargeBills>){
