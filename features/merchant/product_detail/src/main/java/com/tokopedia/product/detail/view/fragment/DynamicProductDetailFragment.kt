@@ -63,7 +63,8 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.discovery.common.manager.*
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -254,6 +255,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private var warehouseId: String? = null
     private var doActivityResult = true
     private var shouldFireVariantTracker = true
+    private var recomWishlistItem: RecommendationItem? = null
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mutableMapOf())
     private var enableCheckImeiRemoteConfig = false
     private var alreadyPerformSellerMigrationAction = false
@@ -395,6 +397,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         outState.putBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, false)
     }
 
+
+
     override fun onPause() {
         super.onPause()
         trackVideoState()
@@ -533,8 +537,15 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     }
                 }
             }
-            else ->
-                super.onActivityResult(requestCode, resultCode, data)
+            PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
+                handleProductCardOptionsActivityResult(requestCode, resultCode, data,
+                        object : ProductCardOptionsWishlistCallback {
+                            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                                handleWishlistAction(productCardOptionsModel)
+                            }
+                        })
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -868,6 +879,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     trackingQueue, position, recomItem, chipValue, false, viewModel.isUserSessionActive, pageName, title,
                     viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         }
+    }
+
+    override fun onThreeDotsClick(recomItem: RecommendationItem, adapterPosition: Int, carouselPosition: Int) {
+        recomWishlistItem = recomItem
+        showProductCardOptions(
+                this,
+                recomItem.createProductCardOptionsModel(adapterPosition))
     }
 
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
@@ -2368,6 +2386,34 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             base_btn_affiliate_dynamic.gone()
         }
     }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
+        if (productCardOptionsModel == null) return
+
+        val wishlistResult = productCardOptionsModel.wishlistResult
+        if (wishlistResult.isUserLoggedIn) {
+            if (wishlistResult.isSuccess) {
+                recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
+                recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, viewModel.userSessionInterface.isLoggedIn, wishlistResult.isAddWishlist) }
+                view?.showToasterSuccess(
+                        message = if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                        ctaText = getString(R.string.recom_go_to_wishlist),
+                        ctaListener = {
+                            goToWishlist()
+                        }
+                )
+            } else {
+                view?.showToasterError(
+                        if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
+                )
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+
+        recomWishlistItem = null
+    }
+
 
     private fun onAffiliateClick() {
         activity?.let {
