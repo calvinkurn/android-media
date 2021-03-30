@@ -200,6 +200,7 @@ yang ditemukan</string>
     <string name="title_topchat_review_other">Ulasan Lain</string>
     <string name="title_topchat_review_success">Terima kasih sudah bantu calon pembeli lain lewat ulasanmu.</string>
     <string name="title_topchat_see_cart">Lihat Keranjang</string>
+    <string name="title_topchat_update_stock">Ubah Stok</string>
 
     <string name="topchat_dms_hex_empty_stock_color_bg">#AD31353B</string>
     <string name="topchat_desc_dual_announcement_first_image">First Banner Announcement</string>

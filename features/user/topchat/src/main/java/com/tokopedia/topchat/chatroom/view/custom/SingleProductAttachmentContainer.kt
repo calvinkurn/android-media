@@ -55,6 +55,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var sellerStockType: Typography? = null
     private var sellerStockCount: Typography? = null
     private var sellerFullfilment: LinearLayout? = null
+    private var btnUpdateStock: LinearLayout? = null
+    private var footerContainer: LinearLayout? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var listener: ProductAttachmentListener? = null
@@ -137,6 +139,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         sellerStockType = findViewById(R.id.tp_seller_stock_category)
         sellerStockCount = findViewById(R.id.tp_seller_stock_count)
         sellerFullfilment = findViewById(R.id.ll_seller_fullfilment)
+        btnUpdateStock = findViewById(R.id.ll_seller_update_stock)
+        footerContainer = findViewById(R.id.ll_footer)
     }
 
     private fun initLayoutView() {
@@ -200,6 +204,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindBackground(product)
             bindSellerRemainingStock(product)
             bindSellerFullfilment(product)
+            bindSellerUpdateStock(product)
             bindMargin(product)
             listener.trackSeenProduct(product)
         }
@@ -364,6 +369,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
+    private fun bindSellerUpdateStock(product: ProductAttachmentViewModel) {
+        if (product.canShowFooter || commonListener?.isSeller() == false) {
+            btnUpdateStock?.hide()
+        } else {
+            btnUpdateStock?.show()
+        }
+    }
+
     private fun bindMargin(product: ProductAttachmentViewModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
@@ -455,6 +468,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindFooter(product: ProductAttachmentViewModel) {
         if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
+            footerContainer?.show()
             bindBuy(product)
             bindAtc(product)
             bindWishList(product)
@@ -496,6 +510,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun hideFooter() {
+        footerContainer?.hide()
         btnBuy?.hide()
         btnAtc?.hide()
         btnWishList?.hide()
