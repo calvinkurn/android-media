@@ -198,7 +198,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindPreOrderLabel(product)
             bindEmptyStockLabel(product)
             bindBackground(product)
-            bindRemainingStockSeller(product)
+            bindSellerRemainingStock(product)
             bindSellerFullfilment(product)
             bindMargin(product)
             listener.trackSeenProduct(product)
@@ -333,7 +333,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindRemainingStockSeller(product: ProductAttachmentViewModel) {
+    private fun bindSellerRemainingStock(product: ProductAttachmentViewModel) {
         if (commonListener?.isSeller() == true) {
             sellerStockContainer?.show()
             bindSellerStockCount(product)
