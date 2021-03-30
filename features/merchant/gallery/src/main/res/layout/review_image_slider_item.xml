@@ -29,12 +29,12 @@
             android:layout_height="@dimen/review_image_slider_rating_height"
             tools:src="@drawable/ic_gold_star_five"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_image_slider_date"
             style="@style/TextView.Micro.WhitePrimary"
-            android:layout_marginLeft="9dp"
-            tools:text="20 Okt 2018"
-            />
+            android:layout_marginStart="@dimen/dp_9"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
 
     </LinearLayout>
 
@@ -48,16 +48,18 @@
         android:layout_marginLeft="17dp"
         android:gravity="center_vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             style="@style/TextView.Micro.WhitePrimary"
             android:text="@string/review_image_slider_by_prefix"
-            />
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_image_slider_name"
             style="@style/TextView.Small.White.Bold"
-            android:layout_marginLeft="4dp"
-            tools:text="Achmad Zaky"/>
+            android:layout_marginStart="@dimen/dp_4"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
     </LinearLayout>
 
