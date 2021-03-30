@@ -33,5 +33,8 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
         emoneyPdpHeaderView.buttonCtaText = "Cek Saldo"
 
         emoneyPdpInputCardWidget.initView()
+
+        emoneyPdpTab.addNewTab("Recents")
+        emoneyPdpTab.addNewTab("Promo")
     }
 }
