@@ -38,7 +38,6 @@ import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
@@ -180,13 +179,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     // order prioritas
     private CheckboxUnify checkBoxPriority;
-    private TextView tvPrioritasTicker;
+    private Typography tvPrioritasTicker;
     private LinearLayout llPrioritasTicker;
     private RelativeLayout llPrioritas;
     private Typography tvPrioritasFee;
     private Typography tvPrioritasFeePrice;
     private ImageView imgPriorityTnc;
-    private TextView tvPrioritasInfo;
+    private Typography tvPrioritasInfo;
     private boolean isPriorityChecked = false;
 
     // Shipping Experience

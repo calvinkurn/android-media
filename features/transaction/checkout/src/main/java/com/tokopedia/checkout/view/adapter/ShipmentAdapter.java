@@ -261,7 +261,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.checkout_module_selector_circle_green)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.unify_font_12)
                 .finishStringRes(R.string.show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)

@@ -10,7 +10,6 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.design.component.Tooltip
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography

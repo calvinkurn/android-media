@@ -40,7 +40,6 @@ import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.TrackerData;
@@ -54,12 +53,11 @@ import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.helper.CartProtectionInfoBottomSheetHelper;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.design.countdown.CountDownView;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
@@ -119,6 +117,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
+import com.tokopedia.unifycomponents.TimerUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -216,6 +215,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutTradeInAnalytics checkoutTradeInAnalytics;
     @Inject
     CheckoutEgoldAnalytics checkoutEgoldAnalytics;
+    @Inject
+    CheckoutCampaignTimerHelper checkoutCampaignTimerHelper;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
@@ -235,7 +236,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     // count down component
     private View cdLayout;
-    private CountDownView cdView;
+    private TimerUnify cdView;
     private Typography cdText;
 
     public static ShipmentFragment newInstance(boolean isOneClickShipment,
@@ -2621,21 +2622,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void setCampaignTimer() {
-        if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
-            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
-
-            long diff = TimeHelper.timeBetweenRFC3339(timer.getTimerServer(), timer.getTimerExpired());
-
+        CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
+        if (timer != null && timer.getShowTimer()) {
+            checkoutCampaignTimerHelper.setCampaignTimer(this, checkoutAnalyticsCourierSelection, cdView, shipmentPresenter.getCampaignTimer());
             cdLayout.setVisibility(View.VISIBLE);
             cdText.setText(timer.getTimerDescription());
-            cdView.setupTimerFromRemianingMillis(diff, () -> {
-                // need to check with resumed to avoid crash when time is expired in background
-                // time needs to be running in background
-                if (getFragmentManager() != null && isResumed()) {
-                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, this);
-                    dialog.show(getFragmentManager(), "expired dialog");
-                }
-            });
         }
     }
 
