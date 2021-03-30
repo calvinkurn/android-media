@@ -67,14 +67,14 @@ public class ShippingDurationBottomsheet implements ShippingDurationContract.Vie
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
-    private Activity activity;
-    private BottomSheetUnify bottomSheet;
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llContent;
     private RecyclerView rvDuration;
     private Bundle bundle;
 
+    private Activity activity;
+    private BottomSheetUnify bottomSheet;
     private ShippingDurationBottomsheetListener shippingDurationBottomsheetListener;
 
     private PerformanceMonitoring chooseCourierTracePerformance;
@@ -96,6 +96,7 @@ public class ShippingDurationBottomsheet implements ShippingDurationContract.Vie
 
     public void show(Activity activity,
                      FragmentManager fragmentManager,
+                     ShippingDurationBottomsheetListener shippingDurationBottomsheetListener,
                      ShipmentDetailData shipmentDetailData,
                      int selectedServiceId,
                      List<ShopShipment> shopShipmentList,
@@ -107,6 +108,7 @@ public class ShippingDurationBottomsheet implements ShippingDurationContract.Vie
                      boolean isTradeInDropOff, boolean isFulFillment,
                      int preOrderTime, String mvc) {
         this.activity = activity;
+        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener;
 
         initData(shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
                 cartPosition, codHistory, isLeasing, pslCode, products, cartString,
@@ -124,6 +126,7 @@ public class ShippingDurationBottomsheet implements ShippingDurationContract.Vie
         bottomSheet.setClearContentPadding(true);
         bottomSheet.setCustomPeekHeight(Resources.getSystem().getDisplayMetrics().heightPixels / 2);
         bottomSheet.setDragable(true);
+        bottomSheet.setHideable(true);
         bottomSheet.setShowListener(() -> {
             chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE);
             presenter.attachView(this);
@@ -132,6 +135,9 @@ public class ShippingDurationBottomsheet implements ShippingDurationContract.Vie
         });
         bottomSheet.setOnDismissListener(() -> {
             presenter.detachView();
+            return Unit.INSTANCE;
+        });
+        bottomSheet.setCloseClickListener(view -> {
             if (shippingDurationBottomsheetListener != null) {
                 shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
             }
@@ -156,10 +162,6 @@ public class ShippingDurationBottomsheet implements ShippingDurationContract.Vie
         bundle.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment);
         bundle.putInt(ARGUMENT_PO_TIME, preOrderTime);
         bundle.putString(ARGUMENT_MVC, mvc);
-    }
-
-    public void setShippingDurationBottomsheetListener(ShippingDurationBottomsheetListener shippingDurationBottomsheetListener) {
-        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener;
     }
 
     private void initializeInjector() {
