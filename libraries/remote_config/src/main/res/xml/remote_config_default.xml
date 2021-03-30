@@ -541,4 +541,8 @@
         <key>app_notif_tray_clear_v2</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>app_enable_branch_utm_only_branch_link</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
