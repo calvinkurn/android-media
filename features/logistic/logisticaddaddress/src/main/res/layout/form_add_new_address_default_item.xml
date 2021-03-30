@@ -66,7 +66,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_24">
+        android:layout_marginBottom="@dimen/dp_10">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_phone_wrapper"
@@ -94,14 +94,26 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_phone_helper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_2"
+            app:layout_constraintTop_toBottomOf="@id/et_phone_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text=""
+            android:textColor="@color/Unify_R500"
+            android:textSize="@dimen/sp_12" />
+
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/btn_contact_picker"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_marginRight="@dimen/unify_space_16"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/et_phone_wrapper"
+            app:layout_constraintBottom_toBottomOf="@id/et_phone_wrapper"
             app:icon_name="CONTACT"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -166,4 +166,7 @@
 
     <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
 
+    <string name="txt_phone_helper"> Min. 9 angka</string>
+    <string name="contact_not_found">Kontak tidak ditemukan</string>
+    <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
 </resources>

@@ -315,6 +315,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             et_phone.apply {
+                addTextChangedListener(setPhoneWatcher())
                 setOnTouchListener { view, event ->
                     view.parent.requestDisallowInterceptTouchEvent(true)
                     if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
@@ -343,6 +344,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         }
 
         et_phone.apply {
+            addTextChangedListener(setPhoneWatcher())
             setOnTouchListener { view, event ->
                 view.parent.requestDisallowInterceptTouchEvent(true)
                 if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
@@ -603,6 +605,33 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         }
     }
 
+    private fun setPhoneWatcher(): TextWatcher {
+        return object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                //no-op
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //no-op
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    val strLength = s.toString().length
+                    when {
+                        strLength < 9 -> {
+                            tv_phone_helper.text = getString(R.string.txt_phone_helper)
+                        }
+                        else -> {
+                            tv_phone_helper.text = ""
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
     private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean, isCircuitBreaker: Boolean) {
         if (!isMismatch && !isMismatchSolved) {
             ll_mismatch.visibility = View.GONE
@@ -784,7 +813,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun onNavigateToContact() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper?.checkPermissions(this, getPermissions(),
+            permissionCheckerHelper?.checkPermission(this,
+                    PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
                             //no-op
@@ -797,14 +827,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                         override fun onPermissionGranted() {
                             openContactPicker()
                         }
-                    })
+                    }, this.getString(R.string.rationale_need_contact))
         }
-    }
-
-    private fun getPermissions() : Array<String> {
-        return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
-        )
     }
 
     private fun openContactPicker() {
@@ -814,7 +838,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
             view?.let {
-                Toaster.build(it, "Kontak tidka ditemukan", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(it, getString(R.string.contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
     }
@@ -1083,7 +1107,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     override fun showError(t: Throwable?) {
         val message = ErrorHandler.getErrorMessage(context, t)
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
     }
 
     override fun onDetach() {
