@@ -7,8 +7,8 @@ import com.tokopedia.settingnotif.usersetting.data.pojo.SmsSection
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changePhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPhoneNumber
-import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
+import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 
 class SmsFieldFragment: SettingFieldFragment() {
 
@@ -44,6 +44,5 @@ class SmsFieldFragment: SettingFieldFragment() {
 
     override fun getScreenName() = getString(R.string.settingnotif_sms)
     override fun getNotificationType() = TYPE_SMS
-    override fun initViewModel() {} // no-op
 
 }
