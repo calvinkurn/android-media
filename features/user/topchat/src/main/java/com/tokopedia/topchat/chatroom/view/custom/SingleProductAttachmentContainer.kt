@@ -216,6 +216,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
+    fun updateStockState(product: ProductAttachmentViewModel) {
+        bindSellerStockCount(product)
+        bindEmptyStockLabel(product)
+    }
+
     private fun initBackgroundDrawable(useStrokeSender: Boolean) {
         if (bgSender == null) {
             val strokeColor = if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_G200 else null
@@ -357,7 +362,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    fun bindSellerStockCount(product: ProductAttachmentViewModel) {
+    private fun bindSellerStockCount(product: ProductAttachmentViewModel) {
         sellerStockCount?.text = product.remainingStock.toString()
     }
 
@@ -505,7 +510,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
         label?.apply {
             if (product.hasEmptyStock()) {
                 show()

@@ -80,6 +80,9 @@ class BroadcastViewHolder constructor(
                 bindProductCarousel(element)
                 bindSingleProduct(element)
             }
+            is SingleProductAttachmentContainer.PayloadUpdateStock -> {
+                updateProductStock(element, payload)
+            }
         }
     }
 
@@ -91,6 +94,20 @@ class BroadcastViewHolder constructor(
         bindMessage(element)
         bindBackground(element)
         bindCta(element)
+    }
+
+    private fun updateProductStock(
+            element: BroadCastUiModel,
+            payload: SingleProductAttachmentContainer.PayloadUpdateStock
+    ) {
+        if (element.isSingleProduct()) {
+            val product = element.singleProduct ?: return
+            singleProduct?.updateStockState(product)
+        } else {
+            ProductCarouselListAttachmentViewHolderBinder.updateCarouselProductStock(
+                    adapterProductCarousel, payload
+            )
+        }
     }
 
     private fun bindBanner(element: BroadCastUiModel) {
@@ -144,9 +161,18 @@ class BroadcastViewHolder constructor(
         val productCarousel = element.productCarousel
         if (productCarousel != null) {
             rvProductCarousel?.show()
-            ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(productCarousel, deferredAttachment)
-            ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(productCarousel, adapterProductCarousel)
-            ProductCarouselListAttachmentViewHolderBinder.bindScrollState(rvProductCarousel, productCarouselListener, this)
+            ProductCarouselListAttachmentViewHolderBinder.updateParentMetaData(
+                    element, adapterPosition, adapterProductCarousel
+            )
+            ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(
+                    productCarousel, deferredAttachment
+            )
+            ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(
+                    productCarousel, adapterProductCarousel
+            )
+            ProductCarouselListAttachmentViewHolderBinder.bindScrollState(
+                    rvProductCarousel, productCarouselListener, this
+            )
         } else {
             rvProductCarousel?.gone()
         }
@@ -154,11 +180,15 @@ class BroadcastViewHolder constructor(
 
     private fun bindSingleProduct(element: BroadCastUiModel) {
         val product = element.singleProduct
+        val metaData = SingleProductAttachmentContainer.ParentViewHolderMetaData(
+                element, adapterPosition
+        )
         if (product != null) {
             singleProduct?.show()
             singleProduct?.bindData(
                     product, adapterPosition, productListener, deferredAttachment,
-                    searchListener, commonListener, adapterListener, false, null
+                    searchListener, commonListener, adapterListener,
+                    false, metaData
             )
         } else {
             singleProduct?.gone()

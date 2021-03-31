@@ -50,15 +50,11 @@ class ProductCarouselListAttachmentViewHolder constructor(
                 bind(carousel)
             }
             is SingleProductAttachmentContainer.PayloadUpdateStock -> {
-                updateProductStock(payload)
+                ProductCarouselListAttachmentViewHolderBinder.updateCarouselProductStock(
+                        adapter, payload
+                )
             }
         }
-    }
-
-    private fun updateProductStock(payload: SingleProductAttachmentContainer.PayloadUpdateStock) {
-        val productPosition = adapter.findProductPosition(payload.productId)
-        if (productPosition == RecyclerView.NO_POSITION) return
-        adapter.notifyItemChanged(productPosition, payload)
     }
 
     override fun bind(carousel: ProductCarouselUiModel) {

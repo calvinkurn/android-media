@@ -81,4 +81,13 @@ object ProductCarouselListAttachmentViewHolderBinder {
         )
         adapter.updateParentMetaData(metaData)
     }
+
+    fun updateCarouselProductStock(
+            adapter: ProductListAdapter,
+            payload: SingleProductAttachmentContainer.PayloadUpdateStock
+    ) {
+        val productPosition = adapter.findProductPosition(payload.productId)
+        if (productPosition == RecyclerView.NO_POSITION) return
+        adapter.notifyItemChanged(productPosition, payload)
+    }
 }
