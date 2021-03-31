@@ -10,4 +10,4 @@
     android:layout_marginBottom="@dimen/dp_8"
     android:ellipsize="end"
     app:typographyWeight="bold"
-    app:typographyType="heading_5" />
+    app:typographyType="heading_4" />
