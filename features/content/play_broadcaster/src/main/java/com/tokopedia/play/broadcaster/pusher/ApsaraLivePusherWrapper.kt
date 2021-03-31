@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import com.alivc.live.pusher.*
 import com.tokopedia.play.broadcaster.pusher.config.ApsaraLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.config.DefaultApsaraLivePusherConfig
@@ -16,7 +14,6 @@ import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherErrorListe
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherNetworkListenerImpl
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
-import com.tokopedia.play.broadcaster.pusher.observer.PlayLivePusherObserver
 import java.util.concurrent.ConcurrentLinkedQueue
 
 
@@ -25,17 +22,12 @@ import java.util.concurrent.ConcurrentLinkedQueue
  */
 class ApsaraLivePusherWrapper private constructor(
         val context: Context,
-        private val lifecycleOwner: LifecycleOwner,
         private val pusherConfig: ApsaraLivePusherConfig
 ) {
 
-    class Builder(
-            context: Context,
-            lifecycleOwner: LifecycleOwner
-    ) {
+    class Builder(context: Context) {
 
         private val mContext: Context = context.applicationContext
-        private val mLifecycleOwner: LifecycleOwner = lifecycleOwner
         private var mApsaraLivePushConfig: ApsaraLivePusherConfig? = null
 
         fun setPushConfig(pushConfig: ApsaraLivePusherConfig): Builder {
@@ -46,7 +38,6 @@ class ApsaraLivePusherWrapper private constructor(
         fun build(): ApsaraLivePusherWrapper {
             return ApsaraLivePusherWrapper(
                     context = mContext,
-                    lifecycleOwner = mLifecycleOwner,
                     pusherConfig = mApsaraLivePushConfig ?: DefaultApsaraLivePusherConfig(mContext)
             )
         }
@@ -58,8 +49,6 @@ class ApsaraLivePusherWrapper private constructor(
 
     private var aliVcLivePusher: AlivcLivePusher? = null
     private var apsaraLivePusherState: ApsaraLivePusherState = ApsaraLivePusherState.Idle
-
-    private val livePusherObserver: LifecycleObserver = PlayLivePusherObserver(this)
 
     private val livePusherStateProcessor = object : ApsaraLivePusherStateProcessor {
         override fun onStateChanged(state: ApsaraLivePusherState) {
@@ -91,8 +80,6 @@ class ApsaraLivePusherWrapper private constructor(
             aliVcLivePusher?.setLivePushNetworkListener(alivcLivePushNetworkListener)
             aliVcLivePusher?.setLivePushErrorListener(alivcLivePushErrorListener)
             aliVcLivePusher?.setAudioDenoise(true)
-
-            configureLifecycleObserver()
         }
     }
 
@@ -168,7 +155,6 @@ class ApsaraLivePusherWrapper private constructor(
     }
 
     fun destroy() {
-        removeLifecycleObserver()
         safeAction { aliVcLivePusher?.destroy() }
     }
 
@@ -186,14 +172,6 @@ class ApsaraLivePusherWrapper private constructor(
         } catch (error: Error) {
             broadcastErrorToListeners(PLAY_PUSHER_ERROR_SYSTEM_ERROR, error)
         }
-    }
-
-    private fun configureLifecycleObserver() {
-        lifecycleOwner.lifecycle.addObserver(livePusherObserver)
-    }
-
-    private fun removeLifecycleObserver() {
-        lifecycleOwner.lifecycle.removeObserver(livePusherObserver)
     }
 
     private fun broadcastStateToListeners(state: ApsaraLivePusherState) {

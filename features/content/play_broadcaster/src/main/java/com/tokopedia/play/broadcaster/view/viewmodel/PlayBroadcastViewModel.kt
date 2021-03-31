@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
+import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
@@ -166,6 +167,7 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.cancel()
         liveStateProcessor.removeStateListener(liveStateListener)
         liveStateProcessor.removeStateListener(channelLiveStateListener)
+        liveStateProcessor.onDestroy()
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -342,6 +344,14 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun setChannelId(channelId: String) {
         hydraConfigStore.setChannelId(channelId)
+    }
+
+    fun onResume() {
+        liveStateProcessor.onResume()
+    }
+
+    fun onPause() {
+        liveStateProcessor.onPause()
     }
 
     private fun sendLivePusherState(state: PlayLivePusherState) {

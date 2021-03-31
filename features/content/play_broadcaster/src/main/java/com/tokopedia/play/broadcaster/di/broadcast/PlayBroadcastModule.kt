@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.di.broadcast
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -28,18 +26,11 @@ import dagger.Provides
  * Created by jegul on 20/05/20
  */
 @Module
-class PlayBroadcastModule(private val activity: AppCompatActivity) {
-
-    private val mContext: Context = activity
+class PlayBroadcastModule(private val mContext: Context) {
 
     @Provides
     fun provideContext(): Context {
         return mContext
-    }
-
-    @Provides
-    fun provideLifecycleOwner(): LifecycleOwner {
-        return activity
     }
 
     @PlayBroadcastScope
@@ -58,8 +49,8 @@ class PlayBroadcastModule(private val activity: AppCompatActivity) {
 
     @PlayBroadcastScope
     @Provides
-    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context, lifecycleOwner: LifecycleOwner): ApsaraLivePusherWrapper.Builder {
-        return ApsaraLivePusherWrapper.Builder(context, lifecycleOwner)
+    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context) : ApsaraLivePusherWrapper.Builder {
+        return ApsaraLivePusherWrapper.Builder(context)
     }
 
     @PlayBroadcastScope

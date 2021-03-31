@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.util.state
 
-import androidx.lifecycle.LifecycleOwner
+import android.content.Context
+import android.content.SharedPreferences
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
-import com.tokopedia.play.broadcaster.util.state.observer.PlayLiveStateObserver
 import com.tokopedia.play.broadcaster.util.timer.PlayCountDownTimer
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
@@ -14,20 +14,16 @@ import javax.inject.Inject
  * Created by mzennis on 16/03/21.
  */
 class PlayLiveStateProcessor(
-        private val lifecycleOwner: LifecycleOwner,
         private val livePusherWrapper: ApsaraLivePusherWrapper,
         private val countDownTimer: PlayCountDownTimer
-): PlayLiveStateObserver.Listener {
+) {
 
-    class Factory @Inject constructor(
-            private val lifecycleOwner: LifecycleOwner
-    ) {
+    class Factory @Inject constructor() {
         fun create(
                 livePusherWrapper: ApsaraLivePusherWrapper,
                 countDownTimer: PlayCountDownTimer
         ): PlayLiveStateProcessor {
             return PlayLiveStateProcessor(
-                    lifecycleOwner = lifecycleOwner,
                     livePusherWrapper = livePusherWrapper,
                     countDownTimer = countDownTimer
             )
@@ -35,7 +31,14 @@ class PlayLiveStateProcessor(
     }
 
     private val mListeners = mutableListOf<PlayLiveStateListener>()
-    private val liveStateObserver = PlayLiveStateObserver(livePusherWrapper, listener = this)
+
+    private val localStorage: SharedPreferences
+        get() = livePusherWrapper.context.getSharedPreferences(PlayCountDownTimer.PLAY_BROADCAST_PREFERENCE, Context.MODE_PRIVATE)
+
+    private val localStorageEditor: SharedPreferences.Editor
+        get() = localStorage.edit()
+
+    private var mPauseDuration: Long? = null
 
     init {
         livePusherWrapper.addListener(object : ApsaraLivePusherWrapper.Listener{
@@ -47,11 +50,30 @@ class PlayLiveStateProcessor(
                 handleError(code, throwable)
             }
         })
-        addLifecycleObserver()
+    }
+
+    fun onResume() {
+        if (livePusherWrapper.pusherState is ApsaraLivePusherState.Pause) {
+            if (isReachMaximumPauseDuration()) reachMaximumPauseDuration()
+            else shouldContinueLiveStreaming()
+        } else livePusherWrapper.resume()
+    }
+
+    fun onPause() {
+        livePusherWrapper.pause()
+        setLastPauseMillis()
+    }
+
+    fun onDestroy() {
+        if (livePusherWrapper.pusherState == ApsaraLivePusherState.Idle
+                || livePusherWrapper.pusherState == ApsaraLivePusherState.Stop) {
+            removeLastPauseMillis()
+        }
+        livePusherWrapper.destroy()
     }
 
     fun setPauseDuration(duration: Long) {
-        liveStateObserver.setPauseDuration(duration)
+        this.mPauseDuration = duration
     }
 
     fun addStateListener(listener: PlayLiveStateListener) {
@@ -62,11 +84,11 @@ class PlayLiveStateProcessor(
         mListeners.remove(listener)
     }
 
-    override fun onReachMaximumPauseDuration() {
+    private fun reachMaximumPauseDuration() {
         broadcastState(PlayLivePusherState.Stop(shouldNavigate = true))
     }
 
-    override fun onShouldContinueLiveStreaming() {
+    private fun shouldContinueLiveStreaming() {
         broadcastState(PlayLivePusherState.Resume(isResumed = false))
     }
 
@@ -86,7 +108,6 @@ class PlayLiveStateProcessor(
             }
             ApsaraLivePusherState.Restart -> broadcastState(PlayLivePusherState.Resume(isResumed = true))
             ApsaraLivePusherState.Recovered -> broadcastState(PlayLivePusherState.Resume(isResumed = true))
-            ApsaraLivePusherState.Stop -> removeLifecycleObserver()
             else -> {}
         }
     }
@@ -109,11 +130,34 @@ class PlayLiveStateProcessor(
         mListeners.forEach { it.onStateChanged(state) }
     }
 
-    private fun addLifecycleObserver() {
-        lifecycleOwner.lifecycle.addObserver(liveStateObserver)
+
+    private fun setLastPauseMillis() {
+        localStorageEditor.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())?.apply()
     }
 
-    private fun removeLifecycleObserver() {
-        lifecycleOwner.lifecycle.removeObserver(liveStateObserver)
+    private fun isReachMaximumPauseDuration(): Boolean {
+        val maxPauseMillis = mPauseDuration
+        if (maxPauseMillis != null) {
+            val lastPauseMillis = localStorage.getLong(KEY_PAUSE_TIME, 0L)
+            if (lastPauseMillis > 0 && reachMaximumPauseDuration(lastPauseMillis, maxPauseMillis)) {
+                localStorageEditor.remove(KEY_PAUSE_TIME)?.apply()
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun reachMaximumPauseDuration(lastMillis: Long, maxPauseMillis: Long): Boolean {
+        val currentMillis = System.currentTimeMillis()
+        return ((currentMillis - lastMillis) > maxPauseMillis)
+    }
+
+    private fun removeLastPauseMillis() {
+        localStorageEditor.remove(KEY_PAUSE_TIME)?.apply()
+    }
+
+    companion object {
+
+        const val KEY_PAUSE_TIME = "play_broadcast_pause_time"
     }
 }
