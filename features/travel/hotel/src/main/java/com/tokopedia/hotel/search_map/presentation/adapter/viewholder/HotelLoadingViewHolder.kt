@@ -14,6 +14,6 @@ class HotelLoadingViewHolder(itemView: View): AbstractViewHolder<HotelLoadingMod
     }
 
     companion object {
-        val LAYOUT = R.layout.item_property_horizontal_search_shimmering
+        val LAYOUT = R.layout.property_horizontal_search_shimmering_loading
     }
 }

@@ -158,6 +158,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     showCollapsingHeader()
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty()) {
+                        cardListPosition = SELECTED_POSITION_INIT
                         changeMarkerState(cardListPosition)
                     } else {
                         hideLoader()
