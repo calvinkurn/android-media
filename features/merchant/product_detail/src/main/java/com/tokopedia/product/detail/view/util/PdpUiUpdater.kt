@@ -25,7 +25,6 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetMapper
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.math.roundToLong
@@ -531,7 +530,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(data.pageName) {
             (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                 recomWidgetData = data
-                cardModel = data.recommendationItemList.toProductCardModels()
+                cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
                 filterData = mapToAnnotateChip(data)
             }
         }
@@ -561,7 +560,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             (mapOfData[data.name] as? ProductRecommendationDataModel)?.run {
                 filterData = data.filterData
                 recomWidgetData = data.recomWidgetData
-                cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels()
+                cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels(hasThreeDots = true)
                         ?: listOf()
             }
         }
