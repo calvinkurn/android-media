@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
@@ -62,7 +63,7 @@ class ShowSessionIdBs(private val sid: String) : BottomSheetUnify() {
                 clipboard?.setPrimaryClip(clip)
             }
 
-            SnackbarManager.make(tvSid, getString(R.string.tradein_sid_mes), Snackbar.LENGTH_SHORT).show()
+            Toaster.build(contentView as View, getString(R.string.tradein_sid_mes), Toast.LENGTH_SHORT,actionText = "Oke",clickListener = View.OnClickListener {  }).show()
 
             dismiss()
         }
