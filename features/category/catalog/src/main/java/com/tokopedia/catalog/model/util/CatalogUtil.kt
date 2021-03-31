@@ -104,4 +104,12 @@ object CatalogUtil {
         share.putExtra(Intent.EXTRA_TEXT, shareTxt + "\n" + productUri)
         context?.startActivity(Intent.createChooser(share, shareTxt))
     }
+
+    fun getSortFilterAnalytics(searchFilterMap : HashMap<String,String>?) : String{
+        var label = ""
+        searchFilterMap?.forEach { map ->
+            label = "$label&${map.key}=${map.value}"
+        }
+        return label.removePrefix("&")
+    }
 }

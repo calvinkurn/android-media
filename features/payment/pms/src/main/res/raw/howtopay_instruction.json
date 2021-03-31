@@ -542,9 +542,9 @@
             ]
           },
           {
-            "payment_channel": "Mandiri Internet Banking / Mandiri Online",
+            "payment_channel": "Mandiri Internet Banking / Livin’ By Mandiri",
             "channel_steps": [
-              "Login Mandiri Online dengan memasukkan Username dan Password",
+              "Login Livin’ By Mandiri dengan memasukkan Username dan Password",
               "Pilih menu \"Pembayaran\"",
               "Pilih menu \"Multipayment\"",
               "Pilih penyedia jasa \"Tokopedia\"",
@@ -552,7 +552,7 @@
               "Setelah muncul tagihan, pilih Konfirmasi",
               "Masukkan PIN / Challenge Code Token",
               "Transaksi selesai, simpan bukti bayar Anda",
-              "Jangan gunakan fitur \"Simpan Daftar Transfer\" untuk pembayaran melalui Internet Banking karena dapat mengganggu proses pembayaran berikutnya.<br/><br/>Untuk menghapus daftar transfer tersimpan ikuti langkah berikut:<br/>1. Login Mandiri Online<br/>2. Pilih ke menu Pembayaran<br/>3. Pilih menu Daftar Pembayaran<br/>4. Pilih pada pembayaran yang tersimpan, lalu pilih menu untuk hapus"
+              "Jangan gunakan fitur \"Simpan Daftar Transfer\" untuk pembayaran melalui Internet Banking karena dapat mengganggu proses pembayaran berikutnya.<br/><br/>Untuk menghapus daftar transfer tersimpan ikuti langkah berikut:<br/>1. Login Livin’ By Mandiri<br/>2. Pilih ke menu Pembayaran<br/>3. Pilih menu Daftar Pembayaran<br/>4. Pilih pada pembayaran yang tersimpan, lalu pilih menu untuk hapus"
             ]
           }
         ]
