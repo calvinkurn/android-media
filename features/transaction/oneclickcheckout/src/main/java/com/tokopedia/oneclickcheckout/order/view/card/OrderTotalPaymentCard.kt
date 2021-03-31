@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
@@ -13,7 +12,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -45,13 +43,10 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
             btnPay?.apply {
                 when (orderTotal.buttonType) {
                     OccButtonType.CHOOSE_PAYMENT -> {
-                        layoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
-                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = true
-//                                isLoading = false
                                 if (isNewFlow) {
                                     setText(R.string.change_payment_method)
                                 } else {
@@ -61,9 +56,7 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                                 groupPayment?.visible()
                             }
                             OccButtonState.DISABLE -> {
-                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = false
-//                                isLoading = false
                                 if (isNewFlow) {
                                     setText(R.string.change_payment_method)
                                 } else {
@@ -73,73 +66,56 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                                 groupPayment?.visible()
                             }
                             else -> {
-                                layoutParams?.width = Utils.convertDpToPixel(BUTTON_CHOOSE_PAYMENT_WIDTH, context)
-                                layoutParams?.height = Utils.convertDpToPixel(BUTTON_LOADING_HEIGHT, context)
-//                                isLoading = true
                                 groupPayment?.gone()
                                 groupLoaderPayment?.visible()
                             }
                         }
                     }
                     OccButtonType.PAY -> {
-                        layoutParams?.width = Utils.convertDpToPixel(BUTTON_PAY_WIDTH, context)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
-                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 val drawable = getIconUnifyDrawable(context, IconUnify.PROTECTION_CHECK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                                 drawable?.setBounds(24.toPx(), 0, 44.toPx(), 20.toPx())
                                 setCompoundDrawables(drawable, null, null, null)
                                 compoundDrawablePadding = 4.toPx()
                                 isEnabled = true
-//                                isLoading = false
                                 setText(R.string.pay)
                                 groupLoaderPayment?.gone()
                                 groupPayment?.visible()
                             }
                             OccButtonState.DISABLE -> {
-                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 val drawable = getIconUnifyDrawable(context, IconUnify.PROTECTION_CHECK)
                                 drawable?.setBounds(24.toPx(), 0, 44.toPx(), 20.toPx())
                                 setCompoundDrawables(drawable, null, null, null)
                                 compoundDrawablePadding = 4.toPx()
                                 isEnabled = false
-//                                isLoading = false
                                 setText(R.string.pay)
                                 groupLoaderPayment?.gone()
                                 groupPayment?.visible()
                             }
                             else -> {
-                                layoutParams?.height = Utils.convertDpToPixel(BUTTON_LOADING_HEIGHT, context)
                                 setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-//                                isLoading = true
                                 groupPayment?.gone()
                                 groupLoaderPayment?.visible()
                             }
                         }
                     }
                     OccButtonType.CONTINUE -> {
-                        layoutParams?.width = Utils.convertDpToPixel(BUTTON_CHOOSE_PAYMENT_WIDTH, context)
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
-                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = true
-//                                isLoading = false
                                 setText(R.string.continue_pay)
                                 groupLoaderPayment?.gone()
                                 groupPayment?.visible()
                             }
                             OccButtonState.DISABLE -> {
-                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = false
-//                                isLoading = false
                                 setText(R.string.continue_pay)
                                 groupLoaderPayment?.gone()
                                 groupPayment?.visible()
                             }
                             else -> {
-                                layoutParams?.height = Utils.convertDpToPixel(BUTTON_LOADING_HEIGHT, context)
-//                                isLoading = true
                                 groupPayment?.gone()
                                 groupLoaderPayment?.visible()
                             }
