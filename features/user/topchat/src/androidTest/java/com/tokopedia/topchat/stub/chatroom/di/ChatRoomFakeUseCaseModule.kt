@@ -12,7 +12,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentR
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
@@ -70,7 +69,7 @@ class ChatRoomFakeUseCaseModule {
     fun provideStickerGroupUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<ChatListGroupStickerResponse>,
             cacheManager: TopchatCacheManager,
-            dispatchers: TopchatCoroutineContextProvider
+            dispatchers: TopchatAndroidTestCoroutineContextDispatcher
     ): ChatListGroupStickerUseCaseStub {
         return ChatListGroupStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }
@@ -88,7 +87,7 @@ class ChatRoomFakeUseCaseModule {
     fun provideStickerListUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<StickerResponse>,
             cacheManager: TopchatCacheManager,
-            dispatchers: TopchatCoroutineContextProvider
+            dispatchers: TopchatAndroidTestCoroutineContextDispatcher
     ): ChatListStickerUseCaseStub {
         return ChatListStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }
@@ -128,7 +127,7 @@ class ChatRoomFakeUseCaseModule {
     @ChatScope
     fun provideGetShopFollowingUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<ShopFollowingPojo>,
-            dispatchers: TopchatCoroutineContextProvider
+            dispatchers: TopchatAndroidTestCoroutineContextDispatcher
     ): GetShopFollowingUseCaseStub {
         return GetShopFollowingUseCaseStub(gqlUseCase, dispatchers)
     }
