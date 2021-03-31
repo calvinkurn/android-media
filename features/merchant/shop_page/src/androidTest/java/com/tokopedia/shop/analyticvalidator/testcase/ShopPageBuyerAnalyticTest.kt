@@ -135,13 +135,13 @@ class ShopPageBuyerAnalyticTest {
                 withId(R.id.layout_remind_me))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.snackbar_btn))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.image_tnc))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.bottom_sheet_close))
-        )).perform(click())
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.snackbar_btn))
         )).perform(click())
     }
 

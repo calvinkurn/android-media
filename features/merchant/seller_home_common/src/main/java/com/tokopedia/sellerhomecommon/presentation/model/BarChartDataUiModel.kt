@@ -12,7 +12,7 @@ data class BarChartDataUiModel(
         val chartData: BarChartUiModel = BarChartUiModel()
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && (chartData.yAxis.all { it.value == 0 })
+        return chartData.yAxis.all { it.value == 0 }
     }
 }
 

@@ -70,7 +70,7 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     private fun setupParams() {
-        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
+        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN) == true) {
             otpData.userId = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "").toEmptyStringIfNull()
         }else {
             otpData.userId = userSession.userId ?: userSession.temporaryUserId

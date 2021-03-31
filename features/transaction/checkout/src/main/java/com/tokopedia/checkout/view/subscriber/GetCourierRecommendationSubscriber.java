@@ -29,7 +29,6 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     private final int itemPosition;
     private final ShippingCourierConverter shippingCourierConverter;
     private final ShipmentCartItemModel shipmentCartItemModel;
-    private final List<ShopShipment> shopShipmentList;
     private final boolean isInitialLoad;
     private final boolean isTradeInDropOff;
     private final boolean isForceReloadRates;
@@ -38,7 +37,6 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                               int shipperId, int spId, int itemPosition,
                                               ShippingCourierConverter shippingCourierConverter,
                                               ShipmentCartItemModel shipmentCartItemModel,
-                                              List<ShopShipment> shopShipmentList,
                                               boolean isInitialLoad, boolean isTradeInDropOff,
                                               boolean isForceReloadRates) {
         this.view = view;
@@ -48,7 +46,6 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         this.itemPosition = itemPosition;
         this.shippingCourierConverter = shippingCourierConverter;
         this.shipmentCartItemModel = shipmentCartItemModel;
-        this.shopShipmentList = shopShipmentList;
         this.isInitialLoad = isInitialLoad;
         this.isTradeInDropOff = isTradeInDropOff;
         this.isForceReloadRates = isForceReloadRates;

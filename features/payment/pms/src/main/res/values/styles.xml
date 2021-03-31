@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CardWarningStyle">
+    <style name="PMS_CardWarningStyle">
         <item name="android:padding">@dimen/dp_8</item>
-        <item name="android:background">@drawable/bg_card_warning</item>
+        <item name="android:background">@drawable/pms_bg_card_warning</item>
         <item name="android:textSize">@dimen/sp_12</item>
     </style>
 </resources>

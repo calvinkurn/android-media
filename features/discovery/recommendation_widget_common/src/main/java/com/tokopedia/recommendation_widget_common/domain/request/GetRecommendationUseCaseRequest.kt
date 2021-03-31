@@ -75,6 +75,10 @@ internal class GetRecommendationUseCaseRequest {
                         recommendationType
                         stock
                         isTopads
+                        specificationLabels {
+                            key
+                            value
+                        }
                       }
                     }
                   }
@@ -147,6 +151,10 @@ internal class GetRecommendationUseCaseRequest {
                           recommendationType
                           stock
                           isTopads
+                          specificationLabels {
+                            key
+                            value
+                        }
                        }
                    }
                  }

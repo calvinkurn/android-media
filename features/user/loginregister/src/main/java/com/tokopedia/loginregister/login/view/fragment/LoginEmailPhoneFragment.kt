@@ -1590,7 +1590,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
         })
         startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)

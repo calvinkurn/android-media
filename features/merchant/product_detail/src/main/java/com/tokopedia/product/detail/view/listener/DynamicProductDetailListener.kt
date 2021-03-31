@@ -12,6 +12,8 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 
 interface DynamicProductDetailListener {
@@ -19,6 +21,7 @@ interface DynamicProductDetailListener {
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
+    fun getFragmentTrackingQueue(): TrackingQueue?
 
     /**
      * ProductMediaViewHolder
@@ -92,12 +95,18 @@ interface DynamicProductDetailListener {
      * ProductRecommendationViewHolder
      */
     fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onThreeDotsClick(recomItem: RecommendationItem, adapterPosition: Int, carouselPosition: Int)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
     fun getRecommendationCarouselSavedState(): SparseIntArray
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
+
+    /**
+     * PdpComparisonWidgetViewHolder
+     */
+    fun getStickyTitleView(): StickyTitleView?
 
     /**
      * ProductGeneralInfoViewHolder

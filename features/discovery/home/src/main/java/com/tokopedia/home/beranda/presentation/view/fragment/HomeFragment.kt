@@ -541,7 +541,7 @@ open class HomeFragment : BaseDaggerFragment(),
                         ))
                         val icons = IconBuilder(
                                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
-                        ).addIcon(IconList.ID_MESSAGE) {}
+                        ).addIcon(getInboxIcon()) {}
                         if (!useNewInbox) {
                             icons.addIcon(IconList.ID_NOTIFICATION) {}
                         }
@@ -573,6 +573,14 @@ open class HomeFragment : BaseDaggerFragment(),
         useNewInbox = getAbTestPlatform().getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
+    }
+
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
     }
 
     private fun showNavigationOnBoarding() {
@@ -2043,6 +2051,10 @@ open class HomeFragment : BaseDaggerFragment(),
         trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName, userId, widgetPosition) as HashMap<String, Any>)
     }
 
+    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+
+    }
+
     override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int) {
         BestSellerWidgetTracker.sendFilterClickTracker(filter.value, bestSellerDataModel.id, bestSellerDataModel.title, userId)
         getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel)
@@ -2142,7 +2154,7 @@ open class HomeFragment : BaseDaggerFragment(),
                     if (!useNewInbox) {
                         navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
                     }
-                    navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+                    navToolbar?.setBadgeCounter(getInboxIcon(), inboxCount)
                     navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
                 }
         )
