@@ -61,10 +61,10 @@ class PlayCoverSetupViewModel @Inject constructor(
             }
         }
 
-    val savedCoverTitle: String
-        get() {
-            return observableCoverTitle.value.orEmpty()
-        }
+//    val savedCoverTitle: String
+//        get() {
+//            return observableCoverTitle.value.orEmpty()
+//        }
 
     val source: CoverSource
         get() {
@@ -80,9 +80,9 @@ class PlayCoverSetupViewModel @Inject constructor(
         it.croppedCover
     }
 
-    val observableCoverTitle: LiveData<String> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
-            it.title
-        }
+//    val observableCoverTitle: LiveData<String> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
+//            it.title
+//        }
 
     val observableSelectedProducts: LiveData<List<CarouselCoverUiModel.Product>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
         dataList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) }
@@ -113,10 +113,10 @@ class PlayCoverSetupViewModel @Inject constructor(
         }
     }
 
-    fun uploadCover(coverTitle: String) {
+    fun uploadCover() {
         _observableUploadCoverEvent.value = NetworkResult.Loading
         launchCatchError(block = {
-            uploadImageAndUpdateCoverState(coverTitle)
+            uploadImageAndUpdateCoverState()
 
             val result = setupDataStore.uploadSelectedCover(channelId)
             if (result is NetworkResult.Success) _observableUploadCoverEvent.value = result.map { Event(Unit) }
@@ -163,11 +163,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         )
     }
 
-    fun saveCover(coverTitle: String) {
-        setupDataStore.updateCoverTitle(coverTitle)
-    }
-
-    private suspend fun uploadImageAndUpdateCoverState(coverTitle: String) {
+    private suspend fun uploadImageAndUpdateCoverState() {
         val currentCropState = cropState
         if (currentCropState is CoverSetupState.Cropped.Draft) {
             val validatedImageUri = validateImageMinSize(currentCropState.coverImage)
@@ -179,7 +175,6 @@ class PlayCoverSetupViewModel @Inject constructor(
                 setupDataStore.setFullCover(
                         PlayCoverUiModel(
                                 croppedCover = CoverSetupState.Cropped.Draft(validatedImageUri, source),
-                                title = coverTitle,
                                 state = SetupDataState.Draft
                         )
                 )
@@ -190,7 +185,6 @@ class PlayCoverSetupViewModel @Inject constructor(
                 setupDataStore.setFullCover(
                         PlayCoverUiModel(
                                 croppedCover = CoverSetupState.Cropped.Uploaded(validatedImageUri, uploadedImageUri, source),
-                                title = coverTitle,
                                 state = SetupDataState.Draft
                         )
                 )

@@ -8,11 +8,10 @@ import com.tokopedia.play.broadcaster.view.state.SetupDataState
  */
 data class PlayCoverUiModel(
         val croppedCover: CoverSetupState,
-        val title: String,
         val state: SetupDataState
 ) {
 
     companion object {
-        fun empty() = PlayCoverUiModel(CoverSetupState.Blank, "", SetupDataState.Draft)
+        fun empty() = PlayCoverUiModel(CoverSetupState.Blank, SetupDataState.Draft)
     }
 }

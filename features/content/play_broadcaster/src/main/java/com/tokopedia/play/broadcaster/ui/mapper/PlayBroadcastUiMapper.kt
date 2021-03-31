@@ -207,7 +207,7 @@ class PlayBroadcastUiMapper(
         }
     }
 
-    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
+    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String): PlayCoverUiModel {
         val prevSource = when (val prevCover = setupCover?.croppedCover) {
             is CoverSetupState.Cropped -> prevCover.coverSource
             else -> null
@@ -220,7 +220,6 @@ class PlayBroadcastUiMapper(
                         coverSource = prevSource ?: CoverSource.None
                 ),
                 state = SetupDataState.Uploaded,
-                title = coverTitle
         )
     }
 

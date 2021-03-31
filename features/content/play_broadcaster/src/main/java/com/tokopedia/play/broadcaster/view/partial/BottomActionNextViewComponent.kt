@@ -26,6 +26,10 @@ class BottomActionNextViewComponent(
         btnNext.isClickable = isEnabled
     }
 
+    fun setLoading(isLoading: Boolean) {
+        btnNext.isLoading = isLoading
+    }
+
     interface Listener {
 
         fun onNextButtonClicked(view: BottomActionNextViewComponent)

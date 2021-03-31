@@ -53,31 +53,29 @@ class PlayBroadcastUpdateChannelUseCase @Inject constructor(private val updateCh
         fun createUpdateFullCoverRequest(
                 channelId: String,
                 authorId: String,
-                coverTitle: String,
                 coverUrl: String
         ): QueryParams {
             val params = mapOf(
                     PARAMS_CHANNEL_ID to channelId,
                     FieldsToUpdate.AuthorID.fieldName to authorId,
-                    FieldsToUpdate.Title.fieldName to coverTitle,
                     FieldsToUpdate.Cover.fieldName to coverUrl
             )
 
             return QueryParamBuilder()
                     .setParams(params)
-                    .setFields(listOf(FieldsToUpdate.Title, FieldsToUpdate.Cover, FieldsToUpdate.AuthorID))
+                    .setFields(listOf(FieldsToUpdate.Cover, FieldsToUpdate.AuthorID))
                     .build()
         }
 
-        fun createUpdateCoverTitleRequest(
+        fun createUpdateTitleRequest(
                 channelId: String,
                 authorId: String,
-                coverTitle: String
+                title: String
         ): QueryParams {
             val params = mapOf(
                     PARAMS_CHANNEL_ID to channelId,
                     FieldsToUpdate.AuthorID.fieldName to authorId,
-                    FieldsToUpdate.Title.fieldName to coverTitle
+                    FieldsToUpdate.Title.fieldName to title
             )
             return QueryParamBuilder()
                     .setParams(params)

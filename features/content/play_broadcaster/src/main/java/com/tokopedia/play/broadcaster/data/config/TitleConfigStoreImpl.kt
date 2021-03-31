@@ -5,9 +5,9 @@ import javax.inject.Inject
 /**
  * Created by jegul on 13/07/20
  */
-class CoverConfigStoreImpl @Inject constructor(
+class TitleConfigStoreImpl @Inject constructor(
 
-): CoverConfigStore {
+): TitleConfigStore {
 
     /**
      * Default Value:

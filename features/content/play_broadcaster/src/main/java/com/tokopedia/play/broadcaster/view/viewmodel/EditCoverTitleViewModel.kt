@@ -1,17 +1,17 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.ui.validator.title.TitleSetupValidator
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,8 +21,8 @@ import javax.inject.Inject
 class EditCoverTitleViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
-        private val setupDataStore: PlayBroadcastSetupDataStore
-) : ViewModel() {
+        private val setupDataStore: PlayBroadcastSetupDataStore,
+) : ViewModel(), TitleSetupValidator {
 
     private val channelId: String
         get() = hydraConfigStore.getChannelId()
@@ -33,24 +33,25 @@ class EditCoverTitleViewModel @Inject constructor(
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
 
-    val observableCurrentTitle: LiveData<String> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
-        it.title
-    }
+    val observableTitle: LiveData<PlayTitleUiModel.HasTitle>
+        get() = setupDataStore.getObservableTitle()
+                .filterIsInstance<PlayTitleUiModel.HasTitle>()
+                .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
 
     val observableUpdateTitle: LiveData<NetworkResult<Unit>>
         get() = _observableUpdateTitle
     private val _observableUpdateTitle = MutableLiveData<NetworkResult<Unit>>()
 
-    fun isValidCoverTitle(coverTitle: String): Boolean {
-        return coverTitle.isNotBlank() && coverTitle.length <= maxTitleChars
+    override fun isTitleValid(title: String): Boolean {
+        return title.isNotBlank() && title.length <= maxTitleChars
     }
 
     fun editTitle(title: String) {
-        setupDataStore.updateCoverTitle(title)
+        setupDataStore.setTitle(title)
 
         scope.launch {
             _observableUpdateTitle.value = NetworkResult.Loading
-            val value = setupDataStore.uploadCoverTitle(channelId).map { Unit }
+            val value = setupDataStore.uploadTitle(channelId).map { Unit }
             _observableUpdateTitle.value = value
         }
     }

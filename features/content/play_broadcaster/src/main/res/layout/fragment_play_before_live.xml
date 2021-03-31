@@ -82,14 +82,14 @@
         android:layout_height="wrap_content"
         android:text="@string/play_cover_title_label"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toTopOf="@id/tv_cover_title"
-        app:layout_constraintEnd_toEndOf="@id/tv_cover_title"
-        app:layout_constraintStart_toStartOf="@id/tv_cover_title"
+        app:layout_constraintBottom_toTopOf="@id/tv_channel_title"
+        app:layout_constraintEnd_toEndOf="@id/tv_channel_title"
+        app:layout_constraintStart_toStartOf="@id/tv_channel_title"
         app:typographyType="body_3"
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_cover_title"
+        android:id="@+id/tv_channel_title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl2"

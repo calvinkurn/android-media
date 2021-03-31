@@ -188,7 +188,7 @@ class PlayCoverSetupFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeCropState()
-        observeCoverTitle()
+//        observeCoverTitle()
         observeUploadCover()
     }
 
@@ -235,7 +235,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     }
 
                     viewModel.setDraftCroppedCover(croppedUri)
-                    if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
+                    if (isEditCoverMode) shouldUploadCover()
                 } catch (e: Throwable) {  /* Fail to crop */ }
             }
         } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
@@ -252,13 +252,13 @@ class PlayCoverSetupFragment @Inject constructor(
      * CoverSetup View Component Listener
      */
     override fun onImageAreaClicked(view: CoverSetupViewComponent) {
-        viewModel.saveCover(coverSetupView.coverTitle)
+//        viewModel.saveCover(coverSetupView.coverTitle)
         requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
         analytic.clickAddCover()
     }
 
-    override fun onNextButtonClicked(view: CoverSetupViewComponent, coverTitle: String) {
-        shouldUploadCover(coverTitle)
+    override fun onNextButtonClicked(view: CoverSetupViewComponent) {
+        shouldUploadCover()
         analytic.clickContinueOnAddCoverAndTitlePage()
     }
 
@@ -267,7 +267,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onViewDestroyed(view: CoverSetupViewComponent) {
-        viewModel.saveCover(view.coverTitle)
+//        viewModel.saveCover(view.coverTitle)
     }
 
     fun setListener(listener: Listener) {
@@ -374,11 +374,9 @@ class PlayCoverSetupFragment @Inject constructor(
         }
     }
 
-    private fun shouldUploadCover(coverTitle: String) {
-        if (viewModel.isValidCoverTitle(coverTitle)) {
-            if (isGalleryPermissionGranted()) viewModel.uploadCover(coverTitle)
-            else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
-        }
+    private fun shouldUploadCover() {
+        if (isGalleryPermissionGranted()) viewModel.uploadCover()
+        else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
     }
 
     private fun showDialogPermissionRationale() {
@@ -530,9 +528,9 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun observeCoverTitle() {
-        viewModel.observableCoverTitle.observe(viewLifecycleOwner, Observer {
-            coverSetupView.coverTitle = it
-        })
+//        viewModel.observableCoverTitle.observe(viewLifecycleOwner, Observer {
+//            coverSetupView.coverTitle = it
+//        })
     }
 
     private fun observeUploadCover() {
@@ -557,7 +555,9 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun setupTransition() {
         setupEnterTransition()
+        setupExitTransition()
         setupReturnTransition()
+        setupReenterTransition()
     }
 
     private fun setupEnterTransition() {
@@ -583,6 +583,20 @@ class PlayCoverSetupFragment @Inject constructor(
                 .addTransition(ChangeTransform())
                 .addTransition(ChangeBounds())
                 .setDuration(450)
+    }
+
+    private fun setupExitTransition() {
+        exitTransition = TransitionSet()
+                .addTransition(Slide(Gravity.START))
+                .addTransition(Fade(Fade.OUT))
+                .setDuration(300)
+    }
+
+    private fun setupReenterTransition() {
+        reenterTransition = TransitionSet()
+                .addTransition(Slide(Gravity.START))
+                .addTransition(Fade(Fade.IN))
+                .setDuration(300)
     }
 
     companion object {

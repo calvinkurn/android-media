@@ -15,6 +15,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
@@ -89,9 +90,9 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditCoverTitleViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        dataStoreViewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(EditCoverTitleViewModel::class.java)
 
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
@@ -199,7 +200,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupSaveButton() {
-        btnSave.isEnabled = viewModel.isValidCoverTitle(title)
+        btnSave.isEnabled = viewModel.isTitleValid(title)
     }
 
     private fun onUpdateSuccess() {
@@ -246,7 +247,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
      * Observe
      */
     private fun observeUpdateTitle() {
-        viewModel.observableUpdateTitle.observe(viewLifecycleOwner, Observer {
+        viewModel.observableUpdateTitle.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> onUpdateSuccess()
                 is NetworkResult.Fail -> onUpdateFail(it.error)
@@ -255,13 +256,13 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
                     btnSave.isLoading = true
                 }
             }
-        })
+        }
     }
 
     private fun observeSelectedCover() {
-        viewModel.observableCurrentTitle.observe(viewLifecycleOwner, Observer {
-            etCoverTitle.setText(it.orEmpty())
-        })
+        viewModel.observableTitle.observe(viewLifecycleOwner) {
+            etCoverTitle.setText(it.title)
+        }
     }
 
     companion object {
