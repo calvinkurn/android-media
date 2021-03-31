@@ -11,7 +11,6 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
-import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
@@ -122,8 +121,9 @@ class PlayBroadcastViewModel @Inject constructor(
     private val liveStateListener = object : PlayLiveStateListener {
         override fun onStateChanged(state: PlayLivePusherState) {
             if (state is PlayLivePusherState.Start) startWebSocket()
-            if (state is PlayLivePusherState.Stop) stopPushStream(state.shouldNavigate)
-            else sendLivePusherState(state)
+            if (state is PlayLivePusherState.Stop) {
+                if (!state.isStopped) stopPushStream(state.shouldNavigate)
+            } else sendLivePusherState(state)
         }
     }
 
@@ -152,7 +152,6 @@ class PlayBroadcastViewModel @Inject constructor(
     }
     
     private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, countDownTimer)
-
     private var isLiveStarted: Boolean = false
 
     init {
@@ -337,9 +336,7 @@ class PlayBroadcastViewModel @Inject constructor(
         countDownTimer.stop()
         livePusher.stop()
         livePusher.stopPreview()
-        sendLivePusherState(PlayLivePusherState.Stop(shouldNavigate))
-        countDownTimer.destroy()
-        livePusher.destroy()
+        sendLivePusherState(PlayLivePusherState.Stop(isStopped = true, shouldNavigate))
     }
 
     fun setChannelId(channelId: String) {
