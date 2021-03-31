@@ -25,6 +25,8 @@ class SomListBulkPrintDialog(context: Context) {
             }
             dialogPrimaryCTA.gone()
             dialogSecondaryCTA.gone()
+            dialogSecondaryLongCTA.gone()
+            dialogCTAContainer.gone()
             setUnlockVersion()
             setOverlayClose(false)
             setCancelable(false)
