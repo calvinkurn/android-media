@@ -314,6 +314,7 @@ class NewShopPageFragment :
         shopViewModel?.followShopData?.removeObservers(this)
         shopViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
         shopViewModel?.shopPageTickerData?.removeObservers(this)
+        shopViewModel?.shopPageShopShareData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -578,6 +579,15 @@ class NewShopPageFragment :
             }
         })
 
+        shopViewModel?.shopPageShopShareData?.observe(owner, Observer { result ->
+            if(result is Success){
+                shopPageHeaderDataModel?.let {
+                    it.shopSnippetUrl = result.data.shopSnippetUrl
+                    it.shopCoreUrl = result.data.shopCore.url
+                }
+            }
+        })
+
         shopViewModel?.shopSellerPLayWidgetData?.observe(owner, Observer { result ->
             if (result is Success) {
                 shopPageHeaderDataModel?.let {
@@ -700,13 +710,13 @@ class NewShopPageFragment :
     }
 
     private fun getShopPageP2Data() {
-        getShopTickerStatus()
+        getShopInfoData()
         getFollowStatus()
         getSellerPlayWidget()
     }
 
-    private fun getShopTickerStatus() {
-        shopViewModel?.getShopTickerData(shopId, shopDomain ?: "", isRefresh)
+    private fun getShopInfoData() {
+        shopViewModel?.getShopInfoData(shopId, shopDomain ?: "", isRefresh)
     }
 
     private fun getSellerPlayWidget() {
