@@ -111,7 +111,6 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.miscDependencies.dagger
@@ -142,6 +141,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoIdlingResource
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     testImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
