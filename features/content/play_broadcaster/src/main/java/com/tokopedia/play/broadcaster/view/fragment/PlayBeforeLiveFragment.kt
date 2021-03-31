@@ -65,7 +65,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 ) : PlayBaseBroadcastFragment() {
 
     private lateinit var ivImagePreview: ImageView
-    private lateinit var tvCoverTitle: TextView
+    private lateinit var tvChannelTitle: TextView
     private lateinit var llSelectedProduct: LinearLayout
     private lateinit var tvSelectedProduct: TextView
     private lateinit var btnStartLive: PlayStartStreamingButton
@@ -191,7 +191,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun initView(view: View) {
         with(view) {
             ivImagePreview = findViewById(R.id.iv_image_preview)
-            tvCoverTitle = findViewById(R.id.tv_cover_title)
+            tvChannelTitle = findViewById(R.id.tv_channel_title)
             tvSelectedProduct = findViewById(R.id.tv_selected_product)
             llSelectedProduct = findViewById(R.id.ll_selected_product)
             btnStartLive = findViewById(R.id.btn_start_live)
@@ -210,7 +210,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             openEditProductPage()
             analytic.clickEditProductTaggingOnFinalSetupPage()
         }
-        tvCoverTitle.setOnClickListener {
+        tvChannelTitle.setOnClickListener {
             openEditCoverTitlePage()
             analytic.clickEditTitleOnFinalSetupPage()
         }
@@ -231,6 +231,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeCreateChannel()
         observeProductList()
         observeCover()
+        observeTitle()
         observeLiveInfo()
         observeBroadcastSchedule()
         observeDeleteBroadcastSchedule()
@@ -266,8 +267,12 @@ class PlayBeforeLiveFragment @Inject constructor(
                 is CoverSetupState.Cropping.Image -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
                 else -> ivImagePreview.setImageDrawable(null)
             }
+        })
+    }
 
-//            tvCoverTitle.text = it.title
+    private fun observeTitle() {
+        parentViewModel.observableTitle.observe(viewLifecycleOwner, Observer {
+            tvChannelTitle.text = it.title
         })
     }
 

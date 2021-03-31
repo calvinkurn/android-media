@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
 
@@ -22,11 +23,17 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 ) : PlayBroadcastSetupDataStore {
 
     override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
-        if (!modeExclusion.contains(OverwriteMode.Product))
+        if (!modeExclusion.contains(OverwriteMode.Product)) {
             overwriteProductDataStore(dataStore)
+        }
 
-        if (!modeExclusion.contains(OverwriteMode.Cover))
+        if (!modeExclusion.contains(OverwriteMode.Cover)) {
             overwriteCoverDataStore(dataStore)
+        }
+
+        if (!modeExclusion.contains(OverwriteMode.Title)) {
+            overwriteTitleDataStore(dataStore)
+        }
 
         overwriteBroadcastScheduleDataStore(dataStore)
     }
@@ -49,6 +56,11 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     private fun overwriteCoverDataStore(dataStore: CoverDataStore) {
         dataStore.getSelectedCover()?.let(::setFullCover)
+    }
+
+    private fun overwriteTitleDataStore(dataStore: TitleDataStore) {
+        val title = dataStore.getTitle()
+        if (title is PlayTitleUiModel.HasTitle) setTitle(title.title)
     }
 
     private fun overwriteBroadcastScheduleDataStore(dataStore: BroadcastScheduleDataStore) {
@@ -108,16 +120,8 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         coverDataStore.updateCoverState(state)
     }
 
-    override fun updateCoverTitle(title: String) {
-        coverDataStore.updateCoverTitle(title)
-    }
-
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
         return coverDataStore.uploadSelectedCover(channelId)
-    }
-
-    override suspend fun uploadCoverTitle(channelId: String): NetworkResult<Unit> {
-        return coverDataStore.uploadCoverTitle(channelId)
     }
 
     private fun validateCover() {
@@ -139,6 +143,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     /**
      * Title
      */
+    override fun getObservableTitle(): Flow<PlayTitleUiModel> {
+        return titleDataStore.getObservableTitle()
+    }
+
     override fun getTitleDataStore(): TitleDataStore {
         return titleDataStore
     }

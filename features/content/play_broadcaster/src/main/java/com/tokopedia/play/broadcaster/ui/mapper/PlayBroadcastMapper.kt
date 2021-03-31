@@ -49,7 +49,7 @@ interface PlayBroadcastMapper {
 
     fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel
 
-    fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel
+    fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String): PlayCoverUiModel
 
     fun mapShareInfo(channel: GetChannelResponse.Channel): ShareUiModel
 

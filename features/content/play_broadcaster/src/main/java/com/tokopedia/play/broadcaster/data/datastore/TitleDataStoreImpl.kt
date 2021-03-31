@@ -5,6 +5,8 @@ import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,14 +19,21 @@ class TitleDataStoreImpl @Inject constructor(
         private val userSession: UserSessionInterface,
 ) : TitleDataStore {
 
-    private var mTitle: PlayTitleUiModel = PlayTitleUiModel.NoTitle
+    private val _observableTitle: MutableStateFlow<PlayTitleUiModel> = MutableStateFlow(PlayTitleUiModel.NoTitle)
+
+    private val mTitle: PlayTitleUiModel
+        get() = _observableTitle.value
+
+    override fun getObservableTitle(): Flow<PlayTitleUiModel> {
+        return _observableTitle
+    }
 
     override fun getTitle(): PlayTitleUiModel {
         return mTitle
     }
 
     override fun setTitle(title: String) {
-        mTitle = PlayTitleUiModel.HasTitle(title)
+        _observableTitle.value = PlayTitleUiModel.HasTitle(title)
     }
 
     override suspend fun uploadTitle(channelId: String): NetworkResult<Unit> {

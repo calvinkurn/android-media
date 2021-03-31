@@ -163,10 +163,6 @@ class PlayCoverSetupViewModel @Inject constructor(
         )
     }
 
-    fun saveCover(coverTitle: String) {
-        setupDataStore.updateCoverTitle(coverTitle)
-    }
-
     private suspend fun uploadImageAndUpdateCoverState() {
         val currentCropState = cropState
         if (currentCropState is CoverSetupState.Cropped.Draft) {

@@ -43,28 +43,9 @@ class CoverDataStoreImpl @Inject constructor(
         )
     }
 
-    override fun updateCoverTitle(title: String) {
-        val currentCover = getSelectedCover() ?: PlayCoverUiModel.empty()
-        _selectedCoverLiveData.value = currentCover.copy(
-                state = SetupDataState.Draft
-        )
-    }
-
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
         return try {
             updateCover(channelId)
-            getSelectedCover()?.let {
-                setFullCover(it.copy(state = SetupDataState.Uploaded))
-            }
-            NetworkResult.Success(Unit)
-        } catch (e: Throwable) {
-            NetworkResult.Fail(e)
-        }
-    }
-
-    override suspend fun uploadCoverTitle(channelId: String): NetworkResult<Unit> {
-        return try {
-            syncCoverTitle(channelId)
             getSelectedCover()?.let {
                 setFullCover(it.copy(state = SetupDataState.Uploaded))
             }
@@ -89,21 +70,6 @@ class CoverDataStoreImpl @Inject constructor(
                             channelId = channelId,
                             authorId = userSession.shopId,
                             coverUrl = coverUrl
-                    )
-            )
-        }
-        return@withContext updateChannelUseCase.executeOnBackground()
-    }
-
-    private suspend fun syncCoverTitle(channelId: String) = withContext(dispatcher.io) {
-        val coverTitle = ""
-
-        updateChannelUseCase.apply {
-            setQueryParams(
-                    PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
-                            channelId = channelId,
-                            authorId = userSession.shopId,
-                            title = coverTitle
                     )
             )
         }
