@@ -228,35 +228,36 @@ class HotelBookingFragment : HotelBaseFragment() {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.let {
                         if (it.hasExtra(COUPON_EXTRA_PROMO_DATA)) {
-                            val itemPromoData = it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)
-                            promoCode = itemPromoData.promoCode
-                            hotelCart.appliedVoucher.isCoupon = if (itemPromoData.typePromo == PromoData.TYPE_COUPON) 1 else 0
+                            it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)?.let { itemPromoData ->
+                                promoCode = itemPromoData.promoCode
+                                hotelCart.appliedVoucher.isCoupon = if (itemPromoData.typePromo == PromoData.TYPE_COUPON) 1 else 0
 
-                            when (itemPromoData.state) {
-                                TickerCheckoutView.State.EMPTY -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                                            "",
-                                            "")
-                                }
-                                TickerCheckoutView.State.FAILED -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.FAILED,
-                                            itemPromoData?.title.toEmptyStringIfNull(),
-                                            itemPromoData?.description.toEmptyStringIfNull())
+                                when (itemPromoData.state) {
+                                    TickerCheckoutView.State.EMPTY -> {
+                                        promoCode = ""
+                                        setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                                "",
+                                                "")
+                                    }
+                                    TickerCheckoutView.State.FAILED -> {
+                                        promoCode = ""
+                                        setupPromoTicker(TickerCheckoutView.State.FAILED,
+                                                itemPromoData.title.toEmptyStringIfNull(),
+                                                itemPromoData.description.toEmptyStringIfNull())
 
-                                }
-                                TickerCheckoutView.State.ACTIVE -> {
-                                    trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
-                                    setupPromoTicker(TickerCheckoutView.State.ACTIVE,
-                                            itemPromoData?.title.toEmptyStringIfNull(),
-                                            itemPromoData?.description.toEmptyStringIfNull())
-                                }
-                                else -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                                            "",
-                                            "")
+                                    }
+                                    TickerCheckoutView.State.ACTIVE -> {
+                                        trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
+                                        setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+                                                itemPromoData.title.toEmptyStringIfNull(),
+                                                itemPromoData.description.toEmptyStringIfNull())
+                                    }
+                                    else -> {
+                                        promoCode = ""
+                                        setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                                "",
+                                                "")
+                                    }
                                 }
                             }
                         }
