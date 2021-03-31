@@ -94,17 +94,19 @@ data class CategoryGetDetailModularData(
             @Keep
             data class Data(
                 @SerializedName("id")
-                var id: Int,
+                var id: Int ? = 0,
                 @SerializedName("name")
-                var name: String,
+                var name: String? = null,
                 @SerializedName("url")
-                var url: String,
+                var url: String? = null,
                 @SerializedName("thumbnailImage")
-                var thumbnailImage: String,
+                var thumbnailImage: String? = null,
                 @SerializedName("isAdult")
                 var isAdult: Int,
                 @SerializedName("applinks")
-                var applinks: String
+                var applinks: String? = null,
+                @SerializedName("text")
+                var text: String? = null
             )
         }
     }
