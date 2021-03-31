@@ -69,8 +69,6 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = hydraConfigStore.getIngestUrl()
     val title: String
         get() = hydraConfigStore.getTitle()
-//    val pusherState: PlayLivePusherState
-//        get() = _observableLivePusherState.value?:PlayLivePusherState.Unknown
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -132,17 +130,7 @@ class PlayBroadcastViewModel @Inject constructor(
         override fun onChannelStateChanged(channelStatusType: PlayChannelStatusType) {
             updateChannelStatus(channelStatusType)
         }
-
-//        override fun onChannelResumed() {
-//            reconnectPushStream()
-//        }
     }
-
-//    private val liveStateErrorStateListener = object : PlayLiveErrorStateListener {
-//        override fun onError(autoReconnect: Boolean) {
-//            if (autoReconnect) reconnectPushStream()
-//        }
-//    }
     
     private val countDownTimerListener = object : PlayCountDownTimer.Listener {
         override fun onCountDownActive(millis: Long) {
@@ -160,10 +148,6 @@ class PlayBroadcastViewModel @Inject constructor(
                 stopPushStream()
             }
         }
-
-//        override fun onReachMaximumPauseDuration() {
-//            stopPushStream()
-//        }
     }
     
     private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, countDownTimer)
@@ -174,7 +158,6 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableChatList.value = mutableListOf()
         liveStateProcessor.addStateListener(liveStateListener)
         liveStateProcessor.addStateListener(channelLiveStateListener)
-//        liveStateProcessor.addStateListener(liveStateErrorStateListener)
         countDownTimer.setListener(countDownTimerListener)
     }
 
@@ -183,7 +166,6 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.cancel()
         liveStateProcessor.removeStateListener(liveStateListener)
         liveStateProcessor.removeStateListener(channelLiveStateListener)
-//        liveStateProcessor.removeStateListener(liveStateErrorStateListener)
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -224,7 +206,6 @@ class PlayBroadcastViewModel @Inject constructor(
             else countDownTimer.setDuration(configUiModel.durationConfig.duration)
 
             countDownTimer.setMaxDuration(configUiModel.durationConfig.duration)
-//            liveStateProcessor.setPauseDuration(10000)
             liveStateProcessor.setPauseDuration(configUiModel.durationConfig.pauseDuration)
 
         }) {
@@ -293,92 +274,6 @@ class PlayBroadcastViewModel @Inject constructor(
         }) {
         }
     }
-
-    /**
-     * Apsara integration
-     */
-//    fun initPushStream() {
-//        livePusher.setPlayPusherInfoListener(object : PlayPusherInfoListener {
-//            override fun onStarted() {
-//                scope.launchCatchError(block = {
-//                    updateChannelStatus(PlayChannelStatusType.Live)
-//                    _observableLivePusherState.value = LivePusherState.Started
-//                    if (!isManualStartTimer) livePusher.startTimer()
-//                    startWebSocket()
-//                }) {
-//                    _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
-//                        startPushStream()
-//                    })
-//                    livePusher.stopPush()
-//                    livePusher.pauseTimer()
-//                }
-//            }
-//
-//            override fun onResumed() {
-//                scope.launchCatchError(block = {
-//                    updateChannelStatus(PlayChannelStatusType.Live)
-//                    _observableLivePusherState.value = LivePusherState.Started
-//                    livePusher.resumeTimer()
-//                }) {
-//                    _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
-//                        _observableLivePusherState.value = LivePusherState.Connecting
-//                        resumePushStream()
-//                    })
-//                    livePusher.stopPush()
-//                    livePusher.pauseTimer()
-//                }
-//            }
-//
-//            override fun onPaused() {
-//                scope.launchCatchError(block = {
-//                    updateChannelStatus(PlayChannelStatusType.Pause)
-//                }) {
-//                }
-//            }
-//
-//            override fun onRecovered() {
-//                autoReconnectPushStream()
-//            }
-//
-//            override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
-//               val liveErrorStatus =  when (errorStatus) {
-//                   ApsaraLivePusherErrorStatus.NetworkPoor -> LivePusherErrorStatus.NetworkPoor
-//                   ApsaraLivePusherErrorStatus.NetworkLoss,
-//                   ApsaraLivePusherErrorStatus.ReconnectFailed -> LivePusherErrorStatus.NetworkLoss
-//                   ApsaraLivePusherErrorStatus.ConnectFailed -> LivePusherErrorStatus.ConnectFailed {
-//                       reconnectPushStream()
-//                   }
-//                   ApsaraLivePusherErrorStatus.SystemError -> LivePusherErrorStatus.UnRecoverable {
-//                       livePusher.restartPush()
-//                   }
-//               }
-//                _observableLivePusherState.value = LivePusherState.Error(liveErrorStatus)
-//            }
-//
-//        })
-//        livePusher.setPlayPusherTimerListener(object : PlayPusherTimerListener {
-//            override fun onCountDownActive(timeLeft: String) {
-//                _observableLiveDurationState.value = LivePusherTimerState.Active(timeLeft)
-//            }
-//
-//            override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-//                _observableLiveDurationState.value = LivePusherTimerState.AlmostFinish(minutesUntilFinished)
-//            }
-//
-//            override fun onCountDownFinish() {
-//                val event = _observableEvent.value
-//                if (event == null || (!event.freeze && !event.banned)) {
-//                    _observableLiveDurationState.value = LivePusherTimerState.Finish
-//                    stopPushStream()
-//                }
-//            }
-//
-//            override fun onReachMaximumPauseDuration() {
-//                stopPushStream()
-//            }
-//
-//        })
-//    }
 
     fun switchCamera() {
         livePusher.switchCamera()

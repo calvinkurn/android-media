@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pusher.exception
+package com.tokopedia.play.broadcaster.pusher.error
 
 
 /**

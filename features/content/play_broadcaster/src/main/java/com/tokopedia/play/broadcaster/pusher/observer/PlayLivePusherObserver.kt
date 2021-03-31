@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util
+package com.tokopedia.play.broadcaster.pusher.observer
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver

@@ -10,13 +10,13 @@ import androidx.lifecycle.LifecycleOwner
 import com.alivc.live.pusher.*
 import com.tokopedia.play.broadcaster.pusher.config.ApsaraLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.config.DefaultApsaraLivePusherConfig
-import com.tokopedia.play.broadcaster.pusher.exception.ApsaraFatalException
+import com.tokopedia.play.broadcaster.pusher.error.ApsaraFatalException
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePushInfoListenerImpl
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherErrorListenerImpl
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherNetworkListenerImpl
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
-import com.tokopedia.play.broadcaster.util.PlayLivePusherObserver
+import com.tokopedia.play.broadcaster.pusher.observer.PlayLivePusherObserver
 import java.util.concurrent.ConcurrentLinkedQueue
 
 

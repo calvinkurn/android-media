@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.pusher.exception.ApsaraFatalException
+import com.tokopedia.play.broadcaster.pusher.error.ApsaraFatalException
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel

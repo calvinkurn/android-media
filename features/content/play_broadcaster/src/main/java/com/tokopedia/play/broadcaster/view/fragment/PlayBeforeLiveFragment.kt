@@ -21,7 +21,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
-import com.tokopedia.play.broadcaster.pusher.exception.ApsaraFatalException
+import com.tokopedia.play.broadcaster.pusher.error.ApsaraFatalException
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.util.extension.setLoading
 import com.tokopedia.play.broadcaster.util.extension.showToaster

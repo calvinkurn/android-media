@@ -4,7 +4,7 @@ import com.alivc.live.pusher.AlivcLivePushError
 import com.alivc.live.pusher.AlivcLivePushErrorListener
 import com.alivc.live.pusher.AlivcLivePusher
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper.Companion.PLAY_PUSHER_ERROR_SYSTEM_ERROR
-import com.tokopedia.play.broadcaster.pusher.exception.ApsaraFatalException
+import com.tokopedia.play.broadcaster.pusher.error.ApsaraFatalException
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
 
 

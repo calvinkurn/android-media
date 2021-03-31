@@ -16,12 +16,13 @@ import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
@@ -400,25 +401,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         ).show()
     }
 
-//    private fun showDialogContinueLiveStreaming() {
-//        getDialog(
-//                actionType = DialogUnify.HORIZONTAL_ACTION,
-//                title = getString(R.string.play_dialog_continue_live_title),
-//                desc = getString(R.string.play_dialog_continue_live_desc),
-//                primaryCta = getString(R.string.play_next),
-//                primaryListener = { dialog ->
-//                    dialog.dismiss()
-//                    viewModel.startPushStream()
-//                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
-//                },
-//                secondaryCta = getString(R.string.play_broadcast_end),
-//                secondaryListener = { dialog ->
-//                    dialog.dismiss()
-//                    viewModel.stopPushStream(shouldNavigate = true)
-//                }
-//        ).show()
-//    }
-
     private fun showDialogWhenActiveOnOtherDevices() {
         getDialog(
                 title = getString(R.string.play_dialog_error_active_other_devices_title),
@@ -477,48 +459,48 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun startPageMonitoring() {
-//        pageMonitoring = PageLoadTimePerformanceCallback(
-//                PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
-//                PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
-//                PLAY_BROADCASTER_TRACE_RENDER_PAGE
-//        )
-//        pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
-//        starPrepareMonitoring()
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
+                PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
+                PLAY_BROADCASTER_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
+        starPrepareMonitoring()
     }
 
     private fun starPrepareMonitoring() {
-//        pageMonitoring.startPreparePagePerformanceMonitoring()
+        pageMonitoring.startPreparePagePerformanceMonitoring()
     }
 
     private fun stopPrepareMonitoring() {
-//        pageMonitoring.stopPreparePagePerformanceMonitoring()
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
     }
 
     private fun startNetworkMonitoring() {
-//        stopPrepareMonitoring()
-//        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+        stopPrepareMonitoring()
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
     }
 
     private fun stopNetworkMonitoring() {
-//        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
     }
 
     private fun startRenderMonitoring() {
-//        stopNetworkMonitoring()
-//        pageMonitoring.startRenderPerformanceMonitoring()
+        stopNetworkMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
     }
 
     private fun stopRenderMonitoring() {
-//        pageMonitoring.stopRenderPerformanceMonitoring()
+        pageMonitoring.stopRenderPerformanceMonitoring()
     }
 
     private fun stopPageMonitoring() {
-//        stopRenderMonitoring()
-//        pageMonitoring.stopMonitoring()
+        stopRenderMonitoring()
+        pageMonitoring.stopMonitoring()
     }
 
     private fun invalidatePerformanceData() {
-//        pageMonitoring.invalidate()
+        pageMonitoring.invalidate()
     }
 
     @TestOnly
