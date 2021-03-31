@@ -15,7 +15,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusActive
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusWarehouse
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
@@ -312,14 +315,25 @@ class TopChatRoomAdapter constructor(
         }
     }
 
-    fun updateProductStock(updateProductResult: UpdateProductStockResult, stockCount: Int) {
+    fun updateProductStock(
+            updateProductResult: UpdateProductStockResult, stockCount: Int, status: String
+    ) {
         val itemPair = getUpToDateUiModelPosition(
                 updateProductResult.lastKnownPosition, updateProductResult.product
         )
         val position = itemPair.first
         if (position == RecyclerView.NO_POSITION) return
         val item = itemPair.second ?: return
-        item.remainingStock = stockCount
+        when (status) {
+            ProductStatus.ACTIVE.name -> {
+                item.status = statusActive
+                item.remainingStock = stockCount
+            }
+            ProductStatus.INACTIVE.name -> {
+                item.remainingStock = 0
+                item.status = statusWarehouse
+            }
+        }
         notifyItemChanged(position, SingleProductAttachmentContainer.PAYLOAD_UPDATE_STOCK)
     }
 

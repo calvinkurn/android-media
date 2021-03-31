@@ -42,6 +42,7 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private fun bindStock(element: ProductAttachmentViewModel) {
         productView?.bindSellerStockCount(element)
+        productView?.bindEmptyStockLabel(element)
     }
 
     fun bind(element: ProductAttachmentViewModel, isUnifyBroadcast: Boolean) {

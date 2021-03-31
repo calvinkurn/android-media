@@ -962,8 +962,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val stockCount = data.getIntExtra(
                     ProductManageCommonConstant.EXTRA_UPDATED_STOCK, 0
             )
+            val status = data.getStringExtra(
+                    ProductManageCommonConstant.EXTRA_UPDATED_STATUS
+            ) ?: return
             val updateProductResult = presenter.onGoingStockUpdate[productId] ?: return
-            adapter.updateProductStock(updateProductResult, stockCount)
+            adapter.updateProductStock(updateProductResult, stockCount, status)
             presenter.onGoingStockUpdate.remove(productId)
         }
     }

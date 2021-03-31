@@ -499,7 +499,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+    fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
         label?.apply {
             if (product.hasEmptyStock()) {
                 show()
