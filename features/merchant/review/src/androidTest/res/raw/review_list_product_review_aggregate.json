@@ -1,0 +1,84 @@
+[
+  {
+    "data": {
+      "productrevGetProductRatingOverallByShop": {
+        "filterBy": "time=1y",
+        "productCount": 114,
+        "rating": 4.553468227386475,
+        "reviewCount": 692
+      }
+    }
+  },
+  {
+    "data": {
+      "productrevShopRatingAggregate": {
+        "data": [
+          {
+            "product": {
+              "productID": 608748943,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/11/14/77816542/77816542_f930cfb8-28bd-4039-94f9-f1921a54b3e2_700_700",
+              "productName": "Bunga 2"
+            },
+            "rating": 4.076923076923077,
+            "reviewCount": 26
+          },
+          {
+            "product": {
+              "productID": 1317524953,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/e75a64dc-4231-475d-93b6-c71dbfa208d4.jpg",
+              "productName": "Pr0duct T3st1n6 6464"
+            },
+            "rating": 4.75,
+            "reviewCount": 16
+          },
+          {
+            "product": {
+              "productID": 604161938,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/11/7/77816542/77816542_a7945d31-95c8-4795-ac94-2d4a63d4ebff_1024_1024",
+              "productName": "Bunga 3"
+            },
+            "rating": 4.5625,
+            "reviewCount": 16
+          },
+          {
+            "product": {
+              "productID": 1319727341,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/6/4fb27d24-3123-4c71-a4f2-1308336b5fdd.jpg",
+              "productName": "Pr0duct T3st1n6 C4s3 L4pt0p"
+            },
+            "rating": 4.866666666666667,
+            "reviewCount": 15
+          },
+          {
+            "product": {
+              "productID": 1573272100,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/31/3980bca7-5728-46fa-8648-31a72656ada0.jpg",
+              "productName": "PrOduc7 73571n6 6un03n9"
+            },
+            "rating": 4.6,
+            "reviewCount": 15
+          },
+          {
+            "product": {
+              "productID": 1319718684,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/6/87667c38-c855-4106-9091-7ba2eeec547b.jpg",
+              "productName": "Pr0duct T3st1n6 T4s M1n1"
+            },
+            "rating": 4.785714285714286,
+            "reviewCount": 14
+          },
+          {
+            "product": {
+              "productID": 1286183602,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/26/7cd74586-2239-48d1-8fa3-059c82f18602.jpg",
+              "productName": "Pr0duct T3st1n6 Bl0us3 W4n1t4"
+            },
+            "rating": 4.833333333333333,
+            "reviewCount": 12
+          }
+        ],
+        "hasNext": true
+      }
+    }
+  }
+]
