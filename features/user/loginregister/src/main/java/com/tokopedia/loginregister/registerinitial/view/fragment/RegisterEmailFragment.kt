@@ -327,11 +327,11 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                     setWrapperErrorNew(wrapperPassword, getString(R.string.error_field_required))
                     false
                 }
-                !PasswordUtils.isValidMinimumlength(this) -> {
+                PasswordUtils.isTooShortLength(this) -> {
                     setWrapperErrorNew(wrapperPassword, getString(R.string.error_minimal_password))
                     false
                 }
-                !PasswordUtils.isValidMaxLength(this) -> {
+                PasswordUtils.isExceedMaximumLength(this) -> {
                     setWrapperErrorNew(wrapperPassword, getString(R.string.error_maximal_password))
                     false
                 } else -> true
