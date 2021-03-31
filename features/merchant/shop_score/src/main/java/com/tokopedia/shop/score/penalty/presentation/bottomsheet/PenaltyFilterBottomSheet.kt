@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -31,7 +33,11 @@ import javax.inject.Inject
 class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomSheetListener {
 
     @Inject
-    lateinit var shopPenaltyViewModel: ShopPenaltyViewModel
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelShopPenalty by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopPenaltyViewModel::class.java)
+    }
 
     private var isApplyFilter = false
     private var rvPenaltyFilter: RecyclerView? = null
@@ -40,7 +46,6 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
     private val filterPenaltyAdapterTypeFactory by lazy { FilterPenaltyAdapterFactory(this) }
     private val filterPenaltyAdapter by lazy { FilterPenaltyAdapter(filterPenaltyAdapterTypeFactory) }
 
-    private var penaltyFilterList = mutableListOf<PenaltyFilterUiModel>()
     private var penaltyFilterFinishListener: PenaltyFilterFinishListener? = null
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_filter_penalty
@@ -84,10 +89,10 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
     override fun onChipsFilterItemClick(nameFilter: String, chipType: String, chipTitle: String, position: Int) {
         when (nameFilter) {
             ShopScoreConstant.TITLE_SORT -> {
-                shopPenaltyViewModel.updateFilterSelected(nameFilter, chipType, position)
+                viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position)
             }
             ShopScoreConstant.TITLE_TYPE_PENALTY -> {
-                shopPenaltyViewModel.updateFilterManySelected(nameFilter, chipType, chipTitle)
+                viewModelShopPenalty.updateFilterManySelected(nameFilter, chipType, chipTitle)
             }
         }
     }
@@ -95,13 +100,13 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
     private fun clickBtnApplied() {
         btnShowPenalty?.setOnClickListener {
             isApplyFilter = true
-            penaltyFilterFinishListener?.onClickFilterApplied(shopPenaltyViewModel.getPenaltyFilterUiModelList())
+            penaltyFilterFinishListener?.onClickFilterApplied(viewModelShopPenalty.getPenaltyFilterUiModelList())
             dismissAllowingStateLoss()
         }
     }
 
     private fun observePenaltyFilter() {
-        observe(shopPenaltyViewModel.filterPenaltyData) {
+        observe(viewModelShopPenalty.filterPenaltyData) {
             when (it) {
                 is Success -> {
                     filterPenaltyAdapter.updateData(it.data.updateFilterPenaltyFromSortFilter())
@@ -110,14 +115,14 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
                 else -> {}
             }
         }
-        shopPenaltyViewModel.getFilterPenalty(penaltyFilterList)
+        viewModelShopPenalty.getFilterPenalty()
     }
 
     private fun List<BaseFilterPenaltyPage>.updateFilterPenaltyFromSortFilter(): List<BaseFilterPenaltyPage> {
 
         val chipsFilterUiModelList = mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>()
 
-        shopPenaltyViewModel.getSortFilterWrapperList().map {
+        viewModelShopPenalty.getSortFilterWrapperList().map {
             chipsFilterUiModelList.add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(
                     title = it.sortFilterItem?.title.toString(),
                     isSelected = it.isSelected
@@ -131,7 +136,7 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         return this
     }
 
-    private fun observeUpdateFilterSelected() = observe(shopPenaltyViewModel.updateFilterSelected) {
+    private fun observeUpdateFilterSelected() = observe(viewModelShopPenalty.updateFilterSelected) {
         when (it) {
             is Success -> {
                 filterPenaltyAdapter.updateFilterSelected(it.data.first, it.data.second)
@@ -141,7 +146,7 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         }
     }
 
-    private fun observeResetFilter() = observe(shopPenaltyViewModel.resetFilterResult) {
+    private fun observeResetFilter() = observe(viewModelShopPenalty.resetFilterResult) {
         when (it) {
             is Success -> {
                 filterPenaltyAdapter.resetFilterSelected(it.data)
@@ -156,7 +161,7 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
             bottomSheetAction.text = it.resources.getString(R.string.reset_filter_penalty)
         }
         bottomSheetAction.setOnClickListener {
-            shopPenaltyViewModel.resetFilterSelected()
+            viewModelShopPenalty.resetFilterSelected()
         }
     }
 
@@ -169,7 +174,7 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
     }
 
     private fun checkIsSelected(): Boolean {
-        shopPenaltyViewModel.getPenaltyFilterUiModelList().forEach {
+        viewModelShopPenalty.getPenaltyFilterUiModelList().forEach {
             it.chipsFilerList.forEach { chips ->
                 if (chips.isSelected) {
                     return true

@@ -2,10 +2,12 @@ package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.os.Bundle
 import android.view.*
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
@@ -37,7 +39,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, ItemHeaderShopPerformanceListener {
 
     @Inject
-    lateinit var viewModel: ShopPerformanceViewModel
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopPerformanceViewModel::class.java)
+    }
 
     private val shopPerformanceAdapterTypeFactory by lazy {
         ShopPerformanceAdapterTypeFactory(this, this,

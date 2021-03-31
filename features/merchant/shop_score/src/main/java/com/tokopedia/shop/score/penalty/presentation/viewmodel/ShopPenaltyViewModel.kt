@@ -41,7 +41,7 @@ class ShopPenaltyViewModel @Inject constructor(
     private val _updateFilterSelected = MutableLiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>>()
     val updateFilterSelected: LiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>> = _updateFilterSelected
 
-    private var penaltyFilterUiModel = mutableListOf<PenaltyFilterUiModel>()
+    private val penaltyFilterUiModel = mutableListOf<PenaltyFilterUiModel>()
     private var itemSortFilterWrapperList = mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>()
 
     fun getPenaltyFilterUiModelList() = penaltyFilterUiModel
@@ -50,31 +50,22 @@ class ShopPenaltyViewModel @Inject constructor(
 
     fun getDataDummyPenalty() {
         launch {
-            _penaltyPageData.value = Success(penaltyMapper.mapToPenaltyVisitableDummy())
+            val penaltyDummyData = penaltyMapper.mapToPenaltyVisitableDummy()
+            _penaltyPageData.value = Success(penaltyDummyData)
         }
     }
 
-    fun getFilterPenalty(penaltyFilterList: List<PenaltyFilterUiModel>) {
+    fun getFilterPenalty() {
         launchCatchError(block = {
-            penaltyFilterUiModel.clear()
-            if (penaltyFilterUiModel.isNotEmpty()) {
-                penaltyFilterUiModel.addAll(penaltyFilterList)
-            } else {
+            if (penaltyFilterUiModel.isNullOrEmpty()) {
                 penaltyFilterUiModel.addAll(penaltyMapper.mapToPenaltyFilterBottomSheet())
             }
-            penaltyFilterUiModel.map {
-                if (it.title == ShopScoreConstant.TITLE_TYPE_PENALTY) {
-                    it.chipsFilerList.map { chipsFilter ->
-                        itemSortFilterWrapperList.add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
-                                isSelected = chipsFilter.isSelected,
-                                sortFilterItem = SortFilterItem(
-                                        type = ChipsUnify.TYPE_NORMAL,
-                                        size = ChipsUnify.SIZE_SMALL,
-                                        title = chipsFilter.title
-                                )
-                        ))
-                    }
-                }
+            itemSortFilterWrapperList.forEachIndexed { index, itemSortFilterWrapper ->
+                penaltyFilterUiModel.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }
+                        ?.chipsFilerList?.getOrNull(index)?.apply {
+                            isSelected = itemSortFilterWrapper.isSelected
+                            title = itemSortFilterWrapper.sortFilterItem?.title?.toString().orEmpty()
+                        }
             }
             _filterPenaltyData.value = Success(penaltyFilterUiModel)
         }, onError = {

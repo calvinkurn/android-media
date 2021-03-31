@@ -8,6 +8,10 @@ interface FilterPenaltyListener {
     fun onParentSortFilterClick()
 }
 
+interface ItemDetailPenaltyListener {
+    fun onItemPenaltyClick()
+}
+
 interface FilterPenaltyBottomSheetListener {
     fun onChipsFilterItemClick(nameFilter: String, chipType: String, chipTitle: String, position: Int)
 }

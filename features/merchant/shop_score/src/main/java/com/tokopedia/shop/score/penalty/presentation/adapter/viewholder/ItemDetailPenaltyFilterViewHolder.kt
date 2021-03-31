@@ -36,11 +36,18 @@ class ItemDetailPenaltyFilterViewHolder(view: View,
 
     private fun SortFilter.setupSortFilter(sortFilterItemList: List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>?) {
         sortFilterItems.removeAllViews()
+        indicatorCounter = 0
 
         val itemSortFilterList = ArrayList<SortFilterItem>()
 
         sortFilterItemList?.map {
-            it.sortFilterItem?.let { sortFilterItem -> itemSortFilterList.add(sortFilterItem) }
+            it.sortFilterItem?.let { sortFilterItem ->
+                itemSortFilterList.add(SortFilterItem(
+                        title = sortFilterItem.title,
+                        size = ChipsUnify.SIZE_SMALL,
+                        type = if (it.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+                ))
+            }
         }
 
         addItem(itemSortFilterList)

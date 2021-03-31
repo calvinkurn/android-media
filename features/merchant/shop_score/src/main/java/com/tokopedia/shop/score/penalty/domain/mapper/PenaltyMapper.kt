@@ -25,7 +25,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         return ShopPenaltyDetailUiModel(
                 titleDetail = "Cash advance",
                 dateDetail = "31 Des 2020",
-                invoiceTransaction = "Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330",
+                summaryDetail = "Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330",
                 deductionPointPenalty = "5",
                 statusDate = "31 Des 2020",
                 stepperPenaltyDetailList = mapToStepperPenaltyDetail(PENALTY_DONE)

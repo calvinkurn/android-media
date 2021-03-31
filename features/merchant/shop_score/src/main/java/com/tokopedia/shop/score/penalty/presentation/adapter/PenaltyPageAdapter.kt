@@ -28,7 +28,7 @@ class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
     }
 
     fun updateSortFilterPenaltyFromBottomSheet(chipsPenaltyList: List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?) {
-        val sortFilterIndex = visitables.indexOfFirst { it is PenaltyFilterUiModel }
+        val sortFilterIndex = visitables.indexOfFirst { it is ItemDetailPenaltyFilterUiModel }
         visitables.filterIsInstance<ItemDetailPenaltyFilterUiModel>().firstOrNull()?.itemSortFilterWrapperList?.mapIndexed { index, item ->
             item.isSelected = chipsPenaltyList?.getOrNull(index)?.isSelected ?: false
         }

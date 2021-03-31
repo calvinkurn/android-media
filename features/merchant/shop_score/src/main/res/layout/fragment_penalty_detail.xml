@@ -75,13 +75,16 @@
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 
-        <com.tokopedia.unifycomponents.CardUnify
+        <androidx.cardview.widget.CardView
             android:id="@+id/card_total_deduction_point_penalty"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:cardBackgroundColor="@color/Unify_N50"
+            app:cardCornerRadius="@dimen/spacing_lvl3"
+            app:cardElevation="@dimen/layout_lvl0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitleResultDetailPenalty">
@@ -90,11 +93,11 @@
                 android:id="@+id/tv_total_deduction_point_penalty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:padding="@dimen/spacing_lvl3"
+                app:typographyWeight="reguler"
                 android:text="@string/total_deduction_point_performance" />
 
-        </com.tokopedia.unifycomponents.CardUnify>
+        </androidx.cardview.widget.CardView>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleStatusPenalty"
@@ -117,6 +120,7 @@
             android:layout_height="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl2"
             app:icon_name="INFORMATION"
+            app:icon_color_light_enable="@color/Unify_N500"
             app:layout_constraintBottom_toBottomOf="@id/tvTitleStatusPenalty"
             app:layout_constraintStart_toEndOf="@id/tvTitleStatusPenalty"
             app:layout_constraintTop_toTopOf="@id/tvTitleStatusPenalty" />
@@ -129,8 +133,10 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/tvDescResultDetailPenalty"
             app:layout_constraintStart_toStartOf="@id/tvTitleStatusPenalty"
+            app:layout_constraintEnd_toEndOf="@id/card_total_deduction_point_penalty"
             app:layout_constraintTop_toBottomOf="@id/tvTitleStatusPenalty"
-            tools:itemCount="4"
+            android:orientation="horizontal"
+            tools:itemCount="3"
             tools:listitem="@layout/item_penalty_stepper" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -146,7 +152,7 @@
             app:layout_constraintTop_toBottomOf="@id/rv_timeline_status_penalty"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="@string/example_desc_result_detail_penalty" />
+            android:text="@string/example_desc_result_detail_penalty" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvDateResultDetailPenalty"
@@ -166,7 +172,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnCallHelpCenter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -175,7 +181,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDateResultDetailPenalty"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />

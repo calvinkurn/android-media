@@ -4,7 +4,7 @@ import androidx.annotation.ColorRes
 
 data class ShopPenaltyDetailUiModel(val titleDetail: String = "",
                                     val dateDetail: String = "",
-                                    val invoiceTransaction: String = "",
+                                    val summaryDetail: String = "",
                                     val deductionPointPenalty: String = "",
                                     val statusDate: String = "",
                                     val stepperPenaltyDetailList: List<StepperPenaltyDetail> = listOf()) {

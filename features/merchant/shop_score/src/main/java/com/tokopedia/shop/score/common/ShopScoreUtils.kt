@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
 import com.tokopedia.sortfilter.SortFilterItem
@@ -15,6 +17,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 object ShopScoreUtils {
 

@@ -9,7 +9,7 @@ data class PenaltyFilterUiModel(
         var chipsFilerList: List<ChipsFilterPenaltyUiModel> = listOf()
 ): BaseFilterPenaltyPage {
     data class ChipsFilterPenaltyUiModel(
-        val title: String = "",
+        var title: String = "",
         // temporary
         val value: String = "",
         var isSelected: Boolean = false
