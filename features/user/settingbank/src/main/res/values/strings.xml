@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SettingBank</string>
     <string name="title_setting_bank">Rekening Bank</string>
-    <string name="menu_delete">Hapus</string>
+    <string name="sbank_menu_delete">Hapus</string>
     <string name="cancel">Batal</string>
     <string name="bank_name_title">Nama Bank</string>
     <string name="account_number_title">Nomor Rekening</string>

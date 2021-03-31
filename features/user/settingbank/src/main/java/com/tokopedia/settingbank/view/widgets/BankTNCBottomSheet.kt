@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toDp
 
 class BankTNCBottomSheet : BottomSheetUnify() {
 
@@ -27,8 +29,8 @@ class BankTNCBottomSheet : BottomSheetUnify() {
         }
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setDefaultParams()
         initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -48,6 +50,12 @@ class BankTNCBottomSheet : BottomSheetUnify() {
             setTitle(getString(R.string.sbank_terms_and_condition) )
             setChild(child)
         }
+    }
+
+    private fun setDefaultParams() {
+        isFullpage = true
+        isDragable = true
+        isHideable = true
     }
 
     companion object{

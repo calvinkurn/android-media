@@ -5,14 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -39,8 +37,6 @@ import kotlinx.android.synthetic.main.fragment_setting_bank_new.*
 import javax.inject.Inject
 
 class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
-
-    private var confirmationDialog: AlertDialog? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,8 +66,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        settingBankViewModel = viewModelProvider.get(SettingBankViewModel::class.java)
+        settingBankViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(SettingBankViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -81,6 +77,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progress_bar.setOnClickListener { //not required
+        }
         setHasOptionsMenu(true)
         initBankAccountRecyclerView()
         startObservingViewModels()
@@ -182,7 +180,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         }
     }
 
-
     private fun showGlobalError(errorType: Int, retryAction: () -> Unit) {
         globalError.visible()
         globalError.setType(errorType)
@@ -242,12 +239,12 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         context?.let { context ->
             view?.let { view ->
                 retry?.let {
-                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                    Toaster.build(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
                             Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
+                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() }).show()
                 } ?: run {
-                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                    Toaster.build(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                 }
 
             }
@@ -256,7 +253,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     fun showToasterOnUI(message: String?) {
         message?.let {
-            view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT) }
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT).show() }
         }
     }
 
@@ -342,7 +339,29 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun openDeleteConfirmationPopUp(bankAccount: BankAccount) {
-        activity?.let { activity ->
+        context?.let { context ->
+            val description = context.getString(R.string.sbank_delete_bank_confirm,
+                    bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
+            DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
+                    imageType = DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.sbank_delete_this_account))
+                setDescription(description)
+                setPrimaryCTAText(getString(R.string.sbank_delete_account))
+                setSecondaryCTAText(getString(R.string.sbank_back))
+                setPrimaryCTAClickListener {
+                    bankSettingAnalytics.eventDialogConfirmDeleteAccountClick()
+                    dismiss()
+                    deleteBankAccount()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                show()
+            }
+        }
+
+
+        /*activity?.let { activity ->
             deleteBankAccount = bankAccount
             val dialogBuilder = AlertDialog.Builder(activity)
             val inflater = activity.layoutInflater
@@ -361,7 +380,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                 confirmationDialog?.dismiss()
             }
             confirmationDialog = dialogBuilder.setView(dialogView).show()
-        }
+        }*/
     }
 
     private fun deleteBankAccount() {

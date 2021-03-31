@@ -6,14 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAccountDataTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sbank_account_data"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_14"
+        app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toTopOf="@+id/guidelineTop" />
 
@@ -172,7 +171,6 @@
         android:layout_width="@dimen/unify_space_16"
         android:layout_height="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_8"
-        android:layout_marginRight="@dimen/unify_space_8"
         app:icon_name="IMAGE"
         app:layout_constraintBottom_toBottomOf="@+id/tvDocPathOrKTPName"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd" />
