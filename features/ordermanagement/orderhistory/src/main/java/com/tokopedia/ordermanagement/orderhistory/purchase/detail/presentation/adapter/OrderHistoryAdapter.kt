@@ -33,26 +33,28 @@ class OrderHistoryAdapter(private val historyListDatas: List<OrderHistoryListDat
                         .orderHistoryComment == "") View.GONE else View.VISIBLE
         holder.orderHistoryDescription.text = Html.fromHtml(historyListDatas[position].orderHistoryTitle)
         holder.orderHistoryTime.text = historyListDatas[position].orderHistoryTime
-        holder.dot.setColorFilter(Color.parseColor(historyListDatas[position].color))
+        val color = historyListDatas.getOrNull(position)?.color ?: ""
+        val previousColor = historyListDatas.getOrNull(position - 1)?.color ?: ""
+        holder.dot.setColorFilter(Color.parseColor(color))
         when (position) {
             0 -> {
                 holder.dotTraiTop.visibility = View.GONE
                 holder.dotTrailBot.setBackgroundColor(
-                        Color.parseColor(historyListDatas[position].color)
+                        Color.parseColor(color)
                 )
             }
             historyListDatas.size - 1 -> {
                 holder.dotTrailBot.visibility = View.GONE
                 holder.dotTraiTop.setBackgroundColor(
-                        Color.parseColor(historyListDatas[position - 1].color)
+                        Color.parseColor(previousColor)
                 )
             }
             else -> {
                 holder.dotTrailBot.setBackgroundColor(
-                        Color.parseColor(historyListDatas[position].color)
+                        Color.parseColor(color)
                 )
                 holder.dotTraiTop.setBackgroundColor(
-                        Color.parseColor(historyListDatas[position - 1].color)
+                        Color.parseColor(previousColor)
                 )
             }
         }
@@ -60,9 +62,9 @@ class OrderHistoryAdapter(private val historyListDatas: List<OrderHistoryListDat
 
     private fun setTitleColor(holder: OrderHistoryViewHolder, position: Int) {
         if (position == 0) {
-            holder.orderHistoryTitle.setTextColor(Color.parseColor(
-                    historyListDatas[position].color
-            ))
+            historyListDatas.getOrNull(position)?.color?.let {
+                holder.orderHistoryTitle.setTextColor(Color.parseColor(it))
+            }
         } else holder.orderHistoryTitle.setTextColor(
                 holder.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }

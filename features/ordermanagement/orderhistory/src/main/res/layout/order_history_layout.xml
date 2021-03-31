@@ -35,7 +35,7 @@
                     android:background="@color/Unify_N0"
                     android:padding="@dimen/dp_20"
                     android:textColor="@color/Unify_N300"
-                    android:text="Status Pemesanan"
+                    android:text="@string/order_management_history_order_status"
                     app:typographyType="heading_3" />
 
                 <View
