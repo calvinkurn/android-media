@@ -199,7 +199,7 @@
     <string name="pm_next_update_pm_grade_info">Update kenaikan grade dilakukan setiap bulan dan penurunan grade setiap 3 bulan.</string>
     <string name="pm_label_next_three_months_pm_grade_update">Update selanjutnya: %1$s</string>
     <string name="pm_deactivate_power_merchant_bottom_cta">Berhenti dari Power Merchant? <font color="#03AC0E"><b>Klik di sini</b></font></string>
-    <string name="pm_deactivate_power_merchant_message_info"><![CDATA[Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan dan status PM otomatis berhenti pada <b>%1$s.</b>]]></string>
+    <string name="pm_deactivate_power_merchant_message_info"><![CDATA[Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan dan status PM otomatis berhenti pada <b>%1$s WIB.</b>]]></string>
     <string name="pm_registration_success_title">Selamat, tokomu sudah \nmenjadi Power Merchant!</string>
     <string name="pm_registration_success_description">Mulai 31 Mei 2021, ada sistem penilaian baru yang berlaku untuk tokomu, lho. Pelajari tentang perubahannya, yuk!</string>
     <string name="pm_registration_success_description_end_game">Tingkatkan terus Performa Tokomu untuk menikmati berbagai keuntungan Power Merchant, ya!</string>
@@ -214,4 +214,9 @@
     <string name="pm_new_pm_inf_title">Informasi Power Merchant Baru</string>
     <string name="pm_new_pm_inf_description">Belum ada penilaian untuk tokomu karena penilaian toko baru akan muncul setelah 90 hari bergabung. Tokomu akan dapat grade Power Merchant sesuai dengan performa, ya.</string>
     <string name="pm_see_the_next">Lihat Keuntungannya</string>
+    <string name="pm_expired_time_format">%1$s, pukul %2$s</string>
+    <string name="pm_system_error_message">Terjadi kesalahan pada sistem</string>
+    <string name="pm_network_error_message">Koneksi internetmu terganggu</string>
+    <string name="pm_try_again">Coba lagi</string>
+    <string name="pm_cancel_pm_deactivation_success">Penonaktifan Power Merchant-mu dibatalkan.</string>
 </resources>

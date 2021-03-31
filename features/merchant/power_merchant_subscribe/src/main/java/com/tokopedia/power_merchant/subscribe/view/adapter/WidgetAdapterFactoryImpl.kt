@@ -25,7 +25,7 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(model: WidgetShopGradeUiModel): Int = ShopGradeWidget.RES_LAYOUT
 
-    override fun type(model: WidgetQuitSubmissionUiModel): Int = QuitSubmissionWidget.RES_LAYOUT
+    override fun type(model: WidgetCancelDeactivationSubmissionUiModel): Int = CancelDeactivationSubmissionWidget.RES_LAYOUT
 
     override fun type(model: WidgetExpandableUiModel): Int = ExpandableWidget.RES_LAYOUT
 
@@ -46,7 +46,7 @@ class WidgetAdapterFactoryImpl(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent)
-            QuitSubmissionWidget.RES_LAYOUT -> QuitSubmissionWidget(parent)
+            CancelDeactivationSubmissionWidget.RES_LAYOUT -> CancelDeactivationSubmissionWidget(parent, widgetListener)
             NextUpdateInfoWidget.RES_LAYOUT -> NextUpdateInfoWidget(parent)
             NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)

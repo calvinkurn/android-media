@@ -47,6 +47,12 @@ class GetPMStatusUseCase @Inject constructor(
                  power_merchant {
                    status
                    expired_time
+                   auto_extend {
+                     status
+                   }
+                 }
+                 official_store {
+                   status
                  }
                }
              }

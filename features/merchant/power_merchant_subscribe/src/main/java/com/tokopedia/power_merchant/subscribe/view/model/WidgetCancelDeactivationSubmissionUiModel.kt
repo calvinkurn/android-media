@@ -6,8 +6,8 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 04/03/21
  */
 
-data class WidgetQuitSubmissionUiModel(
-        val deactivationDateFmt: String
+data class WidgetCancelDeactivationSubmissionUiModel(
+        val expiredTime: String
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

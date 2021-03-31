@@ -442,7 +442,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             PeriodType.FINAL_PERIOD -> showFinalPmInterruptPage(data)
             PeriodType.TRANSITION_PERIOD -> showTransitionPmInterruptPage(data)
             else -> {
-                //show interrupt popup
+                //todo: show interrupt page
             }
         }
     }
@@ -463,9 +463,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             if (!hasShowInterruptPopup) {
                 withContext(Dispatchers.Main) {
                     val bottomSheet = PMTransitionInterruptBottomSheet.getInstance(supportFragmentManager)
-                    if (!bottomSheet.isAdded) {
-                        saveFlagHasShowPmInterruptPopup()
-                        Handler().post {
+                    Handler().post {
+                        if (!bottomSheet.isAdded) {
+                            saveFlagHasShowPmInterruptPopup()
                             bottomSheet.setData(data)
                                     .show(supportFragmentManager)
                         }

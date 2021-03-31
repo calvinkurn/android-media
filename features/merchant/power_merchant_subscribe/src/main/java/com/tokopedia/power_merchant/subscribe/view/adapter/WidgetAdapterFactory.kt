@@ -18,7 +18,7 @@ interface WidgetAdapterFactory {
 
     fun type(model: WidgetShopGradeUiModel): Int
 
-    fun type(model: WidgetQuitSubmissionUiModel): Int
+    fun type(model: WidgetCancelDeactivationSubmissionUiModel): Int
 
     fun type(model: WidgetExpandableUiModel): Int
 

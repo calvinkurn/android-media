@@ -18,12 +18,26 @@ data class PMShopStatusModel(
 
 data class PMShopStatusDataModel(
         @SerializedName("power_merchant")
-        val powerMerchant: PMDataModel? = null
+        val powerMerchant: PMDataModel? = null,
+        @SerializedName("official_store")
+        val officialStore: OfficialStoreStatusModel? = null
 )
 
 data class PMDataModel(
         @SerializedName("status")
         val status: String? = "",
         @SerializedName("expired_time")
-        val expiredTime: String? = ""
+        val expiredTime: String? = "",
+        @SerializedName("auto_extend")
+        val autoExtend: AutoExtendModel? = null
+)
+
+data class AutoExtendModel(
+        @SerializedName("status")
+        val status: String? = "",
+)
+
+data class OfficialStoreStatusModel(
+        @SerializedName("status")
+        val status: String? = ""
 )

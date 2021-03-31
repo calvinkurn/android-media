@@ -39,11 +39,14 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         get() = _pmStatusAndShopInfo
     val pmActivationStatus: LiveData<Result<Boolean>>
         get() = _pmActivationStatus
+    val pmCancelDeactivationStatus: LiveData<Result<Boolean>>
+        get() = _pmCancelDeactivationStatus
 
     private val _pmActiveData: MutableLiveData<Result<PMActiveDataUiModel>> = MutableLiveData()
     private val _pmGradeAndShopInfo: MutableLiveData<Result<PMGradeBenefitAndShopInfoUiModel>> = MutableLiveData()
     private val _pmStatusAndShopInfo: MutableLiveData<Result<PMStatusAndShopInfoUiModel>> = MutableLiveData()
     private val _pmActivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
+    private val _pmCancelDeactivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
 
     fun getPmStatusAndShopInfo() {
         launchCatchError(block = {
@@ -86,6 +89,17 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
             _pmActivationStatus.value = Success(result)
         }, onError = {
             _pmActivationStatus.value = Fail(it)
+        })
+    }
+
+    fun cancelPmDeactivationSubmission() {
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                activatePMUseCase.get().executeOnBackground()
+            }
+            _pmCancelDeactivationStatus.value = Success(result)
+        }, onError = {
+            _pmCancelDeactivationStatus.value = Fail(it)
         })
     }
 }
