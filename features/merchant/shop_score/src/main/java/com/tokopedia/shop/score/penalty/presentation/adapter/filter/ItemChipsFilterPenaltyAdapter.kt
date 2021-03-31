@@ -49,6 +49,7 @@ class ItemChipsFilterPenaltyAdapter(private val filterPenaltyBottomSheetListener
                     }
                     setOnClickListener {
                         filterPenaltyBottomSheetListener.onChipsFilterItemClick(nameFilter, chipType.orEmpty(),
+                                chipsItemPenalty.chipText.orEmpty(),
                                 adapterPosition)
                     }
                 }

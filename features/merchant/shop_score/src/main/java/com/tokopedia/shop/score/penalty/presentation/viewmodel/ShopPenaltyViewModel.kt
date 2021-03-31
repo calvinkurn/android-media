@@ -10,6 +10,7 @@ import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -61,6 +62,20 @@ class ShopPenaltyViewModel @Inject constructor(
             } else {
                 penaltyFilterUiModel.addAll(penaltyMapper.mapToPenaltyFilterBottomSheet())
             }
+            penaltyFilterUiModel.map {
+                if (it.title == ShopScoreConstant.TITLE_TYPE_PENALTY) {
+                    it.chipsFilerList.map { chipsFilter ->
+                        itemSortFilterWrapperList.add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
+                                isSelected = chipsFilter.isSelected,
+                                sortFilterItem = SortFilterItem(
+                                        type = ChipsUnify.TYPE_NORMAL,
+                                        size = ChipsUnify.SIZE_SMALL,
+                                        title = chipsFilter.title
+                                )
+                        ))
+                    }
+                }
+            }
             _filterPenaltyData.value = Success(penaltyFilterUiModel)
         }, onError = {
             _filterPenaltyData.value = Fail(it)
@@ -95,11 +110,11 @@ class ShopPenaltyViewModel @Inject constructor(
         })
     }
 
-    fun updateFilterManySelected(titleFilter: String, chipType: String) {
+    fun updateFilterManySelected(titleFilter: String, chipType: String, chipTitle: String) {
         launchCatchError(block = {
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
-            penaltyFilterUiModel.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }
-                        ?.chipsFilerList?.find { it.title == titleFilter }?.isSelected = !updateChipsSelected
+            penaltyFilterUiModel.find { it.title == titleFilter }
+                    ?.chipsFilerList?.find { it.title == chipTitle }?.isSelected = !updateChipsSelected
             val chipsUiModelList = penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilerList
                     ?: listOf()
             _updateFilterSelected.value = Success(Pair(chipsUiModelList, titleFilter))

@@ -41,7 +41,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title_status_penalty"
             app:typographyType="small"

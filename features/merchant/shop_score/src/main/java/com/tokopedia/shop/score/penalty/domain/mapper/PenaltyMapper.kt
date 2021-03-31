@@ -1,6 +1,12 @@
 package com.tokopedia.shop.score.penalty.domain.mapper
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.CASH_ADVANCE
+import com.tokopedia.shop.score.common.ShopScoreConstant.ON_GOING
+import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_DONE
+import com.tokopedia.shop.score.common.ShopScoreConstant.POINTS_NOT_YET_DEDUCTED
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_DUPLICATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_VIOLATION
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
@@ -13,7 +19,88 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import javax.inject.Inject
 
-class PenaltyMapper @Inject constructor() {
+class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
+
+    fun mapToPenaltyDetailDummy(): ShopPenaltyDetailUiModel {
+        return ShopPenaltyDetailUiModel(
+                titleDetail = "Cash advance",
+                dateDetail = "31 Des 2020",
+                invoiceTransaction = "Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330",
+                deductionPointPenalty = "5",
+                statusDate = "31 Des 2020",
+                stepperPenaltyDetailList = mapToStepperPenaltyDetail(PENALTY_DONE)
+        )
+    }
+
+    fun mapToStepperPenaltyDetail(statusPenalty: String): List<ShopPenaltyDetailUiModel.StepperPenaltyDetail> {
+        return mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>().apply {
+            when (statusPenalty) {
+                POINTS_NOT_YET_DEDUCTED -> {
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            titleStepper = context?.getString(R.string.title_point_have_not_been_deducted).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
+                            isBold = true
+                    ))
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            titleStepper = context?.getString(R.string.title_on_going).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    ))
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            titleStepper = context?.getString(R.string.title_penalty_over).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
+                    ))
+                }
+                ON_GOING -> {
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            titleStepper = context?.getString(R.string.title_point_have_not_been_deducted).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    ))
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            titleStepper = context?.getString(R.string.title_on_going).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
+                            isBold = true
+                    ))
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
+                            titleStepper = context?.getString(R.string.title_penalty_over).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    ))
+                }
+                PENALTY_DONE -> {
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            titleStepper = context?.getString(R.string.title_point_have_not_been_deducted).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    ))
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            titleStepper = context?.getString(R.string.title_on_going).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    ))
+                    add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
+                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                            titleStepper = context?.getString(R.string.title_penalty_over).orEmpty(),
+                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
+                            isBold = true
+                    ))
+                }
+            }
+        }
+    }
 
     fun mapToPenaltyVisitableDummy(): List<BasePenaltyPage> {
         return mutableListOf<BasePenaltyPage>().apply {

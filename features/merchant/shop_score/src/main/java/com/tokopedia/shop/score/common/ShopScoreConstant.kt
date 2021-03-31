@@ -93,4 +93,8 @@ object ShopScoreConstant {
     const val TITLE_SORT = "Urutkan"
     const val TITLE_TYPE_PENALTY = "Jenis Pelanggaran"
 
+    const val POINTS_NOT_YET_DEDUCTED = "Poin belum dipotong"
+    const val ON_GOING = "Sedang Berlangsung"
+    const val PENALTY_DONE = "Penalty Selesai"
+
 }

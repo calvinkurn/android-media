@@ -15,11 +15,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPenaltyFilterBottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_lvl3"
         android:layout_below="@+id/separatorDividerPenalty"
-        android:layout_above="@+id/btnShowPenalty"
         android:layout_alignParentStart="true"
+        tools:itemCount="2"
         tools:listitem="@layout/item_penalty_filter_list"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -27,14 +27,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/rvPenaltyFilterBottomSheet"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/spacing_lvl5"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/btn_show_penalty" />
 
 </RelativeLayout>

@@ -1,11 +1,14 @@
 package com.tokopedia.shop.score.penalty.presentation.bottomsheet
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,6 +23,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenalt
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -55,12 +59,19 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         getComponent(PenaltyComponent::class.java)?.inject(this)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        clearContentPadding = true
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         showKnob = true
         isDragable = true
+        isHideable = true
         showCloseIcon = false
+        clearContentPadding = true
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.PenaltyFilterDialogStyle)
+        customPeekHeight = (getScreenHeight() / 2).toDp()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupRecyclerView()
         observePenaltyFilter()
@@ -70,19 +81,19 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         clickBtnReset()
     }
 
-    override fun onChipsFilterItemClick(nameFilter: String, chipType: String, position: Int) {
+    override fun onChipsFilterItemClick(nameFilter: String, chipType: String, chipTitle: String, position: Int) {
         when (nameFilter) {
             ShopScoreConstant.TITLE_SORT -> {
                 shopPenaltyViewModel.updateFilterSelected(nameFilter, chipType, position)
             }
             ShopScoreConstant.TITLE_TYPE_PENALTY -> {
-                shopPenaltyViewModel.updateFilterManySelected(nameFilter, chipType)
+                shopPenaltyViewModel.updateFilterManySelected(nameFilter, chipType, chipTitle)
             }
         }
     }
 
     private fun clickBtnApplied() {
-        btnShowPenalty?.apply {
+        btnShowPenalty?.setOnClickListener {
             isApplyFilter = true
             penaltyFilterFinishListener?.onClickFilterApplied(shopPenaltyViewModel.getPenaltyFilterUiModelList())
             dismissAllowingStateLoss()
