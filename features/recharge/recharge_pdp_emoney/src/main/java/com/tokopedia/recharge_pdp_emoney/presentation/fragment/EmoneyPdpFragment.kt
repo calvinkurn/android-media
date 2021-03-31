@@ -36,5 +36,8 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
 
         emoneyPdpTab.addNewTab("Recents")
         emoneyPdpTab.addNewTab("Promo")
+
+        emoneyPdpProductWidget.visibility = View.VISIBLE
+        emoneyPdpProductWidget.titleText = "Pilih Nominal"
     }
 }
