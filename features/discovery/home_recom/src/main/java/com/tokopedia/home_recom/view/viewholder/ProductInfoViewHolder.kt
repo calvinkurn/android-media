@@ -29,6 +29,10 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : Abs
         }
     }
 
+    override fun bind(element: ProductInfoDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     private fun initView(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let {productDetailData ->
             itemView.show()
