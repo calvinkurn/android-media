@@ -14,6 +14,7 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
+import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView;
 import com.tokopedia.search.result.presentation.model.GlobalNavDataView;
@@ -203,6 +204,8 @@ public interface ProductListSectionContract {
         boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData);
 
         void refreshItemAtIndex(int index);
+
+        void trackInspirationCarouselChipsClicked(@NotNull InspirationCarouselDataView.Option option);
     }
 
     interface Presenter extends CustomerPresenter<View> {

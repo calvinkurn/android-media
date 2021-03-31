@@ -2376,7 +2376,8 @@ final class ProductListPresenter
                         labelGroup.getType(),
                         labelGroup.getTitle(),
                         labelGroup.getUrl()
-                ))
+                )),
+                clickedInspirationCarouselOption.getTitle()
         );
 
         clickedInspirationCarouselOption.setProduct(productList);

@@ -72,7 +72,9 @@ class InspirationCarouselDataView(
                 val labelGroupDataList: List<LabelGroupDataView> = listOf(),
                 val layout: String = "",
                 val originalPrice: String = "",
-                val discountPercentage: Int = 0
+                val discountPercentage: Int = 0,
+                val position: Int = 0,
+                val optionTitle: String = "",
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -129,6 +131,20 @@ class InspirationCarouselDataView(
                         "variant", "none / other",
                         "list", "/search - carousel",
                         "position", optionPosition
+                )
+            }
+
+            fun getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams: String): Any {
+                return DataLayer.mapOf(
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+                        "id", id,
+                        "list", "/search - carousel chips",
+                        "name", name,
+                        "position", position,
+                        "price", price,
+                        "variant", "none / other"
                 )
             }
         }

@@ -37,6 +37,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
                 clickedInspirationCarouselOption
         )
 
+        `Then verify tracking chips click`(clickedInspirationCarouselOption)
         `Then assert view is refreshed`(adapterPosition)
         `Then assert get inspiration carousel chips API is called`(clickedInspirationCarouselOption.identifier)
     }
@@ -88,6 +89,12 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
         requestParams.parameters["identifier"] shouldBe expectedIdentifier
     }
 
+    private fun `Then verify tracking chips click`(clickedInspirationCarouselOption: InspirationCarouselDataView.Option) {
+        verify {
+            productListView.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
+        }
+    }
+
     private fun `Then assert view is refreshed`(adapterPosition: Int) {
         verify {
             productListView.refreshItemAtIndex(adapterPosition)
@@ -109,6 +116,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
                 clickedInspirationCarouselOption
         )
 
+        `Then verify tracking chips click`(clickedInspirationCarouselOption)
         `Then assert view is refreshed`(adapterPosition)
         `Then assert get inspiration carousel chips API is not called`()
     }
@@ -141,6 +149,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
                 clickedInspirationCarouselOption
         )
 
+        `Then verify tracking chips click`(clickedInspirationCarouselOption)
         `Then verify inspiration carousel option product is updated`(
                 clickedInspirationCarouselOption,
                 chipsProductsModel,
@@ -173,6 +182,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
                 clickedInspirationCarouselOption.inspirationCarouselType,
                 clickedInspirationCarouselOption.layout,
                 position,
+                clickedInspirationCarouselOption.title,
         )
     }
 

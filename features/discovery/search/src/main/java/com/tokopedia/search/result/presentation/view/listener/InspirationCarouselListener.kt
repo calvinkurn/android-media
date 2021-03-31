@@ -21,6 +21,12 @@ interface InspirationCarouselListener {
 
     fun onInspirationCarouselGridBannerClicked(option: InspirationCarouselDataView.Option)
 
+    fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product)
+
+    fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product)
+
+    fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option)
+
     fun onInspirationCarouselChipsClicked(
             inspirationCarouselAdapterPosition: Int,
             inspirationCarouselViewModel: InspirationCarouselDataView,

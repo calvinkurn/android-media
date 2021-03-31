@@ -155,7 +155,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             actual.bannerImageUrl shouldBe expected.bannerImageUrl
             actual.bannerLinkUrl shouldBe expected.bannerLinkUrl
             actual.bannerApplinkUrl shouldBe expected.bannerApplinkUrl
-            actual.product.assert(expected.inspirationCarouselProducts, this.type, this.layout, expectedOptionPosition)
+            actual.product.assert(expected.inspirationCarouselProducts, this.type, this.layout, expectedOptionPosition, expected.title)
             actual.inspirationCarouselType shouldBe this.type
             actual.layout shouldBe this.layout
             actual.position shouldBe this.position

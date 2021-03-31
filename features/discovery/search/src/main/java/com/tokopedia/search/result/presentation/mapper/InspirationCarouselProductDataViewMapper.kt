@@ -9,13 +9,14 @@ class InspirationCarouselProductDataViewMapper {
 
     fun convertToInspirationCarouselProductDataView(
             inspirationCarouselProduct: List<InspirationCarouselProduct>,
-            position: Int,
+            productPosition: Int,
             inspirationCarouselType: String,
             layout: String,
             mapLabelGroupDataViewList: (List<ProductLabelGroup>) -> List<LabelGroupDataView>,
+            optionTitle: String,
     ): List<InspirationCarouselDataView.Option.Product> {
 
-        return inspirationCarouselProduct.map { product ->
+        return inspirationCarouselProduct.mapIndexed { index, product ->
             InspirationCarouselDataView.Option.Product(
                     product.id,
                     product.name,
@@ -27,13 +28,15 @@ class InspirationCarouselProductDataViewMapper {
                     product.url,
                     product.applink,
                     product.description,
-                    position,
+                    productPosition,
                     inspirationCarouselType,
                     product.ratingAverage,
                     mapLabelGroupDataViewList(product.labelGroupList),
                     layout,
                     product.originalPrice,
-                    product.discountPercentage
+                    product.discountPercentage,
+                    index + 1,
+                    optionTitle
             )
         }
     }

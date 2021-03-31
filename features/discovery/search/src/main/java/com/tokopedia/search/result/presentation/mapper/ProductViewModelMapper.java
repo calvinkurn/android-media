@@ -370,7 +370,8 @@ public class ProductViewModelMapper {
                             position,
                             data.getType(),
                             data.getLayout(),
-                            this::convertToLabelGroupList
+                            this::convertToLabelGroupList,
+                            opt.getTitle()
                     ),
                     data.getType(),
                     data.getLayout(),

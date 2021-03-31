@@ -107,8 +107,10 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
         expectedInspirationCarouselProduct: List<InspirationCarouselProduct>,
         inspirationCarouselType: String,
         inspirationCarouselLayout: String,
-        position: Int
+        optionPosition: Int,
+        optionTitle: String,
 ) {
+    var productPosition = 1
     listShouldBe(expectedInspirationCarouselProduct) { actualProduct, expectedProduct ->
         actualProduct.id shouldBe expectedProduct.id
         actualProduct.name shouldBe expectedProduct.name
@@ -131,6 +133,9 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
         actualProduct.layout shouldBe inspirationCarouselLayout
         actualProduct.originalPrice shouldBe expectedProduct.originalPrice
         actualProduct.discountPercentage shouldBe expectedProduct.discountPercentage
-        actualProduct.optionPosition shouldBe position
+        actualProduct.optionPosition shouldBe optionPosition
+        actualProduct.position shouldBe productPosition
+        actualProduct.optionTitle shouldBe optionTitle
+        productPosition++
     }
 }
