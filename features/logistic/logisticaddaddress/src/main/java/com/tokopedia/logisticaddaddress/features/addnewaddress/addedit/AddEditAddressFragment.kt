@@ -231,7 +231,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
         if (!isMismatch && !isMismatchSolved) {
             et_detail_address.apply {
-                addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper))
+                addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper, null))
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive(isFullFlow, isLogisticLabel) }
                 addTextChangedListener(setDetailAlamatWatcher())
 
@@ -271,6 +271,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     return@setOnTouchListener false
                 }
 
+                addTextChangedListener(setWrapperWatcher(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char)))
+
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive(isFullFlow, isLogisticLabel)
@@ -281,7 +283,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         } else {
             if (isMismatch) {
                 et_kota_kecamatan_mismatch.apply {
-                    addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper))
+                    addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper, null))
                     setOnClickListener {
                         showDistrictRecommendationBottomSheet()
                         AddNewAddressAnalytics.eventClickFieldKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
@@ -290,7 +292,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             et_alamat_mismatch.apply {
-                addTextChangedListener(setWrapperWatcher(et_alamat_mismatch_wrapper))
+                addTextChangedListener(setWrapperWatcher(et_alamat_mismatch_wrapper, null))
                 addTextChangedListener(setAlamatWatcher())
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
@@ -311,6 +313,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             setOnTouchLabelAddress(ANA_NEGATIVE)
 
             et_receiver_name.apply {
+                addTextChangedListener(setWrapperWatcher(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char)))
                 setOnTouchListener { view, event ->
                     view.parent.requestDisallowInterceptTouchEvent(true)
                     if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
@@ -327,7 +330,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             et_phone.apply {
-                addTextChangedListener(setPhoneWatcher())
                 setOnTouchListener { view, event ->
                     view.parent.requestDisallowInterceptTouchEvent(true)
                     if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
@@ -352,11 +354,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 }
                 return@setOnTouchListener false
             }
-            addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper))
+            addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper, null))
         }
 
         et_phone.apply {
-            addTextChangedListener(setPhoneWatcher())
             setOnTouchListener { view, event ->
                 view.parent.requestDisallowInterceptTouchEvent(true)
                 if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
@@ -364,7 +365,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 }
                 return@setOnTouchListener false
             }
-            addTextChangedListener(setWrapperWatcher(et_phone_wrapper))
+            addTextChangedListener(setWrapperWatcher(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char)))
         }
 
         btn_contact_picker.setOnClickListener {
@@ -407,7 +408,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 }
                 return@setOnTouchListener false
             }
-            addTextChangedListener(setWrapperWatcher(et_label_address_wrapper))
+            addTextChangedListener(setWrapperWatcher(et_label_address_wrapper, null))
         }
     }
 
@@ -565,7 +566,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         setWrapperError(et_phone_wrapper, null)
     }
 
-    private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
+    private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -573,7 +574,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    setWrapperError(wrapper, null)
+                    setWrapperError(wrapper, text)
                 }
             }
 
@@ -616,7 +617,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
         }
     }
-
+/*
     private fun setPhoneWatcher(): TextWatcher {
         return object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -642,7 +643,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
         }
-    }
+    }*/
 
     private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean, isCircuitBreaker: Boolean) {
         if (!isMismatch && !isMismatchSolved) {
