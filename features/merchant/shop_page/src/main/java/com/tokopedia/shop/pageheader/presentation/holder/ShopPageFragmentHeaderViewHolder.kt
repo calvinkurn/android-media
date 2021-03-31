@@ -11,14 +11,18 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -42,7 +46,8 @@ import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
                                        private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
-                                       private val context: Context) {
+                                       private val context: Context,
+                                       private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener) {
     private var isShopFavorite = false
     private val shopPageProfileBadgeView: AppCompatImageView
         get() = view.shop_page_main_profile_badge.takeIf {
@@ -60,6 +65,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         get() = view.shop_page_follow_unfollow_button.takeIf {
             isUsingNewNavigation()
         } ?: view.shop_page_follow_unfollow_button_old
+    private val chooseAddressWidget: ChooseAddressWidget?
+        get() = view.choose_address_widget
     private var coachMark: CoachMark2? = null
 
     private val playSgcWidgetContainer = view.findViewById<CardView>(R.id.play_sgc_widget_container)
@@ -68,6 +75,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
+    }
+
+    fun updateChooseAddressWidget(){
+        chooseAddressWidget?.updateWidget()
     }
 
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
@@ -121,6 +132,113 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_chevron_shop_info.setOnClickListener(null)
             view.shop_page_main_profile_name.setOnClickListener (null)
             view.shop_page_chevron_shop_info.hide()
+        }
+    }
+
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
+        chooseAddressWidget?.apply {
+            val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
+            val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+                    ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
+                    true
+            )
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
+                show()
+                bindChooseAddress(chooseAddressWidgetListener)
+                view.choosee_address_widget_bottom_shadow?.show()
+            } else {
+                view.choosee_address_widget_bottom_shadow?.hide()
+                hide()
+            }
+        }
+    }
+
+    fun showCoachMark(
+            followStatusData: FollowStatus?,
+            shopId: String,
+            userId: String
+    ){
+        val coachMarkList = arrayListOf<CoachMark2Item>().apply {
+            getShopFollowButtonCoachMarkItem(followStatusData)?.let{
+                add(it)
+            }
+            getChooseAddressWidgetCoachMarkItem()?.let{
+                add(it)
+            }
+        }
+        if(coachMarkList.isNotEmpty()){
+            coachMark = CoachMark2(context)
+            coachMark?.isOutsideTouchable = true
+            coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    checkCoachMarkImpression(
+                            onCoachMarkFollowButtonImpressed = {
+                                listener.saveFirstTimeVisit()
+                                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                            },
+                            onCoachMarkChooseAddressWidgetImpressed = {
+                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                            }
+                    )
+                }
+            })
+            coachMark?.showCoachMark(coachMarkList)
+            checkCoachMarkImpression(
+                    onCoachMarkFollowButtonImpressed = {
+                        listener.saveFirstTimeVisit()
+                        shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                    },
+                    onCoachMarkChooseAddressWidgetImpressed = {
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                    }
+            )
+        }
+    }
+
+    private fun checkCoachMarkImpression(
+            onCoachMarkFollowButtonImpressed: () -> Unit,
+            onCoachMarkChooseAddressWidgetImpressed: () -> Unit
+    ) {
+        coachMark?.coachMarkItem?.getOrNull(coachMark?.currentIndex.orZero())?.let {
+            when (it.anchorView.id) {
+                followButton.id -> {
+                    onCoachMarkFollowButtonImpressed.invoke()
+                }
+                chooseAddressWidget?.id -> {
+                    onCoachMarkChooseAddressWidgetImpressed.invoke()
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun getShopFollowButtonCoachMarkItem(
+            followStatusData: FollowStatus?
+    ): CoachMark2Item? {
+        val coachMarkText = followStatusData?.followButton?.coachmarkText.orEmpty()
+        return if (!coachMarkText.isBlank() && listener.isFirstTimeVisit() == false) {
+            CoachMark2Item(
+                    anchorView = followButton,
+                    title = "",
+                    description = MethodChecker.fromHtml(coachMarkText)
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
+        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
+        return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
+            chooseAddressWidget?.let {
+                CoachMark2Item(
+                        it,
+                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
+                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
+                )
+            }
+        } else {
+            null
         }
     }
 
@@ -312,7 +430,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followStatus?.let {
             followButton.text = it.followButton?.buttonLabel
             val voucherUrl = it.followButton?.voucherIconURL
-            val coachMarkText = it.followButton?.coachmarkText
             if (!voucherUrl.isNullOrBlank()) {
                 followButton.loadLeftDrawable(
                         context = context,
@@ -322,11 +439,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 shopPageTracking?.impressionVoucherFollowUnfollowShop(shopId, userId)
             } else {
                 removeCompoundDrawableFollowButton()
-            }
-            if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
-                setCoachMark(coachMarkText)
-                listener.saveFirstTimeVisit()
-                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
             }
         }
         changeColorButton()
@@ -345,19 +457,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         if (!followButton.compoundDrawables.isNullOrEmpty()) {
             followButton.removeDrawable()
         }
-    }
-
-    private fun setCoachMark(description: String) {
-        val coachMarkItem = ArrayList<CoachMark2Item>()
-        coachMarkItem.add(
-                CoachMark2Item(
-                        anchorView = followButton,
-                        title = "",
-                        description = MethodChecker.fromHtml(description)
-                )
-        )
-        coachMark = CoachMark2(context)
-        coachMark?.showCoachMark(coachMarkItem)
     }
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
@@ -396,21 +495,5 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     fun setLoadingFollowButton(isLoading: Boolean) {
         followButton.isLoading = isLoading
     }
-
-    interface ShopPageFragmentViewHolderListener {
-        fun onFollowerTextClicked(shopFavourited: Boolean)
-        fun setFollowStatus(isFollowing: Boolean)
-        fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
-        fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
-        fun openShopInfo()
-        fun onStartLiveStreamingClicked()
-        fun saveFirstTimeVisit()
-        fun isFirstTimeVisit(): Boolean?
-        fun onSendRequestOpenModerate(optionValue : String)
-        fun onCompleteSendRequestOpenModerate()
-        fun onCompleteCheckRequestModerateStatus(moderateStatusResult : ShopModerateRequestResult)
-        fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet)
-    }
-
 
 }

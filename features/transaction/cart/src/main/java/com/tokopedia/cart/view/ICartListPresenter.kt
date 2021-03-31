@@ -118,4 +118,6 @@ interface ICartListPresenter {
     fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>)
 
     fun followShop(shopId: String)
+
+    fun doClearAllPromo()
 }

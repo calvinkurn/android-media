@@ -36,7 +36,7 @@ class GetShopPageHomeLayoutUseCaseTest {
     lateinit var graphQlUseCase: MultiRequestGraphqlUseCase
 
     private val getShopPageHomeLayoutUseCase by lazy {
-        GetShopPageHomeLayoutUseCase(anyString(), graphQlUseCase)
+        GetShopPageHomeLayoutUseCase(graphQlUseCase)
     }
 
     @Before

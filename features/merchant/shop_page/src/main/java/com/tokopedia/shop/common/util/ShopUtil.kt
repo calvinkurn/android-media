@@ -1,12 +1,17 @@
 package com.tokopedia.shop.common.util
 
+import android.content.Context
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.*
 import timber.log.Timber
 
 object ShopUtil {
@@ -33,5 +38,23 @@ object ShopUtil {
                 AbTestPlatform.NAVIGATION_VARIANT_OLD
         )
         return (navType == AbTestPlatform.NAVIGATION_VARIANT_REVAMP && !GlobalConfig.isSellerApp())
+    }
+
+    fun getShopPageWidgetUserAddressLocalData(context: Context?): LocalCacheModel? {
+        return context?.let{
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    fun isUsingNewShopPageHeader(context: Context?): Boolean {
+        val abTestShopHeaderType = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                AB_TEST_NEW_SHOP_HEADER_KEY,
+                AB_TEST_NEW_SHOP_HEADER_NEW_VALUE
+        )
+        val remoteConfigEnableNewShopHeaderValue = FirebaseRemoteConfigImpl(context).getBoolean(
+                REMOTE_CONFIG_ENABLE_NEW_SHOP_PAGE_HEADER,
+                true
+        )
+        return abTestShopHeaderType.equals(AB_TEST_NEW_SHOP_HEADER_NEW_VALUE, true) && remoteConfigEnableNewShopHeaderValue
     }
 }

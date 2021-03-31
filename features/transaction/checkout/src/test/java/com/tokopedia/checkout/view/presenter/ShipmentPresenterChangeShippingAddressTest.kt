@@ -132,12 +132,10 @@ class ShipmentPresenterChangeShippingAddressTest {
                     }
             )
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData.Builder()
-                .success(true)
-                .build())
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = true))
 
         // When
-        presenter.changeShippingAddress(recipientAddressModel, false, false, true, true)
+        presenter.changeShippingAddress(recipientAddressModel, null, false, false, true, true)
 
         // Then
         verifySequence {
@@ -154,12 +152,10 @@ class ShipmentPresenterChangeShippingAddressTest {
     @Test
     fun changeShippingAddressFailed_ShouldShowError() {
         // Given
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData.Builder()
-                .success(false)
-                .build())
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = false))
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
+        presenter.changeShippingAddress(RecipientAddressModel(), null, false, false, true, true)
 
         // Then
         verifySequence {
@@ -179,7 +175,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
+        presenter.changeShippingAddress(RecipientAddressModel(), null, false, false, true, true)
 
         // Then
         verifySequence {
@@ -199,7 +195,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         val recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
             locationDataModel = LocationDataModel().apply {
-                addrId = 1
+                addrId = "1"
             }
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
@@ -218,12 +214,10 @@ class ShipmentPresenterChangeShippingAddressTest {
                     }
             )
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData.Builder()
-                .success(true)
-                .build())
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = true))
 
         // When
-        presenter.changeShippingAddress(recipientAddressModel, false, true, true, true)
+        presenter.changeShippingAddress(recipientAddressModel, null, false, true, true, true)
 
         // Then
         verifySequence {
@@ -243,14 +237,10 @@ class ShipmentPresenterChangeShippingAddressTest {
         val errorMessages = ArrayList<String>().apply {
             add("Error Message")
         }
-        val shippingAddressData = SetShippingAddressData.Builder()
-                .success(false)
-                .messages(errorMessages)
-                .build()
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(shippingAddressData)
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = false, messages = errorMessages))
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
+        presenter.changeShippingAddress(RecipientAddressModel(), null, false, false, true, true)
 
         // Then
         verifySequence {

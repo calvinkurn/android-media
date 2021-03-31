@@ -1,0 +1,18 @@
+{
+  "readme": "Lucky Egg Trackers",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "luckyEggView",
+      "eventCategory": "lucky egg - homepage entry point",
+      "eventAction": "impression on egg",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "event": "luckyEggClick",
+      "eventCategory": "lucky egg - homepage entry point",
+      "eventAction": "click egg on homepage",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}
