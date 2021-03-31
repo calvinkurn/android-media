@@ -135,11 +135,15 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : Abs
     }
 
     private fun onProductImpression(productInfoDataModel: ProductInfoDataModel){
-        itemView.product_image?.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
-            override fun onViewHint() {
-                listener.onProductAnchorImpression(productInfoDataModel)
+        productInfoDataModel.productDetailData?.let {
+            if (it.isTopads) {
+                itemView.product_image?.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
+                    override fun onViewHint() {
+                        listener.onProductAnchorImpression(productInfoDataModel)
+                    }
+                })
             }
-        })
+        }
     }
 
     private fun onClickProductCard(productInfoDataModel: ProductInfoDataModel){
