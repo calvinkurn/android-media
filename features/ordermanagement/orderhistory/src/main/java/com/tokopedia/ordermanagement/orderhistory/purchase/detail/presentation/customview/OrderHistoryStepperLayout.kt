@@ -38,7 +38,9 @@ class OrderHistoryStepperLayout : LinearLayout {
         val title = findViewById<TextView>(R.id.stepper_title)
         val stepperImage = findViewById<ImageView>(R.id.stepper_image)
         title.text = model.stepperStatusTitle
-        title.setTextColor(Color.parseColor(model.orderListData.firstOrNull().color))
+        model.orderListData.firstOrNull()?.color?.let {
+            title.setTextColor(Color.parseColor(it))
+        }
         if (model.historyImage.isEmpty()) visibility = View.GONE else ImageHandler.LoadImage(stepperImage, model.historyImage)
     }
 }
