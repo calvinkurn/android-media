@@ -10,6 +10,8 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_info_bs.*
 
+
+const val TYPE_DASAR = 0
 class InfoBottomSheet : BottomSheetUnify(){
     private var contentView: View? = null
     private var bottomSheetType : Int = 0
@@ -26,10 +28,10 @@ class InfoBottomSheet : BottomSheetUnify(){
         isDragable = true
         isHideable = true
         showCloseIcon = false
-        if(bottomSheetType == 0){
-            setTitle(getString(R.string.topads_create_bs_title1))
-        }else
+        if(bottomSheetType == TYPE_DASAR){
             setTitle(getString(R.string.topads_create_bs_title2))
+        }else
+            setTitle(getString(R.string.topads_create_bs_title1))
     }
 
 
@@ -40,13 +42,13 @@ class InfoBottomSheet : BottomSheetUnify(){
 
     private fun initView() {
         context?.let {
-            if(bottomSheetType == 0){
-                infoDesc?.text = getString(R.string.topads_create_bs_desc1)
-                image?.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_tips1))
-            }
-            else {
+            if(bottomSheetType == TYPE_DASAR){
                 infoDesc?.text = getString(R.string.topads_create_bs_desc2)
                 image?.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_tips2))
+            }
+            else {
+                infoDesc?.text = getString(R.string.topads_create_bs_desc1)
+                image?.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_tips1))
             }
         }
     }

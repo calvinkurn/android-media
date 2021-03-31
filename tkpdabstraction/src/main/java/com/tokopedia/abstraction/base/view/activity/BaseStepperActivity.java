@@ -94,13 +94,12 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
         updateToolbarTitle();
     }
 
-    public void getToFragment(int pos,StepperModel stepperModel){
+    public void getToFragment(int pos, StepperModel stepperModel) {
+        this.stepperModel = stepperModel;
         currentPosition = pos;
         progressStepper.setProgress(currentPosition);
         setupFragment(null);
         updateToolbarTitle();
-        this.stepperModel = stepperModel;
-
     }
 
     @Override

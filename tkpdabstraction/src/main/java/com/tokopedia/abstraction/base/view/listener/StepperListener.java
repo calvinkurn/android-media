@@ -12,5 +12,5 @@ public interface StepperListener {
 
     void finishPage();
 
-    void getToFragment(int pos,StepperModel model);
+    void getToFragment(int pos, StepperModel model);
 }

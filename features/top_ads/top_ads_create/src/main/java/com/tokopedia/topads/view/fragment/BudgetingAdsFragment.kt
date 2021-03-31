@@ -25,7 +25,7 @@ import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
-import com.tokopedia.topads.view.activity.KeywordSUggestionActivity
+import com.tokopedia.topads.view.activity.KeywordSuggestionActivity
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapter
 import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapterTypeFactoryImpl
@@ -107,7 +107,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun prepareView() {
         addKeyword?.setOnClickListener {
-            val intent = Intent(context, KeywordSUggestionActivity::class.java)
+            val intent = Intent(context, KeywordSuggestionActivity::class.java)
             stepperModel?.selectedKeywordStage = getItemSelected()
             intent.putExtra("model", stepperModel)
             startActivityForResult(intent, 47)

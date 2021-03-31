@@ -8,7 +8,7 @@ import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
 import com.tokopedia.topads.view.fragment.KeywordAdsListFragment
 
-class KeywordSUggestionActivity :BaseSimpleActivity(), HasComponent<CreateAdsComponent> {
+class KeywordSuggestionActivity :BaseSimpleActivity(), HasComponent<CreateAdsComponent> {
     override fun getNewFragment(): Fragment? {
         return KeywordAdsListFragment.createInstance(intent.extras)
     }
