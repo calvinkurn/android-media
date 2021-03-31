@@ -43,6 +43,10 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : Abs
             } else {
                 itemView.badge?.hide()
             }
+            itemView.textTopAds.gone()
+            if (productDetailData.isTopads) {
+                itemView.textTopAds.visible()
+            }
             setRatingReviewCount(productDetailData.rating, productDetailData.countReview)
             itemView.context?.let{
                 ImageHandler.loadImageRounded2(it, itemView.product_image, productDetailData.imageUrl)
