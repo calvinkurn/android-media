@@ -182,7 +182,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun observeActivatePowerMerchant() {
         observe(viewModel.onActivatePmSuccess) {
             if (it is Success) {
-                showBottomSheetSuccess(it.data)
+                showRegistrationSuccessBottomSheet()
                 refreshData()
             }
         }
@@ -306,74 +306,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showBottomSheetSuccess(freeShipping: PowerMerchantFreeShippingStatus) {
-        val isFreeShippingEligible = freeShipping.isEligible
-        val chargePeriod = !freeShipping.isTransitionPeriod
-        val showFreeShipping = isFreeShippingEligible && chargePeriod
-
-        if (showFreeShipping) {
-            trackFreeShippingSuccessBottomSheet(freeShipping)
-        } else {
-            trackPowerMerchantSuccessBottomSheet()
-        }
-
-        val primaryBtnLabel = if (showFreeShipping) {
-            getString(R.string.power_merchant_free_shipping_learn_more)
-        } else {
-            getString(R.string.pm_label_bs_success_button)
-        }
-
-        val description = if (showFreeShipping) {
-            getString(R.string.power_merchant_success_free_shipping_description)
-        } else {
-            getString(R.string.power_merchant_success_description)
-        }
-
-        val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
-                getString(R.string.power_merchant_success_title),
-                description,
-                R.drawable.ic_pm_registration_success,
-                CTAMode.SINGLE
-        )
-        bottomSheet.setPrimaryButtonText(primaryBtnLabel)
-        bottomSheet.setPrimaryButtonClickListener {
-            if (showFreeShipping) {
-                openFreeShippingPage()
-                trackSuccessBottomSheetClickLearnMore(freeShipping)
-            } else {
-                trackClickStartSuccessBottomSheet()
-            }
-            bottomSheet.dismiss()
-        }
-        bottomSheet.show(childFragmentManager)
-    }
-
-    private fun trackClickStartSuccessBottomSheet() {
-        powerMerchantTracking.eventClickStartSuccessBottomSheet()
-    }
-
     private fun openFreeShippingPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW,
                 URL_FREE_SHIPPING_INTERIM_PAGE)
         startActivityForResult(intent, FREE_SHIPPING_INTENT_CODE)
-    }
-
-    private fun trackFreeShippingSuccessBottomSheet(freeShipping: PowerMerchantFreeShippingStatus) {
-        PowerMerchantFreeShippingTracker.eventFreeShippingSuccessBottomSheet(
-                userSessionInterface,
-                freeShipping
-        )
-    }
-
-    private fun trackPowerMerchantSuccessBottomSheet() {
-        powerMerchantTracking.eventPowerMerchantSuccessBottomSheet()
-    }
-
-    private fun trackSuccessBottomSheetClickLearnMore(freeShipping: PowerMerchantFreeShippingStatus) {
-        PowerMerchantFreeShippingTracker.sendSuccessBottomSheetClickLearnMore(
-                userSessionInterface,
-                freeShipping
-        )
     }
 
     private fun showBottomSheetCancel() {
@@ -600,7 +536,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showNotificationBottomSheet(title: String, description: String, imgUrl: String, callback: (() -> Unit)? = null) {
+    private fun showNotificationBottomSheet(title: String, description: String, imgUrl: String,
+                                            callback: (() -> Unit)? = null) {
         val notifBottomSheet = PMNotificationBottomSheet.createInstance(title, description, imgUrl)
         if (!notifBottomSheet.isAdded) {
             val ctaText = getString(R.string.pm_learn_new_pm)
